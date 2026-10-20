@@ -358,8 +358,8 @@ mod tests {
     fn a_config_file_may_name_the_transport_grpc_or_kafka() {
         let direct = load_file(
             "source:\n  name: filebeat.okta.default\n  transport: grpc\n  \
-             listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
-             sink:\n  topic: okta_load\n  transport: grpc\n  endpoint: http://dfe-loader:6000\n",
+             listen: 0.0.0.0:6000\nsink:\n  topic: okta_load\n  transport: grpc\n  \
+             endpoint: http://dfe-loader:6000\n",
         )
         .expect("an engine-rendered grpc config loads");
         assert_eq!(direct.source.transport, crate::config::Transport::Direct);

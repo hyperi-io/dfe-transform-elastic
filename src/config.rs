@@ -125,6 +125,7 @@ pub struct Config {
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
+    #[serde(default)]
     pub name: String,
 
     /// Which transport the inbound side uses: `bus` consumes `topics`, `direct`
@@ -149,6 +150,7 @@ pub struct SourceConfig {
     pub envelope: crate::envelope::EnvelopeSetting,
 
     /// Topics to consume.
+    #[serde(default)]
     pub topics: Vec<String>,
 
     /// Events pulled per batch.
@@ -167,9 +169,11 @@ pub struct SourceConfig {
     pub max_batch_bytes: usize,
 
     /// Kafka consumer group.
+    #[serde(default)]
     pub group_id: String,
 
     /// Broker list.
+    #[serde(default)]
     pub brokers: Vec<String>,
 
     /// When the source is told its records are safe: a Kafka offset commit on
@@ -187,7 +191,9 @@ pub struct SourceConfig {
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SinkConfig {
     /// Where the events land: the topic produced to on the bus, and the
-    /// routing key every push carries on direct. Required on both.
+    /// routing key every push carries on direct. Required on both once the
+    /// configuration names work.
+    #[serde(default)]
     pub topic: String,
 
     /// Which transport the outbound side uses: `bus` produces to `topic`,
@@ -420,8 +426,8 @@ mod tests {
     fn the_direct_transport_round_trips_through_yaml() {
         let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  transport: direct\n  \
-             listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
-             sink:\n  topic: okta_load\n  transport: direct\n  endpoint: http://loader:6000\n",
+             listen: 0.0.0.0:6000\nsink:\n  topic: okta_load\n  transport: direct\n  \
+             endpoint: http://loader:6000\n",
             "config.yaml",
             scalo::yaml::Profile::Config,
         )
@@ -430,6 +436,34 @@ mod tests {
         assert!(parsed.sink.transport.is_direct());
         assert!(!parsed.work_state().is_idle());
         assert!(parsed.validate().is_ok());
+    }
+
+    /// Every field a deployment may not know yet is optional in the file, so
+    /// an idle instance carries only what it sets. A config that names work
+    /// without one is still refused, by `validate` rather than by the parse.
+    #[test]
+    fn source_and_sink_fields_may_be_left_out() {
+        let idle: Config = scalo::yaml::from_str(
+            "source:\n  brokers: [b:9092]\nsink:\n  brokers: [b:9092]\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
+        )
+        .expect("sections naming no source, topics, group or sink topic parse");
+        assert!(idle.work_state().is_idle());
+        assert!(idle.validate().is_ok());
+
+        let no_group: Config = scalo::yaml::from_str(
+            "source:\n  name: filebeat.okta.default\n  topics: [in]\n  brokers: [b:9092]\n\
+             sink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
+        )
+        .expect("a bus source without a group parses");
+        let message = no_group
+            .validate()
+            .expect_err("the bus needs a consumer group")
+            .to_string();
+        assert!(message.contains("source.group_id"), "{message}");
     }
 
     /// Holding the acknowledgement is the default, so a config written before

@@ -61,6 +61,7 @@ $defs:
       name:
         description: Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
         type: string
+        default: ""
       transport:
         description: |-
           Which transport the inbound side uses: `bus` consumes `topics`, `direct`
@@ -90,6 +91,7 @@ $defs:
         type: array
         items:
           type: string
+        default: []
       batch_size:
         description: Events pulled per batch.
         type: integer
@@ -113,11 +115,13 @@ $defs:
       group_id:
         description: Kafka consumer group.
         type: string
+        default: ""
       brokers:
         description: Broker list.
         type: array
         items:
           type: string
+        default: []
       acknowledgements:
         description: |-
           When the source is told its records are safe: a Kafka offset commit on
@@ -130,11 +134,6 @@ $defs:
         $ref: "#/$defs/AcknowledgementsConfig"
         default:
           enabled: true
-    required:
-    - name
-    - topics
-    - group_id
-    - brokers
   Transport:
     description: |-
       Which transport a side of the service uses.
@@ -202,8 +201,10 @@ $defs:
       topic:
         description: |-
           Where the events land: the topic produced to on the bus, and the
-          routing key every push carries on direct. Required on both.
+          routing key every push carries on direct. Required on both once the
+          configuration names work.
         type: string
+        default: ""
       transport:
         description: |-
           Which transport the outbound side uses: `bus` produces to `topic`,
@@ -237,8 +238,6 @@ $defs:
         format: uint
         minimum: 0
         default: 15728640
-    required:
-    - topic
   GeoIpConfig:
     description: |-
       GeoIP database provisioning configuration.
