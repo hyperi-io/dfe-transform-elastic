@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.17](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.16...v1.1.17) (2026-10-21)
+
+### Bug Fixes
+
+* rebuild on scalo 2.14.18 ([#123](https://github.com/hyperi-io/dfe-transform-elastic/issues/123)) ([01d092a](https://github.com/hyperi-io/dfe-transform-elastic/commit/01d092a78a6bd39ce9096379d5bb2d5c1d31114d))
+
 ## [1.1.16](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.15...v1.1.16) (2026-10-20)
 
 ### Bug Fixes
