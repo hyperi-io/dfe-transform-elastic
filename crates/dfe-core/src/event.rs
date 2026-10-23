@@ -377,6 +377,20 @@ impl Event {
         self.set(path, value)
     }
 
+    /// Set a value only where the document holds none, which is an ingest
+    /// `set` with `override: false`: an absent or null field is written, any
+    /// other value is kept.
+    ///
+    /// # Errors
+    ///
+    /// Propagates whatever [`Event::set_resolved`] returns.
+    pub fn set_if_absent(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
+        if self.has_value(path) {
+            return Ok(());
+        }
+        self.set_resolved(path, value)
+    }
+
     /// Overwrite a value that ALREADY exists, reporting whether one did.
     ///
     /// [`Event::set`] splits on every dot and builds the objects it needs, so a
@@ -1156,6 +1170,34 @@ mod tests {
         let mut event = Event::new(json!({"a": "string"}));
         let result = event.set("a.b", "value");
         assert!(result.is_err());
+    }
+
+    /// The `override: false` reading: a value the document carries is kept,
+    /// and an absent or null one is filled.
+    #[test]
+    fn set_if_absent_keeps_a_carried_value_and_fills_a_missing_or_null_one() {
+        let mut event = Event::new(json!({
+            "agent": {"type": "filebeat", "version": null},
+        }));
+
+        event.set_if_absent("agent.type", "dfe-receiver").unwrap();
+        event.set_if_absent("agent.version", "1.0.0").unwrap();
+        event.set_if_absent("input.type", "syslog").unwrap();
+
+        assert_eq!(event.get_str("agent.type"), Some("filebeat"));
+        assert_eq!(event.get_str("agent.version"), Some("1.0.0"));
+        assert_eq!(event.get_str("input.type"), Some("syslog"));
+    }
+
+    /// An empty string is a value, so it is kept: only absent and null count
+    /// as missing.
+    #[test]
+    fn set_if_absent_treats_an_empty_string_as_carried() {
+        let mut event = Event::new(json!({"data_stream": {"namespace": ""}}));
+        event
+            .set_if_absent("data_stream.namespace", "default")
+            .unwrap();
+        assert_eq!(event.get_str("data_stream.namespace"), Some(""));
     }
 
     #[test]
