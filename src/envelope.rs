@@ -463,8 +463,12 @@ impl Delivery {
         // A Beats or Agent document the receiver forwards keeps its own agent,
         // input and namespace, as Elasticsearch keeps them. The data stream's
         // type and dataset name the pipeline that runs here, so they are ours.
-        event.set_if_absent("agent.type", json!(self.envelope.producer()))?;
-        event.set_if_absent("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
+        // This build's version only ever describes our own agent, never a
+        // shipper's type.
+        if !event.has_value("agent.type") {
+            event.set_resolved("agent.type", json!(self.envelope.producer()))?;
+            event.set_if_absent("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
+        }
         event.set_if_absent("input.type", json!(self.variant.as_ref()))?;
         event.set_resolved("data_stream.type", json!("logs"))?;
         event.set_resolved("data_stream.dataset", json!(self.dataset))?;
@@ -1436,6 +1440,20 @@ mod tests {
         assert_eq!(event.get_str("data_stream.namespace"), Some("default"));
         assert_eq!(event.get_str("data_stream.dataset"), Some("panw.panos"));
         assert_eq!(event.get_str("data_stream.type"), Some("logs"));
+    }
+
+    /// A shipper that names its agent without a version gets none of ours:
+    /// this build's version beside a shipper's type would describe neither.
+    #[test]
+    fn a_shipper_agent_without_a_version_gains_none_of_ours() {
+        let mut event = shipped_through_the_receiver();
+        event.remove("agent.version");
+        receiver_delivery(&event, "cisco_ios.log")
+            .apply(&mut event)
+            .unwrap();
+
+        assert_eq!(event.get_str("agent.type"), Some("filebeat"));
+        assert!(!event.has("agent.version"), "{:?}", event.get("agent"));
     }
 
     /// A shipper field holding null is no value, which is how an ingest `set`
