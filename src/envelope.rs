@@ -302,11 +302,12 @@ impl Envelope {
         }
     }
 
-    /// What wrote the wrapper, as `agent.type`.
+    /// What wrote the wrapper, as `agent.type` where the payload names no
+    /// agent of its own.
     ///
     /// Beats stamps the beat's own name here, so the DFE producers stamp
-    /// theirs -- an operator reading `agent.type` learns what actually
-    /// delivered the event either way.
+    /// theirs -- an operator reading `agent.type` learns what shipped the
+    /// event either way.
     #[must_use]
     pub const fn producer(self) -> &'static str {
         match self {
@@ -415,7 +416,8 @@ pub const BARE: &str = "bare";
 pub struct Delivery {
     /// The family to unwrap with.
     pub envelope: Envelope,
-    /// Which of that producer's shapes, and what `input.type` becomes.
+    /// Which of that producer's shapes, and what `input.type` becomes where
+    /// the payload names none.
     pub variant: Cow<'static, str>,
     /// What a syslog delivery must leave in `message`.
     pub framing: Option<Framing>,
@@ -438,7 +440,8 @@ impl Delivery {
         }
     }
 
-    /// Remove the wrapper, then put back the metadata Beats would have set.
+    /// Remove the wrapper, then put back the metadata Beats would have set
+    /// where the payload does not carry it already.
     ///
     /// A Beats delivery already carries all of it, so it is left alone.
     ///
@@ -457,15 +460,19 @@ impl Delivery {
         self.envelope
             .unwrap_into_beats(event, self.framing, &self.variant)?;
 
-        // `set_resolved`, not `set`: a payload already spelling one of these as
-        // a single dotted key keeps it and gains a nested twin beside it, and
-        // the transform reads past both.
-        event.set_resolved("agent.type", json!(self.envelope.producer()))?;
-        event.set_resolved("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
-        event.set_resolved("input.type", json!(self.variant.as_ref()))?;
+        // A Beats or Agent document the receiver forwards keeps its own agent,
+        // input and namespace, as Elasticsearch keeps them. The data stream's
+        // type and dataset name the pipeline that runs here, so they are ours.
+        // This build's version only ever describes our own agent, never a
+        // shipper's type.
+        if !event.has_value("agent.type") {
+            event.set_resolved("agent.type", json!(self.envelope.producer()))?;
+            event.set_if_absent("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
+        }
+        event.set_if_absent("input.type", json!(self.variant.as_ref()))?;
         event.set_resolved("data_stream.type", json!("logs"))?;
         event.set_resolved("data_stream.dataset", json!(self.dataset))?;
-        event.set_resolved("data_stream.namespace", json!("default"))?;
+        event.set_if_absent("data_stream.namespace", json!("default"))?;
         if let Some(ingested) = ingested {
             event.set_resolved("event.ingested", ingested)?;
         }
@@ -1357,6 +1364,151 @@ mod tests {
             .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
         assert_eq!(event.get_str("message"), Some("<13>"));
+    }
+
+    /// A Filebeat document as the receiver routes it: the shipper's whole
+    /// envelope, plus the `_source` its routing rule stamped.
+    fn shipped_through_the_receiver() -> Event {
+        Event::new(json!({
+            "agent": { "type": "filebeat", "version": "9.5.5", "name": "edge01" },
+            "data_stream": { "dataset": "cisco_ios.log", "namespace": "branch01", "type": "logs" },
+            "input": { "type": "filestream" },
+            "log": { "file": { "path": "/var/log/cisco_ios.log" } },
+            "message": "<189>29: Mar  3 10:30:00: %SYS-5-CONFIG_I: Configured from console",
+            "_source": "el0a1b2c3d",
+        }))
+    }
+
+    fn receiver_delivery(event: &Event, dataset: &'static str) -> Delivery {
+        Delivery {
+            envelope: Envelope::Receiver,
+            variant: detect(event).variant,
+            framing: Some(Framing::Line),
+            dataset,
+        }
+    }
+
+    /// Elasticsearch keeps what the shipper stamped, so a Beats or Agent
+    /// document forwarded by the receiver must too: a replaced `agent.type`
+    /// fills the meta schema's `agent_type` column with `dfe-receiver`.
+    #[test]
+    fn a_receiver_delivery_keeps_the_shippers_agent_input_and_namespace() {
+        let mut event = shipped_through_the_receiver();
+        receiver_delivery(&event, "cisco_ios.log")
+            .apply(&mut event)
+            .unwrap();
+
+        assert_eq!(event.get_str("agent.type"), Some("filebeat"));
+        assert_eq!(event.get_str("agent.version"), Some("9.5.5"));
+        assert_eq!(event.get_str("input.type"), Some("filestream"));
+        assert_eq!(event.get_str("data_stream.namespace"), Some("branch01"));
+        assert_eq!(event.get_str("data_stream.dataset"), Some("cisco_ios.log"));
+        assert_eq!(event.get_str("data_stream.type"), Some("logs"));
+    }
+
+    /// The dataset names the pipeline this transform runs, which a shipper's
+    /// value cannot change, so it is written whatever arrived.
+    #[test]
+    fn a_receiver_delivery_writes_the_dataset_of_the_pipeline_that_ran() {
+        let mut event = shipped_through_the_receiver();
+        receiver_delivery(&event, "cisco_ios.other")
+            .apply(&mut event)
+            .unwrap();
+
+        assert_eq!(
+            event.get_str("data_stream.dataset"),
+            Some("cisco_ios.other")
+        );
+    }
+
+    /// A raw line the receiver wrapped carries no shipper metadata, so it still
+    /// gets the delivery's own: the producer, this build, the transport, and
+    /// Elasticsearch's default namespace.
+    #[test]
+    fn a_bare_line_through_the_receiver_still_gets_the_delivery_labels() {
+        let mut event = receiver_event();
+        receiver_delivery(&event, "panw.panos")
+            .apply(&mut event)
+            .unwrap();
+
+        assert_eq!(event.get_str("agent.type"), Some("dfe-receiver"));
+        assert_eq!(
+            event.get_str("agent.version"),
+            Some(env!("CARGO_PKG_VERSION"))
+        );
+        assert_eq!(event.get_str("input.type"), Some("syslog"));
+        assert_eq!(event.get_str("data_stream.namespace"), Some("default"));
+        assert_eq!(event.get_str("data_stream.dataset"), Some("panw.panos"));
+        assert_eq!(event.get_str("data_stream.type"), Some("logs"));
+    }
+
+    /// A shipper that names its agent without a version gets none of ours:
+    /// this build's version beside a shipper's type would describe neither.
+    #[test]
+    fn a_shipper_agent_without_a_version_gains_none_of_ours() {
+        let mut event = shipped_through_the_receiver();
+        event.remove("agent.version");
+        receiver_delivery(&event, "cisco_ios.log")
+            .apply(&mut event)
+            .unwrap();
+
+        assert_eq!(event.get_str("agent.type"), Some("filebeat"));
+        assert!(!event.has("agent.version"), "{:?}", event.get("agent"));
+    }
+
+    /// A shipper field holding null is no value, which is how an ingest `set`
+    /// with `override: false` reads it.
+    #[test]
+    fn a_null_shipper_field_is_filled() {
+        let mut event = shipped_through_the_receiver();
+        event.set("data_stream.namespace", Value::Null).unwrap();
+        receiver_delivery(&event, "cisco_ios.log")
+            .apply(&mut event)
+            .unwrap();
+
+        assert_eq!(event.get_str("data_stream.namespace"), Some("default"));
+    }
+
+    /// The fetcher moves the provider's whole payload into `message`, so a
+    /// provider field that happens to be called `agent` or `data_stream` never
+    /// stands in for the delivery's labels.
+    #[test]
+    fn a_fetcher_delivery_still_gets_its_own_labels() {
+        let mut event = Event::new(json!({
+            "agent": { "type": "provider-agent" },
+            "data_stream": { "namespace": "provider-ns" },
+            "eventType": "user.session.start",
+            "_timestamp_fetcher": 1_771_459_200_000_u64,
+            "_timestamp_received": 1_771_459_200_000_u64,
+            "_source_fetcher": "okta.system_log",
+        }));
+        Delivery {
+            envelope: Envelope::Fetcher,
+            variant: detect(&event).variant,
+            framing: None,
+            dataset: "okta.system",
+        }
+        .apply(&mut event)
+        .unwrap();
+
+        assert_eq!(event.get_str("agent.type"), Some("dfe-fetcher"));
+        assert_eq!(
+            event.get_str("agent.version"),
+            Some(env!("CARGO_PKG_VERSION"))
+        );
+        assert_eq!(event.get_str("input.type"), Some("okta.system_log"));
+        assert_eq!(event.get_str("data_stream.namespace"), Some("default"));
+        assert_eq!(event.get_str("data_stream.dataset"), Some("okta.system"));
+        assert_eq!(
+            event.get_str("event.ingested"),
+            Some("2026-02-19T00:00:00.000Z")
+        );
+        let payload: Value =
+            serde_json::from_str(event.get_str("message").expect("payload in message")).unwrap();
+        assert_eq!(
+            payload.pointer("/agent/type").and_then(Value::as_str),
+            Some("provider-agent")
+        );
     }
 
     #[test]

@@ -22,7 +22,7 @@ static PLAIN: RwLock<Option<HashMap<String, &'static Pattern>>> = RwLock::new(No
 /// anchors hold at position 0, so it matches the empty string.
 pub const NEVER_MATCHES: &str = r"[^\s\S]";
 
-/// A site-local cache over [`regex`], resolved once per call site.
+/// A site-local cache over [`fn@regex`], resolved once per call site.
 ///
 /// The shared map underneath is the dedup layer and must not be read on the hot
 /// path: its reader-count atomic bounces between cores once the service runs
