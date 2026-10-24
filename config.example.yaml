@@ -61,3 +61,4 @@ geoip:
     enabled: true
     data_dir: /var/lib/dfe/geoip
     max_age_days: 30
+    max_database_bytes: 536870912

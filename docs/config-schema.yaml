@@ -53,6 +53,7 @@ properties:
         maxmind_license_key: null
         ipinfo_token: null
         max_age_days: 30
+        max_database_bytes: 536870912
 $defs:
   SourceConfig:
     description: Inbound configuration.
@@ -283,6 +284,7 @@ $defs:
           maxmind_license_key: null
           ipinfo_token: null
           max_age_days: 30
+          max_database_bytes: 536870912
   GeoIpProvider:
     description: |-
       Source of the MMDB databases.
@@ -302,13 +304,15 @@ $defs:
     - description: MaxMind GeoLite2 -- free account required (account id + licence key).
       type: string
       const: max_mind_geo_lite2
-    - description: IPLocate.io -- free, anonymous, country + ASN only.
+    - description: IPLocate.io IP to ASN -- free, anonymous, ASN only, CC BY-SA 4.0.
       type: string
       const: ip_locate
     - description: IPinfo Lite -- free token required, country + ASN only.
       type: string
       const: ip_info_lite
-    - description: sapics/ip-location-db -- free CC0, country + ASN only.
+    - description: |-
+        DB-IP Lite ASN as sapics/ip-location-db republishes it -- free,
+        anonymous, ASN only, CC BY 4.0.
       type: string
       const: sapics
     - description: Caller supplies the MMDB paths directly; nothing is downloaded.
@@ -369,3 +373,11 @@ $defs:
         format: uint32
         minimum: 0
         default: 30
+      max_database_bytes:
+        description: |-
+          Largest download, and largest database decompressed from it, in bytes.
+          A transfer past it is abandoned and the local copy kept. Default 512 MiB.
+        type: integer
+        format: uint64
+        minimum: 0
+        default: 536870912
