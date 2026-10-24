@@ -3,6 +3,13 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.18](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.17...v1.1.18) (2026-10-24)
+
+### Bug Fixes
+
+* keep the shipper's agent and namespace fields on a receiver delivery ([#125](https://github.com/hyperi-io/dfe-transform-elastic/issues/125)) ([9f5adbe](https://github.com/hyperi-io/dfe-transform-elastic/commit/9f5adbe13ebdb6d69508acdbd9e06c28709a9bb6))
+* take scalo 2.14.20 ([#127](https://github.com/hyperi-io/dfe-transform-elastic/issues/127)) ([cecc086](https://github.com/hyperi-io/dfe-transform-elastic/commit/cecc08642f20f37fa60e66473c4981b0c4660fc2))
+
 ## [1.1.17](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.16...v1.1.17) (2026-10-21)
 
 ### Bug Fixes
