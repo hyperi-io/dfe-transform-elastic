@@ -91,6 +91,10 @@ impl Config {
             ));
         }
 
+        if self.source.mode == super::Mode::Agentless {
+            return self.validate_agentless();
+        }
+
         let intake = crate::registry::intake(&self.source.name)
             .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))?;
 
@@ -118,6 +122,52 @@ impl Config {
         }
 
         Ok(())
+    }
+
+    /// The checks agentless mode adds: the source is detected, so none is named.
+    fn validate_agentless(&self) -> crate::Result<()> {
+        use super::Unmatched;
+        let source = &self.source;
+        let refuse = |message: String| Err(crate::Error::Config(message));
+
+        if !source.name.trim().is_empty() {
+            return refuse(format!(
+                "source.name is '{}' but source.mode is agentless, which picks the source per \
+                 event. Clear one of them",
+                source.name
+            ));
+        }
+        if let Some(pinned) = source.envelope.pinned()
+            && pinned != crate::envelope::Envelope::Receiver
+        {
+            return refuse(
+                "source.envelope must be auto or receiver in agentless mode, which reads \
+                 dfe-receiver syslog"
+                    .into(),
+            );
+        }
+        crate::detect::Detector::new(&source.detect.candidates)
+            .map_err(|e| crate::Error::Config(e.to_string()))?;
+
+        let fallback = source.detect.fallback.as_str();
+        match (source.detect.unmatched, fallback.is_empty()) {
+            (Unmatched::Fallback, true) => {
+                refuse("source.detect.fallback is required when unmatched is fallback".into())
+            }
+            (Unmatched::Fallback, false) => {
+                crate::registry::lookup(fallback)
+                    .ok_or_else(|| crate::Error::UnknownSource(fallback.to_owned()))?;
+                if crate::detect::label(fallback).is_none() {
+                    return refuse(format!("source.detect.fallback '{fallback}' has no catalogue label"));
+                }
+                Ok(())
+            }
+            (_, false) => refuse(
+                "source.detect.fallback is set but unmatched is not fallback, so it would never run"
+                    .into(),
+            ),
+            (_, true) => Ok(()),
+        }
     }
 }
 
@@ -322,5 +372,110 @@ mod tests {
         let mut c = valid();
         c.source.envelope = crate::envelope::EnvelopeSetting::Fetcher;
         assert!(c.validate().is_ok());
+    }
+
+    /// Each row edits an agentless config and names the text its refusal must
+    /// carry, or `None` where it must pass.
+    #[test]
+    fn agentless_mode_is_checked_as_a_whole() {
+        use crate::config::{Mode, Unmatched};
+        type Edit = fn(&mut crate::config::Config);
+        let rows: &[(&str, Edit, Option<&str>)] = &[
+            ("no name, defaults", |_| {}, None),
+            (
+                "a name is refused",
+                |c| c.source.name = "filebeat.okta.default".into(),
+                Some("source.name"),
+            ),
+            (
+                "a pinned beats envelope",
+                |c| c.source.envelope = crate::envelope::EnvelopeSetting::Beats,
+                Some("source.envelope"),
+            ),
+            (
+                "a pinned receiver envelope",
+                |c| c.source.envelope = crate::envelope::EnvelopeSetting::Receiver,
+                None,
+            ),
+            (
+                "an unknown candidate",
+                |c| c.source.detect.candidates = vec!["filebeat.nope.default".into()],
+                Some("candidates"),
+            ),
+            (
+                "a known candidate",
+                |c| c.source.detect.candidates = vec!["filebeat.cisco_asa.default".into()],
+                None,
+            ),
+            (
+                "fallback needs a source",
+                |c| c.source.detect.unmatched = Unmatched::Fallback,
+                Some("source.detect.fallback is required"),
+            ),
+            (
+                "fallback names an unregistered source",
+                |c| {
+                    c.source.detect.unmatched = Unmatched::Fallback;
+                    c.source.detect.fallback = "filebeat.nope.default".into();
+                },
+                Some("unknown source"),
+            ),
+            (
+                "fallback names a source",
+                |c| {
+                    c.source.detect.unmatched = Unmatched::Fallback;
+                    c.source.detect.fallback = "filebeat.cisco_ios.default".into();
+                },
+                None,
+            ),
+            (
+                "a fallback that would never run",
+                |c| c.source.detect.fallback = "filebeat.cisco_ios.default".into(),
+                Some("would never run"),
+            ),
+            (
+                "stop needs nothing else",
+                |c| c.source.detect.unmatched = Unmatched::Stop,
+                None,
+            ),
+        ];
+        for (name, edit, refusal) in rows {
+            let mut c = valid();
+            c.source.mode = Mode::Agentless;
+            c.source.name.clear();
+            c.source.envelope = crate::envelope::EnvelopeSetting::Auto;
+            edit(&mut c);
+            assert!(
+                !c.work_state().is_idle(),
+                "{name}: agentless with topics is work"
+            );
+            match (c.validate(), refusal) {
+                (Ok(()), None) => {}
+                (Err(e), Some(text)) => assert!(e.to_string().contains(text), "{name}: {e}"),
+                (got, want) => panic!("{name}: got {got:?}, wanted {want:?}"),
+            }
+        }
+    }
+
+    #[test]
+    fn agentless_keys_load_from_yaml() {
+        let parsed: crate::config::Config = scalo::yaml::from_str(
+            "source:\n  mode: agentless\n  topics: [in]\n  group_id: g\n  brokers: [b:9092]\n  \
+             detect:\n    unmatched: fallback\n    fallback: filebeat.cisco_ios.default\n    \
+             candidates: [filebeat.cisco_asa.default]\nsink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
+        )
+        .expect("agentless keys parse");
+        assert_eq!(parsed.source.mode, crate::config::Mode::Agentless);
+        assert_eq!(
+            parsed.source.detect.unmatched,
+            crate::config::Unmatched::Fallback
+        );
+        assert_eq!(
+            parsed.source.detect.candidates,
+            ["filebeat.cisco_asa.default"]
+        );
+        assert!(parsed.validate().is_ok());
     }
 }

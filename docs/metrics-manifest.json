@@ -881,6 +881,32 @@
       "group": "custom"
     },
     {
+      "name": "events_detected_total",
+      "type": "counter",
+      "description": "Agentless events a marker claimed, by catalogue source",
+      "unit": "",
+      "labels": [
+        "source"
+      ],
+      "group": "custom"
+    },
+    {
+      "name": "events_unmatched_total",
+      "type": "counter",
+      "description": "Agentless events no marker claimed",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "events_fallback_total",
+      "type": "counter",
+      "description": "Unmatched events that ran the fallback transform",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
       "name": "batch_events",
       "type": "histogram",
       "description": "Events per received batch",

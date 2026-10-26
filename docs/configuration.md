@@ -34,6 +34,31 @@ On `direct` the brokers and group may stay empty. Empty topics do not idle there
 
 The listener speaks plaintext gRPC with no authentication of its own, and the push to the endpoint travels in the clear. Both belong behind the mesh route dfe-infra provisions for them, never on an interface reachable from outside the cluster.
 
+## Agentless mode serves one syslog stream of many device types
+
+`source.mode: agentless` reads the source off each event instead of from `source.name`, so one pod can consume a dfe-receiver syslog topic that carries firewalls, switches and proxies together. Each event is matched against a table of markers (literals, key sets and CEF vendor and product pairs), the winner's transform runs, and the output is stamped `_source` with that source's dfe-schemas catalogue label, which is what dfe-loader routes on. `source.name` must stay empty. `source.envelope` must be `auto` or `receiver`.
+
+- `source.mode`: `agent` (default) or `agentless`.
+- `source.detect.unmatched`: what an event no marker claims gets. `passthrough` (default) unwraps it to the Beats layout, runs no transform and leaves `_source` off, so the loader lands it under `sink.topic`'s default table. `fallback` runs `source.detect.fallback`'s transform and stamps its label. `stop` ends the service with the block unreleased, so a restart reads it again.
+- `source.detect.fallback`: a registered source, required when `unmatched` is `fallback` and refused otherwise.
+- `source.detect.candidates`: the sources the detector may name. Empty means all of them. A name it does not know is refused at startup. Narrowing it hands shared lines to the source left in: ASA-format lines go to ASA, and to the IOS catch-all once ASA is out. Citrix CEF goes to the ADC source unless it is excluded, and then to WAF.
+
+    DFE_TRANSFORM_ELASTIC_SOURCE_MODE=agentless
+    DFE_TRANSFORM_ELASTIC_SOURCE_DETECT_UNMATCHED=fallback
+    DFE_TRANSFORM_ELASTIC_SOURCE_DETECT_FALLBACK=filebeat.cisco_ios.default
+    DFE_TRANSFORM_ELASTIC_SOURCE_DETECT_CANDIDATES=filebeat.cisco_asa.default,filebeat.cisco_ftd.default
+
+Fetcher events carry the provider's own payload, so they count as unmatched. Three counters report the split: `events_detected_total{source}`, `events_unmatched_total` and `events_fallback_total`.
+
+Detection costs about 2,080 ns an event (481K events a second on one core), so a 20,000-event batch spends about 42 ms on it. That is 20,000 compat-corpus events of 718 bytes on average, measured on desktop-derek (AMD EPYC 7302) with the bench profile. `cargo bench --bench detect` re-derives it.
+
+Run it on the receiver's `_raw` capture where you can. The receiver splits each line with `syslog_loose`, and a marker that straddled the split (`Pleasant Password Server:`, an `amp:` tag) is gone from the parsed fields. On the compat corpus the detector names 8,243 of 8,885 events of detectable sources from the raw line and 8,004 from the parsed fields.
+
+`scripts/replay_syslog.py` feeds an agentless stack from the committed fixtures under `tests/fixtures/unencumbered/`, standard library only. `--sources` takes catalogue labels from the same table the detector stamps, and `--list` shows the ones with fixtures. A syslog header is added only to a fixture line that lacks one, and the `%` the ASA fixtures dropped is put back. UDP sends one datagram per line and TCP is newline framed. There is no `http://` form, because dfe-receiver's `/ingest` takes JSON and not syslog.
+
+    scripts/replay_syslog.py --list
+    scripts/replay_syslog.py --target udp://dfe-receiver:514 --sources cisco-asa,fortinet,panw --rate 50 --loop --duration 120
+
 ## `source.acknowledgements` holds the source until delivery
 
 `source.acknowledgements.enabled` (default `true`) holds the source's acknowledgement -- the Kafka offset commit on the bus, the answer to a push on direct -- until every event built from a record is delivered, or dropped and counted. A sink outage is then waited out, and a crash redelivers rather than loses. `false` acknowledges at receipt, before the transform runs, and a crash loses what was in flight. The flat env form is `DFE_TRANSFORM_ELASTIC_SOURCE_ACKNOWLEDGEMENTS_ENABLED`.

@@ -89,6 +89,18 @@ pub struct TransformMetrics {
     /// Unwrapped as Beats instead, which every source accepts.
     pub envelope_unaccepted: Counter,
 
+    /// Agentless events a marker claimed, by the catalogue label they were
+    /// stamped with. Registered here for the manifest and incremented per
+    /// source by `agentless`.
+    pub events_detected: Counter,
+
+    /// Agentless events no marker claimed, whatever `detect.unmatched` then did
+    /// with them. A steady rate means a device type the table does not know.
+    pub events_unmatched: Counter,
+
+    /// Unmatched events that ran `detect.fallback`'s transform.
+    pub events_fallback: Counter,
+
     /// Events per received batch. Shows whether `batch_size` is being reached.
     pub batch_events: Histogram,
 
@@ -169,6 +181,20 @@ impl TransformMetrics {
                 "envelope_unaccepted_total",
                 "Batches detected as an envelope this source cannot arrive in",
             ),
+            events_detected: manager.counter_with_labels(
+                "events_detected_total",
+                "Agentless events a marker claimed, by catalogue source",
+                &["source"],
+                "custom",
+            ),
+            events_unmatched: manager.counter(
+                "events_unmatched_total",
+                "Agentless events no marker claimed",
+            ),
+            events_fallback: manager.counter(
+                "events_fallback_total",
+                "Unmatched events that ran the fallback transform",
+            ),
             batch_events: manager.histogram("batch_events", "Events per received batch"),
             batch_duration: manager
                 .histogram("batch_duration_seconds", "Seconds to transform one batch"),
@@ -224,6 +250,9 @@ mod tests {
             "_send_backpressure_total",
             "_send_filtered_dlq_total",
             "_events_oversize_total",
+            "_events_detected_total",
+            "_events_unmatched_total",
+            "_events_fallback_total",
             "_batch_events",
             "_batch_duration_seconds",
             // AppMetrics layer.

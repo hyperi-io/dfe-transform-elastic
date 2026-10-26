@@ -14,6 +14,11 @@ properties:
     $ref: "#/$defs/SourceConfig"
     default:
       name: ""
+      mode: agent
+      detect:
+        unmatched: passthrough
+        fallback: ""
+        candidates: []
       transport: bus
       listen: 0.0.0.0:6000
       envelope: auto
@@ -60,9 +65,25 @@ $defs:
     type: object
     properties:
       name:
-        description: Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
+        description: |-
+          Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
+          Left empty in agentless mode, which picks the source per event.
         type: string
         default: ""
+      mode:
+        description: |-
+          `agent` runs the one transform `name` selects. `agentless` detects the
+          source of each event instead, and stamps `_source` with its catalogue
+          label so dfe-loader routes it to that source's table.
+        $ref: "#/$defs/Mode"
+        default: agent
+      detect:
+        description: Detection settings, read only in agentless mode.
+        $ref: "#/$defs/DetectConfig"
+        default:
+          unmatched: passthrough
+          fallback: ""
+          candidates: []
       transport:
         description: |-
           Which transport the inbound side uses: `bus` consumes `topics`, `direct`
@@ -135,6 +156,54 @@ $defs:
         $ref: "#/$defs/AcknowledgementsConfig"
         default:
           enabled: true
+  Mode:
+    description: Whether one named transform serves the source, or each event picks its own.
+    oneOf:
+    - description: "`source.name` names the one transform every event runs."
+      type: string
+      const: agent
+    - description: |-
+        The source is read off each event's text, and that source's transform
+        runs. One dfe-receiver syslog stream can then carry many device types.
+      type: string
+      const: agentless
+  DetectConfig:
+    description: How agentless mode detects each event's source.
+    type: object
+    properties:
+      unmatched:
+        description: What happens to an event nothing matches.
+        $ref: "#/$defs/Unmatched"
+        default: passthrough
+      fallback:
+        description: |-
+          The registered source whose transform runs on an unmatched event.
+          Required when `unmatched` is `fallback`, and refused otherwise.
+        type: string
+        default: ""
+      candidates:
+        description: |-
+          Sources the detector may name, by registered name. Empty means every
+          source it knows. Narrowing it hands lines two sources share to the one
+          left, e.g. leaving out `filebeat.cisco_asa.default` lets FTD take them.
+        type: array
+        items:
+          type: string
+        default: []
+  Unmatched:
+    description: What agentless mode does with an event no marker claims.
+    oneOf:
+    - description: |-
+        Emit the event unwrapped to the Beats layout with no transform and no
+        `_source`, so dfe-loader lands it under the sink topic's default table.
+      type: string
+      const: passthrough
+    - description: Run `detect.fallback`'s transform and stamp its label.
+      type: string
+      const: fallback
+    - description: Stop the service with the block unreleased, so a restart reads it again.
+      type: string
+      const: stop
   Transport:
     description: |-
       Which transport a side of the service uses.

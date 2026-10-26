@@ -194,8 +194,9 @@ pub const FETCHER_KEYS: &[&str] = &[
     "_source_fetcher",
 ];
 
-/// The fetcher's marker, which is also what the loader routes a fetched record
-/// on, so it survives the unwrap rather than being stripped with the rest.
+/// The fetcher's marker. dfe-engine's routing rule for a fetched source matches
+/// on it, so it survives the unwrap. dfe-loader reads only `_source`
+/// (`metadata.source_fields`), so nothing in the loader keys on this field.
 const FETCHER_SOURCE: &str = "_source_fetcher";
 
 /// The facility used when the receiver saw no PRI. 1 (user) is what a syslogd
