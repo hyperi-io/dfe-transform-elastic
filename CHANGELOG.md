@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.19](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.18...v1.1.19) (2026-10-26)
+
+### Bug Fixes
+
+* detect the source of each syslog event in agentless mode ([8a47ea0](https://github.com/hyperi-io/dfe-transform-elastic/commit/8a47ea0f34db01c3e422a3012c146a51fa4c6db3))
+
 ## [1.1.18](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.17...v1.1.18) (2026-10-24)
 
 ### Bug Fixes
