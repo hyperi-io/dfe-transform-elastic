@@ -54,6 +54,8 @@ fn config_sized(
     Config {
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
+            mode: dfe_transform_elastic::config::Mode::Agent,
+            detect: dfe_transform_elastic::config::DetectConfig::default(),
             transport: dfe_transform_elastic::config::Transport::Bus,
             listen: String::new(),
             envelope: EnvelopeSetting::Auto,

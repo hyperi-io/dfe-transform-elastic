@@ -38,6 +38,7 @@ tracing = { workspace = true }
 clap = { workspace = true }
 bytes = { workspace = true }
 memchr = { workspace = true }
+aho-corasick = { workspace = true }
 metrics = { workspace = true }
 schemars = { workspace = true }
 chrono = { workspace = true }
@@ -59,9 +60,15 @@ tempfile = { workspace = true }
 testcontainers = { workspace = true }
 testcontainers-modules = { workspace = true }
 criterion = { workspace = true }
+# The parser dfe-receiver runs, so the detector is scored on what it delivers.
+syslog_loose = { workspace = true }
 
 [[bench]]
 name = "envelope"
+harness = false
+
+[[bench]]
+name = "detect"
 harness = false
 
 [features]
@@ -205,6 +212,13 @@ serde_json = { version = ">=1.0.151", features = ["preserve_order", "float_round
 
 # SIMD byte search
 memchr = ">=2.8.3"
+
+# One pass over a line for every marker the agentless detector knows.
+aho-corasick = ">=1.1.5"
+
+# Test only: dfe-receiver's syslog parser, which decides what the detector is
+# handed when the receiver keeps no raw line.
+syslog_loose = ">=0.23.0, <0.24"
 
 # The lock in front of the GeoIP cache. std's RwLock carries poisoning and a
 # slower uncontended path, and this one is taken on the per-event path across

@@ -134,6 +134,8 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
     Config {
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
+            mode: dfe_transform_elastic::config::Mode::Agent,
+            detect: dfe_transform_elastic::config::DetectConfig::default(),
             transport: Transport::Direct,
             listen: listen.into(),
             envelope: EnvelopeSetting::Auto,

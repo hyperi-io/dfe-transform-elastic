@@ -121,12 +121,68 @@ pub struct Config {
     pub geoip: scalo::geoip_download::GeoIpConfig,
 }
 
+/// Whether one named transform serves the source, or each event picks its own.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "lowercase")]
+pub enum Mode {
+    /// `source.name` names the one transform every event runs.
+    #[default]
+    Agent,
+    /// The source is read off each event's text, and that source's transform
+    /// runs. One dfe-receiver syslog stream can then carry many device types.
+    Agentless,
+}
+
+/// What agentless mode does with an event no marker claims.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "lowercase")]
+pub enum Unmatched {
+    /// Emit the event unwrapped to the Beats layout with no transform and no
+    /// `_source`, so dfe-loader lands it under the sink topic's default table.
+    #[default]
+    Passthrough,
+    /// Run `detect.fallback`'s transform and stamp its label.
+    Fallback,
+    /// Stop the service with the block unreleased, so a restart reads it again.
+    Stop,
+}
+
+/// How agentless mode detects each event's source.
+#[derive(Debug, Clone, Default, Deserialize, Serialize, JsonSchema)]
+pub struct DetectConfig {
+    /// What happens to an event nothing matches.
+    #[serde(default)]
+    pub unmatched: Unmatched,
+
+    /// The registered source whose transform runs on an unmatched event.
+    /// Required when `unmatched` is `fallback`, and refused otherwise.
+    #[serde(default)]
+    pub fallback: String,
+
+    /// Sources the detector may name, by registered name. Empty means every
+    /// source it knows. Narrowing it hands lines two sources share to the one
+    /// left, e.g. leaving out `filebeat.cisco_asa.default` lets FTD take them.
+    #[serde(default)]
+    pub candidates: Vec<String>,
+}
+
 /// Inbound configuration.
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
+    /// Left empty in agentless mode, which picks the source per event.
     #[serde(default)]
     pub name: String,
+
+    /// `agent` runs the one transform `name` selects. `agentless` detects the
+    /// source of each event instead, and stamps `_source` with its catalogue
+    /// label so dfe-loader routes it to that source's table.
+    #[serde(default)]
+    pub mode: Mode,
+
+    /// Detection settings, read only in agentless mode.
+    #[serde(default)]
+    pub detect: DetectConfig,
 
     /// Which transport the inbound side uses: `bus` consumes `topics`, `direct`
     /// accepts pushes on `listen`.
@@ -227,6 +283,8 @@ impl Default for SourceConfig {
     fn default() -> Self {
         Self {
             name: String::new(),
+            mode: Mode::default(),
+            detect: DetectConfig::default(),
             transport: Transport::default(),
             listen: default_listen(),
             envelope: crate::envelope::EnvelopeSetting::default(),
@@ -318,8 +376,9 @@ impl Config {
     #[must_use]
     pub fn work_state(&self) -> scalo::lifecycle::WorkState {
         let no_intake = !self.source.transport.is_direct() && self.source.topics.is_empty();
+        let no_source = self.source.mode == Mode::Agent && self.source.name.trim().is_empty();
         scalo::lifecycle::WorkState::idle_if(
-            self.source.name.trim().is_empty() || no_intake,
+            no_source || no_intake,
             "no source name, or no topics on the bus transport",
         )
     }
@@ -332,6 +391,8 @@ fn valid() -> Config {
     Config {
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
+            mode: Mode::Agent,
+            detect: DetectConfig::default(),
             transport: Transport::Bus,
             listen: default_listen(),
             envelope: crate::envelope::EnvelopeSetting::Beats,

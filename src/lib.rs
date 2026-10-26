@@ -9,9 +9,11 @@
 //! Lints are configured in `Cargo.toml` `[lints]` so lib and bin share one
 //! source of truth; do not restate them here as crate attributes.
 
+pub mod agentless;
 pub mod cli;
 pub mod config;
 pub mod deployment;
+pub mod detect;
 pub mod envelope;
 pub mod error;
 pub mod metrics;
