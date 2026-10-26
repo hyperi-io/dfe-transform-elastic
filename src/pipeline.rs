@@ -203,7 +203,7 @@ fn for_the_log(error: &TransformError) -> Cow<'_, str> {
 }
 
 /// The head of a value, with the full length named where it was cut.
-fn elided(value: &str) -> Cow<'_, str> {
+pub(crate) fn elided(value: &str) -> Cow<'_, str> {
     let Some((head, _)) = value.char_indices().nth(GROK_VALUE_LOG_MAX) else {
         return Cow::Borrowed(value);
     };

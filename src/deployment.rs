@@ -161,6 +161,10 @@ fn shipped_config() -> Config {
     Config {
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
+            // `agent` runs the one transform `name` selects. `agentless`
+            // detects each event's source and leaves `name` empty.
+            mode: crate::config::Mode::Agent,
+            detect: crate::config::DetectConfig::default(),
             // `bus` consumes `topics`; `direct` accepts pushes on `listen`
             // (issue #19).
             transport: Transport::Bus,

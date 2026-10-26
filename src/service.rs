@@ -44,6 +44,7 @@ use scalo::worker::engine::BlockPieces;
 use scalo::worker::{BatchEngine, BatchProcessingConfig, EngineError};
 use tokio_util::sync::CancellationToken;
 
+use crate::agentless::{Agentless, Stopped};
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{
@@ -423,17 +424,28 @@ pub async fn run_loop<S: TransportSender>(
     metrics: &TransformMetrics,
     scaling: Option<&ScalingSignals>,
 ) -> crate::Result<()> {
-    let transform = crate::registry::lookup(&config.source.name)
-        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let intake = crate::registry::intake(&config.source.name)
-        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let dataset = crate::registry::dataset(&config.source.name)
-        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+    let (work, transform_name) = if let Some(agentless) = Agentless::new(&config.source, metrics)? {
+        (Work::Agentless(Box::new(agentless)), "agentless")
+    } else {
+        let transform = crate::registry::lookup(&config.source.name)
+            .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+        let intake = crate::registry::intake(&config.source.name)
+            .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+        let dataset = crate::registry::dataset(&config.source.name)
+            .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+        let resolver = crate::envelope::Resolver::new(config.source.envelope, intake, dataset);
+        (
+            Work::One {
+                transform,
+                resolver,
+            },
+            transform.name(),
+        )
+    };
 
     let stage = Stage {
         config,
-        transform,
-        resolver: crate::envelope::Resolver::new(config.source.envelope, intake, dataset),
+        work,
         topic: Arc::from(config.sink.topic.as_str()),
         metrics,
         scaling,
@@ -446,7 +458,7 @@ pub async fn run_loop<S: TransportSender>(
 
     tracing::info!(
         source = %config.source.name,
-        transform = transform.name(),
+        transform = transform_name,
         source_transport = ?config.source.transport,
         sink_transport = ?config.sink.transport,
         topics = ?config.source.topics,
@@ -480,7 +492,10 @@ pub async fn run_loop<S: TransportSender>(
         })
         .run_with_pieces(
             |mut block: WorkBatch<AnyToken>| {
-                let (records, dead) = stage.transform(&block.records);
+                let (records, dead) = stage.transform(&block.records).map_err(|stopped| {
+                    tracing::error!(error = %stopped, "stopping on an unmatched event");
+                    EngineError::Sink(stopped.to_string())
+                })?;
                 block.records = records;
                 block.dlq_entries.extend(dead);
                 Ok(block)
@@ -538,11 +553,21 @@ impl LoopState {
     }
 }
 
+/// What turns a parsed event into output.
+enum Work {
+    /// `source.name`'s transform, for every event.
+    One {
+        transform: &'static (dyn dfe_runtime::Transform + Sync),
+        resolver: crate::envelope::Resolver,
+    },
+    /// The source is detected per event.
+    Agentless(Box<Agentless>),
+}
+
 /// Everything the transform half of the loop needs, shared with the ticker.
 struct Stage<'a> {
     config: &'a Config,
-    transform: &'static (dyn dfe_runtime::Transform + Sync),
-    resolver: crate::envelope::Resolver,
+    work: Work,
     /// The sink topic, carried by every outbound record.
     topic: Arc<str>,
     metrics: &'a TransformMetrics,
@@ -557,9 +582,12 @@ impl Stage<'_> {
     /// that survived and a dead letter per input refused as not JSON.
     // Block and byte counts are bounded far below 2^53, so the f64 casts are exact.
     #[allow(clippy::cast_precision_loss)]
-    fn transform(&self, records: &[Record]) -> (Vec<Record>, Vec<FilteredDlqEntry>) {
+    fn transform(
+        &self,
+        records: &[Record],
+    ) -> Result<(Vec<Record>, Vec<FilteredDlqEntry>), Stopped> {
         if records.is_empty() {
-            return (Vec::new(), Vec::new());
+            return Ok((Vec::new(), Vec::new()));
         }
         let metrics = self.metrics;
 
@@ -597,8 +625,13 @@ impl Stage<'_> {
         // records in `transport_received_*`; these are the events parsed out.
         metrics.dfe.records_received(events.len() as u64);
 
-        let (transformed, outcome, envelopes) =
-            transform_batch_resolved(self.transform, &self.resolver, events);
+        let (transformed, outcome, envelopes) = match &self.work {
+            Work::One {
+                transform,
+                resolver,
+            } => transform_batch_resolved(*transform, resolver, events),
+            Work::Agentless(agentless) => agentless.transform(events)?,
+        };
         {
             let mut state = self.state.lock();
             let state = &mut *state;
@@ -651,7 +684,7 @@ impl Stage<'_> {
             .into_iter()
             .map(|payload| outbound_record(payload, &self.topic))
             .collect();
-        (out, dead)
+        Ok((out, dead))
     }
 
     /// Push a zero saturation when no block has pushed the signals for
@@ -859,11 +892,11 @@ const fn consumer_lag(_consumer: &AnyReceiver) -> Option<i64> {
 /// Push the per-pod signals `/scaling/pressure` serves to KEDA.
 ///
 /// The component names must match those declared in
-/// [`crate::cli::App::scaling_components`]; `set_component` silently ignores an
+/// `crate::cli::App::scaling_components`; `set_component` silently ignores an
 /// unregistered name.
 ///
 /// `kafka_lag` is skipped entirely on the direct transport rather than pushed
-/// as zero, and [`crate::cli::App::scaling_components`] declines to declare it
+/// as zero, and `crate::cli::App::scaling_components` declines to declare it
 /// there for the same reason: a declared component holds at zero while still
 /// taking its weight out of the composite.
 #[allow(clippy::cast_precision_loss)]
@@ -1116,6 +1149,8 @@ mod tests {
         Config {
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
+                mode: crate::config::Mode::Agent,
+                detect: crate::config::DetectConfig::default(),
                 transport: crate::config::Transport::Bus,
                 listen: String::new(),
                 envelope: crate::envelope::EnvelopeSetting::Auto,
@@ -1988,5 +2023,87 @@ mod tests {
             (first - 1.0).abs() < f64::EPSILON,
             "a full governed receive read as {first}"
         );
+    }
+
+    /// A dfe-receiver syslog record, as it arrives on the source topic.
+    fn syslog_record(body: &str) -> Vec<u8> {
+        serde_json::to_vec(&serde_json::json!({
+            "_source": "syslog",
+            "message": body,
+            "hostname": "fw01",
+            "structured_data": [],
+        }))
+        .unwrap()
+    }
+
+    fn agentless_config(unmatched: crate::config::Unmatched) -> Config {
+        let mut config = config();
+        config.source.mode = crate::config::Mode::Agentless;
+        config.source.name.clear();
+        config.source.detect.unmatched = unmatched;
+        config
+    }
+
+    /// Agentless through the real loop: each record leaves carrying its own
+    /// source's catalogue label.
+    #[tokio::test(start_paused = true)]
+    async fn agentless_stamps_each_record_with_its_sources_label() {
+        let config = agentless_config(crate::config::Unmatched::Passthrough);
+        let engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
+        let consumer = memory_source(vec![
+            syslog_record("%ASA-6-302013: Built inbound TCP connection 1 for outside:10.0.0.1/80 (10.0.0.1/80) to inside:10.0.0.2/1234 (10.0.0.2/1234)"),
+            syslog_record("%SYS-5-CONFIG_I: Configured from console by admin on vty0"),
+        ])
+        .await;
+        let sink = Flaky::new(0, usize::MAX);
+        let shutdown = CancellationToken::new();
+        let metrics = test_metrics();
+
+        let run = run_loop(
+            &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+        );
+        tokio::pin!(run);
+        tokio::select! {
+            result = &mut run => panic!("the loop stopped: {result:?}"),
+            () = sink.wait_for(2) => {}
+        }
+        shutdown.cancel();
+        run.await.expect("the loop stops cleanly on shutdown");
+
+        let mut labels: Vec<String> = sink
+            .delivered()
+            .iter()
+            .map(|p| {
+                let doc: serde_json::Value = serde_json::from_slice(p).unwrap();
+                doc["_source"].as_str().unwrap().to_owned()
+            })
+            .collect();
+        labels.sort();
+        let expect = |s| crate::detect::label(s).unwrap().to_owned();
+        let mut want = vec![
+            expect("filebeat.cisco_asa.default"),
+            expect("filebeat.cisco_ios.default"),
+        ];
+        want.sort();
+        assert_eq!(labels, want);
+    }
+
+    /// `stop` ends the loop with an error instead of delivering a block that
+    /// holds an unmatched record.
+    #[tokio::test(start_paused = true)]
+    async fn agentless_stop_ends_the_loop_on_an_unmatched_record() {
+        let config = agentless_config(crate::config::Unmatched::Stop);
+        let engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
+        let consumer = memory_source(vec![syslog_record("nothing here names a device")]).await;
+        let sink = Flaky::new(0, usize::MAX);
+        let shutdown = CancellationToken::new();
+        let metrics = test_metrics();
+
+        let result = run_loop(
+            &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+        )
+        .await;
+        assert!(result.is_err(), "the loop must stop: {result:?}");
+        assert_eq!(sink.delivered().len(), 0);
     }
 }

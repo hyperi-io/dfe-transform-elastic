@@ -13,7 +13,7 @@ use scalo::config::flat_env::{
 };
 use scalo::config::{self, ConfigOptions};
 
-use super::{Config, SinkConfig, SourceConfig};
+use super::{Config, DetectConfig, SinkConfig, SourceConfig};
 
 /// Environment prefix for the config cascade.
 pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
@@ -191,11 +191,38 @@ fn parse_transport(value: &str, current: super::Transport) -> super::Transport {
     }
 }
 
+/// Parse an enum setting by its config-file name, keeping `current` on anything
+/// unrecognised so a typo cannot silently change what the service does.
+fn parse_setting<T: serde::de::DeserializeOwned>(raw: &str, what: &str, current: T) -> T {
+    scalo::yaml::from_str(raw, what, scalo::yaml::Profile::Config).unwrap_or_else(|e| {
+        tracing::warn!(value = %raw, error = %e, "ignoring an unknown {what}, keeping the configured one");
+        current
+    })
+}
+
+impl ApplyFlatEnv for DetectConfig {
+    fn apply_flat_env(&mut self, prefix: &str) {
+        if let Some(raw) = flat_env_string(prefix, "UNMATCHED") {
+            self.unmatched = parse_setting(&raw, "unmatched action", self.unmatched);
+        }
+        if let Some(fallback) = flat_env_string(prefix, "FALLBACK") {
+            self.fallback = fallback;
+        }
+        if let Some(candidates) = flat_env_list(prefix, "CANDIDATES") {
+            self.candidates = candidates;
+        }
+    }
+}
+
 impl ApplyFlatEnv for SourceConfig {
     fn apply_flat_env(&mut self, prefix: &str) {
         if let Some(name) = flat_env_string(prefix, "NAME") {
             self.name = name;
         }
+        if let Some(raw) = flat_env_string(prefix, "MODE") {
+            self.mode = parse_setting(&raw, "source mode", self.mode);
+        }
+        self.detect.apply_flat_env(&format!("{prefix}_DETECT"));
         if let Some(raw) = flat_env_string(prefix, "TRANSPORT") {
             self.transport = parse_transport(&raw, self.transport);
         }

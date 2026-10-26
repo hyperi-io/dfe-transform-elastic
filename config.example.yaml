@@ -35,6 +35,11 @@
 
 source:
   name: filebeat.okta.default
+  mode: agent
+  detect:
+    unmatched: passthrough
+    fallback: ""
+    candidates: []
   transport: bus
   listen: 0.0.0.0:6000
   envelope: auto
