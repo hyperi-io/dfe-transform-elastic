@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.20](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.19...v1.1.20) (2026-10-26)
+
+### Bug Fixes
+
+* take a body-framed syslog line's body from _raw when the receiver kept it ([e289f77](https://github.com/hyperi-io/dfe-transform-elastic/commit/e289f775be26832b2955222d71a743cfbca572c2))
+
 ## [1.1.19](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.18...v1.1.19) (2026-10-26)
 
 ### Bug Fixes
