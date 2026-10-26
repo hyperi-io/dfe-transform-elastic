@@ -779,12 +779,16 @@ fn epoch_stamp(value: &Value, per_milli: f64) -> Option<Value> {
 /// Leave `message` holding what the pipeline groks, and lift the parsed header
 /// onto ECS `log.syslog.*` either way.
 ///
-/// [`Framing::Body`] keeps the receiver's `message` untouched: those pipelines
-/// read it as CSV or key-value, so a prefixed header would corrupt the first
-/// field.
+/// [`Framing::Body`] wants the body alone: those pipelines read it as CSV or
+/// key-value, so a prefixed header would corrupt the first field. The receiver
+/// takes everything up to the first colon as the tag, which wrecks a line with
+/// no tag (PAN-OS CSV), so the body comes from `_raw` when the receiver kept it
+/// and its header reads in full. Otherwise the receiver's `message` stays.
 fn unwrap_syslog(event: &mut Event, framing: Framing) -> crate::Result<()> {
     let message = match framing {
-        Framing::Body => None,
+        Framing::Body => {
+            raw_line(event).and_then(|raw| strip_syslog_header(&raw).map(str::to_owned))
+        }
         Framing::Line => Some(raw_line(event).unwrap_or_else(|| reconstruct(event))),
     };
 
@@ -808,6 +812,207 @@ fn unwrap_syslog(event: &mut Event, framing: Framing) -> crate::Result<()> {
 fn raw_line(event: &Event) -> Option<String> {
     let raw = event.get_str("_raw")?;
     (!raw.trim().is_empty()).then(|| raw.to_string())
+}
+
+/// The body of a syslog line, or `None` when its header does not read in full.
+///
+/// Optional `<PRI>`, then RFC 5424 (`1 TIMESTAMP HOST APP PROCID MSGID SD`) or
+/// RFC 3164 (`Mmm dd hh:mm:ss`, or an RFC 3339 stamp, then HOST and an optional
+/// tag). A Cisco stamp that ends `[ TZ]:` has no host. A tag is taken only when
+/// the first token is `name:` or `name[pid]:` with the colon followed by a space
+/// or the end, so `1,2015/01/05 05:38:58,...` stays in the body.
+fn strip_syslog_header(line: &str) -> Option<&str> {
+    let rest = line.get(pri_len(line.as_bytes())..)?;
+    let body = rfc5424_body(rest).or_else(|| rfc3164_body(rest))?;
+    let body = body.trim_end_matches(['\r', '\n']);
+    (!body.is_empty()).then_some(body)
+}
+
+/// Bytes taken by a leading `<1-3 digits>`, or zero.
+fn pri_len(b: &[u8]) -> usize {
+    if b.first() != Some(&b'<') {
+        return 0;
+    }
+    let digits = b[1..].iter().take_while(|d| d.is_ascii_digit()).count();
+    if (1..=3).contains(&digits) && b.get(1 + digits) == Some(&b'>') {
+        digits + 2
+    } else {
+        0
+    }
+}
+
+/// The first space-delimited token and what follows its space.
+fn token(s: &str) -> Option<(&str, &str)> {
+    let (tok, rest) = s.split_once(' ')?;
+    (!tok.is_empty()).then_some((tok, rest))
+}
+
+/// `dddd-dd-ddTdd:dd:dd`, an optional fraction, then `Z` or `+dd:dd`.
+fn is_rfc3339(t: &str) -> bool {
+    let b = t.as_bytes();
+    let shape = |at: usize, pat: &[u8]| {
+        b.get(at..at + pat.len()).is_some_and(|w| {
+            w.iter().zip(pat).all(|(&c, &p)| {
+                if p == b'd' {
+                    c.is_ascii_digit()
+                } else {
+                    c == p
+                }
+            })
+        })
+    };
+    if !shape(0, b"dddd-dd-ddTdd:dd:dd") {
+        return false;
+    }
+    let mut i = 19;
+    if b.get(i) == Some(&b'.') {
+        let frac = b[i + 1..].iter().take_while(|d| d.is_ascii_digit()).count();
+        if !(1..=9).contains(&frac) {
+            return false;
+        }
+        i += 1 + frac;
+    }
+    match b.get(i) {
+        Some(b'Z') => i + 1 == b.len(),
+        Some(b'+' | b'-') => shape(i + 1, b"dd:dd") && i + 6 == b.len(),
+        _ => false,
+    }
+}
+
+/// RFC 5424: version, five header tokens, then structured data.
+fn rfc5424_body(s: &str) -> Option<&str> {
+    let digits = s.bytes().take_while(u8::is_ascii_digit).count();
+    if !(1..=3).contains(&digits) || s.as_bytes().get(digits) != Some(&b' ') {
+        return None;
+    }
+    let (stamp, s) = token(&s[digits + 1..])?;
+    if stamp != "-" && !is_rfc3339(stamp) {
+        return None;
+    }
+    // HOST, APP-NAME, PROCID, MSGID.
+    let (_, s) = token(s)?;
+    let (_, s) = token(s)?;
+    let (_, s) = token(s)?;
+    let (_, s) = token(s)?;
+
+    if let Some(after) = s.strip_prefix('-') {
+        return match after.as_bytes().first() {
+            None => Some(after),
+            Some(b' ') => Some(&after[1..]),
+            Some(_) => None,
+        };
+    }
+    let mut rest = s;
+    let mut groups = 0;
+    while rest.starts_with('[') {
+        let b = rest.as_bytes();
+        let mut j = 1;
+        loop {
+            match b.get(j)? {
+                b'\\' => j += 2,
+                b']' => break,
+                _ => j += 1,
+            }
+        }
+        rest = &rest[j + 1..];
+        groups += 1;
+    }
+    (groups > 0).then(|| rest.strip_prefix(' ').unwrap_or(rest))
+}
+
+/// RFC 3164, with a BSD, Cisco or RFC 3339 stamp.
+fn rfc3164_body(s: &str) -> Option<&str> {
+    if let Some(after) = bsd_stamp(s) {
+        return cisco_body(after).or_else(|| host_and_tag(after.strip_prefix(' ')?));
+    }
+    let (stamp, rest) = token(s)?;
+    is_rfc3339(stamp).then(|| host_and_tag(rest)).flatten()
+}
+
+/// What follows `Mmm dd hh:mm:ss[.fff]`, or `None` when the stamp does not read.
+/// A leading `*` or `.` is Cisco's unsynchronised-clock mark.
+fn bsd_stamp(s: &str) -> Option<&str> {
+    const MONTHS: [&str; 12] = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ];
+    let b = s.as_bytes();
+    let mut i = usize::from(matches!(b.first(), Some(b'*' | b'.')));
+    if !MONTHS.contains(&s.get(i..i + 3)?) {
+        return None;
+    }
+    i += 3;
+    let spaces = b[i..].iter().take_while(|&&c| c == b' ').count();
+    if !(1..=2).contains(&spaces) {
+        return None;
+    }
+    i += spaces;
+    let day = b[i..].iter().take_while(|c| c.is_ascii_digit()).count();
+    if !(1..=2).contains(&day) || b.get(i + day) != Some(&b' ') {
+        return None;
+    }
+    i += day + 1;
+    let clock = b.get(i..i + 8)?;
+    let ok = clock.iter().enumerate().all(|(n, &c)| match n {
+        2 | 5 => c == b':',
+        _ => c.is_ascii_digit(),
+    });
+    if !ok {
+        return None;
+    }
+    i += 8;
+    if b.get(i) == Some(&b'.') {
+        let frac = b[i + 1..].iter().take_while(|d| d.is_ascii_digit()).count();
+        if !(1..=9).contains(&frac) {
+            return None;
+        }
+        i += 1 + frac;
+    }
+    s.get(i..)
+}
+
+/// Cisco's `: body` or ` TZ: body` straight after the stamp, which has no host.
+fn cisco_body(after: &str) -> Option<&str> {
+    let rest = if let Some(r) = after.strip_prefix(':') {
+        r
+    } else {
+        let (tz, r) = after.strip_prefix(' ')?.split_once(':')?;
+        if !(2..=5).contains(&tz.len()) || !tz.bytes().all(|c| c.is_ascii_uppercase()) {
+            return None;
+        }
+        r
+    };
+    Some(rest.strip_prefix(' ').unwrap_or(rest))
+}
+
+/// HOST, then the body with a leading `name:` or `name[pid]:` tag removed.
+fn host_and_tag(s: &str) -> Option<&str> {
+    let (host, rest) = token(s)?;
+    if host.ends_with(':') {
+        return None;
+    }
+    let b = rest.as_bytes();
+    let mut j = b
+        .iter()
+        .take_while(|c| !matches!(c, b' ' | b':' | b'[' | b']'))
+        .count();
+    if j == 0 {
+        return Some(rest);
+    }
+    if b.get(j) == Some(&b'[') {
+        let pid = b[j + 1..]
+            .iter()
+            .take_while(|c| !matches!(c, b' ' | b'[' | b']'))
+            .count();
+        if pid == 0 || b.get(j + 1 + pid) != Some(&b']') {
+            return Some(rest);
+        }
+        j += pid + 2;
+    }
+    if b.get(j) == Some(&b':') && matches!(b.get(j + 1), None | Some(b' ')) {
+        let body = &rest[j + 1..];
+        return Some(body.strip_prefix(' ').unwrap_or(body));
+    }
+    Some(rest)
 }
 
 /// Rebuild an RFC 3164 line from the receiver's parsed fields.
@@ -1242,17 +1447,111 @@ mod tests {
         assert_eq!(event.get_str("log.syslog.hostname"), Some("web01"));
     }
 
-    /// `_raw` must not override `message` under body framing either -- the
-    /// whole point of body framing is that a line would corrupt the parse.
+    /// Body framing takes the body from `_raw` when the header reads in full,
+    /// and keeps the receiver's `message` when it does not or `_raw` is absent.
     #[test]
-    fn body_framing_ignores_raw() {
-        let mut event = receiver_event();
-        event.set("_raw", json!("<165>a full line")).unwrap();
-
-        Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
-            .unwrap();
-        assert_eq!(event.get_str("message"), Some("the body"));
+    fn body_framing_takes_the_body_from_raw() {
+        let rows: &[(&str, Option<&str>, &str)] = &[
+            (
+                "PAN-OS has no tag, so the colon in the stamp is not one",
+                Some(
+                    "<11>Jan  5 05:38:59 PAN1.exampleCustomer.com 1,2015/01/05 05:38:58,0006C110285,THREAT,vulnerability",
+                ),
+                "1,2015/01/05 05:38:58,0006C110285,THREAT,vulnerability",
+            ),
+            (
+                "a 3164 tag with a pid",
+                Some("<134>Oct 26 16:27:11 fw01 filterlog[123]: 5,,,1000000103,igb0,match"),
+                "5,,,1000000103,igb0,match",
+            ),
+            (
+                "a 3164 tag without a pid",
+                Some("<134>Oct 26 16:27:11 fw01 sshd: Accepted publickey"),
+                "Accepted publickey",
+            ),
+            (
+                "5424 with structured data",
+                Some(
+                    r#"<165>1 2026-03-03T10:30:00.003+11:00 web01 app 1234 ID47 [exampleSDID@32473 iut="3" note="a \] b"][x@1 k="v"] An application event"#,
+                ),
+                "An application event",
+            ),
+            (
+                "5424 with nil structured data",
+                Some("<165>1 2026-03-03T10:30:00Z web01 app - - - the 5424 body"),
+                "the 5424 body",
+            ),
+            (
+                "Cisco stamp with a fraction and zone has no host",
+                Some("<189>Jun  5 05:09:30.838 EST: %IP-4-DUPADDR: Duplicate address 172.16.1.216"),
+                "%IP-4-DUPADDR: Duplicate address 172.16.1.216",
+            ),
+            (
+                "Cisco unsynchronised-clock mark",
+                Some("<189>*Nov 14 08:30:56.699: %LINK-5-CHANGED: Interface Gi2, changed state"),
+                "%LINK-5-CHANGED: Interface Gi2, changed state",
+            ),
+            (
+                "meraki has a space before any colon, so no tag",
+                Some(
+                    "<134>Oct  2 21:09:28 192.168.128.1 1 1696306168.009553886 satosugu events x url='https://a.b/'",
+                ),
+                "1 1696306168.009553886 satosugu events x url='https://a.b/'",
+            ),
+            (
+                "an RFC 3339 stamp with a 3164 host",
+                Some("<134>2026-03-03T10:30:00+11:00 web01 nginx: GET /"),
+                "GET /",
+            ),
+            (
+                "a colon with no space after it is not a tag",
+                Some("<134>Oct 26 16:27:11 h tag:value rest"),
+                "tag:value rest",
+            ),
+            ("no PRI", Some("Oct 26 16:27:11 h body here"), "body here"),
+            (
+                "garbage falls back to the receiver's message",
+                Some("<165>a full line"),
+                "the body",
+            ),
+            (
+                "a header with no body falls back",
+                Some("<134>Oct 26 16:27:11 host"),
+                "the body",
+            ),
+            (
+                "a 5424 header short of tokens falls back",
+                Some("<165>1 2026-03-03T10:30:00Z web01 app"),
+                "the body",
+            ),
+            (
+                "a bad 5424 stamp falls back",
+                Some("<165>1 yesterday web01 app - - - x"),
+                "the body",
+            ),
+            (
+                "an unterminated structured-data group falls back",
+                Some(r#"<165>1 - h a - - [id k="v" body"#),
+                "the body",
+            ),
+            ("no _raw leaves the message alone", None, "the body"),
+            (
+                "a blank _raw leaves the message alone",
+                Some("  "),
+                "the body",
+            ),
+        ];
+        for (name, raw, want) in rows {
+            let mut event = receiver_event();
+            if let Some(raw) = raw {
+                event.set("_raw", json!(raw)).unwrap();
+            }
+            Envelope::Receiver
+                .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
+                .unwrap();
+            assert_eq!(event.get_str("message"), Some(*want), "{name}");
+            assert!(!event.has("_raw"), "{name}: _raw is a receiver key");
+        }
     }
 
     /// `_raw` is the device's own spelling, and beats any reconstruction.
