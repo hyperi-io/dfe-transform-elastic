@@ -153,7 +153,10 @@ this.
 Two syslog framings, recorded per source in `registry.rs` as the `Framing` enum:
 
 - **Body** -- `panw.*` and `cisco_meraki` read `message` as CSV or key-value. The receiver's
-  body goes through untouched, because a prefixed header would corrupt the first field.
+  body goes through with no header, because a prefixed header would corrupt the first field. When
+  the receiver kept `_raw` and its header reads in full (RFC 3164 or 5424), the body is cut from
+  `_raw`, since the receiver takes everything up to the first colon as the tag and wrecks a line
+  that has none, as PAN-OS CSV does. Otherwise the receiver's `message` stays.
 - **Line** -- `fortinet`, `cisco_ios` and `cisco_nexus` grok the header out of `message`, so a
   line is put back: the receiver's `_raw` verbatim if present, otherwise an RFC 3164 line
   rebuilt from the parsed fields. Reconstruction is enough for `fortinet` (`<PRI>` only); it is
