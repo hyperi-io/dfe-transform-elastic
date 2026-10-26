@@ -1200,7 +1200,9 @@ pub fn grok_to_regex_typed(
                 }
             }
 
-            let sub_pattern = grok_pattern_regex(&name);
+            // The library's own groups are never named by a vendor and Elastic's
+            // grok never captured them, so they must not cost a slot each.
+            let sub_pattern = uncapture(grok_pattern_regex(&name));
 
             if field.is_empty() {
                 // A few builtins carry their own destination, as Elastic's own
@@ -1264,6 +1266,57 @@ pub fn grok_to_regex_typed(
 
     resolve_capture_paths(&mut field_map, &mut capture_types);
     (result, field_map, capture_types)
+}
+
+/// Rewrite every unnamed capturing group `(...)` of a library pattern as
+/// `(?:...)`.
+///
+/// Elastic's grok engine captures only the groups a pattern names, and a vendor
+/// cannot refer to the numbering inside a library pattern. Left capturing, each
+/// group adds a slot to every state of the compiled regex, and `%{IP}` and
+/// `%{IPV6}` carry 77 of them apiece: the 302021 teardown pattern held 967
+/// groups over 58,031 states, and the regex engine's per-thread search cache is
+/// states times slots, which came to 1.8 GB on the first match. A vendor's own
+/// unnamed groups are left alone, because a `gsub` replacement reads them as
+/// `$1`.
+///
+/// Escapes and character classes are copied whole, so a `(` inside either is
+/// left alone. `(?` and `(*` open something that is not a plain group.
+fn uncapture(pattern: &str) -> String {
+    let mut out = String::with_capacity(pattern.len());
+    let mut chars = pattern.chars().peekable();
+    // Depth of nested `[...]`, and whether the next char is the first in a
+    // class, where a `]` is a literal.
+    let mut class_depth = 0usize;
+    let mut class_start = false;
+
+    while let Some(c) = chars.next() {
+        out.push(c);
+        match c {
+            '\\' => {
+                if let Some(escaped) = chars.next() {
+                    out.push(escaped);
+                }
+                class_start = false;
+            }
+            '[' => {
+                class_depth += 1;
+                class_start = true;
+                if class_depth == 1 && chars.peek() == Some(&'^') {
+                    out.extend(chars.next());
+                }
+            }
+            ']' if class_depth > 0 && !class_start => class_depth -= 1,
+            '(' if class_depth == 0 && !matches!(chars.peek(), Some('?' | '*')) => {
+                out.push_str("?:");
+            }
+            _ => class_start = false,
+        }
+        if c != '[' && c != '\\' {
+            class_start = false;
+        }
+    }
+    out
 }
 
 /// Does an opening paren begin a named capture, rather than a look-behind?
@@ -4542,5 +4595,60 @@ mod tests {
         let mut event = Event::new(json!({ "id": "taken", "id.orig_h": "10.0.0.1" }));
         let error = dot_expand(&mut event, "", "*").unwrap_err();
         assert!(error.to_string().contains("id.orig_h"), "{error}");
+    }
+
+    /// Only named groups capture. An unnamed group has never produced a value
+    /// in Elastic's grok, and each one left capturing costs every state of the
+    /// compiled regex a slot.
+    #[test]
+    fn unnamed_groups_stop_capturing() {
+        let rows: &[(&str, &str, &str)] = &[
+            ("a plain group", "(a|b)c", "(?:a|b)c"),
+            ("nested", "((a)(b))", "(?:(?:a)(?:b))"),
+            ("a non-capturing group is left", "(?:a)", "(?:a)"),
+            ("a named group is left", "(?P<x>a)", "(?P<x>a)"),
+            ("a look-ahead is left", "a(?!b)", "a(?!b)"),
+            ("an escaped paren is text", r"\(a\)", r"\(a\)"),
+            ("a paren in a class is text", "[(]a", "[(]a"),
+            ("a negated class with a paren", "[^(]a(b)", "[^(]a(?:b)"),
+            ("a leading ] in a class is text", "[]()]a(b)", "[]()]a(?:b)"),
+            (
+                "a nested posix class",
+                "[[:alpha:](]a(b)",
+                "[[:alpha:](]a(?:b)",
+            ),
+            (
+                "an escaped bracket does not open a class",
+                r"\[(a)",
+                r"\[(?:a)",
+            ),
+        ];
+        for (name, input, want) in rows {
+            assert_eq!(super::uncapture(input), *want, "{name}");
+        }
+    }
+
+    /// `%{IP}` and `%{IPV6}` carry dozens of unnamed groups. After the rewrite
+    /// the only capture a grok has is the one it names, while a vendor's own
+    /// unnamed group keeps its number.
+    #[test]
+    fn a_grok_captures_only_what_it_names() {
+        for grok in ["%{IP:a}", "%{IPV6:a}", "^%{IPV6:a}|%{IP:a}$"] {
+            let (regex, _, _) = super::grok_to_regex_typed(grok);
+            let named = regex.matches("(?P<").count();
+            let all = regex.matches('(').count()
+                - regex.matches("(?").count()
+                - regex.matches(r"\(").count();
+            assert_eq!(
+                all, 0,
+                "{grok}: {all} capturing groups left over {named} named"
+            );
+        }
+
+        let (regex, _, _) = super::grok_to_regex_typed("(x)%{IP:a}");
+        assert!(
+            regex.starts_with("(x)"),
+            "a vendor group keeps its number: {regex}"
+        );
     }
 }
