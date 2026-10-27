@@ -175,6 +175,62 @@ fn the_variant_id_survives_a_whole_transform() {
     assert_eq!(out.get("_source").and_then(Value::as_str), Some("syslog"));
 }
 
+/// What dfe-receiver delivers for `line` once a routing rule has relabelled
+/// `_source`, with no `_raw`: the tagless PAN-OS line split by `syslog_loose`
+/// at its first space, so `appname` holds the first CSV field.
+fn relabelled_panw_delivery(label: &str) -> Value {
+    let line = format!("<134>Mar  3 10:30:00 fw01 {PANW_BODY}");
+    let m = syslog_loose::parse_message(&line, syslog_loose::Variant::Either);
+    json!({
+        "message": m.msg,
+        "hostname": m.hostname,
+        "appname": m.appname,
+        "facility": "local0",
+        "severity": "info",
+        "timestamp": "2026-03-03T10:30:00+11:00",
+        "_source": label,
+    })
+}
+
+/// A routing rule turns `_source: "syslog"` into the catalogue label, and the
+/// receiver's split of a tagless line puts the first CSV field in `appname`.
+/// The panw CSV must still parse, and the label must still reach the loader.
+#[test]
+fn a_relabelled_panw_delivery_parses_without_raw_capture() {
+    let via_beats = run(
+        "filebeat.panw.traffic",
+        Envelope::Beats,
+        json!({ "message": PANW_BODY }),
+    )
+    .expect("beats path emitted");
+
+    for label in ["demo-syslog", "panw-panos"] {
+        let via_relabel = run(
+            "filebeat.panw.traffic",
+            Envelope::Receiver,
+            relabelled_panw_delivery(label),
+        )
+        .expect("relabelled path emitted");
+
+        let relabelled = leaves(&via_relabel);
+        for (path, expected) in leaves(&via_beats) {
+            assert_eq!(
+                relabelled.get(&path),
+                Some(&expected),
+                "{label}: `{path}` differs between envelopes"
+            );
+        }
+        assert_eq!(
+            via_relabel.get("_source").and_then(Value::as_str),
+            Some(label)
+        );
+        assert!(
+            via_relabel.get("error").is_none() && via_relabel.pointer("/event/kind").is_some(),
+            "{label}: {via_relabel}"
+        );
+    }
+}
+
 /// What a `Framing::Line` source is handed: a `<PRI>`-prefixed line, rebuilt
 /// when the receiver kept no raw one.
 ///

@@ -362,7 +362,16 @@ pub fn detect(event: &Event) -> Detected {
     if keys.contains_key(FETCHER_SOURCE) {
         return owned(Envelope::Fetcher, FETCHER_SOURCE);
     }
-    if keys.contains_key("_source") {
+    if let Some(source) = keys.get("_source") {
+        // A routing rule may have replaced the transport's name with a catalogue
+        // label, so what the event carries says which transport it was.
+        let named = source.as_str().is_some_and(is_transport_name);
+        if let Some(transport) = infer_transport(keys).filter(|_| !named) {
+            return Detected {
+                family: Envelope::Receiver,
+                variant: Cow::Borrowed(transport),
+            };
+        }
         return owned(Envelope::Receiver, "_source");
     }
     // OTLP's generic mode tags `_signal` and the Vector gRPC source tags
@@ -695,17 +704,65 @@ fn unwrap_receiver(event: &mut Event, framing: Framing, variant: &str) -> crate:
 /// The transport's name, from the producer first and detection second.
 ///
 /// `_source` is what the converter wrote and settles it for the six transports
-/// that write one. The detected variant covers the ones that do not, chiefly
-/// Splunk HEC. With neither, syslog is the only transport a bare payload can
-/// still be.
+/// that write one, unless a routing rule relabelled it, in which case the
+/// event's own fields do. The detected variant covers the transports that write
+/// none, chiefly Splunk HEC. With neither, syslog is the only transport a bare
+/// payload can still be.
 fn variant_or_source<'a>(event: &'a Event, variant: &'a str) -> &'a str {
     if let Some(source) = event.get_str("_source") {
-        return source;
+        if is_transport_name(source) {
+            return source;
+        }
+        let inferred = event.as_value().as_object().and_then(infer_transport);
+        return inferred.unwrap_or(source);
     }
     if TRANSPORTS.iter().any(|t| t.name == variant) {
         return variant;
     }
     "syslog"
+}
+
+/// Whether `name` is a transport this module unwraps.
+fn is_transport_name(name: &str) -> bool {
+    name == "syslog" || TRANSPORTS.iter().any(|t| t.name == name)
+}
+
+/// The fields dfe-receiver's syslog converter writes, each only when the line
+/// carried it. `severity` and `timestamp` are left out because gelf writes them
+/// too.
+const SYSLOG_FIELDS: &[&str] = &[
+    "hostname",
+    "appname",
+    "procid",
+    "msgid",
+    "structured_data",
+    "facility",
+];
+
+/// Which transport an event came from when `_source` no longer says.
+///
+/// dfe-receiver writes `_source` with the transport's name, and a routing rule
+/// then overwrites it with the catalogue label (`cisco-asa`). Syslog is the
+/// transport with syslog header fields. Any other is the [`TRANSPORTS`] entry
+/// with the most of its own source fields present, at least two, so one shared
+/// name such as `timestamp` never decides it alone. Entries with the same
+/// fields (netflow and sflow) unwrap identically, so the first of them will do.
+fn infer_transport(keys: &serde_json::Map<String, Value>) -> Option<&'static str> {
+    if SYSLOG_FIELDS.iter().any(|f| keys.contains_key(*f)) {
+        return Some("syslog");
+    }
+    let mut best: Option<(&'static str, usize)> = None;
+    for transport in TRANSPORTS {
+        let present = transport
+            .lift
+            .iter()
+            .filter(|(from, _)| keys.contains_key(*from))
+            .count();
+        if present >= 2 && best.is_none_or(|(_, n)| present > n) {
+            best = Some((transport.name, present));
+        }
+    }
+    best.map(|(name, _)| name)
 }
 
 /// Move a transport's own field names onto their ECS homes.
@@ -779,13 +836,18 @@ fn epoch_stamp(value: &Value, per_milli: f64) -> Option<Value> {
 /// Leave `message` holding what the pipeline groks, and lift the parsed header
 /// onto ECS `log.syslog.*` either way.
 ///
-/// [`Framing::Body`] wants the body alone: those pipelines read it as CSV or
-/// key-value, so a prefixed header would corrupt the first field. The receiver
-/// takes everything up to the first colon as the tag, which wrecks a line with
-/// no tag (PAN-OS CSV), so the body comes from `_raw` when the receiver kept it
-/// and its header reads in full. Otherwise the receiver's `message` stays.
+/// [`Framing::Body`] wants the body alone, because a prefixed header would
+/// corrupt the first field of a CSV or key-value pipeline. It comes from the
+/// receiver's parsed fields with a wrong tag split repaired (`repaired_body`).
+/// `_raw`, which is opt-in, is read only when those fields hold no message at
+/// all. [`Framing::Line`] prefers `_raw` when present, because a rebuilt line
+/// loses what the parse dropped (`cisco_nexus` sequence numbers, the `cisco_ios`
+/// source IP), and otherwise rebuilds from the same repaired fields.
 fn unwrap_syslog(event: &mut Event, framing: Framing) -> crate::Result<()> {
     let message = match framing {
+        Framing::Body if event.get_str("message").is_some_and(|m| !m.is_empty()) => {
+            repaired_body(event)
+        }
         Framing::Body => {
             raw_line(event).and_then(|raw| strip_syslog_header(&raw).map(str::to_owned))
         }
@@ -812,6 +874,66 @@ fn unwrap_syslog(event: &mut Event, framing: Framing) -> crate::Result<()> {
 fn raw_line(event: &Event) -> Option<String> {
     let raw = event.get_str("_raw")?;
     (!raw.trim().is_empty()).then(|| raw.to_string())
+}
+
+/// Whether `app` can be a real RFC 3164 tag: at most 32 of letters, digits and
+/// `._-`, with a letter in it. `1,2015/01/05` is a CSV field, and a bare `1` a
+/// version number, neither of them a tag.
+fn is_tag(app: &str) -> bool {
+    app.len() <= 32
+        && app
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b'-'))
+        && app.bytes().any(|b| b.is_ascii_alphabetic())
+}
+
+/// The body the receiver's parsed fields describe, when its split was wrong.
+///
+/// dfe-receiver parses with `syslog_loose`, which takes the first token of the
+/// message as the tag even when the device wrote none, ending it at a space or
+/// a colon and dropping that one separator. A tagless PAN-OS line therefore
+/// arrives with `1,2015/01/05` as `appname`. When `appname` is not a tag, the
+/// body is `appname[procid]`, a space and `message`. The space is exact when
+/// the token ended at one, which is how every tagless device line seen ends it.
+///
+/// With no `hostname` or `appname` the parse found no header at all: either
+/// `message` is the whole line, or it starts with the tail of a Cisco stamp
+/// (`.838 EST: `) the parse left behind.
+///
+/// `None` leaves `message` as it is.
+fn repaired_body(event: &Event) -> Option<String> {
+    let message = event.get_str("message").unwrap_or_default();
+    match event.get_str("appname") {
+        Some(app) if is_tag(app) => None,
+        Some(app) => {
+            let mut body = String::with_capacity(app.len() + message.len() + 8);
+            body.push_str(app);
+            if let Some(pid) = event.get_str("procid") {
+                body.push('[');
+                body.push_str(pid);
+                body.push(']');
+            }
+            if !message.is_empty() {
+                body.push(' ');
+                body.push_str(message);
+            }
+            Some(body)
+        }
+        None if event.get_str("hostname").is_some() => None,
+        None => strip_syslog_header(message)
+            .or_else(|| strip_stamp_tail(message))
+            .map(str::to_owned),
+    }
+}
+
+/// `.838 EST: body` or `.838: body`, the tail of a Cisco stamp.
+fn strip_stamp_tail(message: &str) -> Option<&str> {
+    let fraction = message.strip_prefix('.')?;
+    let digits = fraction.bytes().take_while(u8::is_ascii_digit).count();
+    if !(1..=9).contains(&digits) {
+        return None;
+    }
+    cisco_body(&fraction[digits..]).filter(|body| !body.is_empty())
 }
 
 /// The body of a syslog line, or `None` when its header does not read in full.
@@ -1042,6 +1164,13 @@ fn reconstruct(event: &Event) -> String {
     if let Some(host) = event.get_str("hostname") {
         line.push_str(host);
         line.push(' ');
+    }
+
+    // A split the receiver got wrong has no real tag, so the repaired body
+    // stands alone and nothing is written in a tag's place.
+    if let Some(body) = repaired_body(event) {
+        line.push_str(&body);
+        return line;
     }
 
     if let Some(app) = event.get_str("appname") {
@@ -1447,110 +1576,295 @@ mod tests {
         assert_eq!(event.get_str("log.syslog.hostname"), Some("web01"));
     }
 
-    /// Body framing takes the body from `_raw` when the header reads in full,
-    /// and keeps the receiver's `message` when it does not or `_raw` is absent.
+    /// With no parsed message at all, body framing falls back to the body cut
+    /// from `_raw`, and leaves `message` unset when that header does not read.
     #[test]
-    fn body_framing_takes_the_body_from_raw() {
-        let rows: &[(&str, Option<&str>, &str)] = &[
+    fn body_framing_cuts_the_body_from_raw_only_without_a_message() {
+        let rows: &[(&str, Option<&str>, Option<&str>)] = &[
             (
                 "PAN-OS has no tag, so the colon in the stamp is not one",
                 Some(
                     "<11>Jan  5 05:38:59 PAN1.exampleCustomer.com 1,2015/01/05 05:38:58,0006C110285,THREAT,vulnerability",
                 ),
-                "1,2015/01/05 05:38:58,0006C110285,THREAT,vulnerability",
+                Some("1,2015/01/05 05:38:58,0006C110285,THREAT,vulnerability"),
             ),
             (
                 "a 3164 tag with a pid",
                 Some("<134>Oct 26 16:27:11 fw01 filterlog[123]: 5,,,1000000103,igb0,match"),
-                "5,,,1000000103,igb0,match",
+                Some("5,,,1000000103,igb0,match"),
             ),
             (
                 "a 3164 tag without a pid",
                 Some("<134>Oct 26 16:27:11 fw01 sshd: Accepted publickey"),
-                "Accepted publickey",
+                Some("Accepted publickey"),
             ),
             (
                 "5424 with structured data",
                 Some(
                     r#"<165>1 2026-03-03T10:30:00.003+11:00 web01 app 1234 ID47 [exampleSDID@32473 iut="3" note="a \] b"][x@1 k="v"] An application event"#,
                 ),
-                "An application event",
+                Some("An application event"),
             ),
             (
                 "5424 with nil structured data",
                 Some("<165>1 2026-03-03T10:30:00Z web01 app - - - the 5424 body"),
-                "the 5424 body",
+                Some("the 5424 body"),
             ),
             (
                 "Cisco stamp with a fraction and zone has no host",
                 Some("<189>Jun  5 05:09:30.838 EST: %IP-4-DUPADDR: Duplicate address 172.16.1.216"),
-                "%IP-4-DUPADDR: Duplicate address 172.16.1.216",
+                Some("%IP-4-DUPADDR: Duplicate address 172.16.1.216"),
             ),
             (
                 "Cisco unsynchronised-clock mark",
                 Some("<189>*Nov 14 08:30:56.699: %LINK-5-CHANGED: Interface Gi2, changed state"),
-                "%LINK-5-CHANGED: Interface Gi2, changed state",
+                Some("%LINK-5-CHANGED: Interface Gi2, changed state"),
             ),
             (
                 "meraki has a space before any colon, so no tag",
                 Some(
                     "<134>Oct  2 21:09:28 192.168.128.1 1 1696306168.009553886 satosugu events x url='https://a.b/'",
                 ),
-                "1 1696306168.009553886 satosugu events x url='https://a.b/'",
+                Some("1 1696306168.009553886 satosugu events x url='https://a.b/'"),
             ),
             (
                 "an RFC 3339 stamp with a 3164 host",
                 Some("<134>2026-03-03T10:30:00+11:00 web01 nginx: GET /"),
-                "GET /",
+                Some("GET /"),
             ),
             (
                 "a colon with no space after it is not a tag",
                 Some("<134>Oct 26 16:27:11 h tag:value rest"),
-                "tag:value rest",
+                Some("tag:value rest"),
             ),
-            ("no PRI", Some("Oct 26 16:27:11 h body here"), "body here"),
             (
-                "garbage falls back to the receiver's message",
+                "no PRI",
+                Some("Oct 26 16:27:11 h body here"),
+                Some("body here"),
+            ),
+            (
+                "garbage leaves message unset",
                 Some("<165>a full line"),
-                "the body",
+                None,
             ),
             (
-                "a header with no body falls back",
+                "a header with no body leaves it unset",
                 Some("<134>Oct 26 16:27:11 host"),
-                "the body",
+                None,
             ),
             (
-                "a 5424 header short of tokens falls back",
+                "a 5424 header short of tokens",
                 Some("<165>1 2026-03-03T10:30:00Z web01 app"),
-                "the body",
+                None,
             ),
             (
-                "a bad 5424 stamp falls back",
+                "a bad 5424 stamp",
                 Some("<165>1 yesterday web01 app - - - x"),
-                "the body",
+                None,
             ),
             (
-                "an unterminated structured-data group falls back",
+                "an unterminated structured-data group",
                 Some(r#"<165>1 - h a - - [id k="v" body"#),
-                "the body",
+                None,
             ),
-            ("no _raw leaves the message alone", None, "the body"),
-            (
-                "a blank _raw leaves the message alone",
-                Some("  "),
-                "the body",
-            ),
+            ("no _raw", None, None),
+            ("a blank _raw", Some("  "), None),
         ];
         for (name, raw, want) in rows {
             let mut event = receiver_event();
+            event.remove("message");
             if let Some(raw) = raw {
                 event.set("_raw", json!(raw)).unwrap();
             }
             Envelope::Receiver
                 .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
                 .unwrap();
-            assert_eq!(event.get_str("message"), Some(*want), "{name}");
+            assert_eq!(event.get_str("message"), *want, "{name}");
             assert!(!event.has("_raw"), "{name}: _raw is a receiver key");
+        }
+    }
+
+    /// The event dfe-receiver builds from `line`, parsed by the same
+    /// `syslog_loose` it uses. Only the fields it writes when they are set.
+    fn parsed_event(line: &str) -> Event {
+        use syslog_loose::{ProcId, Variant};
+        let m = syslog_loose::parse_message(line, Variant::Either);
+        let mut fields = serde_json::Map::new();
+        fields.insert("message".into(), json!(m.msg));
+        fields.insert("_source".into(), json!("syslog"));
+        for (key, value) in [
+            ("hostname", m.hostname),
+            ("appname", m.appname),
+            ("msgid", m.msgid),
+        ] {
+            if let Some(value) = value {
+                fields.insert(key.into(), json!(value));
+            }
+        }
+        match m.procid {
+            Some(ProcId::PID(pid)) => fields.insert("procid".into(), json!(pid.to_string())),
+            Some(ProcId::Name(name)) => fields.insert("procid".into(), json!(name)),
+            None => None,
+        };
+        Event::new(Value::Object(fields))
+    }
+
+    /// Body framing is fed from the parsed fields, with a wrong tag split put
+    /// back, whether or not `_raw` is there. Line framing prefers `_raw` and
+    /// otherwise rebuilds from the same repaired fields. The separator rule is
+    /// the one `syslog_loose` was measured to leave: it drops one space or colon
+    /// after the first token, so a tagless body rejoins with a single space.
+    #[test]
+    fn a_wrong_tag_split_is_repaired_from_the_parsed_fields() {
+        let rows: &[(&str, &str, &str)] = &[
+            (
+                "tagless PAN-OS",
+                "<11>Jan  5 05:38:59 PAN1.exampleCustomer.com 1,2015/01/05 05:38:58,0006C110285,THREAT,vuln,1",
+                "1,2015/01/05 05:38:58,0006C110285,THREAT,vuln,1",
+            ),
+            (
+                "PAN-OS with a colon later in the body",
+                "<134>Jan  5 05:38:59 PAN1 1,2015/01/05 05:38:58,x,y: z",
+                "1,2015/01/05 05:38:58,x,y: z",
+            ),
+            (
+                "Cisco stamp tail left in the message",
+                "<189>Jun  5 05:09:30.838 EST: %IP-4-DUPADDR: Duplicate address 172.16.1.216",
+                "%IP-4-DUPADDR: Duplicate address 172.16.1.216",
+            ),
+            (
+                "Cisco unsynchronised-clock line the parse gave up on",
+                "<189>*Nov 14 08:30:56.699: %LINK-5-CHANGED: Interface Gi2, changed",
+                "%LINK-5-CHANGED: Interface Gi2, changed",
+            ),
+            (
+                "meraki",
+                "<134>Oct  2 21:09:28 192.168.128.1 1 1696306168.009553886 satosugu events x url='https://a.b/'",
+                "1 1696306168.009553886 satosugu events x url='https://a.b/'",
+            ),
+            (
+                "a real tag with a pid is left alone",
+                "<134>Oct 26 16:27:11 fw01 filterlog[123]: 5,,,1000000103,igb0",
+                "5,,,1000000103,igb0",
+            ),
+            (
+                "a real tag with a colon in the body",
+                "<134>Oct 26 16:27:11 h sshd[1]: Accepted: ok",
+                "Accepted: ok",
+            ),
+            (
+                "a tag with no space after the colon",
+                "<134>Oct 26 16:27:11 h tag:value rest",
+                "value rest",
+            ),
+            (
+                "a tagless first word that reads as a tag is left alone",
+                "<134>Oct 26 16:27:11 h plain body with no colon",
+                "body with no colon",
+            ),
+            (
+                "a colon-ended CSV field rejoins with a space",
+                "<134>Oct 26 16:27:11 h 1,2:3,4",
+                "1,2 3,4",
+            ),
+        ];
+        for (name, line, body) in rows {
+            for raw in [None, Some(*line)] {
+                let mut event = parsed_event(line);
+                if let Some(raw) = raw {
+                    event.set("_raw", json!(raw)).unwrap();
+                }
+                Envelope::Receiver
+                    .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
+                    .unwrap();
+                assert_eq!(event.get_str("message"), Some(*body), "{name}, raw {raw:?}");
+
+                let mut event = parsed_event(line);
+                if let Some(raw) = raw {
+                    event.set("_raw", json!(raw)).unwrap();
+                }
+                Envelope::Receiver
+                    .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
+                    .unwrap();
+                let rebuilt = event.get_str("message").unwrap();
+                match raw {
+                    Some(raw) => assert_eq!(rebuilt, raw, "{name}: _raw wins on a line"),
+                    None => assert!(rebuilt.ends_with(body), "{name}: {rebuilt}"),
+                }
+            }
+        }
+    }
+
+    /// A routing rule overwrites `_source` with a catalogue label, so the
+    /// transport is read off the event's own fields, and the label survives.
+    #[test]
+    fn a_relabelled_source_is_unwrapped_by_its_fields() {
+        let syslog = |label: &str| {
+            let mut event = parsed_event(
+                "<11>Jan  5 05:38:59 PAN1 1,2015/01/05 05:38:58,0006C110285,THREAT,vuln,1",
+            );
+            event.set("_source", json!(label)).unwrap();
+            event
+        };
+        let rows: Vec<(&str, Event, &str, &str, Option<&str>)> = vec![
+            // name, event, path that must hold, its value, message afterwards
+            (
+                "cisco-asa syslog",
+                syslog("cisco-asa"),
+                "log.syslog.hostname",
+                "PAN1",
+                Some("1,2015/01/05 05:38:58,0006C110285,THREAT,vuln,1"),
+            ),
+            (
+                "demo-syslog syslog",
+                syslog("demo-syslog"),
+                "log.syslog.hostname",
+                "PAN1",
+                Some("1,2015/01/05 05:38:58,0006C110285,THREAT,vuln,1"),
+            ),
+            (
+                "relabelled gelf",
+                Event::new(
+                    json!({"_source": "cisco-asa", "message": "m", "host": "web01", "level": 6, "severity": "info"}),
+                ),
+                "host.name",
+                "web01",
+                Some("m"),
+            ),
+            (
+                "relabelled otlp",
+                Event::new(
+                    json!({"_source": "cisco-asa", "body": "the line", "severity_text": "INFO", "trace_id": "abc"}),
+                ),
+                "log.level",
+                "INFO",
+                Some("the line"),
+            ),
+            (
+                "an unknown label with no transport fields is left as it was",
+                Event::new(json!({"_source": "mystery", "whatever": "x"})),
+                "whatever",
+                "x",
+                None,
+            ),
+            (
+                "one shared field does not pick a transport",
+                Event::new(json!({"_source": "mystery", "job": "j"})),
+                "job",
+                "j",
+                None,
+            ),
+        ];
+        for (name, mut event, path, value, message) in rows {
+            let label = event.get_str("_source").unwrap().to_owned();
+            let detected = detect(&event);
+            assert_eq!(detected.family, Envelope::Receiver, "{name}");
+            Envelope::Receiver
+                .unwrap_into_beats(&mut event, Some(Framing::Body), &detected.variant)
+                .unwrap();
+            assert_eq!(event.get_str(path), Some(value), "{name}");
+            assert_eq!(event.get_str("message"), message, "{name}");
+            assert_eq!(event.get_str("_source"), Some(label.as_str()), "{name}");
         }
     }
 
