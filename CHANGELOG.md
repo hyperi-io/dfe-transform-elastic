@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.21](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.20...v1.1.21) (2026-10-27)
+
+### Bug Fixes
+
+* unwrap a relabelled receiver syslog event and repair its split header ([e20400f](https://github.com/hyperi-io/dfe-transform-elastic/commit/e20400f1812fc5b280ca659e82115ce608e2e065))
+
 ## [1.1.20](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.19...v1.1.20) (2026-10-26)
 
 ### Bug Fixes
