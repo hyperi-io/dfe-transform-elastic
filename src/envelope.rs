@@ -959,14 +959,19 @@ fn raw_line(event: &Event) -> Option<String> {
 }
 
 /// Whether `app` can be a real RFC 3164 tag: at most 32 of letters, digits and
-/// `._-`, with a letter in it. `1,2015/01/05` is a CSV field, and a bare `1` a
-/// version number, neither of them a tag.
+/// `._-/`, with a letter in it, and optionally a `[pid]` after them.
+/// `1,2015/01/05` is a CSV field, and a bare `1` a version number, neither of
+/// them a tag.
 fn is_tag(app: &str) -> bool {
-    app.len() <= 32
-        && app
+    let name = match app.strip_suffix(']').and_then(|rest| rest.split_once('[')) {
+        Some((name, pid)) if !pid.is_empty() && !pid.contains(['[', ']']) => name,
+        _ => app,
+    };
+    name.len() <= 32
+        && name
             .bytes()
-            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b'-'))
-        && app.bytes().any(|b| b.is_ascii_alphabetic())
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'_' | b'-' | b'/'))
+        && name.bytes().any(|b| b.is_ascii_alphabetic())
 }
 
 /// The body the receiver's parsed fields describe, when its split was wrong.
@@ -1300,7 +1305,15 @@ const SYSLOG_TO_ECS: &[(&str, &str)] = &[
 ///
 /// The transform's own grok sets the same fields when it matches. Setting them
 /// here as well means the header survives a grok that does not.
+///
+/// A tag that fails [`is_tag`] is the receiver taking the first word of a
+/// tagless line, which `repaired_body` has already put back in the message. It
+/// and the `procid` split from it are dropped rather than lifted.
 fn lift_to_ecs(event: &mut Event) -> crate::Result<()> {
+    if event.get_str("appname").is_some_and(|app| !is_tag(app)) {
+        event.remove("appname");
+        event.remove("procid");
+    }
     apply_renames(event, SYSLOG_TO_ECS)
 }
 
@@ -1872,6 +1885,92 @@ mod tests {
                 match raw {
                     Some(raw) => assert_eq!(rebuilt, raw, "{name}: _raw wins on a line"),
                     None => assert!(rebuilt.ends_with(body), "{name}: {rebuilt}"),
+                }
+            }
+        }
+    }
+
+    /// The tag grammar `is_tag` applies, as the split repair and the header lift
+    /// both see it.
+    #[test]
+    fn is_tag_follows_the_rfc3164_grammar() {
+        let rows: &[(&str, bool)] = &[
+            ("nginx", true),
+            ("sshd[1234]", true),
+            ("CRON/daemon", true),
+            ("a.b_c-d", true),
+            ("%ASA-6-302021", false),
+            ("1,2015/01/05", false),
+            ("2015/01/05", false),
+            ("1", false),
+            ("", false),
+            ("[123]", false),
+            ("sshd[]", false),
+            ("sshd[1]x", false),
+            ("a b", false),
+            ("abcdefghijklmnopqrstuvwxyz0123456", false),
+        ];
+        for (app, want) in rows {
+            assert_eq!(is_tag(app), *want, "{app:?}");
+        }
+    }
+
+    /// A tagless line makes `syslog_loose` hand a body word over as the
+    /// `appname`. It must not reach `log.syslog.appname`, while a real tag
+    /// still does. The PAN-OS and Cisco IOS rows are lines from the
+    /// unencumbered fixtures, each behind a header.
+    #[test]
+    fn an_invalid_tag_is_not_lifted_into_log_syslog_appname() {
+        const PANW: &str = include_str!("../tests/fixtures/unencumbered/panw/metron-panos-csv.log");
+        const IOS: &str =
+            include_str!("../tests/fixtures/unencumbered/cisco_ios/cisco-ios-syslog.log");
+
+        let mut rows: Vec<(String, String, Option<&str>)> = vec![
+            (
+                "tagless PAN-OS".into(),
+                "<11>Jan  5 05:38:59 PAN1 1,2015/01/05 05:38:58,0006C110285,THREAT,vuln,1".into(),
+                None,
+            ),
+            (
+                "a real tag with a pid".into(),
+                "<134>Oct 26 16:27:11 fw01 filterlog[123]: 5,,,1000000103,igb0".into(),
+                Some("filterlog"),
+            ),
+            (
+                "a real tag".into(),
+                "<134>Oct 26 16:27:11 h sshd[1]: Accepted: ok".into(),
+                Some("sshd"),
+            ),
+        ];
+        for line in PANW.lines().filter(|l| !l.is_empty()) {
+            rows.push((
+                format!("panw fixture {line:.30}"),
+                format!("<11>Jan  5 05:38:59 PAN1 {line}"),
+                None,
+            ));
+        }
+        for line in IOS.lines().filter(|l| l.starts_with('<')) {
+            rows.push((format!("cisco_ios fixture {line:.30}"), line.into(), None));
+        }
+
+        for (name, line, want) in &rows {
+            let mut event = parsed_event(line);
+            let parsed = event.get_str("appname").map(str::to_owned);
+            Envelope::Receiver
+                .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
+                .unwrap();
+            let got = event.get_str("log.syslog.appname");
+            if name.starts_with("cisco_ios") {
+                // The receiver's own parse decides which of these carry a tag.
+                assert_eq!(
+                    got.is_some(),
+                    parsed.as_deref().is_some_and(is_tag),
+                    "{name}: parsed {parsed:?}, lifted {got:?}"
+                );
+            } else {
+                assert_eq!(got, *want, "{name}: parsed {parsed:?}");
+                if want.is_none() {
+                    assert!(!event.has("log.syslog.procid"), "{name}");
                 }
             }
         }
