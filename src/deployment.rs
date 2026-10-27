@@ -194,8 +194,7 @@ fn shipped_config() -> Config {
             transport: Transport::Bus,
             endpoint: "http://dfe-loader:6000".into(),
             brokers: Some(vec!["kafka:9092".into()]),
-            // The stack's 16 MiB record ceiling less headroom for framing and
-            // headers. An event over it is dropped and counted.
+            // The DFE record cap. An event over it is dropped and counted.
             max_message_bytes: crate::config::default_max_message_bytes(),
         },
         // scalo provisions the MMDB databases, re-downloading a file older than
