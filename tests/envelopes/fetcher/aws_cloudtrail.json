@@ -1,9 +1,9 @@
 {
   "provenance": {
-    "file": "dfe-fetcher src/pipeline/mod.rs",
-    "line": "enrich_record, and the assertions in the test at line 550 which uses this exact source name",
+    "file": "dfe-fetcher crates/rest/src/hooks/cloudtrail_event.rs, crates/fetcher/tests/integration/source_aws.rs and src/pipeline/mod.rs",
+    "line": "the cloudtrail_event builder lifts the event out of the LookupEvents record's CloudTrailEvent string, and the test_aws_fetch_cloudtrail_success assertions use this exact source name",
     "producer": "dfe-fetcher, aws.cloudtrail source",
-    "note": "The variant is the dotted <provider>.<stream> string the fetcher was configured with, so the variant space is open rather than enumerable -- detection reads the value, it does not match it against a list. This is the case the user named: cloudwatch -> beats -> es -> receiver collapses to dfe-fetcher -> transform, because the Agent input for CloudTrail is pure transport and the parsing all lives in the ingest pipeline."
+    "note": "The row is the bare CloudTrail event, the shape CloudTrail delivers to S3, with the fetcher's three delivery keys appended. None of the LookupEvents fields (EventId, EventName, Username, Resources) survive the builder. The variant is the dotted <provider>.<stream> string the fetcher was configured with, so the variant space is open rather than enumerable -- detection reads the value, it does not match it against a list."
   },
   "shape": {
     "family": "fetcher",
@@ -16,14 +16,16 @@
   "event": {
     "eventVersion": "1.08",
     "eventTime": "2026-02-19T00:00:00Z",
-    "eventSource": "s3.amazonaws.com",
-    "eventName": "GetObject",
+    "eventSource": "signin.amazonaws.com",
+    "eventName": "ConsoleLogin",
     "awsRegion": "ap-southeast-2",
     "sourceIPAddress": "203.0.113.7",
     "userIdentity": {
       "type": "IAMUser",
-      "arn": "arn:aws:iam::123456789012:user/derek"
+      "accountId": "123456789012"
     },
+    "eventID": "evt-1",
+    "recipientAccountId": "123456789012",
     "_timestamp_fetcher": 1771459200000,
     "_timestamp_received": 1771459200000,
     "_source_fetcher": "aws.cloudtrail"
