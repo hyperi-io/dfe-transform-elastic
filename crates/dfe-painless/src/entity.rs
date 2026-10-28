@@ -13,7 +13,7 @@
 //! its distinctive markers asserted so a restructured script declines loudly
 //! rather than half-running.
 //!
-//! The parse runs once per call site: [`crate::params::params_pattern`]
+//! The parse runs once per call site: `crate::params::params_pattern`
 //! only names this matcher when [`EntityScript::parse`] succeeds, and the
 //! parsed script rides inside the pattern. A statement the parser cannot read
 //! fails the WHOLE parse -- the script then falls through the dispatch as it

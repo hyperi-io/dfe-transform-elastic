@@ -24,7 +24,7 @@
 //! }
 //! ```
 //!
-//! Distinct from [`crate::common::KnownPattern::KeyValuePairs`], which folds ONE
+//! Distinct from `crate::common::KnownPattern::KeyValuePairs`, which folds ONE
 //! list at a document path and writes the fold back over it. That reader
 //! declines a second loop, and the member here is two walks down.
 //!
