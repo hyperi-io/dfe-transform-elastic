@@ -878,7 +878,7 @@ fn incompressible(len: usize) -> Vec<u8> {
 }
 
 /// A stock broker, whose `message.max.bytes` is about 1 MB, refuses a record
-/// the 15 MiB budget passes. The sink reports that as a dead letter, so the
+/// the 8,000,000-byte budget passes. The sink reports that as a dead letter, so the
 /// loop drops and counts the record rather than retrying the partition forever.
 ///
 /// The producer allows 16 MiB and compresses, and the broker judges the

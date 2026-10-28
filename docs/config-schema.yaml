@@ -37,7 +37,7 @@ properties:
       transport: bus
       endpoint: http://dfe-loader:6000
       brokers: null
-      max_message_bytes: 15728640
+      max_message_bytes: 8000000
   geoip:
     description: |-
       Which MMDB databases the geoip processors read, and how to obtain them.
@@ -300,14 +300,15 @@ $defs:
           Ceiling on one outbound record. An event that serialises larger is
           dropped and counted on `events_oversize_total`.
 
-          The default fits the stack's 16 MiB record ceiling. Against a broker or
+          The default is the DFE record cap, 8,000,000 bytes. Against a broker or
           topic whose `message.max.bytes` is lower, set this below that limit, or
           the broker refuses those events instead and they count on
-          `send_filtered_dlq_total`.
+          `send_filtered_dlq_total`. Brokers that carry more can raise it, up to
+          16 MiB.
         type: integer
         format: uint
         minimum: 0
-        default: 15728640
+        default: 8000000
   GeoIpConfig:
     description: |-
       GeoIP database provisioning configuration.
