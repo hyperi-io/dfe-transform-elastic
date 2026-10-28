@@ -602,6 +602,210 @@ fn okta_produces_the_same_output_from_beats_or_the_fetcher() {
     );
 }
 
+/// A Microsoft Graph `directoryAudit`, as the Graph reference's "Get
+/// directoryAudit" example shows it, with `targetResources` spelled as the
+/// resource type names it.
+const GRAPH_DIRECTORY_AUDIT: &str = r#"{
+  "id": "Directory_da159bfb-54fa-4092-8a38-6e1fa7870e30_ABCDE_123456",
+  "category": "GroupManagement",
+  "correlationId": "da159bfb-54fa-4092-8a38-6e1fa7870e30",
+  "result": "success",
+  "resultReason": "Successfully added member to group",
+  "activityDisplayName": "Add member to group",
+  "activityDateTime": "2018-01-09T21:20:02.7215374Z",
+  "loggedByService": "Core Directory",
+  "operationType": "Add",
+  "initiatedBy": {
+    "user": {
+      "id": "728309ae-1a37-4937-9afe-e35d964db09b",
+      "displayName": "Audry Oliver",
+      "userPrincipalName": "bob@wingtiptoysonline.com",
+      "ipAddress": "127.0.0.1"
+    },
+    "app": null
+  },
+  "targetResources": [
+    {
+      "id": "ef7e527d-6c92-4234-8c6d-cf6fdfb57f95",
+      "displayName": "Example.com",
+      "type": "Group",
+      "modifiedProperties": [
+        { "displayName": "Action Client Name", "oldValue": null, "newValue": "DirectorySync" }
+      ],
+      "groupType": "unifiedGroups"
+    },
+    {
+      "id": "1f0e98f5-3161-4c6b-9b50-d488572f2bb7",
+      "displayName": null,
+      "type": "User",
+      "modifiedProperties": [],
+      "userPrincipalName": "example@contoso.com"
+    }
+  ],
+  "additionalDetails": [
+    { "key": "Additional Detail Name", "value": "Additional Detail Value" }
+  ]
+}"#;
+
+/// A Microsoft Graph `signIn`, as the Graph reference's "Get signIn" example
+/// shows it.
+const GRAPH_SIGN_IN: &str = r#"{
+  "id": "66ea54eb-6301-4ee5-be62-ff5a759b0100",
+  "createdDateTime": "2023-12-01T16:03:24Z",
+  "userDisplayName": "Test Contoso",
+  "userPrincipalName": "testaccount1@contoso.com",
+  "userId": "26be570a-ae82-4189-b4e2-a37c6808512d",
+  "appId": "de8bc8b5-d9f9-48b1-a8ad-b748da725064",
+  "appDisplayName": "Graph explorer",
+  "ipAddress": "131.107.159.37",
+  "clientAppUsed": "Browser",
+  "correlationId": "d79f5bee-5860-4832-928f-3133e22ae912",
+  "conditionalAccessStatus": "notApplied",
+  "isInteractive": true,
+  "riskDetail": "none",
+  "riskLevelAggregated": "none",
+  "riskLevelDuringSignIn": "none",
+  "riskState": "none",
+  "riskEventTypes": [],
+  "resourceDisplayName": "Microsoft Graph",
+  "resourceId": "00000003-0000-0000-c000-000000000000",
+  "status": { "errorCode": 0, "failureReason": null, "additionalDetails": null },
+  "deviceDetail": {
+    "deviceId": "",
+    "displayName": null,
+    "operatingSystem": "Windows 10",
+    "browser": "Edge 80.0.361",
+    "isCompliant": null,
+    "isManaged": null,
+    "trustType": null
+  },
+  "location": {
+    "city": "Redmond",
+    "state": "Washington",
+    "countryOrRegion": "US",
+    "geoCoordinates": { "altitude": null, "latitude": 47.68050003051758, "longitude": -122.12094116210938 }
+  }
+}"#;
+
+/// What dfe-fetcher delivers for an Entra Graph audit unit: the Graph record at
+/// the top level, with the three keys `enrich_record` appends.
+fn fetched_graph_record(record: &str, unit: &str) -> Value {
+    let mut delivered = serde_json::from_str::<Value>(record)
+        .expect("the record parses")
+        .as_object()
+        .expect("an object")
+        .clone();
+    delivered.insert("_source_fetcher".into(), json!(unit));
+    delivered.insert("_timestamp_fetcher".into(), json!(1_771_459_200_000_u64));
+    delivered.insert("_timestamp_received".into(), json!(1_771_459_200_000_u64));
+    Value::Object(delivered)
+}
+
+/// Elastic's `azure` audit-log and sign-in pipelines read the Event Hub
+/// diagnostic-log record. The Graph record has a `category` of its own
+/// (`GroupManagement`), so before the envelope dressed it the audit-logs
+/// pipeline dropped every record and the sign-in pipeline, which keeps only
+/// categories ending `SignInLogs`, did the same to a record with none.
+#[test]
+fn a_graph_audit_record_survives_the_azure_pipelines() {
+    for (source, record, unit, expected) in [
+        (
+            "filebeat.azure_auditlogs.default",
+            GRAPH_DIRECTORY_AUDIT,
+            "azure.entra_directory_audits",
+            [
+                ("/event/action", "Add member to group"),
+                ("/event/outcome", "success"),
+                ("/@timestamp", "2018-01-09T21:20:02.721Z"),
+                ("/user/name", "bob@wingtiptoysonline.com"),
+                ("/source/ip", "127.0.0.1"),
+                ("/azure/auditlogs/category", "AuditLogs"),
+                ("/azure/auditlogs/properties/category", "GroupManagement"),
+            ],
+        ),
+        (
+            "filebeat.azure_signinlogs.default",
+            GRAPH_SIGN_IN,
+            "azure.entra_signins",
+            [
+                ("/event/action", "Sign-in activity"),
+                ("/event/outcome", "success"),
+                ("/@timestamp", "2023-12-01T16:03:24.000Z"),
+                ("/user/name", "testaccount1@contoso.com"),
+                ("/source/ip", "131.107.159.37"),
+                ("/azure/signinlogs/category", "SignInLogs"),
+                (
+                    "/azure/signinlogs/properties/app_display_name",
+                    "Graph explorer",
+                ),
+            ],
+        ),
+    ] {
+        let out = run(
+            source,
+            Envelope::Fetcher,
+            fetched_graph_record(record, unit),
+        )
+        .unwrap_or_else(|| panic!("{source}: the pipeline dropped the Graph record"));
+        for (pointer, want) in expected {
+            assert_eq!(
+                out.pointer(pointer).and_then(Value::as_str),
+                Some(want),
+                "{source}: {pointer}"
+            );
+        }
+        // The routing marker survives, so the loader still finds the source's table.
+        assert_eq!(
+            out.get("_source_fetcher").and_then(Value::as_str),
+            Some(unit)
+        );
+    }
+}
+
+/// A Graph record missing the fields the envelope derives from still gets the
+/// category the pipeline keeps, and a record already in the Event Hub form is
+/// not wrapped twice.
+#[test]
+fn the_graph_envelope_tolerates_sparse_and_already_wrapped_records() {
+    let sparse = fetched_graph_record(
+        r#"{"id": "Directory_1", "category": "UserManagement", "activityDisplayName": "Add user"}"#,
+        "azure.entra_directory_audits",
+    );
+    let out = run(
+        "filebeat.azure_auditlogs.default",
+        Envelope::Fetcher,
+        sparse,
+    )
+    .expect("a sparse record is not dropped");
+    assert_eq!(
+        out.pointer("/event/action").and_then(Value::as_str),
+        Some("Add user")
+    );
+
+    let mut hub: Value = fetched_graph_record(
+        r#"{"time": "2022-01-22T18:15:02.5168093Z", "category": "AuditLogs",
+            "operationName": "Add service principal credentials",
+            "properties": {"id": "Directory_2", "category": "ApplicationManagement"}}"#,
+        "azure.entra_directory_audits",
+    );
+    assert!(hub.get("properties").is_some());
+    let out = run(
+        "filebeat.azure_auditlogs.default",
+        Envelope::Fetcher,
+        std::mem::take(&mut hub),
+    )
+    .expect("an Event Hub form record is not dropped");
+    assert_eq!(
+        out.pointer("/azure/auditlogs/properties/id")
+            .and_then(Value::as_str),
+        Some("Directory_2")
+    );
+    assert!(
+        out.pointer("/azure/auditlogs/properties/properties")
+            .is_none()
+    );
+}
+
 /// What an Elastic Agent hands the `cisco_ios` pipeline, from the Elastic
 /// data's `tests/envelopes/beats/agent_cisco_ios.json`.
 fn agent_wrapped() -> Value {
