@@ -495,7 +495,19 @@ impl Delivery {
 
 /// The Microsoft Graph audit logs dfe-fetcher pulls, by the dataset of the
 /// Elastic pipeline that reads them.
-const GRAPH_AUDIT_DATASETS: &[&str] = &["azure.auditlogs", "azure.signinlogs"];
+const GRAPH_AUDIT_DATASETS: &[&str] =
+    &["azure.auditlogs", "azure.signinlogs", "azure.provisioning"];
+
+/// The nested objects of a Graph provisioning record that the Event Hub form
+/// spells with a capital: `id` is `Id` and `displayName` is `Name` there.
+const PROVISIONING_OBJECTS: &[&str] = &[
+    "servicePrincipal",
+    "sourceSystem",
+    "targetSystem",
+    "initiatedBy",
+    "sourceIdentity",
+    "targetIdentity",
+];
 
 /// Wrap a Microsoft Graph audit record as the Azure Monitor diagnostic-log
 /// record the `azure` pipelines were written for.
@@ -522,22 +534,35 @@ fn dress_graph_record(dataset: &str, event: &mut Event) {
         return;
     }
 
-    let (category, time_field, operation, address): (_, _, _, &[&str]) =
-        if dataset == "azure.auditlogs" {
-            (
-                "AuditLogs",
-                "activityDateTime",
-                record.get("activityDisplayName").cloned(),
-                &["initiatedBy", "user", "ipAddress"],
-            )
-        } else {
-            (
-                "SignInLogs",
-                "createdDateTime",
-                Some(json!("Sign-in activity")),
-                &["ipAddress"],
-            )
-        };
+    let (category, time_field, operation, address): (_, _, _, &[&str]) = match dataset {
+        "azure.auditlogs" => (
+            "AuditLogs",
+            "activityDateTime",
+            record.get("activityDisplayName").cloned(),
+            &["initiatedBy", "user", "ipAddress"],
+        ),
+        "azure.signinlogs" => (
+            "SignInLogs",
+            "createdDateTime",
+            Some(json!("Sign-in activity")),
+            &["ipAddress"],
+        ),
+        _ => (
+            "ProvisioningLogs",
+            "activityDateTime",
+            Some(json!("Provisioning activity")),
+            &[],
+        ),
+    };
+    if dataset == "azure.provisioning" {
+        capitalise_provisioning_keys(record);
+    }
+
+    // dfe-fetcher copies the event time to `timestamp` for the common header.
+    // It is a delivery key here, so it must not reach the Graph resource.
+    if record.get("timestamp").is_some() && record.get("timestamp") == record.get(time_field) {
+        record.remove("timestamp");
+    }
 
     let mut dressed = Map::new();
     if let Some(time) = record.get(time_field) {
@@ -547,16 +572,33 @@ fn dress_graph_record(dataset: &str, event: &mut Event) {
     if let Some(operation) = operation.filter(Value::is_string) {
         dressed.insert("operationName".to_owned(), operation);
     }
-    if let Some(correlation) = record.get("correlationId") {
+    // A provisioning record is correlated by its change, and carries the
+    // outcome, duration and tenant the Event Hub envelope repeats.
+    let correlation = if dataset == "azure.provisioning" {
+        "changeId"
+    } else {
+        "correlationId"
+    };
+    if let Some(correlation) = record.get(correlation) {
         dressed.insert("correlationId".to_owned(), correlation.clone());
     }
-    let caller = address
-        .split_first()
-        .and_then(|(first, rest)| {
-            rest.iter()
-                .try_fold(record.get(*first)?, |node, key| node.get(*key))
-        })
-        .filter(|ip| ip.as_str().is_some_and(|ip| !ip.is_empty()));
+    if dataset == "azure.provisioning" {
+        let copies = [
+            ("tenantId", record.get("tenantId")),
+            ("durationMs", record.get("durationInMilliseconds")),
+            (
+                "resultType",
+                nested(record, &["provisioningStatusInfo", "status"])
+                    .filter(|status| status.is_string()),
+            ),
+        ];
+        for (key, value) in copies {
+            if let Some(value) = value {
+                dressed.insert(key.to_owned(), value.clone());
+            }
+        }
+    }
+    let caller = nested(record, address).filter(|ip| ip.as_str().is_some_and(|ip| !ip.is_empty()));
     if let Some(caller) = caller {
         dressed.insert("callerIpAddress".to_owned(), caller.clone());
     }
@@ -570,6 +612,39 @@ fn dress_graph_record(dataset: &str, event: &mut Event) {
         Value::Object(std::mem::take(record)),
     );
     *record = dressed;
+}
+
+/// The value at `path` below `record`, if every step is an object.
+fn nested<'a>(record: &'a Map<String, Value>, path: &[&str]) -> Option<&'a Value> {
+    let (first, rest) = path.split_first()?;
+    rest.iter()
+        .try_fold(record.get(*first)?, |node, key| node.get(*key))
+}
+
+/// Spell the nested objects of a Graph provisioning record the way the Event
+/// Hub form does, which is what the pipeline renames from: `id` becomes `Id`,
+/// `displayName` becomes `Name`, and the initiator's `initiatingType` or
+/// `initiatorType` becomes `Type`. A key the record already spells that way is
+/// kept.
+fn capitalise_provisioning_keys(record: &mut Map<String, Value>) {
+    for object in PROVISIONING_OBJECTS {
+        let Some(Value::Object(inner)) = record.get_mut(*object) else {
+            continue;
+        };
+        for (graph, hub) in [
+            ("id", "Id"),
+            ("displayName", "Name"),
+            ("initiatingType", "Type"),
+            ("initiatorType", "Type"),
+        ] {
+            if inner.contains_key(hub) {
+                continue;
+            }
+            if let Some(value) = inner.remove(graph) {
+                inner.insert(hub.to_owned(), value);
+            }
+        }
+    }
 }
 
 /// When the producer says it took delivery, if it says at all.
@@ -2163,6 +2238,83 @@ mod tests {
             .unwrap();
 
         assert_eq!(event.get_str("data_stream.namespace"), Some("default"));
+    }
+
+    /// Run `record` through a fetcher delivery for `dataset` and return the
+    /// payload the transform will parse.
+    fn dressed_payload(dataset: &'static str, record: Value) -> Value {
+        let mut event = Event::new(record);
+        Delivery {
+            envelope: Envelope::Fetcher,
+            variant: detect(&event).variant,
+            framing: None,
+            dataset,
+        }
+        .apply(&mut event)
+        .unwrap();
+        serde_json::from_str(event.get_str("message").expect("payload in message")).unwrap()
+    }
+
+    /// A Graph provisioning record names its nested objects `id` and
+    /// `displayName`, and the Event Hub form the pipeline renames from spells
+    /// them `Id` and `Name`. The envelope fields are derived from the record.
+    #[test]
+    fn a_graph_provisioning_record_gets_the_event_hub_spelling() {
+        let payload = dressed_payload(
+            "azure.provisioning",
+            json!({
+                "id": "75b5b0ae",
+                "activityDateTime": "2019-05-04T03:00:54Z",
+                "tenantId": "74beb175",
+                "changeId": "b6502552",
+                "durationInMilliseconds": 3236,
+                "provisioningStatusInfo": { "status": "success" },
+                "servicePrincipal": { "id": "6cc35b93", "displayName": "Contoso" },
+                "initiatedBy": { "initiatingType": "system", "id": "", "displayName": "Service" },
+                "sourceIdentity": { "Id": "kept", "id": "dropped-by-the-existing-key" },
+                "_source_fetcher": "azure.entra_provisioning",
+                "_timestamp_received": 1_771_459_200_000_u64,
+            }),
+        );
+        assert_eq!(payload["category"], "ProvisioningLogs");
+        assert_eq!(payload["operationName"], "Provisioning activity");
+        assert_eq!(payload["time"], "2019-05-04T03:00:54Z");
+        assert_eq!(payload["correlationId"], "b6502552");
+        assert_eq!(payload["tenantId"], "74beb175");
+        assert_eq!(payload["durationMs"], 3236);
+        assert_eq!(payload["resultType"], "success");
+        let properties = &payload["properties"];
+        assert_eq!(properties["servicePrincipal"]["Id"], "6cc35b93");
+        assert_eq!(properties["servicePrincipal"]["Name"], "Contoso");
+        assert!(properties["servicePrincipal"].get("id").is_none());
+        assert_eq!(properties["initiatedBy"]["Type"], "system");
+        assert_eq!(properties["initiatedBy"]["Name"], "Service");
+        assert_eq!(properties["sourceIdentity"]["Id"], "kept");
+    }
+
+    /// dfe-fetcher copies an Entra event's time to `timestamp` for the common
+    /// header. The Graph resource has no such field, so it stays out of
+    /// `properties`, but a `timestamp` that is not that copy is the
+    /// provider's and stays.
+    #[test]
+    fn the_fetchers_timestamp_copy_stays_out_of_the_graph_resource() {
+        let stamped = dressed_payload(
+            "azure.auditlogs",
+            json!({
+                "activityDateTime": "2018-01-09T21:20:02Z",
+                "timestamp": "2018-01-09T21:20:02Z",
+            }),
+        );
+        assert!(stamped["properties"].get("timestamp").is_none());
+
+        let provider = dressed_payload(
+            "azure.auditlogs",
+            json!({
+                "activityDateTime": "2018-01-09T21:20:02Z",
+                "timestamp": "provider's own",
+            }),
+        );
+        assert_eq!(provider["properties"]["timestamp"], "provider's own");
     }
 
     /// The fetcher moves the provider's whole payload into `message`, so a
