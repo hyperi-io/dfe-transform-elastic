@@ -6359,7 +6359,7 @@ pub fn parameters_into_map(event: &mut Event, pattern: &ParametersIntoMap) -> bo
 ///
 /// `juniper_srx`'s keys arrive kebab-cased -- `source-address` -- and a script
 /// swaps the hyphen for an underscore across the whole map. This is NOT the
-/// recursive converter: [`snake_case_apply`] reads a helper applied by a
+/// recursive converter: `snake_case_apply` reads a helper applied by a
 /// `instanceof Map` descent, where this is one `Collectors.toMap` over a single
 /// level and keeps the vendor's own nesting untouched.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -8176,7 +8176,7 @@ pub fn remove_empty_child_maps(event: &mut Event, pattern: &RemoveEmptyChildMaps
 
 /// A vendor flag folded to a real boolean by comparing its string spelling.
 ///
-/// Distinct from [`KnownPattern::TruthyAssignments`], which is m365's
+/// Distinct from `KnownPattern::TruthyAssignments`, which is m365's
 /// `isTruthy(...)` helper and leaves a value it cannot resolve ALONE. This is
 /// written inline and always assigns: a spelling not in the truthy set becomes
 /// `false`, not "unchanged", so the two cannot share a runner.
@@ -9626,7 +9626,7 @@ pub fn keys_to_snake_case(value: &mut Value, rule: SnakeRule) {
 /// is the only thing that answers it. Ten packages write the test negated with
 /// no else, which is how Microsoft's `@odata.*` metadata stays out of the
 /// document; `beyondtrust_epm` writes it the other way round and re-inserts the
-/// key verbatim. [`at_key_branch`] reads which.
+/// key verbatim. `at_key_branch` reads which.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AtKeys {
     /// No `@` test at all, so every key goes through the case rule.
@@ -9650,7 +9650,7 @@ pub enum AtKeys {
 /// `beyondtrust`'s reads the character AFTER the uppercase as well, so it
 /// separates only where a letter or digit precedes: `HTTPServer` is
 /// `http_server` and `IT_Administrators` keeps its single underscore.
-/// [`snake_case_apply`] reads which is which off the script.
+/// `snake_case_apply` reads which is which off the script.
 ///
 /// Returns a new value; the script assigns the result rather than mutating.
 #[must_use]
@@ -12009,7 +12009,7 @@ pub fn snake_case_list_elements(event: &mut Event, pattern: &SnakeCaseListElemen
 /// One member TOTALLED across a list of objects.
 ///
 /// `ti_recordedfuture` reports evidence as a list and the ECS sighting count
-/// is the sum of one member over it. Distinct from [`KnownPattern::CombineFields`],
+/// is the sum of one member over it. Distinct from `KnownPattern::CombineFields`,
 /// which adds up named fields at fixed paths rather than walking a list.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SumMemberOverList {
@@ -12160,7 +12160,7 @@ pub fn first_present_key_name(event: &mut Event, pattern: &FirstPresentKeyName) 
 
 /// FRACTIONAL seconds scaled to nanoseconds and cast to a Java `int`.
 ///
-/// Distinct from [`KnownPattern::DurationToNanos`], which parses a whole
+/// Distinct from `KnownPattern::DurationToNanos`, which parses a whole
 /// number of seconds and saturates at `i64`. stormshield parses a float and
 /// the vendor casts with `(int)`, so the result saturates at `i32` -- two of
 /// its events expect exactly 2,147,483,647, which is that cast and not an
@@ -12781,7 +12781,7 @@ fn run_range_ladder(event: &mut Event, pattern: &RangeLadder) -> bool {
 
 /// `long <local> = ctx.<source>; ctx.event = ctx.event ?: [:]; ctx.event.<risk> = (double) <local>; if (<local> < <n1>) { ctx.event.<severity> = <v1>; } else if (<local> < <n2>) { ... } else { ctx.event.<severity> = <vN>; }`
 ///
-/// crowdstrike's automated-lead risk score: unlike [`RangeLadder`], each arm
+/// crowdstrike's automated-lead risk score: unlike `RangeLadder`, each arm
 /// names only a CEILING, not a band, and the final `else` has none at all.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScoreSeverityBands {
@@ -23628,10 +23628,10 @@ fn run_split_element(event: &mut Event, pattern: &SplitElement) -> bool {
 /// Returns true if the script was handled, false if it should fall through
 /// to the generic `painless_exec` stub.
 ///
-/// The dispatch is two halves. [`known_patterns`] reads the script TEXT and
+/// The dispatch is two halves. `known_patterns` reads the script TEXT and
 /// names the matchers it triggers -- a decision that never changes for a given
 /// script, which is why [`crate::plan::PainlessPlan`] makes it once
-/// per call site. [`run_known_pattern`] then runs one matcher against one event.
+/// per call site. `run_known_pattern` then runs one matcher against one event.
 /// This entry point does both per call, for callers without a plan.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = normalise(script);

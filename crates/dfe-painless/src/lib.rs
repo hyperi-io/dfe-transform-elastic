@@ -20,7 +20,7 @@
 //! recognised pattern gets a reader that parses the script ONCE per call site
 //! and a runner that applies it per event. [`plan::PainlessPlan`] holds that
 //! split: `cached_painless!` resolves the dispatch behind a site-local
-//! `OnceLock`, so the ladder in [`common::known_patterns`] is cold path and
+//! `OnceLock`, so the ladder in `common::known_patterns` is cold path and
 //! only the matched runner costs anything per event.
 //!
 //! The modules drop the `painless_` prefix the crate name already carries.

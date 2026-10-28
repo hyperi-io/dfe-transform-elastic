@@ -25,7 +25,7 @@
 //! matches an arm decides the value** -- not the first, and not the highest
 //! band. An element matching no arm leaves whatever an earlier one wrote.
 //!
-//! Distinct from [`crate::common::KnownPattern::CaseInsensitiveLadder`], which
+//! Distinct from `crate::common::KnownPattern::CaseInsensitiveLadder`, which
 //! takes a SCALAR subject read straight off the document. That reader declines
 //! a subject reached by subscript on a loop variable, and its arm returns the
 //! empty plan, so `alert_v2` was claimed and served by nothing until this

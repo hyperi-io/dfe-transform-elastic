@@ -333,7 +333,7 @@ fn json_processor_value(event: &Event, field: &str) -> std::result::Result<Optio
 /// An absent field is a no-op, exactly as the old inline `if let` was; a
 /// present one that will not parse is the processor's failure, worded the
 /// same way the inline `serde_json` block worded it so `on_failure` output
-/// does not shift. [`json_processor_value`] carries what "will not parse"
+/// does not shift. `json_processor_value` carries what "will not parse"
 /// covers, containers included.
 ///
 /// # Errors
@@ -454,7 +454,7 @@ fn render_path(event: &Event, template: &str) -> String {
 /// # Errors
 ///
 /// Returns a `ParseError` naming the field when the text is not JSON, when the
-/// field holds a container rather than text (see [`json_processor_value`]), or
+/// field holds a container rather than text (see `json_processor_value`), or
 /// when what parses is not an object.
 pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> Result<()> {
     let fail = |message: String| crate::TransformError::ParseError {
@@ -1907,7 +1907,7 @@ const MAX_ENTITY_BODY: usize = 8;
 /// Running the sentences together is the difference between
 /// `... 22.04\n\n\n\nVulnerable software ...` and one unreadable line, and it
 /// fails the field on every event that carries markup.
-/// [`INLINE_ELEMENTS`] holds the list Lucene draws that line with.
+/// `INLINE_ELEMENTS` holds the list Lucene draws that line with.
 ///
 /// Trimming is NOT part of this. `rapid7_insightvm` puts a `trim` processor
 /// after each `html_strip` precisely because the leading `<p><p>` leaves two

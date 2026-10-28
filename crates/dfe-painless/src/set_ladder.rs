@@ -34,7 +34,7 @@
 //! **The written order is Java's, not the script's.** `ctx.event.category`
 //! receives the `HashSet` itself, and Elasticsearch serialises it by walking the
 //! hash table -- so `add('authentication')` then `add('host')` comes out as
-//! `["host", "authentication"]`. [`crate::helpers::java_bucket`] is what
+//! `["host", "authentication"]`. `crate::helpers::java_bucket` is what
 //! reproduces that.
 //!
 //! **A vendor literal is compared as written.** `trend_micro`'s audit list holds

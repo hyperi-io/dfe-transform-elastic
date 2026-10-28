@@ -7,7 +7,7 @@
 //! [`painless_exec`] was re-deciding WHICH matcher runs on every event -- up
 //! to 116 substring scans over constant text, at 20k events a batch. The
 //! decision is a property of the text alone, so [`PainlessPlan`] makes it
-//! once: [`cached_painless`] holds the plan in a site-local `OnceLock`, the
+//! once: `cached_painless!` holds the plan in a site-local `OnceLock`, the
 //! same pattern as `cached_grok`, and per event only the matchers the text
 //! actually triggers are run.
 //!
@@ -33,7 +33,7 @@ use crate::common::DropPolicy;
 
 /// A script's normalised text and the matcher branches its text triggers.
 ///
-/// Built once per call site by [`cached_painless`]; executed per event by
+/// Built once per call site by `cached_painless!`; executed per event by
 /// [`painless_exec_plan`] / [`painless_exec_plan_params`].
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PainlessPlan {

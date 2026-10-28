@@ -49,7 +49,7 @@ impl DfaParser {
     /// Parse the input, returning captured fields as string slices.
     ///
     /// Only the matched portion of the input is consumed. Use
-    /// [`parse_with_remainder`] to also get the remaining input.
+    /// [`Self::parse_with_remainder`] to also get the remaining input.
     pub fn parse<'a>(&self, input: &'a str) -> Result<HashMap<String, &'a str>, ParseError> {
         let mut caps = self.regex.create_captures();
         self.regex.captures(input, &mut caps);
