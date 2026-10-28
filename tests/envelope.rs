@@ -806,6 +806,74 @@ fn the_graph_envelope_tolerates_sparse_and_already_wrapped_records() {
     );
 }
 
+/// The row dfe-fetcher's `cloudtrail_event` builder emits for a `LookupEvents`
+/// record: the bare CloudTrail event with the three delivery keys appended,
+/// recorded in `tests/envelopes/fetcher/aws_cloudtrail.json`.
+///
+/// The `aws.cloudtrail` pipeline reads the event from `message`, so the same
+/// bytes delivered by Beats must produce the same ECS columns.
+#[test]
+fn cloudtrail_fills_its_columns_from_the_fetcher_row() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("envelopes/fetcher/aws_cloudtrail.json"))
+            .expect("the fixture parses");
+    let delivered = fixture["event"].clone();
+
+    let mut bare = delivered.as_object().expect("an object").clone();
+    for key in [
+        "_timestamp_fetcher",
+        "_timestamp_received",
+        "_source_fetcher",
+    ] {
+        bare.remove(key);
+    }
+    let via_beats = run(
+        "filebeat.aws_cloudtrail.default",
+        Envelope::Beats,
+        json!({ "message": Value::Object(bare).to_string() }),
+    )
+    .expect("beats path emitted");
+    let via_fetcher = run(
+        "filebeat.aws_cloudtrail.default",
+        Envelope::Fetcher,
+        delivered,
+    )
+    .expect("fetcher path emitted");
+
+    for (column, want) in [
+        ("/event/action", "ConsoleLogin"),
+        ("/event/provider", "signin.amazonaws.com"),
+        ("/cloud/account/id", "123456789012"),
+        ("/cloud/region", "ap-southeast-2"),
+    ] {
+        assert_eq!(
+            via_fetcher.pointer(column).and_then(Value::as_str),
+            Some(want),
+            "{column} from the fetcher row"
+        );
+    }
+    let timestamp = via_fetcher
+        .pointer("/@timestamp")
+        .and_then(Value::as_str)
+        .expect("@timestamp is set");
+    assert!(
+        timestamp.starts_with("2026-02-19T00:00:00"),
+        "@timestamp comes from eventTime, not the fetch time: {timestamp}"
+    );
+
+    let fetcher_leaves = leaves(&via_fetcher);
+    for (path, expected) in leaves(&via_beats) {
+        if path == "event.original" {
+            continue;
+        }
+        assert_eq!(
+            fetcher_leaves.get(&path),
+            Some(&expected),
+            "`{path}` differs between envelopes"
+        );
+    }
+}
+
 /// What an Elastic Agent hands the `cisco_ios` pipeline, from the Elastic
 /// data's `tests/envelopes/beats/agent_cisco_ios.json`.
 fn agent_wrapped() -> Value {
