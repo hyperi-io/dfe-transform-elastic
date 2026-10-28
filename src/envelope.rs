@@ -32,7 +32,7 @@
 use std::borrow::Cow;
 
 use dfe_runtime::{Event, syslog_pri};
-use serde_json::{Value, json};
+use serde_json::{Map, Value, json};
 
 use crate::registry::{Framing, Intake};
 
@@ -467,6 +467,9 @@ impl Delivery {
         // into `message`, taking the delivery keys with it.
         let ingested = ingest_time(event);
 
+        if self.envelope == Envelope::Fetcher {
+            dress_graph_record(self.dataset, event);
+        }
         self.envelope
             .unwrap_into_beats(event, self.framing, &self.variant)?;
 
@@ -488,6 +491,85 @@ impl Delivery {
         }
         Ok(())
     }
+}
+
+/// The Microsoft Graph audit logs dfe-fetcher pulls, by the dataset of the
+/// Elastic pipeline that reads them.
+const GRAPH_AUDIT_DATASETS: &[&str] = &["azure.auditlogs", "azure.signinlogs"];
+
+/// Wrap a Microsoft Graph audit record as the Azure Monitor diagnostic-log
+/// record the `azure` pipelines were written for.
+///
+/// Elastic reads these streams from an Event Hub, where each record is a
+/// diagnostic-log envelope (`time`, `category`, `operationName`, ...) around
+/// the Graph resource under `properties`. dfe-fetcher delivers the Graph
+/// resource itself, whose own `category` is a resource category such as
+/// `UserManagement`, so the audit-logs pipeline, which keeps only
+/// `category: AuditLogs`, drops every record. The envelope fields are derived
+/// from the record, and the delivery keys stay at the top level for
+/// [`unwrap_fetcher`] to strip.
+///
+/// A record that already has `properties` or `message` is in the Event Hub
+/// form and is left alone.
+fn dress_graph_record(dataset: &str, event: &mut Event) {
+    if !GRAPH_AUDIT_DATASETS.contains(&dataset) {
+        return;
+    }
+    let Some(record) = event.as_value_mut().as_object_mut() else {
+        return;
+    };
+    if record.contains_key("properties") || record.contains_key("message") {
+        return;
+    }
+
+    let (category, time_field, operation, address): (_, _, _, &[&str]) =
+        if dataset == "azure.auditlogs" {
+            (
+                "AuditLogs",
+                "activityDateTime",
+                record.get("activityDisplayName").cloned(),
+                &["initiatedBy", "user", "ipAddress"],
+            )
+        } else {
+            (
+                "SignInLogs",
+                "createdDateTime",
+                Some(json!("Sign-in activity")),
+                &["ipAddress"],
+            )
+        };
+
+    let mut dressed = Map::new();
+    if let Some(time) = record.get(time_field) {
+        dressed.insert("time".to_owned(), time.clone());
+    }
+    dressed.insert("category".to_owned(), json!(category));
+    if let Some(operation) = operation.filter(Value::is_string) {
+        dressed.insert("operationName".to_owned(), operation);
+    }
+    if let Some(correlation) = record.get("correlationId") {
+        dressed.insert("correlationId".to_owned(), correlation.clone());
+    }
+    let caller = address
+        .split_first()
+        .and_then(|(first, rest)| {
+            rest.iter()
+                .try_fold(record.get(*first)?, |node, key| node.get(*key))
+        })
+        .filter(|ip| ip.as_str().is_some_and(|ip| !ip.is_empty()));
+    if let Some(caller) = caller {
+        dressed.insert("callerIpAddress".to_owned(), caller.clone());
+    }
+    for key in FETCHER_KEYS {
+        if let Some(value) = record.remove(*key) {
+            dressed.insert((*key).to_owned(), value);
+        }
+    }
+    dressed.insert(
+        "properties".to_owned(),
+        Value::Object(std::mem::take(record)),
+    );
+    *record = dressed;
 }
 
 /// When the producer says it took delivery, if it says at all.
