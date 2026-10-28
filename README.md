@@ -56,7 +56,7 @@ source:
 sink:
   topic: normalised_events
   brokers: ["kafka:9092"]        # defaults to the source brokers
-  max_message_bytes: 15728640    # ceiling on one outbound record (15 MiB)
+  max_message_bytes: 8000000     # ceiling on one outbound record (the DFE record cap)
 ```
 
 That is the shape, not the whole surface. `config.example.yaml` is the COMPLETE

@@ -599,8 +599,8 @@ mod tests {
         }
     }
 
-    /// The stack carries a 16 MiB record, so a 2 MB event goes out under the
-    /// shipped budget rather than being dropped as oversize.
+    /// A 2 MB event goes out under the shipped budget rather than being
+    /// dropped as oversize.
     #[test]
     fn an_event_over_one_megabyte_fits_the_shipped_budget() {
         let events = padded(1, 2_000_000);
@@ -610,6 +610,23 @@ mod tests {
         assert_eq!(outcome.oversize, 0, "a 2 MB event was dropped as oversize");
         assert_eq!(outcome.serialised, 1);
         assert!(payloads[0].len() > 2_000_000);
+    }
+
+    /// The shipped budget is the DFE record cap: a payload of 8,000,000 bytes
+    /// goes out and one byte more is dropped and counted.
+    #[test]
+    fn the_shipped_budget_admits_8_000_000_bytes_and_drops_one_more() {
+        let budget = crate::config::default_max_message_bytes();
+        assert_eq!(budget, 8_000_000);
+        let overhead = serialise_events(&padded(1, 0), budget).0[0].len();
+
+        let (payloads, outcome) = serialise_events(&padded(1, budget - overhead), budget);
+        assert_eq!(payloads.first().map(Vec::len), Some(8_000_000));
+        assert_eq!((outcome.serialised, outcome.oversize), (1, 0));
+
+        let (payloads, outcome) = serialise_events(&padded(1, budget - overhead + 1), budget);
+        assert_eq!(payloads, [] as [Vec<u8>; 0]);
+        assert_eq!((outcome.serialised, outcome.oversize), (0, 1));
     }
 
     /// A record no broker can accept is dropped and counted, rather than
