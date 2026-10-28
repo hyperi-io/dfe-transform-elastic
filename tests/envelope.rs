@@ -687,6 +687,64 @@ const GRAPH_SIGN_IN: &str = r#"{
   }
 }"#;
 
+/// A Microsoft Graph `provisioningObjectSummary`, as the Graph reference's
+/// "List provisioningObjectSummary" success example shows it.
+const GRAPH_PROVISIONING: &str = r#"{
+  "id": "75b5b0ae-9fc5-8d0e-e0a9-7y6a4728de56",
+  "activityDateTime": "2019-05-04T03:00:54Z",
+  "tenantId": "74beb175-3b80-7b63-b9d5-6f0b76082b16",
+  "jobId": "aws.74beb1753b704b63b8d56f0b76082b16.10a7a801-7101-4c69-ae00-ce9f75f8460a",
+  "cycleId": "b6502552-018d-79bd-8869-j47194dc65c1",
+  "changeId": "b6502552-018d-89bd-9969-b49194dc65c1",
+  "provisioningAction": "create",
+  "durationInMilliseconds": 3236,
+  "provisioningStatusInfo": { "status": "success", "errorInformation": null },
+  "provisioningSteps": [
+    {
+      "name": "EntryImport",
+      "provisioningStepType": "Import",
+      "status": "success",
+      "description": "Retrieved RolesCompound '10a7a801-7101-4c69-ae00-ce9f75f8460a' from Contoso",
+      "details": {}
+    }
+  ],
+  "modifiedProperties": [
+    { "displayName": "displayName", "oldValue": null, "newValue": "Contoso" }
+  ],
+  "servicePrincipal": { "id": "6cc35b93-185a-4485-a519-50c09549g3ad", "displayName": "Contoso" },
+  "sourceSystem": {
+    "id": "d1e090e1-f2f4-4678-be44-6442ffff0621",
+    "displayName": "Contoso",
+    "details": {}
+  },
+  "targetSystem": {
+    "id": "e69d4bd2-2da2-483e-bc49-aad4080b91b3",
+    "displayName": "Azure Active Directory",
+    "details": {
+      "ApplicationId": "bcf4d658-ac9f-408d-bf04-e86dc10328fb",
+      "ServicePrincipalId": "6nn35b93-185a-4485-a519-50c09549f3ad",
+      "ServicePrincipalDisplayName": "Contoso"
+    }
+  },
+  "initiatedBy": {
+    "initiatingType": "system",
+    "id": "",
+    "displayName": "Azure AD Provisioning Service"
+  },
+  "sourceIdentity": {
+    "identityType": "RolesCompound",
+    "id": "60a7a801-7101-4c69-ae00-ce9f75f8460a",
+    "displayName": "",
+    "details": {}
+  },
+  "targetIdentity": {
+    "identityType": "ServicePrincipal",
+    "id": "6nn35b93-185a-4485-a519-50c09549f3ad",
+    "displayName": "",
+    "details": {}
+  }
+}"#;
+
 /// What dfe-fetcher delivers for an Entra Graph audit unit: the Graph record at
 /// the top level, with the three keys `enrich_record` appends.
 fn fetched_graph_record(record: &str, unit: &str) -> Value {
@@ -708,12 +766,18 @@ fn fetched_graph_record(record: &str, unit: &str) -> Value {
 /// categories ending `SignInLogs`, did the same to a record with none.
 #[test]
 fn a_graph_audit_record_survives_the_azure_pipelines() {
-    for (source, record, unit, expected) in [
+    type Case = (
+        &'static str,
+        &'static str,
+        &'static str,
+        &'static [(&'static str, &'static str)],
+    );
+    let cases: [Case; 3] = [
         (
             "filebeat.azure_auditlogs.default",
             GRAPH_DIRECTORY_AUDIT,
             "azure.entra_directory_audits",
-            [
+            &[
                 ("/event/action", "Add member to group"),
                 ("/event/outcome", "success"),
                 ("/@timestamp", "2018-01-09T21:20:02.721Z"),
@@ -724,10 +788,21 @@ fn a_graph_audit_record_survives_the_azure_pipelines() {
             ],
         ),
         (
+            "filebeat.azure_provisioning.default",
+            GRAPH_PROVISIONING,
+            "azure.entra_provisioning",
+            &[
+                ("/event/action", "Provisioning activity"),
+                ("/event/outcome", "success"),
+                ("/@timestamp", "2019-05-04T03:00:54.000Z"),
+                ("/azure/provisioning/category", "ProvisioningLogs"),
+            ],
+        ),
+        (
             "filebeat.azure_signinlogs.default",
             GRAPH_SIGN_IN,
             "azure.entra_signins",
-            [
+            &[
                 ("/event/action", "Sign-in activity"),
                 ("/event/outcome", "success"),
                 ("/@timestamp", "2023-12-01T16:03:24.000Z"),
@@ -740,14 +815,15 @@ fn a_graph_audit_record_survives_the_azure_pipelines() {
                 ),
             ],
         ),
-    ] {
+    ];
+    for (source, record, unit, expected) in cases {
         let out = run(
             source,
             Envelope::Fetcher,
             fetched_graph_record(record, unit),
         )
         .unwrap_or_else(|| panic!("{source}: the pipeline dropped the Graph record"));
-        for (pointer, want) in expected {
+        for &(pointer, want) in expected {
             assert_eq!(
                 out.pointer(pointer).and_then(Value::as_str),
                 Some(want),

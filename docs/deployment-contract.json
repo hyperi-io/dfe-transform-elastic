@@ -84,7 +84,7 @@
       "brokers": [
         "kafka:9092"
       ],
-      "max_message_bytes": 15728640
+      "max_message_bytes": 8000000
     },
     "geoip": {
       "enabled": true,
@@ -184,7 +184,7 @@
           "transport": "bus",
           "endpoint": "http://dfe-loader:6000",
           "brokers": null,
-          "max_message_bytes": 15728640
+          "max_message_bytes": 8000000
         }
       },
       "geoip": {
@@ -437,11 +437,11 @@
             "default": null
           },
           "max_message_bytes": {
-            "description": "Ceiling on one outbound record. An event that serialises larger is\ndropped and counted on `events_oversize_total`.\n\nThe default fits the stack's 16 MiB record ceiling. Against a broker or\ntopic whose `message.max.bytes` is lower, set this below that limit, or\nthe broker refuses those events instead and they count on\n`send_filtered_dlq_total`.",
+            "description": "Ceiling on one outbound record. An event that serialises larger is\ndropped and counted on `events_oversize_total`.\n\nThe default is the DFE record cap, 8,000,000 bytes. Against a broker or\ntopic whose `message.max.bytes` is lower, set this below that limit, or\nthe broker refuses those events instead and they count on\n`send_filtered_dlq_total`. Brokers that carry more can raise it, up to\n16 MiB.",
             "type": "integer",
             "format": "uint",
             "minimum": 0,
-            "default": 15728640
+            "default": 8000000
           }
         }
       },

@@ -269,10 +269,11 @@ pub struct SinkConfig {
     /// Ceiling on one outbound record. An event that serialises larger is
     /// dropped and counted on `events_oversize_total`.
     ///
-    /// The default fits the stack's 16 MiB record ceiling. Against a broker or
+    /// The default is the DFE record cap, 8,000,000 bytes. Against a broker or
     /// topic whose `message.max.bytes` is lower, set this below that limit, or
     /// the broker refuses those events instead and they count on
-    /// `send_filtered_dlq_total`.
+    /// `send_filtered_dlq_total`. Brokers that carry more can raise it, up to
+    /// 16 MiB.
     #[serde(default = "default_max_message_bytes")]
     pub max_message_bytes: usize,
 }
@@ -337,23 +338,26 @@ pub const fn default_max_batch_bytes() -> usize {
     16 * 1024 * 1024
 }
 
-/// The largest record the stack carries: the brokers' and topics'
-/// `message.max.bytes`, the producer's, and the consumer's fetch all share it.
+/// The largest record the producer will put on the wire: the brokers' and
+/// topics' `message.max.bytes`, the producer's, and the consumer's fetch all
+/// share it. It bounds `sink.max_message_bytes` for an operator whose brokers
+/// carry more than the DFE record cap.
 ///
 /// scalo's `MESSAGE_MAX_BYTES`, restated because that constant only exists
 /// with the `kafka` feature. A test holds the two equal.
 pub const PIPELINE_MESSAGE_MAX_BYTES: usize = 16 * 1024 * 1024;
 
-/// Room the default budget leaves under [`PIPELINE_MESSAGE_MAX_BYTES`] for
-/// what a payload's length does not count: record framing, headers, the gRPC
-/// routing metadata, and zstd's growth on an incompressible payload.
-pub const MESSAGE_HEADROOM_BYTES: usize = 1024 * 1024;
+/// The DFE-wide record cap: dfe-receiver refuses a request body over it, and
+/// every broker DFE deploys, Confluent Basic's 8,388,608 included, takes a
+/// record this size with room for framing.
+pub const DFE_RECORD_CAP_BYTES: usize = 8_000_000;
 
-/// Default ceiling on one outbound record: the stack's record ceiling less
-/// [`MESSAGE_HEADROOM_BYTES`], so 15 MiB.
+/// Default ceiling on one outbound record: the DFE record cap. Deployments
+/// whose brokers carry more raise `sink.max_message_bytes`, up to
+/// [`PIPELINE_MESSAGE_MAX_BYTES`].
 #[must_use]
 pub const fn default_max_message_bytes() -> usize {
-    PIPELINE_MESSAGE_MAX_BYTES - MESSAGE_HEADROOM_BYTES
+    DFE_RECORD_CAP_BYTES
 }
 
 impl Config {
@@ -551,10 +555,10 @@ mod tests {
         assert!(off.validate().is_ok());
     }
 
-    /// The stack carries a 16 MiB record end to end, so the default budget is
-    /// 15 MiB and an event over a stock broker's 1 MB is carried, not dropped.
+    /// The default budget is the DFE record cap, so an event over a stock
+    /// broker's 1 MB is carried and one over 8,000,000 bytes is not.
     #[test]
-    fn message_budget_defaults_to_the_stack_ceiling_less_headroom() {
+    fn message_budget_defaults_to_the_dfe_record_cap() {
         let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
@@ -562,7 +566,8 @@ mod tests {
             scalo::yaml::Profile::Config,
         )
         .expect("config parses without a sink budget");
-        assert_eq!(parsed.sink.max_message_bytes, 15 * 1024 * 1024);
+        assert_eq!(parsed.sink.max_message_bytes, 8_000_000);
+        assert_eq!(parsed.sink.max_message_bytes, DFE_RECORD_CAP_BYTES);
         assert!(parsed.sink.max_message_bytes > 1_000_000);
         assert!(parsed.sink.max_message_bytes < PIPELINE_MESSAGE_MAX_BYTES);
     }

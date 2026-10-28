@@ -28,10 +28,10 @@ fn peak_mib() -> u64 {
     kib / 1024
 }
 
-/// Under the 768 MiB pod limit and a third of the 1,900 MiB the line took, with
-/// room over the 320 MiB a dev build measures, so only a regression to per-group
-/// slot growth trips it.
-const PEAK_BUDGET_MIB: u64 = 640;
+/// A dev build peaks near 60 MiB. The line took about 180 MiB while `%{IP}` spelt
+/// its digits `\d`, so the bound trips on a return of the Unicode digit class
+/// or of per-group slot growth, and still sits far under the 768 MiB pod limit.
+const PEAK_BUDGET_MIB: u64 = 128;
 
 #[test]
 fn a_302021_teardown_line_transforms_in_bounded_memory() {
