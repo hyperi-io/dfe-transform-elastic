@@ -837,16 +837,17 @@ mod tests {
 
     /// Verbatim from `pipelines/checkpoint/firewall/default.yml`: the offset
     /// normaliser writes group 1 and a literal zero, which Rust would read as
-    /// group 10 and drop.
+    /// group 10 and drop. A `gsub` pattern is a plain regex, not a grok, so its
+    /// groups keep their numbers.
     #[test]
     fn a_group_reference_stops_where_the_groups_do() {
-        let compiled = grok("([+-])([0-9]):?([0-9]{2})");
-        assert_eq!(compiled.regex.replace_all("-5:00", "$10$2:$3"), "-05:00");
-        assert_eq!(compiled.regex.replace_all("+5:30", "$10$2:$3"), "+05:30");
+        let compiled = regex("([+-])([0-9]):?([0-9]{2})");
+        assert_eq!(compiled.replace_all("-5:00", "$10$2:$3"), "-05:00");
+        assert_eq!(compiled.replace_all("+5:30", "$10$2:$3"), "+05:30");
 
         // A reference that is not ambiguous is passed through untouched.
-        let pair = grok("([+-][0-9]{2})([0-9]{2})");
-        assert_eq!(pair.regex.replace_all("-0500", "$1:$2"), "-05:00");
+        let pair = regex("([+-][0-9]{2})([0-9]{2})");
+        assert_eq!(pair.replace_all("-0500", "$1:$2"), "-05:00");
     }
 
     /// Verbatim from `pipelines/checkpoint/firewall/default.yml`: the RFC5424
