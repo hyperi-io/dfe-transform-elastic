@@ -21,7 +21,7 @@
 //! ```
 //!
 //! The `asset_host_detection` stream writes the same table through `params`, and
-//! [`crate::params::TableGate`] is what lets that spelling keep the same
+//! `crate::params::TableGate` is what lets that spelling keep the same
 //! membership test.
 //!
 //! THREE ways to write nothing, and the script needs all three. A type in no

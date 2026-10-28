@@ -135,7 +135,7 @@ static GROK: RwLock<Option<HashMap<String, &'static CompiledGrok>>> = RwLock::ne
 /// # Panics
 ///
 /// Does not panic on a malformed pattern -- see the module docs. The `expect`
-/// on the fallback cannot fire: [`NEVER_MATCHES`] is a valid regex, pinned by
+/// on the fallback cannot fire: `NEVER_MATCHES` is a valid regex, pinned by
 /// a test.
 #[must_use]
 pub fn grok(pattern: &str) -> &'static CompiledGrok {
