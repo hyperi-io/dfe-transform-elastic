@@ -1159,6 +1159,13 @@ pub fn grok_to_regex_typed(
 ) {
     use std::fmt::Write as _;
 
+    let pattern = collapse_redundant_ipv6(pattern);
+    let pattern = if has_backreference(&pattern) {
+        pattern
+    } else {
+        std::borrow::Cow::Owned(uncapture(&pattern))
+    };
+    let pattern: &str = &pattern;
     let mut result = String::with_capacity(pattern.len());
     let mut field_map = std::collections::HashMap::new();
     let mut capture_types = std::collections::HashMap::new();
@@ -1213,7 +1220,10 @@ pub fn grok_to_regex_typed(
                     capture_types.insert(safe.to_string(), CaptureType::Number);
                     let _ = write!(result, "{inner}");
                 } else {
-                    let _ = write!(result, "({sub_pattern})");
+                    // Elastic's grok captures only what a pattern names, so an
+                    // unnamed reference is a group and not a capture. Each
+                    // capture adds a slot to every state of the compiled regex.
+                    let _ = write!(result, "(?:{sub_pattern})");
                 }
             } else {
                 // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
@@ -1268,17 +1278,87 @@ pub fn grok_to_regex_typed(
     (result, field_map, capture_types)
 }
 
-/// Rewrite every unnamed capturing group `(...)` of a library pattern as
+/// Drop an `%{IPV6}` alternative that the `%{IP}` beside it already covers.
+///
+/// `%{IP}` is `%{IPV6}|%{IPV4}`, so in `%{IPV6:a}|%{IP:a}` the first branch
+/// matches nothing the second would not, and tries it first. Each expansion of
+/// `%{IPV6}` is about 3,700 states, and `cisco_asa`'s 302021 teardown pattern
+/// spells the pair six times (`faddr`, `gaddr` and `laddr`, each with and
+/// without an interface), so the redundant branch is half of its 54,000 states.
+///
+/// Only the exact shape is rewritten: both branches carry the same field spec,
+/// the IPV6 branch opens its alternative, and the IP branch fills its whole
+/// alternative. `x%{IPV6:a}|%{IP:a}` and `%{IPV6:a}|%{IP:a}:%{PORT}` are not
+/// redundant and are left alone, as is `%{IPV6:a}|%{IP:b}`, which names two
+/// fields.
+fn collapse_redundant_ipv6(pattern: &str) -> std::borrow::Cow<'_, str> {
+    const IPV6: &str = "%{IPV6";
+    if !pattern.contains(IPV6) {
+        return std::borrow::Cow::Borrowed(pattern);
+    }
+    let mut out = String::with_capacity(pattern.len());
+    let mut rest = pattern;
+    while let Some(at) = rest.find(IPV6) {
+        let (before, from) = rest.split_at(at);
+        out.push_str(before);
+        let after = &from[IPV6.len()..];
+        let twin = after.find('}').and_then(|end| {
+            let spec = &after[..end];
+            if !(spec.is_empty() || spec.starts_with(':')) {
+                return None;
+            }
+            let tail = after[end + 1..].strip_prefix("|%{IP")?;
+            let tail = tail.strip_prefix(spec)?.strip_prefix('}')?;
+            let closes = tail.is_empty() || tail.starts_with([')', '|']);
+            (opens_alternative(&out) && closes).then_some(&after[end + 2..])
+        });
+        if let Some(without_ipv6) = twin {
+            rest = without_ipv6;
+        } else {
+            out.push_str(IPV6);
+            rest = after;
+        }
+    }
+    out.push_str(rest);
+    std::borrow::Cow::Owned(out)
+}
+
+/// Whether the next token starts an alternative of the pattern built so far:
+/// at its start, or right after an unescaped `(`, `(?:` or `|`.
+fn opens_alternative(built: &str) -> bool {
+    let head = ["(?:", "(", "|"]
+        .iter()
+        .find_map(|opener| built.strip_suffix(opener));
+    match head {
+        None => built.is_empty(),
+        Some(head) => {
+            let escapes = head.bytes().rev().take_while(|b| *b == b'\\').count();
+            escapes % 2 == 0
+        }
+    }
+}
+
+/// Whether the pattern refers back to a numbered group (`\1` to `\9`), which
+/// only the backtracking engine supports and which needs the numbering intact.
+fn has_backreference(pattern: &str) -> bool {
+    let mut chars = pattern.chars();
+    while let Some(c) = chars.next() {
+        if c == '\\' && chars.next().is_some_and(|n| ('1'..='9').contains(&n)) {
+            return true;
+        }
+    }
+    false
+}
+
+/// Rewrite every unnamed capturing group `(...)` of a grok pattern as
 /// `(?:...)`.
 ///
-/// Elastic's grok engine captures only the groups a pattern names, and a vendor
-/// cannot refer to the numbering inside a library pattern. Left capturing, each
+/// Elastic's grok engine captures only the groups a pattern names, so a group
+/// without a name is grouping and nothing else. Left capturing, each
 /// group adds a slot to every state of the compiled regex, and `%{IP}` and
 /// `%{IPV6}` carry 77 of them apiece: the 302021 teardown pattern held 967
 /// groups over 58,031 states, and the regex engine's per-thread search cache is
-/// states times slots, which came to 1.8 GB on the first match. A vendor's own
-/// unnamed groups are left alone, because a `gsub` replacement reads them as
-/// `$1`.
+/// states times slots, which came to 1.8 GB on the first match.
 ///
 /// Escapes and character classes are copied whole, so a `(` inside either is
 /// left alone. `(?` and `(*` open something that is not a plain group.
@@ -1501,7 +1581,12 @@ static CISCO_TIMESTAMP: LazyLock<String> = LazyLock::new(|| {
 /// greedy tail took the user agent after it into `source.address`, shifting
 /// every later field one token left and costing six of them an event.
 /// RFC 6874 spells a zone id as unreserved characters, so a space ends it.
-const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%[0-9A-Za-z_.~-]+)?";
+///
+/// Digits are `[0-9]`, not `\d`: the Unicode digit class compiles to hundreds
+/// of states wherever it appears and this pattern spells it forty times, so
+/// one `%{IP}` was 4,000 states and the `cisco_asa` teardown line (six of them)
+/// held a 34 MB search cache per thread.
+const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}))|:)))(%[0-9A-Za-z_.~-]+)?";
 
 /// The simplified `IPV4`. Elastic's own guards it with `(?<![0-9])` and
 /// `(?![0-9])` and range-checks every octet; the range check is still missing
@@ -1525,7 +1610,7 @@ const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]
 /// 71 ns on one that does not, and 924 ns -> 1.32 us behind a greedy prefix.
 /// Paid because the alternative is a wrong address in a security event rather
 /// than a missing one.
-const IPV4: &str = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b";
+const IPV4: &str = r"\b[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\b";
 
 /// A hostname as Elastic defines it, for the composites below.
 ///
@@ -4647,8 +4732,150 @@ mod tests {
 
         let (regex, _, _) = super::grok_to_regex_typed("(x)%{IP:a}");
         assert!(
-            regex.starts_with("(x)"),
-            "a vendor group keeps its number: {regex}"
+            regex.starts_with("(?:x)"),
+            "a vendor group does not capture: {regex}"
         );
+    }
+
+    /// Unnamed groups and unnamed references are grouping, not captures: only
+    /// the whole match is left. A pattern that refers back to a numbered group
+    /// keeps its numbering.
+    #[test]
+    fn an_unnamed_group_or_reference_does_not_capture() {
+        let rows: &[(&str, &str, usize)] = &[
+            (
+                "a vendor group and three references",
+                "(x)%{NUMBER}/%{WORD}%{IP}",
+                1,
+            ),
+            (
+                "a named capture among unnamed groups",
+                "(x)%{WORD:w}(y|z)",
+                2,
+            ),
+            ("a back reference keeps the numbering", r"(x)%{WORD:w}\1", 3),
+        ];
+        for (name, grok, groups) in rows {
+            let (regex, _, _) = super::grok_to_regex_typed(grok);
+            let compiled = fancy_regex::Regex::new(&regex).expect("compiles");
+            assert_eq!(compiled.captures_len(), *groups, "{name}: {regex}");
+        }
+        let (regex, _, _) = super::grok_to_regex_typed("(x)%{NUMBER}/%{WORD}");
+        let caps = regex::Regex::new(&regex)
+            .expect("compiles")
+            .captures("x12/ab")
+            .expect("matches");
+        assert_eq!(&caps[0], "x12/ab");
+    }
+
+    /// Only a `%{IPV6}` branch that opens its alternative, with the same field
+    /// spec as an `%{IP}` branch that fills the next one, is redundant.
+    #[test]
+    fn a_redundant_ipv6_branch_is_dropped_and_nothing_else() {
+        let rows: &[(&str, &str, &str)] = &[
+            ("the pair", "(?:%{IPV6:a}|%{IP:a})", "(?:%{IP:a})"),
+            (
+                "an alternative among others",
+                "(?:%{IPV6:a}|%{IP:a}|%{WORD:w})",
+                "(?:%{IP:a}|%{WORD:w})",
+            ),
+            ("no field name", "(%{IPV6}|%{IP})", "(%{IP})"),
+            ("at the start", "%{IPV6:a}|%{IP:a}", "%{IP:a}"),
+            (
+                "after a non-capturing group opener",
+                "x(?:%{IPV6:a}|%{IP:a})y",
+                "x(?:%{IP:a})y",
+            ),
+            (
+                "two pairs",
+                "(%{IPV6:a}|%{IP:a})/(%{IPV6:b}|%{IP:b})",
+                "(%{IP:a})/(%{IP:b})",
+            ),
+            (
+                "a prefix on the IPV6 branch",
+                "x%{IPV6:a}|%{IP:a}",
+                "x%{IPV6:a}|%{IP:a}",
+            ),
+            (
+                "a suffix on the IP branch",
+                "(%{IPV6:a}|%{IP:a}:%{PORT})",
+                "(%{IPV6:a}|%{IP:a}:%{PORT})",
+            ),
+            (
+                "two field names",
+                "(%{IPV6:a}|%{IP:b})",
+                "(%{IPV6:a}|%{IP:b})",
+            ),
+            (
+                "IPV6 alone",
+                "(%{IPV6:a}|%{WORD:a})",
+                "(%{IPV6:a}|%{WORD:a})",
+            ),
+            (
+                "the IP branch first",
+                "(%{IP:a}|%{IPV6:a})",
+                "(%{IP:a}|%{IPV6:a})",
+            ),
+            (
+                "an escaped opener",
+                r"\(%{IPV6:a}|%{IP:a})",
+                r"\(%{IPV6:a}|%{IP:a})",
+            ),
+            (
+                "a literal colon before",
+                "ip:%{IPV6:a}|%{IP:a}",
+                "ip:%{IPV6:a}|%{IP:a}",
+            ),
+        ];
+        for (name, input, want) in rows {
+            assert_eq!(super::collapse_redundant_ipv6(input), *want, "{name}");
+        }
+    }
+
+    /// Dropping the branch must not change what matches or what is captured,
+    /// checked against the same grok with both branches kept.
+    #[test]
+    fn dropping_the_redundant_ipv6_branch_keeps_every_match() {
+        let paired = "^(?:%{IPV6:addr}|%{IP:addr}|(?P<host>[a-z]+))/%{NUMBER:port}$";
+        // The extra group hides the IP branch from the collapse, so this one
+        // keeps both branches.
+        let lone = "^(?:%{IPV6:addr}|(?:%{IP:addr})|(?P<host>[a-z]+))/%{NUMBER:port}$";
+        let compile = |grok: &str| {
+            let (regex, map, _) = super::grok_to_regex_typed(grok);
+            (regex::Regex::new(&regex).expect("compiles"), map)
+        };
+        let (paired_re, paired_map) = compile(paired);
+        let (lone_re, lone_map) = compile(lone);
+        assert!(
+            paired_re.as_str().len() < lone_re.as_str().len(),
+            "the collapse did not shrink the pattern"
+        );
+
+        let address_of =
+            |re: &regex::Regex, map: &std::collections::HashMap<String, String>, line: &str| {
+                let caps = re.captures(line)?;
+                re.capture_names()
+                    .flatten()
+                    .filter(|n| map.get(*n).is_some_and(|f| f == "addr"))
+                    .find_map(|n| caps.name(n))
+                    .map(|m| m.as_str().to_owned())
+            };
+        for line in [
+            "198.51.100.102/62845",
+            "2001:db8::1/443",
+            "fe80::1%eth0/1",
+            "::1/80",
+            "::ffff:192.0.2.1/9",
+            "gateway/22",
+            "198.51.100.102",
+            "999.1.1.1/1",
+        ] {
+            assert_eq!(
+                address_of(&paired_re, &paired_map, line),
+                address_of(&lone_re, &lone_map, line),
+                "{line}"
+            );
+            assert_eq!(paired_re.is_match(line), lone_re.is_match(line), "{line}");
+        }
     }
 }
