@@ -807,7 +807,7 @@ fn the_graph_envelope_tolerates_sparse_and_already_wrapped_records() {
 }
 
 /// The row dfe-fetcher's `cloudtrail_event` builder emits for a `LookupEvents`
-/// record: the bare CloudTrail event with the three delivery keys appended,
+/// record: the bare `CloudTrail` event with the three delivery keys appended,
 /// recorded in `tests/envelopes/fetcher/aws_cloudtrail.json`.
 ///
 /// The `aws.cloudtrail` pipeline reads the event from `message`, so the same
