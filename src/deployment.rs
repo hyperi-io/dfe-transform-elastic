@@ -10,10 +10,9 @@
 
 use crate::config::{Config, GEOIP_DATA_DIR, SinkConfig, SourceConfig, Transport, default_geoip};
 use scalo::deployment::{
-    CONTRACT_SCHEMA_VERSION, Capability, DeploymentContract, FieldSpec, HealthContract,
-    ImageProfile, KafkaLagTrigger, KedaConfig, KedaContract, NativeDepsContract, PortContract,
-    ResourceList, ResourcesContract, SecretEnvContract, SecretGroupContract, SecurityContract,
-    ServiceAccount, WritablePath, base_image_from_cascade,
+    Capability, DeploymentContract, FieldSpec, HealthContract, ImageProfile, KafkaLagTrigger,
+    KedaConfig, KedaContract, NativeDepsContract, PortContract, ResourceList, ResourcesContract,
+    SecretEnvContract, SecretGroupContract, WritablePath, base_image_from_cascade,
 };
 
 /// The `source.transport` values that bind the Push listener: the name
@@ -47,7 +46,6 @@ pub fn contract() -> DeploymentContract {
                 .bound_from("source.listen")
                 .app_protocol("kubernetes.io/h2c"),
         ],
-        unbound_listen_paths: vec![],
         hot_paths: vec![],
         entrypoint_args: vec![
             "--config".into(),
@@ -83,7 +81,6 @@ pub fn contract() -> DeploymentContract {
             })
             .with_kafka_trigger(KafkaLagTrigger::disabled()),
         ),
-        schema_version: CONTRACT_SCHEMA_VERSION,
         // scalo writes no vendor, licence or copyright of its own, so the labels and the generated Dockerfile header carry exactly these.
         oci_labels: scalo::deployment::OciLabels {
             title: "dfe-transform-elastic".into(),
@@ -108,9 +105,7 @@ pub fn contract() -> DeploymentContract {
                 memory: "512Mi".into(),
             },
         },
-        security: SecurityContract::default(),
-        singleton: false,
-        service_account: ServiceAccount::Own,
+        ..DeploymentContract::default()
     }
 }
 
@@ -697,7 +692,7 @@ mod tests {
     fn contract_carries_the_reflectable_config() {
         let c = contract();
         assert!(c.config_schema.is_some());
-        assert_eq!(c.schema_version, CONTRACT_SCHEMA_VERSION);
+        assert_eq!(c.schema_version, scalo::deployment::CONTRACT_SCHEMA_VERSION);
         assert_ne!(c.capabilities, [] as [scalo::Capability; 0]);
     }
 
@@ -755,7 +750,8 @@ mod tests {
     fn committed_dockerfile_does_not_drift() {
         let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("Dockerfile");
         let committed = std::fs::read_to_string(&path).expect("Dockerfile is committed");
-        let fresh = scalo::deployment::generate_dockerfile(&contract(), None);
+        let fresh = scalo::deployment::generate_dockerfile(&contract(), None)
+            .expect("the contract is valid");
         assert_eq!(committed.trim_end(), fresh.trim_end());
     }
 
