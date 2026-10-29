@@ -96,10 +96,10 @@ unwrap_used = "deny"
 expect_used = "deny"
 panic = "deny"
 dbg_macro = "deny"
+# Types keep descriptive names even where the module path repeats them, so call sites read without it.
 module_name_repetitions = "allow"
+# #[must_use] goes where dropping the value is a bug, not on every pure function.
 must_use_candidate = "allow"
-missing_errors_doc = "allow"
-missing_panics_doc = "allow"
 
 [workspace]
 members = [
@@ -126,10 +126,10 @@ unwrap_used = "deny"
 expect_used = "deny"
 panic = "deny"
 dbg_macro = "deny"
+# Types keep descriptive names even where the module path repeats them, so call sites read without it.
 module_name_repetitions = "allow"
+# #[must_use] goes where dropping the value is a bug, not on every pure function.
 must_use_candidate = "allow"
-missing_errors_doc = "allow"
-missing_panics_doc = "allow"
 
 [workspace.package]
 version = "0.1.0"
