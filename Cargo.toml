@@ -100,6 +100,9 @@ dbg_macro = "deny"
 module_name_repetitions = "allow"
 # #[must_use] goes where dropping the value is a bug, not on every pure function.
 must_use_candidate = "allow"
+# About 38 public Result and panicking fns have no # Errors or # Panics section, 8 of them in dfe-core.
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 
 [workspace]
 members = [
@@ -130,6 +133,9 @@ dbg_macro = "deny"
 module_name_repetitions = "allow"
 # #[must_use] goes where dropping the value is a bug, not on every pure function.
 must_use_candidate = "allow"
+# About 38 public Result and panicking fns have no # Errors or # Panics section, 8 of them in dfe-core.
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 
 [workspace.package]
 version = "0.1.0"
