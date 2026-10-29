@@ -3,10 +3,9 @@
 
 //! Reading the configuration: an explicit file, or scalo's cascade.
 //!
-//! The two are not equivalent, and the module docs on the parent say why. What
-//! lives here is the consequence: a `--config` file is read directly, so a
-//! section scalo resolves for itself reaches nothing when written there and is
-//! warned about rather than refused.
+//! An explicit file is read straight into [`Config`] and also handed to scalo's
+//! cascade as its settings layer, so the sections scalo resolves for itself
+//! apply from that file too.
 
 use scalo::config::flat_env::{
     ApplyFlatEnv, flat_env_bool, flat_env_list, flat_env_parsed, flat_env_string,
@@ -18,25 +17,20 @@ use super::{Config, DetectConfig, SinkConfig, SourceConfig};
 /// Environment prefix for the config cascade.
 pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 
-/// Sections that reach NOTHING when written into a `--config` file.
+/// Sections scalo resolves for itself, from its cascade or the environment.
 ///
-/// [`Config::load`] installs scalo's cascade with no `config_paths`, so a file
-/// named with `--config` is not one of its layers. Every section here is
-/// resolved by scalo itself, from that cascade or from the environment, and
-/// each resolver falls back to the type's `Default` when the key is absent. So
-/// the operator gets defaults while believing otherwise.
+/// A `--config` file is a layer of that cascade, so each section here applies
+/// when written in it. They are not [`Config`] fields, so the parse skips them,
+/// and the unread-key warning leaves them out because scalo does read them.
 ///
-/// The test for membership is "does writing it into the `--config` file reach
-/// anything", NOT "does scalo resolve it from the cascade for us". Two entries
-/// only make sense under the wider test. `memory` is read by
-/// `MemoryGuardConfig::from_env`, not from the cascade, and `batch_processing`
-/// configures the runtime's own batch engine, which the service loop does not
-/// run -- its engine takes the record cap from `source.batch_size` -- so both
-/// are inert in that file either way, which is the thing worth saying.
+/// `memory` is read by `MemoryGuardConfig::from_env`, not from the cascade, and
+/// `batch_processing` configures the runtime's own batch engine, which the
+/// service loop does not run -- its engine takes the record cap from
+/// `source.batch_size` -- so both stay inert in the file.
 ///
 /// `geoip` is deliberately absent: it is declared on [`Config`] and handed to
-/// `scalo::geoip_download` explicitly, which is what makes it work from a file.
-pub const CASCADE_ONLY_SECTIONS: &[&str] = &[
+/// `scalo::geoip_download` explicitly.
+pub const SCALO_SECTIONS: &[&str] = &[
     "batch_processing",
     "http_client",
     "logger",
@@ -49,34 +43,6 @@ pub const CASCADE_ONLY_SECTIONS: &[&str] = &[
     "version_check",
     "worker_pool",
 ];
-
-/// Warn for every [`CASCADE_ONLY_SECTIONS`] entry a `--config` file carries.
-///
-/// This used to REFUSE, on the reasoning that an operator who sets
-/// `scaling.memory_gate_threshold` has a reason and running on a default they
-/// did not choose is worse than not starting. The deployment says otherwise:
-/// the infra chart renders `.Values.config` verbatim from whatever dfe-engine
-/// publishes, so a section we do not control can appear in that file and a
-/// refusal stops the pod over a value that was never ours to police. Warning
-/// tells the operator the same thing and leaves the service running, which is
-/// what dfe-transform-vrl does.
-///
-/// Every offending section is reported, not just the first -- a config with
-/// three of them should not need three restarts to discover that.
-fn warn_unreachable_cascade_sections(path: &str, unknown_keys: &[String]) {
-    for section in CASCADE_ONLY_SECTIONS {
-        if unknown_keys.iter().any(|key| key == section) {
-            tracing::warn!(
-                section = *section,
-                path = path,
-                instead = format!("{ENV_PREFIX}_{}__<KEY>", section.to_uppercase()),
-                "config section is not applied: scalo resolves it for itself, and a file named \
-                 with --config is not one of its cascade layers -- set it in the environment or \
-                 delete the section to take scalo's defaults"
-            );
-        }
-    }
-}
 
 /// Warn for every key the parse skipped that the service does not read.
 ///
@@ -93,16 +59,15 @@ fn warn_ignored_keys(path: &str, unknown_keys: &[String]) {
     }
 }
 
-/// The dotted paths no [`Config`] field took, less the [`CASCADE_ONLY_SECTIONS`]
-/// entries, which have their own warning naming the environment variable that
-/// would reach them.
+/// The dotted paths no [`Config`] field took, less the [`SCALO_SECTIONS`]
+/// entries, which scalo reads.
 fn ignored_keys(unknown_keys: &[String]) -> Vec<&str> {
     unknown_keys
         .iter()
         .map(String::as_str)
         .filter(|key| {
             let section = key.split('.').next().unwrap_or_default();
-            !CASCADE_ONLY_SECTIONS.contains(&section)
+            !SCALO_SECTIONS.contains(&section)
         })
         .collect()
 }
@@ -115,13 +80,18 @@ impl Config {
     /// Returns [`crate::Error::Config`] if the file is missing or unreadable,
     /// or if the cascade cannot be unmarshalled into this shape.
     pub fn load(config_path: Option<&str>) -> crate::Result<Self> {
-        // Installed whichever branch runs: `version_check` and the deployment
-        // module read the cascade themselves, and they get defaults rather than
-        // an error if nothing set it up. Installing twice is a no-op, not a
-        // failure -- the cascade is a process-wide `OnceLock`.
+        // Installed whichever branch runs: `version_check`, `logger`, `scaling`
+        // and the rest read the cascade themselves, and they get defaults rather
+        // than an error if nothing set it up. An explicit file is its settings
+        // layer, so a scalo section written in it applies. Installing twice is
+        // a no-op, not a failure -- the cascade is a process-wide `OnceLock`.
         match config::setup(ConfigOptions {
             env_prefix: ENV_PREFIX.to_string(),
             load_dotenv: true,
+            config_paths: config_path
+                .map(std::path::PathBuf::from)
+                .into_iter()
+                .collect(),
             ..Default::default()
         }) {
             Ok(()) | Err(config::ConfigError::AlreadyInitialised) => {}
@@ -130,8 +100,8 @@ impl Config {
             }
         }
 
-        // An explicit file is the whole configuration, read here and never
-        // handed to the cascade above.
+        // An explicit file is read into `Config` here, as well as being a layer
+        // of the cascade above.
         let mut config: Self = if let Some(path) = config_path {
             let text = std::fs::read_to_string(path).map_err(|e| {
                 crate::Error::Config(format!("config file not found at '{path}': {e}"))
@@ -139,7 +109,6 @@ impl Config {
             let loaded =
                 scalo::yaml::from_str_reporting::<Self>(&text, path, scalo::yaml::Profile::Config)
                     .map_err(|e| crate::Error::Config(format!("invalid config: {e}")))?;
-            warn_unreachable_cascade_sections(path, &loaded.unknown_keys);
             warn_ignored_keys(path, &loaded.unknown_keys);
             loaded.value
         } else {
@@ -158,9 +127,10 @@ impl Config {
 
 /// Flat, single-underscore env overrides -- `DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS`.
 ///
-/// This is the one override that reaches a `--config` deployment, because scalo
-/// resolves its own cascade from the double-underscore form and a named file is
-/// not one of those layers.
+/// This is the override that reaches the fields of [`Config`] in a `--config`
+/// deployment, whatever the file says. scalo's own double-underscore form
+/// (`DFE_TRANSFORM_ELASTIC_SCALING__ENABLED`) is a cascade key and reaches only
+/// the sections scalo resolves.
 ///
 /// `geoip` takes none: it is scalo's type and this is scalo's trait, so the
 /// orphan rule puts it out of reach. It stays settable from the file and the
@@ -300,48 +270,49 @@ mod tests {
         Config::load(Some(path.to_str().expect("utf-8 path")))
     }
 
-    /// The trap this warning exists to name: the chart passes `--config`, and
-    /// scalo reads `scaling` from a cascade that file is not a layer of, so a
-    /// threshold written there reaches nothing.
-    ///
-    /// It LOADS. A surplus section is reported and stepped over, because the
-    /// chart renders that file from what dfe-engine publishes and refusing
-    /// would stop the pod over a value that was never this service's to police.
+    /// A scalo section in a `--config` file loads and leaves what the file
+    /// configures alone.
     #[test]
     fn a_config_file_carrying_scaling_still_loads() {
         let loaded = load_file(&format!(
             "{FILE_BASE}scaling:\n  enabled: true\n  memory_gate_threshold: 0.9\n"
         ))
-        .expect("a surplus cascade section is warned about, not refused");
+        .expect("a scalo section in the file loads");
 
-        // Loading past it must not disturb what the file DOES configure.
         assert_eq!(loaded.source.name, "filebeat.okta.default");
         assert_eq!(loaded.sink.topic, "out");
     }
 
-    /// `load` installs scalo's cascade without the named file, which is what
-    /// makes the [`CASCADE_ONLY_SECTIONS`] warning true: a `scaling` block there
-    /// leaves scalo's own reader on its default.
+    /// `load` hands the named file to scalo's cascade as its settings layer, so
+    /// a `logger.level` and a `scaling` block written in it take effect where
+    /// scalo reads them. Each test runs in its own process under nextest, so
+    /// this one installs the cascade.
     #[test]
-    fn a_config_file_is_not_a_layer_of_the_scalo_cascade() {
+    fn a_config_file_is_a_layer_of_the_scalo_cascade() {
         load_file(&format!(
-            "{FILE_BASE}scaling:\n  enabled: false\n  memory_gate_threshold: 0.5\n"
+            "{FILE_BASE}logger:\n  level: trace\nscaling:\n  enabled: false\n  \
+             memory_gate_threshold: 0.5\n"
         ))
-        .expect("a surplus cascade section is warned about, not refused");
+        .expect("the file loads");
 
         let cascade = scalo::config::try_get().expect("load installs the cascade");
         assert!(
-            !cascade.contains("scaling"),
-            "the --config file reached scalo's cascade"
+            cascade.contains("scaling"),
+            "the file did not reach the cascade"
         );
+
+        let logger = scalo::logger::LoggerSettings::from_cascade();
+        assert_eq!(
+            logger.level.as_deref(),
+            Some("trace"),
+            "logger.level came from the default"
+        );
+
         let scaling = scalo::scaling::ScalingPressureConfig::from_cascade();
+        assert!(!scaling.enabled, "scaling.enabled came from the default");
         assert!(
-            scaling.enabled,
-            "scaling.enabled came from the --config file"
-        );
-        assert!(
-            (scaling.memory_gate_threshold - 0.5).abs() > f64::EPSILON,
-            "scaling.memory_gate_threshold came from the --config file"
+            (scaling.memory_gate_threshold - 0.5).abs() < f64::EPSILON,
+            "scaling.memory_gate_threshold came from the default"
         );
     }
 
@@ -352,15 +323,15 @@ mod tests {
         // A floor, so an emptied list cannot make this pass by looping zero
         // times. It moves only when scalo gains or loses a section.
         assert!(
-            CASCADE_ONLY_SECTIONS.len() >= 11,
-            "the cascade-only list lost entries: {}",
-            CASCADE_ONLY_SECTIONS.len()
+            SCALO_SECTIONS.len() >= 11,
+            "the scalo section list lost entries: {}",
+            SCALO_SECTIONS.len()
         );
 
-        for section in CASCADE_ONLY_SECTIONS {
+        for section in SCALO_SECTIONS {
             let body = format!("{FILE_BASE}{section}:\n  enabled: true\n");
             let loaded = load_file(&body)
-                .unwrap_or_else(|e| panic!("`{section}` must be warned about, not refused: {e}"));
+                .unwrap_or_else(|e| panic!("`{section}` must load from a file: {e}"));
             assert_eq!(loaded.source.name, "filebeat.okta.default", "{section}");
         }
     }
@@ -373,7 +344,7 @@ mod tests {
             .expect("geoip is declared on Config, so a file may set it");
         assert!(!loaded.geoip.enabled);
         assert!(
-            !CASCADE_ONLY_SECTIONS.contains(&"geoip"),
+            !SCALO_SECTIONS.contains(&"geoip"),
             "geoip reaches scalo explicitly, so refusing it would be wrong"
         );
     }

@@ -62,20 +62,30 @@ impl App {
                 }
                 Some(0)
             }
-            AppCommand::EmitDockerfile => {
-                println!(
-                    "{}",
-                    generate_dockerfile(&crate::deployment::contract(), None)
-                );
-                Some(0)
-            }
-            AppCommand::EmitCompose => {
-                println!(
-                    "{}",
-                    generate_compose_fragment(&crate::deployment::contract())
-                );
-                Some(0)
-            }
+            AppCommand::EmitDockerfile => Some(
+                match generate_dockerfile(&crate::deployment::contract(), None) {
+                    Ok(dockerfile) => {
+                        println!("{dockerfile}");
+                        0
+                    }
+                    Err(e) => {
+                        eprintln!("fatal: the deployment contract is invalid: {e}");
+                        1
+                    }
+                },
+            ),
+            AppCommand::EmitCompose => Some(
+                match generate_compose_fragment(&crate::deployment::contract()) {
+                    Ok(compose) => {
+                        println!("{compose}");
+                        0
+                    }
+                    Err(e) => {
+                        eprintln!("fatal: the deployment contract is invalid: {e}");
+                        1
+                    }
+                },
+            ),
             AppCommand::EmitConfig => {
                 print!("{}", crate::deployment::default_config_yaml());
                 Some(0)

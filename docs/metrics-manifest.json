@@ -414,6 +414,14 @@
       "group": "platform"
     },
     {
+      "name": "dlq_payload_truncated_total",
+      "type": "counter",
+      "description": "Dead letters whose payload was cut to max_payload_bytes",
+      "unit": "",
+      "labels": [],
+      "group": "platform"
+    },
+    {
       "name": "auth_failures_total",
       "type": "counter",
       "description": "Authentication failures by reason",

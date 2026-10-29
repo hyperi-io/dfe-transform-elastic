@@ -44,7 +44,9 @@ properties:
 
       scalo's type verbatim: provisioning is shared across the fleet, and the
       lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
-      so a change needs a restart.
+      so a change needs a restart. A key the section leaves out takes
+      [`default_geoip`], whose `auto_download.data_dir` is the image's writable
+      volume rather than scalo's `/var/lib/geoip`.
     $ref: "#/$defs/GeoIpConfig"
     default:
       enabled: true
@@ -53,7 +55,7 @@ properties:
       asn_db_path: null
       auto_download:
         enabled: true
-        data_dir: /var/lib/geoip
+        data_dir: /var/lib/dfe/geoip
         maxmind_account_id: null
         maxmind_license_key: null
         ipinfo_token: null

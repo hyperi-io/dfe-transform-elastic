@@ -188,7 +188,7 @@
         }
       },
       "geoip": {
-        "description": "Which MMDB databases the geoip processors read, and how to obtain them.\n\nscalo's type verbatim: provisioning is shared across the fleet, and the\nlookup engine and its cache stay in `dfe-runtime`. Read once at startup,\nso a change needs a restart.",
+        "description": "Which MMDB databases the geoip processors read, and how to obtain them.\n\nscalo's type verbatim: provisioning is shared across the fleet, and the\nlookup engine and its cache stay in `dfe-runtime`. Read once at startup,\nso a change needs a restart. A key the section leaves out takes\n[`default_geoip`], whose `auto_download.data_dir` is the image's writable\nvolume rather than scalo's `/var/lib/geoip`.",
         "$ref": "#/$defs/GeoIpConfig",
         "default": {
           "enabled": true,
@@ -197,7 +197,7 @@
           "asn_db_path": null,
           "auto_download": {
             "enabled": true,
-            "data_dir": "/var/lib/geoip",
+            "data_dir": "/var/lib/dfe/geoip",
             "maxmind_account_id": null,
             "maxmind_license_key": null,
             "ipinfo_token": null,

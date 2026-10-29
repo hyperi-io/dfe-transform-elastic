@@ -7,29 +7,24 @@
 //! the batch loop by reference, and scalo's `config-reload` feature is not
 //! enabled. Every value here needs a pod restart to change.
 //!
-//! Two ways in, and they are not equivalent. With no `--config` the whole scalo
-//! cascade applies. With `--config` -- which is what the container passes --
-//! the named file IS the configuration: `loader` reads it directly and installs
-//! the cascade with an empty `ConfigOptions::config_paths`, so the file is not
-//! one of the cascade's layers. The cascade is still installed either way,
-//! because the rest of scalo reads it. Kafka credentials are unaffected:
-//! `KafkaConfig::from_env` reads `KAFKA_*` separately.
+//! Two ways in. With no `--config` the whole scalo cascade applies. With
+//! `--config` -- which is what the container passes -- `loader` reads the named
+//! file directly into [`Config`] and also hands it to scalo's cascade as its
+//! settings layer, so the sections scalo resolves for itself (`logger`,
+//! `metrics`, `scaling` and the rest in [`SCALO_SECTIONS`]) take their values
+//! from that file. Kafka credentials are unaffected: `KafkaConfig::from_env`
+//! reads `KAFKA_*` separately.
 //!
-//! **Two env spellings, and only one of them reaches a `--config` file.** The
-//! FLAT, single-underscore form -- `DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS` -- is
-//! applied by `loader`'s [`ApplyFlatEnv`](scalo::config::flat_env::ApplyFlatEnv)
-//! impls after the configuration is loaded, on both branches. scalo's own
-//! double-underscore form is resolved from the cascade, which a named file is
-//! not a layer of, so it reaches that deployment never.
+//! **Two env spellings.** The FLAT, single-underscore form --
+//! `DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS` -- is applied by `loader`'s
+//! [`ApplyFlatEnv`](scalo::config::flat_env::ApplyFlatEnv) impls after the
+//! configuration is loaded, on both branches. scalo's own double-underscore form
+//! (`DFE_TRANSFORM_ELASTIC_SCALING__ENABLED`) is resolved from the cascade and
+//! outranks the file there.
 //!
-//! The consequence is invisible and so is stated outright: a section scalo
-//! resolves from the cascade for itself cannot be set from a `--config` file at
-//! all. That file yields only what this [`Config`] declares, and scalo sees
-//! only what the service then hands it -- which is why `geoip` works from a
-//! file. Every other scalo section is listed in [`CASCADE_ONLY_SECTIONS`] and
-//! WARNED about here rather than refused: the infra chart renders
-//! `.Values.config` verbatim, so a section we do not control can appear in that
-//! file, and stopping the pod over it polices something that was never ours.
+//! The sections in [`SCALO_SECTIONS`] are not [`Config`] fields, so the parse
+//! skips them without a warning. `geoip` is the exception: it is declared here
+//! and handed to `scalo::geoip_download` explicitly.
 //!
 //! The module is split three ways: the shape lives here, reading a file or the
 //! cascade lives in `loader`, and refusing a configuration that cannot work
@@ -38,7 +33,7 @@
 mod loader;
 mod validate;
 
-pub use loader::{CASCADE_ONLY_SECTIONS, ENV_PREFIX};
+pub use loader::{ENV_PREFIX, SCALO_SECTIONS};
 
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -116,9 +111,62 @@ pub struct Config {
     ///
     /// scalo's type verbatim: provisioning is shared across the fleet, and the
     /// lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
-    /// so a change needs a restart.
-    #[serde(default)]
+    /// so a change needs a restart. A key the section leaves out takes
+    /// [`default_geoip`], whose `auto_download.data_dir` is the image's writable
+    /// volume rather than scalo's `/var/lib/geoip`.
+    #[serde(default = "default_geoip", deserialize_with = "deserialize_geoip")]
+    #[schemars(with = "scalo::geoip_download::GeoIpConfig")]
     pub geoip: scalo::geoip_download::GeoIpConfig,
+}
+
+/// The directory the downloader writes the databases to, on the `geoip` volume
+/// the deployment contract declares. dfe-loader's directory too, so one volume
+/// serves both stages. scalo's own default, `/var/lib/geoip`, sits on the
+/// image's read-only root.
+pub const GEOIP_DATA_DIR: &str = "/var/lib/dfe/geoip";
+
+/// scalo's geoip defaults, with the downloader pointed at [`GEOIP_DATA_DIR`].
+#[must_use]
+pub fn default_geoip() -> scalo::geoip_download::GeoIpConfig {
+    scalo::geoip_download::GeoIpConfig {
+        auto_download: scalo::geoip_download::AutoDownloadConfig {
+            data_dir: GEOIP_DATA_DIR.into(),
+            ..Default::default()
+        },
+        ..Default::default()
+    }
+}
+
+/// Read the `geoip` section over [`default_geoip`], key by key, so a section
+/// that sets only `enabled` still downloads to [`GEOIP_DATA_DIR`].
+fn deserialize_geoip<'de, D>(
+    deserializer: D,
+) -> Result<scalo::geoip_download::GeoIpConfig, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    use serde::de::Error as _;
+
+    fn overlay(base: &mut serde_json::Value, over: serde_json::Value) {
+        match (base, over) {
+            (serde_json::Value::Object(base), serde_json::Value::Object(over)) => {
+                for (key, value) in over {
+                    match base.get_mut(&key) {
+                        Some(slot) => overlay(slot, value),
+                        None => {
+                            base.insert(key, value);
+                        }
+                    }
+                }
+            }
+            (slot, over) => *slot = over,
+        }
+    }
+
+    let supplied = serde_json::Value::deserialize(deserializer)?;
+    let mut merged = serde_json::to_value(default_geoip()).map_err(D::Error::custom)?;
+    overlay(&mut merged, supplied);
+    serde_json::from_value(merged).map_err(D::Error::custom)
 }
 
 /// Whether one named transform serves the source, or each event picks its own.
@@ -414,7 +462,7 @@ fn valid() -> Config {
             brokers: None,
             max_message_bytes: default_max_message_bytes(),
         },
-        geoip: scalo::geoip_download::GeoIpConfig::default(),
+        geoip: default_geoip(),
     }
 }
 
@@ -580,6 +628,38 @@ mod tests {
         assert_eq!(
             Ok(PIPELINE_MESSAGE_MAX_BYTES),
             usize::try_from(scalo::transport::kafka::MESSAGE_MAX_BYTES)
+        );
+    }
+
+    /// The downloader writes to the contract's `geoip` volume unless told
+    /// otherwise, for a missing section and for one that sets other keys.
+    /// scalo's own default sits on the image's read-only root.
+    #[test]
+    fn geoip_downloads_to_the_contracts_volume_by_default() {
+        let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                    group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+        let dir = |extra: &str| -> std::path::PathBuf {
+            let parsed: Config = scalo::yaml::from_str(
+                &format!("{base}{extra}"),
+                "config.yaml",
+                scalo::yaml::Profile::Config,
+            )
+            .expect("config parses");
+            parsed.geoip.auto_download.data_dir
+        };
+
+        let volume = std::path::PathBuf::from("/var/lib/dfe/geoip");
+        assert_eq!(dir(""), volume, "no geoip section");
+        assert_eq!(dir("geoip:\n  enabled: true\n"), volume, "other keys set");
+        assert_eq!(
+            dir("geoip:\n  auto_download:\n    max_age_days: 3\n"),
+            volume,
+            "other auto_download keys set"
+        );
+        assert_eq!(
+            dir("geoip:\n  auto_download:\n    data_dir: /data/geo\n"),
+            std::path::PathBuf::from("/data/geo"),
+            "an explicit data_dir wins"
         );
     }
 

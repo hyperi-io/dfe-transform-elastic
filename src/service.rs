@@ -152,9 +152,9 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 /// own: the memory guard leases each block's bytes, and the governor's byte
 /// budget makes every receive a byte-bounded `recv_limited`.
 ///
-/// Built here rather than taken from the runtime because the runtime's engine
-/// reads its record cap from the cascade, which a `--config` file is not a
-/// layer of, and this one takes it from `source.batch_size`.
+/// Built here rather than taken from the runtime because this one takes its
+/// record cap from `source.batch_size`, not from the runtime's
+/// `batch_processing` section.
 fn batch_engine(config: &Config, runtime: &ServiceRuntime) -> BatchEngine {
     let settings = engine_config(config);
     let engine = match runtime.worker_pool.as_ref() {
@@ -352,11 +352,11 @@ fn missing_transport(side: &str, transport: Transport) -> crate::Error {
 
 /// State the scaling settings that actually took effect, once, at startup.
 ///
-/// These come from scalo's config cascade and NOT from the `--config` file, so
-/// without this line an operator has nothing to read them back from -- which is
-/// how a threshold edited in the wrong place goes unnoticed. `source` names the
-/// layer that supplied them, so a value left at scalo's default is visibly a
-/// default rather than a choice.
+/// These come from scalo's config cascade, of which the `--config` file is a
+/// layer, so without this line an operator has nothing to read them back from
+/// -- which is how a threshold edited in the wrong place goes unnoticed.
+/// `source` says whether the cascade supplied them, so a value left at scalo's
+/// default is visibly a default rather than a choice.
 fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
     let config = scalo::scaling::ScalingPressureConfig::from_cascade();
     let configured = scalo::config::try_get().is_some_and(|cfg| cfg.contains("scaling"));
@@ -365,7 +365,7 @@ fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
         enabled = pressure.is_some_and(scalo::scaling::ScalingPressure::is_enabled),
         memory_gate_threshold = config.memory_gate_threshold,
         source,
-        "scaling pressure configured; set DFE_TRANSFORM_ELASTIC_SCALING__* to change it"
+        "scaling pressure configured; set `scaling` in the config file or DFE_TRANSFORM_ELASTIC_SCALING__* to change it"
     );
 }
 

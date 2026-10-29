@@ -8,23 +8,16 @@
 //! The image is just this Rust binary. There is no sidecar and no interpreter
 //! -- the transforms are compiled in, which is the whole design.
 
+use crate::config::{Config, GEOIP_DATA_DIR, SinkConfig, SourceConfig, Transport, default_geoip};
 use scalo::deployment::{
-    CONTRACT_SCHEMA_VERSION, Capability, DeploymentContract, FieldSpec, HealthContract,
-    ImageProfile, KafkaLagTrigger, KedaConfig, KedaContract, NativeDepsContract, PortContract,
-    ResourceList, ResourcesContract, SecretEnvContract, SecretGroupContract, SecurityContract,
-    ServiceAccount, WritablePath, base_image_from_cascade,
+    Capability, DeploymentContract, FieldSpec, HealthContract, ImageProfile, KafkaLagTrigger,
+    KedaConfig, KedaContract, NativeDepsContract, PortContract, ResourceList, ResourcesContract,
+    SecretEnvContract, SecretGroupContract, WritablePath, base_image_from_cascade,
 };
-use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
-
-use crate::config::{Config, SinkConfig, SourceConfig, Transport};
 
 /// The `source.transport` values that bind the Push listener: the name
 /// `Transport::Direct` serialises to, and the alias dfe-engine renders.
 const PUSH_TRANSPORTS: [&str; 2] = ["direct", "grpc"];
-
-/// Where the shipped config downloads the `GeoIP` databases, and the writable
-/// volume the contract mounts there.
-const GEOIP_DATA_DIR: &str = "/var/lib/dfe/geoip";
 
 /// Build the deployment contract for dfe-transform-elastic.
 #[must_use]
@@ -53,7 +46,6 @@ pub fn contract() -> DeploymentContract {
                 .bound_from("source.listen")
                 .app_protocol("kubernetes.io/h2c"),
         ],
-        unbound_listen_paths: vec![],
         hot_paths: vec![],
         entrypoint_args: vec![
             "--config".into(),
@@ -89,7 +81,6 @@ pub fn contract() -> DeploymentContract {
             })
             .with_kafka_trigger(KafkaLagTrigger::disabled()),
         ),
-        schema_version: CONTRACT_SCHEMA_VERSION,
         // scalo writes no vendor, licence or copyright of its own, so the labels and the generated Dockerfile header carry exactly these.
         oci_labels: scalo::deployment::OciLabels {
             title: "dfe-transform-elastic".into(),
@@ -114,9 +105,7 @@ pub fn contract() -> DeploymentContract {
                 memory: "512Mi".into(),
             },
         },
-        security: SecurityContract::default(),
-        singleton: false,
-        service_account: ServiceAccount::Own,
+        ..DeploymentContract::default()
     }
 }
 
@@ -201,13 +190,7 @@ fn shipped_config() -> Config {
         // `max_age_days` and keeping the stale copy when a provider is down.
         // `/var/lib/dfe/geoip` is dfe-loader's directory too, so one volume
         // serves both stages; scalo's own default is `/var/lib/geoip`.
-        geoip: GeoIpConfig {
-            auto_download: AutoDownloadConfig {
-                data_dir: GEOIP_DATA_DIR.into(),
-                ..Default::default()
-            },
-            ..Default::default()
-        },
+        geoip: default_geoip(),
     }
 }
 
@@ -551,11 +534,6 @@ mod tests {
 
     /// The shipped config must not carry keys this service never reads: a
     /// knob that silently does nothing is worse than no knob.
-    ///
-    /// The contract is delivered as the `--config` file, so every section in
-    /// [`crate::config::CASCADE_ONLY_SECTIONS`] is dead here by construction.
-    /// Checking that list rather than a hand-typed set means a new scalo
-    /// section is covered by naming it in one place.
     #[test]
     fn default_config_has_no_keys_the_service_ignores() {
         let cfg = contract().default_config.expect("default_config present");
@@ -565,13 +543,6 @@ mod tests {
             assert!(
                 !object.contains_key(dead),
                 "`{dead}` is in the shipped config but nothing reads it"
-            );
-        }
-        for dead in crate::config::CASCADE_ONLY_SECTIONS {
-            assert!(
-                !object.contains_key(*dead),
-                "`{dead}` is in the shipped config, but scalo reads it from the cascade and \
-                 `--config` is not a cascade layer, so it would be ignored"
             );
         }
     }
@@ -721,7 +692,7 @@ mod tests {
     fn contract_carries_the_reflectable_config() {
         let c = contract();
         assert!(c.config_schema.is_some());
-        assert_eq!(c.schema_version, CONTRACT_SCHEMA_VERSION);
+        assert_eq!(c.schema_version, scalo::deployment::CONTRACT_SCHEMA_VERSION);
         assert_ne!(c.capabilities, [] as [scalo::Capability; 0]);
     }
 
@@ -779,7 +750,8 @@ mod tests {
     fn committed_dockerfile_does_not_drift() {
         let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("Dockerfile");
         let committed = std::fs::read_to_string(&path).expect("Dockerfile is committed");
-        let fresh = scalo::deployment::generate_dockerfile(&contract(), None);
+        let fresh = scalo::deployment::generate_dockerfile(&contract(), None)
+            .expect("the contract is valid");
         assert_eq!(committed.trim_end(), fresh.trim_end());
     }
 
