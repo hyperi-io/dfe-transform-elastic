@@ -3,6 +3,19 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.22](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.21...v1.1.22) (2026-10-29)
+
+### Bug Fixes
+
+* cut the 302021 teardown line's peak memory by spelling IP digits [0-9] ([#141](https://github.com/hyperi-io/dfe-transform-elastic/issues/141)) ([d4cf7dc](https://github.com/hyperi-io/dfe-transform-elastic/commit/d4cf7dc57844e37888bef1ab3150686c26a51405))
+* default the record budget to the DFE record cap of 8,000,000 bytes ([#140](https://github.com/hyperi-io/dfe-transform-elastic/issues/140)) ([1fc53ca](https://github.com/hyperi-io/dfe-transform-elastic/commit/1fc53cab082997f87f369ac310a5741a9b5106f4))
+* dress Graph provisioning records as the Azure diagnostic log ([#143](https://github.com/hyperi-io/dfe-transform-elastic/issues/143)) ([d18ddb6](https://github.com/hyperi-io/dfe-transform-elastic/commit/d18ddb694e056eb9bdd4ec7c17c9f3dee2b57903))
+* drop an invalid syslog tag instead of lifting it into log.syslog.appname ([#138](https://github.com/hyperi-io/dfe-transform-elastic/issues/138)) ([1c3caeb](https://github.com/hyperi-io/dfe-transform-elastic/commit/1c3caebafb4b83fcda95d746d2b29d276558da1a))
+* rebuild on scalo 2.14.21 ([6ba1ffa](https://github.com/hyperi-io/dfe-transform-elastic/commit/6ba1ffaafef58dbfd70e6f5a92af4526d7b21708))
+* resolve the 22 rustdoc link warnings ([#144](https://github.com/hyperi-io/dfe-transform-elastic/issues/144)) ([4c85b75](https://github.com/hyperi-io/dfe-transform-elastic/commit/4c85b75fe9b2e740d6be1b09a7bed5b04abd0be0))
+* update the lockfile, pulldown-cmark 0.13.5 clears RUSTSEC-2026-0414 ([#145](https://github.com/hyperi-io/dfe-transform-elastic/issues/145)) ([1c9b7f7](https://github.com/hyperi-io/dfe-transform-elastic/commit/1c9b7f74143b3b4c4ed3016b805b13c5f16601c8))
+* wrap Microsoft Graph audit records as the Azure diagnostic log the pipelines read ([#139](https://github.com/hyperi-io/dfe-transform-elastic/issues/139)) ([7f1d792](https://github.com/hyperi-io/dfe-transform-elastic/commit/7f1d792dcacb22567d62ab577dac97524f319c02))
+
 ## [1.1.21](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.20...v1.1.21) (2026-10-27)
 
 ### Bug Fixes
