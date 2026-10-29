@@ -142,6 +142,8 @@ docker build -t dfe-transform-elastic .
 
 The source catalogue, `sources.yaml`, is compiled into the binary. `dfe-transform-elastic emit-catalogue` prints it, so a deployment takes the catalogue dfe-engine offers from the image it already pulls, with no credential for this repo.
 
+`scripts/emit_variants.py` prints every registered variant with the intakes it accepts. On a push to `main` that changes it, `.github/workflows/sync-elastic-variants.yml` opens or updates a `chore(elastic-variants)` PR on dfe-schemas, whose catalogue test checks every elastic entry against that file.
+
 ## Observability
 
 - `/livez`, `/readyz`, `/metrics` and `/metrics/manifest`, all served from the

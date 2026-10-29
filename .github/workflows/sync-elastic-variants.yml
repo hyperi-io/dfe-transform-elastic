@@ -1,0 +1,111 @@
+# Project:   dfe-transform-elastic
+# File:      .github/workflows/sync-elastic-variants.yml
+# Purpose:   Open or update the dfe-schemas PR that syncs registries/elastic-variants.yaml
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# dfe-schemas checks every elastic catalogue entry against that file, and the contract this
+# service publishes names its variants but not the intakes each one accepts.
+#
+# Auth: a GitHub App installation token (vars.GH_APP_CLIENT_ID + secrets.GH_APP_PRIVATE_KEY),
+#   scoped to dfe-schemas with contents + pull-requests write, which covers the branch push
+#   and opening, editing or closing the PR.
+# Optional var: DFE_SCHEMAS_REPO - repo as owner/name (default: hyperi-io/dfe-schemas)
+
+name: Sync elastic variants
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "sources.yaml"
+      - "scripts/emit_variants.py"
+      - "scripts/sources.py"
+      - ".github/workflows/sync-elastic-variants.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Every run rebuilds the one sync branch from dfe-schemas main, so runs queue rather than race.
+concurrency:
+  group: sync-elastic-variants
+  cancel-in-progress: false
+
+jobs:
+  push-to-dfe-schemas:
+    name: Open or update the dfe-schemas sync PR
+    # scripts/sources.py reads with PyYAML, which the native runner image's python3 carries and the vanilla default may not.
+    runs-on: ${{ vars.GH_RUNNER_PYTHON || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Generate the variant registry
+        run: python3 scripts/emit_variants.py > "$RUNNER_TEMP/elastic-variants.yaml"
+
+      - name: Resolve the dfe-schemas repo
+        id: target
+        env:
+          DFE_SCHEMAS_REPO: ${{ vars.DFE_SCHEMAS_REPO || 'hyperi-io/dfe-schemas' }}
+        run: |
+          echo "owner=${DFE_SCHEMAS_REPO%%/*}" >> "$GITHUB_OUTPUT"
+          echo "name=${DFE_SCHEMAS_REPO#*/}" >> "$GITHUB_OUTPUT"
+
+      - name: Mint a dfe-schemas token from the GitHub App
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: ${{ steps.target.outputs.owner }}
+          repositories: ${{ steps.target.outputs.name }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Open, update or close the sync PR
+        env:
+          BRANCH: sync-elastic-variants
+          DFE_SCHEMAS_REPO: ${{ vars.DFE_SCHEMAS_REPO || 'hyperi-io/dfe-schemas' }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ORIGIN: ${{ github.repository }}@${{ github.sha }}
+          TARGET: registries/elastic-variants.yaml
+          TITLE: "chore(elastic-variants): sync from dfe-transform-elastic"
+        run: |
+          set -euo pipefail
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${DFE_SCHEMAS_REPO}.git" "$RUNNER_TEMP/dfe-schemas"
+          cd "$RUNNER_TEMP/dfe-schemas"
+
+          open_pr="$(gh pr list --repo "$DFE_SCHEMAS_REPO" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')"
+
+          if cmp -s "$RUNNER_TEMP/elastic-variants.yaml" "$TARGET"; then
+            echo "$TARGET on dfe-schemas main already matches $ORIGIN, no PR needed"
+            # An open PR now carries an older registry than main, so merging it would regress main.
+            if [[ -n "$open_pr" ]]; then
+              gh pr close "$open_pr" --repo "$DFE_SCHEMAS_REPO" --delete-branch \
+                --comment "Superseded: main already matches $ORIGIN."
+            fi
+            exit 0
+          fi
+
+          git checkout -b "$BRANCH"
+          cp "$RUNNER_TEMP/elastic-variants.yaml" "$TARGET"
+          git add "$TARGET"
+          git commit -m "$TITLE" -m "Auto-generated from $ORIGIN"
+          # The branch is rebuilt from main on every run, so it replaces whatever an earlier run pushed.
+          git push --force origin "$BRANCH"
+
+          body="Auto-generated from $ORIGIN
+
+          This PR syncs $TARGET, the variants dfe-transform-elastic registers and the intakes each accepts, so tests/test_catalogue.py checks the elastic catalogue entries against it."
+          if [[ -n "$open_pr" ]]; then
+            gh pr edit "$open_pr" --repo "$DFE_SCHEMAS_REPO" --body "$body"
+          else
+            gh pr create --repo "$DFE_SCHEMAS_REPO" --head "$BRANCH" --title "$TITLE" --body "$body"
+          fi
