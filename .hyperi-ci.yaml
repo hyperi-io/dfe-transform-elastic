@@ -61,7 +61,9 @@ build:
         enabled: true
         # 600s of load, 300s per source. The prefix holds it there over the duration_secs hyperi-ci exports.
         workload_cmd: "env PGO_WORKLOAD_DURATION_SECS=600 bash scripts/pgo-workload.sh"
-        # hyperi-ci's timeout is this plus 600s, which has to cover the driver build and broker pull as well as the load.
+        # Built before the workload clock starts, so the script's own cargo build finds it fresh.
+        workload_setup_cmd: "cargo build --release -p pgo-driver --features driver"
+        # hyperi-ci's timeout is this plus 600s, which covers the broker pull as well as the load.
         duration_secs: 900
       bolt:
         enabled: true

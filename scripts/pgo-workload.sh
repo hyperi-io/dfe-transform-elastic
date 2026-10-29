@@ -117,6 +117,8 @@ fi
 # Locate the driver
 # ----------------------------------------------------------------------------
 
+# CI builds the driver first in .hyperi-ci.yaml's pgo.workload_setup_cmd, so
+# this build is a no-op there and the real build only runs locally.
 # A cargo shim redirects CARGO_TARGET_DIR on some hosts, so the build output is
 # not necessarily under $PROJECT_ROOT/target. Cargo's own JSON message names the
 # artefact wherever it landed, which is the only reading that survives the
