@@ -63,7 +63,8 @@ jobs:
     uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
     with:
       runner-build: namespace-profile-hyperi-amd64-32x64
-      runner-quality: namespace-profile-hyperi-amd64-8x16
+      # No runner-quality: one dfe-transforms rustc peaks near 14 GiB, which a
+      # 16 GiB 8x16 runner kills, so Quality stays on the org's GH_RUNNER_RUST.
       runner-build-arm64: namespace-profile-hyperi-arm64-32x64
       # `both` resolves to the release channel; `internal` is the spike
       # channel and would demote a release build silently.
