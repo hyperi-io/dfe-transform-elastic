@@ -8,23 +8,17 @@
 //! The image is just this Rust binary. There is no sidecar and no interpreter
 //! -- the transforms are compiled in, which is the whole design.
 
+use crate::config::{Config, GEOIP_DATA_DIR, SinkConfig, SourceConfig, Transport, default_geoip};
 use scalo::deployment::{
     CONTRACT_SCHEMA_VERSION, Capability, DeploymentContract, FieldSpec, HealthContract,
     ImageProfile, KafkaLagTrigger, KedaConfig, KedaContract, NativeDepsContract, PortContract,
     ResourceList, ResourcesContract, SecretEnvContract, SecretGroupContract, SecurityContract,
     ServiceAccount, WritablePath, base_image_from_cascade,
 };
-use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
-
-use crate::config::{Config, SinkConfig, SourceConfig, Transport};
 
 /// The `source.transport` values that bind the Push listener: the name
 /// `Transport::Direct` serialises to, and the alias dfe-engine renders.
 const PUSH_TRANSPORTS: [&str; 2] = ["direct", "grpc"];
-
-/// Where the shipped config downloads the `GeoIP` databases, and the writable
-/// volume the contract mounts there.
-const GEOIP_DATA_DIR: &str = "/var/lib/dfe/geoip";
 
 /// Build the deployment contract for dfe-transform-elastic.
 #[must_use]
@@ -201,13 +195,7 @@ fn shipped_config() -> Config {
         // `max_age_days` and keeping the stale copy when a provider is down.
         // `/var/lib/dfe/geoip` is dfe-loader's directory too, so one volume
         // serves both stages; scalo's own default is `/var/lib/geoip`.
-        geoip: GeoIpConfig {
-            auto_download: AutoDownloadConfig {
-                data_dir: GEOIP_DATA_DIR.into(),
-                ..Default::default()
-            },
-            ..Default::default()
-        },
+        geoip: default_geoip(),
     }
 }
 

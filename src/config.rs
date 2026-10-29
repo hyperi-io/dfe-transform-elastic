@@ -116,9 +116,62 @@ pub struct Config {
     ///
     /// scalo's type verbatim: provisioning is shared across the fleet, and the
     /// lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
-    /// so a change needs a restart.
-    #[serde(default)]
+    /// so a change needs a restart. A key the section leaves out takes
+    /// [`default_geoip`], whose `auto_download.data_dir` is the image's writable
+    /// volume rather than scalo's `/var/lib/geoip`.
+    #[serde(default = "default_geoip", deserialize_with = "deserialize_geoip")]
+    #[schemars(with = "scalo::geoip_download::GeoIpConfig")]
     pub geoip: scalo::geoip_download::GeoIpConfig,
+}
+
+/// The directory the downloader writes the databases to, on the `geoip` volume
+/// the deployment contract declares. dfe-loader's directory too, so one volume
+/// serves both stages. scalo's own default, `/var/lib/geoip`, sits on the
+/// image's read-only root.
+pub const GEOIP_DATA_DIR: &str = "/var/lib/dfe/geoip";
+
+/// scalo's geoip defaults, with the downloader pointed at [`GEOIP_DATA_DIR`].
+#[must_use]
+pub fn default_geoip() -> scalo::geoip_download::GeoIpConfig {
+    scalo::geoip_download::GeoIpConfig {
+        auto_download: scalo::geoip_download::AutoDownloadConfig {
+            data_dir: GEOIP_DATA_DIR.into(),
+            ..Default::default()
+        },
+        ..Default::default()
+    }
+}
+
+/// Read the `geoip` section over [`default_geoip`], key by key, so a section
+/// that sets only `enabled` still downloads to [`GEOIP_DATA_DIR`].
+fn deserialize_geoip<'de, D>(
+    deserializer: D,
+) -> Result<scalo::geoip_download::GeoIpConfig, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    use serde::de::Error as _;
+
+    fn overlay(base: &mut serde_json::Value, over: serde_json::Value) {
+        match (base, over) {
+            (serde_json::Value::Object(base), serde_json::Value::Object(over)) => {
+                for (key, value) in over {
+                    match base.get_mut(&key) {
+                        Some(slot) => overlay(slot, value),
+                        None => {
+                            base.insert(key, value);
+                        }
+                    }
+                }
+            }
+            (slot, over) => *slot = over,
+        }
+    }
+
+    let supplied = serde_json::Value::deserialize(deserializer)?;
+    let mut merged = serde_json::to_value(default_geoip()).map_err(D::Error::custom)?;
+    overlay(&mut merged, supplied);
+    serde_json::from_value(merged).map_err(D::Error::custom)
 }
 
 /// Whether one named transform serves the source, or each event picks its own.
@@ -414,7 +467,7 @@ fn valid() -> Config {
             brokers: None,
             max_message_bytes: default_max_message_bytes(),
         },
-        geoip: scalo::geoip_download::GeoIpConfig::default(),
+        geoip: default_geoip(),
     }
 }
 
@@ -580,6 +633,38 @@ mod tests {
         assert_eq!(
             Ok(PIPELINE_MESSAGE_MAX_BYTES),
             usize::try_from(scalo::transport::kafka::MESSAGE_MAX_BYTES)
+        );
+    }
+
+    /// The downloader writes to the contract's `geoip` volume unless told
+    /// otherwise, for a missing section and for one that sets other keys.
+    /// scalo's own default sits on the image's read-only root.
+    #[test]
+    fn geoip_downloads_to_the_contracts_volume_by_default() {
+        let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                    group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+        let dir = |extra: &str| -> std::path::PathBuf {
+            let parsed: Config = scalo::yaml::from_str(
+                &format!("{base}{extra}"),
+                "config.yaml",
+                scalo::yaml::Profile::Config,
+            )
+            .expect("config parses");
+            parsed.geoip.auto_download.data_dir
+        };
+
+        let volume = std::path::PathBuf::from("/var/lib/dfe/geoip");
+        assert_eq!(dir(""), volume, "no geoip section");
+        assert_eq!(dir("geoip:\n  enabled: true\n"), volume, "other keys set");
+        assert_eq!(
+            dir("geoip:\n  auto_download:\n    max_age_days: 3\n"),
+            volume,
+            "other auto_download keys set"
+        );
+        assert_eq!(
+            dir("geoip:\n  auto_download:\n    data_dir: /data/geo\n"),
+            std::path::PathBuf::from("/data/geo"),
+            "an explicit data_dir wins"
         );
     }
 
