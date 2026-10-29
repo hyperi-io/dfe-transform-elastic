@@ -42,6 +42,7 @@ build:
   strategies:
     - native
   rust:
+    glibc_max: "2.41"
     # The arm64 leg needs a larger runner for MEMORY, not cores. `dfe-transforms`
     # carries one module per data stream and holds 13.15 GiB in a single rustc at
     # opt-level 1; the hosted `ubuntu-24.04-arm` is 2 vCPU and 8 GiB on a private
