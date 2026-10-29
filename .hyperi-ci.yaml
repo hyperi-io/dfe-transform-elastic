@@ -42,6 +42,7 @@ build:
   strategies:
     - native
   rust:
+    glibc_max: "2.41"
     # The arm64 leg needs a larger runner for MEMORY, not cores. `dfe-transforms`
     # carries one module per data stream and holds 13.15 GiB in a single rustc at
     # opt-level 1; the hosted `ubuntu-24.04-arm` is 2 vCPU and 8 GiB on a private
@@ -60,7 +61,9 @@ build:
         enabled: true
         # 600s of load, 300s per source. The prefix holds it there over the duration_secs hyperi-ci exports.
         workload_cmd: "env PGO_WORKLOAD_DURATION_SECS=600 bash scripts/pgo-workload.sh"
-        # hyperi-ci's timeout is this plus 600s, which has to cover the driver build and broker pull as well as the load.
+        # Built before the workload clock starts, so the script's own cargo build finds it fresh.
+        workload_setup_cmd: "cargo build --release -p pgo-driver --features driver"
+        # hyperi-ci's timeout is this plus 600s, which covers the broker pull as well as the load.
         duration_secs: 900
       bolt:
         enabled: true

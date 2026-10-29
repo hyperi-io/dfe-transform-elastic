@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! One ASA 302021 teardown line through the whole transform, with its memory
-//! held to a bound.
+//! held to the deployment contract.
 //!
 //! The faddr/gaddr/laddr pattern carried 967 capture groups over 58,031 states
 //! (every `%{IP}` and `%{IPV6}` brought 77 unnamed ones), and the regex engine's
@@ -15,23 +15,6 @@
 use dfe_runtime::Event;
 use dfe_transform_elastic::registry;
 use serde_json::json;
-
-/// The process's peak resident set, in MiB.
-fn peak_mib() -> u64 {
-    let status = std::fs::read_to_string("/proc/self/status").expect("linux /proc");
-    let kib: u64 = status
-        .lines()
-        .find_map(|l| l.strip_prefix("VmHWM:"))
-        .and_then(|rest| rest.split_whitespace().next())
-        .and_then(|n| n.parse().ok())
-        .expect("VmHWM is reported");
-    kib / 1024
-}
-
-/// A dev build peaks near 60 MiB. The line took about 180 MiB while `%{IP}` spelt
-/// its digits `\d`, so the bound trips on a return of the Unicode digit class
-/// or of per-group slot growth, and still sits far under the 768 MiB pod limit.
-const PEAK_BUDGET_MIB: u64 = 128;
 
 #[test]
 fn a_302021_teardown_line_transforms_in_bounded_memory() {
@@ -47,9 +30,9 @@ fn a_302021_teardown_line_transforms_in_bounded_memory() {
     assert_eq!(event.get_str("event.code"), Some("302021"));
     assert_eq!(event.get_str("destination.address"), Some("198.51.100.102"));
     assert_eq!(event.get_str("source.address"), Some("192.168.50.22"));
-    let peak = peak_mib();
-    assert!(
-        peak < PEAK_BUDGET_MIB,
-        "peak resident set {peak} MiB, budget {PEAK_BUDGET_MIB} MiB"
+    // Fails over the contract's memory limit, warns over its request.
+    scalo::deployment::test_support::assert_peak_memory(
+        "a_302021_teardown_line_transforms_in_bounded_memory",
+        &dfe_transform_elastic::deployment::contract().resources,
     );
 }
