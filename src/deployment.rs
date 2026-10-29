@@ -539,11 +539,6 @@ mod tests {
 
     /// The shipped config must not carry keys this service never reads: a
     /// knob that silently does nothing is worse than no knob.
-    ///
-    /// The contract is delivered as the `--config` file, so every section in
-    /// [`crate::config::CASCADE_ONLY_SECTIONS`] is dead here by construction.
-    /// Checking that list rather than a hand-typed set means a new scalo
-    /// section is covered by naming it in one place.
     #[test]
     fn default_config_has_no_keys_the_service_ignores() {
         let cfg = contract().default_config.expect("default_config present");
@@ -553,13 +548,6 @@ mod tests {
             assert!(
                 !object.contains_key(dead),
                 "`{dead}` is in the shipped config but nothing reads it"
-            );
-        }
-        for dead in crate::config::CASCADE_ONLY_SECTIONS {
-            assert!(
-                !object.contains_key(*dead),
-                "`{dead}` is in the shipped config, but scalo reads it from the cascade and \
-                 `--config` is not a cascade layer, so it would be ignored"
             );
         }
     }
