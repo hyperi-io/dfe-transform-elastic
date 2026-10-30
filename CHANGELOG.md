@@ -3,6 +3,13 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.23](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.22...v1.1.23) (2026-10-30)
+
+### Bug Fixes
+
+* 2.2.2 round on scalo 2.14.22 ([#149](https://github.com/hyperi-io/dfe-transform-elastic/issues/149)) ([98c7fd3](https://github.com/hyperi-io/dfe-transform-elastic/commit/98c7fd32cdb2ea071c82c29cf01e98e5a5fb22e1))
+* bring the clippy config to the baseline ([#147](https://github.com/hyperi-io/dfe-transform-elastic/issues/147)) ([37fe7c4](https://github.com/hyperi-io/dfe-transform-elastic/commit/37fe7c48ac381f9daa2ec0e42ac32532660af206))
+
 ## [1.1.22](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.21...v1.1.22) (2026-10-29)
 
 ### Bug Fixes
