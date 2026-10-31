@@ -50,6 +50,10 @@ pub enum TransformError {
     #[error("field [{field}] does not contain value_split [{split}]")]
     KvValueSplit { field: String, split: String },
 
+    /// A dotted path deeper than any document the decode accepts.
+    #[error("path of {depth} segments is deeper than the {limit} allowed")]
+    PathTooDeep { depth: usize, limit: usize },
+
     /// An enrichment module (geoip, `user_agent`, `community_id`) failed.
     #[error("enrichment '{enrichment}' failed: {message}")]
     EnrichmentError { enrichment: String, message: String },

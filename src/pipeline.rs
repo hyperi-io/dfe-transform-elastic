@@ -493,20 +493,39 @@ mod tests {
     /// A record nested far past the decode's recursion limit is refused as not
     /// JSON, on the 2 MiB stack a tokio worker runs the transform on, rather
     /// than overflowing it.
+    ///
+    /// The second record parses at depth one and holds a key of 100,000
+    /// dotted segments, which keycloak's `dot_expander` would build into that
+    /// many levels for the serialise and the drop to recurse through. The
+    /// expander refuses it, and the pipeline's `on_failure` sends the event on
+    /// with the key unexpanded and the refusal in `error.message`.
     #[test]
     fn a_deeply_nested_record_is_refused_on_a_2mib_stack() {
-        let refused = std::thread::Builder::new()
+        let (nested, outcome, payloads) = std::thread::Builder::new()
             .stack_size(2 * 1024 * 1024)
             .spawn(|| {
                 let levels = 100_000;
                 let line = format!("{}1{}", r#"{"a":"#.repeat(levels), "}".repeat(levels));
                 let (events, outcome) = parse_batch(line.as_bytes());
-                events.is_empty() && outcome.refused.len() == 1
+                let nested = events.is_empty() && outcome.refused.len() == 1;
+
+                let vendor = serde_json::json!({ "a.".repeat(levels) + "a": 1 }).to_string();
+                let record = serde_json::json!({ "message": vendor }).to_string();
+                let transform =
+                    crate::registry::lookup("filebeat.keycloak_log.default").expect("registered");
+                let (out, outcome) = transform_batch(transform, parse_batch(record.as_bytes()).0);
+                let (payloads, _) = serialise_events(&out, usize::MAX);
+                (nested, outcome, payloads)
             })
             .expect("spawn")
             .join()
             .expect("the record path overflowed the stack");
-        assert!(refused, "a 100,000-level record was not refused");
+        assert!(nested, "a 100,000-level record was not refused");
+        assert_eq!(outcome.emitted, 1, "{outcome:?}");
+        let document: serde_json::Value =
+            serde_json::from_slice(&payloads[0]).expect("the event serialised");
+        let message = document["error"]["message"].to_string();
+        assert!(message.contains("deeper than"), "error.message: {message}");
     }
 
     #[test]

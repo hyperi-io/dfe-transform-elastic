@@ -385,12 +385,19 @@ fn parse_dn(dn: &str) -> (String, Option<String>, Option<String>) {
                 }
             }
         }
-        let part = dn[start..end].replace("\\,", ",");
+        let segment = &dn[start..end];
+        let part = segment.replace("\\,", ",");
         let part = part.trim();
-        if name.is_none() && part.len() > 3 && part[..3].eq_ignore_ascii_case("CN=") {
-            name = Some(part[3..].to_owned());
-        } else if part.len() > 3 && part[..3].eq_ignore_ascii_case("DC=") {
-            domain_parts.push(&dn[start + 3..end]);
+        // `get`, because byte 3 of a non-ASCII part is not a char boundary.
+        let marker = part.get(..3).filter(|_| part.len() > 3);
+        if name.is_none() && marker.is_some_and(|m| m.eq_ignore_ascii_case("CN=")) {
+            name = part.get(3..).map(str::to_owned);
+        } else if marker.is_some_and(|m| m.eq_ignore_ascii_case("DC=")) {
+            // Past the whitespace `trim` dropped, so the slice starts at the value.
+            let lead = segment.len() - segment.trim_start().len();
+            if let Some(value) = dn.get(start + lead + 3..end) {
+                domain_parts.push(value);
+            }
         }
         start = end + 1;
     }
@@ -533,3 +540,34 @@ pub const ENTRIES: &[Entry] = &[
         run: device_relationships,
     },
 ];
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+mod tests {
+    use super::*;
+
+    /// Each row is a DN and the name and domain it spells. A non-ASCII byte
+    /// where a marker would end, and whitespace before a `DC=`, must read the
+    /// value rather than slice through a character.
+    #[test]
+    fn a_dn_splits_into_its_name_and_domain() {
+        let rows: [(&str, Option<&str>, Option<&str>); 4] = [
+            (
+                "CN=Ada,DC=corp,DC=example",
+                Some("Ada"),
+                Some("corp.example"),
+            ),
+            ("a\u{65e5}x,DC=corp", None, Some("corp")),
+            ("CN=Bob,\u{a0}\u{a0}DC=corp", Some("Bob"), Some("corp")),
+            ("C\u{65e5},D\u{65e5}", None, None),
+        ];
+        for (dn, name, domain) in rows {
+            let (_, got_name, got_domain) = parse_dn(dn);
+            assert_eq!(
+                (got_name.as_deref(), got_domain.as_deref()),
+                (name, domain),
+                "{dn}"
+            );
+        }
+    }
+}
