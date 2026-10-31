@@ -1,30 +1,21 @@
 # dfe-transform-elastic
 
-Beats and Elastic Agent JSON in, DFE-normalised events out.
+[![Build Status](https://github.com/hyperi-io/dfe-transform-elastic/actions/workflows/ci.yml/badge.svg)](https://github.com/hyperi-io/dfe-transform-elastic/actions)
+[![License](https://img.shields.io/badge/license-BUSL--1.1-blue)](LICENSE)
 
-## Overview
+Turns Beats and Elastic Agent events into DFE-normalised events, applying the Elastic ingest-pipeline logic for each source. In a DFE deployment it feeds dfe-loader, so data from an existing Elastic shipper lands in DFE without the shipper changing.
 
-dfe-transform-elastic is a batch transform service. It consumes JSON event
-batches produced by filebeat, winlogbeat, metricbeat, auditbeat, heartbeat,
-packetbeat or Elastic Agent, from Kafka or over a direct gRPC push, applies the
-Elastic ingest-pipeline logic for that source, and produces normalised events
-downstream the same way.
+## What it gives you
 
-The transform logic is **compiled in**. There is no interpreter, no scripting
-VM and no plugin system: each supported source is a Rust module, and the
-service resolves one of them by name at startup. That is the whole design
-decision, and everything else follows from it -- the container is just the
-binary, the hot path has no dynamic dispatch per event, and adding a source
-means a release rather than a config change.
+- Filebeat, Winlogbeat, Metricbeat, Auditbeat, Heartbeat, Packetbeat and Elastic Agent data. `dfe-transform-elastic sources` lists every source a build carries.
+- Each source's pipeline compiled in as a Rust module, with no interpreter or plugin system on the hot path.
+- Events wrapped by Beats, by dfe-receiver or by dfe-fetcher, the wrapper read off each event.
+- Kafka in and out, or a direct gRPC push with no broker.
+- A config that names a source the build does not carry is refused at startup, not at the first batch.
+- Stated failure modes for bad input. Invalid UTF-8 is decoded with replacements and counted. Non-JSON, an event that will not transform and an oversize event are dropped and counted, and the batch carries on.
+- At-least-once delivery for what it can deliver: by default the offset commit, or the answer to a push, is held until the sink takes the block. `source.acknowledgements.enabled: false` acknowledges at receipt instead.
 
-It is built on the [scalo](https://github.com/hyperi-io/scalo-rs) data-plane
-runtime: config cascade, logging, metrics, the Kafka and gRPC transports, health
-probes, memory guard and scaling pressure.
-
-**Sibling services.** `dfe-transform-vrl` runs user-supplied VRL programs and
-is the right choice when the transform must be changed without a release. This
-service is the right choice when the transform is a known Elastic pipeline and
-throughput matters.
+Use dfe-transform-vrl instead when the transform has to change without a release.
 
 ## Quick start
 
