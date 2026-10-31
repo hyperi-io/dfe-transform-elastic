@@ -108,11 +108,11 @@ fn enrich(
     // `^O:[A-Z]{2}` and `^G:[A-Z]{2}` -- anchored, and the capture keeps the
     // marker, which is the vendor's own reading.
     for (marker, suffix) in [("O:", "Owner"), ("G:", "Group")] {
-        if let Some(rest) = sddl.strip_prefix(marker)
-            && rest.len() >= 2
-            && rest[..2].chars().all(|c| c.is_ascii_uppercase())
+        // `get`, because byte 2 of a non-ASCII value is not a char boundary.
+        if let Some(head) = sddl.strip_prefix(marker).and_then(|rest| rest.get(..2))
+            && head.chars().all(|c| c.is_ascii_uppercase())
         {
-            let captured = format!("{marker}{}", &rest[..2]);
+            let captured = format!("{marker}{head}");
             let translated = translate_sid(&captured, tables);
             let _ = event.set(
                 &format!("winlog.event_data.{prefix}{suffix}"),
@@ -414,5 +414,19 @@ mod tests {
             event.get_str("winlog.event_data.NewSdDacl0"),
             Some("Local system :Access Allowed ([Generic All, Read Control])")
         );
+    }
+
+    /// Byte 2 of a non-ASCII owner is not a char boundary, so the owner is
+    /// read as unmatched rather than sliced through.
+    #[test]
+    fn a_non_ascii_owner_is_not_sliced_through() {
+        let mut event = Event::new(json!({
+            "event": { "code": 4670 },
+            "winlog": { "event_data": { "NewSd": "O:\u{65e5}XD:(A;;GA;;;SY)" }},
+        }));
+
+        assert!(run(&mut event, &params()));
+        assert!(!event.has("winlog.event_data.NewSdOwner"));
+        assert!(event.has("winlog.event_data.NewSdDacl0"));
     }
 }

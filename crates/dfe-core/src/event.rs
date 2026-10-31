@@ -307,7 +307,14 @@ impl Event {
     /// segments are walked as an iterator rather than collected, and a key is
     /// only turned into a `String` when it has to be inserted -- which, after
     /// the first event of a batch, it usually does not.
+    ///
+    /// # Errors
+    ///
+    /// [`TransformError::PathTooDeep`] for a path of more than
+    /// [`MAX_PATH_DEPTH`] segments, and [`TransformError::TypeMismatch`] where
+    /// a segment holds something other than an object.
     pub fn set(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
+        check_path_depth(path)?;
         let value = value.into();
         let mut segments = path.split('.').peekable();
         let mut depth = 0;
@@ -651,6 +658,33 @@ fn ingest_instant() -> Value {
     )
 }
 
+/// The most segments a dotted path may write, which is `serde_json`'s decode
+/// recursion limit: the serialise and the drop recurse once per level, so a
+/// path the decode would have refused overflows the stack instead.
+pub const MAX_PATH_DEPTH: usize = 128;
+
+/// Refuse a dotted `path` of more than [`MAX_PATH_DEPTH`] segments.
+///
+/// # Errors
+///
+/// [`TransformError::PathTooDeep`], naming the depth rather than the path,
+/// which is input of any length.
+pub fn check_path_depth(path: &str) -> Result<()> {
+    // Every segment past the first costs at least its dot, so a shorter path
+    // cannot be too deep and the hot path skips the count.
+    if path.len() < MAX_PATH_DEPTH {
+        return Ok(());
+    }
+    let depth = path.matches('.').count() + 1;
+    if depth > MAX_PATH_DEPTH {
+        return Err(TransformError::PathTooDeep {
+            depth,
+            limit: MAX_PATH_DEPTH,
+        });
+    }
+    Ok(())
+}
+
 /// The first `depth` segments of a dotted path, for an error message.
 ///
 /// Only called on the error path, so it can afford to allocate.
@@ -773,7 +807,12 @@ fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Valu
 /// event, which is a `max.poll.interval` breach and a rebalance loop.
 ///
 /// Longest first, because the document's own spelling wins over a split of it.
+///
+/// Each candidate is hashed whole, so the cost is quadratic in the dots of
+/// `rest`. A path deeper than [`MAX_PATH_DEPTH`] -- a `kv` key read off the
+/// line, say -- is answered `None` before that starts.
 fn flat_key<'r>(map: &serde_json::Map<String, Value>, rest: &'r str) -> Option<&'r str> {
+    check_path_depth(rest).ok()?;
     rest.rmatch_indices('.')
         .map(|(at, _)| rest.get(..at).unwrap_or_default())
         .find(|candidate| map.contains_key(*candidate))
@@ -943,6 +982,11 @@ mod tests {
 
     /// A document nested far past `serde_json`'s recursion limit is refused, on
     /// the 2 MiB stack a tokio worker decodes on, rather than overflowing it.
+    ///
+    /// A dotted path is the other way in: one key of `a.a.a...` parses at depth
+    /// one, and writing it would build the tree the decode refuses, which the
+    /// serialise and the drop then recurse through. Reading it would hash every
+    /// prefix as a candidate flat key, which is quadratic in its dots.
     #[test]
     fn a_deeply_nested_document_is_refused_on_a_2mib_stack() {
         for levels in [20_000, 100_000] {
@@ -951,7 +995,16 @@ mod tests {
                 let arrays =
                     Event::from_json(&format!("{}{}", "[".repeat(levels), "]".repeat(levels)))
                         .is_err();
-                objects && arrays
+                let path = format!("{}a", "a.".repeat(levels));
+                // Two keys, because a map of one or none answers without hashing.
+                let mut event = Event::new(json!({"b": 1, "c": 2}));
+                let dotted = event.set(&path, 1).is_err();
+                // A read of the same path, which `kv` makes before every write,
+                // must not try each of its prefixes as a flat key.
+                let unread = event.get(&path).is_none() && !event.has_value(&path);
+                let mut out = Vec::new();
+                let written = event.write_json(&mut out).is_ok();
+                objects && arrays && dotted && unread && written
             });
             assert!(refused, "{levels} levels were accepted");
         }

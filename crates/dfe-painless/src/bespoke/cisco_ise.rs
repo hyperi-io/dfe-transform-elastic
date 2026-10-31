@@ -106,6 +106,11 @@ fn fold_nested(attributes: &mut Map<String, Value>, rest: &str) {
             if let Some(split) = next_split
                 && chars[split - 1] != '\\'
             {
+                // A level per `=` is input-controlled, and the serialise and
+                // the drop recurse once per level.
+                if depth.len() >= dfe_core::event::MAX_PATH_DEPTH {
+                    return;
+                }
                 let Some(inner) = descend(attributes, &depth, &key) else {
                     return;
                 };
@@ -187,3 +192,39 @@ pub const ENTRIES: &[Entry] = &[
         run: split_log_details_raw,
     },
 ];
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+mod tests {
+    use super::*;
+
+    /// How many maps deep `value` goes, walked without recursion.
+    fn depth(mut value: &Value) -> usize {
+        let mut levels = 0;
+        while let Some(child) = value.as_object().and_then(|map| map.values().next()) {
+            levels += 1;
+            value = child;
+        }
+        levels
+    }
+
+    /// A three-part line nests one level. A line of more parts than a path may
+    /// write stops folding at that depth rather than nesting once per `=`.
+    #[test]
+    fn an_mdm_tlv_line_nests_at_most_the_path_depth() {
+        let mut shallow = Map::new();
+        fold_nested(&mut shallow, "a=b=c");
+        assert_eq!(
+            Value::Object(shallow),
+            serde_json::json!({ NESTED: { "a": { "b": "c" } } })
+        );
+
+        let mut deep = Map::new();
+        fold_nested(&mut deep, &"a=".repeat(1_000));
+        let levels = depth(&Value::Object(deep));
+        assert!(
+            levels <= dfe_core::event::MAX_PATH_DEPTH + 1,
+            "{levels} levels"
+        );
+    }
+}
