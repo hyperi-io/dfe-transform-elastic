@@ -564,7 +564,9 @@ pub fn condition_eq(left: Option<&Value>, right: Option<&Value>) -> bool {
 ///
 /// # Errors
 ///
-/// Returns an error only if the event refuses a write.
+/// Returns an error if the event refuses a write, or
+/// [`crate::TransformError::PathTooDeep`] for a key of more segments than a
+/// path may write.
 pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::Result<()> {
     // Decided on a BORROW, before anything is cloned. The rebuild below copies
     // the whole container, and for the root that is the entire document -- a
@@ -606,6 +608,7 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
     let mut expanded = false;
     for (key, value) in members {
         if key.contains('.') && (field == "*" || key == field) {
+            dfe_core::event::check_path_depth(key)?;
             expanded = true;
             let mut node = &mut rebuilt;
             let mut segments = key.split('.').peekable();
@@ -4674,12 +4677,28 @@ mod tests {
 
     /// A dotted key whose prefix is already a SCALAR cannot become the object
     /// it names, which is where the expander raises rather than overwriting
-    /// what is there.
+    /// what is there. A key of more segments than a path may write raises
+    /// too, before it builds a tree too deep to serialise or drop.
     #[test]
     fn dot_expand_raises_where_a_segment_is_not_an_object() {
-        let mut event = Event::new(json!({ "id": "taken", "id.orig_h": "10.0.0.1" }));
-        let error = dot_expand(&mut event, "", "*").unwrap_err();
-        assert!(error.to_string().contains("id.orig_h"), "{error}");
+        let deep = format!("{}a", "a.".repeat(crate::event::MAX_PATH_DEPTH));
+        let rows: [(&str, Value, &str); 2] = [
+            (
+                "a scalar prefix",
+                json!({ "id": "taken", "id.orig_h": "10.0.0.1" }),
+                "id.orig_h",
+            ),
+            (
+                "a key too deep",
+                json!({ "kept": 1, deep: 1 }),
+                "deeper than",
+            ),
+        ];
+        for (name, document, text) in rows {
+            let mut event = Event::new(document);
+            let error = dot_expand(&mut event, "", "*").unwrap_err();
+            assert!(error.to_string().contains(text), "{name}: {error}");
+        }
     }
 
     /// Only named groups capture. An unnamed group has never produced a value
