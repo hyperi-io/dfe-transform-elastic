@@ -83,7 +83,7 @@ case discovered in production.
 
 ## Core, full and the shared broker
 
-Core is every test that is not `#[ignore]`d, and it runs on every push: the unit tests, the corpus and floors above, `tests/broker.rs` and `tests/kafka_tls.rs` against a real broker, and the memory tests (`tests/ndjson_fanout.rs`, `tests/asa_teardown.rs`) held to the deployment contract. Full adds the `#[ignore]`d ones, the tests that need `DFE_ELASTIC_FIXTURES` or a generated corpus, and a release runs it (`test.full.required_for_release`). Run full locally with `cargo nextest run --all-features --run-ignored all`.
+Core is every test that is not `#[ignore]`d, and it runs on every push: the unit tests, the corpus and floors above, `tests/broker.rs` and `tests/kafka_tls.rs` against a real broker, and the memory tests (`tests/ndjson_fanout.rs`, `tests/asa_teardown.rs`) held to the deployment contract. Full adds the `#[ignore]`d ones, every one of which reads the Elastic test data below, so it runs only where `DFE_ELASTIC_FIXTURES` names that data: `cargo nextest run --all-features --run-ignored all`. A release does not require it, because no CI runner holds the data.
 
 Nextest is required (`test.rust.nextest`): the memory tests read the process's peak resident set and `tests/config_cascade.rs` reads scalo's process-wide cascade, so each needs a process of its own.
 
