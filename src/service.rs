@@ -382,7 +382,21 @@ fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
 /// directly -- a test must not reach db-ip.com. It is also why this never
 /// returns an error: a provider outage degrades enrichment, and turning that
 /// into a failed startup would take the transform offline over geo fields.
-async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
+///
+/// `enabled: false` turns enrichment off as well as provisioning. Left to
+/// itself the lookup engine searches its standard directories for whatever
+/// was not provisioned, so a mounted or earlier-downloaded database would
+/// still enrich.
+pub async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
+    if !config.enabled {
+        if !dfe_runtime::enrichment::geoip_global::disable() {
+            tracing::warn!(
+                "GeoIP databases were already resolved; geoip.enabled: false came too late"
+            );
+        }
+        tracing::info!("GeoIP enrichment disabled by geoip.enabled: false");
+        return;
+    }
     let paths = match scalo::geoip_download::ensure_databases(config).await {
         Ok(paths) => paths,
         Err(e) => {
