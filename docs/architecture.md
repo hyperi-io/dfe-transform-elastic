@@ -112,7 +112,7 @@ transport.
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-compose`, `emit-config`, `emit-catalogue`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
 | `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
-| `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `CASCADE_ONLY_SECTIONS` -- the scalo sections that file is warned for carrying |
+| `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `SCALO_SECTIONS` -- the sections scalo reads for itself, which the unread-key warning skips |
 | `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
