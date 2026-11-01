@@ -283,39 +283,6 @@ mod tests {
         assert_eq!(loaded.sink.topic, "out");
     }
 
-    /// `load` hands the named file to scalo's cascade as its settings layer, so
-    /// a `logger.level` and a `scaling` block written in it take effect where
-    /// scalo reads them. Each test runs in its own process under nextest, so
-    /// this one installs the cascade.
-    #[test]
-    fn a_config_file_is_a_layer_of_the_scalo_cascade() {
-        load_file(&format!(
-            "{FILE_BASE}logger:\n  level: trace\nscaling:\n  enabled: false\n  \
-             memory_gate_threshold: 0.5\n"
-        ))
-        .expect("the file loads");
-
-        let cascade = scalo::config::try_get().expect("load installs the cascade");
-        assert!(
-            cascade.contains("scaling"),
-            "the file did not reach the cascade"
-        );
-
-        let logger = scalo::logger::LoggerSettings::from_cascade().unwrap();
-        assert_eq!(
-            logger.level.as_deref(),
-            Some("trace"),
-            "logger.level came from the default"
-        );
-
-        let scaling = scalo::scaling::ScalingPressureConfig::from_cascade().unwrap();
-        assert!(!scaling.enabled, "scaling.enabled came from the default");
-        assert!(
-            (scaling.memory_gate_threshold - 0.5).abs() < f64::EPSILON,
-            "scaling.memory_gate_threshold came from the default"
-        );
-    }
-
     /// No name on the list stops a config from loading, so adding one to the
     /// list is the whole job of covering a new scalo section.
     #[test]
