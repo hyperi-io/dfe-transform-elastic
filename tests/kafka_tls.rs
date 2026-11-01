@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! The service binary consumes and produces over SASL_SSL with a private CA.
+//! The service binary consumes and produces over `SASL_SSL` with a private CA.
 //!
 //! A chart delivers that CA as a file named by `SSL_CERT_FILE`, with no CA in
 //! the service's own config. The binary runs as its own process, so the
@@ -35,7 +35,7 @@ impl Drop for Service {
     }
 }
 
-/// A client of `broker`'s SASL_SSL listener that names the CA itself.
+/// A client of `broker`'s `SASL_SSL` listener that names the CA itself.
 async fn client(broker: &TlsBroker, group: &str, topics: Vec<String>) -> KafkaTransport {
     KafkaTransport::new(&KafkaConfig {
         brokers: vec![broker.sasl_ssl.clone()],
