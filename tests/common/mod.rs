@@ -3,126 +3,132 @@
 
 //! Broker test infrastructure.
 //!
-//! A live broker is used when one is reachable; otherwise an ephemeral Kafka
-//! container is started for the test and removed when it drops. A suite that
-//! silently skips both is a suite that reports green while testing nothing, so
-//! in CI the absence of both is a failure rather than a skip.
+//! A live broker is used when one is reachable. Otherwise the run's one shared
+//! broker, from scalo's `shared_kafka`, which the first test process starts
+//! and the run removes when it ends. A test that stops its broker, or needs
+//! broker settings of its own, holds one alone. A suite that silently skips
+//! all of these reports green while testing nothing, so in CI the absence of
+//! a broker is a failure rather than a skip.
 
 use std::time::Duration;
 
+use scalo::deployment::test_support::shared_service::{
+    OwnedContainer, Suite, container_name, start_alone,
+};
+use scalo::transport::kafka::test_support::{KAFKA_PORT, docker_answers, kafka_spec, shared_kafka};
 use scalo::transport::kafka::{KafkaConfig, KafkaProfile, KafkaTransport};
-use testcontainers::ContainerAsync;
-use testcontainers_modules::kafka::apache::Kafka;
 
-/// Label on every container this suite starts, for bulk cleanup:
-/// `docker rm -f $(docker ps -aq --filter label=io.hyperi.test.suite=dfe-transform-elastic-broker)`
-pub const TEST_SUITE_LABEL: (&str, &str) = ("io.hyperi.test.suite", "dfe-transform-elastic-broker");
+/// Names and labels every container this suite starts, and keeps its run log.
+pub const SUITE: Suite = Suite {
+    repo: "dfe-transform-elastic",
+    manifest_dir: env!("CARGO_MANIFEST_DIR"),
+    tmp_dir: option_env!("CARGO_TARGET_TMPDIR"),
+};
 
-/// The host ports a test broker may publish on: fixed, below 10240, because a
-/// port Docker picks comes from the ephemeral range that other stacks on a
-/// shared host publish fixed ports in.
+/// The host ports a broker a test holds alone may publish on: fixed, below
+/// 10240, because a test that restarts its broker must keep its address, and
+/// a port Docker picks comes from the ephemeral range other stacks use.
 const HOST_PORTS: std::ops::Range<u16> = 9400..10240;
 
-/// How many free ports a container start tries before giving up, since a port
-/// free when probed can be taken by a concurrent run before Docker binds it.
-const PORT_ATTEMPTS: usize = 8;
+/// Where a test's broker came from.
+enum Held {
+    /// `KAFKA_BROKERS`, owned by nobody here.
+    Live,
+    /// The run's shared broker, by container name.
+    Shared(String),
+    /// A broker this test holds alone, removed when it drops.
+    Owned(OwnedContainer),
+}
 
-/// A broker for one test, live or containerised.
-///
-/// Dropping this stops any container it started.
+/// A broker for one test.
 pub struct Broker {
     brokers: String,
-    container: Option<ContainerAsync<Kafka>>,
+    held: Held,
 }
 
 impl Broker {
-    /// Resolve a broker, preferring a live one.
-    ///
-    /// `test` names the calling test and goes into the container name, so
-    /// concurrent tests do not collide. Returns `None` when there is neither a
-    /// live broker nor a working container runtime.
-    pub async fn ensure(test: &str) -> Option<Self> {
+    /// A live broker, else the run's shared one. `None` when there is neither
+    /// a live broker nor a Docker daemon.
+    pub async fn ensure(_test: &str) -> Option<Self> {
         if let Some(live) = live_brokers() {
             eprintln!("using live Kafka at {live}");
             return Some(Self {
                 brokers: live,
-                container: None,
+                held: Held::Live,
             });
         }
-
-        match Self::spawn(test, &[]).await {
-            Ok(broker) => {
-                eprintln!("spawned Kafka container at {}", broker.brokers);
-                Some(broker)
-            }
-            Err(e) => {
-                eprintln!("could not spawn a Kafka container: {e}");
-                None
-            }
+        if !docker_answers() {
+            return None;
         }
+        let shared = shared_kafka(SUITE).await;
+        Some(Self {
+            brokers: shared.addr(KAFKA_PORT),
+            held: Held::Shared(shared.name),
+        })
     }
 
-    /// Start a container for one test, never a live broker: for a test that
-    /// stops the broker, which it must own.
+    /// A broker this test holds alone, never a live one: for a test that stops
+    /// the broker.
     pub async fn container(test: &str) -> Option<Self> {
-        Self::container_with(test, &[]).await
+        Self::alone(test, &[]).await
     }
 
-    /// A container whose broker takes records up to `ceiling` bytes, never a
-    /// live broker: a stock broker refuses anything over about 1 MB.
+    /// A broker this test holds alone that takes records up to `ceiling`
+    /// bytes: a stock broker refuses anything over about 1 MB.
     pub async fn container_with_ceiling(test: &str, ceiling: usize) -> Option<Self> {
-        let ceiling = ceiling.to_string();
-        Self::container_with(test, &[("KAFKA_MESSAGE_MAX_BYTES", ceiling.as_str())]).await
+        Self::alone(test, &[("KAFKA_MESSAGE_MAX_BYTES", ceiling.to_string())]).await
     }
 
-    async fn container_with(test: &str, env: &[(&str, &str)]) -> Option<Self> {
-        match Self::spawn(test, env).await {
-            Ok(broker) => {
-                eprintln!("spawned Kafka container at {}", broker.brokers);
-                Some(broker)
-            }
-            Err(e) => {
-                eprintln!("could not spawn a Kafka container: {e}");
-                None
-            }
+    async fn alone(test: &str, env: &[(&str, String)]) -> Option<Self> {
+        if !docker_answers() {
+            return None;
         }
-    }
-
-    async fn spawn(test: &str, env: &[(&str, &str)]) -> Result<Self, String> {
-        let name = container_name(test);
-        let mut last_err = String::from("no free host port below 10240");
-        for port in free_host_ports().take(PORT_ATTEMPTS) {
-            reap_stale(&name);
-            match start_on(&name, port, env).await {
-                Ok(container) => {
-                    let host = container
-                        .get_host()
-                        .await
-                        .map_err(|e| format!("host: {e}"))?;
-                    return Ok(Self {
-                        brokers: format!("{host}:{port}"),
-                        container: Some(container),
-                    });
-                }
-                Err(e) => last_err = e,
-            }
-        }
-        Err(last_err)
-    }
-
-    /// Stop the broker this test started, leaving its data and its port.
-    pub async fn stop(&self) {
-        let container = self.container.as_ref().expect("stop needs a container");
-        container
-            .stop_with_timeout(Some(10))
+        let port = free_host_port()?;
+        let mut spec = kafka_spec(Some(port));
+        spec.env
+            .extend(env.iter().map(|(k, v)| ((*k).to_string(), v.clone())));
+        let name = container_name(&SUITE, Some(test), "kafka");
+        let owned = tokio::task::spawn_blocking(move || start_alone(&SUITE, &spec, &name))
             .await
-            .expect("the broker stops");
+            .expect("the broker a test holds alone starts");
+        eprintln!("started Kafka container {}", owned.container.name);
+        Some(Self {
+            brokers: owned.container.addr(KAFKA_PORT),
+            held: Held::Owned(owned),
+        })
+    }
+
+    /// Stop the broker this test holds, leaving its data and its port.
+    pub async fn stop(&self) {
+        self.docker("stop").await;
     }
 
     /// Start the broker again after [`stop`](Self::stop), on the same port.
     pub async fn start(&self) {
-        let container = self.container.as_ref().expect("start needs a container");
-        container.start().await.expect("the broker starts again");
+        self.docker("start").await;
+    }
+
+    async fn docker(&self, verb: &'static str) {
+        let Held::Owned(owned) = &self.held else {
+            panic!("{verb} needs a broker this test holds alone");
+        };
+        let name = owned.container.name.clone();
+        let status = tokio::process::Command::new("docker")
+            .args([verb, &name])
+            .stdout(std::process::Stdio::null())
+            .status()
+            .await
+            .expect("docker runs");
+        assert!(status.success(), "docker {verb} {name} failed");
+    }
+
+    /// The name of the container behind this broker, `None` for a live one.
+    pub fn container_name(&self) -> Option<String> {
+        match &self.held {
+            Held::Live => None,
+            Held::Shared(name) => Some(name.clone()),
+            Held::Owned(owned) => Some(owned.container.name.clone()),
+        }
     }
 
     /// A producer whose librdkafka settings are overridden, for a test that
@@ -144,11 +150,6 @@ impl Broker {
     /// Broker list, as the config wants it.
     pub fn list(&self) -> Vec<String> {
         self.brokers.split(',').map(String::from).collect()
-    }
-
-    /// Whether this test started a container rather than using a live broker.
-    pub const fn is_container(&self) -> bool {
-        self.container.is_some()
     }
 
     /// A producer for `topic` on this broker.
@@ -192,111 +193,14 @@ fn live_brokers() -> Option<String> {
         .map(|_| brokers)
 }
 
-/// Start the broker container `name`, published on host `port`, with `env` set
-/// on it as broker properties.
-async fn start_on(
-    name: &str,
-    port: u16,
-    env: &[(&str, &str)],
-) -> Result<ContainerAsync<Kafka>, String> {
-    use testcontainers::ImageExt;
-    use testcontainers::runners::AsyncRunner;
-    use testcontainers_modules::kafka::apache::KAFKA_PORT;
-
-    // Pinned here rather than left to the module default: a tag baked into
-    // a dependency's source is invisible to dependency review. The JVM image,
-    // because `apache/kafka-native` before 4.4.0 segfaults in `getpwuid` on
-    // about 2% of starts.
-    // renovate: datasource=docker depName=apache/kafka
-    const KAFKA_TAG: &str = "4.3.1";
-    // Digest of `KAFKA_TAG`, apart from it because the Renovate regex stops at a colon.
-    const KAFKA_DIGEST: &str =
-        "sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837";
-    // A JVM broker takes 5-12 s to become ready, longer on a busy runner.
-    const KAFKA_STARTUP_TIMEOUT: Duration = Duration::from_secs(180);
-
-    let mut image = Kafka::default()
-        .with_jvm_image()
-        .with_tag(format!("{KAFKA_TAG}@{KAFKA_DIGEST}"))
-        .with_container_name(name)
-        .with_labels(labels())
-        .with_startup_timeout(KAFKA_STARTUP_TIMEOUT)
-        .with_mapped_port(port, KAFKA_PORT);
-    for (key, value) in env {
-        image = image.with_env_var(*key, *value);
-    }
-    image
-        .start()
-        .await
-        .map_err(|e| format!("start on port {port}: {e}"))
-}
-
-/// Host ports in [`HOST_PORTS`] that nothing is listening on, starting at an
+/// A host port in [`HOST_PORTS`] that nothing is listening on, starting at an
 /// offset taken from the process id so concurrent runs start apart.
-fn free_host_ports() -> impl Iterator<Item = u16> {
+fn free_host_port() -> Option<u16> {
     let span = HOST_PORTS.end - HOST_PORTS.start;
     let offset = u16::try_from(std::process::id() % u32::from(span)).unwrap_or(0);
     (0..span)
-        .map(move |i| HOST_PORTS.start + (offset + i) % span)
-        .filter(|port| std::net::TcpListener::bind(("0.0.0.0", *port)).is_ok())
-}
-
-/// Container name: which repo, which suite, which test.
-///
-/// testcontainers defaults to a random hex name, which is untraceable the
-/// moment one survives a killed run.
-fn container_name(test: &str) -> String {
-    let slug: String = test
-        .chars()
-        .map(|c| {
-            if c.is_ascii_alphanumeric() {
-                c.to_ascii_lowercase()
-            } else {
-                '-'
-            }
-        })
-        .collect();
-    format!("dfe-transform-elastic-test-broker-{slug}")
-}
-
-fn labels() -> Vec<(String, String)> {
-    vec![
-        (
-            TEST_SUITE_LABEL.0.to_string(),
-            TEST_SUITE_LABEL.1.to_string(),
-        ),
-        (
-            "io.hyperi.test.repo".to_string(),
-            "dfe-transform-elastic".to_string(),
-        ),
-        ("io.hyperi.test.service".to_string(), "kafka".to_string()),
-        (
-            "io.hyperi.test.owner-pid".to_string(),
-            std::process::id().to_string(),
-        ),
-    ]
-}
-
-/// Remove a DEAD container holding `name`, so a leak from a killed run cannot
-/// block this one.
-///
-/// A RUNNING container is left alone: two concurrent runs share these names,
-/// and force-removing a live one would sabotage the other run. The start then
-/// fails with "name is already in use", which says what actually happened.
-fn reap_stale(name: &str) {
-    let running = std::process::Command::new("docker")
-        .args(["ps", "--quiet", "--filter", &format!("name=^{name}$")])
-        .output();
-    if let Ok(out) = &running
-        && !out.stdout.is_empty()
-    {
-        return;
-    }
-    let _ = std::process::Command::new("docker")
-        .args(["rm", "--force", "--volumes", name])
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .status();
+        .map(|i| HOST_PORTS.start + (offset + i) % span)
+        .find(|port| std::net::TcpListener::bind(("0.0.0.0", *port)).is_ok())
 }
 
 /// A topic name unique to this run.
