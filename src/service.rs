@@ -29,6 +29,7 @@
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
+use dfe_runtime::Event;
 use scalo::cli::ServiceRuntime;
 use scalo::transport::filter::FilteredDlqEntry;
 #[cfg(feature = "grpc")]
@@ -48,8 +49,8 @@ use crate::agentless::{Agentless, Stopped};
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{
-    EnvelopeOutcome, NOT_JSON, message_budget, parse_batch, serialise_events,
-    transform_batch_resolved,
+    BatchOutcome, EnvelopeOutcome, NOT_JSON, SerialiseOutcome, message_budget, parse_each,
+    serialise_events, transform_batch_resolved,
 };
 
 /// The longest the loop goes without pushing scaling signals.
@@ -564,6 +565,37 @@ enum Work {
     Agentless(Box<Agentless>),
 }
 
+/// One block on its way through [`Stage::transform`].
+///
+/// One record's NDJSON lines are bounded by its bytes alone: an 8 MB record of
+/// 17-byte lines is 470,588 events, and holding them all peaked at 1.3 GiB
+/// against a 512 MiB pod limit. So parsed events go through in groups of at
+/// most `cap`, and only their outbound records stay.
+struct Block {
+    cap: usize,
+    pending: Vec<Event>,
+    out: Vec<Record>,
+    parsed: usize,
+    outcome: BatchOutcome,
+    envelopes: EnvelopeOutcome,
+    serialised: SerialiseOutcome,
+}
+
+impl Block {
+    fn new(cap: usize, records: usize) -> Self {
+        let cap = cap.max(1);
+        Self {
+            cap,
+            pending: Vec::with_capacity(records.min(cap)),
+            out: Vec::with_capacity(records),
+            parsed: 0,
+            outcome: BatchOutcome::default(),
+            envelopes: EnvelopeOutcome::default(),
+            serialised: SerialiseOutcome::default(),
+        }
+    }
+}
+
 /// Everything the transform half of the loop needs, shared with the ticker.
 struct Stage<'a> {
     config: &'a Config,
@@ -580,6 +612,9 @@ struct Stage<'a> {
 impl Stage<'_> {
     /// Parse, transform and serialise one block, returning a record per event
     /// that survived and a dead letter per input refused as not JSON.
+    ///
+    /// At most `source.batch_size` parsed events are held at once, however many
+    /// NDJSON lines the block's records carry.
     // Block and byte counts are bounded far below 2^53, so the f64 casts are exact.
     #[allow(clippy::cast_precision_loss)]
     fn transform(
@@ -596,10 +631,10 @@ impl Stage<'_> {
         metrics.batch_events.record(records.len() as f64);
 
         let started = Instant::now();
-        let mut events = Vec::with_capacity(records.len());
+        let mut block = Block::new(self.config.source.batch_size, records.len());
         let mut dead = Vec::new();
         for record in records {
-            let (parsed, parse_outcome) = parse_batch(&record.payload);
+            let parse_outcome = parse_each(&record.payload, |event| self.take(&mut block, event))?;
             if !parse_outcome.refused.is_empty() {
                 let refused = parse_outcome.refused.len() as u64;
                 metrics.parse_errors.increment(refused);
@@ -618,20 +653,21 @@ impl Stage<'_> {
             if parse_outcome.lossy {
                 metrics.lossy_payloads.increment(1);
             }
-            events.extend(parsed);
         }
+        self.flush(&mut block)?;
+        let Block {
+            out,
+            parsed,
+            outcome,
+            envelopes,
+            serialised,
+            ..
+        } = block;
 
         // One series, counted once. The source transport counts its own wire
         // records in `transport_received_*`; these are the events parsed out.
-        metrics.dfe.records_received(events.len() as u64);
+        metrics.dfe.records_received(parsed as u64);
 
-        let (transformed, outcome, envelopes) = match &self.work {
-            Work::One {
-                transform,
-                resolver,
-            } => transform_batch_resolved(*transform, resolver, events),
-            Work::Agentless(agentless) => agentless.transform(events)?,
-        };
         {
             let mut state = self.state.lock();
             let state = &mut *state;
@@ -665,8 +701,6 @@ impl Stage<'_> {
         );
         push_scaling_signals(self.scaling, self.consumer, saturation);
 
-        let (payloads, serialised) =
-            serialise_events(&transformed, self.config.sink.max_message_bytes);
         if serialised.oversize > 0 {
             metrics
                 .events_oversize
@@ -680,11 +714,46 @@ impl Stage<'_> {
                 .increment(serialised.failed as u64);
         }
 
-        let out = payloads
-            .into_iter()
-            .map(|payload| outbound_record(payload, &self.topic))
-            .collect();
         Ok((out, dead))
+    }
+
+    /// Hold one parsed event, flushing the block's pending events once they
+    /// reach its cap.
+    fn take(&self, block: &mut Block, event: Event) -> Result<(), Stopped> {
+        block.pending.push(event);
+        block.parsed += 1;
+        if block.pending.len() >= block.cap {
+            self.flush(block)?;
+        }
+        Ok(())
+    }
+
+    /// Transform and serialise the block's pending events, keeping only the
+    /// outbound records.
+    fn flush(&self, block: &mut Block) -> Result<(), Stopped> {
+        if block.pending.is_empty() {
+            return Ok(());
+        }
+        let events = std::mem::take(&mut block.pending);
+        let (transformed, outcome, envelopes) = match &self.work {
+            Work::One {
+                transform,
+                resolver,
+            } => transform_batch_resolved(*transform, resolver, events),
+            Work::Agentless(agentless) => agentless.transform(events)?,
+        };
+        let (payloads, serialised) =
+            serialise_events(&transformed, self.config.sink.max_message_bytes);
+        drop(transformed);
+        block.out.extend(
+            payloads
+                .into_iter()
+                .map(|payload| outbound_record(payload, &self.topic)),
+        );
+        block.outcome.absorb(outcome);
+        block.envelopes.absorb(envelopes);
+        block.serialised.absorb(serialised);
+        Ok(())
     }
 
     /// Push a zero saturation when no block has pushed the signals for
