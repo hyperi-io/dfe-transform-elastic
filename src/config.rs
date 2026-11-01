@@ -117,6 +117,16 @@ pub struct Config {
     #[serde(default = "default_geoip", deserialize_with = "deserialize_geoip")]
     #[schemars(with = "scalo::geoip_download::GeoIpConfig")]
     pub geoip: scalo::geoip_download::GeoIpConfig,
+
+    /// Where a record goes that no retry can deliver: input that is not JSON,
+    /// and an event the sink transport would refuse.
+    ///
+    /// scalo's type verbatim. The default writes NDJSON files under
+    /// `/var/spool/scalo/dlq`, which the deployment contract declares as a
+    /// writable volume. With `enabled: false` such a record is dropped and
+    /// counted on `pipeline_dead_letters_dropped_total`.
+    #[serde(default)]
+    pub dlq: scalo::dlq::DlqConfig,
 }
 
 /// The directory the downloader writes the databases to, on the `geoip` volume
@@ -463,6 +473,7 @@ fn valid() -> Config {
             max_message_bytes: default_max_message_bytes(),
         },
         geoip: default_geoip(),
+        dlq: scalo::dlq::DlqConfig::default(),
     }
 }
 

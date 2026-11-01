@@ -54,11 +54,14 @@ dfe-runtime = { workspace = true, features = ["testutil"] }
 # `start_paused` for the loop tests: the pipeline's retry backoff is fast-forwarded
 # by a paused clock instead of waited out.
 tokio = { workspace = true, features = ["test-util"] }
-# An in-process source, so the loop's hold is tested without a broker.
-scalo = { workspace = true, features = ["transport-memory", "deployment-test-support"] }
+# An in-process source, so the loop's hold is tested without a broker, and
+# the run's shared Kafka broker for the tests that need one.
+scalo = { workspace = true, features = [
+    "transport-memory",
+    "deployment-test-support",
+    "transport-kafka-test-support",
+] }
 tempfile = { workspace = true }
-testcontainers = { workspace = true }
-testcontainers-modules = { workspace = true }
 criterion = { workspace = true }
 # The parser dfe-receiver runs, so the detector is scored on what it delivers.
 syslog_loose = { workspace = true }
@@ -159,7 +162,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 # Features are added when their API is actually referenced, not speculatively.
 # The floor moves with `release.helm.library` in .hyperi-ci.yaml: the library
 # renders only the contract version its scalo release writes.
-scalo = { version = "2.14.22", features = [
+scalo = { version = ">=2.14.24, <3", features = [
     "cli-service",
     "config",
     "config-schema",
@@ -282,12 +285,6 @@ tempfile = ">=3.27.0, <4"
 # transforms each block on one thread and scales by replica, and nothing in
 # the shipped path uses a work-stealing pool.
 rayon = ">=1.12.0, <2"
-
-# Ephemeral broker for the round-trip test. Same range as the rest of the
-# fleet so one version is shared across dfe-receiver, dfe-loader and the
-# transform services.
-testcontainers = ">=0.27.3, <0.28"
-testcontainers-modules = { version = ">=0.15, <0.16", features = ["kafka"] }
 
 [profile.release]
 lto = "thin"

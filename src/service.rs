@@ -23,8 +23,10 @@
 //! delivered: one that will not transform or serialise, one over
 //! `sink.max_message_bytes`, and one the sink transport would refuse, which the
 //! pipeline screens out before the send. Input that is not JSON is refused as a
-//! dead letter. Dead letters take scalo's DLQ path with no backend, so they are
-//! dropped and counted in `pipeline_dead_letters_dropped_total`.
+//! dead letter. Dead letters, the screened records among them, go to the DLQ
+//! `dlq` configures, and the source is released only once the DLQ holds them.
+//! With `dlq.enabled: false` they are dropped and counted in
+//! `pipeline_dead_letters_dropped_total`.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -115,7 +117,16 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 
     provision_geoip(&config.geoip).await;
 
-    let (engine, budget) = batch_engine(&config, &runtime);
+    // Its own token, so the drain outlives the loop's and takes the dead
+    // letters of the blocks drained at shutdown.
+    let dlq = scalo::dlq::Dlq::spawn(
+        &config.dlq,
+        "dfe-transform-elastic",
+        None,
+        CancellationToken::new(),
+    )
+    .map_err(|e| crate::Error::Config(format!("dlq: {e}")))?;
+    let (engine, budget) = batch_engine(&config, &runtime, dlq.clone());
     let consumer =
         build_receiver(&config, runtime.governor.as_ref(), &runtime.memory_guard).await?;
     let producer = build_sender(&config).await?;
@@ -134,7 +145,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     });
     log_effective_scaling(runtime.scaling.as_deref());
 
-    run_loop(
+    let result = run_loop(
         &config,
         &engine,
         &consumer,
@@ -143,7 +154,11 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         &metrics,
         scaling.as_ref(),
     )
-    .await
+    .await;
+    if let Err(e) = dlq.shutdown().await {
+        tracing::error!(error = %e, "the DLQ drain did not stop cleanly");
+    }
+    result
 }
 
 /// The engine the loop runs on, wired to the runtime the way scalo wires its
@@ -155,13 +170,14 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 fn batch_engine(
     config: &Config,
     runtime: &ServiceRuntime,
+    dlq: scalo::dlq::Dlq,
 ) -> (BatchEngine, Arc<scalo::ByteBudgetController>) {
     let settings = engine_config(config);
     let engine = match runtime.worker_pool.as_ref() {
         Some(pool) => BatchEngine::with_pool(Arc::clone(pool), settings),
         None => BatchEngine::new(settings),
     };
-    let mut engine = with_dead_letters(engine);
+    let mut engine = engine.with_dlq(Arc::new(dlq));
     engine.auto_wire(&runtime.metrics, Some(&runtime.memory_guard));
     let budget = bound_intake(&mut engine, config, runtime.governor.as_ref());
     (engine, budget)
@@ -215,11 +231,11 @@ pub fn bound_intake(
 
 /// Route the engine's dead letters through scalo's DLQ path, with no backend.
 ///
-/// This service configures no DLQ, so a dead letter -- input that is not
-/// JSON, or a record the sink would refuse -- is dropped, counted in
-/// `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total`, and
-/// its block released `Dropped`. Without it scalo's default policy stops the
-/// loop on the first dead letter.
+/// What `dlq.enabled: false` gives, and what the tests drive: a dead letter --
+/// input that is not JSON, or a record the sink would refuse -- is dropped,
+/// counted in `pipeline_dead_letters_dropped_total{reason}` and
+/// `dlq_dropped_total`, and its block released `Dropped`. Without a DLQ scalo's
+/// default policy stops the loop on the first dead letter.
 #[must_use]
 pub fn with_dead_letters(engine: BatchEngine) -> BatchEngine {
     engine.with_dlq(Arc::new(scalo::dlq::Dlq::disabled()))
@@ -402,7 +418,8 @@ fn missing_transport(side: &str, transport: Transport) -> crate::Error {
 /// `source` says whether the cascade supplied them, so a value left at scalo's
 /// default is visibly a default rather than a choice.
 fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
-    let config = scalo::scaling::ScalingPressureConfig::from_cascade();
+    // run_app has already refused a `scaling` section that does not parse.
+    let config = scalo::scaling::ScalingPressureConfig::from_cascade().unwrap_or_default();
     let configured = scalo::config::try_get().is_some_and(|cfg| cfg.contains("scaling"));
     let source = if configured { "cascade" } else { "default" };
     tracing::info!(
@@ -977,7 +994,7 @@ async fn send_each<S: TransportSender>(
                 metrics.dfe.records_filtered(count);
                 tracing::warn!(
                     records = count,
-                    "the sink transport dead-lettered a send and this service has no DLQ; \
+                    "the sink transport dead-lettered a send the screen let through; \
                      its records are dropped and not counted delivered"
                 );
             }
@@ -1295,6 +1312,7 @@ mod tests {
                 max_message_bytes: crate::config::default_max_message_bytes(),
             },
             geoip: scalo::geoip_download::GeoIpConfig::default(),
+            dlq: scalo::dlq::DlqConfig::default(),
         }
     }
 

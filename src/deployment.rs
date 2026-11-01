@@ -23,7 +23,7 @@ const PUSH_TRANSPORTS: [&str; 2] = ["direct", "grpc"];
 #[must_use]
 pub fn contract() -> DeploymentContract {
     // One cascade-resolved base image drives both the runtime FROM and the
-    // native-deps codename, so librdkafka packages match the base distro.
+    // native-deps codename.
     let base_image = base_image_from_cascade();
     DeploymentContract {
         app_name: "dfe-transform-elastic".into(),
@@ -92,8 +92,17 @@ pub fn contract() -> DeploymentContract {
         },
         config_schema: Some(scalo::deployment::config_schema_json::<crate::config::Config>()),
         capabilities: capabilities(),
-        // The GeoIP downloader writes here, so the root filesystem stays read-only.
-        writable_paths: vec![WritablePath::new("geoip", GEOIP_DATA_DIR).size_limit("512Mi")],
+        // The GeoIP downloader and the file DLQ write here, so the root
+        // filesystem stays read-only. A full DLQ volume holds its block at the
+        // source rather than dropping it.
+        writable_paths: vec![
+            WritablePath::new("geoip", GEOIP_DATA_DIR).size_limit("512Mi"),
+            WritablePath::new(
+                "dlq",
+                scalo::dlq::FileDlqConfig::default().path.to_string_lossy(),
+            )
+            .size_limit("1Gi"),
+        ],
         termination_grace_seconds: 45,
         resources: ResourcesContract {
             requests: ResourceList {
@@ -191,6 +200,8 @@ fn shipped_config() -> Config {
         // `/var/lib/dfe/geoip` is dfe-loader's directory too, so one volume
         // serves both stages; scalo's own default is `/var/lib/geoip`.
         geoip: default_geoip(),
+        // A file DLQ on the writable volume the contract declares for it.
+        dlq: scalo::dlq::DlqConfig::default(),
     }
 }
 
@@ -755,28 +766,30 @@ mod tests {
         assert_eq!(committed.trim_end(), fresh.trim_end());
     }
 
-    /// The downloader writes to `geoip.auto_download.data_dir` under a
-    /// read-only root filesystem, so that path needs an ungated writable path or
-    /// 14 of the source pipelines enrich to nothing and nothing says so.
+    /// The geoip downloader and the file DLQ write under a read-only root
+    /// filesystem, so each directory needs an ungated writable path. Without
+    /// one, 14 of the source pipelines enrich to nothing, and the DLQ starts
+    /// with no backend and holds every block that has a dead letter.
     #[test]
-    fn the_geoip_downloader_has_somewhere_to_write() {
+    fn every_directory_the_config_writes_has_a_writable_path() {
         let c = contract();
-        let data_dir = c
-            .default_config
-            .as_ref()
-            .and_then(|config| config.pointer("/geoip/auto_download/data_dir"))
-            .and_then(serde_json::Value::as_str)
-            .expect("the contract names a geoip data_dir");
-
         assert!(c.security.read_only_root_filesystem);
-        assert!(
-            c.writable_paths
-                .iter()
-                .any(|writable| writable.when.is_none()
-                    && std::path::Path::new(data_dir).starts_with(&writable.path)),
-            "no writable path covers {data_dir}: {:?}",
-            c.writable_paths
-        );
+        for pointer in ["/geoip/auto_download/data_dir", "/dlq/file/path"] {
+            let dir = c
+                .default_config
+                .as_ref()
+                .and_then(|config| config.pointer(pointer))
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or_else(|| panic!("the contract names no {pointer}"));
+            assert!(
+                c.writable_paths
+                    .iter()
+                    .any(|writable| writable.when.is_none()
+                        && std::path::Path::new(dir).starts_with(&writable.path)),
+                "no writable path covers {pointer} = {dir}: {:?}",
+                c.writable_paths
+            );
+        }
     }
 
     /// The chart mounts a Secret under every declared name, so a name the

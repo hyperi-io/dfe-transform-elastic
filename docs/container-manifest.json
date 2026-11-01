@@ -6,21 +6,8 @@
   "image_registry": "ghcr.io/hyperi-io",
   "image_profile": "production",
   "runtime_packages": {
-    "apt_repos": [
-      {
-        "key_url": "https://packages.confluent.io/clients/deb/archive.key",
-        "keyring": "/usr/share/keyrings/confluent-clients.gpg",
-        "url": "https://packages.confluent.io/clients/deb",
-        "codename": "bookworm",
-        "packages": [
-          "librdkafka1"
-        ]
-      }
-    ],
-    "apt_packages": [
-      "libssl3t64",
-      "zlib1g"
-    ],
+    "apt_repos": [],
+    "apt_packages": [],
     "distro": "trixie",
     "unresolved_base_image": null
   },

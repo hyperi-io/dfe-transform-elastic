@@ -23,10 +23,10 @@ pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 /// when written in it. They are not [`Config`] fields, so the parse skips them,
 /// and the unread-key warning leaves them out because scalo does read them.
 ///
-/// `memory` is read by `MemoryGuardConfig::from_env`, not from the cascade, and
 /// `batch_processing` configures the runtime's own batch engine, which the
 /// service loop does not run -- its engine takes the record cap from
-/// `source.batch_size` -- so both stay inert in the file.
+/// `source.batch_size` -- so it stays inert in the file, though scalo still
+/// refuses one that does not parse.
 ///
 /// `geoip` is deliberately absent: it is declared on [`Config`] and handed to
 /// `scalo::geoip_download` explicitly.
@@ -301,14 +301,14 @@ mod tests {
             "the file did not reach the cascade"
         );
 
-        let logger = scalo::logger::LoggerSettings::from_cascade();
+        let logger = scalo::logger::LoggerSettings::from_cascade().unwrap();
         assert_eq!(
             logger.level.as_deref(),
             Some("trace"),
             "logger.level came from the default"
         );
 
-        let scaling = scalo::scaling::ScalingPressureConfig::from_cascade();
+        let scaling = scalo::scaling::ScalingPressureConfig::from_cascade().unwrap();
         assert!(!scaling.enabled, "scaling.enabled came from the default");
         assert!(
             (scaling.memory_gate_threshold - 0.5).abs() < f64::EPSILON,
