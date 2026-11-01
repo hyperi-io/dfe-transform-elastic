@@ -177,6 +177,9 @@ scalo = { version = ">=2.14.24, <3", features = [
     "metrics",
     "scaling",
     "service-metrics",
+    # The transport types the config and the loop name whichever transport is
+    # compiled in, AcknowledgementsConfig and Record among them.
+    "transport",
     "version-check",
     # BatchEngine and its pipeline builder, which runs the service loop.
     "worker-batch",
