@@ -201,9 +201,18 @@ where
         // Cannot fail: the probe above proved the path writable.
         event.set("_ingest._value", item)?;
         if let Err(error) = body(event) {
-            if let Some(failed) = event.get("_ingest._value") {
-                out.push(failed.clone());
-            }
+            // A nested loop puts its enclosing element back first, because the
+            // field lives inside it. A top-level one leaves the failing element
+            // exposed, as Elasticsearch does.
+            let failed = match &enclosing {
+                Some(previous) => {
+                    let failed = event.remove("_ingest._value");
+                    event.set("_ingest._value", previous.clone())?;
+                    failed
+                }
+                None => event.get("_ingest._value").cloned(),
+            };
+            out.extend(failed);
             out.extend(rest);
             event.set(field, Value::Array(out))?;
             return Err(error);
@@ -250,17 +259,29 @@ where
     for (key, value) in entries {
         event.set("_ingest._key", Value::String(key))?;
         event.set("_ingest._value", value)?;
-        body(event)?;
+        if let Err(error) = body(event) {
+            // As in [`foreach_array`]: a nested loop's enclosing scope goes
+            // back, a top-level one leaves the failing entry exposed.
+            if enclosing_key.is_some() || enclosing_value.is_some() {
+                restore_scope(event, enclosing_key, enclosing_value)?;
+            }
+            return Err(error);
+        }
         let Some(Value::String(key)) = event.remove("_ingest._key") else {
             continue;
         };
         out.insert(key, event.remove("_ingest._value").unwrap_or(Value::Null));
     }
 
-    for (path, previous) in [
-        ("_ingest._key", enclosing_key),
-        ("_ingest._value", enclosing_value),
-    ] {
+    restore_scope(event, enclosing_key, enclosing_value)?;
+    event.set(field, Value::Object(out))?;
+    Ok(())
+}
+
+/// Put back the `_ingest._key` and `_ingest._value` an enclosing loop had,
+/// dropping `_ingest` if nothing else is left in it.
+fn restore_scope(event: &mut Event, key: Option<Value>, value: Option<Value>) -> Result<()> {
+    for (path, previous) in [("_ingest._key", key), ("_ingest._value", value)] {
         match previous {
             Some(value) => event.set(path, value)?,
             None => {
@@ -274,7 +295,6 @@ where
     {
         event.remove("_ingest");
     }
-    event.set(field, Value::Object(out))?;
     Ok(())
 }
 
@@ -3531,6 +3551,40 @@ mod tests {
         assert!(error.to_string().contains("bad"));
         assert_eq!(event.get("tags"), Some(&json!(["A", "bad", "c"])));
         assert_eq!(event.get("_ingest._value"), Some(&json!("bad")));
+    }
+
+    /// An inner loop that fails under `ignore_failure` writes back into the
+    /// element the outer loop is on, and leaves that element in place, for an
+    /// inner array and an inner map alike.
+    #[test]
+    fn a_failing_nested_foreach_puts_the_enclosing_element_back() {
+        for inner in [json!(["ok", "bad"]), json!({ "a": "ok", "b": "bad" })] {
+            let mut event = Event::new(json!({ "findings": [{ "id": 1, "inner": inner }] }));
+            foreach_array(&mut event, "findings", |event| {
+                let ignored = foreach_array(event, "_ingest._value.inner", |event| {
+                    if event.get_str("_ingest._value") == Some("bad") {
+                        return Err(crate::TransformError::FieldNotFound { path: "bad".into() });
+                    }
+                    event.set("_ingest._value", "OK")
+                });
+                assert!(ignored.is_err(), "the inner body failed");
+                Ok(())
+            })
+            .unwrap();
+
+            let finding = event.get("findings").and_then(|f| f.get(0)).cloned();
+            let finding = finding.unwrap_or_default();
+            assert_eq!(
+                finding.get("id"),
+                Some(&json!(1)),
+                "outer element lost: {event:?}"
+            );
+            assert!(
+                finding.get("inner").is_some(),
+                "inner field lost: {event:?}"
+            );
+            assert_eq!(event.get("_ingest"), None, "scope left behind: {event:?}");
+        }
     }
 
     /// An empty array still clears the loop's own `_ingest._value` and writes
