@@ -16,7 +16,7 @@ The FLAT, single-underscore form is applied to the loaded configuration on both 
     DFE_TRANSFORM_ELASTIC_SOURCE_BATCH_SIZE=5000
     DFE_TRANSFORM_ELASTIC_SINK_TOPIC=out
 
-It covers every `source.*` and `sink.*` field. `geoip` is not among them: it is scalo's own type, so it stays settable from the file and the cascade only. scalo's DOUBLE-underscore form is resolved from the cascade, which a named file is not a layer of, so it never reaches a `--config` deployment's `source.*` or `sink.*`.
+It covers every `source.*` and `sink.*` field. `geoip` is not among them: it is scalo's own type, so it stays settable from the file and the cascade only. scalo's DOUBLE-underscore form is resolved from the cascade, and a `--config` deployment reads `source.*` and `sink.*` straight from the file, so it never reaches them.
 
 ## `transport` selects the bus or a direct push, per side
 
@@ -73,15 +73,17 @@ Against a broker or topic whose `message.max.bytes` is lower -- a stock Kafka br
 
     DFE_TRANSFORM_ELASTIC_SINK_MAX_MESSAGE_BYTES=900000
 
-## A record that will not parse or transform is dropped and counted
+## A record that will not parse goes to the DLQ, one that will not transform is counted
 
-There is no dead-letter backend. A record that is not JSON is dropped and counted on `parse_errors_total` and `pipeline_dead_letters_dropped_total`. An event whose transform returns an error, or that will not serialise, is dropped and counted on `events_errored_total`. Either way the source is acknowledged -- the offset commits on the bus, the push is answered on direct -- so the record is not redelivered. Holding the acknowledgement protects what the sink refuses for now, never what can never be delivered.
+A record that is not JSON, and an event the sink transport would refuse, go to the DLQ `dlq` configures: by default NDJSON files under `/var/spool/scalo/dlq`, on the `dlq` volume the chart mounts at 1Gi. The source is acknowledged only once the DLQ holds them, so a full or broken DLQ holds the block rather than losing it. `dlq` is scalo's `DlqConfig`, so `mode`, `file.rotation` and `file.max_age_days` are set there. With `dlq.enabled: false` they are dropped and counted on `pipeline_dead_letters_dropped_total` instead.
 
-## A section scalo resolves for itself cannot be set from the file
+An event whose transform returns an error, or that will not serialise, is dropped and counted on `events_errored_total`, and its source is acknowledged, so it is not redelivered.
 
-`scaling` is the one that bites. The container starts with `--config`, and scalo reads `scaling` from its own cascade, so a `scaling:` block in the named file reaches nothing and the defaults stand. Set `DFE_TRANSFORM_ELASTIC_SCALING__ENABLED` or `DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD` instead. The effective values are logged once at startup, with whether each came from the cascade or the default.
+## scalo's own sections are set in the same file
 
-`CASCADE_ONLY_SECTIONS` in `src/config/loader.rs` is the full list. The service WARNS for each such section rather than refusing the file, naming the env form that does reach it, because the file is rendered from what dfe-engine publishes and a surplus section is not this service's to stop a pod over. `geoip` is deliberately absent from the list: the service declares that section itself and hands it to scalo, which is what makes it settable from a file. KEDA replica scaling is separate and unaffected: it is driven by the chart's `keda.*` values and the `scaling_pressure` gauge.
+The `--config` file is a layer of scalo's cascade, so `scaling`, `self_regulation`, `logger` and the other sections scalo reads for itself apply when written in it. The DOUBLE-underscore env form overrides them, for example `DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`. The effective scaling values are logged once at startup, with whether they came from the cascade or the default.
+
+`SCALO_SECTIONS` in `src/config/loader.rs` is the full list, and the unread-key warning skips it. One of them does nothing here: `batch_processing` sizes scalo's own batch engine, which the service loop does not run. Its receives take their record cap from `source.batch_size` and their byte cap from `source.max_batch_bytes`. scalo still refuses to start on a `batch_processing` section that does not parse. Every other key no field and no scalo section reads gets one warning at startup. `geoip` is not on the list: the service declares that section itself and hands it to scalo. KEDA replica scaling is separate: it is driven by the chart's `keda.*` values and the `scaling_pressure` gauge.
 
 ## The metrics listener is scalo's, not a config field
 

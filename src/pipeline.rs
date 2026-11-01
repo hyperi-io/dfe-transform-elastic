@@ -30,6 +30,13 @@ impl BatchOutcome {
     pub const fn total(&self) -> usize {
         self.emitted + self.dropped + self.errored
     }
+
+    /// Add `other`'s counts to these.
+    pub const fn absorb(&mut self, other: Self) {
+        self.emitted += other.emitted;
+        self.dropped += other.dropped;
+        self.errored += other.errored;
+    }
 }
 
 /// What a batch's envelopes turned out to be.
@@ -45,6 +52,17 @@ pub struct EnvelopeOutcome {
     pub contradicted: bool,
     /// At least one event's detected family is not one this source accepts.
     pub unaccepted: bool,
+}
+
+impl EnvelopeOutcome {
+    /// Fold a later batch's envelopes into these, keeping the earlier first.
+    pub fn absorb(&mut self, other: Self) {
+        if self.first.is_none() {
+            self.first = other.first;
+        }
+        self.contradicted |= other.contradicted;
+        self.unaccepted |= other.unaccepted;
+    }
 }
 
 /// How each event's envelope is decided.
@@ -245,6 +263,30 @@ pub struct ParseOutcome {
 /// Bytes that are not valid UTF-8 are replaced with U+FFFD, matching what Beats
 /// itself substitutes for a file it cannot decode, and counted.
 pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
+    // Sized from the payload's own newline count -- one SIMD pass against a
+    // `Vec` that reallocated its way up to 20,000 events on every batch.
+    let lines = memchr::memchr_iter(b'\n', payload).count();
+    let mut events = Vec::with_capacity(lines.max(1));
+    let Ok(outcome) = parse_each(payload, |event| {
+        events.push(event);
+        Ok::<(), std::convert::Infallible>(())
+    });
+    (events, outcome)
+}
+
+/// [`parse_batch`], handing each event to `each` as it is parsed rather than
+/// collecting them.
+///
+/// The service path: one record's lines are bounded by nothing but its bytes,
+/// so the caller decides how many parsed events it holds at once.
+///
+/// # Errors
+///
+/// The first error `each` returns, at which point parsing stops.
+pub fn parse_each<E>(
+    payload: &[u8],
+    mut each: impl FnMut(Event) -> Result<(), E>,
+) -> Result<ParseOutcome, E> {
     // Borrowed when the payload is already valid UTF-8, which is the common
     // case, so the hot path still reads straight out of the Kafka buffer.
     let text = String::from_utf8_lossy(payload);
@@ -253,10 +295,6 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
         ..ParseOutcome::default()
     };
 
-    // Sized from the payload's own newline count -- one SIMD pass against a
-    // `Vec` that reallocated its way up to 20,000 events on every batch.
-    let lines = memchr::memchr_iter(b'\n', payload).count();
-    let mut events = Vec::with_capacity(lines.max(1));
     let mut bad: Vec<&str> = Vec::new();
     let mut first_bad: Option<String> = None;
     for line in text.lines() {
@@ -266,7 +304,7 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
         match Event::from_json(line) {
             Ok(event) => {
                 outcome.parsed += 1;
-                events.push(event);
+                each(event)?;
             }
             Err(e) => {
                 outcome.bad_lines += 1;
@@ -279,7 +317,7 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
     }
 
     let Some(sample) = first_bad else {
-        return (events, outcome);
+        return Ok(outcome);
     };
     outcome.refused = if outcome.parsed == 0 {
         vec![payload.to_vec()]
@@ -297,7 +335,7 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
         "input is not JSON; refused and dead-lettered"
     );
 
-    (events, outcome)
+    Ok(outcome)
 }
 
 /// What serialising a batch produced.
@@ -312,6 +350,15 @@ pub struct SerialiseOutcome {
     /// Events serde refused to serialise. Dropped, on the same footing as an
     /// event the transform rejected.
     pub failed: usize,
+}
+
+impl SerialiseOutcome {
+    /// Add `other`'s counts to these.
+    pub const fn absorb(&mut self, other: Self) {
+        self.serialised += other.serialised;
+        self.oversize += other.oversize;
+        self.failed += other.failed;
+    }
 }
 
 /// The smallest per-message budget worth honouring.
@@ -353,32 +400,29 @@ pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, Se
     let budget = message_budget(max_bytes);
     let mut payloads = Vec::with_capacity(events.len());
     let mut outcome = SerialiseOutcome::default();
-    // Seeded from the previous document: a batch is one source's events, so the
-    // next one is close to the same size and the buffer does not regrow.
-    let mut hint = 1024;
+    // Written once and copied out at its exact length: a payload is held until
+    // its block is delivered, and a buffer sized by a guess holds the guess.
+    let mut scratch: Vec<u8> = Vec::with_capacity(1024);
 
     for event in events {
-        let mut payload: Vec<u8> = Vec::with_capacity(hint);
-        if let Err(e) = event.write_json(&mut payload) {
+        scratch.clear();
+        if let Err(e) = event.write_json(&mut scratch) {
             outcome.failed += 1;
             tracing::warn!(error = %e, "event could not be serialised, dropped");
             continue;
         }
-        if payload.len() > budget {
+        if scratch.len() > budget {
             outcome.oversize += 1;
             tracing::error!(
-                bytes = payload.len(),
+                bytes = scratch.len(),
                 budget,
                 "event exceeds the per-message budget and cannot be produced, dropped"
             );
             continue;
         }
 
-        // Seeded only from a payload that fits, so one oversize event does not
-        // size the next allocation to a record the budget already refused.
-        hint = payload.len().max(1024);
         outcome.serialised += 1;
-        payloads.push(payload);
+        payloads.push(scratch.as_slice().to_vec());
     }
 
     (payloads, outcome)

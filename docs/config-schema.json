@@ -57,6 +57,25 @@
           "max_database_bytes": 536870912
         }
       }
+    },
+    "dlq": {
+      "description": "Where a record goes that no retry can deliver: input that is not JSON,\nand an event the sink transport would refuse.\n\nscalo's type verbatim. The default writes NDJSON files under\n`/var/spool/scalo/dlq`, which the deployment contract declares as a\nwritable volume. With `enabled: false` such a record is dropped and\ncounted on `pipeline_dead_letters_dropped_total`.",
+      "$ref": "#/$defs/DlqConfig",
+      "default": {
+        "enabled": true,
+        "mode": "cascade",
+        "queue_capacity": 10000,
+        "batch_size": 256,
+        "flush_interval_ms": 100,
+        "max_payload_bytes": 524288,
+        "file": {
+          "enabled": true,
+          "path": "/var/spool/scalo/dlq",
+          "rotation": "hourly",
+          "max_age_days": 30,
+          "compress_rotated": true
+        }
+      }
     }
   },
   "$defs": {
@@ -107,14 +126,14 @@
           "default": []
         },
         "batch_size": {
-          "description": "Events pulled per batch.",
+          "description": "The most records one receive takes, and the most parsed events held at once.",
           "type": "integer",
           "format": "uint",
           "minimum": 0,
           "default": 20000
         },
         "max_batch_bytes": {
-          "description": "Ceiling on the BYTES one fetch may bring back, the inbound mirror of\n`sink.max_message_bytes`.\n\n`batch_size` bounds the event count and nothing bounds their size, so a\nproducer sending large records decides this service's memory. Applied as\nlibrdkafka's `fetch.max.bytes`, which enforces it at the broker rather\nthan after the bytes have arrived; the pod's memory limit has to cover\nthis plus the parsed document trees, which are several times larger.",
+          "description": "Ceiling on the BYTES one receive may bring back, the inbound mirror of\n`sink.max_message_bytes`.\n\n`batch_size` bounds the record count and nothing bounds their size, so a\nproducer sending large records decides this service's memory. Applied\ntwice: as librdkafka's `fetch.max.bytes`, which the broker enforces per\nfetch, and as the byte budget every receive stops at, which the\nself-regulation governor can lower but never raise. The pod's memory\nlimit has to cover this plus the outbound records built from it.",
           "type": "integer",
           "format": "uint",
           "minimum": 0,
@@ -436,6 +455,137 @@
           "default": 536870912
         }
       }
+    },
+    "DlqConfig": {
+      "description": "Top-level DLQ configuration.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Whether DLQ is enabled.",
+          "type": "boolean",
+          "default": true
+        },
+        "mode": {
+          "description": "Backend routing mode.",
+          "$ref": "#/$defs/DlqMode",
+          "default": "cascade"
+        },
+        "queue_capacity": {
+          "description": "Bounded mpsc capacity. When the queue is full, `try_send` returns\n`QueueFull` (overflow=Drop). Sized for failure-burst tolerance.\nDefault 10_000.",
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0,
+          "default": 10000
+        },
+        "batch_size": {
+          "description": "Drain coalesces up to this many entries into one backend write.\nDefault 256.",
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0,
+          "default": 256
+        },
+        "flush_interval_ms": {
+          "description": "Flush a partial batch after this duration, even if not full.\nDefault 100 ms.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "default": 100
+        },
+        "max_payload_bytes": {
+          "description": "Payload bytes an entry keeps: a longer payload is cut to this and the\nentry marked `truncated` with its original length, so it lands where\nthe whole record could not. `None` keeps every payload whole. Default\n[`DEFAULT_MAX_PAYLOAD_BYTES`].",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint",
+          "minimum": 0,
+          "default": 524288
+        },
+        "file": {
+          "description": "File backend configuration.",
+          "$ref": "#/$defs/FileDlqConfig",
+          "default": {
+            "enabled": true,
+            "path": "/var/spool/scalo/dlq",
+            "rotation": "hourly",
+            "max_age_days": 30,
+            "compress_rotated": true
+          }
+        }
+      }
+    },
+    "DlqMode": {
+      "description": "How backends are used when multiple are enabled.",
+      "oneOf": [
+        {
+          "description": "Try backends in order; stop on first success.\nDefault order: Kafka first, file fallback.",
+          "type": "string",
+          "const": "cascade"
+        },
+        {
+          "description": "Write every batch to all enabled backends. The write succeeds when at\nleast one backend takes the whole batch, and fails only when none does.",
+          "type": "string",
+          "const": "fan_out"
+        },
+        {
+          "description": "File backend only (no Kafka dependency).",
+          "type": "string",
+          "const": "file_only"
+        },
+        {
+          "description": "Kafka backend only (matches a typical consumer's current behaviour).",
+          "type": "string",
+          "const": "kafka_only"
+        }
+      ]
+    },
+    "FileDlqConfig": {
+      "description": "File-based DLQ configuration.\n\nWrites NDJSON files with automatic rotation and cleanup.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Enable the file backend.",
+          "type": "boolean",
+          "default": true
+        },
+        "path": {
+          "description": "Base directory for DLQ files.\nService name is appended as a subdirectory. Default `/var/spool/scalo/dlq`.",
+          "type": "string",
+          "default": "/var/spool/scalo/dlq"
+        },
+        "rotation": {
+          "description": "File rotation period.",
+          "$ref": "#/$defs/RotationPeriod",
+          "default": "hourly"
+        },
+        "max_age_days": {
+          "description": "Auto-cleanup files older than this many days.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 30
+        },
+        "compress_rotated": {
+          "description": "Compress rotated files with flate2/gzip.",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "RotationPeriod": {
+      "description": "File rotation period.",
+      "oneOf": [
+        {
+          "description": "Rotate files every hour.",
+          "type": "string",
+          "const": "hourly"
+        },
+        {
+          "description": "Rotate files every day.",
+          "type": "string",
+          "const": "daily"
+        }
+      ]
     }
   }
 }

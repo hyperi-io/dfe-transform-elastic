@@ -154,6 +154,7 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
             max_message_bytes: dfe_transform_elastic::config::default_max_message_bytes(),
         },
         geoip: scalo::geoip_download::GeoIpConfig::default(),
+        dlq: scalo::dlq::DlqConfig::default(),
     }
 }
 

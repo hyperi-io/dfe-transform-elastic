@@ -76,6 +76,7 @@ fn config_sized(
         // Unread here: the round trip drives `run_loop`, and provisioning sits
         // on `run`, so no test reaches a provider.
         geoip: scalo::geoip_download::GeoIpConfig::default(),
+        dlq: scalo::dlq::DlqConfig::default(),
     }
 }
 
@@ -964,15 +965,15 @@ async fn an_event_over_one_megabyte_arrives_on_a_broker_at_the_stack_ceiling() {
     );
 }
 
-/// The container this suite starts must carry a traceable name and the suite
+/// The container this suite runs on must carry the suite's name prefix and
 /// label, so an operator can tell what left it behind.
 #[tokio::test(flavor = "multi_thread")]
 async fn container_is_named_and_labelled() {
     let broker = broker_or_skip!("container-hygiene");
-    if !broker.is_container() {
+    let Some(name) = broker.container_name() else {
         eprintln!("using a live broker; nothing to inspect");
         return;
-    }
+    };
 
     let out = std::process::Command::new("docker")
         .args([
@@ -980,18 +981,14 @@ async fn container_is_named_and_labelled() {
             "--format",
             "{{.Names}}",
             "--filter",
-            &format!(
-                "label={}={}",
-                common::TEST_SUITE_LABEL.0,
-                common::TEST_SUITE_LABEL.1
-            ),
+            &format!("label=io.hyperi.test.suite={}", common::SUITE.label()),
         ])
         .output()
         .expect("docker ps runs");
 
     let names = String::from_utf8_lossy(&out.stdout);
     assert!(
-        names.contains("dfe-transform-elastic-test-broker-container-hygiene"),
-        "container is not traceable by name or label: {names}"
+        name.starts_with(&common::SUITE.prefix()) && names.lines().any(|n| n == name),
+        "{name} is not traceable by name or label: {names}"
     );
 }

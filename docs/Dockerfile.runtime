@@ -8,23 +8,10 @@ LABEL org.opencontainers.image.vendor="HYPERI PTY LIMITED"
 LABEL org.opencontainers.image.licenses="BUSL-1.1"
 LABEL io.hyperi.profile="production"
 
-# Runtime shared libraries for dynamically-linked Rust crates.
 # Apt versions are unpinned because Debian drops superseded ones, so the digest-pinned base is what fixes the release.
 # hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl netcat-openbsd iputils-ping gnupg \
-    && curl -fsSL https://packages.confluent.io/clients/deb/archive.key -o /tmp/repo-key.asc \
-    && gpg --show-keys --with-colons --with-fingerprint /tmp/repo-key.asc \
-       > /tmp/repo-key.info \
-    && grep -q "^fpr:::::::::CBBB821E8FAF364F79835C438B1DA6120C2BF624:" /tmp/repo-key.info \
-    && rm -f /tmp/repo-key.info \
-    && gpg --dearmor -o /usr/share/keyrings/confluent-clients.gpg /tmp/repo-key.asc \
-    && rm -f /tmp/repo-key.asc \
-    && echo "deb [signed-by=/usr/share/keyrings/confluent-clients.gpg] \
-       https://packages.confluent.io/clients/deb bookworm main" \
-       > /etc/apt/sources.list.d/confluent-clients.list \
-    && apt-get update && apt-get install -y --no-install-recommends \
-       librdkafka1 libssl3t64 zlib1g \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Dynamic OCI labels (injected by CI at build time)
@@ -42,8 +29,10 @@ LABEL org.opencontainers.image.created="${OCI_CREATED}"
 COPY --from=builder /app/target/release/dfe-transform-elastic /usr/local/bin/dfe-transform-elastic
 RUN chmod +x /usr/local/bin/dfe-transform-elastic
 
-# Ubuntu 24.04 ships with ubuntu user at UID 1000 -- remove before creating appuser
+# A base image may ship its own user at UID 1000 (Ubuntu's `ubuntu`), so remove it first.
 RUN if id ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi && useradd --create-home --uid 1000 appuser
+RUN mkdir -p '/var/lib/dfe/geoip' '/var/spool/scalo/dlq' && chown 1000:1000 '/var/lib/dfe/geoip' '/var/spool/scalo/dlq'
+WORKDIR /home/appuser
 # Numeric, so Kubernetes runAsNonRoot can verify it without reading /etc/passwd.
 USER 1000
 
@@ -51,10 +40,9 @@ EXPOSE 9090
 # Conditional listeners, not EXPOSEd -- publish explicitly when enabled:
 #   6000/tcp push -- when config.source.transport is one of "direct", "grpc"
 
-# Shell form maps any curl failure to exit 1, the only unhealthy status Docker defines.
-# hadolint ignore=DL3025
+# bash builtins only, so the image needs no HTTP client. A status other than 200 exits 1.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -sf http://localhost:9090/livez > /dev/null || exit 1
+    CMD ["bash", "-c", "exec 3<>/dev/tcp/localhost/9090 && printf 'GET /livez HTTP/1.0\\r\\n\\r\\n' >&3 && read -r _ code _ <&3 && [ \"$code\" = 200 ]"]
 
 ENTRYPOINT ["dfe-transform-elastic"]
 CMD ["--config", "/etc/dfe-transform-elastic/config.yaml"]

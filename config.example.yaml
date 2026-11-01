@@ -67,3 +67,16 @@ geoip:
     data_dir: /var/lib/dfe/geoip
     max_age_days: 30
     max_database_bytes: 536870912
+dlq:
+  enabled: true
+  mode: cascade
+  queue_capacity: 10000
+  batch_size: 256
+  flush_interval_ms: 100
+  max_payload_bytes: 524288
+  file:
+    enabled: true
+    path: /var/spool/scalo/dlq
+    rotation: hourly
+    max_age_days: 30
+    compress_rotated: true

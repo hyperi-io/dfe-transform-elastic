@@ -23,12 +23,15 @@
 //! delivered: one that will not transform or serialise, one over
 //! `sink.max_message_bytes`, and one the sink transport would refuse, which the
 //! pipeline screens out before the send. Input that is not JSON is refused as a
-//! dead letter. Dead letters take scalo's DLQ path with no backend, so they are
-//! dropped and counted in `pipeline_dead_letters_dropped_total`.
+//! dead letter. Dead letters, the screened records among them, go to the DLQ
+//! `dlq` configures, and the source is released only once the DLQ holds them.
+//! With `dlq.enabled: false` they are dropped and counted in
+//! `pipeline_dead_letters_dropped_total`.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
+use dfe_runtime::Event;
 use scalo::cli::ServiceRuntime;
 use scalo::transport::filter::FilteredDlqEntry;
 #[cfg(feature = "grpc")]
@@ -48,8 +51,8 @@ use crate::agentless::{Agentless, Stopped};
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{
-    EnvelopeOutcome, NOT_JSON, message_budget, parse_batch, serialise_events,
-    transform_batch_resolved,
+    BatchOutcome, EnvelopeOutcome, NOT_JSON, SerialiseOutcome, message_budget, parse_each,
+    serialise_events, transform_batch_resolved,
 };
 
 /// The longest the loop goes without pushing scaling signals.
@@ -82,7 +85,7 @@ pub struct ScalingSignals {
     /// The cgroup-aware guard feeding the never-OOM hard gate.
     pub memory: std::sync::Arc<scalo::MemoryGuard>,
     /// The byte budget the engine's receives are capped by, which batch
-    /// saturation is measured against. `None` when self-regulation is off.
+    /// saturation is measured against. `None` where the engine has none.
     pub budget: Option<std::sync::Arc<scalo::ByteBudgetController>>,
 }
 
@@ -114,7 +117,16 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 
     provision_geoip(&config.geoip).await;
 
-    let engine = batch_engine(&config, &runtime);
+    // Its own token, so the drain outlives the loop's and takes the dead
+    // letters of the blocks drained at shutdown.
+    let dlq = scalo::dlq::Dlq::spawn(
+        &config.dlq,
+        "dfe-transform-elastic",
+        None,
+        CancellationToken::new(),
+    )
+    .map_err(|e| crate::Error::Config(format!("dlq: {e}")))?;
+    let (engine, budget) = batch_engine(&config, &runtime, dlq.clone());
     let consumer =
         build_receiver(&config, runtime.governor.as_ref(), &runtime.memory_guard).await?;
     let producer = build_sender(&config).await?;
@@ -129,14 +141,11 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         pressure: std::sync::Arc::clone(pressure),
         memory: std::sync::Arc::clone(&runtime.memory_guard),
         // The same controller `batch_engine` wires into the engine.
-        budget: runtime
-            .governor
-            .as_ref()
-            .map(scalo::SelfRegulationGovernor::budget),
+        budget: Some(Arc::clone(&budget)),
     });
     log_effective_scaling(runtime.scaling.as_deref());
 
-    run_loop(
+    let result = run_loop(
         &config,
         &engine,
         &consumer,
@@ -145,37 +154,88 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         &metrics,
         scaling.as_ref(),
     )
-    .await
+    .await;
+    if let Err(e) = dlq.shutdown().await {
+        tracing::error!(error = %e, "the DLQ drain did not stop cleanly");
+    }
+    result
 }
 
 /// The engine the loop runs on, wired to the runtime the way scalo wires its
-/// own: the memory guard leases each block's bytes, and the governor's byte
-/// budget makes every receive a byte-bounded `recv_limited`.
+/// own, and the byte budget its receives are held to.
 ///
 /// Built here rather than taken from the runtime because this one takes its
 /// record cap from `source.batch_size`, not from the runtime's
 /// `batch_processing` section.
-fn batch_engine(config: &Config, runtime: &ServiceRuntime) -> BatchEngine {
+fn batch_engine(
+    config: &Config,
+    runtime: &ServiceRuntime,
+    dlq: scalo::dlq::Dlq,
+) -> (BatchEngine, Arc<scalo::ByteBudgetController>) {
     let settings = engine_config(config);
     let engine = match runtime.worker_pool.as_ref() {
         Some(pool) => BatchEngine::with_pool(Arc::clone(pool), settings),
         None => BatchEngine::new(settings),
     };
-    let mut engine = with_dead_letters(engine);
+    let mut engine = engine.with_dlq(Arc::new(dlq));
     engine.auto_wire(&runtime.metrics, Some(&runtime.memory_guard));
-    if let Some(governor) = runtime.governor.as_ref() {
-        engine.set_byte_budget(governor.budget());
-    }
-    engine
+    let budget = bound_intake(&mut engine, config, runtime.governor.as_ref());
+    (engine, budget)
+}
+
+/// Give the engine the byte budget every receive is held to, and return it.
+///
+/// `source.max_batch_bytes` is the ceiling. Without a budget scalo receives
+/// by record count alone, draining librdkafka's queue across as many fetches as
+/// it takes, and the governor's own budget grows to its profile's ceiling
+/// (64 MiB on balanced). So the budget here is the governor's, on its pressure
+/// latch, capped at `max_batch_bytes`, and with the governor off a fixed one at
+/// `max_batch_bytes`.
+pub fn bound_intake(
+    engine: &mut BatchEngine,
+    config: &Config,
+    governor: Option<&scalo::SelfRegulationGovernor>,
+) -> Arc<scalo::ByteBudgetController> {
+    let ceiling = u64::try_from(config.source.max_batch_bytes).unwrap_or(u64::MAX);
+    let (pressure, start, record_cap) = match governor {
+        Some(governor) => {
+            let budget = governor.budget();
+            (
+                governor.pressure(),
+                budget.byte_budget().min(ceiling),
+                budget.record_cap(),
+            )
+        }
+        // No sources, so it never holds and the budget stays at the ceiling.
+        None => (
+            Arc::new(scalo::UnifiedPressure::new(
+                Vec::new(),
+                scalo::SelfRegulationConfig::default().hysteresis(),
+            )),
+            ceiling,
+            config.source.batch_size,
+        ),
+    };
+    let budget = Arc::new(scalo::ByteBudgetController::new(
+        scalo::ByteBudgetConfig {
+            start_bytes: start,
+            max_bytes: ceiling,
+            record_cap,
+            ..scalo::ByteBudgetConfig::default()
+        },
+        pressure,
+    ));
+    engine.set_byte_budget(Arc::clone(&budget));
+    budget
 }
 
 /// Route the engine's dead letters through scalo's DLQ path, with no backend.
 ///
-/// This service configures no DLQ, so a dead letter -- input that is not
-/// JSON, or a record the sink would refuse -- is dropped, counted in
-/// `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total`, and
-/// its block released `Dropped`. Without it scalo's default policy stops the
-/// loop on the first dead letter.
+/// What `dlq.enabled: false` gives, and what the tests drive: a dead letter --
+/// input that is not JSON, or a record the sink would refuse -- is dropped,
+/// counted in `pipeline_dead_letters_dropped_total{reason}` and
+/// `dlq_dropped_total`, and its block released `Dropped`. Without a DLQ scalo's
+/// default policy stops the loop on the first dead letter.
 #[must_use]
 pub fn with_dead_letters(engine: BatchEngine) -> BatchEngine {
     engine.with_dlq(Arc::new(scalo::dlq::Dlq::disabled()))
@@ -358,7 +418,8 @@ fn missing_transport(side: &str, transport: Transport) -> crate::Error {
 /// `source` says whether the cascade supplied them, so a value left at scalo's
 /// default is visibly a default rather than a choice.
 fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
-    let config = scalo::scaling::ScalingPressureConfig::from_cascade();
+    // run_app has already refused a `scaling` section that does not parse.
+    let config = scalo::scaling::ScalingPressureConfig::from_cascade().unwrap_or_default();
     let configured = scalo::config::try_get().is_some_and(|cfg| cfg.contains("scaling"));
     let source = if configured { "cascade" } else { "default" };
     tracing::info!(
@@ -381,7 +442,21 @@ fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
 /// directly -- a test must not reach db-ip.com. It is also why this never
 /// returns an error: a provider outage degrades enrichment, and turning that
 /// into a failed startup would take the transform offline over geo fields.
-async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
+///
+/// `enabled: false` turns enrichment off as well as provisioning. Left to
+/// itself the lookup engine searches its standard directories for whatever
+/// was not provisioned, so a mounted or earlier-downloaded database would
+/// still enrich.
+pub async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
+    if !config.enabled {
+        if !dfe_runtime::enrichment::geoip_global::disable() {
+            tracing::warn!(
+                "GeoIP databases were already resolved; geoip.enabled: false came too late"
+            );
+        }
+        tracing::info!("GeoIP enrichment disabled by geoip.enabled: false");
+        return;
+    }
     let paths = match scalo::geoip_download::ensure_databases(config).await {
         Ok(paths) => paths,
         Err(e) => {
@@ -564,6 +639,37 @@ enum Work {
     Agentless(Box<Agentless>),
 }
 
+/// One block on its way through [`Stage::transform`].
+///
+/// One record's NDJSON lines are bounded by its bytes alone: an 8 MB record of
+/// 17-byte lines is 470,588 events, and holding them all peaked at 1.3 GiB
+/// against a 512 MiB pod limit. So parsed events go through in groups of at
+/// most `cap`, and only their outbound records stay.
+struct Block {
+    cap: usize,
+    pending: Vec<Event>,
+    out: Vec<Record>,
+    parsed: usize,
+    outcome: BatchOutcome,
+    envelopes: EnvelopeOutcome,
+    serialised: SerialiseOutcome,
+}
+
+impl Block {
+    fn new(cap: usize, records: usize) -> Self {
+        let cap = cap.max(1);
+        Self {
+            cap,
+            pending: Vec::with_capacity(records.min(cap)),
+            out: Vec::with_capacity(records),
+            parsed: 0,
+            outcome: BatchOutcome::default(),
+            envelopes: EnvelopeOutcome::default(),
+            serialised: SerialiseOutcome::default(),
+        }
+    }
+}
+
 /// Everything the transform half of the loop needs, shared with the ticker.
 struct Stage<'a> {
     config: &'a Config,
@@ -580,6 +686,9 @@ struct Stage<'a> {
 impl Stage<'_> {
     /// Parse, transform and serialise one block, returning a record per event
     /// that survived and a dead letter per input refused as not JSON.
+    ///
+    /// At most `source.batch_size` parsed events are held at once, however many
+    /// NDJSON lines the block's records carry.
     // Block and byte counts are bounded far below 2^53, so the f64 casts are exact.
     #[allow(clippy::cast_precision_loss)]
     fn transform(
@@ -596,10 +705,10 @@ impl Stage<'_> {
         metrics.batch_events.record(records.len() as f64);
 
         let started = Instant::now();
-        let mut events = Vec::with_capacity(records.len());
+        let mut block = Block::new(self.config.source.batch_size, records.len());
         let mut dead = Vec::new();
         for record in records {
-            let (parsed, parse_outcome) = parse_batch(&record.payload);
+            let parse_outcome = parse_each(&record.payload, |event| self.take(&mut block, event))?;
             if !parse_outcome.refused.is_empty() {
                 let refused = parse_outcome.refused.len() as u64;
                 metrics.parse_errors.increment(refused);
@@ -618,20 +727,21 @@ impl Stage<'_> {
             if parse_outcome.lossy {
                 metrics.lossy_payloads.increment(1);
             }
-            events.extend(parsed);
         }
+        self.flush(&mut block)?;
+        let Block {
+            out,
+            parsed,
+            outcome,
+            envelopes,
+            serialised,
+            ..
+        } = block;
 
         // One series, counted once. The source transport counts its own wire
         // records in `transport_received_*`; these are the events parsed out.
-        metrics.dfe.records_received(events.len() as u64);
+        metrics.dfe.records_received(parsed as u64);
 
-        let (transformed, outcome, envelopes) = match &self.work {
-            Work::One {
-                transform,
-                resolver,
-            } => transform_batch_resolved(*transform, resolver, events),
-            Work::Agentless(agentless) => agentless.transform(events)?,
-        };
         {
             let mut state = self.state.lock();
             let state = &mut *state;
@@ -665,8 +775,6 @@ impl Stage<'_> {
         );
         push_scaling_signals(self.scaling, self.consumer, saturation);
 
-        let (payloads, serialised) =
-            serialise_events(&transformed, self.config.sink.max_message_bytes);
         if serialised.oversize > 0 {
             metrics
                 .events_oversize
@@ -680,11 +788,46 @@ impl Stage<'_> {
                 .increment(serialised.failed as u64);
         }
 
-        let out = payloads
-            .into_iter()
-            .map(|payload| outbound_record(payload, &self.topic))
-            .collect();
         Ok((out, dead))
+    }
+
+    /// Hold one parsed event, flushing the block's pending events once they
+    /// reach its cap.
+    fn take(&self, block: &mut Block, event: Event) -> Result<(), Stopped> {
+        block.pending.push(event);
+        block.parsed += 1;
+        if block.pending.len() >= block.cap {
+            self.flush(block)?;
+        }
+        Ok(())
+    }
+
+    /// Transform and serialise the block's pending events, keeping only the
+    /// outbound records.
+    fn flush(&self, block: &mut Block) -> Result<(), Stopped> {
+        if block.pending.is_empty() {
+            return Ok(());
+        }
+        let events = std::mem::take(&mut block.pending);
+        let (transformed, outcome, envelopes) = match &self.work {
+            Work::One {
+                transform,
+                resolver,
+            } => transform_batch_resolved(*transform, resolver, events),
+            Work::Agentless(agentless) => agentless.transform(events)?,
+        };
+        let (payloads, serialised) =
+            serialise_events(&transformed, self.config.sink.max_message_bytes);
+        drop(transformed);
+        block.out.extend(
+            payloads
+                .into_iter()
+                .map(|payload| outbound_record(payload, &self.topic)),
+        );
+        block.outcome.absorb(outcome);
+        block.envelopes.absorb(envelopes);
+        block.serialised.absorb(serialised);
+        Ok(())
     }
 
     /// Push a zero saturation when no block has pushed the signals for
@@ -851,7 +994,7 @@ async fn send_each<S: TransportSender>(
                 metrics.dfe.records_filtered(count);
                 tracing::warn!(
                     records = count,
-                    "the sink transport dead-lettered a send and this service has no DLQ; \
+                    "the sink transport dead-lettered a send the screen let through; \
                      its records are dropped and not counted delivered"
                 );
             }
@@ -1169,6 +1312,7 @@ mod tests {
                 max_message_bytes: crate::config::default_max_message_bytes(),
             },
             geoip: scalo::geoip_download::GeoIpConfig::default(),
+            dlq: scalo::dlq::DlqConfig::default(),
         }
     }
 
@@ -2023,6 +2167,99 @@ mod tests {
             (first - 1.0).abs() < f64::EPSILON,
             "a full governed receive read as {first}"
         );
+    }
+
+    /// A sink that notes how many records each send carried.
+    #[derive(Default)]
+    struct Calls {
+        sizes: std::sync::Mutex<Vec<usize>>,
+    }
+
+    impl Calls {
+        fn sizes(&self) -> Vec<usize> {
+            self.sizes.lock().unwrap().clone()
+        }
+
+        async fn wait_for_records(&self, count: usize) {
+            while self.sizes().iter().sum::<usize>() < count {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        }
+    }
+
+    impl scalo::transport::TransportBase for Calls {
+        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
+            std::future::ready(Ok(()))
+        }
+        fn is_healthy(&self) -> bool {
+            true
+        }
+        fn name(&self) -> &'static str {
+            "calls"
+        }
+    }
+
+    impl TransportSender for Calls {
+        fn send(
+            &self,
+            _destination: &str,
+            _payload: bytes::Bytes,
+        ) -> impl Future<Output = SendResult> + Send {
+            std::future::ready(SendResult::Fatal(TransportError::Internal(
+                "the loop sends blocks".into(),
+            )))
+        }
+
+        fn send_batch(&self, records: &[Record]) -> impl Future<Output = SendResult> + Send {
+            self.sizes.lock().unwrap().push(records.len());
+            std::future::ready(SendResult::Ok)
+        }
+    }
+
+    /// `source.max_batch_bytes` bounds what one receive holds, with the
+    /// governor off and with it on: neither scalo's count-only receive nor the
+    /// governor's own budget, which grows to its profile's ceiling, keeps a
+    /// receive under it on its own.
+    #[tokio::test(start_paused = true)]
+    async fn max_batch_bytes_bounds_every_receive() {
+        const RECORDS: usize = 60;
+        const PAD: usize = 10 * 1024;
+        let guard = Arc::new(scalo::MemoryGuard::new(scalo::MemoryGuardConfig::default()));
+        let governor = scalo::SelfRegulationConfig::default()
+            .build(Arc::clone(&guard))
+            .expect("self-regulation is on by default");
+
+        for governed in [None, Some(&governor)] {
+            let mut config = config();
+            config.source.max_batch_bytes = 64 * 1024;
+            let mut engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
+            let _budget = bound_intake(&mut engine, &config, governed);
+
+            let consumer = memory_source(vec![okta_event("bounded", PAD); RECORDS]).await;
+            let sink = Calls::default();
+            let shutdown = CancellationToken::new();
+            let metrics = test_metrics();
+            let run = run_loop(
+                &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+            );
+            tokio::pin!(run);
+            tokio::select! {
+                result = &mut run => panic!("the loop stopped: {result:?}"),
+                () = sink.wait_for_records(RECORDS) => {}
+            }
+            shutdown.cancel();
+            run.await.expect("the loop stops cleanly on shutdown");
+
+            // A receive stops once it passes the budget, so it holds at most
+            // one record more than fits.
+            let most = config.source.max_batch_bytes / PAD + 1;
+            let sizes = sink.sizes();
+            assert!(
+                sizes.iter().all(|&n| n <= most),
+                "governed: {}, records per send {sizes:?}, at most {most} fit",
+                governed.is_some()
+            );
+        }
     }
 
     /// A dfe-receiver syslog record, as it arrives on the source topic.

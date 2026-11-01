@@ -114,8 +114,8 @@ impl Cache {
     /// The cached fields for `ip` in `database`, if any.
     ///
     /// The read lock is held for a hash lookup and a refcount bump and nothing
-    /// else, which is what keeps one transform thread per partition off each
-    /// other's back.
+    /// else, which is what keeps concurrent transform threads off each other's
+    /// back.
     #[must_use]
     pub fn get(&self, database: Database, ip: IpAddr) -> Option<Fields> {
         let hit = self
