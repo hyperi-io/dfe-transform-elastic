@@ -267,18 +267,19 @@ pub struct SourceConfig {
     #[serde(default)]
     pub topics: Vec<String>,
 
-    /// Events pulled per batch.
+    /// The most records one receive takes, and the most parsed events held at once.
     #[serde(default = "default_batch_size")]
     pub batch_size: usize,
 
-    /// Ceiling on the BYTES one fetch may bring back, the inbound mirror of
+    /// Ceiling on the BYTES one receive may bring back, the inbound mirror of
     /// `sink.max_message_bytes`.
     ///
-    /// `batch_size` bounds the event count and nothing bounds their size, so a
-    /// producer sending large records decides this service's memory. Applied as
-    /// librdkafka's `fetch.max.bytes`, which enforces it at the broker rather
-    /// than after the bytes have arrived; the pod's memory limit has to cover
-    /// this plus the parsed document trees, which are several times larger.
+    /// `batch_size` bounds the record count and nothing bounds their size, so a
+    /// producer sending large records decides this service's memory. Applied
+    /// twice: as librdkafka's `fetch.max.bytes`, which the broker enforces per
+    /// fetch, and as the byte budget every receive stops at, which the
+    /// self-regulation governor can lower but never raise. The pod's memory
+    /// limit has to cover this plus the outbound records built from it.
     #[serde(default = "default_max_batch_bytes")]
     pub max_batch_bytes: usize,
 

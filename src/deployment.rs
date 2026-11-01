@@ -59,11 +59,11 @@ pub fn contract() -> DeploymentContract {
         // There is no `health`, `metrics` or `scaling` section because `Config`
         // declares none: a key this service never reads is a knob that silently
         // does nothing. scalo's `--metrics-addr` (env `METRICS_ADDR`) owns the
-        // listener, and it resolves `scaling` from its config cascade, which
-        // the file this contract ships is not a layer of. Scaling runs on
+        // listener, and it resolves `scaling` from its config cascade, of which
+        // the file this contract ships is a layer. Scaling runs on
         // `ScalingPressureConfig::default()` with the components registered by
-        // `ServiceApp::scaling_components`; move a gate threshold with
-        // `DFE_TRANSFORM_ELASTIC_SCALING__*`.
+        // `ServiceApp::scaling_components`. Move a gate threshold with a
+        // `scaling` block in the file or `DFE_TRANSFORM_ELASTIC_SCALING__*`.
         default_config: serde_json::to_value(shipped_config()).ok().map(strip_nulls),
         depends_on: vec!["kafka".into()],
         native_deps: NativeDepsContract::for_scalo_features(&["transport-kafka"], &base_image),
