@@ -35,6 +35,12 @@ quality:
 test:
   enabled: true
   coverage: true
+  rust:
+    # Required, not auto: the memory and cascade tests read process-wide state, and only nextest gives each test a process of its own.
+    nextest: true
+  # A release runs the full tier. docs/testing.md says which tests are which.
+  full:
+    required_for_release: true
 
 # Building
 build:
