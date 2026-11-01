@@ -83,7 +83,7 @@ pub struct ScalingSignals {
     /// The cgroup-aware guard feeding the never-OOM hard gate.
     pub memory: std::sync::Arc<scalo::MemoryGuard>,
     /// The byte budget the engine's receives are capped by, which batch
-    /// saturation is measured against. `None` when self-regulation is off.
+    /// saturation is measured against. `None` where the engine has none.
     pub budget: Option<std::sync::Arc<scalo::ByteBudgetController>>,
 }
 
@@ -115,7 +115,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 
     provision_geoip(&config.geoip).await;
 
-    let engine = batch_engine(&config, &runtime);
+    let (engine, budget) = batch_engine(&config, &runtime);
     let consumer =
         build_receiver(&config, runtime.governor.as_ref(), &runtime.memory_guard).await?;
     let producer = build_sender(&config).await?;
@@ -130,10 +130,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         pressure: std::sync::Arc::clone(pressure),
         memory: std::sync::Arc::clone(&runtime.memory_guard),
         // The same controller `batch_engine` wires into the engine.
-        budget: runtime
-            .governor
-            .as_ref()
-            .map(scalo::SelfRegulationGovernor::budget),
+        budget: Some(Arc::clone(&budget)),
     });
     log_effective_scaling(runtime.scaling.as_deref());
 
@@ -150,13 +147,15 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 }
 
 /// The engine the loop runs on, wired to the runtime the way scalo wires its
-/// own: the memory guard leases each block's bytes, and the governor's byte
-/// budget makes every receive a byte-bounded `recv_limited`.
+/// own, and the byte budget its receives are held to.
 ///
 /// Built here rather than taken from the runtime because this one takes its
 /// record cap from `source.batch_size`, not from the runtime's
 /// `batch_processing` section.
-fn batch_engine(config: &Config, runtime: &ServiceRuntime) -> BatchEngine {
+fn batch_engine(
+    config: &Config,
+    runtime: &ServiceRuntime,
+) -> (BatchEngine, Arc<scalo::ByteBudgetController>) {
     let settings = engine_config(config);
     let engine = match runtime.worker_pool.as_ref() {
         Some(pool) => BatchEngine::with_pool(Arc::clone(pool), settings),
@@ -164,10 +163,54 @@ fn batch_engine(config: &Config, runtime: &ServiceRuntime) -> BatchEngine {
     };
     let mut engine = with_dead_letters(engine);
     engine.auto_wire(&runtime.metrics, Some(&runtime.memory_guard));
-    if let Some(governor) = runtime.governor.as_ref() {
-        engine.set_byte_budget(governor.budget());
-    }
-    engine
+    let budget = bound_intake(&mut engine, config, runtime.governor.as_ref());
+    (engine, budget)
+}
+
+/// Give the engine the byte budget every receive is held to, and return it.
+///
+/// `source.max_batch_bytes` is the ceiling. Without a budget scalo receives
+/// by record count alone, draining librdkafka's queue across as many fetches as
+/// it takes, and the governor's own budget grows to its profile's ceiling
+/// (64 MiB on balanced). So the budget here is the governor's, on its pressure
+/// latch, capped at `max_batch_bytes`, and with the governor off a fixed one at
+/// `max_batch_bytes`.
+pub fn bound_intake(
+    engine: &mut BatchEngine,
+    config: &Config,
+    governor: Option<&scalo::SelfRegulationGovernor>,
+) -> Arc<scalo::ByteBudgetController> {
+    let ceiling = u64::try_from(config.source.max_batch_bytes).unwrap_or(u64::MAX);
+    let (pressure, start, record_cap) = match governor {
+        Some(governor) => {
+            let budget = governor.budget();
+            (
+                governor.pressure(),
+                budget.byte_budget().min(ceiling),
+                budget.record_cap(),
+            )
+        }
+        // No sources, so it never holds and the budget stays at the ceiling.
+        None => (
+            Arc::new(scalo::UnifiedPressure::new(
+                Vec::new(),
+                scalo::SelfRegulationConfig::default().hysteresis(),
+            )),
+            ceiling,
+            config.source.batch_size,
+        ),
+    };
+    let budget = Arc::new(scalo::ByteBudgetController::new(
+        scalo::ByteBudgetConfig {
+            start_bytes: start,
+            max_bytes: ceiling,
+            record_cap,
+            ..scalo::ByteBudgetConfig::default()
+        },
+        pressure,
+    ));
+    engine.set_byte_budget(Arc::clone(&budget));
+    budget
 }
 
 /// Route the engine's dead letters through scalo's DLQ path, with no backend.
@@ -2106,6 +2149,99 @@ mod tests {
             (first - 1.0).abs() < f64::EPSILON,
             "a full governed receive read as {first}"
         );
+    }
+
+    /// A sink that notes how many records each send carried.
+    #[derive(Default)]
+    struct Calls {
+        sizes: std::sync::Mutex<Vec<usize>>,
+    }
+
+    impl Calls {
+        fn sizes(&self) -> Vec<usize> {
+            self.sizes.lock().unwrap().clone()
+        }
+
+        async fn wait_for_records(&self, count: usize) {
+            while self.sizes().iter().sum::<usize>() < count {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        }
+    }
+
+    impl scalo::transport::TransportBase for Calls {
+        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
+            std::future::ready(Ok(()))
+        }
+        fn is_healthy(&self) -> bool {
+            true
+        }
+        fn name(&self) -> &'static str {
+            "calls"
+        }
+    }
+
+    impl TransportSender for Calls {
+        fn send(
+            &self,
+            _destination: &str,
+            _payload: bytes::Bytes,
+        ) -> impl Future<Output = SendResult> + Send {
+            std::future::ready(SendResult::Fatal(TransportError::Internal(
+                "the loop sends blocks".into(),
+            )))
+        }
+
+        fn send_batch(&self, records: &[Record]) -> impl Future<Output = SendResult> + Send {
+            self.sizes.lock().unwrap().push(records.len());
+            std::future::ready(SendResult::Ok)
+        }
+    }
+
+    /// `source.max_batch_bytes` bounds what one receive holds, with the
+    /// governor off and with it on: neither scalo's count-only receive nor the
+    /// governor's own budget, which grows to its profile's ceiling, keeps a
+    /// receive under it on its own.
+    #[tokio::test(start_paused = true)]
+    async fn max_batch_bytes_bounds_every_receive() {
+        const RECORDS: usize = 60;
+        const PAD: usize = 10 * 1024;
+        let guard = Arc::new(scalo::MemoryGuard::new(scalo::MemoryGuardConfig::default()));
+        let governor = scalo::SelfRegulationConfig::default()
+            .build(Arc::clone(&guard))
+            .expect("self-regulation is on by default");
+
+        for governed in [None, Some(&governor)] {
+            let mut config = config();
+            config.source.max_batch_bytes = 64 * 1024;
+            let mut engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
+            let _budget = bound_intake(&mut engine, &config, governed);
+
+            let consumer = memory_source(vec![okta_event("bounded", PAD); RECORDS]).await;
+            let sink = Calls::default();
+            let shutdown = CancellationToken::new();
+            let metrics = test_metrics();
+            let run = run_loop(
+                &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+            );
+            tokio::pin!(run);
+            tokio::select! {
+                result = &mut run => panic!("the loop stopped: {result:?}"),
+                () = sink.wait_for_records(RECORDS) => {}
+            }
+            shutdown.cancel();
+            run.await.expect("the loop stops cleanly on shutdown");
+
+            // A receive stops once it passes the budget, so it holds at most
+            // one record more than fits.
+            let most = config.source.max_batch_bytes / PAD + 1;
+            let sizes = sink.sizes();
+            assert!(
+                sizes.iter().all(|&n| n <= most),
+                "governed: {}, records per send {sizes:?}, at most {most} fit",
+                governed.is_some()
+            );
+        }
     }
 
     /// A dfe-receiver syslog record, as it arrives on the source topic.
