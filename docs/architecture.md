@@ -112,7 +112,7 @@ transport.
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-compose`, `emit-config`, `emit-catalogue`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
 | `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
-| `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `CASCADE_ONLY_SECTIONS` -- the scalo sections that file is warned for carrying |
+| `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `SCALO_SECTIONS` -- the sections scalo reads for itself, which the unread-key warning skips |
 | `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
@@ -186,7 +186,7 @@ All four `SendResult` variants are handled, and three of them are not delivery:
 | `Fatal` | Recoverable (a timeout): as `Backpressured`. Otherwise authorisation, a missing topic, a closed transport | Stop, block unreleased |
 | `FilteredDlq` | The sink transport dead-lettered the send | Dropped and counted on `send_filtered_dlq_total` and `records_filtered_total`, block released as dropped, never counted delivered |
 
-A record the sink transport would refuse -- over its `message.max.bytes`, or matched by an outbound `dlq` filter -- is screened out by the pipeline before the send. Input that is not JSON is refused in process as a dead letter with the reason `payload is not JSON`: a whole record when no line of it parses, otherwise the bad line alone. Both take scalo's DLQ path (`service.rs::with_dead_letters`) with no backend configured, so they are dropped and counted on `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total`, and the block is released rather than held behind something no retry can deliver.
+A record the sink transport would refuse -- over its `message.max.bytes`, or matched by an outbound `dlq` filter -- is screened out by the pipeline before the send. Input that is not JSON is refused in process as a dead letter with the reason `payload is not JSON`: a whole record when no line of it parses, otherwise the bad line alone. Both go to the DLQ `dlq` configures, a file DLQ by default, and the block is released once the DLQ confirms it holds them. With `dlq.enabled: false` they are dropped and counted on `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total` (`service.rs::with_dead_letters` builds that engine for the tests).
 
 JSON is the only payload format. MessagePack, supported in DFE/XDR 2.0 and 2.1, is deprecated in DFE 2.2 and no longer accepted: the JSON path (SIMD parsing with sonic-rs, zstd on the wire) is fast enough that MessagePack gave no CPU saving.
 

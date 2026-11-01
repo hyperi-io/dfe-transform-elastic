@@ -80,3 +80,13 @@ A CI job with access to that data runs those, plus the Python-tooling checks, ag
 `tests/unicode.rs` runs every registered transform against seventeen scripts and a set of
 degenerate inputs, so multi-byte and malformed text is a first-class case rather than an edge
 case discovered in production.
+
+## Core, full and the shared broker
+
+Core is every test that is not `#[ignore]`d, and it runs on every push: the unit tests, the corpus and floors above, `tests/broker.rs` and `tests/kafka_tls.rs` against a real broker, and the memory tests (`tests/ndjson_fanout.rs`, `tests/asa_teardown.rs`) held to the deployment contract. Full adds the `#[ignore]`d ones, every one of which reads the Elastic test data below, so it runs only where `DFE_ELASTIC_FIXTURES` names that data: `cargo nextest run --all-features --run-ignored all`. A release does not require it, because no CI runner holds the data.
+
+Nextest is required (`test.rust.nextest`): the memory tests read the process's peak resident set and `tests/config_cascade.rs` reads scalo's process-wide cascade, so each needs a process of its own.
+
+The Kafka tests share one broker per run, `apache/kafka:4.3.1@sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837`, the image scalo pins as `test_support::KAFKA_IMAGE`. The first test process starts it through scalo's `shared_kafka`, the rest join it by name, and it is removed when the run's nextest process exits, locally and in CI alike. The two tests that stop the broker or raise its record ceiling start one alone (`start_alone`), and `tests/kafka_tls.rs` starts scalo's `TlsBroker`. Each is removed when its test ends. A live broker named in `KAFKA_BROKERS` is used instead where one answers. Without Docker the tests skip locally and fail in CI.
+
+The standard these follow is hyperi-ai's `standards/universal/testing.md`.

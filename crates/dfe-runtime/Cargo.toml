@@ -69,7 +69,7 @@ harness = false
 
 # The GeoIP cache hit, on one thread and on eight. 14 of the 60 source
 # pipelines carry a geoip processor, several of them four or more times per
-# event, and the service runs one transform thread per Kafka partition.
+# event, and the cache is process-global, shared by every thread that transforms.
 [[bench]]
 name = "geoip"
 harness = false
