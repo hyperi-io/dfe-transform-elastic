@@ -227,8 +227,8 @@ aho-corasick = ">=1.1.5"
 syslog_loose = ">=0.23.0, <0.24"
 
 # The lock in front of the GeoIP cache. std's RwLock carries poisoning and a
-# slower uncontended path, and this one is taken on the per-event path across
-# one transform thread per Kafka partition. Already in the lockfile through
+# slower uncontended path, and this one is taken on the per-event path. Already
+# in the lockfile through
 # scalo, so this adds no supply chain.
 parking_lot = ">=0.12.5, <0.13"
 
@@ -279,8 +279,8 @@ criterion = { version = ">=0.8.2, <0.9", features = ["html_reports"] }
 tempfile = ">=3.27.0, <4"
 
 # Scores the compat corpus across cores. A test-only dependency: the service
-# gets its parallelism from one transform thread per Kafka partition, and
-# nothing in the shipped path uses a work-stealing pool.
+# transforms each block on one thread and scales by replica, and nothing in
+# the shipped path uses a work-stealing pool.
 rayon = ">=1.12.0, <2"
 
 # Ephemeral broker for the round-trip test. Same range as the rest of the
