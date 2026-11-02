@@ -66,7 +66,13 @@ pub fn contract() -> DeploymentContract {
         // `scaling` block in the file or `DFE_TRANSFORM_ELASTIC_SCALING__*`.
         default_config: serde_json::to_value(shipped_config()).ok().map(strip_nulls),
         depends_on: vec!["kafka".into()],
-        native_deps: NativeDepsContract::for_scalo_features(&["transport-kafka"], &base_image),
+        native_deps: {
+            let mut deps =
+                NativeDepsContract::for_scalo_features(&["transport-kafka"], &base_image);
+            // The wait-for-engine init container probes /readyz with curl from this image.
+            deps.apt_packages.push("curl".into());
+            deps
+        },
         image_profile: ImageProfile::Production,
         // No raw-lag trigger: DFE scales on the pressure composite in dfe-infra's charts.
         keda: Some(
