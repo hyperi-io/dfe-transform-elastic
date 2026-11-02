@@ -3,6 +3,13 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.24](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.23...v1.1.24) (2026-11-02)
+
+### Bug Fixes
+
+* **elastic:** bound NDJSON fan-out memory, update scalo 2.14.25 ([#152](https://github.com/hyperi-io/dfe-transform-elastic/issues/152)) ([e7bdc5a](https://github.com/hyperi-io/dfe-transform-elastic/commit/e7bdc5ae1d72bb59c244b94b872c22fa6f03ddd7))
+* refuse dotted paths deeper than the decode ([#150](https://github.com/hyperi-io/dfe-transform-elastic/issues/150)) ([2485cbc](https://github.com/hyperi-io/dfe-transform-elastic/commit/2485cbc6cf6fc1503d0e8b942532bd4a1c44183f))
+
 ## [1.1.23](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.22...v1.1.23) (2026-10-30)
 
 ### Bug Fixes
