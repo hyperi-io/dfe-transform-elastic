@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.25](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.24...v1.1.25) (2026-11-02)
+
+### Bug Fixes
+
+* **image:** restore curl for wait-for-engine ([03ac97b](https://github.com/hyperi-io/dfe-transform-elastic/commit/03ac97b26172ae672d660ad8bf4bd83a094ce57e))
+
 ## [1.1.24](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.23...v1.1.24) (2026-11-02)
 
 ### Bug Fixes
