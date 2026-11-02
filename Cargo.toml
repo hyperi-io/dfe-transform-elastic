@@ -74,6 +74,10 @@ harness = false
 name = "detect"
 harness = false
 
+[[bench]]
+name = "original"
+harness = false
+
 [features]
 default = ["kafka", "grpc"]
 # hyperi-ci enables this on spike/alpha/beta/release. Local dev stays on the
