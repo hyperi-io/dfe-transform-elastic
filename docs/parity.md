@@ -57,6 +57,12 @@ processors and JSON-encodes the result before it ever reaches Kafka (see
 [System context](architecture.md#system-context) for the full flow). Everything from there is
 this service's job: JSON parse, ingest pipeline logic, enrichment, ECS normalisation.
 
+One deliberate difference in the output: `event.original` is removed from every document unless
+its `tags` contain `preserve_original_event`. Elastic keeps it, but the default output here is the
+extracted JSON without a second copy of the vendor line. Setting that tag, which is Elastic's own
+opt-in and what its pipelines add on failure, restores the field. The removal runs once where
+`pipeline::run_batch` emits each event, so a transform called directly still sets it.
+
 ---
 
 ## How parity is verified

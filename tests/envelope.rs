@@ -533,6 +533,35 @@ const OKTA_RECORD: &str = r#"{"uuid":"9d5c5a1b-0d3e-4a2f-8a11-2f0c1e6b7d90",
 "alternateId":"derek@example.com","displayName":"Derek"},
 "client":{"ipAddress":"203.0.113.7","userAgent":{"rawUserAgent":"Mozilla/5.0"}}}"#;
 
+/// A generated transform copies `message` to `event.original`, and the service
+/// takes the copy back out unless the event is tagged to keep it.
+#[test]
+fn event_original_is_dropped_unless_tagged() {
+    let untagged = run(
+        "filebeat.okta.default",
+        Envelope::Beats,
+        json!({ "message": OKTA_RECORD }),
+    )
+    .expect("emitted");
+    assert!(
+        untagged.pointer("/event/original").is_none(),
+        "event.original rode along: {untagged}"
+    );
+    assert_eq!(
+        untagged.pointer("/event/action").and_then(Value::as_str),
+        Some("user.session.start"),
+        "the transform did not parse the record"
+    );
+
+    let tagged = run(
+        "filebeat.okta.default",
+        Envelope::Beats,
+        json!({ "message": OKTA_RECORD, "tags": ["preserve_original_event"] }),
+    )
+    .expect("emitted");
+    assert!(tagged.pointer("/event/original").is_some());
+}
+
 /// The fetcher side of the equivalence the receiver side already has: one okta
 /// record delivered both ways must parse to the same thing.
 ///
@@ -568,15 +597,8 @@ fn okta_produces_the_same_output_from_beats_or_the_fetcher() {
     // The fetcher path additionally carries what Beats would have stamped --
     // `agent.*`, `data_stream.*`, `input.type`, `event.ingested` -- so the
     // assertion is one-way, exactly as the syslog equivalence is.
-    //
-    // `event.original` is checked separately, below: the fetcher path
-    // re-serialises the payload to move it into `message`, so the two agree as
-    // JSON rather than as text.
     let fetcher_leaves = leaves(&via_fetcher);
     for (path, expected) in leaves(&via_beats) {
-        if path == "event.original" {
-            continue;
-        }
         assert_eq!(
             fetcher_leaves.get(&path),
             Some(&expected),
@@ -584,15 +606,11 @@ fn okta_produces_the_same_output_from_beats_or_the_fetcher() {
         );
     }
 
-    // Same document, whatever the whitespace.
-    let original_of = |out: &Value| -> Value {
-        let text = out
-            .pointer("/event/original")
-            .and_then(Value::as_str)
-            .expect("event.original is set");
-        serde_json::from_str(text).expect("event.original is JSON")
-    };
-    assert_eq!(original_of(&via_beats), original_of(&via_fetcher));
+    // Neither side is tagged to keep it, so the vendor payload rides along on
+    // neither, and `event.original` cannot be the thing the two agree on.
+    for out in [&via_beats, &via_fetcher] {
+        assert!(out.pointer("/event/original").is_none());
+    }
 
     // A guard against the test passing because BOTH sides parsed nothing.
     assert_eq!(
@@ -1043,6 +1061,7 @@ fn the_fetchers_own_keys_never_reach_the_output() {
         );
     }
 
+    let delivered_copy = delivered.clone();
     let out = run(
         "filebeat.okta.default",
         Envelope::Fetcher,
@@ -1050,11 +1069,13 @@ fn the_fetchers_own_keys_never_reach_the_output() {
     )
     .expect("emitted");
 
-    // The payload the transform parsed, which is what `event.original` holds.
-    let payload = out
-        .pointer("/event/original")
-        .and_then(Value::as_str)
-        .expect("event.original is set");
+    // The payload the transform parses is `message` once the envelope is
+    // unwrapped, and none of the delivery keys may be in it.
+    let mut unwrapped = dfe_runtime::Event::new(Value::Object(delivered_copy));
+    Envelope::Fetcher
+        .unwrap_into_beats(&mut unwrapped, None, "okta.system_log")
+        .expect("unwraps");
+    let payload = unwrapped.get_str("message").expect("message is set");
     for key in dfe_transform_elastic::envelope::FETCHER_KEYS {
         assert!(
             !payload.contains(&format!("\"{key}\"")),

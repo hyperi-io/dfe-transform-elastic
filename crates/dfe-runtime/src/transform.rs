@@ -7,6 +7,8 @@
 //! transforms compose into a `TransformChain` that runs sequentially,
 //! stopping on `Drop` or error.
 
+use serde_json::Value;
+
 use crate::error::Result;
 use crate::event::Event;
 
@@ -28,6 +30,31 @@ pub trait Transform: Send + Sync {
 
     /// Apply this transform to an event.
     fn transform(&self, event: &mut Event) -> Result<TransformResult>;
+}
+
+/// The `tags` value that keeps `event.original` on an event.
+///
+/// Elastic's own opt-in: a user sets it in the integration, and the pipelines
+/// add it themselves when they fail.
+pub const PRESERVE_ORIGINAL_EVENT: &str = "preserve_original_event";
+
+/// Remove `event.original` unless the event is tagged [`PRESERVE_ORIGINAL_EVENT`].
+///
+/// Most generated transforms copy `message` to `event.original` and never
+/// remove it, so every row would carry the vendor line twice. Elastic keeps the
+/// copy, but the suite's default output is the extracted JSON only. A single
+/// tags lookup and a single remove, with no allocation.
+pub fn drop_original_unless_preserved(event: &mut Event) {
+    let preserved = match event.get("tags") {
+        Some(Value::Array(tags)) => tags
+            .iter()
+            .any(|tag| tag.as_str() == Some(PRESERVE_ORIGINAL_EVENT)),
+        Some(Value::String(tag)) => tag == PRESERVE_ORIGINAL_EVENT,
+        _ => false,
+    };
+    if !preserved {
+        event.remove("event.original");
+    }
 }
 
 /// Sequential composition of multiple transforms.
@@ -192,6 +219,44 @@ mod tests {
         assert!(result.is_err());
         assert_eq!(event.get_str("a"), Some("1"));
         assert!(!event.has("b"));
+    }
+
+    #[test]
+    fn original_is_dropped_unless_the_tag_keeps_it() {
+        let cases = [
+            ("untagged", json!({}), false),
+            (
+                "other tags",
+                json!({"tags": ["forwarded", "cisco-ios"]}),
+                false,
+            ),
+            (
+                "tag in a list",
+                json!({"tags": ["forwarded", PRESERVE_ORIGINAL_EVENT]}),
+                true,
+            ),
+            (
+                "tag as a scalar",
+                json!({"tags": PRESERVE_ORIGINAL_EVENT}),
+                true,
+            ),
+            ("tags of the wrong type", json!({"tags": 7}), false),
+        ];
+        for (name, extra, kept) in cases {
+            let mut doc = extra;
+            doc["event"] = json!({"original": "vendor line", "kind": "event"});
+            let mut event = Event::new(doc);
+            drop_original_unless_preserved(&mut event);
+            assert_eq!(event.has("event.original"), kept, "{name}");
+            assert_eq!(event.get_str("event.kind"), Some("event"), "{name}");
+        }
+    }
+
+    #[test]
+    fn dropping_an_absent_original_is_harmless() {
+        let mut event = Event::new(json!({"message": "x"}));
+        drop_original_unless_preserved(&mut event);
+        assert_eq!(event.get_str("message"), Some("x"));
     }
 
     #[test]

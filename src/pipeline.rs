@@ -10,6 +10,7 @@
 
 use std::borrow::Cow;
 
+use dfe_runtime::transform::drop_original_unless_preserved;
 use dfe_runtime::{Event, Transform, TransformError, TransformResult};
 
 use crate::envelope::{Delivery, Resolution, Resolver};
@@ -147,6 +148,7 @@ fn run_batch(
         }
         match transform.transform(&mut event) {
             Ok(TransformResult::Continue) => {
+                drop_original_unless_preserved(&mut event);
                 outcome.emitted += 1;
                 out.push(event);
             }
@@ -578,6 +580,31 @@ mod tests {
         assert_eq!(out.len(), 3);
         assert_eq!(outcome.emitted, 3);
         assert_eq!(outcome.total(), 3);
+    }
+
+    /// Copies `message` to `event.original`, as most generated transforms do.
+    struct KeepsOriginal;
+    impl Transform for KeepsOriginal {
+        fn name(&self) -> &str {
+            "keeps_original"
+        }
+        fn transform(&self, e: &mut Event) -> TransformOutcome<TransformResult> {
+            if let Some(line) = e.get("message").cloned() {
+                e.set("event.original", line)?;
+            }
+            Ok(TransformResult::Continue)
+        }
+    }
+
+    #[test]
+    fn event_original_leaves_only_on_a_preserve_original_event_tag() {
+        let (events, _) = parse_batch(
+            b"{\"message\":\"a\"}\n{\"message\":\"b\",\"tags\":[\"preserve_original_event\"]}\n",
+        );
+        let (out, outcome) = transform_batch(&KeepsOriginal, events);
+        assert_eq!(outcome.emitted, 2);
+        assert!(!out[0].has("event.original"), "untagged event kept it");
+        assert_eq!(out[1].get_str("event.original"), Some("b"));
     }
 
     #[test]

@@ -128,7 +128,7 @@ known_different:
   - prefix: user_agent
     why: Our parser against Elastic's ua-parser, differing on edge cases.
   - prefix: event.original
-    why: Present or absent by the preserve_original_event tag, which is deployment config.
+    why: Removed from the service output unless the preserve_original_event tag is set, so Elastic's copy is the expected difference.
   - prefix: okta.debug_context.debug_data.flattened.risk_object
     why: A raw string rendering of a parsed object, so formatting rather than content.
   - prefix: cisco_nexus.log.time
