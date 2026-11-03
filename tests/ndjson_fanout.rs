@@ -9,6 +9,7 @@
 //! is the most events one accepted record can ask the service to hold. This
 //! test is its own process, so the high-water mark is that record's alone.
 
+#![cfg(any(feature = "kafka", feature = "grpc"))]
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use std::future::Future;
