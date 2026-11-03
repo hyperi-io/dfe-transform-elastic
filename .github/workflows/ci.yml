@@ -8,8 +8,10 @@
 name: CI
 
 on:
-  schedule:
-    - cron: '23 17 * * *'
+  # No nightly schedule: a scheduled run is the full tier, and every #[ignore]d
+  # test here reads Elastic-licensed fixtures no CI runner holds (docs/testing.md).
+  # `hyperi-ci init --schedule-only` would add the cron back. Run the full tier by
+  # hand where the data is: `hyperi-ci run test --tier full` with DFE_ELASTIC_FIXTURES set.
   push:
     branches: ["**"]
     paths-ignore:
