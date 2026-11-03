@@ -161,6 +161,7 @@ impl Agentless {
             outcome.emitted += o.emitted;
             outcome.dropped += o.dropped;
             outcome.errored += o.errored;
+            outcome.restored += o.restored;
             envelopes.first = envelopes.first.take().or(e.first);
             envelopes.contradicted |= e.contradicted;
             envelopes.unaccepted |= e.unaccepted;

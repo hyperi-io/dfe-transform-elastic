@@ -1197,6 +1197,9 @@ fn record_batch(
     metrics.events_transformed.increment(outcome.emitted as u64);
     metrics.events_dropped.increment(outcome.dropped as u64);
     metrics.events_errored.increment(outcome.errored as u64);
+    metrics
+        .events_unparsed_original_restored
+        .increment(outcome.restored as u64);
     metrics.dfe.records_filtered(outcome.dropped as u64);
     metrics
         .app

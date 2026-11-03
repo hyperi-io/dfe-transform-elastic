@@ -38,6 +38,11 @@ pub struct TransformMetrics {
     /// Events whose transform returned an error. Counted, not fatal.
     pub events_errored: Counter,
 
+    /// Events whose input did not parse: the transform wrote only envelope
+    /// fields, so `event.original` went back into `message`. A rising rate is a
+    /// source whose lines no longer parse, with no error to show it.
+    pub events_unparsed_original_restored: Counter,
+
     /// Input refused as not JSON and dead-lettered: a record no line of which
     /// parsed, or one line of a record that otherwise did.
     pub parse_errors: Counter,
@@ -128,6 +133,10 @@ impl TransformMetrics {
             events_errored: manager.counter(
                 "events_errored_total",
                 "Events whose transform returned an error",
+            ),
+            events_unparsed_original_restored: manager.counter(
+                "events_unparsed_original_restored_total",
+                "Events with unparsed input: the transform wrote only envelope fields, so event.original went back into message",
             ),
             parse_errors: manager.counter(
                 "parse_errors_total",
@@ -239,6 +248,7 @@ mod tests {
             "_events_transformed_total",
             "_events_dropped_total",
             "_events_errored_total",
+            "_events_unparsed_original_restored_total",
             "_parse_errors_total",
             "_lossy_payloads_total",
             "_painless_handled_total",

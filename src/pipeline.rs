@@ -10,6 +10,7 @@
 
 use std::borrow::Cow;
 
+use dfe_runtime::transform::{Original, settle_original};
 use dfe_runtime::{Event, Transform, TransformError, TransformResult};
 
 use crate::envelope::{Delivery, Resolution, Resolver};
@@ -23,6 +24,10 @@ pub struct BatchOutcome {
     pub dropped: usize,
     /// Events whose transform returned an error.
     pub errored: usize,
+    /// Emitted events whose input did not parse, so `event.original` went back
+    /// into `message`: the transform wrote only envelope fields. Counted within
+    /// `emitted`, not beside it.
+    pub restored: usize,
 }
 
 impl BatchOutcome {
@@ -36,6 +41,7 @@ impl BatchOutcome {
         self.emitted += other.emitted;
         self.dropped += other.dropped;
         self.errored += other.errored;
+        self.restored += other.restored;
     }
 }
 
@@ -147,6 +153,9 @@ fn run_batch(
         }
         match transform.transform(&mut event) {
             Ok(TransformResult::Continue) => {
+                if settle_original(&mut event) == Original::Restored {
+                    outcome.restored += 1;
+                }
                 outcome.emitted += 1;
                 out.push(event);
             }
@@ -578,6 +587,60 @@ mod tests {
         assert_eq!(out.len(), 3);
         assert_eq!(outcome.emitted, 3);
         assert_eq!(outcome.total(), 3);
+    }
+
+    /// Moves `message` to `event.original` and parses nothing out of it.
+    struct MovesMessage;
+    impl Transform for MovesMessage {
+        fn name(&self) -> &str {
+            "moves_message"
+        }
+        fn transform(&self, e: &mut Event) -> TransformOutcome<TransformResult> {
+            e.rename("message", "event.original")?;
+            Ok(TransformResult::Continue)
+        }
+    }
+
+    const TAGGED: &[u8] = b"{\"message\":\"a\",\"tags\":[\"preserve_original_event\"]}\n";
+    const UNTAGGED: &[u8] = b"{\"message\":\"a\"}\n";
+
+    #[test]
+    fn the_only_copy_goes_back_to_message_and_is_counted() {
+        let (out, outcome) = transform_batch(&MovesMessage, parse_batch(UNTAGGED).0);
+        assert_eq!((outcome.emitted, outcome.restored), (1, 1));
+        assert_eq!(out[0].get_str("message"), Some("a"));
+        assert!(!out[0].has("event.original"));
+    }
+
+    #[test]
+    fn a_tagged_event_keeps_event_original_and_restores_nothing() {
+        let (out, outcome) = transform_batch(&MovesMessage, parse_batch(TAGGED).0);
+        assert_eq!((outcome.emitted, outcome.restored), (1, 0));
+        assert_eq!(out[0].get_str("event.original"), Some("a"));
+        assert!(!out[0].has("message"));
+    }
+
+    /// Copies `message` to `event.original` and keeps both, as most generated
+    /// transforms do.
+    struct CopiesMessage;
+    impl Transform for CopiesMessage {
+        fn name(&self) -> &str {
+            "copies_message"
+        }
+        fn transform(&self, e: &mut Event) -> TransformOutcome<TransformResult> {
+            if let Some(line) = e.get("message").cloned() {
+                e.set("event.original", line)?;
+            }
+            Ok(TransformResult::Continue)
+        }
+    }
+
+    #[test]
+    fn a_doubled_line_loses_its_event_original() {
+        let (out, outcome) = transform_batch(&CopiesMessage, parse_batch(UNTAGGED).0);
+        assert_eq!((outcome.emitted, outcome.restored), (1, 0));
+        assert_eq!(out[0].get_str("message"), Some("a"));
+        assert!(!out[0].has("event.original"));
     }
 
     #[test]

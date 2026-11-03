@@ -57,6 +57,14 @@ processors and JSON-encodes the result before it ever reaches Kafka (see
 [System context](architecture.md#system-context) for the full flow). Everything from there is
 this service's job: JSON parse, ingest pipeline logic, enrichment, ECS normalisation.
 
+One deliberate difference in the output: `event.original` is not a second copy of the vendor line. Elastic keeps it, but the default output here is the extracted JSON alone. Where `pipeline::run_batch` emits an event:
+
+- Tagged `preserve_original_event` (Elastic's own opt-in, and what its pipelines add on failure): `event.original` stays.
+- Holding any field beyond the static and shipper fields in `ENVELOPE` (`dfe-runtime` `transform.rs`): `event.original` is removed.
+- Holding only those fields, so nothing was parsed: `event.original` moves back to `message`, and `events_unparsed_original_restored_total` counts it.
+
+A transform called directly still sets `event.original`.
+
 ---
 
 ## How parity is verified

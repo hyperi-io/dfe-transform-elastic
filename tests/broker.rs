@@ -596,6 +596,8 @@ async fn a_record_the_sink_refuses_is_counted_not_delivered() {
     /// Below `sink.max_message_bytes`, so the service's own budget lets the
     /// padded event through and the sink transport is what refuses it.
     const SINK_CEILING: &str = "262144";
+    /// Over `SINK_CEILING` on its own, since the event carries it once.
+    const REFUSED_PAD: usize = 270_000;
 
     let broker = broker_or_skip!("refused-record");
     let source_topic = common::topic("refused-src");
@@ -605,7 +607,7 @@ async fn a_record_the_sink_refuses_is_counted_not_delivered() {
     let seed = broker.producer("seed").await;
     for payload in [
         okta_events_named("kept", KEPT),
-        okta_events_padded("refused", 1, 150_000),
+        okta_events_padded("refused", 1, REFUSED_PAD),
     ] {
         let sent = seed.send(&source_topic, bytes::Bytes::from(payload)).await;
         assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
