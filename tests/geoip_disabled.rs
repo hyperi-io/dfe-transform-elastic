@@ -5,6 +5,7 @@
 //! engine searches. Its own process, because the lookup engine's state is
 //! process-wide and set once.
 
+#![cfg(any(feature = "kafka", feature = "grpc"))]
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use dfe_runtime::enrichment::geoip_global;
