@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.26](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.25...v1.1.26) (2026-11-03)
+
+### Bug Fixes
+
+* **pipeline:** drop duplicate originals and restore unparsed lines ([#154](https://github.com/hyperi-io/dfe-transform-elastic/issues/154)) ([88934fb](https://github.com/hyperi-io/dfe-transform-elastic/commit/88934fb64ab456fcf625e0cd11f9d760b8996f3f))
+
 ## [1.1.25](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.24...v1.1.25) (2026-11-02)
 
 ### Bug Fixes
