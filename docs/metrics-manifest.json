@@ -785,6 +785,14 @@
       "group": "custom"
     },
     {
+      "name": "events_unparsed_original_restored_total",
+      "type": "counter",
+      "description": "Events with unparsed input: the transform wrote only envelope fields, so event.original went back into message",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
       "name": "parse_errors_total",
       "type": "counter",
       "description": "Input refused as not JSON and dead-lettered: a whole record, or one bad line of one",
