@@ -43,6 +43,20 @@ Worked out from the table above. Nothing new was run.
 - Vector is slower than Elasticsearch's own pipeline at the parse alone: 0.34-0.79x of `_simulate`.
 - dfe-transform-elastic sits on about one core. So one instance is roughly level with Vector per pinned core on `cisco_ios` and behind on `okta_system` (1,537 vs 2,314 rec/s). It's cheap per record but doesn't parallelise. You scale it with pods, and that's ours to fix.
 
+## In production, and why it differs
+
+The bench says Elasticsearch's own pipeline beats Vector at the parse alone. Production said the opposite. On DFE 2.1, parsing Filebeat and Winlogbeat data in Vector was cheaper than Elastic's Painless pipelines for existing Elasticsearch and OpenSearch clusters. That held in production at customers running OpenSearch at 10-100 TB a day, where OpenSearch was the analyst discovery service beside DFE. (The DFE console replaces it in 2.2.) This is field experience, not a number from this bench.
+
+Both are true. The bench is one node at a steady rate. A real cluster pays for the tier the parse runs on, sized for the peak, and the next two sections are that cost.
+
+## Scaling with the load
+
+dfe-transform-elastic scales with the data. KEDA ('the autoscaler that watches the backlog') adds pods when input queues up and removes them when it drains. So it runs few pods at the lows and more at a spike.
+
+Dedicated ingest nodes can't do that. On Elastic Cloud on Kubernetes, Elastic Cloud Hosted and Elastic Cloud Enterprise, autoscaling covers data tiers and machine learning nodes only. A node with just the ingest role isn't autoscaled. On Hosted, data tiers only scale up, and not on CPU or memory. So ingest nodes get sized for the peak and sit there at the lows. Elastic Cloud Serverless is the exception: it scales to usage.
+
+Sources: https://www.elastic.co/docs/deploy-manage/autoscaling and https://github.com/elastic/cloud-on-k8s/issues/6236
+
 ## ESTIMATE: what a real cluster adds
 
 **This is an estimate, not a measurement.** None of it is in the numbers above. It's counted from the documented write path, and a multi-node run is the only way to size it.
