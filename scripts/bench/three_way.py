@@ -6,14 +6,14 @@
 One corpus per source, fed to three engines on the same host, each pinned to the same
 cores. Method, scope and results are in docs/benchmark.md.
 
-Runs where Docker is local, which is desktop-derek. Every timed `run` goes inside
-`flock /home/derek/.dfe-bench.lock` so no other timed job shares the host with it.
+Runs on the host the local Docker daemon is on. Every timed `run` goes inside
+`flock ~/.dfe-bench.lock` so no other timed job shares the host with it.
 
 Examples:
     three_way.py corpus --compat testdata/compat --out work/corpus
     three_way.py fetch-pipelines --out work/integrations
     three_way.py up --es
-    flock /home/derek/.dfe-bench.lock three_way.py run --engine transform-elastic \\
+    flock ~/.dfe-bench.lock three_way.py run --engine transform-elastic \\
         --source cisco_ios --mode clean --rows 1000000
     three_way.py report --results results
     three_way.py down
@@ -1468,7 +1468,11 @@ def main(argv: list[str] | None = None) -> int:
 
     p = sub.add_parser("matrix", help="run every cell of a plan under the bench lock")
     p.add_argument("--plan", required=True)
-    p.add_argument("--lock", default="/home/derek/.dfe-bench.lock")
+    p.add_argument(
+        "--lock",
+        default=str(Path.home() / ".dfe-bench.lock"),
+        help="flock file every timed run holds",
+    )
     p.add_argument("--corpus", default="work/corpus")
     p.add_argument("--work", default="work")
     p.add_argument("--results", default="results")
