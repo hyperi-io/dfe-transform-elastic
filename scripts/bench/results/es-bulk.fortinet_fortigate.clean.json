@@ -1,0 +1,169 @@
+{
+  "rows": 100000,
+  "runs": [
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.32,
+          6.44,
+          6.74
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.66,
+          6.51,
+          6.76
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 2.25,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 83,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 7685.307764625958,
+      "rate_per_core": 1921.3269411564895,
+      "cpu_seconds": 40.12727025,
+      "rec_per_cpu_second": 1993.6566704285099,
+      "whole_rate": 6081.910543946504,
+      "window_seconds": 10.40947252213179,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794225202
+    },
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.66,
+          6.51,
+          6.76
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.82,
+          6.55,
+          6.77
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.522727272727273,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 68,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 8918.54842390278,
+      "rate_per_core": 2229.637105975695,
+      "cpu_seconds": 34.77008125,
+      "rec_per_cpu_second": 2300.828675802994,
+      "whole_rate": 7445.776328950714,
+      "window_seconds": 8.970069589529885,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794225221
+    },
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.82,
+          6.55,
+          6.77
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.88,
+          6.57,
+          6.77
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.520352035203521,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 70,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 8534.140274954585,
+      "rate_per_core": 2133.5350687386463,
+      "cpu_seconds": 36.40982575,
+      "rec_per_cpu_second": 2197.209087165159,
+      "whole_rate": 7227.716460835436,
+      "window_seconds": 9.37411355128279,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794225235
+    },
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.88,
+          6.57,
+          6.77
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.8,
+          6.56,
+          6.76
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.0,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 71,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 8720.59255651331,
+      "rate_per_core": 2180.1481391283273,
+      "cpu_seconds": 35.68158625,
+      "rec_per_cpu_second": 2242.0527899036438,
+      "whole_rate": 7124.738756144794,
+      "window_seconds": 9.173688540264266,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794225251
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "rows": 400000,
+  "runs": [
+    {
+      "engine": "vector",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.13,
+          6.05,
+          8.02
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          8.09,
+          6.85,
+          8.18
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 4.755050505050505,
+      "peak_cgroup_memory_bytes": 1039831040,
+      "peak_rss_bytes": 984367104,
+      "samples": 259,
+      "rate": 10342.994556337027,
+      "rate_per_core": 2585.748639084257,
+      "cpu_seconds": 119.91451667153845,
+      "rec_per_cpu_second": 2668.5676503748236,
+      "whole_rate": 7344.66541040252,
+      "window_seconds": 30.93881547138008,
+      "output_records": 400000,
+      "sent": 400000,
+      "discarded": 0,
+      "errors": 80000,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794223495
+    },
+    {
+      "engine": "vector",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          8.09,
+          6.85,
+          8.18
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          7.91,
+          6.97,
+          8.14
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 11.992574257425742,
+      "peak_cgroup_memory_bytes": 956207104,
+      "peak_rss_bytes": 983691264,
+      "samples": 259,
+      "rate": 10653.578508384197,
+      "rate_per_core": 2663.394627096049,
+      "cpu_seconds": 117.06293296279877,
+      "rec_per_cpu_second": 2733.57237770296,
+      "whole_rate": 7340.956519109656,
+      "window_seconds": 30.036855667620518,
+      "output_records": 400000,
+      "sent": 400000,
+      "discarded": 0,
+      "errors": 80000,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794223555
+    },
+    {
+      "engine": "vector",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          7.92,
+          6.99,
+          8.14
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          7.07,
+          6.87,
+          8.03
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.7352941176470589,
+      "peak_cgroup_memory_bytes": 945983488,
+      "peak_rss_bytes": 976310272,
+      "samples": 264,
+      "rate": 10323.119336958796,
+      "rate_per_core": 2580.779834239699,
+      "cpu_seconds": 120.35722121141765,
+      "rec_per_cpu_second": 2658.7519783120692,
+      "whole_rate": 7262.022027902878,
+      "window_seconds": 30.998382325615193,
+      "output_records": 400000,
+      "sent": 400000,
+      "discarded": 0,
+      "errors": 80000,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794223614
+    },
+    {
+      "engine": "vector",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.9,
+          6.84,
+          8.01
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.81,
+          6.79,
+          7.93
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 0.5,
+      "peak_cgroup_memory_bytes": 991817728,
+      "peak_rss_bytes": 976125952,
+      "samples": 258,
+      "rate": 10602.635317341445,
+      "rate_per_core": 2650.658829335361,
+      "cpu_seconds": 117.31407855489996,
+      "rec_per_cpu_second": 2727.7203549806536,
+      "whole_rate": 7381.8187271741335,
+      "window_seconds": 30.181175756994566,
+      "output_records": 400000,
+      "sent": 400000,
+      "discarded": 0,
+      "errors": 80000,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794223674
+    }
+  ]
+}

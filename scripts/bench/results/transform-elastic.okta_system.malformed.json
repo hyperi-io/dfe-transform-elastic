@@ -1,0 +1,177 @@
+{
+  "rows": 240000,
+  "runs": [
+    {
+      "engine": "transform-elastic",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          7.06,
+          6.53,
+          7.06
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.88,
+          6.29,
+          6.96
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.0025252525252526,
+      "peak_cgroup_memory_bytes": 528023552,
+      "peak_rss_bytes": 515416064,
+      "samples": 165,
+      "rate": 7301.955228778339,
+      "rate_per_core": 1825.4888071945848,
+      "cpu_seconds": 26.253043,
+      "rec_per_cpu_second": 7313.4379127021575,
+      "whole_rate": 7098.366451183037,
+      "window_seconds": 26.294327202020213,
+      "output_records": 240000,
+      "transformed": 240000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794224465
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.81,
+          6.27,
+          6.95
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.4,
+          6.13,
+          6.88
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 9.448069806980698,
+      "peak_cgroup_memory_bytes": 496431104,
+      "peak_rss_bytes": 509968384,
+      "samples": 163,
+      "rate": 7303.166973925179,
+      "rate_per_core": 1825.7917434812948,
+      "cpu_seconds": 25.772248,
+      "rec_per_cpu_second": 7449.873988485599,
+      "whole_rate": 7178.866026319198,
+      "window_seconds": 26.28996443399228,
+      "output_records": 240000,
+      "transformed": 240000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794224504
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.77,
+          6.2,
+          6.89
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.18,
+          6.0,
+          6.8
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.49009900990099,
+      "peak_cgroup_memory_bytes": 499462144,
+      "peak_rss_bytes": 513728512,
+      "samples": 165,
+      "rate": 7245.480880648204,
+      "rate_per_core": 1811.370220162051,
+      "cpu_seconds": 26.082666,
+      "rec_per_cpu_second": 7361.2106983235535,
+      "whole_rate": 7088.440438967605,
+      "window_seconds": 26.499276329996064,
+      "output_records": 240000,
+      "transformed": 240000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794224543
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.89,
+          6.13,
+          6.84
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.19,
+          5.92,
+          6.74
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 6.828540507111935,
+      "peak_cgroup_memory_bytes": 481644544,
+      "peak_rss_bytes": 495341568,
+      "samples": 166,
+      "rate": 7153.637306975181,
+      "rate_per_core": 1788.4093267437952,
+      "cpu_seconds": 26.4450336075,
+      "rec_per_cpu_second": 7260.342446513187,
+      "whole_rate": 7045.368945038005,
+      "window_seconds": 26.839493220153848,
+      "output_records": 240000,
+      "transformed": 240000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794224581
+    }
+  ]
+}

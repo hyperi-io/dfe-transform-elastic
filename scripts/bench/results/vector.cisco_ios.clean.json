@@ -1,0 +1,173 @@
+{
+  "rows": 600000,
+  "runs": [
+    {
+      "engine": "vector",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          10.93,
+          16.22,
+          15.96
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          10.5,
+          15.17,
+          15.61
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 2.559659090909091,
+      "peak_cgroup_memory_bytes": 767586304,
+      "peak_rss_bytes": 709136384,
+      "samples": 242,
+      "rate": 11764.185323001628,
+      "rate_per_core": 2941.046330750407,
+      "cpu_seconds": 152.68823433540902,
+      "rec_per_cpu_second": 3143.6606893075195,
+      "whole_rate": 11440.688801841136,
+      "window_seconds": 40.801805379713976,
+      "output_records": 600000,
+      "sent": 600000,
+      "discarded": 0,
+      "errors": 0,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794221734
+    },
+    {
+      "engine": "vector",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          10.62,
+          15.11,
+          15.59
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          9.52,
+          14.21,
+          15.26
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 32.782828282828284,
+      "peak_cgroup_memory_bytes": 674357248,
+      "peak_rss_bytes": 703610880,
+      "samples": 217,
+      "rate": 13646.735812831346,
+      "rate_per_core": 3411.6839532078366,
+      "cpu_seconds": 137.1107188737063,
+      "rec_per_cpu_second": 3500.820387661533,
+      "whole_rate": 12876.052592659853,
+      "window_seconds": 35.17324630470826,
+      "output_records": 600000,
+      "sent": 600000,
+      "discarded": 0,
+      "errors": 0,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794221790
+    },
+    {
+      "engine": "vector",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          11.11,
+          14.4,
+          15.31
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          12.21,
+          14.14,
+          15.17
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 13.27384351798972,
+      "peak_cgroup_memory_bytes": 715870208,
+      "peak_rss_bytes": 699658240,
+      "samples": 230,
+      "rate": 13296.875164478575,
+      "rate_per_core": 3324.218791119644,
+      "cpu_seconds": 136.1306209973261,
+      "rec_per_cpu_second": 3526.025199058103,
+      "whole_rate": 11556.385973581588,
+      "window_seconds": 36.09870695652445,
+      "output_records": 600000,
+      "sent": 600000,
+      "discarded": 0,
+      "errors": 0,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794221844
+    },
+    {
+      "engine": "vector",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          12.36,
+          14.11,
+          15.15
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          10.08,
+          13.29,
+          14.82
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 11.095959595959597,
+      "peak_cgroup_memory_bytes": 768708608,
+      "peak_rss_bytes": 716861440,
+      "samples": 194,
+      "rate": 15418.181360384357,
+      "rate_per_core": 3854.545340096089,
+      "cpu_seconds": 122.90790276445395,
+      "rec_per_cpu_second": 3905.3631963755242,
+      "whole_rate": 13841.868649984623,
+      "window_seconds": 31.132076396073355,
+      "output_records": 600000,
+      "sent": 600000,
+      "discarded": 0,
+      "errors": 0,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794221906
+    }
+  ]
+}

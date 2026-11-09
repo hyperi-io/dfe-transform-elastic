@@ -1,0 +1,177 @@
+{
+  "rows": 160000,
+  "runs": [
+    {
+      "engine": "transform-elastic",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.61,
+          6.6,
+          6.77
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.85,
+          6.43,
+          6.71
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.992725803192564,
+      "peak_cgroup_memory_bytes": 207785984,
+      "peak_rss_bytes": 224854016,
+      "samples": 88,
+      "rate": 9173.522104895726,
+      "rate_per_core": 2293.3805262239316,
+      "cpu_seconds": 14.633455,
+      "rec_per_cpu_second": 8747.079893299293,
+      "whole_rate": 8739.833338116227,
+      "window_seconds": 13.95320123899728,
+      "output_records": 160000,
+      "transformed": 160000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794225325
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.85,
+          6.43,
+          6.71
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.69,
+          6.35,
+          6.68
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 10.790604060406041,
+      "peak_cgroup_memory_bytes": 197648384,
+      "peak_rss_bytes": 215482368,
+      "samples": 90,
+      "rate": 8910.936188601743,
+      "rate_per_core": 2227.734047150436,
+      "cpu_seconds": 15.041746,
+      "rec_per_cpu_second": 8509.65040893524,
+      "whole_rate": 8568.006068827199,
+      "window_seconds": 14.36437174398452,
+      "output_records": 160000,
+      "transformed": 160000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794225346
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.69,
+          6.35,
+          6.68
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.08,
+          6.16,
+          6.61
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.495049504950495,
+      "peak_cgroup_memory_bytes": 204722176,
+      "peak_rss_bytes": 222212096,
+      "samples": 89,
+      "rate": 8916.856498425153,
+      "rate_per_core": 2229.2141246062884,
+      "cpu_seconds": 15.047717,
+      "rec_per_cpu_second": 8506.273742388961,
+      "whole_rate": 8673.77683801989,
+      "window_seconds": 14.354834579047747,
+      "output_records": 160000,
+      "transformed": 160000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794225368
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.07,
+          6.15,
+          6.6
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.18,
+          6.1,
+          6.58
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 8.495049504950495,
+      "peak_cgroup_memory_bytes": 202506240,
+      "peak_rss_bytes": 219140096,
+      "samples": 88,
+      "rate": 9040.299215946978,
+      "rate_per_core": 2260.0748039867444,
+      "cpu_seconds": 14.799218,
+      "rec_per_cpu_second": 8649.105648690356,
+      "whole_rate": 8763.167526639745,
+      "window_seconds": 14.158823390956968,
+      "output_records": 160000,
+      "transformed": 160000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794225389
+    }
+  ]
+}
