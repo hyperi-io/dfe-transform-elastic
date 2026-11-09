@@ -7,13 +7,13 @@ Up to 16x less. That's the path from Elastic's own ingest to DFE 2.2, in two ste
 - **Up to 4x** moving parsing off Elasticsearch and OpenSearch ingest onto an autoscaled DFE 2.1 pipeline. Proven in production.
 - **Up to 4x again** moving that pipeline to purpose-built Rust in DFE 2.2. Proven in production, and up to 3.7x in this bench.
 
-Against an Elastic ingest node directly, this bench gives:
+Against Elastic's own ingest, for the parse alone:
 
+- **Up to 17x less memory** for the same throughput, and never less than 5x. That holds wherever the parsed data goes next: ClickHouse, or back into Elasticsearch or OpenSearch.
 - **Up to 5x less CPU** over a working year, once the ingest tier is sized for the peak.
-- **Up to 17x less memory** for the same throughput.
 - **Zero wrong fields** against Elastic's own output, on every source tested.
 
-Each is a top end. The ranges and their limits are below.
+An external pipeline, at least 5x lighter on memory than the stack's own ingest. The detail is below.
 
 This page keeps three kinds of claim apart: what we MEASURED, what we DERIVED from those numbers, and what we only ESTIMATE.
 
@@ -75,17 +75,6 @@ dfe-transform-elastic scales with the data. KEDA ('the autoscaler that watches t
 Dedicated ingest nodes can't do that. On Elastic Cloud on Kubernetes, Elastic Cloud Hosted and Elastic Cloud Enterprise, autoscaling covers data tiers and machine learning nodes only. A node with just the ingest role isn't autoscaled. On Hosted, data tiers only scale up, and not on CPU or memory. So ingest nodes get sized for the peak and sit there at the lows. Elastic Cloud Serverless is the exception: it scales to usage.
 
 Sources: https://www.elastic.co/docs/deploy-manage/autoscaling and https://github.com/elastic/cloud-on-k8s/issues/6236
-
-## The fair questions, answered
-
-These figures will get quoted and argued with. The answers:
-
-- **"One node on a shared host."** Yes. Read a ratio as good to about 20%. A quiet re-run is planned. Two production deployments and the PB-scale tests landed in the same place.
-- **"Elasticsearch's pipeline beat Vector per record."** It did, and the DERIVED section says so. The first step's gain is memory and sizing for the peak, and production proved it at 10-100 TB a day.
-- **"You picked sources that suit you."** Four parser families, from Elastic's own pipeline-test fixtures. Winlogbeat, the most Painless-heavy pipeline, is next. That's where production saw the gain.
-- **"Serverless autoscales."** It does, and this page says so. Self-managed clusters, and Elastic's own hosted and Kubernetes offerings, don't autoscale ingest nodes.
-- **"Indexing wasn't compared."** Right. It belongs to whatever store the data lands in. This page is about the parse and the tier it runs on.
-- **"Faster but wrong is easy."** Zero wrong fields against Elastic's own output on every source here. A parity ratchet (`tests/compat-baseline.json`) holds them there.
 
 ## ESTIMATE: what scaling saves over a working year
 
