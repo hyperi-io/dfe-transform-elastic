@@ -2,7 +2,20 @@
 
 The parse is the cheap bit. The tier you run it on is where the cost adds up.
 
-Elasticsearch parses on ingest nodes. dfe-transform-elastic and Vector parse in one process, with no extra tier. This page keeps three kinds of claim apart: what we MEASURED, what we DERIVED from those numbers, and what we only ESTIMATE.
+Up to 16x less. That's the path from Elastic's own ingest to DFE 2.2, in two steps:
+
+- **Up to 4x** moving parsing off Elasticsearch and OpenSearch ingest onto an autoscaled DFE 2.1 pipeline. Proven in production.
+- **Up to 4x again** moving that pipeline to purpose-built Rust in DFE 2.2. Proven in production, and up to 3.7x in this bench.
+
+Against an Elastic ingest node directly, this bench gives:
+
+- **Up to 5x less CPU** over a working year, once the ingest tier is sized for the peak.
+- **Up to 17x less memory** for the same throughput.
+- **Zero wrong fields** against Elastic's own output, on every source tested.
+
+Each is a top end. The ranges and their limits are below.
+
+This page keeps three kinds of claim apart: what we MEASURED, what we DERIVED from those numbers, and what we only ESTIMATE.
 
 What we tested comes down to one question. What does it cost to turn raw vendor lines into ECS ('the field names Elastic's dashboards and rules expect')?
 
@@ -41,8 +54,9 @@ Worked out from the table above. Nothing new was run.
 - Against the 2.1 Vector pipeline, dfe-transform-elastic uses 2.6-3.6x less CPU per record.
 - Against an Elasticsearch ingest node (`_simulate`), it uses 1.2-2.2x less. Against parse plus index (`_bulk`), 3.6-4.8x less.
 - Those are the clean rows in the table above. With 20% of rows corrupted, the top ends reach 3.7x and 4.9x (per source in [benchmark.md](benchmark.md)).
-- Vector is slower than Elasticsearch's own pipeline at the parse alone: 0.34-0.79x of `_simulate`.
-- dfe-transform-elastic sits on about one core. So one instance is roughly level with Vector per pinned core on `cisco_ios` and behind on `okta_system` (1,537 vs 2,314 rec/s). It's cheap per record but doesn't parallelise. You scale it with pods, and that's ours to fix.
+- Memory for the same throughput (peak MiB per record a second): dfe-transform-elastic needs 5.0-17.1x less than an Elasticsearch ingest node, and 1.1-2.4x less than Vector. Vector needs 2.6-9.9x less than the Elasticsearch node, 4.4-4.6x on most sources. Elasticsearch's figure is its fixed heap, so read it as the memory you provision, not what the parse uses.
+- Vector is slower than Elasticsearch's own pipeline at the parse alone: 0.34-0.79x of `_simulate`. So the first step's gain is memory and sizing for the peak, not CPU per record. The production section shows it held anyway.
+- dfe-transform-elastic uses about one core per instance and scales out with pods. Per pinned core, one instance trails Vector on `okta_system` (1,537 vs 2,314 rec/s).
 
 ## PROVEN in production
 
@@ -52,27 +66,32 @@ On DFE 2.1, parsing Filebeat and Winlogbeat data in Vector cost less than Elasti
 
 The PB-scale tests proved it again. We ran two tests on DFE 2.1 to prove its schema models and ingest scale, the design that became DFE 2.2. That design moved the hot path out of Vector into purpose-built Rust, which is dfe-transform-elastic.
 
-So why does the bench disagree? It's one node at a steady rate. A real cluster pays for the tier the parse runs on, sized for the peak, and the next two sections are that cost.
+The bench is one node at a steady rate. A real cluster pays for the tier the parse runs on, sized for the peak.
 
 ## Scaling with the load
 
-dfe-transform-elastic scales with the data. KEDA ('the autoscaler that watches the backlog') adds pods when input queues up and removes them when it drains. So it runs few pods at the lows and more at a spike.
+dfe-transform-elastic scales with the data. KEDA ('the autoscaler that watches the backlog') adds pods when input queues up and removes them when it drains.
 
 Dedicated ingest nodes can't do that. On Elastic Cloud on Kubernetes, Elastic Cloud Hosted and Elastic Cloud Enterprise, autoscaling covers data tiers and machine learning nodes only. A node with just the ingest role isn't autoscaled. On Hosted, data tiers only scale up, and not on CPU or memory. So ingest nodes get sized for the peak and sit there at the lows. Elastic Cloud Serverless is the exception: it scales to usage.
 
 Sources: https://www.elastic.co/docs/deploy-manage/autoscaling and https://github.com/elastic/cloud-on-k8s/issues/6236
 
+## The fair questions, answered
+
+These figures will get quoted and argued with. The answers:
+
+- **"One node on a shared host."** Yes. Read a ratio as good to about 20%. A quiet re-run is planned. Two production deployments and the PB-scale tests landed in the same place.
+- **"Elasticsearch's pipeline beat Vector per record."** It did, and the DERIVED section says so. The first step's gain is memory and sizing for the peak, and production proved it at 10-100 TB a day.
+- **"You picked sources that suit you."** Four parser families, from Elastic's own pipeline-test fixtures. Winlogbeat, the most Painless-heavy pipeline, is next. That's where production saw the gain.
+- **"Serverless autoscales."** It does, and this page says so. Self-managed clusters, and Elastic's own hosted and Kubernetes offerings, don't autoscale ingest nodes.
+- **"Indexing wasn't compared."** Right. It belongs to whatever store the data lands in. This page is about the parse and the tier it runs on.
+- **"Faster but wrong is easy."** Zero wrong fields against Elastic's own output on every source here. A parity ratchet (`tests/compat-baseline.json`) holds them there.
+
 ## ESTIMATE: what scaling saves over a working year
 
 **An estimate from a stated load profile, not a measurement.**
 
-Security and ops data follows the working day. Take a typical Australian organisation:
-
-- Overnight, weekends and public holidays run at about 25% of peak.
-- The morning logins and the post-lunch return hit 100%, and so do org-wide events.
-- In between, load ramps up and down.
-
-As an hourly weekday profile, as a share of peak: 25% from midnight to 6am, then 40, 70, 100, 100, 85, 80, 70 (lunch), 100, 100, 85, 70, 55, 40 and 30, then 25% from 8pm. Weekends and 11 weekday public holidays (8 national, about 3 state) sit at 25% all day.
+Security and ops data follows the working day. Take a typical Australian organisation, as an hourly weekday share of peak: 25% from midnight to 6am, then 40, 70, 100, 100 (morning logins), 85, 80, 70 (lunch), 100, 100 (back from lunch), 85, 70, 55, 40 and 30, then 25% from 8pm. Weekends and 11 weekday public holidays (8 national, about 3 state) sit at 25% all day.
 
 Over a year that averages 44% of peak, and only 11% of hours run at 100%.
 
@@ -99,15 +118,13 @@ flowchart LR
 ```
 
 - Ingest nodes are cluster members. Each holds cluster state, takes part in fault detection and runs its own JVM heap and GC, busy or not. For heavy ingest, Elastic recommends dedicated ingest nodes.
-- Every parsed document crosses the cluster again, from the ingest node to its primary shard's node.
+- Every parsed document crosses the cluster again, to its primary shard's node.
 - Every replica gets the document over the network and indexes it again. With `n` replicas that's `1 + n` hops and `1 + n` indexes per record.
 - A Logstash shipper is one more JVM fleet in front.
 
 OpenSearch does the same by default, so treat the two as one. Two newer models change the replica cost. OpenSearch segment replication (2.7 on, set when the index is created) indexes once and copies finished segments. Elastic Cloud Serverless writes segments to object storage, and search nodes read them from there. Self-managed Elasticsearch keeps the model above.
 
 DFE has hops too: receiver, Kafka or gRPC, transform, loader, ClickHouse and its replicas. But the transform's Kafka read and write are inside its measured CPU, and no DFE stage holds a cluster seat just to parse.
-
-Sizing it needs one dedicated ingest node and two data nodes with one replica, with CPU and network bytes counted per node.
 
 The replication models above come from:
 
