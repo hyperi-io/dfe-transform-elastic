@@ -166,7 +166,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 # Features are added when their API is actually referenced, not speculatively.
 # The floor moves with `release.helm.library` in .hyperi-ci.yaml: the library
 # renders only the contract version its scalo release writes.
-scalo = { version = ">=2.14.25, <3", features = [
+scalo = { version = ">=2.14.27, <3", features = [
     "cli-service",
     "config",
     "config-schema",
@@ -195,15 +195,15 @@ metrics = ">=0.24.6, <0.25"
 
 # JSON Schema derivation for the reflectable config contract. Same range as
 # scalo's own so cargo unifies to one schemars.
-schemars = { version = ">=1.2.2, <2", default-features = false, features = [
+schemars = { version = ">=1.2.3, <2", default-features = false, features = [
     "std",
     "derive",
     "preserve_order",
 ] }
 
 # Async runtime
-tokio = { version = ">=1.53.2", features = ["full"] }
-tokio-util = ">=0.7.19, <0.8"
+tokio = { version = ">=1.54.1", features = ["full"] }
+tokio-util = ">=0.7.20, <0.8"
 
 # Zero-copy payload bytes -- the currency handed to the transport sender.
 bytes = ">=1.12.1, <2"
@@ -215,7 +215,7 @@ tikv-jemallocator = ">=0.7.0, <0.8"
 clap = { version = ">=4.6.7", features = ["derive"] }
 
 # JSON parsing (SIMD-accelerated)
-simd-json = { version = ">=0.18.1, <0.19", features = ["known-key"] }
+simd-json = { version = ">=0.19.0, <0.20", features = ["known-key"] }
 serde = { version = ">=1.0.229", features = ["derive"] }
 # preserve_order keeps object keys in DOCUMENT order, which is what
 # Elasticsearch's LinkedHashMap-backed ingest documents hold: a Painless
@@ -224,7 +224,7 @@ serde = { version = ">=1.0.229", features = ["derive"] }
 # float_roundtrip parses every float to the nearest double, as Elasticsearch's
 # Java parser does; without it a long literal such as 0.10617876052856445 reads
 # one ulp low and is written back as ...444.
-serde_json = { version = ">=1.0.151", features = ["preserve_order", "float_roundtrip"] }
+serde_json = { version = ">=1.0.154", features = ["preserve_order", "float_roundtrip"] }
 
 # SIMD byte search
 memchr = ">=2.8.3"
@@ -240,7 +240,7 @@ syslog_loose = ">=0.23.0, <0.24"
 # slower uncontended path, and this one is taken on the per-event path. Already
 # in the lockfile through
 # scalo, so this adds no supply chain.
-parking_lot = ">=0.12.5, <0.13"
+parking_lot = ">=0.13.0, <0.14"
 
 # Pre-compiled DFA regex (serialisable, zero-cost startup)
 regex-automata = ">=0.4.18, <0.5"
@@ -250,13 +250,13 @@ regex = ">=1.13.1"
 # lookaround. Only reached when `regex` fails to compile, so the hot path is
 # unchanged; without it those patterns silently match nothing. Bounded because
 # 0.x minors break, and the floor is the line the tests actually run.
-fancy-regex = ">=0.19.2, <0.20"
+fancy-regex = ">=0.20.0, <0.21"
 
 # Mozilla's Public Suffix List, compiled in. Elasticsearch's registered_domain
 # processor is a PSL lookup, and the last-two-labels heuristic it replaced was
 # wrong in both directions: `a.co.uk` came out registered to `co.uk`, and
 # `host.tld` got a registered domain Elasticsearch writes nothing for.
-psl = ">=2.1.239"
+psl = ">=2.1.246"
 
 # Timestamp handling. chrono-tz carries the IANA database, which chrono
 # deliberately does not ship: a pipeline configured with `America/Denver`
@@ -277,7 +277,7 @@ tracing = ">=0.1.44, <0.2"
 # Hashing. Upper bound because 0.x minors break: 0.11 returns a
 # `hybrid_array::Array` from `finalize()`, which has no `LowerHex`.
 sha1 = ">=0.11.0, <0.12"
-sha2 = ">=0.11.0, <0.12"
+sha2 = ">=0.11.1, <0.12"
 # Bounded for the same reason: 0.x minors break, and 0.23 is what the tests run.
 base64 = ">=0.23.1, <0.24"
 
