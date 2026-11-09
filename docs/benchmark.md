@@ -92,7 +92,7 @@ Per-source detail, in the units `report` prints:
 
 ## What the numbers do and do not say
 
-dfe-transform-elastic is 2.6x to 3.7x Vector per CPU-second on these four sources. Vector is 1.0x to 1.9x Elasticsearch `_bulk` indexing. Against Elasticsearch's `_simulate`, which runs the pipeline and nothing else, Vector is slower. `_bulk` pays for indexing a document that the other two engines never do, so it is the right comparison for ingest and the wrong one for the parse step alone.
+dfe-transform-elastic is 2.6x to 3.6x Vector per CPU-second on these four sources, clean, and up to 3.7x with corrupted rows. Vector is 1.0x to 1.9x Elasticsearch `_bulk` indexing. Against Elasticsearch's `_simulate`, which runs the pipeline and nothing else, Vector is slower. `_bulk` pays for indexing a document that the other two engines never do, so it is the right comparison for ingest and the wrong one for the parse step alone.
 
 The numbers move with the host. The first three clean runs of dfe-transform-elastic on `cisco_ios` ran at 8,207 to 12,847 records per CPU-second under a load of 15-20. Three more, after the rest of the matrix had finished and the host was quiet, ran at 12,242 to 15,080. All six are in the mean. Treat a ratio as good to about 20%.
 
