@@ -293,9 +293,12 @@ tempfile = ">=3.27.0, <4"
 # the shipped path uses a work-stealing pool.
 rayon = ">=1.12.0, <2"
 
+# Release CI builds this with thin LTO too (`optimize.lto` in .hyperi-ci.yaml):
+# fat LTO compiled the binary crate in one single-threaded rustc, 31.5 min of
+# the 112 min free-runner arm64 build, and 16 units give thin LTO modules to split.
 [profile.release]
 lto = "thin"
-codegen-units = 1
+codegen-units = 16
 panic = "abort"
 strip = true
 opt-level = 3
