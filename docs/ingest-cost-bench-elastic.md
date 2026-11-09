@@ -48,7 +48,7 @@ Worked out from the table above. Nothing new was run.
 
 The bench says Elasticsearch's own pipeline beats Vector at the parse alone. Production said the opposite, and by a lot.
 
-On DFE 2.1, parsing Filebeat and Winlogbeat data in Vector cost less than Elastic's Painless pipelines for existing Elasticsearch and OpenSearch clusters. Two live deployments proved it, a large telco and a large-scale government agency, each running OpenSearch at 10-100 TB a day as the analyst discovery service beside DFE. (The DFE console replaces that in 2.2.)
+On DFE 2.1, parsing Filebeat and Winlogbeat data in Vector cost less than Elastic's Painless pipelines for existing Elasticsearch and OpenSearch clusters. Two live deployments proved it, a large telco and a large-scale government agency. Each ran OpenSearch at 10-100 TB a day as the analyst discovery service, a sidecar to the ClickHouse instance doing the heavy lifting. (The DFE console replaces that sidecar in 2.2.) Running both side by side gave us a bake-off of the two approaches as a bonus.
 
 The PB-scale tests proved it again. We ran two tests on DFE 2.1 to prove its schema models and ingest scale, the design that became DFE 2.2. That design moved the hot path out of Vector into purpose-built Rust, which is dfe-transform-elastic.
 
@@ -61,6 +61,31 @@ dfe-transform-elastic scales with the data. KEDA ('the autoscaler that watches t
 Dedicated ingest nodes can't do that. On Elastic Cloud on Kubernetes, Elastic Cloud Hosted and Elastic Cloud Enterprise, autoscaling covers data tiers and machine learning nodes only. A node with just the ingest role isn't autoscaled. On Hosted, data tiers only scale up, and not on CPU or memory. So ingest nodes get sized for the peak and sit there at the lows. Elastic Cloud Serverless is the exception: it scales to usage.
 
 Sources: https://www.elastic.co/docs/deploy-manage/autoscaling and https://github.com/elastic/cloud-on-k8s/issues/6236
+
+## ESTIMATE: what scaling saves over a working year
+
+**An estimate from a stated load profile, not a measurement.**
+
+Security and ops data follows the working day. Take a typical Australian organisation:
+
+- Overnight, weekends and public holidays run at about 25% of peak.
+- The morning logins and the post-lunch return hit 100%, and so do org-wide events.
+- In between, load ramps up and down.
+
+As an hourly weekday profile, as a share of peak: 25% from midnight to 6am, then 40, 70, 100, 100, 85, 80, 70 (lunch), 100, 100, 85, 70, 55, 40 and 30, then 25% from 8pm. Weekends and 11 weekday public holidays (8 national, about 3 state) sit at 25% all day.
+
+Over a year that averages 44% of peak, and only 11% of hours run at 100%.
+
+Fixed ingest nodes are sized for the peak, so they carry 1 / 0.44 = 2.26x the capacity the load needs on average. The transform scales to the load, so it doesn't. Give both the same headroom and it cancels out.
+
+That multiplies the per-record saving:
+
+| | per record (MEASURED) | over the year (ESTIMATE) |
+|---|---|---|
+| dfe-transform-elastic vs an Elasticsearch ingest node | 1.2-2.2x less CPU | about 2.8-5.1x less provisioned CPU |
+| dfe-transform-elastic vs the 2.1 pipeline | 2.6-3.6x less CPU | the same 2.6-3.6x (2.1 autoscaled too) |
+
+Your own profile changes the 2.26x. Divide peak by mean load and multiply.
 
 ## ESTIMATE: what a real cluster adds
 
