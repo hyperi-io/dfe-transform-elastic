@@ -38,8 +38,9 @@ The limits, stated plainly:
 
 Worked out from the table above. Nothing new was run.
 
-- Against the 2.1 Vector pipeline, dfe-transform-elastic uses 2.6-3.7x less CPU per record.
-- Against an Elasticsearch ingest node (`_simulate`), it uses 1.2-2.2x less. Against parse plus index (`_bulk`), 3.6-4.9x less.
+- Against the 2.1 Vector pipeline, dfe-transform-elastic uses 2.6-3.6x less CPU per record.
+- Against an Elasticsearch ingest node (`_simulate`), it uses 1.2-2.2x less. Against parse plus index (`_bulk`), 3.6-4.8x less.
+- Those are the clean rows in the table above. With 20% of rows corrupted, the top ends reach 3.7x and 4.9x (per source in [benchmark.md](benchmark.md)).
 - Vector is slower than Elasticsearch's own pipeline at the parse alone: 0.34-0.79x of `_simulate`.
 - dfe-transform-elastic sits on about one core. So one instance is roughly level with Vector per pinned core on `cisco_ios` and behind on `okta_system` (1,537 vs 2,314 rec/s). It's cheap per record but doesn't parallelise. You scale it with pods, and that's ours to fix.
 
