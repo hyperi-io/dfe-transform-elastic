@@ -55,7 +55,17 @@ Ratios of those means, clean and malformed within 0.1x of each other except wher
 | dfe-transform-elastic over Elasticsearch `_bulk` | 3.6x (4.0x) | 3.6x | 4.8x (4.9x) | 3.6x (3.8x) |
 | Vector over Elasticsearch `_simulate` | 0.55x (0.62x) | 0.34x (0.37x) | 0.65x (0.66x) | 0.79x (0.81x) |
 
-Peak memory, the largest container figure over every run of a source: dfe-transform-elastic 222-622 MiB (the bench container had an 8 GiB limit, not the pod's 512Mi, and `okta_system` peaked above that), Vector 512-1,023 MiB, Elasticsearch 5.1-5.7 GiB. Elasticsearch runs a fixed 4 GiB heap and its figure is the container's peak since it started, so it says little about the workload.
+Peak memory in MiB, the largest container figure over every run of a source, and cores used of the four pinned, clean:
+
+| engine | cisco_ios | crowdstrike_falcon | okta_system | fortinet_fortigate | cores used |
+|---|---|---|---|---|---|
+| dfe-transform-elastic | 305 | 378 | 622 | 222 | 0.97-1.05 |
+| Vector VRL | 733 | 946 | 1,023 | 512 | 3.87-3.96 |
+| Elasticsearch (both modes) | 5,111 | 5,628 | 5,674 | 5,674 | 3.61-3.88 `_bulk`, 3.03-3.51 `_simulate` |
+
+The bench container had an 8 GiB limit, not the pod's 512Mi, so `okta_system`'s 622 MiB does not show what a 512Mi pod would do. Elasticsearch runs a fixed 4 GiB heap, and its figure is the container's peak since it started, so it tracks the heap more than the workload.
+
+What Elasticsearch costs beyond the parse -- the ingest node tier, the node-to-node copies, and an estimate of a real cluster -- is in [ingest-cost-bench-elastic.md](ingest-cost-bench-elastic.md).
 
 The malformed set is faster for every engine. A line cut at 20-80% of its length is shorter. Why each engine speeds up on it was not tested. No engine dropped a record. dfe-transform-elastic emitted all of them, Vector emitted all of them and counted component errors on 10-20% of the rows, and Elasticsearch indexed all but 61 of 100,000 fortinet rows.
 
