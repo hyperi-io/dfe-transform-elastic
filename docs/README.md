@@ -13,6 +13,7 @@ Everything deeper than the [README](../README.md). Start at
 | [enrichment.md](enrichment.md) | GeoIP, user agent and community ID -- the three runtime enrichers and the cache in front of the MMDB |
 | [performance.md](performance.md) | SIMD, zero-copy, buffer reuse, the release profile, the native parser targets, and the key dependencies |
 | [benchmark.md](benchmark.md) | The three-way throughput benchmark against Vector VRL and Elasticsearch ingest: method, per-source results and how to re-run it |
+| [ingest-cost-bench-elastic.md](ingest-cost-bench-elastic.md) | What Elasticsearch ingest costs beyond the parse: the measured numbers, what follows from them, and a marked estimate of the ingest node tier and replica copies |
 | [testing.md](testing.md) | The three test tracks, the match modes, and the non-English sweep |
 | [compat.md](compat.md) | How to run `scripts/compat.py`: prerequisites, commands, working a source, older stacks, and the licence position on the corpus |
 | [compat-policy.md](compat-policy.md) | What counts as a difference: the ratchet, the `compare-policy.yaml` sections, and the divergences kept on purpose |
