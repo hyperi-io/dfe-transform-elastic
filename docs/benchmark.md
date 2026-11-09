@@ -29,13 +29,13 @@ The malformed set corrupts 20% of the rows, chosen with a fixed seed (`CORRUPT_S
 - A cumulative processed-record counter is read every 0.2 s: `events_transformed_total` plus errored and dropped for dfe-transform-elastic, Vector's sink `sent_events_total` plus discarded, and completed documents for Elasticsearch. The rate is taken between the 10% and 90% marks, which leaves out the consumer join, JIT warm-up and the drain tail.
 - CPU time is the container cgroup's `cpu.stat usage_usec` over the same window. Peak memory is the cgroup's `memory.peak`, and for the binaries the process's `VmHWM`.
 - One warm-up run, then three measured runs per cell. A run is dropped and repeated when the 1-minute load average before or after it is above the cores not pinned (28 of 32), or when it did not reach its record count.
-- Timed runs hold `flock /home/derek/.dfe-bench.lock`. Each result row carries the load averages and cpu count from before and after.
+- Timed runs hold `flock ~/.dfe-bench.lock` (`--lock` to change it). Each result row carries the load averages and cpu count from before and after.
 
 dfe-transform-elastic used 0.96 to 1.05 of the four pinned cores in every clean run, and its pod contract requests `100m` of CPU with a `500m` limit and 512Mi of memory. Vector and Elasticsearch use all four. So the headline unit is records per CPU-second, which is per core actually used. Records per second per pinned core is in the raw files and the tables.
 
 ## Results
 
-Measured 2026-11-09 on desktop-derek (AMD EPYC 7302 VM, 32 vCPU, 1 thread per core, kernel 7.0.0-42, Docker 29.9.3). Each figure is the mean of three measured runs, with the minimum and maximum beside it. The host was shared, so the load average before a run ranged from 4.6 to 20.3. No run tripped the noise gate, and none stalled.
+Measured 2026-11-09 on a shared build host (AMD EPYC 7302 VM, 32 vCPU, 1 thread per core, kernel 7.0.0-42, Docker 29.9.3). Each figure is the mean of three measured runs, with the minimum and maximum beside it. The host was shared, so the load average before a run ranged from 4.6 to 20.3. No run tripped the noise gate, and none stalled.
 
 Records per CPU-second, clean (malformed in brackets):
 
@@ -82,7 +82,7 @@ Per-source detail, in the units `report` prints:
 
 ## What the numbers do and do not say
 
-dfe-transform-elastic is 2.6x to 3.7x Vector per CPU-second on these four sources, not the 5-10x the spike estimated. Vector is 1.0x to 1.9x Elasticsearch `_bulk` indexing, not another 5-10x. Against Elasticsearch's `_simulate`, which runs the pipeline and nothing else, Vector is slower. `_bulk` pays for indexing a document that the other two engines never do, so it is the right comparison for ingest and the wrong one for the parse step alone.
+dfe-transform-elastic is 2.6x to 3.7x Vector per CPU-second on these four sources. Vector is 1.0x to 1.9x Elasticsearch `_bulk` indexing. Against Elasticsearch's `_simulate`, which runs the pipeline and nothing else, Vector is slower. `_bulk` pays for indexing a document that the other two engines never do, so it is the right comparison for ingest and the wrong one for the parse step alone.
 
 The numbers move with the host. The first three clean runs of dfe-transform-elastic on `cisco_ios` ran at 8,207 to 12,847 records per CPU-second under a load of 15-20. Three more, after the rest of the matrix had finished and the host was quiet, ran at 12,242 to 15,080. All six are in the mean. Treat a ratio as good to about 20%.
 
