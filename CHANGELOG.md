@@ -3,6 +3,14 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.28](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.27...v1.1.28) (2026-11-09)
+
+### Bug Fixes
+
+* **deps:** update redpandadata/redpanda Docker tag to v26.2.6 ([#159](https://github.com/hyperi-io/dfe-transform-elastic/issues/159)) ([f8d1b4d](https://github.com/hyperi-io/dfe-transform-elastic/commit/f8d1b4d3b347f865b08c5f2cbbb367d3e6794ae4))
+* **deps:** update rust-dependencies ([#160](https://github.com/hyperi-io/dfe-transform-elastic/issues/160)) ([4a4e07d](https://github.com/hyperi-io/dfe-transform-elastic/commit/4a4e07dca866ebcd85852341acbef3f6ce4575f9))
+* **tests:** gate the service-loop tests on a transport ([4ea4782](https://github.com/hyperi-io/dfe-transform-elastic/commit/4ea4782449947bfc358ba887a6611fe9c4beff80))
+
 ## [1.1.27](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.26...v1.1.27) (2026-11-03)
 
 ### Bug Fixes
