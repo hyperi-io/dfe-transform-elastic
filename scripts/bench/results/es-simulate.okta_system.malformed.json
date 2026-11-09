@@ -1,0 +1,169 @@
+{
+  "rows": 240000,
+  "runs": [
+    {
+      "engine": "es-simulate",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          7.4,
+          6.97,
+          7.01
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.75,
+          6.84,
+          6.96
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 6.032828282828283,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 75,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 13563.587376470296,
+      "rate_per_core": 3390.896844117574,
+      "cpu_seconds": 44.4018145,
+      "rec_per_cpu_second": 4324.147608877561,
+      "whole_rate": 13293.902659470257,
+      "window_seconds": 14.155547103495337,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794224865
+    },
+    {
+      "engine": "es-simulate",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.45,
+          6.78,
+          6.94
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.78,
+          6.84,
+          6.96
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.452970297029703,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 76,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 13281.852207758191,
+      "rate_per_core": 3320.4630519395478,
+      "cpu_seconds": 44.5715885,
+      "rec_per_cpu_second": 4307.676851140273,
+      "whole_rate": 12811.980708602014,
+      "window_seconds": 14.455815122521017,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794224887
+    },
+    {
+      "engine": "es-simulate",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.78,
+          6.84,
+          6.96
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.63,
+          6.8,
+          6.94
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 0.75,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 81,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 12889.320838588827,
+      "rate_per_core": 3222.3302096472066,
+      "cpu_seconds": 46.26778933333349,
+      "rec_per_cpu_second": 4149.755213432559,
+      "whole_rate": 12649.64472918661,
+      "window_seconds": 14.896052507683633,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794224909
+    },
+    {
+      "engine": "es-simulate",
+      "source": "okta_system",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.63,
+          6.8,
+          6.94
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.34,
+          6.72,
+          6.91
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 10.828282828282829,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 78,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 13137.40975359696,
+      "rate_per_core": 3284.35243839924,
+      "cpu_seconds": 45.062958,
+      "rec_per_cpu_second": 4260.705655407707,
+      "whole_rate": 12867.401674777311,
+      "window_seconds": 14.614753105910495,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794224931
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "rows": 160000,
+  "runs": [
+    {
+      "engine": "es-simulate",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.8,
+          6.56,
+          6.76
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          7.35,
+          6.7,
+          6.81
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.995049504950495,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 61,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 12729.986118843834,
+      "rate_per_core": 3182.4965297109584,
+      "cpu_seconds": 36.011077,
+      "rec_per_cpu_second": 3554.4618673859713,
+      "whole_rate": 12474.553176622998,
+      "window_seconds": 10.054999181069434,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794225266
+    },
+    {
+      "engine": "es-simulate",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          7.35,
+          6.7,
+          6.81
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          7.05,
+          6.66,
+          6.79
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 4.707920792079208,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 61,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 12871.633767085676,
+      "rate_per_core": 3217.908441771419,
+      "cpu_seconds": 34.827371,
+      "rec_per_cpu_second": 3675.2702350114228,
+      "whole_rate": 12640.767047579195,
+      "window_seconds": 9.944347572047263,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794225282
+    },
+    {
+      "engine": "es-simulate",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          7.05,
+          6.66,
+          6.79
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.89,
+          6.65,
+          6.79
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.033590603958356,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 60,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 12653.149485917,
+      "rate_per_core": 3163.28737147925,
+      "cpu_seconds": 35.47939033333349,
+      "rec_per_cpu_second": 3607.7282838691235,
+      "whole_rate": 12411.637820067797,
+      "window_seconds": 10.116058467693316,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794225296
+    },
+    {
+      "engine": "es-simulate",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 160000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.89,
+          6.65,
+          6.79
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.61,
+          6.6,
+          6.77
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 0.75,
+      "peak_cgroup_memory_bytes": 5950070784,
+      "peak_rss_bytes": null,
+      "samples": 62,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 12518.774195668848,
+      "rate_per_core": 3129.693548917212,
+      "cpu_seconds": 35.92314375,
+      "rec_per_cpu_second": 3563.1625364080223,
+      "whole_rate": 12417.67571399368,
+      "window_seconds": 10.224643243767787,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794225310
+    }
+  ]
+}

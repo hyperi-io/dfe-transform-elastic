@@ -1,0 +1,173 @@
+{
+  "rows": 240000,
+  "runs": [
+    {
+      "engine": "vector",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.18,
+          6.1,
+          6.58
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.82,
+          6.16,
+          6.57
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 6.708211997670356,
+      "peak_cgroup_memory_bytes": 506961920,
+      "peak_rss_bytes": 537153536,
+      "samples": 163,
+      "rate": 12650.170551512814,
+      "rate_per_core": 3162.5426378782035,
+      "cpu_seconds": 59.82863693018861,
+      "rec_per_cpu_second": 3209.1655409772466,
+      "whole_rate": 7034.096938777987,
+      "window_seconds": 15.17766098236826,
+      "output_records": 240000,
+      "sent": 240000,
+      "discarded": 0,
+      "errors": 25289,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794225410
+    },
+    {
+      "engine": "vector",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.63,
+          6.32,
+          6.63
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.71,
+          6.37,
+          6.63
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.030503050305031,
+      "peak_cgroup_memory_bytes": 508821504,
+      "peak_rss_bytes": 540479488,
+      "samples": 173,
+      "rate": 11300.721285117084,
+      "rate_per_core": 2825.180321279271,
+      "cpu_seconds": 66.53604538248729,
+      "rec_per_cpu_second": 2885.653917305636,
+      "whole_rate": 6645.132162516031,
+      "window_seconds": 16.9900659573705,
+      "output_records": 240000,
+      "sent": 240000,
+      "discarded": 0,
+      "errors": 25289,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794225448
+    },
+    {
+      "engine": "vector",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          6.71,
+          6.37,
+          6.63
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          6.04,
+          6.22,
+          6.57
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 3.5228272827282727,
+      "peak_cgroup_memory_bytes": 519192576,
+      "peak_rss_bytes": 549752832,
+      "samples": 163,
+      "rate": 12600.015679425718,
+      "rate_per_core": 3150.0039198564295,
+      "cpu_seconds": 60.224657600761454,
+      "rec_per_cpu_second": 3188.0629570830874,
+      "whole_rate": 7057.279033729581,
+      "window_seconds": 15.238076275850393,
+      "output_records": 240000,
+      "sent": 240000,
+      "discarded": 0,
+      "errors": 25289,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794225487
+    },
+    {
+      "engine": "vector",
+      "source": "fortinet_fortigate",
+      "mode": "malformed",
+      "rows": 240000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.8,
+          6.16,
+          6.55
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.82,
+          6.1,
+          6.51
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 3.7753525352535253,
+      "peak_cgroup_memory_bytes": 510476288,
+      "peak_rss_bytes": 541851648,
+      "samples": 162,
+      "rate": 12734.806714941189,
+      "rate_per_core": 3183.7016787352973,
+      "cpu_seconds": 59.497194031018466,
+      "rec_per_cpu_second": 3227.0429408805744,
+      "whole_rate": 7075.583579523626,
+      "window_seconds": 15.076789487094047,
+      "output_records": 240000,
+      "sent": 240000,
+      "discarded": 0,
+      "errors": 25289,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794225524
+    }
+  ]
+}

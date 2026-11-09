@@ -1,0 +1,306 @@
+{
+  "rows": 600000,
+  "runs": [
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          23.19,
+          20.45,
+          16.69
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          14.66,
+          18.51,
+          16.28
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 41.487881783894494,
+      "peak_cgroup_memory_bytes": 237662208,
+      "peak_rss_bytes": 250679296,
+      "samples": 270,
+      "rate": 11407.585660479042,
+      "rate_per_core": 2851.8964151197606,
+      "cpu_seconds": 42.9185401955,
+      "rec_per_cpu_second": 11183.977782411339,
+      "whole_rate": 9897.936928950538,
+      "window_seconds": 42.07726457517946,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794221468
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          14.66,
+          18.51,
+          16.28
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          20.81,
+          19.87,
+          16.94
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 35.37060455250061,
+      "peak_cgroup_memory_bytes": 317485056,
+      "peak_rss_bytes": 332079104,
+      "samples": 330,
+      "rate": 7799.10061975364,
+      "rate_per_core": 1949.77515493841,
+      "cpu_seconds": 58.4893218995,
+      "rec_per_cpu_second": 8206.626174000887,
+      "whole_rate": 8343.624213071693,
+      "window_seconds": 61.54555805886787,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794221535
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          20.34,
+          19.79,
+          16.93
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          13.0,
+          17.84,
+          16.41
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 17.689309015794645,
+      "peak_cgroup_memory_bytes": 319561728,
+      "peak_rss_bytes": 329474048,
+      "samples": 238,
+      "rate": 12845.952611236267,
+      "rate_per_core": 3211.488152809067,
+      "cpu_seconds": 37.3614275,
+      "rec_per_cpu_second": 12847.474845547591,
+      "whole_rate": 12139.117392211501,
+      "window_seconds": 37.3658547969535,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794221612
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          13.88,
+          17.94,
+          16.46
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          11.45,
+          16.41,
+          16.02
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 14.337021937487867,
+      "peak_cgroup_memory_bytes": 251756544,
+      "peak_rss_bytes": 262434816,
+      "samples": 266,
+      "rate": 10654.342153977645,
+      "rate_per_core": 2663.585538494411,
+      "cpu_seconds": 41.433274,
+      "rec_per_cpu_second": 11584.891891478333,
+      "whole_rate": 10286.687997867108,
+      "window_seconds": 45.05205418250989,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794221669
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          5.05,
+          6.17,
+          6.51
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          4.78,
+          5.95,
+          6.42
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 4.035405071119357,
+      "peak_cgroup_memory_bytes": 312229888,
+      "peak_rss_bytes": 322691072,
+      "samples": 199,
+      "rate": 15016.014813947782,
+      "rate_per_core": 3754.0037034869456,
+      "cpu_seconds": 31.83129,
+      "rec_per_cpu_second": 15079.501961748958,
+      "whole_rate": 14724.948796632589,
+      "window_seconds": 31.9658715010155,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 0,
+      "started_unix": 1794225738
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          4.78,
+          5.95,
+          6.42
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          4.64,
+          5.78,
+          6.34
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 13.045454545454545,
+      "peak_cgroup_memory_bytes": 301412352,
+      "peak_rss_bytes": 316370944,
+      "samples": 199,
+      "rate": 15019.03802135961,
+      "rate_per_core": 3754.7595053399027,
+      "cpu_seconds": 31.897209,
+      "rec_per_cpu_second": 15048.338555263566,
+      "whole_rate": 14752.213099926124,
+      "window_seconds": 31.959437037003227,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794225781
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "cisco_ios",
+      "mode": "clean",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          4.64,
+          5.78,
+          6.34
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          5.24,
+          5.78,
+          6.31
+        ],
+        "nproc": 32
+      },
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 0.995049504950495,
+      "peak_cgroup_memory_bytes": 310398976,
+      "peak_rss_bytes": 324730880,
+      "samples": 235,
+      "rate": 11920.126862267944,
+      "rate_per_core": 2980.031715566986,
+      "cpu_seconds": 39.20824,
+      "rec_per_cpu_second": 12242.324572589841,
+      "whole_rate": 12287.103491652495,
+      "window_seconds": 40.26802781096194,
+      "output_records": 600000,
+      "transformed": 600000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794225825
+    }
+  ]
+}
