@@ -44,11 +44,15 @@ Worked out from the table above. Nothing new was run.
 - Vector is slower than Elasticsearch's own pipeline at the parse alone: 0.34-0.79x of `_simulate`.
 - dfe-transform-elastic sits on about one core. So one instance is roughly level with Vector per pinned core on `cisco_ios` and behind on `okta_system` (1,537 vs 2,314 rec/s). It's cheap per record but doesn't parallelise. You scale it with pods, and that's ours to fix.
 
-## In production, and why it differs
+## PROVEN in production
 
-The bench says Elasticsearch's own pipeline beats Vector at the parse alone. Production said the opposite. On DFE 2.1, parsing Filebeat and Winlogbeat data in Vector was cheaper than Elastic's Painless pipelines for existing Elasticsearch and OpenSearch clusters. That held in production at customers running OpenSearch at 10-100 TB a day, where OpenSearch was the analyst discovery service beside DFE. (The DFE console replaces it in 2.2.) This is field experience, not a number from this bench.
+The bench says Elasticsearch's own pipeline beats Vector at the parse alone. Production said the opposite, and by a lot.
 
-Both are true. The bench is one node at a steady rate. A real cluster pays for the tier the parse runs on, sized for the peak, and the next two sections are that cost.
+On DFE 2.1, parsing Filebeat and Winlogbeat data in Vector cost less than Elastic's Painless pipelines for existing Elasticsearch and OpenSearch clusters. Two live deployments proved it, a large telco and a large-scale government agency, each running OpenSearch at 10-100 TB a day as the analyst discovery service beside DFE. (The DFE console replaces that in 2.2.)
+
+The PB-scale tests proved it again. We ran two tests on DFE 2.1 to prove its schema models and ingest scale, the design that became DFE 2.2. That design moved the hot path out of Vector into purpose-built Rust, which is dfe-transform-elastic.
+
+So why does the bench disagree? It's one node at a steady rate. A real cluster pays for the tier the parse runs on, sized for the peak, and the next two sections are that cost.
 
 ## Scaling with the load
 
