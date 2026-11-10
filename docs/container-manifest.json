@@ -7,7 +7,9 @@
   "image_profile": "production",
   "runtime_packages": {
     "apt_repos": [],
-    "apt_packages": [],
+    "apt_packages": [
+      "curl"
+    ],
     "distro": "trixie",
     "unresolved_base_image": null
   },
