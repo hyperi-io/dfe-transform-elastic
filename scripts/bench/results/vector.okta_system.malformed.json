@@ -10,38 +10,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          5.73,
-          6.02,
-          6.77
+          1.4,
+          1.91,
+          2.8
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.36,
-          6.14,
-          6.79
+          2.8,
+          2.21,
+          2.87
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.0182712923956294,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 10.005050505050505,
-      "peak_cgroup_memory_bytes": 1106632704,
-      "peak_rss_bytes": 1049751552,
-      "samples": 141,
-      "rate": 10882.984803293428,
-      "rate_per_core": 2720.746200823357,
-      "cpu_seconds": 87.33895656337182,
-      "rec_per_cpu_second": 2747.9146699658545,
-      "whole_rate": 9924.110460316035,
-      "window_seconds": 22.052773603742494,
+      "engine_cpus_busy_before_pct": 1.9951995199519952,
+      "peak_cgroup_memory_bytes": 1020993536,
+      "peak_rss_bytes": 1051365376,
+      "samples": 154,
+      "rate": 9931.358291733815,
+      "rate_per_core": 2482.839572933454,
+      "cpu_seconds": 95.64517071063118,
+      "rec_per_cpu_second": 2509.2746263803097,
+      "whole_rate": 9018.918412638932,
+      "window_seconds": 24.165878719707415,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2020-02-14T22:18:51.843Z\",\"_id\":\"faf7398a-4f77-11ea-97fb-5925e98228bd\",\"client\":{\"geo\":{\"city_name\":\"Dublin\",\"country_name\":\"United States\",\"location\":{\"lat\":37.7201,\"lon\":-121.919},\"region_name\":\"California\"},\"ip\":\"175.16.199.1\",\"user\":{\"full_name\":\"xxxxxx\",\"id\":\"00u1abvz4pYqdM8ms4x6\",\"name\":\"someusername\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user.session.end\",\"category\":[\"authentication\",\"session\"],\"id\":\"faf7398a-4f77-11ea-97fb-5925e98228bd\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"someusername@elastic.co\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"xxxxxx\\\",\\\"id\\\":\\\"00u1abvz4pYqdM8ms4x6\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\":{\\\"authenticationP",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"db102e212ff7\",stage=\"0\"} 4133 1794275203363\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"db102e212ff7\",stage=\"0\"} 297593 1794275203363\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"db102e212ff7\",stage=\"0\"} 4133 1794275203363\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"db102e212ff7\",stage=\"0\"} 297593 1794275203363\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"db102e212ff7\",intentional=\"true\"} 0 1794275203363\nvector_component_errors_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"db102e212ff7\",stage=\"processing\"} 60000 1794275203363\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"db102e212ff7\"} 300000 1794275203363\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"db102e212ff7\"} 300000 1794275203363\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"db102e212ff7\"} 4133 1794275203363\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"db102e212ff7\"} 300000 1794275203363\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"db102e212ff7\"} 300000 1794275203363\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"db102e212ff7\"} 4133 1794275203363\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\"} 300000 1794275203363\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"db102e212ff7\",partition=\"3\",topic=\"b162-in-vector-okta-system-malformed-0-1794275165\"} 75000 1794275203363\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"db102e212ff7\",partition=\"2\",topic=\"b162-in-vector-okta-system-malformed-0-1794275165\"} 75000 1794275203363\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"db102e212ff7\",partition=\"1\",topic=\"b162-in-vector-okta-system-malformed-0-1794275165\"} 75000 1794275203363\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"db102e212ff7\",partition=\"0\",topic=\"b162-in-vector-okta-system-malformed-0-1794275165\"} 75000 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"azure_platformlogs\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"cisco_ftd\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"cisco_amp\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"cisco_asa\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"db102e212ff7\",output=\"_default\"} 300000 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"okta_system\"} 300000 1794275203363\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"db102e212ff7\",output=\"_default\"} 300000 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"office_365_logs\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"cisco_meraki_logs\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"cisco_meraki_events\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"azure_signinlogs\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"db102e212ff7\",output=\"_default\"} 4133 1794275203363\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"db102e212ff7\"} 19581 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"db102e212ff7\",output=\"azure_activitylogs\"} 0 1794275203363\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind",
       "sent": 300000,
       "discarded": 0,
       "errors": 60000,
+      "log_tail": "OR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 994\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:46:22.612775Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-10T01:46:32.612903Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 19912 times.\n2026-11-10T01:46:32.612931Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: expected `:` at line 1 column 1163\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:46:32.613286Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": false,
       "run": 0,
-      "started_unix": 1794224621
+      "started_unix": 1794275165
     },
     {
       "engine": "vector",
@@ -52,38 +56,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.57,
-          6.19,
-          6.8
+          1.87,
+          2.05,
+          2.78
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.85,
-          6.3,
-          6.82
+          3.19,
+          2.36,
+          2.86
         ],
         "nproc": 32
       },
+      "others_busy_pct": 2.760767201752371,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.25,
-      "peak_cgroup_memory_bytes": 962617344,
-      "peak_rss_bytes": 991412224,
-      "samples": 139,
-      "rate": 10867.710452627634,
-      "rate_per_core": 2716.9276131569086,
-      "cpu_seconds": 87.54935877575555,
-      "rec_per_cpu_second": 2741.3107686456474,
-      "whole_rate": 10049.822636888188,
-      "window_seconds": 22.083768337973332,
+      "engine_cpus_busy_before_pct": 3.0126262626262625,
+      "peak_cgroup_memory_bytes": 945864704,
+      "peak_rss_bytes": 974110720,
+      "samples": 153,
+      "rate": 9990.369798896776,
+      "rate_per_core": 2497.592449724194,
+      "cpu_seconds": 95.04178932030527,
+      "rec_per_cpu_second": 2525.204983159182,
+      "whole_rate": 9128.47770522109,
+      "window_seconds": 24.023134761888684,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2020-02-14T20:18:57.762Z\",\"_id\":\"3af594f9-4f67-11ea-abd3-1f5d113f2546\",\"client\":{\"geo\":{\"city_name\":\"Dublin\",\"country_name\":\"United States\",\"location\":{\"lat\":37.7201,\"lon\":-121.919},\"region_name\":\"California\"},\"user\":{\"full_name\":\"xxxxxx\",\"id\":\"00u1abvz4pYqdM8ms4x6\",\"name\":\"xxxxxx\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"policy.evaluate_sign_on\",\"category\":[\"authentication\"],\"id\":\"3af594f9-4f67-11ea-abd3-1f5d113f2546\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"xxxxxx@elastic.co\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"xxxxxx\\\",\\\"id\\\":\\\"00u1abvz4pYqdM8ms4x6\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\":{\\\"authenticationProvider\\\":null,\\\"authenticationStep",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"2c4fe2de7379\",stage=\"0\"} 300000 1794275291942\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"2c4fe2de7379\",stage=\"0\"} 4009 1794275291942\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"2c4fe2de7379\",stage=\"0\"} 300000 1794275291942\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"2c4fe2de7379\",stage=\"0\"} 4009 1794275291942\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"2c4fe2de7379\",intentional=\"true\"} 0 1794275291942\nvector_component_errors_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"2c4fe2de7379\",stage=\"processing\"} 60000 1794275291942\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"2c4fe2de7379\"} 300000 1794275291942\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"2c4fe2de7379\"} 4145 1794275291942\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"2c4fe2de7379\"} 300000 1794275291942\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"2c4fe2de7379\"} 4145 1794275291942\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"2c4fe2de7379\"} 300000 1794275291942\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\"} 300000 1794275291942\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"2c4fe2de7379\"} 300000 1794275291942\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"2c4fe2de7379\",partition=\"1\",topic=\"b162-in-vector-okta-system-malformed-1-1794275254\"} 75000 1794275291942\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"2c4fe2de7379\",partition=\"3\",topic=\"b162-in-vector-okta-system-malformed-1-1794275254\"} 75000 1794275291942\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"2c4fe2de7379\",partition=\"2\",topic=\"b162-in-vector-okta-system-malformed-1-1794275254\"} 75000 1794275291942\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"2c4fe2de7379\",partition=\"0\",topic=\"b162-in-vector-okta-system-malformed-1-1794275254\"} 75000 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"office_365_logs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"panw_panos_logs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"2c4fe2de7379\",output=\"_default\"} 300000 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"cisco_asa\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"azure_auditlogs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"fortinet_fortigate\"} 300000 1794275291942\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"2c4fe2de7379\",output=\"_default\"} 300000 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"azure_activitylogs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"cisco_amp\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"azure_signinlogs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"azure_platformlogs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"cisco_meraki_logs\"} 0 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"okta_system\"} 300000 1794275291942\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"2c4fe2de7379\",output=\"cisco_ftd\"} 0 1794275291942\nvector_component_sent_events_total{compon",
       "sent": 300000,
       "discarded": 0,
       "errors": 60000,
+      "log_tail": "okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 1351\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:47:51.170717Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-10T01:48:01.170167Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 20140 times.\n2026-11-10T01:48:01.170195Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 1179\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:48:01.170350Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 1,
-      "started_unix": 1794224657
+      "started_unix": 1794275254
     },
     {
       "engine": "vector",
@@ -94,38 +102,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          7.58,
-          6.46,
-          6.87
+          1.8,
+          2.11,
+          2.75
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          8.23,
-          6.74,
-          6.95
+          3.37,
+          2.46,
+          2.84
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.472531418297582,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.0,
-      "peak_cgroup_memory_bytes": 960311296,
-      "peak_rss_bytes": 990654464,
-      "samples": 140,
-      "rate": 11009.352507500596,
-      "rate_per_core": 2752.338126875149,
-      "cpu_seconds": 86.59178637363475,
-      "rec_per_cpu_second": 2771.62546300205,
-      "whole_rate": 10010.669152296245,
-      "window_seconds": 21.79964714877552,
+      "engine_cpus_busy_before_pct": 0.5,
+      "peak_cgroup_memory_bytes": 942915584,
+      "peak_rss_bytes": 973242368,
+      "samples": 154,
+      "rate": 9924.196572367608,
+      "rate_per_core": 2481.049143091902,
+      "cpu_seconds": 95.50694992806635,
+      "rec_per_cpu_second": 2512.906130713655,
+      "whole_rate": 9092.42872284796,
+      "window_seconds": 24.18331783836718,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2020-02-14T22:18:51.843Z\",\"_id\":\"faf7398a-4f77-11ea-97fb-5925e98228bd\",\"client\":{\"geo\":{\"city_name\":\"Dublin\",\"country_name\":\"United States\",\"location\":{\"lat\":37.7201,\"lon\":-121.919},\"region_name\":\"California\"},\"ip\":\"175.16.199.1\",\"user\":{\"full_name\":\"xxxxxx\",\"id\":\"00u1abvz4pYqdM8ms4x6\",\"name\":\"someusername\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user.session.end\",\"category\":[\"authentication\",\"session\"],\"id\":\"faf7398a-4f77-11ea-97fb-5925e98228bd\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"someusername@elastic.co\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"xxxxxx\\\",\\\"id\\\":\\\"00u1abvz4pYqdM8ms4x6\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\":{\\\"authenticationP",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"8cdb4059870d\",stage=\"0\"} 294617 1794275370250\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"8cdb4059870d\",stage=\"0\"} 4011 1794275370250\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"8cdb4059870d\",stage=\"0\"} 294517 1794275370250\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"8cdb4059870d\",stage=\"0\"} 4011 1794275370250\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"8cdb4059870d\",intentional=\"true\"} 0 1794275370250\nvector_component_errors_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"8cdb4059870d\",stage=\"processing\"} 60000 1794275370250\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"8cdb4059870d\"} 4147 1794275370250\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"8cdb4059870d\"} 300000 1794275370250\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"8cdb4059870d\"} 300000 1794275370250\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"8cdb4059870d\"} 300000 1794275370250\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"8cdb4059870d\"} 300000 1794275370250\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\"} 300000 1794275370250\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"8cdb4059870d\"} 4147 1794275370250\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"8cdb4059870d\",partition=\"2\",topic=\"b162-in-vector-okta-system-malformed-2-1794275332\"} 75000 1794275370250\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"8cdb4059870d\",partition=\"0\",topic=\"b162-in-vector-okta-system-malformed-2-1794275332\"} 75000 1794275370250\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"8cdb4059870d\",partition=\"3\",topic=\"b162-in-vector-okta-system-malformed-2-1794275332\"} 75000 1794275370250\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"8cdb4059870d\",partition=\"1\",topic=\"b162-in-vector-okta-system-malformed-2-1794275332\"} 75000 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"panw_panos_logs\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"8cdb4059870d\"} 19651 1794275370250\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"8cdb4059870d\",output=\"_default\"} 300000 1794275370250\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"8cdb4059870d\",output=\"_default\"} 300000 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"cisco_meraki_logs\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"8cdb4059870d\",output=\"_default\"} 300000 1794275370250\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"8cdb4059870d\",output=\"_default\"} 300000 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"azure_activitylogs\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"office_365_logs\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"cisco_meraki_events\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"_unmatched\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"8cdb4059870d\",output=\"_default\"} 4147 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"azure_signinlogs\"} 0 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb4059870d\",output=\"okta_system\"} 300000 1794275370250\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"8cdb40",
       "sent": 300000,
       "discarded": 0,
       "errors": 60000,
+      "log_tail": "okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 1419\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:49:19.485557Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-10T01:49:29.486596Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 18846 times.\n2026-11-10T01:49:29.487165Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 1157\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:49:29.488372Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 2,
-      "started_unix": 1794224692
+      "started_unix": 1794275332
     },
     {
       "engine": "vector",
@@ -136,38 +148,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          8.45,
-          6.81,
-          6.97
+          1.81,
+          2.18,
+          2.72
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          7.89,
-          6.83,
-          6.97
+          3.8,
+          2.66,
+          2.86
         ],
         "nproc": 32
       },
+      "others_busy_pct": 6.0484086196823945,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 2.757575757575758,
-      "peak_cgroup_memory_bytes": 947191808,
-      "peak_rss_bytes": 977453056,
-      "samples": 141,
-      "rate": 11317.677969124237,
-      "rate_per_core": 2829.4194922810593,
-      "cpu_seconds": 83.94834667050408,
-      "rec_per_cpu_second": 2858.900854140656,
-      "whole_rate": 9982.271755202306,
-      "window_seconds": 21.205763289496673,
+      "engine_cpus_busy_before_pct": 9.018326832683268,
+      "peak_cgroup_memory_bytes": 941977600,
+      "peak_rss_bytes": 972648448,
+      "samples": 154,
+      "rate": 9967.125093469864,
+      "rate_per_core": 2491.781273367466,
+      "cpu_seconds": 95.62387664709489,
+      "rec_per_cpu_second": 2509.8334057897805,
+      "whole_rate": 9108.75096091391,
+      "window_seconds": 24.079160013476724,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2023-04-27T00:56:17.750Z\",\"_id\":\"23A8F6AA-0E52-45F7-A2FB-FEF6E0B38FC7\",\"client\":{\"user\":{\"full_name\":\"Okta System\",\"id\":\"spr294puarJOdUsWD1t7\",\"name\":\"system\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"app.user_management\",\"id\":\"23A8F6AA-0E52-45F7-A2FB-FEF6E0B38FC7\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"system@okta.com\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"Okta System\\\",\\\"id\\\":\\\"spr294puarJOdUsWD1t7\\\",\\\"type\\\":\\\"SystemPrincipal\\\"},\\\"authenticationContext\\\":{\\\"authenticationProvider\\\":null,\\\"authenticationStep\\\":0,\\\"credentialProvider\\\":null,\\\"credentialType\\\":null,\\\"externalSessionId\\\":\\\"4ivdy6m56cqo8s6w57o6cvq5fbb409wr\\\",\\\"interface\\\":null,\\\"issuer\\",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"222577aa440c\",stage=\"0\"} 299586 1794275468871\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"222577aa440c\",stage=\"0\"} 4145 1794275468871\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"222577aa440c\",stage=\"0\"} 4145 1794275468871\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"222577aa440c\",stage=\"0\"} 299586 1794275468871\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"222577aa440c\",intentional=\"true\"} 0 1794275468871\nvector_component_errors_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"222577aa440c\",stage=\"processing\"} 60000 1794275468871\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\"} 300000 1794275468871\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"222577aa440c\"} 300000 1794275468871\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"222577aa440c\"} 4145 1794275468871\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"222577aa440c\"} 300000 1794275468871\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"222577aa440c\"} 300000 1794275468871\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"222577aa440c\"} 300000 1794275468871\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"222577aa440c\"} 4145 1794275468871\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"222577aa440c\",partition=\"1\",topic=\"b162-in-vector-okta-system-malformed-3-1794275431\"} 75000 1794275468871\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"222577aa440c\",partition=\"3\",topic=\"b162-in-vector-okta-system-malformed-3-1794275431\"} 75000 1794275468871\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"222577aa440c\",partition=\"2\",topic=\"b162-in-vector-okta-system-malformed-3-1794275431\"} 75000 1794275468871\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"222577aa440c\",partition=\"0\",topic=\"b162-in-vector-okta-system-malformed-3-1794275431\"} 75000 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"cisco_asa\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"fortinet_fortigate\"} 300000 1794275468871\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"222577aa440c\",output=\"_default\"} 300000 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"okta_system\"} 300000 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"cisco_ftd\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"azure_platformlogs\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"cisco_amp\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"222577aa440c\"} 19641 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"_unmatched\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"panw_panos_logs\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"222577aa440c\",output=\"_default\"} 300000 1794275468871\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"222577aa440c\",output=\"_default\"} 4145 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"cisco_meraki_events\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"222577aa440c\",output=\"azure_auditlogs\"} 0 1794275468871\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=",
       "sent": 300000,
       "discarded": 0,
       "errors": 60000,
+      "log_tail": "d=okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 540\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:50:48.098625Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-10T01:50:58.097952Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 20699 times.\n2026-11-10T01:50:58.097978Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (944:974): function call error for \\\"parse_json\\\" at (869:896): unable to parse json: control character (\\\\u0000-\\\\u001F) found while parsing a string at line 1 column 934\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-10T01:50:58.098014Z ERROR transform{component_kind=\"transform\" component_id=okta_system component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 3,
-      "started_unix": 1794224728
+      "started_unix": 1794275431
     }
   ]
 }

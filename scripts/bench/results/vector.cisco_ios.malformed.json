@@ -10,38 +10,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          4.5,
-          8.51,
-          12.31
+          1.86,
+          2.52,
+          3.12
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.65,
-          8.54,
-          12.16
+          3.65,
+          2.9,
+          3.22
         ],
         "nproc": 32
       },
+      "others_busy_pct": 7.041409626983847,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 26.25,
-      "peak_cgroup_memory_bytes": 800468992,
-      "peak_rss_bytes": 699088896,
-      "samples": 178,
-      "rate": 17207.633700111848,
-      "rate_per_core": 4301.908425027962,
-      "cpu_seconds": 110.70731800480839,
-      "rec_per_cpu_second": 4335.756738133174,
-      "whole_rate": 15985.207403710345,
-      "window_seconds": 27.894596570641784,
+      "engine_cpus_busy_before_pct": 2.2475747574757476,
+      "peak_cgroup_memory_bytes": 673955840,
+      "peak_rss_bytes": 704618496,
+      "samples": 191,
+      "rate": 15469.47864630033,
+      "rate_per_core": 3867.3696615750823,
+      "cpu_seconds": 122.82991347010284,
+      "rec_per_cpu_second": 3907.842857162261,
+      "whole_rate": 14859.894097392264,
+      "window_seconds": 31.02884143511821,
       "output_records": 600000,
+      "sample_output": "{\"cisco\":{\"ios\":{\"message_count\":352133,\"uptime\":\"ASR920\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"network\"],\"original\":\"<166>352133: ASR920: Aug 3 08:04:47.140:\\u001f}{\",\"provider\":\"firewall\",\"sequence\":352133,\"timezone\":\"UTC\",\"type\":[\"info\"]},\"log\":{\"syslog\":{\"priority\":166}},\"message\":\"Aug 3 08:04:47.140:\\u001f}{\",\"observer\":{\"product\":\"IOS\",\"type\":\"firewall\",\"vendor\":\"Cisco\"},\"tags\":[\"preserve_original_event\"],\"timestamp\":\"2024-05-22T15:13:13Z\"}",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"509970dc68d4\",stage=\"0\"} 4986 1794267985885\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"509970dc68d4\",stage=\"0\"} 589378 1794267985885\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"509970dc68d4\",stage=\"0\"} 589278 1794267985885\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"509970dc68d4\",stage=\"0\"} 4986 1794267985885\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"509970dc68d4\",intentional=\"true\"} 0 1794267985885\nvector_component_errors_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"509970dc68d4\",stage=\"processing\"} 71706 1794267985885\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"509970dc68d4\"} 600000 1794267985885\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"509970dc68d4\"} 600000 1794267985885\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"509970dc68d4\"} 600000 1794267985885\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\"} 600000 1794267985885\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"509970dc68d4\"} 4986 1794267985885\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"509970dc68d4\"} 4986 1794267985885\nvector_component_received_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"509970dc68d4\"} 600000 1794267985885\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"509970dc68d4\",partition=\"1\",topic=\"b162-in-vector-cisco-ios-malformed-0-1794267942\"} 150000 1794267985885\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"509970dc68d4\",partition=\"3\",topic=\"b162-in-vector-cisco-ios-malformed-0-1794267942\"} 150000 1794267985885\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"509970dc68d4\",partition=\"2\",topic=\"b162-in-vector-cisco-ios-malformed-0-1794267942\"} 150000 1794267985885\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"509970dc68d4\",partition=\"0\",topic=\"b162-in-vector-cisco-ios-malformed-0-1794267942\"} 150000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_dnslogs\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"509970dc68d4\",output=\"_default\"} 4986 1794267985885\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"509970dc68d4\",output=\"_default\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"509970dc68d4\",output=\"_default\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_intrusionlogs\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_proxylogs\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"509970dc68d4\",output=\"_default\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"509970dc68d4\",output=\"_default\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_cloudfirewalllogs\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"_unmatched\"} 0 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_iplogs\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_dlplogs\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_nexus\"} 600000 1794267985885\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"509970dc68d4\",output=\"cisco_umbrella_auditlogs\"} 600000 1794267",
       "sent": 600000,
       "discarded": 0,
       "errors": 71706,
+      "log_tail": "=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (1787:1866): grok_header: failed to grok .event.original:function call error for \\\"parse_groks\\\" at (503:1569): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:46:07.086238Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-09T23:46:17.087335Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 17719 times.\n2026-11-09T23:46:17.087365Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (19048:19124): dissect_gdp: failed to dissect .message: function call error for \\\"parse_groks\\\" at (18683:18951): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:46:17.087489Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": false,
       "run": 0,
-      "started_unix": 1794222315
+      "started_unix": 1794267942
     },
     {
       "engine": "vector",
@@ -52,38 +56,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.65,
-          8.54,
-          12.16
+          1.78,
+          2.54,
+          3.07
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          7.31,
-          8.46,
-          11.97
+          3.41,
+          2.87,
+          3.16
         ],
         "nproc": 32
       },
+      "others_busy_pct": 2.943211906561872,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 7.477722772277228,
-      "peak_cgroup_memory_bytes": 680423424,
-      "peak_rss_bytes": 703737856,
-      "samples": 172,
-      "rate": 17262.357736961523,
-      "rate_per_core": 4315.589434240381,
-      "cpu_seconds": 110.31176955719435,
-      "rec_per_cpu_second": 4351.30360003091,
-      "whole_rate": 16514.75303272284,
-      "window_seconds": 27.80616688137807,
+      "engine_cpus_busy_before_pct": 7.7979797979797985,
+      "peak_cgroup_memory_bytes": 666673152,
+      "peak_rss_bytes": 698277888,
+      "samples": 185,
+      "rate": 16503.098970837967,
+      "rate_per_core": 4125.774742709492,
+      "cpu_seconds": 115.28477026535944,
+      "rec_per_cpu_second": 4163.60286701486,
+      "whole_rate": 15234.642810331125,
+      "window_seconds": 29.085446366660634,
       "output_records": 600000,
+      "sample_output": "{\"cisco\":{\"ios\":{\"facility\":\"SYS\",\"message_count\":7424,\"sequence\":\"007430\",\"uptime\":\"2y10w\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"network\"],\"code\":\"TTY_EXPIRE_TIMER\",\"original\":\"<166>7424: ASR920: 007430: 2y10w: %SYS-6-TTY_EXPIRE_TIMER: (exec timer expired, tty 1 (192.168.0.1)), user username\",\"provider\":\"firewall\",\"sequence\":7430,\"severity\":6,\"timezone\":\"UTC\",\"type\":[\"info\"]},\"log\":{\"level\":\"informational\",\"syslog\":{\"hostname\":\"ASR920\",\"priority\":166}},\"message\":\"(exec timer expired, tty 1 (192.168.0.1)), user username\",\"observer\":{\"product\":\"IOS\",\"type\":\"firewall\",\"vendor\":\"Cisco\"},\"tags\":[\"preserve_original_event\"],\"timestamp\":\"2024-05-22T15:13:13Z\"}",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3fc1c6c57dd0\",stage=\"0\"} 4858 1794268119082\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",stage=\"0\"} 600000 1794268119082\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",stage=\"0\"} 600000 1794268119082\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3fc1c6c57dd0\",stage=\"0\"} 4858 1794268119082\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"3fc1c6c57dd0\",intentional=\"true\"} 0 1794268119082\nvector_component_errors_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"3fc1c6c57dd0\",stage=\"processing\"} 71706 1794268119082\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"3fc1c6c57dd0\"} 4858 1794268119082\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\"} 600000 1794268119082\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3fc1c6c57dd0\"} 4858 1794268119082\nvector_component_received_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"3fc1c6c57dd0\"} 600000 1794268119082\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"3fc1c6c57dd0\"} 600000 1794268119082\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"3fc1c6c57dd0\"} 600000 1794268119082\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"3fc1c6c57dd0\"} 600000 1794268119082\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",partition=\"2\",topic=\"b162-in-vector-cisco-ios-malformed-1-1794268076\"} 150000 1794268119082\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",partition=\"0\",topic=\"b162-in-vector-cisco-ios-malformed-1-1794268076\"} 150000 1794268119082\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",partition=\"3\",topic=\"b162-in-vector-cisco-ios-malformed-1-1794268076\"} 150000 1794268119082\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",partition=\"1\",topic=\"b162-in-vector-cisco-ios-malformed-1-1794268076\"} 150000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_umbrella_intrusionlogs\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_nexus\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_umbrella_cloudfirewalllogs\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"crowdstrike_falcon\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"3fc1c6c57dd0\",output=\"_default\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_umbrella_dlplogs\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"3fc1c6c57dd0\",output=\"_default\"} 4858 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_ios_logs\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3fc1c6c57dd0\",output=\"_default\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_umbrella_iplogs\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"3fc1c6c57dd0\",output=\"cisco_umbrella_auditlogs\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"3fc1c6c57dd0\",output=\"_default\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"3fc1c6c57dd0\",output=\"_default\"} 600000 1794268119082\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3fc1c6c57dd0\"} 23124 1794268119082\nvector_component_sent_events_total{compon",
       "sent": 600000,
       "discarded": 0,
       "errors": 71706,
+      "log_tail": "_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (1787:1866): grok_header: failed to grok .event.original:function call error for \\\"parse_groks\\\" at (503:1569): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:48:21.288079Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-09T23:48:31.287419Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 19313 times.\n2026-11-09T23:48:31.287444Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (12910:12983): grok_message: failed to grok .message:function call error for \\\"parse_groks\\\" at (12640:12827): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:48:31.287910Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 1,
-      "started_unix": 1794222356
+      "started_unix": 1794268076
     },
     {
       "engine": "vector",
@@ -94,38 +102,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          7.31,
-          8.46,
-          11.97
+          1.71,
+          2.49,
+          3.01
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          7.73,
-          8.38,
-          11.8
+          6.32,
+          3.46,
+          3.31
         ],
         "nproc": 32
       },
+      "others_busy_pct": 11.828308156942228,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 2.4925742574257423,
-      "peak_cgroup_memory_bytes": 756961280,
-      "peak_rss_bytes": 708407296,
-      "samples": 173,
-      "rate": 17105.13859077548,
-      "rate_per_core": 4276.28464769387,
-      "cpu_seconds": 111.24142414662697,
-      "rec_per_cpu_second": 4314.939364380247,
-      "whole_rate": 16459.787508481062,
-      "window_seconds": 28.061742817965595,
+      "engine_cpus_busy_before_pct": 1.257627293341579,
+      "peak_cgroup_memory_bytes": 668422144,
+      "peak_rss_bytes": 698667008,
+      "samples": 200,
+      "rate": 15401.410168761291,
+      "rate_per_core": 3850.3525421903228,
+      "cpu_seconds": 123.55566536385747,
+      "rec_per_cpu_second": 3884.888633689554,
+      "whole_rate": 14162.526305209245,
+      "window_seconds": 31.165977318985043,
       "output_records": 600000,
+      "sample_output": "{\"@timestamp\":\"2026-12-08T20:07:53.081Z\",\"cisco\":{\"ios\":{\"facility\":\"TCP\",\"message_count\":9004}},\"destination\":{\"address\":\"224.0.0.18\",\"ip\":\"224.0.0.18\",\"port\":15448},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"network\"],\"code\":\"BADAUTH\",\"original\":\"<190>9004: Dec 8 20:07:53.081: %TCP-6-BADAUTH: No MD5 digest from 192.168.0.1(64999) to 224.0.0.18(15448)\",\"provider\":\"firewall\",\"sequence\":9004,\"severity\":6,\"timezone\":\"UTC\",\"type\":[\"info\"]},\"log\":{\"level\":\"informational\",\"syslog\":{\"priority\":190}},\"message\":\"No MD5 digest from 192.168.0.1(64999) to 224.0.0.18(15448)\",\"network\":{\"type\":\"ipv4\"},\"observer\":{\"product\":\"IOS\",\"type\":\"firewall\",\"vendor\":\"Cisco\"},\"related\":{\"ip\":[\"192.168.0.1\",\"22",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"9f9dc500eb34\",stage=\"0\"} 599233 1794268215099\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"9f9dc500eb34\",stage=\"0\"} 5104 1794268215099\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"9f9dc500eb34\",stage=\"0\"} 598833 1794268215099\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"9f9dc500eb34\",stage=\"0\"} 5104 1794268215099\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"9f9dc500eb34\",intentional=\"true\"} 0 1794268215099\nvector_component_errors_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"9f9dc500eb34\",stage=\"processing\"} 71706 1794268215099\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"9f9dc500eb34\"} 5234 1794268215099\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"9f9dc500eb34\"} 5234 1794268215099\nvector_component_received_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"9f9dc500eb34\"} 600000 1794268215099\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\"} 600000 1794268215099\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"9f9dc500eb34\"} 600000 1794268215099\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"9f9dc500eb34\"} 600000 1794268215099\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"9f9dc500eb34\"} 600000 1794268215099\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"9f9dc500eb34\",partition=\"1\",topic=\"b162-in-vector-cisco-ios-malformed-2-1794268169\"} 150000 1794268215099\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"9f9dc500eb34\",partition=\"3\",topic=\"b162-in-vector-cisco-ios-malformed-2-1794268169\"} 150000 1794268215099\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"9f9dc500eb34\",partition=\"0\",topic=\"b162-in-vector-cisco-ios-malformed-2-1794268169\"} 150000 1794268215099\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"9f9dc500eb34\",partition=\"2\",topic=\"b162-in-vector-cisco-ios-malformed-2-1794268169\"} 150000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_nexus\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_umbrella_dlplogs\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"9f9dc500eb34\",output=\"_default\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_umbrella_proxylogs\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_umbrella_dnslogs\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_umbrella_iplogs\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"_unmatched\"} 0 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_ios_logs\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"crowdstrike_falcon\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"9f9dc500eb34\",output=\"_default\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"9f9dc500eb34\",output=\"_default\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"9f9dc500eb34\",output=\"_default\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_umbrella_cloudfirewalllogs\"} 600000 1794268215099\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"9f9dc500eb34\",output=\"cisco_umbrella_intrusionlog",
       "sent": 600000,
       "discarded": 0,
       "errors": 71706,
+      "log_tail": "id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (12910:12983): grok_message: failed to grok .message:function call error for \\\"parse_groks\\\" at (12640:12827): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:49:54.305936Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-09T23:50:04.306656Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 17554 times.\n2026-11-09T23:50:04.306682Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (18059:18134): dissect_gp: failed to dissect .message: function call error for \\\"parse_groks\\\" at (17683:17962): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:50:04.307208Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 2,
-      "started_unix": 1794222396
+      "started_unix": 1794268169
     },
     {
       "engine": "vector",
@@ -136,38 +148,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          8.07,
-          8.44,
-          11.8
+          1.91,
+          3.34,
+          3.37
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          8.6,
-          8.53,
-          11.67
+          3.75,
+          3.63,
+          3.47
         ],
         "nproc": 32
       },
+      "others_busy_pct": 4.323864157955604,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 26.772830344258917,
-      "peak_cgroup_memory_bytes": 669605888,
-      "peak_rss_bytes": 692719616,
-      "samples": 210,
-      "rate": 13768.49496527279,
-      "rate_per_core": 3442.1237413181975,
-      "cpu_seconds": 110.64047376591495,
-      "rec_per_cpu_second": 4338.376216786174,
-      "whole_rate": 13512.821423618207,
-      "window_seconds": 34.86219817130826,
+      "engine_cpus_busy_before_pct": 1.2450995099509952,
+      "peak_cgroup_memory_bytes": 680620032,
+      "peak_rss_bytes": 711475200,
+      "samples": 195,
+      "rate": 15453.599544931212,
+      "rate_per_core": 3863.399886232803,
+      "cpu_seconds": 122.92930080112265,
+      "rec_per_cpu_second": 3904.6833982774624,
+      "whole_rate": 14510.828564687892,
+      "window_seconds": 31.060724629521037,
       "output_records": 600000,
+      "sample_output": "{\"cisco\":{\"ios\":{\"action\":\"Login\",\"facility\":\"SEC_LOGIN\",\"message_count\":7433,\"sequence\":\"007439\",\"uptime\":\"2y10w\"}},\"destination\":{\"port\":22},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"network\"],\"code\":\"LOGIN_SUCCESS\",\"original\":\"<165>7433: ASR920: 007439: 2y10w: %SEC_LOGIN-5-LOGIN_SUCCESS: Login Success [user: username] [Source: 192.168.0.1] [localport: 22] at 07:57:58 VIENNA Thu Jan 27 2022\",\"provider\":\"firewall\",\"sequence\":7439,\"severity\":5,\"timezone\":\"UTC\",\"type\":[\"info\"]},\"log\":{\"level\":\"notification\",\"syslog\":{\"hostname\":\"ASR920\",\"priority\":165}},\"message\":\"Login Success [user: username] [Source: 192.168.0.1] [localport: 22] at 07:57:58 VIENNA Thu Jan 27 2022\",\"network\":{\"type\":",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"59e249a331e9\",stage=\"0\"} 600000 1794268480565\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"59e249a331e9\",stage=\"0\"} 5101 1794268480565\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"59e249a331e9\",stage=\"0\"} 600000 1794268480565\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"59e249a331e9\",stage=\"0\"} 5101 1794268480565\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"59e249a331e9\",intentional=\"true\"} 0 1794268480565\nvector_component_errors_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",error_type=\"conversion_failed\",host=\"59e249a331e9\",stage=\"processing\"} 71706 1794268480565\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"59e249a331e9\"} 600000 1794268480565\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\"} 600000 1794268480565\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"59e249a331e9\"} 600000 1794268480565\nvector_component_received_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"59e249a331e9\"} 600000 1794268480565\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"59e249a331e9\"} 5101 1794268480565\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"59e249a331e9\"} 5101 1794268480565\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"59e249a331e9\"} 600000 1794268480565\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"59e249a331e9\",partition=\"1\",topic=\"b162-in-vector-cisco-ios-malformed-3-1794268436\"} 150000 1794268480565\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"59e249a331e9\",partition=\"3\",topic=\"b162-in-vector-cisco-ios-malformed-3-1794268436\"} 150000 1794268480565\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"59e249a331e9\",partition=\"0\",topic=\"b162-in-vector-cisco-ios-malformed-3-1794268436\"} 150000 1794268480565\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"59e249a331e9\",partition=\"2\",topic=\"b162-in-vector-cisco-ios-malformed-3-1794268436\"} 150000 1794268480565\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"59e249a331e9\",output=\"_default\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_umbrella_dnslogs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"_unmatched\"} 0 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_nexus\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_ios_logs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_umbrella_proxylogs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_umbrella_dlplogs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_umbrella_intrusionlogs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"59e249a331e9\",output=\"_default\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"cisco_ios_logs\",component_kind=\"transform\",component_type=\"remap\",host=\"59e249a331e9\",output=\"_default\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"crowdstrike_falcon\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_umbrella_auditlogs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",host=\"59e249a331e9\",output=\"cisco_umbrella_cloudfirewalllogs\"} 600000 1794268480565\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events_2\",component_kind=\"transform\",component_type=\"route\",",
       "sent": 600000,
       "discarded": 0,
       "errors": 71706,
+      "log_tail": "=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (21775:21851): dissect_gnp: failed to dissect .message: function call error for \\\"parse_groks\\\" at (21448:21678): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:54:20.774561Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n2026-11-09T23:54:30.775541Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] has been suppressed 19039 times.\n2026-11-09T23:54:30.775567Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Mapping failed with event. error=\"function call error for \\\"assert\\\" at (1787:1866): grok_header: failed to grok .event.original:function call error for \\\"parse_groks\\\" at (503:1569): unable to parse grok: value does not match any rule\" error_type=\"conversion_failed\" stage=\"processing\"\n2026-11-09T23:54:30.775803Z ERROR transform{component_kind=\"transform\" component_id=cisco_ios_logs component_type=remap}: vector::internal_events::remap: Internal log [Mapping failed with event.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 3,
-      "started_unix": 1794222437
+      "started_unix": 1794268436
     }
   ]
 }

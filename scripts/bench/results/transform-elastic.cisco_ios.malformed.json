@@ -10,39 +10,44 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          8.75,
-          11.36,
-          13.79
+          1.93,
+          3.22,
+          3.47
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          7.2,
-          10.66,
-          13.45
+          1.49,
+          2.92,
+          3.36
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.5404127923426287,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.2575757575757576,
-      "peak_cgroup_memory_bytes": 321929216,
-      "peak_rss_bytes": 305889280,
-      "samples": 190,
-      "rate": 15763.336919414334,
-      "rate_per_core": 3940.8342298535836,
-      "cpu_seconds": 30.4189305,
-      "rec_per_cpu_second": 15779.64747971662,
-      "whole_rate": 15376.426645748152,
-      "window_seconds": 30.450405422016047,
+      "engine_cpus_busy_before_pct": 0.7475247524752475,
+      "peak_cgroup_memory_bytes": 220708864,
+      "peak_rss_bytes": 235225088,
+      "samples": 195,
+      "rate": 15189.080230966856,
+      "rate_per_core": 3797.270057741714,
+      "cpu_seconds": 31.599216,
+      "rec_per_cpu_second": 15190.250289754025,
+      "whole_rate": 14983.345001038591,
+      "window_seconds": 31.60165017901454,
       "output_records": 600000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"category\":[\"network\"],\"provider\":\"firewall\",\"type\":[\"info\"],\"original\":\"<166>7431: ASR920: 007437: 2y10w: %SYS-6-LOGOUT: User CPI has exited tty session 1(192.168.0.1)\",\"sequence\":7437,\"severity\":6,\"code\":\"LOGOUT\"},\"observer\":{\"vendor\":\"Cisco\",\"product\":\"IOS\",\"type\":\"router\"},\"log\":{\"syslog\":{\"priority\":166,\"hostname\":\"ASR920\"},\"level\":\"informational\"},\"cisco\":{\"ios\":{\"message_count\":7431,\"sequence\":\"007437\",\"uptime\":\"2y10w\",\"facility\":\"SYS\",\"action\":\"exited\",\"session\":{\"type\":\"tty\",\"number\":\"1\"}}},\"message\":\"User CPI has exited tty session 1(192.168.0.1)\",\"source\":{\"user\":{\"name\":\"CPI\"},\"address\":\"192.168.0.1\",\"ip\":\"19",
+      "counter_lines": "parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0\ntransport_received_events_total{transport=\"kafka\"} 600000\nbatch_engine_parse_errors_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8",
       "transformed": 600000,
       "errored": 0,
       "dropped": 0,
       "dlq_records": 0,
+      "engine_metrics": "worker_pool_tasks_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_messages_parsed_total 0\nself_regulation_inbound_pauses_total 0\nself_regulation_kafka_gate_errors_total 0\nself_regulation_max_hold_releases_total 0\nbatch_engine_messages_filtered_total 0\nbatch_engine_parse_errors_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8\nbatch_engine_messages_received_total 0\nworker_pool_cpu_utilisation 0.06908614158630372\nworker_pool_async_inflight 0\nworker_pool_scale_interval_secs 5\nworker_pool_grow_below 0.6\nself_regulation_pressure_ratio 0.01733836005763256\nworker_pool_emergency_above 0.95\npipeline_ready 1\nworker_pool_available_threads 4\nworker_pool_memory_psi_some 0\nself_regulation_recv_block_bytes 318634\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_max_threads 4\nself_regulation_byte_budget 16777216\nworker_pool_target_threads 4\nworker_pool_min_threads 2\nworker_pool_shrink_above 0.85\nworker_pool_memory_utilisation 0.029737863087855112\nworker_pool_memory_pressure_cap 0.8\nworker_pool_async_concurrency 32\nworker_pool_saturation 1\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nself_regulation_inbound_paused 0\nworker_pool_active_threads 0\nbatch_engine_max_chunk_size 20000\nbatch_engine_intern_table_size 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0",
+      "log_tail": "ill be empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"3c8125f4287d\"}\n{\"timestamp\":\"2026-11-09T23:41:53.885977229Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"3c8125f4287d\"}\n{\"timestamp\":\"2026-11-09T23:41:53.886030229Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"3c8125f4287d\"}\n{\"timestamp\":\"2026-11-09T23:41:54.279288597Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"cisco_ios.log\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"3c8125f4287d\"}\n",
       "measured": false,
       "run": 0,
-      "started_unix": 1794222148
+      "started_unix": 1794267711
     },
     {
       "engine": "transform-elastic",
@@ -53,39 +58,44 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          7.2,
-          10.66,
-          13.45
+          1.49,
+          2.92,
+          3.36
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          5.85,
-          9.87,
-          13.07
+          2.54,
+          2.99,
+          3.36
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.381321430003052,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 32.566326530612244,
-      "peak_cgroup_memory_bytes": 290754560,
-      "peak_rss_bytes": 301703168,
-      "samples": 188,
-      "rate": 15807.730736023432,
-      "rate_per_core": 3951.932684005858,
-      "cpu_seconds": 30.282776,
-      "rec_per_cpu_second": 15850.594410499223,
-      "whole_rate": 15570.539493296732,
-      "window_seconds": 30.3648896869272,
+      "engine_cpus_busy_before_pct": 5.75,
+      "peak_cgroup_memory_bytes": 292995072,
+      "peak_rss_bytes": 307761152,
+      "samples": 193,
+      "rate": 15491.393861479834,
+      "rate_per_core": 3872.8484653699584,
+      "cpu_seconds": 31.031021,
+      "rec_per_cpu_second": 15468.392097056685,
+      "whole_rate": 15161.010656338307,
+      "window_seconds": 30.98494585393928,
       "output_records": 600000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"category\":[\"network\"],\"provider\":\"firewall\",\"type\":[\"info\"],\"original\":\"<166>352133: ASR920: Aug 3 08:04:47.140:\\u001f}{\",\"sequence\":352133},\"observer\":{\"vendor\":\"Cisco\",\"product\":\"IOS\",\"type\":\"router\"},\"log\":{\"syslog\":{\"priority\":166}},\"cisco\":{\"ios\":{\"message_count\":352133,\"uptime\":\"\"}},\"message\":\"ASR920: Aug 3 08:04:47.140:\\u001f}{\"}",
+      "counter_lines": "transport_received_events_total{transport=\"kafka\"} 600000\nworker_pool_scale_events_total{direction=\"up\"} 8\nself_regulation_kafka_gate_errors_total 0\nparse_errors_total 0\nbatch_engine_parse_errors_total 0",
       "transformed": 600000,
       "errored": 0,
       "dropped": 0,
       "dlq_records": 0,
+      "engine_metrics": "worker_pool_scale_events_total{direction=\"up\"} 8\nself_regulation_max_hold_releases_total 0\nself_regulation_kafka_gate_errors_total 0\nself_regulation_inbound_pauses_total 0\nworker_pool_tasks_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_parse_errors_total 0\nbatch_engine_messages_received_total 0\nbatch_engine_messages_filtered_total 0\nbatch_engine_messages_parsed_total 0\nworker_pool_scale_interval_secs 5\nworker_pool_active_threads 0\nworker_pool_emergency_above 0.95\nbatch_engine_intern_table_size 0\nself_regulation_byte_budget 16777216\nworker_pool_memory_pressure_cap 0.8\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_shrink_above 0.85\nworker_pool_async_inflight 0\nbatch_engine_max_chunk_size 20000\nworker_pool_async_concurrency 32\nworker_pool_saturation 1\nself_regulation_recv_block_bytes 320224\nself_regulation_inbound_paused 0\nworker_pool_memory_psi_some 0\npipeline_ready 1\nself_regulation_pressure_ratio 0.03557822283673972\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nworker_pool_target_threads 4\nworker_pool_min_threads 2\nworker_pool_max_threads 4\nworker_pool_cpu_utilisation 0.05633450508117676\nworker_pool_memory_utilisation 0.039559532615398865\nworker_pool_available_threads 4\nworker_pool_grow_below 0.6\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0",
+      "log_tail": "ill be empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"cf8e4a60550d\"}\n{\"timestamp\":\"2026-11-09T23:42:36.840199722Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"cf8e4a60550d\"}\n{\"timestamp\":\"2026-11-09T23:42:36.840238732Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"cf8e4a60550d\"}\n{\"timestamp\":\"2026-11-09T23:42:37.222424119Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"cisco_ios.log\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"cf8e4a60550d\"}\n",
       "measured": true,
       "run": 1,
-      "started_unix": 1794222190
+      "started_unix": 1794267754
     },
     {
       "engine": "transform-elastic",
@@ -96,39 +106,44 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.35,
-          9.91,
-          13.06
+          1.8,
+          2.76,
+          3.27
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          5.54,
-          9.3,
-          12.74
+          1.68,
+          2.62,
+          3.2
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.5345114273280207,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 30.205445544554454,
-      "peak_cgroup_memory_bytes": 224456704,
-      "peak_rss_bytes": 232853504,
-      "samples": 188,
-      "rate": 15811.562032510068,
-      "rate_per_core": 3952.890508127517,
-      "cpu_seconds": 30.2003035,
-      "rec_per_cpu_second": 15893.880006868143,
-      "whole_rate": 15566.989472248515,
-      "window_seconds": 30.35753197647864,
+      "engine_cpus_busy_before_pct": 8.661085226169675,
+      "peak_cgroup_memory_bytes": 217165824,
+      "peak_rss_bytes": 233918464,
+      "samples": 194,
+      "rate": 15392.459232574434,
+      "rate_per_core": 3848.1148081436086,
+      "cpu_seconds": 31.1644965,
+      "rec_per_cpu_second": 15402.141985512264,
+      "whole_rate": 15077.316831295791,
+      "window_seconds": 31.184100782556925,
       "output_records": 600000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"category\":[\"network\"],\"provider\":\"firewall\",\"type\":[\"info\"],\"original\":\"<190>9004: Dec 8 20:07:53.081: %TCP-6-BADAUTH: Invalid MD5 digest from 10.0.0.1(1234) to 10.0.0.2(1234) tableid - 3\",\"sequence\":9004,\"timezone\":\"UTC\",\"severity\":6,\"code\":\"BADAUTH\"},\"observer\":{\"vendor\":\"Cisco\",\"product\":\"IOS\",\"type\":\"router\"},\"log\":{\"syslog\":{\"priority\":190},\"level\":\"informational\"},\"cisco\":{\"ios\":{\"message_count\":9004,\"facility\":\"TCP\",\"tableid\":\"3\"}},\"message\":\"Invalid MD5 digest from 10.0.0.1(1234) to 10.0.0.2(1234) tableid - 3\",\"@timestamp\":\"2026-12-08T20:07:53.081Z\",\"source\":{\"address\":\"10.0.0.1\",\"port\":1234,\"ip\":\"10.0.0.1\"},\"de",
+      "counter_lines": "transport_received_events_total{transport=\"kafka\"} 600000\nbatch_engine_parse_errors_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8\nparse_errors_total 0\nself_regulation_kafka_gate_errors_total 0",
       "transformed": 600000,
       "errored": 0,
       "dropped": 0,
       "dlq_records": 0,
+      "engine_metrics": "worker_pool_tasks_total 0\nself_regulation_inbound_pauses_total 0\nbatch_engine_messages_received_total 0\nbatch_engine_messages_filtered_total 0\nself_regulation_max_hold_releases_total 0\nbatch_engine_parse_errors_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_messages_parsed_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8\nself_regulation_kafka_gate_errors_total 0\nworker_pool_cpu_utilisation 0.060047636032104494\nworker_pool_shrink_above 0.85\nself_regulation_recv_block_bytes 19186\nbatch_engine_max_chunk_size 20000\nworker_pool_scale_interval_secs 5\nworker_pool_emergency_above 0.95\nbatch_engine_intern_table_size 0\npipeline_ready 1\nworker_pool_saturation 1\nworker_pool_memory_utilisation 0.029135311351901012\nself_regulation_byte_budget 16777216\nworker_pool_available_threads 4\nworker_pool_grow_below 0.6\nworker_pool_memory_psi_some 0\nworker_pool_max_threads 4\nworker_pool_active_threads 0\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_async_concurrency 32\nworker_pool_min_threads 2\nworker_pool_async_inflight 0\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nworker_pool_memory_pressure_cap 0.8\nworker_pool_target_threads 4\nself_regulation_inbound_paused 0\nself_regulation_pressure_ratio 0.029075846953346994\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0",
+      "log_tail": "will be empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"ac52d18689f7\"}\n{\"timestamp\":\"2026-11-09T23:43:59.459568248Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"ac52d18689f7\"}\n{\"timestamp\":\"2026-11-09T23:43:59.45960503Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"ac52d18689f7\"}\n{\"timestamp\":\"2026-11-09T23:43:59.852343333Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"cisco_ios.log\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"ac52d18689f7\"}\n",
       "measured": true,
       "run": 2,
-      "started_unix": 1794222232
+      "started_unix": 1794267836
     },
     {
       "engine": "transform-elastic",
@@ -139,39 +154,44 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          5.42,
-          9.22,
-          12.69
+          1.68,
+          2.62,
+          3.2
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          4.5,
-          8.51,
-          12.31
+          2.5,
+          2.67,
+          3.19
         ],
         "nproc": 32
       },
+      "others_busy_pct": 5.241595155888244,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 26.242624262426244,
-      "peak_cgroup_memory_bytes": 294027264,
-      "peak_rss_bytes": 304672768,
-      "samples": 188,
-      "rate": 15822.487646366097,
-      "rate_per_core": 3955.621911591524,
-      "cpu_seconds": 30.319498,
-      "rec_per_cpu_second": 15831.396680776179,
-      "whole_rate": 15606.556799891785,
-      "window_seconds": 30.336569743521977,
+      "engine_cpus_busy_before_pct": 1.245049504950495,
+      "peak_cgroup_memory_bytes": 294277120,
+      "peak_rss_bytes": 309174272,
+      "samples": 195,
+      "rate": 15274.503226370229,
+      "rate_per_core": 3818.625806592557,
+      "cpu_seconds": 31.46466219,
+      "rec_per_cpu_second": 15255.20906919357,
+      "whole_rate": 15031.471567131483,
+      "window_seconds": 31.424917255005568,
       "output_records": 600000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"category\":[\"network\"],\"provider\":\"firewall\",\"type\":[\"info\"],\"original\":\"<166>7424: ASR920: 007430: 2y10w: %SYS-6-TTY_EXPIRE_TIMER: (exec timer expired, tty 1 (192.168.0.1)), user username\",\"sequence\":7430,\"severity\":6,\"code\":\"TTY_EXPIRE_TIMER\"},\"observer\":{\"vendor\":\"Cisco\",\"product\":\"IOS\",\"type\":\"router\"},\"log\":{\"syslog\":{\"priority\":166,\"hostname\":\"ASR920\"},\"level\":\"informational\"},\"cisco\":{\"ios\":{\"message_count\":7424,\"sequence\":\"007430\",\"uptime\":\"2y10w\",\"facility\":\"SYS\"}},\"message\":\"(exec timer expired, tty 1 (192.168.0.1)), user username\"}",
+      "counter_lines": "worker_pool_scale_events_total{direction=\"up\"} 8\nbatch_engine_parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0\ntransport_received_events_total{transport=\"kafka\"} 600000\nparse_errors_total 0",
       "transformed": 600000,
       "errored": 0,
       "dropped": 0,
       "dlq_records": 0,
+      "engine_metrics": "worker_pool_scale_events_total{direction=\"up\"} 8\nbatch_engine_parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0\nself_regulation_inbound_pauses_total 0\nself_regulation_max_hold_releases_total 0\nbatch_engine_messages_received_total 0\nbatch_engine_messages_filtered_total 0\nworker_pool_tasks_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_messages_parsed_total 0\nbatch_engine_intern_table_size 0\nworker_pool_memory_pressure_cap 0.8\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nworker_pool_target_threads 4\nself_regulation_pressure_ratio 0.0356247845827773\nself_regulation_recv_block_bytes 73610\nworker_pool_max_threads 4\nworker_pool_shrink_above 0.85\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_available_threads 4\nself_regulation_inbound_paused 0\nworker_pool_emergency_above 0.95\nworker_pool_min_threads 2\nworker_pool_grow_below 0.6\nworker_pool_memory_utilisation 0.03969248603480738\nworker_pool_scale_interval_secs 5\nworker_pool_memory_psi_some 0\nworker_pool_saturation 1\nself_regulation_byte_budget 16777216\npipeline_ready 1\nworker_pool_async_inflight 0\nbatch_engine_max_chunk_size 20000\nworker_pool_async_concurrency 32\nworker_pool_cpu_utilisation 0.1404567813873291\nworker_pool_active_threads 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0",
+      "log_tail": "ill be empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"bdfda0d46c6c\"}\n{\"timestamp\":\"2026-11-09T23:44:42.141405524Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"bdfda0d46c6c\"}\n{\"timestamp\":\"2026-11-09T23:44:42.141442114Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"bdfda0d46c6c\"}\n{\"timestamp\":\"2026-11-09T23:44:42.524243896Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"cisco_ios.log\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"bdfda0d46c6c\"}\n",
       "measured": true,
       "run": 3,
-      "started_unix": 1794222274
+      "started_unix": 1794267879
     }
   ]
 }

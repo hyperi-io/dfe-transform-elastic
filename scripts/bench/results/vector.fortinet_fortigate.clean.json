@@ -10,38 +10,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          5.6,
-          6.42,
-          6.79
+          1.71,
+          4.41,
+          4.75
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.62,
-          6.56,
-          6.82
+          3.22,
+          4.42,
+          4.73
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.446177248538856,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 0.9975747574757476,
-      "peak_cgroup_memory_bytes": 517537792,
-      "peak_rss_bytes": 548339712,
-      "samples": 177,
-      "rate": 10697.005412095283,
-      "rate_per_core": 2674.2513530238207,
-      "cpu_seconds": 70.76513940826861,
-      "rec_per_cpu_second": 2713.20033572301,
-      "whole_rate": 6437.025078884937,
-      "window_seconds": 17.94894857049454,
+      "engine_cpus_busy_before_pct": 3.717821782178218,
+      "peak_cgroup_memory_bytes": 532189184,
+      "peak_rss_bytes": 555454464,
+      "samples": 191,
+      "rate": 9226.310700867685,
+      "rate_per_core": 2306.5776752169213,
+      "cpu_seconds": 81.45547740884517,
+      "rec_per_cpu_second": 2357.1158884295105,
+      "whole_rate": 5981.036267283468,
+      "window_seconds": 20.81005140894978,
       "output_records": 240000,
+      "sample_output": "{\"@timestamp\":\"2020-04-23T17:32:09Z\",\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"authentication\"],\"code\":\"0102043039\",\"kind\":\"event\",\"original\":\"<189>date=2020-04-23 time=12:32:09 devname=\\\"testswitch3\\\" devid=\\\"someotherrouteridagain\\\" logid=\\\"0102043039\\\" type=\\\"event\\\" subtype=\\\"user\\\" level=\\\"notice\\\" vd=\\\"root\\\" eventtime=1587231130109462858 tz=\\\"-0500\\\" logdesc=\\\"Authentication logon\\\" srcip=10.10.10.10 user=\\\"elastiiiuser\\\" authserver=\\\"FSSO_elastiauth\\\" action=\\\"auth-logon\\\" status=\\\"logon\\\" msg=\\\"User elastiiiuser added to auth logon\\\"\",\"outcome\":\"success\",\"start\":\"2020-04-18T17:32:10.109Z\",\"timezone\":\"-0500\",\"type\":[\"start\"]},\"fortinet\":{\"firewall\":{\"action\":\"auth-logon\",\"auth",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"540741e740d1\",stage=\"0\"} 3449 1794276831613\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"540741e740d1\",stage=\"0\"} 240000 1794276831613\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"540741e740d1\",stage=\"0\"} 3449 1794276831613\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"540741e740d1\",stage=\"0\"} 240000 1794276831613\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"540741e740d1\",intentional=\"true\"} 0 1794276831613\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"540741e740d1\"} 3449 1794276831613\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"540741e740d1\"} 3449 1794276831613\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"540741e740d1\"} 240000 1794276831613\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"540741e740d1\"} 240000 1794276831613\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"540741e740d1\"} 240000 1794276831613\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\"} 240000 1794276831613\nvector_component_received_events_total{component_id=\"fortinet_fortigate\",component_kind=\"transform\",component_type=\"remap\",host=\"540741e740d1\"} 240000 1794276831613\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"540741e740d1\",partition=\"3\",topic=\"b162-in-vector-fortinet-fortigate-clean-0-1794276788\"} 60000 1794276831613\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"540741e740d1\",partition=\"0\",topic=\"b162-in-vector-fortinet-fortigate-clean-0-1794276788\"} 60000 1794276831613\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"540741e740d1\",partition=\"2\",topic=\"b162-in-vector-fortinet-fortigate-clean-0-1794276788\"} 60000 1794276831613\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"540741e740d1\",partition=\"1\",topic=\"b162-in-vector-fortinet-fortigate-clean-0-1794276788\"} 60000 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"cisco_amp\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"cisco_meraki_events\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"azure_auditlogs\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"540741e740d1\",output=\"_default\"} 240000 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"azure_platformlogs\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"_unmatched\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"540741e740d1\",output=\"_default\"} 240000 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"cisco_meraki_logs\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"fortinet_fortigate\"} 240000 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"azure_signinlogs\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"cisco_asa\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"azure_activitylogs\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"540741e740d1\",output=\"_default\"} 240000 1794276831613\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"540741e740d1\",output=\"cisco_ftd\"} 0 1794276831613\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"540741e740d1\"} 16301 1794276831613\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",compo",
       "sent": 240000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T02:13:11.842502Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T02:13:11.843218Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/154-transform-filebeat-fortinet-fortigate-logs.yml\"]\n2026-11-10T02:13:16.030411Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T02:13:16.030444Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T02:13:25.611609Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T02:13:25.611709Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T02:13:25.611789Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T02:13:25.611809Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T02:13:25.612138Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T02:13:25.614453Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": false,
       "run": 0,
-      "started_unix": 1794225043
+      "started_unix": 1794276788
     },
     {
       "engine": "vector",
@@ -52,38 +56,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.73,
-          6.58,
-          6.83
+          1.95,
+          3.88,
+          4.53
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.48,
-          6.51,
-          6.79
+          3.13,
+          3.89,
+          4.5
         ],
         "nproc": 32
       },
+      "others_busy_pct": 2.9928720328825538,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 3.2182129977703653,
-      "peak_cgroup_memory_bytes": 526929920,
-      "peak_rss_bytes": 558403584,
-      "samples": 174,
-      "rate": 11365.035576193515,
-      "rate_per_core": 2841.258894048379,
-      "cpu_seconds": 66.40940716653769,
-      "rec_per_cpu_second": 2891.1566627678735,
-      "whole_rate": 6600.094861548068,
-      "window_seconds": 16.893919839739425,
+      "engine_cpus_busy_before_pct": 1.7376237623762376,
+      "peak_cgroup_memory_bytes": 517292032,
+      "peak_rss_bytes": 548356096,
+      "samples": 177,
+      "rate": 10558.690240311866,
+      "rate_per_core": 2639.6725600779664,
+      "cpu_seconds": 71.62704964839986,
+      "rec_per_cpu_second": 2680.551564562303,
+      "whole_rate": 6467.215707312718,
+      "window_seconds": 18.18407355743481,
       "output_records": 240000,
+      "sample_output": "{\"@timestamp\":\"2020-04-23T17:17:35Z\",\"destination\":{\"geo\":{},\"ip\":\"67.43.156.13\",\"port\":443},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"signature\",\"category\":[\"network\"],\"code\":\"1059028704\",\"kind\":\"event\",\"original\":\"<190>date=2020-04-23 time=13:17:35 devname=\\\"testswitch1\\\" devid=\\\"somerouterid\\\" logid=\\\"1059028704\\\" type=\\\"utm\\\" subtype=\\\"app-ctrl\\\" eventtype=\\\"signature\\\" level=\\\"information\\\" vd=\\\"root\\\" eventtime=1587230255061492894 tz=\\\"-0400\\\" appid=40568 user=\\\"elasticuser\\\" group=\\\"elasticgroup\\\" authserver=\\\"elasticauth\\\" srcip=192.168.2.1 dstip=67.43.156.13 srcport=59790 dstport=443 srcintf=\\\"LAN\\\" srcintfrole=\\\"lan\\\" dstintf=\\\"wan1\\\" dstintfrole=\\\"wan\\\" proto=6 service=\\\"SSL\\\"",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"b65dec83fdff\",stage=\"0\"} 231684 1794276921841\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"b65dec83fdff\",stage=\"0\"} 3034 1794276921841\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"b65dec83fdff\",stage=\"0\"} 231684 1794276921841\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"b65dec83fdff\",stage=\"0\"} 3034 1794276921841\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"b65dec83fdff\",intentional=\"true\"} 0 1794276921841\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"b65dec83fdff\"} 3034 1794276921841\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\"} 240000 1794276921841\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"b65dec83fdff\"} 240000 1794276921841\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"b65dec83fdff\"} 240000 1794276921841\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"b65dec83fdff\"} 3034 1794276921841\nvector_component_received_events_total{component_id=\"fortinet_fortigate\",component_kind=\"transform\",component_type=\"remap\",host=\"b65dec83fdff\"} 240000 1794276921841\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"b65dec83fdff\"} 240000 1794276921841\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"b65dec83fdff\",partition=\"0\",topic=\"b162-in-vector-fortinet-fortigate-clean-1-1794276882\"} 60000 1794276921841\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"b65dec83fdff\",partition=\"3\",topic=\"b162-in-vector-fortinet-fortigate-clean-1-1794276882\"} 60000 1794276921841\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"b65dec83fdff\",partition=\"1\",topic=\"b162-in-vector-fortinet-fortigate-clean-1-1794276882\"} 60000 1794276921841\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"b65dec83fdff\",partition=\"2\",topic=\"b162-in-vector-fortinet-fortigate-clean-1-1794276882\"} 60000 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"okta_system\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"azure_platformlogs\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"cisco_amp\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"b65dec83fdff\",output=\"_default\"} 240000 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"panw_panos_logs\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"cisco_meraki_events\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"b65dec83fdff\"} 14361 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"azure_activitylogs\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"office_365_logs\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"cisco_asa\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"b65dec83fdff\",output=\"_default\"} 240000 1794276921841\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"b65dec83fdff\",output=\"_default\"} 240000 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"azure_auditlogs\"} 0 1794276921841\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"b65dec83fdff\",output=\"_default\"} 3034 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"b65dec83fdff\",output=\"fortinet_fortigate\"} 240000 1794276921841\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"trans",
       "sent": 240000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T02:14:45.060313Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T02:14:45.060994Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/154-transform-filebeat-fortinet-fortigate-logs.yml\"]\n2026-11-10T02:14:49.267620Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T02:14:49.267657Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T02:14:58.839056Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T02:14:58.839183Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T02:14:58.839257Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T02:14:58.839284Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T02:14:58.839692Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T02:14:58.844463Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 1,
-      "started_unix": 1794225084
+      "started_unix": 1794276882
     },
     {
       "engine": "vector",
@@ -94,38 +102,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.44,
-          6.5,
-          6.79
+          1.77,
+          3.41,
+          4.31
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.44,
-          6.47,
-          6.77
+          2.37,
+          3.33,
+          4.24
         ],
         "nproc": 32
       },
+      "others_busy_pct": 2.854141052475819,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 10.202970297029703,
-      "peak_cgroup_memory_bytes": 537055232,
-      "peak_rss_bytes": 567246848,
-      "samples": 173,
-      "rate": 11238.453351680982,
-      "rate_per_core": 2809.6133379202456,
-      "cpu_seconds": 67.39009637725079,
-      "rec_per_cpu_second": 2849.083327098704,
-      "whole_rate": 6639.859386777806,
-      "window_seconds": 17.084201356878147,
+      "engine_cpus_busy_before_pct": 1.7376237623762376,
+      "peak_cgroup_memory_bytes": 518283264,
+      "peak_rss_bytes": 549888000,
+      "samples": 182,
+      "rate": 10630.319907243445,
+      "rate_per_core": 2657.5799768108614,
+      "cpu_seconds": 70.98387418014326,
+      "rec_per_cpu_second": 2704.8396867257675,
+      "whole_rate": 6268.0558683254385,
+      "window_seconds": 18.061544871210526,
       "output_records": 240000,
+      "sample_output": "{\"@timestamp\":\"2020-04-23T17:32:09Z\",\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"authentication\"],\"code\":\"0102043039\",\"kind\":\"event\",\"original\":\"<189>date=2020-04-23 time=12:32:09 devname=\\\"testswitch3\\\" devid=\\\"someotherrouteridagain\\\" logid=\\\"0102043039\\\" type=\\\"event\\\" subtype=\\\"user\\\" level=\\\"notice\\\" vd=\\\"root\\\" eventtime=1587231130109462858 tz=\\\"-0500\\\" logdesc=\\\"Authentication logon\\\" srcip=10.10.10.10 user=\\\"elastiiiuser\\\" authserver=\\\"FSSO_elastiauth\\\" action=\\\"auth-logon\\\" status=\\\"logon\\\" msg=\\\"User elastiiiuser added to auth logon\\\"\",\"outcome\":\"success\",\"start\":\"2020-04-18T17:32:10.109Z\",\"timezone\":\"-0500\",\"type\":[\"start\"]},\"fortinet\":{\"firewall\":{\"action\":\"auth-logon\",\"auth",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"3d575112087e\",stage=\"0\"} 240000 1794277013206\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3d575112087e\",stage=\"0\"} 3177 1794277013206\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"3d575112087e\",stage=\"0\"} 240000 1794277013206\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3d575112087e\",stage=\"0\"} 3177 1794277013206\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"3d575112087e\",intentional=\"true\"} 0 1794277013206\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"3d575112087e\"} 3177 1794277013206\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"3d575112087e\"} 240000 1794277013206\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"3d575112087e\"} 3177 1794277013206\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\"} 240000 1794277013206\nvector_component_received_events_total{component_id=\"fortinet_fortigate\",component_kind=\"transform\",component_type=\"remap\",host=\"3d575112087e\"} 240000 1794277013206\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"3d575112087e\"} 240000 1794277013206\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"3d575112087e\"} 240000 1794277013206\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3d575112087e\",partition=\"3\",topic=\"b162-in-vector-fortinet-fortigate-clean-2-1794276972\"} 60000 1794277013206\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3d575112087e\",partition=\"1\",topic=\"b162-in-vector-fortinet-fortigate-clean-2-1794276972\"} 60000 1794277013206\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3d575112087e\",partition=\"0\",topic=\"b162-in-vector-fortinet-fortigate-clean-2-1794276972\"} 60000 1794277013206\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3d575112087e\",partition=\"2\",topic=\"b162-in-vector-fortinet-fortigate-clean-2-1794276972\"} 60000 1794277013206\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"3d575112087e\",output=\"_default\"} 3177 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"fortinet_fortigate\"} 240000 1794277013206\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"3d575112087e\",output=\"_default\"} 240000 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"cisco_meraki_logs\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"azure_platformlogs\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"office_365_logs\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"_unmatched\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"panw_panos_logs\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"azure_auditlogs\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"cisco_amp\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"azure_signinlogs\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"okta_system\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"3d575112087e\",output=\"_default\"} 240000 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"3d575112087e\",output=\"cisco_ftd\"} 0 1794277013206\nvector_component_sent_events_total{component_id=\"fortinet_fortigate\",component_kind=\"transform\",component_type=\"remap\",host=\"3d575112087e\",output=\"_default\"} 240000 1794277013206\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",compo",
       "sent": 240000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T02:16:15.404034Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T02:16:15.404977Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/154-transform-filebeat-fortinet-fortigate-logs.yml\"]\n2026-11-10T02:16:19.645909Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T02:16:19.645940Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T02:16:29.204952Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T02:16:29.205129Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T02:16:29.205155Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T02:16:29.205324Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T02:16:29.205898Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T02:16:29.210096Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 2,
-      "started_unix": 1794225123
+      "started_unix": 1794276972
     },
     {
       "engine": "vector",
@@ -136,38 +148,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.96,
-          6.58,
-          6.8
+          1.86,
+          3.15,
+          4.16
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.32,
-          6.44,
-          6.74
+          3.3,
+          3.34,
+          4.17
         ],
         "nproc": 32
       },
+      "others_busy_pct": 2.7045541637368675,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 2.5025252525252526,
-      "peak_cgroup_memory_bytes": 518983680,
-      "peak_rss_bytes": 549273600,
-      "samples": 172,
-      "rate": 11331.295872511373,
-      "rate_per_core": 2832.8239681278433,
-      "cpu_seconds": 66.87924950462997,
-      "rec_per_cpu_second": 2870.845612385469,
-      "whole_rate": 6648.983702073135,
-      "window_seconds": 16.944222634392013,
+      "engine_cpus_busy_before_pct": 0.7575757575757576,
+      "peak_cgroup_memory_bytes": 510054400,
+      "peak_rss_bytes": 541790208,
+      "samples": 192,
+      "rate": 9596.790068842069,
+      "rate_per_core": 2399.197517210517,
+      "cpu_seconds": 78.44290273383838,
+      "rec_per_cpu_second": 2447.640172769586,
+      "whole_rate": 5942.235862242491,
+      "window_seconds": 20.006689593363834,
       "output_records": 240000,
+      "sample_output": "{\"@timestamp\":\"2020-04-23T17:32:48Z\",\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"category\":[\"authentication\"],\"code\":\"0102043014\",\"kind\":\"event\",\"original\":\"<189>date=2020-04-23 time=12:32:48 devname=\\\"testswitch3\\\" devid=\\\"someotherrouteridagain\\\" logid=\\\"0102043014\\\" type=\\\"event\\\" subtype=\\\"user\\\" level=\\\"notice\\\" vd=\\\"root\\\" eventtime=1587231168439640874 tz=\\\"-0500\\\" logdesc=\\\"FSSO logon authentication status\\\" srcip=10.10.10.10 user=\\\"elasticouser\\\" server=\\\"elasticserver\\\" action=\\\"FSSO-logon\\\" msg=\\\"FSSO-logon event from FSSO_elasticserver: user elasticouser logged on 10.10.10.10\\\"\",\"outcome\":\"success\",\"start\":\"2020-04-18T17:32:48.439Z\",\"timezone\":\"-0500\",\"type\":[\"start\"]},\"fortinet\":{\"firew",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"7cec0a90c6d3\",stage=\"0\"} 240000 1794277076754\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"7cec0a90c6d3\",stage=\"0\"} 3449 1794277076754\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"7cec0a90c6d3\",stage=\"0\"} 240000 1794277076754\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"7cec0a90c6d3\",stage=\"0\"} 3449 1794277076754\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"7cec0a90c6d3\",intentional=\"true\"} 0 1794277076754\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"7cec0a90c6d3\"} 3449 1794277076754\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"7cec0a90c6d3\"} 240000 1794277076754\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"7cec0a90c6d3\"} 3449 1794277076754\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\"} 240000 1794277076754\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"7cec0a90c6d3\"} 240000 1794277076754\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"7cec0a90c6d3\"} 240000 1794277076754\nvector_component_received_events_total{component_id=\"fortinet_fortigate\",component_kind=\"transform\",component_type=\"remap\",host=\"7cec0a90c6d3\"} 240000 1794277076754\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"7cec0a90c6d3\",partition=\"0\",topic=\"b162-in-vector-fortinet-fortigate-clean-3-1794277034\"} 60000 1794277076754\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"7cec0a90c6d3\",partition=\"1\",topic=\"b162-in-vector-fortinet-fortigate-clean-3-1794277034\"} 60000 1794277076754\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"7cec0a90c6d3\",partition=\"3\",topic=\"b162-in-vector-fortinet-fortigate-clean-3-1794277034\"} 60000 1794277076754\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"7cec0a90c6d3\",partition=\"2\",topic=\"b162-in-vector-fortinet-fortigate-clean-3-1794277034\"} 60000 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"cisco_ftd\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"cisco_asa\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"azure_signinlogs\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"cisco_amp\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"cisco_meraki_logs\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"okta_system\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"office_365_logs\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"fortinet_fortigate\",component_kind=\"transform\",component_type=\"remap\",host=\"7cec0a90c6d3\",output=\"_default\"} 240000 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"fortinet_fortigate\"} 240000 1794277076754\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"7cec0a90c6d3\",output=\"_default\"} 240000 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"panw_panos_logs\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"azure_platformlogs\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"7cec0a90c6d3\",output=\"_default\"} 3449 1794277076754\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"7cec0a90c6d3\",output=\"_unmatched\"} 0 1794277076754\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"7cec0a90c6d3\"} 16315 1794277076754\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kaf",
       "sent": 240000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T02:17:16.857262Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T02:17:16.858015Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/154-transform-filebeat-fortinet-fortigate-logs.yml\"]\n2026-11-10T02:17:21.030046Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T02:17:21.030076Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T02:17:30.752203Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T02:17:30.752414Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T02:17:30.752441Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T02:17:30.752690Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T02:17:30.753253Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T02:17:30.756691Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 3,
-      "started_unix": 1794225163
+      "started_unix": 1794277034
     }
   ]
 }
