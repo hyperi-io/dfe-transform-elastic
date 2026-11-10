@@ -307,19 +307,60 @@ def host_state() -> dict[str, Any]:
     return {"loadavg": host_load(), "nproc": os.cpu_count()}
 
 
-def is_noisy(before: dict[str, Any], after: dict[str, Any], pinned: int) -> bool:
-    """A run is noisy when either 1-minute load exceeds the cores it did not pin."""
+def is_noisy(
+    before: dict[str, Any],
+    after: dict[str, Any],
+    pinned: int,
+    max_load: float | None = None,
+) -> bool:
+    """Whether a run shared the host with other work.
+
+    With `max_load` a run is noisy when the 1-minute load was not under it at the
+    start. The load after a run includes the run's own, so it is only recorded.
+    Without it, either load above the cores the run did not pin counts.
+    """
+    if max_load is not None:
+        return before["loadavg"][0] >= max_load
     spare = int(before["nproc"]) - pinned
     return max(before["loadavg"][0], after["loadavg"][0]) > spare
 
 
-def wait_quiet(pinned: int, limit_s: float = 900.0) -> None:
-    """Hold a run back until the 1-minute load drops to the cores the run did not pin."""
+def wait_quiet(pinned: int, max_load: float | None, limit_s: float = 1800.0) -> None:
+    """Hold a run back until the 1-minute load is under the limit, or the wait runs out.
+
+    The default limit is the cores the run did not pin.
+    """
+    ceiling = max_load if max_load is not None else (os.cpu_count() or 0) - pinned
     deadline = time.monotonic() + limit_s
-    while (
-        host_load()[0] > (os.cpu_count() or 0) - pinned and time.monotonic() < deadline
-    ):
-        time.sleep(15)
+    while host_load()[0] >= ceiling and time.monotonic() < deadline:
+        time.sleep(10)
+
+
+def cpu_times() -> dict[int, tuple[int, int]]:
+    """Return (total, idle) jiffies per cpu from /proc/stat."""
+    out: dict[int, tuple[int, int]] = {}
+    for line in Path("/proc/stat").read_text(encoding="utf-8").splitlines():
+        if line.startswith("cpu") and line[3:4].isdigit():
+            fields = line.split()
+            vals = [int(v) for v in fields[1:]]
+            out[int(fields[0][3:])] = (sum(vals), vals[3] + vals[4])
+    return out
+
+
+def others_busy_pct(
+    first: dict[int, tuple[int, int]],
+    second: dict[int, tuple[int, int]],
+    exclude: set[int],
+) -> float:
+    """Mean busy percentage of every cpu outside the bench's own cpusets over an interval."""
+    busy = []
+    for idx, (total0, idle0) in first.items():
+        if idx in exclude:
+            continue
+        total = second[idx][0] - total0
+        if total:
+            busy.append(100.0 * (total - (second[idx][1] - idle0)) / total)
+    return statistics.fmean(busy) if busy else 0.0
 
 
 def parse_cpuset(spec: str) -> list[int]:
@@ -998,7 +1039,8 @@ def run_kafka_engine(
             *files,
         ]
 
-    state_before = host_state()
+    state_before = getattr(args, "gate_state", None) or host_state()
+    cpu_before = cpu_times()
     busy_before = cpu_busy(args.engine_cpus, 1.0)
     launched = time.monotonic()
     docker(*cmd)
@@ -1032,6 +1074,11 @@ def run_kafka_engine(
     sampler.start()
     sampler.join()
     state_after = host_state()
+    others = others_busy_pct(
+        cpu_before,
+        cpu_times(),
+        set(parse_cpuset(args.engine_cpus)) | set(parse_cpuset(args.broker_cpus)),
+    )
     peak_cg = mem_peak(cg)
     hwm = vm_hwm(cname)
     try:
@@ -1095,7 +1142,8 @@ def run_kafka_engine(
         "stop_reason": sampler.reason,
         "host_before": state_before,
         "host_after": state_after,
-        "noisy": is_noisy(state_before, state_after, cores),
+        "others_busy_pct": others,
+        "noisy": is_noisy(state_before, state_after, cores, args.max_load),
         "engine_cpus_busy_before_pct": busy_before,
         "peak_cgroup_memory_bytes": peak_cg,
         "peak_rss_bytes": hwm,
@@ -1212,7 +1260,8 @@ def run_es_engine(
                 failed.add(sum(1 for d in payload["docs"] if "error" in d))
             done.add(n)
 
-    state_before = host_state()
+    state_before = getattr(args, "gate_state", None) or host_state()
+    cpu_before = cpu_times()
     busy_before = cpu_busy(args.engine_cpus, 1.0)
     launched = time.monotonic()
     sampler = Sampler(
@@ -1229,6 +1278,11 @@ def run_es_engine(
         t.join()
     sampler.join()
     state_after = host_state()
+    others = others_busy_pct(
+        cpu_before,
+        cpu_times(),
+        set(parse_cpuset(args.engine_cpus)) | set(parse_cpuset(args.broker_cpus)),
+    )
     peak_cg = mem_peak(cg)
     if engine == "es-bulk":
         es_request("DELETE", f"/{index}")
@@ -1241,7 +1295,8 @@ def run_es_engine(
         "stop_reason": sampler.reason,
         "host_before": state_before,
         "host_after": state_after,
-        "noisy": is_noisy(state_before, state_after, cores),
+        "others_busy_pct": others,
+        "noisy": is_noisy(state_before, state_after, cores, args.max_load),
         "engine_cpus_busy_before_pct": busy_before,
         "peak_cgroup_memory_bytes": peak_cg,
         "peak_rss_bytes": None,
@@ -1267,7 +1322,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     if path.exists():
         runs = json.loads(path.read_text(encoding="utf-8"))["runs"]
     for idx in range(args.warmup + args.runs):
-        wait_quiet(len(parse_cpuset(args.engine_cpus)))
+        wait_quiet(len(parse_cpuset(args.engine_cpus)), args.max_load, args.quiet_limit)
+        args.gate_state = host_state()
         stamp = int(time.time())
         run_id = f"{args.engine}-{args.source}-{args.mode}-{idx}-{stamp}".replace(
             "_", "-"
@@ -1343,7 +1399,11 @@ def cmd_matrix(args: argparse.Namespace) -> int:
                         "--results", args.results, "--engine-cpus", args.engine_cpus,
                         "--vector-templates", args.vector_templates,
                         "--integrations", args.integrations,
+                        "--te-tag", args.te_tag, "--broker-cpus", args.broker_cpus,
+                        "--quiet-limit", str(args.quiet_limit),
                     ]  # fmt: skip
+                    if args.max_load is not None:
+                        cmd += ["--max-load", str(args.max_load)]
                     log.info("cell %s %s %s attempt %d", engine, source, mode, attempt)
                     subprocess.run(cmd, check=False)
     return 0
@@ -1449,6 +1509,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--results", default="results")
     p.add_argument("--engine-cpus", default="24-27")
     p.add_argument("--te-tag", default="v1.1.27")
+    p.add_argument("--broker-cpus", default="20-23")
+    p.add_argument(
+        "--max-load",
+        type=float,
+        help="start a run only when the 1-minute load is under this, waiting up to --quiet-limit",
+    )
+    p.add_argument("--quiet-limit", type=float, default=1800.0)
     p.add_argument("--vector-templates", help="local dfe-vector-templates checkout")
     p.add_argument(
         "--integrations", default="work/integrations", help="output of fetch-pipelines"
@@ -1478,6 +1545,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--results", default="results")
     p.add_argument("--engine-cpus", default="24-27")
     p.add_argument("--vector-templates", required=True)
+    p.add_argument("--te-tag", default="v1.1.27")
+    p.add_argument("--broker-cpus", default="20-23")
+    p.add_argument("--max-load", type=float)
+    p.add_argument("--quiet-limit", type=float, default=1800.0)
     p.add_argument("--integrations", default="work/integrations")
     p.set_defaults(func=cmd_matrix)
 
