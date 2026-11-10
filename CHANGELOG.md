@@ -3,6 +3,13 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.29](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.28...v1.1.29) (2026-11-10)
+
+### Bug Fixes
+
+* **ci:** drop Namespace runners, add test-tier ([842b0ed](https://github.com/hyperi-io/dfe-transform-elastic/commit/842b0ed54937be917ab352126e5eee859d276727))
+* **transform-elastic:** rebuild on scalo 2.14.28 ([#166](https://github.com/hyperi-io/dfe-transform-elastic/issues/166)) ([5cd9562](https://github.com/hyperi-io/dfe-transform-elastic/commit/5cd956241562789b6949939dac7275bfdfb11d45))
+
 ## [1.1.28](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.27...v1.1.28) (2026-11-09)
 
 ### Bug Fixes
