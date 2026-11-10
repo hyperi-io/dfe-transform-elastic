@@ -10,119 +10,122 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          8.6,
-          8.53,
-          11.67
+          1.7,
+          3.79,
+          3.7
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          8.4,
-          8.49,
-          11.6
+          3.37,
+          4.0,
+          3.77
         ],
         "nproc": 32
       },
+      "others_busy_pct": 17.549860549522908,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 8.01010101010101,
-      "peak_cgroup_memory_bytes": 5359751168,
+      "engine_cpus_busy_before_pct": 8.624850529168995,
+      "peak_cgroup_memory_bytes": 5484806144,
+      "peak_rss_bytes": null,
+      "samples": 101,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 10339.536724715887,
+      "rate_per_core": 2584.8841811789716,
+      "cpu_seconds": 58.95641366666663,
+      "rec_per_cpu_second": 2713.8692815445525,
+      "whole_rate": 9920.438371915005,
+      "window_seconds": 15.474581140326336,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794268801
+    },
+    {
+      "engine": "es-bulk",
+      "source": "cisco_ios",
+      "mode": "malformed",
+      "rows": 200000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.98,
+          3.28,
+          3.54
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.78,
+          3.39,
+          3.57
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 3.65915719925303,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 5.482673267326732,
+      "peak_cgroup_memory_bytes": 5484806144,
+      "peak_rss_bytes": null,
+      "samples": 75,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 14115.629146583828,
+      "rate_per_core": 3528.907286645957,
+      "cpu_seconds": 42.938499,
+      "rec_per_cpu_second": 3726.259737211587,
+      "whole_rate": 13471.689080974742,
+      "window_seconds": 11.334953500016127,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794268954
+    },
+    {
+      "engine": "es-bulk",
+      "source": "cisco_ios",
+      "mode": "malformed",
+      "rows": 200000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.89,
+          3.12,
+          3.47
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.66,
+          3.23,
+          3.5
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 3.995756407735765,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.0,
+      "peak_cgroup_memory_bytes": 5484806144,
       "peak_rss_bytes": null,
       "samples": 74,
       "item_errors": 0,
       "clients": 4,
       "chunk": 2000,
-      "rate": 15057.91758985092,
-      "rate_per_core": 3764.47939746273,
-      "cpu_seconds": 40.9525715,
-      "rec_per_cpu_second": 3906.9585654712796,
-      "whole_rate": 13651.179186060204,
-      "window_seconds": 10.625639238976873,
-      "measured": false,
-      "run": 0,
-      "started_unix": 1794222485
-    },
-    {
-      "engine": "es-bulk",
-      "source": "cisco_ios",
-      "mode": "malformed",
-      "rows": 200000,
-      "cores": 4,
-      "stop_reason": "target",
-      "host_before": {
-        "loadavg": [
-          8.4,
-          8.49,
-          11.6
-        ],
-        "nproc": 32
-      },
-      "host_after": {
-        "loadavg": [
-          8.11,
-          8.42,
-          11.53
-        ],
-        "nproc": 32
-      },
-      "noisy": false,
-      "engine_cpus_busy_before_pct": 1.9925742574257426,
-      "peak_cgroup_memory_bytes": 5359751168,
-      "peak_rss_bytes": null,
-      "samples": 71,
-      "item_errors": 0,
-      "clients": 4,
-      "chunk": 2000,
-      "rate": 14866.339456519878,
-      "rate_per_core": 3716.5848641299694,
-      "cpu_seconds": 41.382283,
-      "rec_per_cpu_second": 3866.38890850947,
-      "whole_rate": 14244.50273448554,
-      "window_seconds": 10.762568718947781,
-      "measured": true,
-      "run": 1,
-      "started_unix": 1794222502
-    },
-    {
-      "engine": "es-bulk",
-      "source": "cisco_ios",
-      "mode": "malformed",
-      "rows": 200000,
-      "cores": 4,
-      "stop_reason": "target",
-      "host_before": {
-        "loadavg": [
-          8.11,
-          8.42,
-          11.53
-        ],
-        "nproc": 32
-      },
-      "host_after": {
-        "loadavg": [
-          8.25,
-          8.43,
-          11.48
-        ],
-        "nproc": 32
-      },
-      "noisy": false,
-      "engine_cpus_busy_before_pct": 6.2555566781167915,
-      "peak_cgroup_memory_bytes": 5359751168,
-      "peak_rss_bytes": null,
-      "samples": 68,
-      "item_errors": 0,
-      "clients": 4,
-      "chunk": 2000,
-      "rate": 15634.6280722286,
-      "rate_per_core": 3908.65701805715,
-      "cpu_seconds": 39.35173266666663,
-      "rec_per_cpu_second": 4065.8946673402766,
-      "whole_rate": 14877.825932019341,
-      "window_seconds": 10.233694032300264,
+      "rate": 14247.29658656682,
+      "rate_per_core": 3561.824146641705,
+      "cpu_seconds": 42.764072,
+      "rec_per_cpu_second": 3741.4584841219053,
+      "whole_rate": 13658.622475893262,
+      "window_seconds": 11.230200693011284,
       "measured": true,
       "run": 2,
-      "started_unix": 1794222517
+      "started_unix": 1794269000
     },
     {
       "engine": "es-bulk",
@@ -133,37 +136,38 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          8.25,
-          8.43,
-          11.48
+          1.9,
+          3.02,
+          3.43
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          8.5,
-          8.48,
-          11.45
+          2.38,
+          3.07,
+          3.44
         ],
         "nproc": 32
       },
+      "others_busy_pct": 4.3022605287735916,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 2.987623762376238,
-      "peak_cgroup_memory_bytes": 5359751168,
+      "engine_cpus_busy_before_pct": 0.75,
+      "peak_cgroup_memory_bytes": 5509349376,
       "peak_rss_bytes": null,
-      "samples": 69,
+      "samples": 70,
       "item_errors": 0,
       "clients": 4,
       "chunk": 2000,
-      "rate": 15426.18365805961,
-      "rate_per_core": 3856.5459145149025,
-      "cpu_seconds": 39.135989,
-      "rec_per_cpu_second": 4088.308589825084,
-      "whole_rate": 14646.694876965752,
-      "window_seconds": 10.37197556742467,
+      "rate": 15442.969960974948,
+      "rate_per_core": 3860.742490243737,
+      "cpu_seconds": 39.086973,
+      "rec_per_cpu_second": 4093.4354266829514,
+      "whole_rate": 14453.407218546588,
+      "window_seconds": 10.360701367957518,
       "measured": true,
       "run": 3,
-      "started_unix": 1794222532
+      "started_unix": 1794269036
     }
   ]
 }

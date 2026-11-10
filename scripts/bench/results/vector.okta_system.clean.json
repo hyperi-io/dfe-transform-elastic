@@ -10,38 +10,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          5.03,
-          5.95,
-          7.23
+          1.88,
+          3.07,
+          4.5
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.12,
-          6.13,
-          7.25
+          3.1,
+          3.19,
+          4.47
         ],
         "nproc": 32
       },
+      "others_busy_pct": 3.3907449111637207,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 5.005050505050505,
-      "peak_cgroup_memory_bytes": 1072517120,
-      "peak_rss_bytes": 1013772288,
-      "samples": 167,
-      "rate": 8868.229497577504,
-      "rate_per_core": 2217.057374394376,
-      "cpu_seconds": 107.3440996959294,
-      "rec_per_cpu_second": 2235.8005766487513,
-      "whole_rate": 8313.970844422765,
-      "window_seconds": 27.062899090011122,
+      "engine_cpus_busy_before_pct": 0.25,
+      "peak_cgroup_memory_bytes": 1023447040,
+      "peak_rss_bytes": 1053003776,
+      "samples": 181,
+      "rate": 8292.354739557168,
+      "rate_per_core": 2073.088684889292,
+      "cpu_seconds": 114.72734758269041,
+      "rec_per_cpu_second": 2091.9162262251257,
+      "whole_rate": 7715.062399026506,
+      "window_seconds": 28.94232187814201,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2023-06-07T15:49:45.109Z\",\"_id\":\"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\",\"client\":{\"as\":{\"organization\":{\"name\":\"verizon\"}},\"domain\":\"verizon.net\",\"geo\":{\"city_name\":\"Bay Shore\",\"country_name\":\"United States\",\"location\":{\"lat\":40.7051,\"lon\":-73.243},\"region_name\":\"New York\"},\"ip\":\"192.168.1.10\",\"user\":{\"full_name\":\"John Doe\",\"id\":\"00aabbccddeeffaaaaaa\",\"name\":\"john.doe\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"device.user.add\",\"id\":\"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"john.doe@elastic.co\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"John Doe\\\",\\\"id\\\":\\\"00aabbccddeeffaaaaaa\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\"",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"ece1bba5290d\",stage=\"0\"} 4790 1794273832751\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"ece1bba5290d\",stage=\"0\"} 295819 1794273832751\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"ece1bba5290d\",stage=\"0\"} 4790 1794273832751\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"ece1bba5290d\",stage=\"0\"} 295619 1794273832751\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"ece1bba5290d\",intentional=\"true\"} 0 1794273832751\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"ece1bba5290d\"} 300000 1794273832751\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"ece1bba5290d\"} 300000 1794273832751\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"ece1bba5290d\"} 4925 1794273832751\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"ece1bba5290d\"} 4925 1794273832751\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\"} 300000 1794273832751\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"ece1bba5290d\"} 300000 1794273832751\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"ece1bba5290d\"} 300000 1794273832751\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"ece1bba5290d\",partition=\"0\",topic=\"b162-in-vector-okta-system-clean-0-1794273788\"} 75000 1794273832751\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"ece1bba5290d\",partition=\"1\",topic=\"b162-in-vector-okta-system-clean-0-1794273788\"} 75000 1794273832751\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"ece1bba5290d\",partition=\"2\",topic=\"b162-in-vector-okta-system-clean-0-1794273788\"} 75000 1794273832751\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"ece1bba5290d\",partition=\"3\",topic=\"b162-in-vector-okta-system-clean-0-1794273788\"} 75000 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"office_365_logs\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"_unmatched\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"cisco_meraki_events\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"azure_auditlogs\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"cisco_asa\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"ece1bba5290d\",output=\"_default\"} 300000 1794273832751\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"ece1bba5290d\",output=\"_default\"} 4925 1794273832751\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"ece1bba5290d\"} 23144 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"cisco_amp\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"okta_system\"} 300000 1794273832751\nvector_component_sent_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"ece1bba5290d\",output=\"_default\"} 300000 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"fortinet_fortigate\"} 300000 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"cisco_ftd\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"azure_activitylogs\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"ece1bba5290d\",output=\"panw_panos_logs\"} 0 1794273832751\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"e",
       "sent": 300000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T01:23:14.189562Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T01:23:14.190865Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/155-transform-filebeat-okta-system-logs.yml\"]\n2026-11-10T01:23:14.620729Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T01:23:14.620768Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T01:23:15.749397Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T01:23:15.749561Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T01:23:15.749575Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T01:23:15.749785Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T01:23:15.750369Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T01:23:15.754521Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": false,
       "run": 0,
-      "started_unix": 1794224085
+      "started_unix": 1794273788
     },
     {
       "engine": "vector",
@@ -52,38 +56,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.27,
-          6.16,
-          7.25
+          1.77,
+          2.75,
+          4.21
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.43,
-          6.19,
-          7.22
+          3.94,
+          3.22,
+          4.29
         ],
         "nproc": 32
       },
+      "others_busy_pct": 12.54543448190463,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.0,
-      "peak_cgroup_memory_bytes": 1073209344,
-      "peak_rss_bytes": 1099898880,
-      "samples": 164,
-      "rate": 9244.538392719396,
-      "rate_per_core": 2311.134598179849,
-      "cpu_seconds": 102.79925274380473,
-      "rec_per_cpu_second": 2334.647320813952,
-      "whole_rate": 8565.91733853841,
-      "window_seconds": 25.961274625568514,
+      "engine_cpus_busy_before_pct": 12.455909433240102,
+      "peak_cgroup_memory_bytes": 1048477696,
+      "peak_rss_bytes": 1078206464,
+      "samples": 202,
+      "rate": 7069.689817888356,
+      "rate_per_core": 1767.422454472089,
+      "cpu_seconds": 130.15992276728628,
+      "rec_per_cpu_second": 1843.8855440095601,
+      "whole_rate": 6379.246558777274,
+      "window_seconds": 33.947741157289634,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2023-02-06T08:56:36.909Z\",\"_id\":\"uuid\",\"client\":{\"as\":{\"organization\":{\"name\":\"bluewin is an lir and isp in switzerland.\"}},\"domain\":\"swisscom.ch\",\"geo\":{\"city_name\":\"Lucerne\",\"country_name\":\"Switzerland\",\"location\":{\"lat\":47.0511,\"lon\":8.3056},\"region_name\":\"Lucerne\"},\"ip\":\"127.0.0.1\",\"user\":{\"full_name\":\"first last\",\"id\":\"id\",\"name\":\"user\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user.authentication.auth_via_mfa\",\"id\":\"uuid\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"user@domain.com\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"first last\\\",\\\"id\\\":\\\"id\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\":{\\\"authenticationProvider\\\":\\\"FACTOR_PROVIDER\\\",\\\"authenticat",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"95a87c08f0d9\",stage=\"0\"} 5600 1794273967278\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"95a87c08f0d9\",stage=\"0\"} 300000 1794273967278\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"95a87c08f0d9\",stage=\"0\"} 300000 1794273967278\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"95a87c08f0d9\",stage=\"0\"} 5600 1794273967278\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"95a87c08f0d9\",intentional=\"true\"} 0 1794273967278\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"95a87c08f0d9\"} 300000 1794273967278\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"95a87c08f0d9\"} 5735 1794273967278\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\"} 300000 1794273967278\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"95a87c08f0d9\"} 300000 1794273967278\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"95a87c08f0d9\"} 300000 1794273967278\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"95a87c08f0d9\"} 300000 1794273967278\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"95a87c08f0d9\"} 5735 1794273967278\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"95a87c08f0d9\",partition=\"3\",topic=\"b162-in-vector-okta-system-clean-1-1794273913\"} 75000 1794273967278\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"95a87c08f0d9\",partition=\"1\",topic=\"b162-in-vector-okta-system-clean-1-1794273913\"} 75000 1794273967278\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"95a87c08f0d9\",partition=\"2\",topic=\"b162-in-vector-okta-system-clean-1-1794273913\"} 75000 1794273967278\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"95a87c08f0d9\",partition=\"0\",topic=\"b162-in-vector-okta-system-clean-1-1794273913\"} 75000 1794273967278\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"95a87c08f0d9\",output=\"_default\"} 300000 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"office_365_logs\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"95a87c08f0d9\"} 25728 1794273967278\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"95a87c08f0d9\",output=\"_default\"} 300000 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"okta_system\"} 300000 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"cisco_asa\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"95a87c08f0d9\",output=\"_default\"} 5735 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"_unmatched\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"panw_panos_logs\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"cisco_ftd\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"cisco_meraki_events\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"fortinet_fortigate\"} 300000 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"azure_auditlogs\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"azure_activitylogs\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"95a87c08f0d9\",output=\"cisco_amp\"} 0 1794273967278\nvector_component_sent_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"9",
       "sent": 300000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T01:25:22.353598Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T01:25:22.354503Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/155-transform-filebeat-okta-system-logs.yml\"]\n2026-11-10T01:25:22.943484Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T01:25:22.943513Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T01:25:24.276774Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T01:25:24.276941Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T01:25:24.276958Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T01:25:24.276959Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T01:25:24.277596Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T01:25:24.280820Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 1,
-      "started_unix": 1794224128
+      "started_unix": 1794273913
     },
     {
       "engine": "vector",
@@ -94,38 +102,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.16,
-          6.14,
-          7.2
+          1.94,
+          2.79,
+          4.0
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.52,
-          6.22,
-          7.18
+          5.34,
+          3.68,
+          4.24
         ],
         "nproc": 32
       },
+      "others_busy_pct": 15.483593313144544,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.245049504950495,
-      "peak_cgroup_memory_bytes": 983773184,
-      "peak_rss_bytes": 1013805056,
-      "samples": 162,
-      "rate": 9241.860651097568,
-      "rate_per_core": 2310.465162774392,
-      "cpu_seconds": 102.96344750166335,
-      "rec_per_cpu_second": 2330.924282582155,
-      "whole_rate": 8606.426864722283,
-      "window_seconds": 25.96879665909023,
+      "engine_cpus_busy_before_pct": 8.610347985347985,
+      "peak_cgroup_memory_bytes": 1014759424,
+      "peak_rss_bytes": 1042661376,
+      "samples": 213,
+      "rate": 6676.61410986127,
+      "rate_per_core": 1669.1535274653174,
+      "cpu_seconds": 137.271138768999,
+      "rec_per_cpu_second": 1748.364602728866,
+      "whole_rate": 6270.562607877786,
+      "window_seconds": 35.94636383815012,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2020-02-14T20:18:57.762Z\",\"_id\":\"3af594f9-4f67-11ea-abd3-1f5d113f2546\",\"client\":{\"geo\":{\"city_name\":\"Dublin\",\"country_name\":\"United States\",\"location\":{\"lat\":37.7201,\"lon\":-121.919},\"region_name\":\"California\"},\"user\":{\"full_name\":\"xxxxxx\",\"id\":\"00u1abvz4pYqdM8ms4x6\",\"name\":\"xxxxxx\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"policy.evaluate_sign_on\",\"category\":[\"authentication\"],\"id\":\"3af594f9-4f67-11ea-abd3-1f5d113f2546\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"xxxxxx@elastic.co\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"xxxxxx\\\",\\\"id\\\":\\\"00u1abvz4pYqdM8ms4x6\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\":{\\\"authenticationProvider\\\":null,\\\"authenticationStep",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"1779d9d7dc75\",stage=\"0\"} 292934 1794274145036\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"1779d9d7dc75\",stage=\"0\"} 5857 1794274145036\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"1779d9d7dc75\",stage=\"0\"} 5857 1794274145036\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"1779d9d7dc75\",stage=\"0\"} 292834 1794274145036\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"1779d9d7dc75\",intentional=\"true\"} 0 1794274145036\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"1779d9d7dc75\"} 5992 1794274145036\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"1779d9d7dc75\"} 300000 1794274145036\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"1779d9d7dc75\"} 300000 1794274145036\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"1779d9d7dc75\"} 5992 1794274145036\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"1779d9d7dc75\"} 300000 1794274145036\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"1779d9d7dc75\"} 300000 1794274145036\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\"} 300000 1794274145036\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"1779d9d7dc75\",partition=\"2\",topic=\"b162-in-vector-okta-system-clean-2-1794274088\"} 75000 1794274145036\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"1779d9d7dc75\",partition=\"0\",topic=\"b162-in-vector-okta-system-clean-2-1794274088\"} 75000 1794274145036\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"1779d9d7dc75\",partition=\"1\",topic=\"b162-in-vector-okta-system-clean-2-1794274088\"} 75000 1794274145036\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"1779d9d7dc75\",partition=\"3\",topic=\"b162-in-vector-okta-system-clean-2-1794274088\"} 75000 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"azure_auditlogs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"azure_signinlogs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"1779d9d7dc75\",output=\"_default\"} 300000 1794274145036\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"1779d9d7dc75\",output=\"_default\"} 5992 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"azure_platformlogs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"1779d9d7dc75\"} 27148 1794274145036\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"1779d9d7dc75\",output=\"_default\"} 300000 1794274145036\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"1779d9d7dc75\",output=\"_default\"} 300000 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"cisco_meraki_logs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"panw_panos_logs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"office_365_logs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"cisco_amp\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"1779d9d7dc75\",output=\"_default\"} 300000 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"okta_system\"} 300000 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"azure_activitylogs\"} 0 1794274145036\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"1779d9d7dc75\",output=\"ci",
       "sent": 300000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T01:28:18.056871Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T01:28:18.058397Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/155-transform-filebeat-okta-system-logs.yml\"]\n2026-11-10T01:28:18.565906Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T01:28:18.565943Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T01:28:20.034161Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T01:28:20.034390Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T01:28:20.034403Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T01:28:20.035443Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T01:28:20.036089Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T01:28:20.084083Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 2,
-      "started_unix": 1794224169
+      "started_unix": 1794274088
     },
     {
       "engine": "vector",
@@ -136,38 +148,42 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.4,
-          6.2,
-          7.17
+          1.69,
+          2.92,
+          3.91
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.13,
-          6.15,
-          7.11
+          3.56,
+          3.26,
+          3.99
         ],
         "nproc": 32
       },
+      "others_busy_pct": 5.1510489823728305,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 7.19064406440644,
-      "peak_cgroup_memory_bytes": 1033207808,
-      "peak_rss_bytes": 1063165952,
-      "samples": 163,
-      "rate": 9277.367977825666,
-      "rate_per_core": 2319.3419944564166,
-      "cpu_seconds": 102.49835438406325,
-      "rec_per_cpu_second": 2341.5010069402238,
-      "whole_rate": 8574.845712595486,
-      "window_seconds": 25.86940612613802,
+      "engine_cpus_busy_before_pct": 2.477966914338493,
+      "peak_cgroup_memory_bytes": 964337664,
+      "peak_rss_bytes": 995106816,
+      "samples": 185,
+      "rate": 8324.977311052453,
+      "rate_per_core": 2081.2443277631132,
+      "cpu_seconds": 113.50970939750995,
+      "rec_per_cpu_second": 2114.356571555674,
+      "whole_rate": 7481.123514133638,
+      "window_seconds": 28.828907399107244,
       "output_records": 300000,
+      "sample_output": "{\"@timestamp\":\"2022-12-12T22:03:08.791Z\",\"_id\":\"c32ae8ec-7a68-11ed-b8a7-9134a086ef85\",\"client\":{\"as\":{\"organization\":{\"name\":\"org\"}},\"domain\":\"domain.com\",\"geo\":{\"city_name\":\"City\",\"country_name\":\"Country\",\"location\":{\"lat\":0.0,\"lon\":0.0},\"region_name\":\"State\"},\"ip\":\"81.2.69.144\",\"user\":{\"full_name\":\"Last_name, First_Name\",\"id\":\"user_id\",\"name\":\"Snipped_User\"}},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user.authentication.verify\",\"id\":\"c32ae8ec-7a68-11ed-b8a7-9134a086ef85\",\"kind\":\"event\",\"original\":\"{\\\"actor\\\":{\\\"alternateId\\\":\\\"Snipped_User@domain.com\\\",\\\"detailEntry\\\":null,\\\"displayName\\\":\\\"Last_name, First_Name\\\",\\\"id\\\":\\\"user_id\\\",\\\"type\\\":\\\"User\\\"},\\\"authenticationContext\\\":{\\\"authe",
+      "counter_lines": "vector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"613cca4680a0\",stage=\"0\"} 300000 1794274281385\nvector_buffer_received_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"613cca4680a0\",stage=\"0\"} 5047 1794274281385\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"613cca4680a0\",stage=\"0\"} 5047 1794274281385\nvector_buffer_sent_events_total{buffer_type=\"memory\",component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"613cca4680a0\",stage=\"0\"} 300000 1794274281385\nvector_component_discarded_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"613cca4680a0\",intentional=\"true\"} 0 1794274281385\nvector_component_received_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"613cca4680a0\"} 300000 1794274281385\nvector_component_received_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"613cca4680a0\"} 300000 1794274281385\nvector_component_received_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\"} 300000 1794274281385\nvector_component_received_events_total{component_id=\"bench_out\",component_kind=\"sink\",component_type=\"kafka\",host=\"613cca4680a0\"} 300000 1794274281385\nvector_component_received_events_total{component_id=\"bench_prom\",component_kind=\"sink\",component_type=\"prometheus_exporter\",host=\"613cca4680a0\"} 5047 1794274281385\nvector_component_received_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"613cca4680a0\"} 300000 1794274281385\nvector_component_received_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"613cca4680a0\"} 5047 1794274281385\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"613cca4680a0\",partition=\"2\",topic=\"b162-in-vector-okta-system-clean-3-1794274235\"} 75000 1794274281385\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"613cca4680a0\",partition=\"0\",topic=\"b162-in-vector-okta-system-clean-3-1794274235\"} 75000 1794274281385\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"613cca4680a0\",partition=\"3\",topic=\"b162-in-vector-okta-system-clean-3-1794274235\"} 75000 1794274281385\nvector_component_received_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"613cca4680a0\",partition=\"1\",topic=\"b162-in-vector-okta-system-clean-3-1794274235\"} 75000 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"cisco_asa\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"cisco_meraki_logs\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"okta_system\",component_kind=\"transform\",component_type=\"remap\",host=\"613cca4680a0\",output=\"_default\"} 300000 1794274281385\nvector_component_sent_events_total{component_id=\"bench_metrics\",component_kind=\"source\",component_type=\"internal_metrics\",host=\"613cca4680a0\",output=\"_default\"} 5047 1794274281385\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message\",component_kind=\"transform\",component_type=\"filter\",host=\"613cca4680a0\",output=\"_default\"} 300000 1794274281385\nvector_component_sent_events_total{component_id=\"101_transform_flatten_message_parse\",component_kind=\"transform\",component_type=\"remap\",host=\"613cca4680a0\",output=\"_default\"} 300000 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"cisco_amp\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"azure_auditlogs\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"cisco_ftd\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"cisco_meraki_events\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"azure_activitylogs\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"azure_platformlogs\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"fortinet_fortigate\"} 300000 1794274281385\nvector_component_sent_events_total{component_id=\"bench_in\",component_kind=\"source\",component_type=\"kafka\",host=\"613cca4680a0\",output=\"_default\"} 300000 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"route\",host=\"613cca4680a0\",output=\"panw_panos_logs\"} 0 1794274281385\nvector_component_sent_events_total{component_id=\"125_transform_route_filebeat_events\",component_kind=\"transform\",component_type=\"ro",
       "sent": 300000,
       "discarded": 0,
       "errors": 0,
+      "log_tail": "2026-11-10T01:30:41.791938Z  INFO vector::app: Log level is enabled. level=\"info\"\n2026-11-10T01:30:41.792874Z  INFO vector::app: Loading configs. paths=[\"/bench/bench.yaml\", \"/templates/src/core_templates/101-transform-flatten-message.yml\", \"/templates/src/core_templates/125-transform-route-filebeat-events.yml\", \"/templates/src/core_templates/155-transform-filebeat-okta-system-logs.yml\"]\n2026-11-10T01:30:42.223770Z  WARN vector::config::loading: Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers\n2026-11-10T01:30:42.223802Z  WARN vector::config::loading: Internal log [Transform \"125_transform_route_filebeat_events.azure_activitylogs\" has no consumers] is being suppressed to avoid flooding.\n2026-11-10T01:30:43.384613Z  INFO vector::topology::running: Running healthchecks.\n2026-11-10T01:30:43.384730Z  INFO vector::topology::builder: Healthcheck passed.\n2026-11-10T01:30:43.384789Z  INFO vector: Vector has started. debug=\"false\" version=\"0.48.0\" arch=\"x86_64\" revision=\"a67e4e2 2025-06-30 18:25:45.272082383\"\n2026-11-10T01:30:43.384805Z  INFO vector::app: API is disabled, enable by setting `api.enabled` to `true` and use commands like `vector top`.\n2026-11-10T01:30:43.385218Z  INFO vector::sinks::prometheus::exporter: Building HTTP server. address=0.0.0.0:9598\n2026-11-10T01:30:43.387595Z  INFO vector::topology::builder: Internal log [Healthcheck passed.] is being suppressed to avoid flooding.\n",
       "measured": true,
       "run": 3,
-      "started_unix": 1794224209
+      "started_unix": 1794274235
     }
   ]
 }

@@ -10,37 +10,38 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.64,
-          6.38,
-          7.08
+          1.82,
+          2.53,
+          3.35
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.68,
-          6.41,
-          7.07
+          2.73,
+          2.67,
+          3.37
         ],
         "nproc": 32
       },
+      "others_busy_pct": 5.334370046761119,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 3.985294117647059,
-      "peak_cgroup_memory_bytes": 5950070784,
+      "engine_cpus_busy_before_pct": 3.967821782178218,
+      "peak_cgroup_memory_bytes": 6198697984,
       "peak_rss_bytes": null,
-      "samples": 88,
+      "samples": 108,
       "item_errors": 0,
       "clients": 4,
       "chunk": 2000,
-      "rate": 11789.36595155472,
-      "rate_per_core": 2947.34148788868,
-      "cpu_seconds": 52.219166,
-      "rec_per_cpu_second": 3676.8109241729367,
-      "whole_rate": 11487.533803463652,
-      "window_seconds": 16.285863106546458,
+      "rate": 9680.666847490182,
+      "rate_per_core": 2420.1667118725454,
+      "cpu_seconds": 63.030848,
+      "rec_per_cpu_second": 3046.1275088667694,
+      "whole_rate": 9490.02980674343,
+      "window_seconds": 19.833344440499786,
       "measured": false,
       "run": 0,
-      "started_unix": 1794224366
+      "started_unix": 1794274772
     },
     {
       "engine": "es-simulate",
@@ -51,37 +52,38 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.68,
-          6.41,
-          7.07
+          1.92,
+          2.48,
+          3.28
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.66,
-          6.42,
-          7.06
+          2.7,
+          2.61,
+          3.3
         ],
         "nproc": 32
       },
+      "others_busy_pct": 5.079307907166577,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.5026767982920741,
-      "peak_cgroup_memory_bytes": 5950070784,
+      "engine_cpus_busy_before_pct": 0.7550505050505051,
+      "peak_cgroup_memory_bytes": 6198697984,
       "peak_rss_bytes": null,
-      "samples": 91,
+      "samples": 100,
       "item_errors": 0,
       "clients": 4,
       "chunk": 2000,
-      "rate": 11483.771501793966,
-      "rate_per_core": 2870.9428754484916,
-      "cpu_seconds": 52.250176666666505,
-      "rec_per_cpu_second": 3674.6287237434017,
-      "whole_rate": 11243.334655762817,
-      "window_seconds": 16.71924593501414,
+      "rate": 9990.747192550134,
+      "rate_per_core": 2497.6867981375335,
+      "cpu_seconds": 60.41595,
+      "rec_per_cpu_second": 3177.968731767025,
+      "whole_rate": 9812.115915148514,
+      "window_seconds": 19.217781843501143,
       "measured": true,
       "run": 1,
-      "started_unix": 1794224391
+      "started_unix": 1794274832
     },
     {
       "engine": "es-simulate",
@@ -92,37 +94,38 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.66,
-          6.42,
-          7.06
+          1.73,
+          2.36,
+          3.18
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          6.51,
-          6.4,
-          7.03
+          2.58,
+          2.51,
+          3.21
         ],
         "nproc": 32
       },
+      "others_busy_pct": 4.763726906810974,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 1.9975747574757476,
-      "peak_cgroup_memory_bytes": 5950070784,
+      "engine_cpus_busy_before_pct": 0.995049504950495,
+      "peak_cgroup_memory_bytes": 6198697984,
       "peak_rss_bytes": null,
-      "samples": 90,
+      "samples": 103,
       "item_errors": 0,
       "clients": 4,
       "chunk": 2000,
-      "rate": 11578.211772378558,
-      "rate_per_core": 2894.5529430946394,
-      "cpu_seconds": 52.735413,
-      "rec_per_cpu_second": 3640.8172246607796,
-      "whole_rate": 11459.306386207447,
-      "window_seconds": 16.58287167091233,
+      "rate": 9896.544607560492,
+      "rate_per_core": 2474.136151890123,
+      "cpu_seconds": 62.5441715,
+      "rec_per_cpu_second": 3069.830415772635,
+      "whole_rate": 9708.081031499978,
+      "window_seconds": 19.400710815098137,
       "measured": true,
       "run": 2,
-      "started_unix": 1794224415
+      "started_unix": 1794274909
     },
     {
       "engine": "es-simulate",
@@ -133,37 +136,38 @@
       "stop_reason": "target",
       "host_before": {
         "loadavg": [
-          6.51,
-          6.4,
-          7.03
+          1.85,
+          2.35,
+          3.14
         ],
         "nproc": 32
       },
       "host_after": {
         "loadavg": [
-          7.06,
-          6.53,
-          7.06
+          2.44,
+          2.44,
+          3.14
         ],
         "nproc": 32
       },
+      "others_busy_pct": 5.3802271689580605,
       "noisy": false,
-      "engine_cpus_busy_before_pct": 9.593434343434343,
-      "peak_cgroup_memory_bytes": 5950070784,
+      "engine_cpus_busy_before_pct": 0.995049504950495,
+      "peak_cgroup_memory_bytes": 6198697984,
       "peak_rss_bytes": null,
-      "samples": 97,
+      "samples": 100,
       "item_errors": 0,
       "clients": 4,
       "chunk": 2000,
-      "rate": 10704.251553651284,
-      "rate_per_core": 2676.062888412821,
-      "cpu_seconds": 54.501629,
-      "rec_per_cpu_second": 3522.83048273658,
-      "whole_rate": 10612.828446895868,
-      "window_seconds": 17.936798200011253,
+      "rate": 9969.846457840738,
+      "rate_per_core": 2492.4616144601846,
+      "cpu_seconds": 61.764942,
+      "rec_per_cpu_second": 3108.559544992368,
+      "whole_rate": 9908.516904776321,
+      "window_seconds": 19.25806990227041,
       "measured": true,
       "run": 3,
-      "started_unix": 1794224439
+      "started_unix": 1794274957
     }
   ]
 }
