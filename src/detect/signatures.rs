@@ -46,7 +46,11 @@ pub(super) struct CefMarker {
     pub product: &'static str,
 }
 
-const fn one_of(source: &'static str, priority: u8, markers: &'static [&'static str]) -> Signature {
+pub(super) const fn one_of(
+    source: &'static str,
+    priority: u8,
+    markers: &'static [&'static str],
+) -> Signature {
     Signature {
         source,
         priority,
@@ -56,7 +60,11 @@ const fn one_of(source: &'static str, priority: u8, markers: &'static [&'static 
     }
 }
 
-const fn every(source: &'static str, priority: u8, markers: &'static [&'static str]) -> Signature {
+pub(super) const fn every(
+    source: &'static str,
+    priority: u8,
+    markers: &'static [&'static str],
+) -> Signature {
     Signature {
         source,
         priority,
@@ -66,7 +74,7 @@ const fn every(source: &'static str, priority: u8, markers: &'static [&'static s
     }
 }
 
-const fn checked(
+pub(super) const fn checked(
     source: &'static str,
     priority: u8,
     markers: &'static [&'static str],
@@ -81,7 +89,7 @@ const fn checked(
     }
 }
 
-const fn cef(
+pub(super) const fn cef(
     source: &'static str,
     priority: u8,
     vendor: &'static str,
@@ -99,8 +107,9 @@ const fn cef(
 /// scratch. A test holds the table to it.
 pub(super) const MAX_EVERY: usize = 32;
 
-/// Every literal-marker entry, in tie-break order.
-pub(super) static SIGNATURES: &[Signature] = &[
+/// The hand-written table the generated one replaces.
+#[cfg(test)]
+pub(super) static HAND_SIGNATURES: &[Signature] = &[
     // Untangle's uvm logger tag followed by a JSON object
     one_of(
         "filebeat.arista_ngfw_log.default",
@@ -866,8 +875,9 @@ pub(super) static SIGNATURES: &[Signature] = &[
     ),
 ];
 
-/// Every CEF vendor and product entry.
-pub(super) static CEF: &[CefMarker] = &[
+/// The hand-written CEF table the generated one replaces.
+#[cfg(test)]
+pub(super) static HAND_CEF: &[CefMarker] = &[
     cef("filebeat.citrix_adc_log.default", 57, "Citrix", "NetScaler"),
     cef("filebeat.citrix_waf_log.default", 56, "Citrix", "NetScaler"),
     cef("filebeat.claroty_ctd_event.default", 60, "Claroty", "CTD"),

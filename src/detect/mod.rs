@@ -16,6 +16,7 @@
 //! `cargo bench --bench detect`.
 
 mod labels;
+mod markers;
 mod signatures;
 mod verify;
 
@@ -27,7 +28,8 @@ use dfe_runtime::event::Event;
 use serde_json::Value;
 
 pub use labels::label;
-use signatures::{CEF, MAX_EVERY, SIGNATURES, Signature};
+use markers::{CEF, SIGNATURES};
+use signatures::{MAX_EVERY, Signature};
 
 /// The text of one event a marker may appear in.
 ///
@@ -447,6 +449,34 @@ mod tests {
                 "{source} is not a registered transform"
             );
             assert!(label(source).is_some(), "{source} has no catalogue label");
+        }
+    }
+
+    /// The generated tables hold the hand-written ones entry for entry, in order.
+    #[test]
+    #[allow(unpredictable_function_pointer_comparisons)]
+    fn the_generated_tables_equal_the_hand_written_ones() {
+        use signatures::{HAND_CEF, HAND_SIGNATURES};
+        assert_eq!(SIGNATURES.len(), HAND_SIGNATURES.len());
+        for (i, (got, want)) in SIGNATURES.iter().zip(HAND_SIGNATURES).enumerate() {
+            assert_eq!(
+                (got.source, got.priority, got.markers, got.all),
+                (want.source, want.priority, want.markers, want.all),
+                "SIGNATURES[{i}]"
+            );
+            assert_eq!(
+                got.verify.map(|f| f as usize),
+                want.verify.map(|f| f as usize),
+                "SIGNATURES[{i}] verify"
+            );
+        }
+        assert_eq!(CEF.len(), HAND_CEF.len());
+        for (i, (got, want)) in CEF.iter().zip(HAND_CEF).enumerate() {
+            assert_eq!(
+                (got.source, got.priority, got.vendor, got.product),
+                (want.source, want.priority, want.vendor, want.product),
+                "CEF[{i}]"
+            );
         }
     }
 

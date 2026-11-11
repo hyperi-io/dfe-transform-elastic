@@ -1,0 +1,5 @@
+# The dfe-schemas wheel src/detect/labels.rs and src/detect/markers.rs are generated from.
+# Bump both values together from https://pypi.org/pypi/dfe-schemas/<version>/json, then run
+# scripts/gen_detect_tables.py. tests/scripts_suite.rs fails the build when the files are stale.
+version = "0.2.27"
+sha256 = "0497216b21aa3c9df6aa46df1938cf3e77f8b094243fe87eb30d82ebee02d8b2"
