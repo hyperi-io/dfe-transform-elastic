@@ -4,7 +4,7 @@
 //! Names the source of a syslog line by what is written in it.
 //!
 //! Agentless mode serves one dfe-receiver stream that carries many device
-//! types, so each event is matched against the marker table in `signatures`
+//! types, so each event is matched against the marker table in `markers`
 //! and the winner's transform runs. One Aho-Corasick pass over the line finds
 //! every literal at once. No regex runs and nothing is allocated per event.
 //!
@@ -16,6 +16,7 @@
 //! `cargo bench --bench detect`.
 
 mod labels;
+mod markers;
 mod signatures;
 mod verify;
 
@@ -27,7 +28,8 @@ use dfe_runtime::event::Event;
 use serde_json::Value;
 
 pub use labels::label;
-use signatures::{CEF, MAX_EVERY, SIGNATURES, Signature};
+use markers::{CEF, MAX_EVERY, SIGNATURES};
+use signatures::Signature;
 
 /// The text of one event a marker may appear in.
 ///
