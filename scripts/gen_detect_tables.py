@@ -87,6 +87,17 @@ def _checked(*, body: bytes, sha256: str, where: str) -> bytes:
     return body
 
 
+def _https_get(url: str, *, timeout: int) -> bytes:
+    """The body at *url*, refused unless it is https, so no file:// or other scheme is read."""
+    if not url.startswith("https://"):
+        raise CatalogueError(f"{url!r} is not an https URL")
+    # Risk accepted: the scheme is checked above and the body is held to the pinned sha256.
+    # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
+    response = urllib.request.urlopen(url, timeout=timeout)
+    with response:
+        return response.read()
+
+
 def fetch_wheel(*, version: str, sha256: str) -> bytes:
     """The pinned wheel from `DFE_SCHEMAS_WHEEL`, else the cache, else PyPI.
 
@@ -101,17 +112,13 @@ def fetch_wheel(*, version: str, sha256: str) -> bytes:
     if cached.is_file():
         return _checked(body=cached.read_bytes(), sha256=sha256, where=str(cached))
     try:
-        with urllib.request.urlopen(
-            PYPI.format(version=version), timeout=60
-        ) as response:
-            release = json.load(response)
+        release = json.loads(_https_get(PYPI.format(version=version), timeout=60))
         wheels = [f for f in release["urls"] if f["packagetype"] == "bdist_wheel"]
         if len(wheels) != 1:
             raise CatalogueError(
                 f"dfe-schemas {version} has {len(wheels)} wheels, not one"
             )
-        with urllib.request.urlopen(wheels[0]["url"], timeout=120) as response:
-            body = response.read()
+        body = _https_get(wheels[0]["url"], timeout=120)
     except OSError as exc:
         raise WheelUnavailable(
             f"dfe-schemas {version} is not cached at {cached} and PyPI is unreachable ({exc}). "

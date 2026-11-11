@@ -318,11 +318,13 @@ class WheelTests(unittest.TestCase):
         self.cache.cleanup()
 
     def _urlopen(self, body: bytes):
-        release = b'{"urls": [{"packagetype": "sdist", "url": "s"}, {"packagetype": "bdist_wheel", "url": "w"}]}'
+        release = b'{"urls": [{"packagetype": "sdist", "url": "https://files/s"}, {"packagetype": "bdist_wheel", "url": "https://files/w"}]}'
         return mock.patch.object(
             gen.urllib.request,
             "urlopen",
-            side_effect=lambda url, timeout: _Response(body if url == "w" else release),
+            side_effect=lambda url, timeout: _Response(
+                body if url == "https://files/w" else release
+            ),
         )
 
     def _offline(self):
@@ -341,6 +343,20 @@ class WheelTests(unittest.TestCase):
             self.assertRaisesRegex(gen.CatalogueError, "pinned 00"),
         ):
             gen.fetch_wheel(version="1.0.0", sha256="00")
+
+    def test_a_wheel_url_that_is_not_https_is_refused(self):
+        release = (
+            b'{"urls": [{"packagetype": "bdist_wheel", "url": "file:///etc/hostname"}]}'
+        )
+        with (
+            mock.patch.object(
+                gen.urllib.request,
+                "urlopen",
+                side_effect=lambda url, timeout: _Response(release),
+            ),
+            self.assertRaisesRegex(gen.CatalogueError, "not an https URL"),
+        ):
+            gen.fetch_wheel(version="1.0.0", sha256=self.sha)
 
     def test_a_download_is_cached_and_read_back_offline(self):
         with self._urlopen(self.body):
