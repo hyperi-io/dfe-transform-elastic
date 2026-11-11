@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Run the Python tooling's own test suite, so it is in the gate.
+//! Run the Python tooling's own test suite and the generated tables' drift
+//! check, so both are in the gate.
 //!
 //! `scripts/` carries 538 lines of tests across `test_compat.py`,
 //! `test_field_census.py` and `test_pattern_reach.py`, and NOTHING executed
@@ -86,5 +87,41 @@ fn the_python_tooling_suite_passes() {
     assert!(
         output.status.success(),
         "the Python tooling suite failed:\n{stderr}"
+    );
+}
+
+/// `src/detect/labels.rs` and `src/detect/markers.rs` match what the pinned
+/// dfe-schemas wheel generates, so a pin bump without a regeneration fails here.
+/// The wheel comes from `DFE_SCHEMAS_WHEEL`, the digest-named cache or `PyPI`. With
+/// none of them (exit 3) the check skips locally and fails in CI.
+#[test]
+fn the_detect_tables_match_the_pinned_catalogue() {
+    let output = Command::new("python3")
+        .args(["scripts/gen_detect_tables.py", "--check"])
+        .current_dir(repo_root())
+        .output();
+    let output = match output {
+        Ok(output) => output,
+        Err(err) => {
+            assert!(
+                std::env::var_os("CI").is_none(),
+                "python3 will not start in CI ({err}), so the drift check cannot be skipped"
+            );
+            eprintln!("python3 will not start ({err}); skipping the drift check");
+            return;
+        }
+    };
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    if output.status.code() == Some(3) {
+        assert!(
+            std::env::var_os("CI").is_none(),
+            "CI cannot reach PyPI for the pinned dfe-schemas wheel:\n{stderr}"
+        );
+        eprintln!("no pinned dfe-schemas wheel available; skipping the drift check:\n{stderr}");
+        return;
+    }
+    assert!(
+        output.status.success(),
+        "the generated detect tables are stale or could not be generated:\n{stderr}"
     );
 }

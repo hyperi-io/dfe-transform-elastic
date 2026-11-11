@@ -135,6 +135,8 @@ The source catalogue, `sources.yaml`, is compiled into the binary. `dfe-transfor
 
 `scripts/emit_variants.py` prints every registered variant with the intakes it accepts. On a push to `main` that changes it, `.github/workflows/sync-elastic-variants.yml` opens or updates a `chore(elastic-variants)` PR on dfe-schemas, whose catalogue test checks every elastic entry against that file.
 
+The other direction is generated code. `src/detect/labels.rs` (each variant's `_source` label) and `src/detect/markers.rs` (the agentless marker table) come from the dfe-schemas wheel `scripts/dfe-schemas.toml` pins by version and sha256. To move the pin, set both values from `https://pypi.org/pypi/dfe-schemas/<version>/json` and run `scripts/gen_detect_tables.py`. `tests/scripts_suite.rs` runs it with `--check`, so a stale file fails the test job.
+
 ## Observability
 
 - `/livez`, `/readyz`, `/metrics` and `/metrics/manifest`, all served from the
