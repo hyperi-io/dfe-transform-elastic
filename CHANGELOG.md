@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.31](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.30...v1.1.31) (2026-11-11)
+
+### Bug Fixes
+
+* **detect:** generate labels and markers from pinned dfe-schemas ([d8d9a41](https://github.com/hyperi-io/dfe-transform-elastic/commit/d8d9a417d31cf0a8d64f52c9b6c67c344872816d))
+
 ## [1.1.30](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.29...v1.1.30) (2026-11-11)
 
 ### Bug Fixes
