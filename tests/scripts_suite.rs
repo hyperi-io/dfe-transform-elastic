@@ -92,7 +92,7 @@ fn the_python_tooling_suite_passes() {
 
 /// `src/detect/labels.rs` and `src/detect/markers.rs` match what the pinned
 /// dfe-schemas wheel generates, so a pin bump without a regeneration fails here.
-/// The wheel comes from `DFE_SCHEMAS_WHEEL`, the digest-named cache or PyPI. With
+/// The wheel comes from `DFE_SCHEMAS_WHEEL`, the digest-named cache or `PyPI`. With
 /// none of them (exit 3) the check skips locally and fails in CI.
 #[test]
 fn the_detect_tables_match_the_pinned_catalogue() {
