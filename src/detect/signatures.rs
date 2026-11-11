@@ -102,7 +102,3 @@ pub(super) const fn cef(
         product,
     }
 }
-
-/// The most `every` entries one detector may hold, which sizes its per-line
-/// scratch. A test holds the table to it.
-pub(super) const MAX_EVERY: usize = 32;

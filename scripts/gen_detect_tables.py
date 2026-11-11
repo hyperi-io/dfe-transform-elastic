@@ -13,12 +13,18 @@ sha256, and the tables are generated from that wheel and nothing else:
     scripts/gen_detect_tables.py --from /projects/dfe-schemas   # an unreleased checkout
 
 Output from `--from` names no release, so `--check` refuses it.
+
+The wheel is read from `DFE_SCHEMAS_WHEEL` when set, else from
+`$XDG_CACHE_HOME/dfe-schemas-wheels/<sha256>.whl` (`~/.cache` by default), else
+downloaded from PyPI into that cache. Each is held to the pinned sha256. Exit 3
+means none was available.
 """
 
 import argparse
 import hashlib
 import io
 import json
+import os
 import re
 import sys
 import tomllib
@@ -43,31 +49,82 @@ WIDTH = 100
 
 VERIFY_NAME = re.compile(r"^[a-z_][a-z0-9_]*$")
 
+# The detector marks an all marker's literals as bits of one u8.
+MAX_ALL_LITERALS = 8
+
+# The detector numbers SIGNATURES entries with a u16.
+MAX_SIGNATURES = 65_534
+
+# Exit status when the wheel is in no cache and PyPI cannot be reached.
+EXIT_UNAVAILABLE = 3
+
 
 class CatalogueError(Exception):
     """The catalogue cannot be turned into the tables."""
 
 
-def read_pin(path: Path = PIN) -> tuple[str, str]:
+def read_pin() -> tuple[str, str]:
     """The pinned dfe-schemas version and wheel sha256."""
-    pin = tomllib.loads(path.read_text(encoding="utf-8"))
+    pin = tomllib.loads(PIN.read_text(encoding="utf-8"))
     return pin["version"], pin["sha256"]
 
 
-def fetch_wheel(*, version: str, sha256: str) -> bytes:
-    """The dfe-schemas wheel for *version*, refused unless its sha256 is *sha256*."""
-    with urllib.request.urlopen(PYPI.format(version=version), timeout=60) as response:
-        release = json.load(response)
-    wheels = [f for f in release["urls"] if f["packagetype"] == "bdist_wheel"]
-    if len(wheels) != 1:
-        raise CatalogueError(f"dfe-schemas {version} has {len(wheels)} wheels, not one")
-    with urllib.request.urlopen(wheels[0]["url"], timeout=120) as response:
-        body = response.read()
+class WheelUnavailable(CatalogueError):
+    """The pinned wheel is in no cache and PyPI cannot be reached."""
+
+
+def cache_path(sha256: str) -> Path:
+    """Where a downloaded wheel is kept, named by its digest."""
+    root = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
+    return Path(root) / "dfe-schemas-wheels" / f"{sha256}.whl"
+
+
+def _checked(*, body: bytes, sha256: str, where: str) -> bytes:
+    """*body*, refused unless its sha256 is *sha256*."""
     digest = hashlib.sha256(body).hexdigest()
     if digest != sha256:
-        raise CatalogueError(
-            f"dfe-schemas {version} wheel is sha256 {digest}, pinned {sha256}"
-        )
+        raise CatalogueError(f"{where} is sha256 {digest}, pinned {sha256}")
+    return body
+
+
+def fetch_wheel(*, version: str, sha256: str) -> bytes:
+    """The pinned wheel from `DFE_SCHEMAS_WHEEL`, else the cache, else PyPI.
+
+    Every source is held to *sha256*, so a cached or supplied file cannot stand
+    in for another release.
+    """
+    supplied = os.environ.get("DFE_SCHEMAS_WHEEL")
+    if supplied:
+        body = Path(supplied).read_bytes()
+        return _checked(body=body, sha256=sha256, where=f"DFE_SCHEMAS_WHEEL {supplied}")
+    cached = cache_path(sha256)
+    if cached.is_file():
+        return _checked(body=cached.read_bytes(), sha256=sha256, where=str(cached))
+    try:
+        with urllib.request.urlopen(
+            PYPI.format(version=version), timeout=60
+        ) as response:
+            release = json.load(response)
+        wheels = [f for f in release["urls"] if f["packagetype"] == "bdist_wheel"]
+        if len(wheels) != 1:
+            raise CatalogueError(
+                f"dfe-schemas {version} has {len(wheels)} wheels, not one"
+            )
+        with urllib.request.urlopen(wheels[0]["url"], timeout=120) as response:
+            body = response.read()
+    except OSError as exc:
+        raise WheelUnavailable(
+            f"dfe-schemas {version} is not cached at {cached} and PyPI is unreachable ({exc}). "
+            "Set DFE_SCHEMAS_WHEEL to a downloaded copy."
+        ) from exc
+    _checked(body=body, sha256=sha256, where=f"dfe-schemas {version} wheel")
+    try:
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        partial = cached.with_suffix(".part")
+        partial.write_bytes(body)
+        partial.replace(cached)
+    except OSError:
+        pass  # A read-only cache only costs the next run a download.
     return body
 
 
@@ -161,9 +218,16 @@ def literal_line(row: dict) -> list[str]:
     source = rust_str(row["source"])
     priority = int(row["priority"])
     verify = row.get("verify")
+    if not 0 <= priority <= 255:
+        raise CatalogueError(f"{row['source']}: priority {priority} does not fit a u8")
     if "all" in row:
         if verify is not None:
             raise CatalogueError(f"{row['source']}: verify is only for an any marker")
+        if len(row["all"]) > MAX_ALL_LITERALS:
+            raise CatalogueError(
+                f"{row['source']}: an all marker holds {len(row['all'])} literals, at most "
+                f"{MAX_ALL_LITERALS} fit the detector's one-byte mask"
+            )
         call, literals, tail = "every", row["all"], ""
     else:
         call, literals = ("checked", row["any"]) if verify else ("one_of", row["any"])
@@ -228,7 +292,12 @@ def render_labels(*, entries: dict[str, dict], origin: str) -> str:
 def render_markers(*, entries: dict[str, dict], origin: str) -> str:
     """src/detect/markers.rs for *entries*."""
     literal, cef = detect_rows(entries)
+    if len(literal) > MAX_SIGNATURES:
+        raise CatalogueError(
+            f"{len(literal)} literal markers, at most {MAX_SIGNATURES}"
+        )
     verified = any(row.get("verify") for row in literal)
+    every = sum("all" in row for row in literal)
     lines = header(
         origin=origin,
         what="The marker table, from the `catalogue.detect` blocks of the dfe-schemas catalogue.",
@@ -239,6 +308,10 @@ def render_markers(*, entries: dict[str, dict], origin: str) -> str:
     if verified:
         lines.append("use super::verify;")
     lines += [
+        "",
+        "/// The `every` entries in [`SIGNATURES`], which sizes the detector's per-line",
+        "/// scratch.",
+        f"pub(super) const MAX_EVERY: usize = {every};",
         "",
         "/// Every literal-marker entry, in tie-break order.",
         "#[rustfmt::skip]",
@@ -305,7 +378,7 @@ def main(argv: list[str] | None = None) -> int:
         files = render(docs=docs, origin=origin)
     except CatalogueError as exc:
         print(f"gen_detect_tables: {exc}", file=sys.stderr)
-        return 2
+        return EXIT_UNAVAILABLE if isinstance(exc, WheelUnavailable) else 2
     stale = [
         p for p, text in files.items() if not p.exists() or p.read_text("utf-8") != text
     ]

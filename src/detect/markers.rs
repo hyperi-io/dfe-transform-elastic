@@ -8,6 +8,10 @@
 use super::signatures::{CefMarker, Signature, cef, checked, every, one_of};
 use super::verify;
 
+/// The `every` entries in [`SIGNATURES`], which sizes the detector's per-line
+/// scratch.
+pub(super) const MAX_EVERY: usize = 32;
+
 /// Every literal-marker entry, in tie-break order.
 #[rustfmt::skip]
 pub(super) static SIGNATURES: &[Signature] = &[

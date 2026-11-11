@@ -28,8 +28,8 @@ use dfe_runtime::event::Event;
 use serde_json::Value;
 
 pub use labels::label;
-use markers::{CEF, SIGNATURES};
-use signatures::{MAX_EVERY, Signature};
+use markers::{CEF, MAX_EVERY, SIGNATURES};
+use signatures::Signature;
 
 /// The text of one event a marker may appear in.
 ///

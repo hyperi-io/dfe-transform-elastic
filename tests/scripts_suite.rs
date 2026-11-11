@@ -92,7 +92,8 @@ fn the_python_tooling_suite_passes() {
 
 /// `src/detect/labels.rs` and `src/detect/markers.rs` match what the pinned
 /// dfe-schemas wheel generates, so a pin bump without a regeneration fails here.
-/// The generator fetches the wheel from PyPI, so this needs the network.
+/// The wheel comes from `DFE_SCHEMAS_WHEEL`, the digest-named cache or PyPI. With
+/// none of them (exit 3) the check skips locally and fails in CI.
 #[test]
 fn the_detect_tables_match_the_pinned_catalogue() {
     let output = Command::new("python3")
@@ -110,9 +111,17 @@ fn the_detect_tables_match_the_pinned_catalogue() {
             return;
         }
     };
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    if output.status.code() == Some(3) {
+        assert!(
+            std::env::var_os("CI").is_none(),
+            "CI cannot reach PyPI for the pinned dfe-schemas wheel:\n{stderr}"
+        );
+        eprintln!("no pinned dfe-schemas wheel available; skipping the drift check:\n{stderr}");
+        return;
+    }
     assert!(
         output.status.success(),
-        "the generated detect tables are stale or could not be generated:\n{}",
-        String::from_utf8_lossy(&output.stderr)
+        "the generated detect tables are stale or could not be generated:\n{stderr}"
     );
 }

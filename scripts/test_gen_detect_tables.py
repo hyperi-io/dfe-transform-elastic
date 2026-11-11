@@ -5,7 +5,9 @@
 
 import hashlib
 import io
+import os
 import sys
+import tempfile
 import unittest
 import zipfile
 from pathlib import Path
@@ -182,6 +184,33 @@ class RefusalTests(unittest.TestCase):
             [_entry("filebeat.a.default", "a"), _entry("filebeat.a.default", "b")],
             "named by two catalogue entries",
         ),
+        (
+            "all marker over the one-byte mask",
+            [
+                _entry(
+                    "filebeat.a.default",
+                    "a",
+                    {
+                        "order": 1,
+                        "markers": [
+                            {"priority": 1, "all": [f"k{i}=" for i in range(9)]}
+                        ],
+                    },
+                )
+            ],
+            "holds 9 literals, at most 8",
+        ),
+        (
+            "priority over a byte",
+            [
+                _entry(
+                    "filebeat.a.default",
+                    "a",
+                    {"order": 1, "markers": [{"priority": 256, "any": ["x"]}]},
+                )
+            ],
+            "does not fit a u8",
+        ),
     ]
 
     def test_bad_catalogue_data_is_refused(self):
@@ -239,6 +268,16 @@ class RenderTests(unittest.TestCase):
             )
         )
 
+    def test_max_every_counts_the_all_markers(self):
+        for count in (0, 1, 33):
+            markers = [{"priority": 1, "any": ["x"]}] + [
+                {"priority": 1, "all": [f"a{i}", f"b{i}"]} for i in range(count)
+            ]
+            docs = [_entry("filebeat.a.default", "a", {"order": 1, "markers": markers})]
+            text = gen.render(docs=docs, origin="test")[gen.MARKERS]
+            with self.subTest(count):
+                self.assertIn(f"pub(super) const MAX_EVERY: usize = {count};", text)
+
     def test_labels_are_sorted_by_byte_order(self):
         docs = [
             _entry("filebeat.b.default", "b"),
@@ -265,6 +304,19 @@ class WheelTests(unittest.TestCase):
         "dfe_schemas/data/tables/t.yaml": "not: catalogue\n",
     }
 
+    def setUp(self):
+        self.cache = tempfile.TemporaryDirectory()
+        env = {"XDG_CACHE_HOME": self.cache.name}
+        self.env = mock.patch.dict(os.environ, env)
+        self.env.start()
+        os.environ.pop("DFE_SCHEMAS_WHEEL", None)
+        self.body = _wheel(self.FILES)
+        self.sha = hashlib.sha256(self.body).hexdigest()
+
+    def tearDown(self):
+        self.env.stop()
+        self.cache.cleanup()
+
     def _urlopen(self, body: bytes):
         release = b'{"urls": [{"packagetype": "sdist", "url": "s"}, {"packagetype": "bdist_wheel", "url": "w"}]}'
         return mock.patch.object(
@@ -273,20 +325,60 @@ class WheelTests(unittest.TestCase):
             side_effect=lambda url, timeout: _Response(body if url == "w" else release),
         )
 
+    def _offline(self):
+        return mock.patch.object(
+            gen.urllib.request, "urlopen", side_effect=OSError("no route to host")
+        )
+
     def test_the_wheel_catalogue_is_read_when_the_digest_matches(self):
-        body = _wheel(self.FILES)
-        with self._urlopen(body):
-            fetched = gen.fetch_wheel(
-                version="1.0.0", sha256=hashlib.sha256(body).hexdigest()
-            )
+        with self._urlopen(self.body):
+            fetched = gen.fetch_wheel(version="1.0.0", sha256=self.sha)
         self.assertEqual([d["source"] for d in gen.wheel_catalogue(fetched)], ["a"])
 
     def test_a_wheel_with_another_digest_is_refused(self):
         with (
-            self._urlopen(_wheel(self.FILES)),
+            self._urlopen(self.body),
             self.assertRaisesRegex(gen.CatalogueError, "pinned 00"),
         ):
             gen.fetch_wheel(version="1.0.0", sha256="00")
+
+    def test_a_download_is_cached_and_read_back_offline(self):
+        with self._urlopen(self.body):
+            gen.fetch_wheel(version="1.0.0", sha256=self.sha)
+        self.assertTrue(gen.cache_path(self.sha).is_file())
+        with self._offline():
+            self.assertEqual(
+                gen.fetch_wheel(version="1.0.0", sha256=self.sha), self.body
+            )
+
+    def test_a_cached_file_with_another_digest_is_refused(self):
+        path = gen.cache_path(self.sha)
+        path.parent.mkdir(parents=True)
+        path.write_bytes(b"not the wheel")
+        with self._offline(), self.assertRaisesRegex(gen.CatalogueError, "pinned"):
+            gen.fetch_wheel(version="1.0.0", sha256=self.sha)
+
+    def test_a_supplied_wheel_is_read_offline_and_held_to_the_digest(self):
+        supplied = Path(self.cache.name) / "supplied.whl"
+        supplied.write_bytes(self.body)
+        os.environ["DFE_SCHEMAS_WHEEL"] = str(supplied)
+        with self._offline():
+            self.assertEqual(
+                gen.fetch_wheel(version="1.0.0", sha256=self.sha), self.body
+            )
+            with self.assertRaisesRegex(gen.CatalogueError, "DFE_SCHEMAS_WHEEL"):
+                gen.fetch_wheel(version="1.0.0", sha256="00")
+
+    def test_no_cache_and_no_network_exits_3(self):
+        pin = Path(self.cache.name) / "pin.toml"
+        pin.write_text(f'version = "1.0.0"\nsha256 = "{self.sha}"\n', encoding="utf-8")
+        with (
+            self._offline(),
+            mock.patch.object(gen, "PIN", pin),
+            mock.patch("sys.stderr", io.StringIO()) as err,
+        ):
+            self.assertEqual(gen.main(["--check"]), gen.EXIT_UNAVAILABLE)
+        self.assertIn("PyPI is unreachable", err.getvalue())
 
     def test_check_refuses_a_local_checkout(self):
         with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
