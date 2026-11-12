@@ -10,8 +10,8 @@ transforms use, and how far the Painless matchers reach. The code map around it 
 ## Three layers over grok and regex
 
 Three-layer strategy for replacing grok/regex with native Rust, implemented in `dfe-parse`.
-Layer 1 is WIRED, for the three whole-pattern forms `grok_cache::native_form` recognises;
-everything else still falls back to the compiled regex the grok expands to. Layers 2 and 3
+Layer 1 is WIRED, for the three whole-pattern forms `grok_cache::native_form` recognises.
+Everything else still falls back to the compiled regex the grok expands to. Layers 2 and 3
 exist in `dfe-parse`, but nothing outside that crate calls them yet. The dispatch table
 below is the current state, and widening it is the gap this architecture exists to close.
 
