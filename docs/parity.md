@@ -5,8 +5,10 @@ how the claim is measured. The code map it sits beside is [architecture.md](arch
 and the mechanics of the measurement are [compat.md](compat.md) and
 [compat-policy.md](compat-policy.md).
 
-**Goal:** Reliable 1:1 (or better) parity with Elastic ingest pipeline output for all
-supported Beats and Elastic Agent integrations.
+**Goal:** 1:1 (or better) parity with Elastic ingest pipeline output for the supported
+Beats and Elastic Agent integrations. Parity is measured per source against Elastic's
+output on the compat corpus and ratcheted in `tests/compat-baseline.json`, so some
+sources match fully and others do not yet.
 
 This is NOT reverse engineering Elasticsearch. We are building an independent transform
 service that produces the same normalised ECS output as the Elastic ingest pipeline would.
@@ -31,7 +33,7 @@ enrich, and route the data.
 | **Painless scripts** | A hand-transcribed runner from `crates/dfe-painless/src/bespoke/` where one is registered for that script, otherwise pattern-matched against `params.rs` and the ladder in `common.rs`; unrecognised scripts are skipped | see [Painless coverage](parsers.md#painless-coverage) -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
 | **Foreach processor** | Per-event loop inside the transform function | Okta, O365 |
 | **Pipeline chaining** | A nested pipeline is INLINED into the calling module between `// Begin nested pipeline` / `// End nested pipeline` markers, so there is no call and no dispatch on the hot path | Done. `rg -c "Begin nested pipeline" crates/dfe-transforms/src/` counts today's call sites |
-| **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, LRU-cached | Done (DB-IP Lite) |
+| **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, behind a bounded cache | Done (DB-IP Lite) |
 | **User Agent parsing** | Regex-based parser | Done (minor diffs from Elastic UA parser) |
 | **Community ID** | Hash-based network flow ID | Done |
 | **Conditional evaluation** | Native Rust `if`/`match` expressions per condition pattern | Nearly. A condition the transpiler cannot read emits `if false`, making the processor it guards dead code -- `skipped_processors` in `tests/ratchets.json` is the live count, with a per-source table beside it |

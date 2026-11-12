@@ -6,7 +6,7 @@ Where the values come from, which env spelling reaches a `--config` file, how th
 
 `Config::load` reads the configuration once and hands it to the batch loop by reference, so every value needs a restart to change. There is no hot reload: the broker connections, the resolved transform, the GeoIP databases and the metrics labels are all fixed at startup.
 
-The two ways in are not equivalent. With no `--config` the scalo cascade applies: `defaults`, `settings` and `settings.<env>` files, `.yaml` or `.yml`, searched in `./`, `./config/`, `/config/` and `~/.config/dfe-transform-elastic/`, then the `DFE_TRANSFORM_ELASTIC_*` environment. With `--config`, which is what the container passes, the named file IS the configuration: `Config::load` reads it directly and installs the scalo cascade without it, so the file is not one of the cascade's layers. Kafka credentials are unaffected either way: they are read from `KAFKA_*` separately.
+The two ways in are not equivalent. With no `--config` the scalo cascade applies: `defaults`, `settings` and `settings.<env>` files, `.yaml` or `.yml`, searched in `./`, `./config/`, `/config/` and `~/.config/dfe-transform-elastic/`, then the `DFE_TRANSFORM_ELASTIC_*` environment. With `--config`, which is what the container passes, `Config::load` reads the named file into `Config` and also hands it to scalo's cascade as its settings layer, so the scalo sections written in it apply. Kafka credentials are unaffected either way: they are read from `KAFKA_*` separately.
 
 ## Only the flat env spelling reaches a `--config` file
 
@@ -28,7 +28,7 @@ Each side carries a `transport` of `bus` (the default) or `direct`. A config fil
 
 Every `source` and `sink` key may be left out of the file. `source.name`, `source.topics`, `source.group_id`, `source.brokers` and `sink.topic` then default to empty. An instance with no source name idles, as does a bus instance with no topics. Once the configuration names work, startup refuses a bus source with no brokers or group.
 
-On `direct` the brokers and group may stay empty. Empty topics do not idle there, because the listener is the work. The fleet routes over the bus until dfe-infra flips the selector (issue #19).
+On `direct` the brokers and group may stay empty. Empty topics do not idle there, because the listener is the work. In a DFE deployment the slim and mesh profiles run both sides on `direct`, and single and scale run on `bus`.
 
 `sink.topic` is required on both transports once the configuration names work. On `direct` it is the routing key every push carries, and dfe-loader routes a record with no `_source` on that key, so a push without one lands under the loader's `default_topic`.
 
@@ -50,7 +50,7 @@ The listener speaks plaintext gRPC with no authentication of its own, and the pu
 
 Fetcher events carry the provider's own payload, so they count as unmatched. Three counters report the split: `events_detected_total{source}`, `events_unmatched_total` and `events_fallback_total`.
 
-Detection costs about 2,080 ns an event (481K events a second on one core), so a 20,000-event batch spends about 42 ms on it. That is 20,000 compat-corpus events of 718 bytes on average, measured on desktop-derek (AMD EPYC 7302) with the bench profile. `cargo bench --bench detect` re-derives it.
+Detection costs about 2,080 ns an event (481K events a second on one core), so a 20,000-event batch spends about 42 ms on it. That is 20,000 compat-corpus events of 718 bytes on average, measured on one AMD EPYC 7302 core with the bench profile. `cargo bench --bench detect` re-derives it.
 
 Run it on the receiver's `_raw` capture where you can. The receiver splits each line with `syslog_loose`, and a marker that straddled the split (`Pleasant Password Server:`, an `amp:` tag) is gone from the parsed fields. On the compat corpus the detector names 8,243 of 8,885 events of detectable sources from the raw line and 8,004 from the parsed fields.
 
@@ -84,6 +84,8 @@ An event whose transform returns an error, or that will not serialise, is droppe
 The `--config` file is a layer of scalo's cascade, so `scaling`, `self_regulation`, `logger` and the other sections scalo reads for itself apply when written in it. The DOUBLE-underscore env form overrides them, for example `DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`. The effective scaling values are logged once at startup, with whether they came from the cascade or the default.
 
 `SCALO_SECTIONS` in `src/config/loader.rs` is the full list, and the unread-key warning skips it. One of them does nothing here: `batch_processing` sizes scalo's own batch engine, which the service loop does not run. Its receives take their record cap from `source.batch_size` and their byte cap from `source.max_batch_bytes`. scalo still refuses to start on a `batch_processing` section that does not parse. Every other key no field and no scalo section reads gets one warning at startup. `geoip` is not on the list: the service declares that section itself and hands it to scalo. KEDA replica scaling is separate: it is driven by the chart's `keda.*` values and the `scaling_pressure` gauge.
+
+The contract's ScaledObject scales on CPU alone (80%, 1 to 10 replicas). In a DFE deployment, dfe-infra's values set the CPU target to 70% in every profile. The single, scale and mesh profiles add the scaling-pressure trigger (target 70, read through dfe-keda-shim), and slim runs on CPU alone. The engine's [KEDA scaling page](https://github.com/hyperi-io/dfe-engine/blob/main/docs/deployment/keda-scaling.md) covers the triggers for every app.
 
 ## The metrics listener is scalo's, not a config field
 

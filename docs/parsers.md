@@ -10,8 +10,9 @@ transforms use, and how far the Painless matchers reach. The code map around it 
 ## Three layers over grok and regex
 
 Three-layer strategy for replacing grok/regex with native Rust, implemented in `dfe-parse`.
-Layer 1 is WIRED, for the two whole-pattern forms `grok_cache::native_form` recognises;
-everything else still falls back to the compiled regex the grok expands to. The dispatch table
+Layer 1 is WIRED, for the three whole-pattern forms `grok_cache::native_form` recognises;
+everything else still falls back to the compiled regex the grok expands to. Layers 2 and 3
+exist in `dfe-parse`, but nothing outside that crate calls them yet. The dispatch table
 below is the current state, and widening it is the gap this architecture exists to close.
 
 ```mermaid
@@ -20,8 +21,8 @@ flowchart TD
     expand --> analyse{Analyse each<br/>capture group}
 
     analyse -->|All replaceable| l1[Layer 1: Native Parsers<br/>parse_ipv4, parse_int, etc.<br/><b>10-20x faster</b>]
-    analyse -->|Some replaceable| l2[Layer 2: Composite<br/>Chain L1 parsers +<br/>literal separators<br/><b>10-15x faster</b>]
-    analyse -->|Irreducibly complex| l3[Layer 3: DFA Fallback<br/>regex-automata pre-compiled<br/><b>2-5x faster</b>]
+    analyse -->|Some replaceable| l2[Layer 2: Composite<br/>Chain L1 parsers +<br/>literal separators<br/><b>not called yet</b>]
+    analyse -->|Irreducibly complex| l3[Layer 3: DFA Fallback<br/>regex-automata pre-compiled<br/><b>not called yet</b>]
 
     l1 --> output[Structured fields]
     l2 --> output
@@ -76,9 +77,7 @@ newline scan. It covers 202 call sites over 37 distinct patterns, 4.7% of the
 `cached_grok_mapped!`).
 
 Those are DERIVED, not typed: re-count them from the generated tree rather than
-editing them. The previous pair -- 194 sites, 10.2% of 1,906 -- was measured before the
-tree was regenerated whole, and the share fell because the denominator more
-than doubled, not because the native form lost ground.
+editing them.
 
 `^%{DATA:f}$` is deliberately excluded despite reading the same: `%{DATA}` is
 the lazy `.*?`, and on a `\r\n` line ending greedy keeps the `\r` in the capture
@@ -101,7 +100,7 @@ The return tuple contains `(remaining_input, parsed_value)`, following winnow/no
 
 ## Layer 2: composite parser builder (`composite.rs`)
 
-Chains Layer 1 parsers with literal separators for full grok-equivalent patterns:
+Built in `dfe-parse` and not yet called by the transforms. Chains Layer 1 parsers with literal separators for full grok-equivalent patterns:
 
 ```rust
 // Grok: %{IPORHOST:source_ip}:%{INT:source_port} -> %{IPORHOST:dest_ip}:%{INT:dest_port}
@@ -121,7 +120,7 @@ let parser = CompositeParser::builder()
 
 ## Layer 3: pre-compiled DFA fallback (`dfa.rs`)
 
-For patterns that can't be decomposed into Layer 1/2:
+Built in `dfe-parse` and not yet called by the transforms. For patterns that can't be decomposed into Layer 1/2:
 
 - Compile regex to DFA at build time via `regex-automata`
 - Serialise DFA bytes, load at runtime with zero compilation cost
