@@ -181,7 +181,7 @@ sources exercise it.
 | `fingerprint` | Done | O365, M365 | `fingerprint_default`: SHA-1, base64, NUL before each value. `salt` and `method` are refused, so the default is the only path. |
 | `pipeline` (nested) | Done | most multi-pipeline packages -- derive with `rg -l "Begin nested pipeline"` | Inlined into the caller, not a call |
 
-Not implemented (not used by any vendored pipeline): bytes, cef, date_index_name,
+Not implemented (not used by any transform's pipeline): bytes, cef, date_index_name,
 enrich, geo_grid, html_strip, inference, redact, reroute, set_security_user.
 The generator ERRORS on one rather than skipping it, so a package that starts
 using one fails to onboard and says which -- that is how `join`, `sort`,
@@ -195,28 +195,24 @@ A script the runtime cannot execute is skipped rather than failing the event, so
 to be counted or they are indistinguishable from a script that did nothing. `painless_exec`
 lives in `crates/dfe-painless/src/plan.rs` and is re-exported through
 `crates/dfe-runtime/src/codegen_api.rs` for the generated call sites. It resolves a
-hand-transcribed runner from `crates/dfe-painless/src/bespoke/` first, then the params patterns
+hand-written runner from `crates/dfe-painless/src/bespoke/` first, then the params patterns
 in `params.rs`, then the `known_patterns` ladder in `common.rs`, and records the outcome
 through `crates/dfe-painless/src/stats.rs`.
 
 **Two measurements, and only the second is honest about reach.**
 
-`crates/dfe-transforms/tests/painless_coverage.rs` drives the committed fixtures and holds a
-floor of 100%, none skipped. That floor is real but its driver is narrow -- a few dozen fixture
-files against the compat corpus's several hundred data streams -- so it says the fixtures are
-fully covered, not that the runtime is.
+`crates/dfe-transforms/tests/painless_coverage.rs` drives a few dozen fixture files and holds a
+floor of 100%, none skipped. That floor is real but its driver is narrow, so it says those
+fixtures are fully covered, not that the runtime is.
 
-Running the same counters over the compat corpus is what says that. Both figures are run
+Running the same counters over every confirmed fixture, in `tests/compat_corpus.rs`, is what says
+that. Both figures are run
 outputs rather than constants, so derive them rather than quoting a number from here: the
-corpus run prints handled, skipped and distinct-script counts, `never_ran` is ratcheted in
-`tests/compat-baseline.json`, and `DFE_PAINLESS_UNHANDLED=<path>` on the corpus test writes the
-per-script detail.
+corpus run prints handled, skipped and distinct-script counts, and `never_ran` is ratcheted in
+`tests/compat-baseline.json`.
 
 The gap between the two is the point. A pattern can MATCH a script statically and then decline at
-run time, which reads as covered from everywhere except that dump - so
-`scripts/pattern_reach.py` joins it against the static census
-(`DFE_BINDING_DUMP=<path>` on `painless_binding`) to name the patterns that claim a script and
-never apply it.
+run time, which reads as covered from everywhere except that dump.
 
 ---
 

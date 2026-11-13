@@ -13,7 +13,7 @@
 #
 # Keys, per source:
 #
-#   package      Integration package directory in elastic/integrations.
+#   package      Integration package directory.
 #   data_stream  Data stream directory within that package.
 #   pipelines    Directory under the vendored pipelines tree holding the copy.
 #   fixtures     Directory under tests/fixtures/.

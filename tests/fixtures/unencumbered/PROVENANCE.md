@@ -4,14 +4,11 @@ Vendor log samples for the sources this service transforms, taken from projects
 whose licences permit redistribution. Nothing here comes from Elastic.
 
 These are INPUTS ONLY. There is no expected output beside them, because the only
-authority on what a source should produce is Elastic's own engine --
-`scripts/compat.py` runs these through it and writes the confirmed documents to
-`testdata/compat/`, which is not committed. See [docs/compat.md](../../../docs/compat.md).
+authority on what a source should produce is Elastic's own engine. See
+[docs/compat.md](../../../docs/compat.md).
 
 Three fortinet files are truncated to 5,000 lines here; the rest are copied whole
 from the upstreams below. `o365/botsv3-o365audit.log` is the BOTS v3 records again, each nested under `o365audit` the way the filebeat o365 input delivers it.
-
-Elastic's own pipeline-test fixtures are Elastic License 2.0, so they live in `dfe-transform-elastic-dev` and never here.
 
 ## Licences and attribution
 

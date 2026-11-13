@@ -198,7 +198,7 @@ the same gates CI does, and the rest answer in seconds:
 # The same gates CI runs, before pushing.
 hyperi-ci check
 
-# One source against the corpus, ~6s once built. The name is a corpus directory
+# One source against the corpus, ~6s once built. The name is a package
 # (okta, cisco_ios, panw) and must match exactly. A filtered run SKIPS both
 # ratchets, so it tells you about that source and nothing else.
 DFE_COMPAT_ONLY=okta cargo test -p dfe-transforms --test compat_corpus
@@ -215,9 +215,9 @@ Two traps worth knowing before you burn a run on them:
 
 - **Never set `CARGO_BUILD_JOBS` by hand.** A hand-set value beats the project's
   own pinning and any build governor on the host.
-- **The compat corpus is gitignored and its absence PASSES.** A run in a git
-  worktree measures nothing and still reports success, so pass
-  `DFE_COMPAT_CORPUS=<main checkout>/testdata/compat` there.
+- **The compat corpus is committed.** Every fixture's confirmed documents sit
+  beside it under `tests/fixtures/`, so a worktree scores the same corpus as
+  the main checkout, and a tree with none fails.
 
 ## Working in this repo
 

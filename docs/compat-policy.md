@@ -8,59 +8,28 @@ means in the first place is [parity.md](parity.md).
 ## The ratchet
 
 `tests/compat-baseline.json` is the ratchet the corpus test asserts, and the
-test prints the exact line for every source that improved.
-`scripts/raise_baseline.py` applies them:
-
-```bash
-cargo test -p dfe-transforms --test compat_corpus -- --nocapture > /tmp/run.txt
-python3 scripts/raise_baseline.py /tmp/run.txt
-```
-
-It REFUSES any line that would lower a score. A fall needs a stated reason and
-is never mechanical.
+test prints the exact line for every source that improved. A fall needs a
+stated reason and is never mechanical.
 
 ## The ratchet refuses to be skipped quietly
 
-The baseline is asserted only when the corpus on disk was captured at the
-`integrations_sha` and engine version the baseline names. A score against
+The baseline is asserted only when the fixtures' confirmed documents name the
+`pipelines_commit` and engine version the baseline names. A score against
 different pipelines is a different measurement, so ratcheting one against the
-other would fail for the wrong reason.
-
-Until 2026-09-03 that mismatch PRINTED and returned, and the run still exited
-0. Regenerate the corpus at a new sha, forget to update the baseline, and
-parity was unenforced with no signal, the message lost among thousands of
-per-fixture lines. It now FAILS instead, naming the two shas.
+other would fail for the wrong reason, and the test FAILS rather than print.
 
 `DFE_COMPAT_ALLOW_UNRATCHETED=1` is the acknowledgement, for the one
-legitimate case: a regeneration in progress, where the corpus has moved and
-the baseline has not caught up yet. It leaves parity unenforced for that run,
-which is why it has to be typed.
-
-A corpus that is ABSENT is a different thing and still skips silently -- the
-corpus is gitignored, so a fresh clone has none.
+legitimate case: the confirmed documents have moved and the baseline has not
+caught up yet. It leaves parity unenforced for that run, which is why it has
+to be typed.
 
 ## The second ratchet: patterns that never apply
 
 `never_ran` in `tests/compat-baseline.json` holds the count of scripts that
-bound a pattern and never once ran it. Read the number there rather than here:
-a figure restated in prose is stale the next time the ratchet moves.
-
-This is the class the work in early September kept finding: a ladder arm with a
-bare `contains()` trigger claims a script its runner then declines on every
-event. The static census counts it as covered and the Painless coverage floor
-reads 100%, because both measure whether a pattern MATCHED. Only running the
-corpus shows whether it applied.
-
-It is not a defect count. A script can legitimately never run because no event
-in the corpus carries its source field, so read it with
-`scripts/pattern_reach.py`, which joins the reach data to call sites, and never
-on its own.
-
-`DFE_PAINLESS_UNHANDLED=<path>` writes the per-script catalogue. The catalogue
-is now on for every run: its write lock is taken once per script EXECUTION,
-about 70,500 times over the whole corpus, and the run measured 18.6s against
-17.7-19.8s with it off. [Choosing which unclaimed script to work
-next](compat.md#choosing-which-unclaimed-script-to-work-next) is what to do with it.
+bound a pattern and never once ran it. A pattern can MATCH a script and decline
+every event, so only running the corpus shows whether it applied. It is not a
+defect count: a script can legitimately never run because no event carries its
+source field.
 
 ## The ratchet does not gate EXTRA fields
 
@@ -120,9 +89,9 @@ about the field.
 The two readers differ. `crates/dfe-runtime/src/testutil/policy.rs` honours
 `sources` and chains the four rule sections into ONE skip set, keeping no column
 breakdown -- a skipped path is simply not compared, whichever section it came
-from. `scripts/compat.py` keeps them apart to build its audit columns and does
-not read `sources` yet, so every rule applies globally, the wider reading of the
-two. And a comparison that does not know its source cannot honour scoping, so
+from. The audit tool that confirms the documents keeps them apart to build its
+columns and does not read `sources` yet, so every rule applies globally there,
+the wider reading of the two. And a comparison that does not know its source cannot honour scoping, so
 every scoped rule applies to it, which is how the committed-fixture tests run.
 
 ## The audit's four columns
@@ -190,8 +159,8 @@ which means Elasticsearch failed a processor and its `on_failure` left
 `event.kind` as `event`. That is why cisco_nexus needs no entry in this
 harness despite 27 unparseable timestamps -- all 27 set `pipeline_error` and
 the source scores 45/45. Its entries in `compare-policy.yaml` still do work
-for `scripts/compat.py`, which applies the rules globally.
+for the audit tool, which applies the rules globally.
 
 **Read the scorer before concluding an Elasticsearch failure costs anything.**
-A scan of `testdata/` cannot see this gate, and sizing a prize off the captures
+A scan of the confirmed documents cannot see this gate, and sizing a prize off the captures
 alone over-counts it by roughly six times.
