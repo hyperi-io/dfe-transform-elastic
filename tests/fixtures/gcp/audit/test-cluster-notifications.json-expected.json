@@ -1,0 +1,80 @@
+{
+  "expected": [
+    {
+      "cloud": {
+        "project": {
+          "id": "elastic-test"
+        },
+        "provider": "gcp"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Node pool projects/elastic-test/locations/us-central1-a/clusters/test-qa/nodePools/test-custom is upgrading to version 1.33.5-gke.2326000.",
+        "outcome": "unknown"
+      },
+      "gcp": {
+        "audit": {
+          "notification": "Node pool projects/elastic-test/locations/us-central1-a/clusters/test-qa/nodePools/test-custom is upgrading to version 1.33.5-gke.2326000."
+        }
+      },
+      "labels": {
+        "cluster_location": "us-central1-a",
+        "cluster_name": "test-qa",
+        "payload": {
+          "currentVersion": "1.33.5-gke.2228001",
+          "operation": "operation-1234567890",
+          "resource": "projects/elastic-test/locations/us-central1-a/clusters/test-qa/nodePools/test-custom",
+          "resourceType": "NODE_POOL",
+          "targetVersion": "1.33.5-gke.2326000"
+        },
+        "project_id": "elastic-test",
+        "type_url": "type.googleapis.com/google.container.v1beta1.UpgradeEvent"
+      },
+      "orchestrator": {
+        "cluster": {
+          "name": "test-qa"
+        },
+        "resource": {
+          "name": "projects/elastic-test/locations/us-central1-a/clusters/test-qa/nodePools/test-custom",
+          "type": "NODE_POOL"
+        },
+        "type": "kubernetes"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "labels": {
+        "cluster_location": "us-central1-a",
+        "cluster_name": "test-qa",
+        "payload": "{\"resourceType\":\"NODE_POOL\",\"operation\":\"operation-1234567890\",\"currentVersion\":\"1.33.5-gke.2228001\",\"targetVersion\":\"1.33.5-gke.2326000\",\"resource\":\"projects/elastic-test/locations/us-central1-a/clusters/test-qa/nodePools/test-custom\"}",
+        "project_id": "elastic-test",
+        "type_url": "type.googleapis.com/google.container.v1beta1.UpgradeEvent"
+      },
+      "message": "Node pool projects/elastic-test/locations/us-central1-a/clusters/test-qa/nodePools/test-custom is upgrading to version 1.33.5-gke.2326000.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-gcp-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "gcp",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

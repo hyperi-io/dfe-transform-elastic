@@ -1,0 +1,10 @@
+{ "message": "<134>1 1647479278.997155282 MX100 ip_flow_start src=10.66.136.167 dst=192.0.2.170 protocol=tcp sport=34294 dport=80 translated_src_ip=203.0.113.61 translated_port=34294" }
+{ "message": "<134>1 1647479278.995279215 MX100 ip_flow_start src=10.66.136.167 dst=198.51.100.111 protocol=udp sport=45061 dport=53 translated_src_ip=203.0.113.61 translated_port=45061" }
+{ "message": "<134>1 1647479278.974067126 MX100 ip_flow_start src=10.66.136.167 dst=198.51.100.111 protocol=udp sport=37401 dport=53 translated_src_ip=203.0.113.61 translated_port=37401" }
+{ "message": "<134>1 1647479278.911594876 MX84 ip_flow_start src=10.248.140.67 dst=198.51.100.144 protocol=tcp sport=61272 dport=443 translated_src_ip=192.0.2.139 translated_port=61272" }
+{ "message": "<134>1 1647479325.891451682 MX84 ip_flow_end src=10.166.157.206 dst=10.26.137.145 protocol=udp sport=7421 dport=53 translated_dst_ip=203.0.113.248 translated_port=53" }
+{ "message": "<134>1 1647479325.842384731 MX84 ip_flow_end src=10.207.111.141 dst=198.51.100.57 protocol=udp sport=38422 dport=443 translated_src_ip=192.0.2.139 translated_port=38422" }
+{ "message": "<134>1 1647479325.842377481 MX84 ip_flow_end src=10.164.40.152 dst=10.26.137.145 protocol=udp sport=29534 dport=53 translated_dst_ip=203.0.113.248 translated_port=53" }
+{ "message": "<134>1 1647479325.755292025 MX100 ip_flow_end src=10.66.136.167 dst=198.51.100.211 protocol=tcp sport=36498 dport=80 translated_src_ip=203.0.113.61 translated_port=36498" }
+{ "message": "<134>1 1647479325.755292025 MX100 ip_flow_start src=10.66.136.167 dst=192.0.2.170 protocol=icmp translated_src_ip=203.0.113.61" }
+{ "message": "<134>1 1647479325.755292025 MX100 ip_flow_end src=10.164.40.152 dst=10.26.137.145 protocol=icmp translated_dst_ip=203.0.113.248" }

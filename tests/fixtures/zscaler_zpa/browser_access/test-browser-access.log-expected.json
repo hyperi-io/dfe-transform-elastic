@@ -1,0 +1,149 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-07-03T05:12:25.000Z",
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 60006
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"LogTimestamp\":\"Wed Jul 3 05:12:25 2047\",\"ConnectionID\":\"\",\"Exporter\":\"unset\",\"TimestampRequestReceiveStart\":\"2047-07-03T05:12:25.723Z\",\"TimestampRequestReceiveHeaderFinish\":\"2047-07-03T05:12:25.723Z\",\"TimestampRequestReceiveFinish\":\"2047-07-03T05:12:25.723Z\",\"TimestampRequestTransmitStart\":\"2047-07-03T05:12:25.790Z\",\"TimestampRequestTransmitFinish\":\"2047-07-03T05:12:25.790Z\",\"TimestampResponseReceiveStart\":\"2047-07-03T05:12:25.791Z\",\"TimestampResponseReceiveFinish\":\"2047-07-03T05:12:25.791Z\",\"TimestampResponseTransmitStart\":\"2047-07-03T05:12:25.791Z\",\"TimestampResponseTransmitFinish\":\"2047-07-03T05:12:25.791Z\",\"TotalTimeRequestReceive\":127,\"TotalTimeRequestTransmit\":21,\"TotalTimeResponseReceive\":73,\"TotalTimeResponseTransmit\":13,\"TotalTimeConnectionSetup\":66995,\"TotalTimeServerResponse\":1349,\"Method\":\"GET\",\"Protocol\":\"HTTPS\",\"Host\":\"portal.acve.pacmx.net\",\"URL\":\"/media/Regular.woff\",\"UserAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15\",\"XFF\":\"\",\"NameID\":\"admin@pacmx.net\",\"StatusCode\":304,\"RequestSize\":615,\"ResponseSize\":331,\"ApplicationPort\":443,\"ClientPublicIp\":\"198.51.100.211\",\"ClientPublicPort\":60006,\"ClientPrivateIp\":\"198.51.100.74\",\"Customer\":\"ANZ Team/zdemo in beta\",\"ConnectionStatus\":\"\",\"ConnectionReason\":\"\"}",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 615
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 331
+          },
+          "status_code": 304
+        }
+      },
+      "organization": {
+        "name": "ANZ Team/zdemo in beta"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "198.51.100.74"
+        ],
+        "user": [
+          "admin",
+          "admin@pacmx.net"
+        ]
+      },
+      "server": {
+        "address": "portal.acve.pacmx.net",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "portal.acve.pacmx.net",
+        "extension": "woff",
+        "original": "https://portal.acve.pacmx.net/media/regular.woff",
+        "path": "/media/regular.woff",
+        "scheme": "https"
+      },
+      "user": {
+        "domain": "pacmx.net",
+        "email": "admin@pacmx.net",
+        "name": "admin"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.14.5",
+          "name": "Mac OS X",
+          "version": "10.14.5"
+        },
+        "version": "12.1.1"
+      },
+      "zscaler_zpa": {
+        "browser_access": {
+          "client_private_ip": "198.51.100.74",
+          "exporter": "unset",
+          "timestamp": {
+            "request": {
+              "receive": {
+                "finish": "2047-07-03T05:12:25.723Z",
+                "header_finish": "2047-07-03T05:12:25.723Z",
+                "start": "2047-07-03T05:12:25.723Z"
+              },
+              "transmit": {
+                "finish": "2047-07-03T05:12:25.790Z",
+                "start": "2047-07-03T05:12:25.790Z"
+              }
+            },
+            "response": {
+              "receive": {
+                "finish": "2047-07-03T05:12:25.791Z",
+                "start": "2047-07-03T05:12:25.791Z"
+              },
+              "transmit": {
+                "finish": "2047-07-03T05:12:25.791Z",
+                "start": "2047-07-03T05:12:25.791Z"
+              }
+            }
+          },
+          "total_time": {
+            "connection": {
+              "setup": 66995
+            },
+            "request": {
+              "receive": 127,
+              "transmit": 21
+            },
+            "response": {
+              "receive": 73,
+              "transmit": 13
+            },
+            "server": {
+              "response": 1349
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"LogTimestamp\":\"Wed Jul 3 05:12:25 2047\",\"ConnectionID\":\"\",\"Exporter\":\"unset\",\"TimestampRequestReceiveStart\":\"2047-07-03T05:12:25.723Z\",\"TimestampRequestReceiveHeaderFinish\":\"2047-07-03T05:12:25.723Z\",\"TimestampRequestReceiveFinish\":\"2047-07-03T05:12:25.723Z\",\"TimestampRequestTransmitStart\":\"2047-07-03T05:12:25.790Z\",\"TimestampRequestTransmitFinish\":\"2047-07-03T05:12:25.790Z\",\"TimestampResponseReceiveStart\":\"2047-07-03T05:12:25.791Z\",\"TimestampResponseReceiveFinish\":\"2047-07-03T05:12:25.791Z\",\"TimestampResponseTransmitStart\":\"2047-07-03T05:12:25.791Z\",\"TimestampResponseTransmitFinish\":\"2047-07-03T05:12:25.791Z\",\"TotalTimeRequestReceive\":127,\"TotalTimeRequestTransmit\":21,\"TotalTimeResponseReceive\":73,\"TotalTimeResponseTransmit\":13,\"TotalTimeConnectionSetup\":66995,\"TotalTimeServerResponse\":1349,\"Method\":\"GET\",\"Protocol\":\"HTTPS\",\"Host\":\"portal.acve.pacmx.net\",\"URL\":\"/media/Regular.woff\",\"UserAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15\",\"XFF\":\"\",\"NameID\":\"admin@pacmx.net\",\"StatusCode\":304,\"RequestSize\":615,\"ResponseSize\":331,\"ApplicationPort\":443,\"ClientPublicIp\":\"198.51.100.211\",\"ClientPublicPort\":60006,\"ClientPrivateIp\":\"198.51.100.74\",\"Customer\":\"ANZ Team/zdemo in beta\",\"ConnectionStatus\":\"\",\"ConnectionReason\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "browser_access",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zscaler_zpa-browser_access-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zscaler_zpa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

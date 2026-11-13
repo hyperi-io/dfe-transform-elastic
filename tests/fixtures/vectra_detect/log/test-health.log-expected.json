@@ -1,0 +1,94 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-14T09:38:10.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "vectra_json_health -: {\"type\": \"heartbeat_check\", \"source_ip\": \"127.0.0.1\", \"headend_addr\": \"203.0.113.248\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"Device heartbeat success on A21000000000248\", \"vectra_timestamp\": \"2559980290\"}",
+        "outcome": "success"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "203.0.113.248",
+          "127.0.0.1"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "vectra_detect": {
+        "log": {
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_health",
+          "headend_addr": "203.0.113.248",
+          "message": "Device heartbeat success on A21000000000248",
+          "result": "success",
+          "source": {
+            "ip": "127.0.0.1"
+          },
+          "type": "heartbeat_check",
+          "vectra_timestamp": "2051-02-14T09:38:10.000Z",
+          "version": "7.4"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_health -: {\"type\": \"heartbeat_check\", \"source_ip\": \"127.0.0.1\", \"headend_addr\": \"203.0.113.248\", \"dvchost\": \"p43-5-20.ma.tvec\", \"version\": \"7.4\", \"result\": \"success\", \"message\": \"Device heartbeat success on A21000000000248\", \"vectra_timestamp\": \"2559980290\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-vectra_detect-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [
+      "vectra_detect.log.host.groups.id",
+      "vectra_detect.log.host.groups.triage_filters.id"
+    ],
+    "package": "vectra_detect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

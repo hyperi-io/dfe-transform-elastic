@@ -1,0 +1,182 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-06-13T06:13:16.000Z",
+      "agent": {
+        "ephemeral_id": "3d8d5dec-bef5-47cc-983e-372cdcc64cac",
+        "id": "8a74d370-da49-4101-8c2a-3f0cc6e818d2",
+        "name": "docker-fleet-agent",
+        "type": "filebeat",
+        "version": "8.18.0"
+      },
+      "data_stream": {
+        "dataset": "infoblox_threat_defense.event",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "elastic_agent": {
+        "id": "8a74d370-da49-4101-8c2a-3f0cc6e818d2",
+        "snapshot": false,
+        "version": "8.18.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "code": "BloxOne-Service-Log",
+        "created": "2053-06-13T06:13:16.000Z",
+        "dataset": "infoblox_threat_defense.event",
+        "id": "infra/service/nx6s5enedoc6xleevm3dpfxga56un5tb",
+        "ingested": "2053-06-13T06:13:39Z",
+        "kind": "event",
+        "original": "CEF:0|Infoblox|Data Connector|Service Log|BloxOne-Service-Log|1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out|1|InfobloxLogName=1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out msg=\"remove /infoblox/data/out/siem/bloxone/cef/25366/dns_1749786141_25366_2091.log: no such file or directory\" InfobloxPoolId=infra/pool/2leijkk6c7vr3mrgwt7vngqg6lbgq7hr InfobloxServiceId=infra/service/nx6s5enedoc6xleevm3dpfxga56un5tb",
+        "severity": 21
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "created": "2053-06-13T06:13:16.000Z",
+          "device": {
+            "event_class_id": "BloxOne-Service-Log",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "Service Log"
+          },
+          "infoblox": {
+            "log_name": "1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out",
+            "pool_id": "infra/pool/2leijkk6c7vr3mrgwt7vngqg6lbgq7hr",
+            "service_id": "infra/service/nx6s5enedoc6xleevm3dpfxga56un5tb"
+          },
+          "message": "remove /infoblox/data/out/siem/bloxone/cef/25366/dns_1749786141_25366_2091.log: no such file or directory",
+          "name": "1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out",
+          "severity": 1,
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "SERVICE-LOG",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:32406"
+        }
+      },
+      "message": "remove /infoblox/data/out/siem/bloxone/cef/25366/dns_1749786141_25366_2091.log: no such file or directory",
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "Service Log"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-06-13T06:13:16.000Z",
+      "agent": {
+        "ephemeral_id": "3d8d5dec-bef5-47cc-983e-372cdcc64cac",
+        "id": "8a74d370-da49-4101-8c2a-3f0cc6e818d2",
+        "name": "docker-fleet-agent",
+        "type": "filebeat",
+        "version": "8.18.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "BloxOne-Service-Log",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "Service Log"
+        },
+        "extensions": {
+          "InfobloxLogName": "1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out",
+          "InfobloxPoolId": "infra/pool/2leijkk6c7vr3mrgwt7vngqg6lbgq7hr",
+          "InfobloxServiceId": "infra/service/nx6s5enedoc6xleevm3dpfxga56un5tb",
+          "message": "\"remove /infoblox/data/out/siem/bloxone/cef/25366/dns_1749786141_25366_2091.log: no such file or directory\""
+        },
+        "name": "1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out",
+        "severity": "1",
+        "version": "0"
+      },
+      "data_stream": {
+        "dataset": "infoblox_threat_defense.event",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "8a74d370-da49-4101-8c2a-3f0cc6e818d2",
+        "snapshot": false,
+        "version": "8.18.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "code": "BloxOne-Service-Log",
+        "dataset": "infoblox_threat_defense.event",
+        "ingested": "2053-06-13T06:13:39Z",
+        "original": "CEF:0|Infoblox|Data Connector|Service Log|BloxOne-Service-Log|1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out|1|InfobloxLogName=1b7cd48f3dc3b59c74b29c9a70206cff/cdc_siem_out msg=\"remove /infoblox/data/out/siem/bloxone/cef/25366/dns_1749786141_25366_2091.log: no such file or directory\" InfobloxPoolId=infra/pool/2leijkk6c7vr3mrgwt7vngqg6lbgq7hr InfobloxServiceId=infra/service/nx6s5enedoc6xleevm3dpfxga56un5tb",
+        "severity": 1
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "198.51.100.211:32406"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "SERVICE-LOG",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "\"remove /infoblox/data/out/siem/bloxone/cef/25366/dns_1749786141_25366_2091.log: no such file or directory\"",
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "Service Log"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-infoblox_threat_defense-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "infoblox_threat_defense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,3012 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-03-24T11:00:49.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.54.252.177",
+        "port": "0",
+        "user": {
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/03/24 11:00:49",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/03/24 11:00:49,013101001305,USERID,login,2305,2049/03/24 11:00:49,vsys1,10.54.252.177,dwofop\\wzzv.ygjxs,,0,1,10800,0,0,<data-source-collected>,<data-source-type>,1252774,0x0,0,0,0,0,,BV79,1,,2049/03/24 11:00:49,1,0x80000000,wzzv.ygjxs",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "BV79",
+        "product": "PAN-OS",
+        "serial_number": "013101001305",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "<data-source-collected>",
+          "datasourcetype": "<data-source-type>",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-03-24T11:00:49.000Z",
+          "factorno": 1,
+          "generated_time": "2049-03-24T11:00:49.000Z",
+          "received_time": "2049-03-24T11:00:49.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1252774",
+          "sub_type": "login",
+          "timeout": 10800,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "BV79"
+        ],
+        "ip": [
+          "10.54.252.177"
+        ],
+        "user": [
+          "wzzv.ygjxs"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.54.252.177",
+        "ip": "10.54.252.177",
+        "port": 0,
+        "user": {
+          "domain": "dwofop",
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dwofop",
+        "name": "wzzv.ygjxs"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-03-24T10:59:45.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.249.63.35",
+        "port": "0",
+        "user": {
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/03/24 10:59:45",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/03/24 10:59:45,013101001305,USERID,logout,2305,2049/03/24 10:59:45,vsys1,10.249.63.35,dwofop\\wzzv.ygjxs,,0,1,0,0,0,<data-source-collected>,<data-source-type>,1252765,0x0,0,0,0,0,,BV79,1,,2049/03/24 10:59:45,1,0x80000000,wzzv.ygjxs",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 240
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "BV79",
+        "product": "PAN-OS",
+        "serial_number": "013101001305",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "<data-source-collected>",
+          "datasourcetype": "<data-source-type>",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-03-24T10:59:45.000Z",
+          "factorno": 1,
+          "generated_time": "2049-03-24T10:59:45.000Z",
+          "received_time": "2049-03-24T10:59:45.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1252765",
+          "sub_type": "logout",
+          "timeout": 0,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "BV79"
+        ],
+        "ip": [
+          "10.249.63.35"
+        ],
+        "user": [
+          "wzzv.ygjxs"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.249.63.35",
+        "ip": "10.249.63.35",
+        "port": 0,
+        "user": {
+          "domain": "dwofop",
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dwofop",
+        "name": "wzzv.ygjxs"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2041-03-28T12:53:05.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,1,0x0",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 476
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "generated_time": "2041-03-28T12:53:05.000Z",
+          "received_time": "2041-03-28T12:53:05.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1",
+          "sub_type": "login",
+          "timeout": 2700,
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "related": {
+        "ip": [
+          "172.22.104.9"
+        ],
+        "user": [
+          "administrator"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": 0,
+        "user": {
+          "domain": "khemw4600z5",
+          "name": "administrator"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "khemw4600z5",
+        "name": "administrator"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2041-03-28T12:53:05.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,2,0x0",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 642
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "generated_time": "2041-03-28T12:53:05.000Z",
+          "received_time": "2041-03-28T12:53:05.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "2",
+          "sub_type": "login",
+          "timeout": 2700,
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "related": {
+        "ip": [
+          "172.22.104.9"
+        ],
+        "user": [
+          "administrator"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": 0,
+        "user": {
+          "domain": "khemw4600z5",
+          "name": "administrator"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "khemw4600z5",
+        "name": "administrator"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2041-03-28T12:53:05.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,3,0x0",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 808
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "generated_time": "2041-03-28T12:53:05.000Z",
+          "received_time": "2041-03-28T12:53:05.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "3",
+          "sub_type": "login",
+          "timeout": 2700,
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "related": {
+        "ip": [
+          "172.22.104.9"
+        ],
+        "user": [
+          "administrator"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": 0,
+        "user": {
+          "domain": "khemw4600z5",
+          "name": "administrator"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "khemw4600z5",
+        "name": "administrator"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2041-03-28T12:53:05.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,4,0x0",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 974
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "generated_time": "2041-03-28T12:53:05.000Z",
+          "received_time": "2041-03-28T12:53:05.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "4",
+          "sub_type": "login",
+          "timeout": 2700,
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "related": {
+        "ip": [
+          "172.22.104.9"
+        ],
+        "user": [
+          "administrator"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": 0,
+        "user": {
+          "domain": "khemw4600z5",
+          "name": "administrator"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "khemw4600z5",
+        "name": "administrator"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:52:16.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:52:16",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:52:16,<serial-number>,USERID,login,2305,2049/04/05 14:52:16,vsys1,10.65.196.150,dwofop\\admin,,0,1,10800,0,0,vpn-client,globalprotect,1277996,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:52:16,1,0x80000000,admin",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1140
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:52:16.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:52:16.000Z",
+          "received_time": "2049-04-05T14:52:16.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1277996",
+          "sub_type": "login",
+          "timeout": 10800,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "domain": "dwofop",
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dwofop",
+        "name": "admin"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:52:33.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:52:33",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:52:33,<serial-number>,USERID,logout,2305,2049/04/05 14:52:33,vsys1,10.65.196.150,dwofop\\admin,,0,1,0,0,0,vpn-client,globalprotect,1277997,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:52:34,1,0x80000000,admin",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1356
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:52:34.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:52:33.000Z",
+          "received_time": "2049-04-05T14:52:33.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1277997",
+          "sub_type": "logout",
+          "timeout": 0,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "domain": "dwofop",
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dwofop",
+        "name": "admin"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:53:10.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:53:10",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:53:10,<serial-number>,USERID,login,2305,2049/04/05 14:53:10,vsys1,10.65.196.150,rlfdknaph\\admin,,0,1,10800,0,0,vpn-client,globalprotect,1277998,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:11,1,0x80000000,admin",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1569
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:53:11.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:53:10.000Z",
+          "received_time": "2049-04-05T14:53:10.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1277998",
+          "sub_type": "login",
+          "timeout": 10800,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "domain": "rlfdknaph",
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "rlfdknaph",
+        "name": "admin"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:53:31.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:53:31",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:53:31,<serial-number>,USERID,login,2305,2049/04/05 14:53:31,vsys1,10.65.196.150,admin,,0,1,10800,0,0,vpn-client,globalprotect,1277999,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:31,1,0x80000000,admin",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1788
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:53:31.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:53:31.000Z",
+          "received_time": "2049-04-05T14:53:31.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1277999",
+          "sub_type": "login",
+          "timeout": 10800,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:53:31.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "user"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:53:31",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:53:31,<serial-number>,USERID,login,2305,2049/04/05 14:53:31,vsys1,10.65.196.150,user,,0,1,10800,0,0,vpn-client,globalprotect,1278000,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:31,1,0x80000000,user",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1997
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:53:31.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:53:31.000Z",
+          "received_time": "2049-04-05T14:53:31.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1278000",
+          "sub_type": "login",
+          "timeout": 10800,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "user"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "name": "user"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "user"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:53:49.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:53:49",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:53:49,<serial-number>,USERID,login,2305,2049/04/05 14:53:49,vsys1,10.65.196.150,admin,,0,1,10800,0,0,vpn-client,globalprotect,1278001,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:49,1,0x80000000,admin",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2204
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:53:49.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:53:49.000Z",
+          "received_time": "2049-04-05T14:53:49.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1278001",
+          "sub_type": "login",
+          "timeout": 10800,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "admin"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-04-05T14:53:52.000Z",
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logout",
+        "category": [
+          "network",
+          "iam"
+        ],
+        "code": "0",
+        "created": "2049/04/05 14:53:52",
+        "dataset": "panw.panos",
+        "kind": "event",
+        "module": "panw",
+        "original": "1,2049/04/05 14:53:52,<serial-number>,USERID,logout,2305,2049/04/05 14:53:52,vsys1,10.65.196.150,dwofop\\admin,,0,1,0,0,0,vpn-client,globalprotect,1278002,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:52,1,0x80000000,admin",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2413
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action_flags": "0x0",
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "device_group_hierarchy1": "0",
+          "device_group_hierarchy2": "0",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "factorcompletiontime": "2049-04-05T14:53:52.000Z",
+          "factorno": 1,
+          "generated_time": "2049-04-05T14:53:52.000Z",
+          "received_time": "2049-04-05T14:53:52.000Z",
+          "repeat_count": 1,
+          "repeatcnt": "1",
+          "sequence_number": "1278002",
+          "sub_type": "logout",
+          "timeout": 0,
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CGKB-AK"
+        ],
+        "ip": [
+          "10.65.196.150"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": 0,
+        "user": {
+          "domain": "dwofop",
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dwofop",
+        "name": "admin"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/03/24 11:00:49",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "dwofop\\wzzv.ygjxs"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.54.252.177",
+        "port": "0",
+        "user": {
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2049/03/24 11:00:49",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "1,2049/03/24 11:00:49,013101001305,USERID,login,2305,2049/03/24 11:00:49,vsys1,10.54.252.177,dwofop\\wzzv.ygjxs,,0,1,10800,0,0,<data-source-collected>,<data-source-type>,1252774,0x0,0,0,0,0,,BV79,1,,2049/03/24 11:00:49,1,0x80000000,wzzv.ygjxs",
+      "observer": {
+        "hostname": "BV79",
+        "product": "PAN-OS",
+        "serial_number": "013101001305",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "<data-source-collected>",
+          "datasourcetype": "<data-source-type>",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/03/24 11:00:49",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1252774",
+          "sub_type": "login",
+          "timeout": "10800",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.54.252.177",
+        "ip": "10.54.252.177",
+        "port": "0",
+        "user": {
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/03/24 10:59:45",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "dwofop\\wzzv.ygjxs"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.249.63.35",
+        "port": "0",
+        "user": {
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "logout",
+        "code": "0",
+        "created": "2049/03/24 10:59:45",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 240
+      },
+      "message": "1,2049/03/24 10:59:45,013101001305,USERID,logout,2305,2049/03/24 10:59:45,vsys1,10.249.63.35,dwofop\\wzzv.ygjxs,,0,1,0,0,0,<data-source-collected>,<data-source-type>,1252765,0x0,0,0,0,0,,BV79,1,,2049/03/24 10:59:45,1,0x80000000,wzzv.ygjxs",
+      "observer": {
+        "hostname": "BV79",
+        "product": "PAN-OS",
+        "serial_number": "013101001305",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "<data-source-collected>",
+          "datasourcetype": "<data-source-type>",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/03/24 10:59:45",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1252765",
+          "sub_type": "logout",
+          "timeout": "0",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.249.63.35",
+        "ip": "10.249.63.35",
+        "port": "0",
+        "user": {
+          "name": "wzzv.ygjxs"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2041/03/28 12:53:05",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "khemw4600z5\\administrator"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 476
+      },
+      "message": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,1,0x0",
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "repeatcnt": "1",
+          "sequence_number": "1",
+          "sub_type": "login",
+          "timeout": "2700",
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2041/03/28 12:53:05",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "khemw4600z5\\administrator"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 642
+      },
+      "message": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,2,0x0",
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "repeatcnt": "1",
+          "sequence_number": "2",
+          "sub_type": "login",
+          "timeout": "2700",
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2041/03/28 12:53:05",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "khemw4600z5\\administrator"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 808
+      },
+      "message": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,3,0x0",
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "repeatcnt": "1",
+          "sequence_number": "3",
+          "sub_type": "login",
+          "timeout": "2700",
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2041/03/28 12:53:05",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "khemw4600z5\\administrator"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2041/03/28 12:53:05",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 974
+      },
+      "message": "1,2041/03/28 12:53:05,001701000225,USERID,login,12,2041/03/28 12:53:05,vsys1,172.22.104.9,khemw4600z5\\administrator,test,0,1,2700,0,0,active-directory,unknown,4,0x0",
+      "observer": {
+        "product": "PAN-OS",
+        "serial_number": "001701000225",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "active-directory",
+          "datasourcename": "test",
+          "datasourcetype": "unknown",
+          "repeatcnt": "1",
+          "sequence_number": "4",
+          "sub_type": "login",
+          "timeout": "2700",
+          "type": "USERID",
+          "virtual_sys": "vsys1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "172.22.104.9",
+        "ip": "172.22.104.9",
+        "port": "0"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:52:16",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "dwofop\\admin"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2049/04/05 14:52:16",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1140
+      },
+      "message": "1,2049/04/05 14:52:16,<serial-number>,USERID,login,2305,2049/04/05 14:52:16,vsys1,10.65.196.150,dwofop\\admin,,0,1,10800,0,0,vpn-client,globalprotect,1277996,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:52:16,1,0x80000000,admin",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:52:16",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1277996",
+          "sub_type": "login",
+          "timeout": "10800",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:52:33",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "dwofop\\admin"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "logout",
+        "code": "0",
+        "created": "2049/04/05 14:52:33",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1356
+      },
+      "message": "1,2049/04/05 14:52:33,<serial-number>,USERID,logout,2305,2049/04/05 14:52:33,vsys1,10.65.196.150,dwofop\\admin,,0,1,0,0,0,vpn-client,globalprotect,1277997,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:52:34,1,0x80000000,admin",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:52:34",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1277997",
+          "sub_type": "logout",
+          "timeout": "0",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:53:10",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "rlfdknaph\\admin"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2049/04/05 14:53:10",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1569
+      },
+      "message": "1,2049/04/05 14:53:10,<serial-number>,USERID,login,2305,2049/04/05 14:53:10,vsys1,10.65.196.150,rlfdknaph\\admin,,0,1,10800,0,0,vpn-client,globalprotect,1277998,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:11,1,0x80000000,admin",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:53:11",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1277998",
+          "sub_type": "login",
+          "timeout": "10800",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:53:31",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "admin"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2049/04/05 14:53:31",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1788
+      },
+      "message": "1,2049/04/05 14:53:31,<serial-number>,USERID,login,2305,2049/04/05 14:53:31,vsys1,10.65.196.150,admin,,0,1,10800,0,0,vpn-client,globalprotect,1277999,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:31,1,0x80000000,admin",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:53:31",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1277999",
+          "sub_type": "login",
+          "timeout": "10800",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:53:31",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "user"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "user"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2049/04/05 14:53:31",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1997
+      },
+      "message": "1,2049/04/05 14:53:31,<serial-number>,USERID,login,2305,2049/04/05 14:53:31,vsys1,10.65.196.150,user,,0,1,10800,0,0,vpn-client,globalprotect,1278000,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:31,1,0x80000000,user",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:53:31",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1278000",
+          "sub_type": "login",
+          "timeout": "10800",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "user"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:53:49",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "admin"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "login",
+        "code": "0",
+        "created": "2049/04/05 14:53:49",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2204
+      },
+      "message": "1,2049/04/05 14:53:49,<serial-number>,USERID,login,2305,2049/04/05 14:53:49,vsys1,10.65.196.150,admin,,0,1,10800,0,0,vpn-client,globalprotect,1278001,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:49,1,0x80000000,admin",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:53:49",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1278001",
+          "sub_type": "login",
+          "timeout": "10800",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T09:22:54.759Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049/04/05 14:53:52",
+        "ietf_header": "1",
+        "internal_zones": [
+          "trust"
+        ],
+        "srcuser": "dwofop\\admin"
+      },
+      "agent": {
+        "ephemeral_id": "b8386c42-923b-4c27-ad1c-d7013a970aae",
+        "id": "b06032dd-7ed8-4fd7-b815-caa2fd6ef9d3",
+        "name": "b2cae08e7992",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "destination": {
+        "port": "0"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "logout",
+        "code": "0",
+        "created": "2049/04/05 14:53:52",
+        "dataset": "panw.panos",
+        "module": "panw",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2413
+      },
+      "message": "1,2049/04/05 14:53:52,<serial-number>,USERID,logout,2305,2049/04/05 14:53:52,vsys1,10.65.196.150,dwofop\\admin,,0,1,0,0,0,vpn-client,globalprotect,1278002,0x0,0,0,0,0,,CGKB-AK,1,,2049/04/05 14:53:52,1,0x80000000,admin",
+      "observer": {
+        "hostname": "CGKB-AK",
+        "product": "PAN-OS",
+        "serial_number": "<serial-number>",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "actionflags": "0x0",
+          "datasource": "vpn-client",
+          "datasourcetype": "globalprotect",
+          "device_group_hierarchy": {
+            "level_1": "0",
+            "level_2": "0",
+            "level_3": "0",
+            "level_4": "0"
+          },
+          "factorcompletiontime": "2049/04/05 14:53:52",
+          "factorno": "1",
+          "repeatcnt": "1",
+          "sequence_number": "1278002",
+          "sub_type": "logout",
+          "timeout": "0",
+          "type": "USERID",
+          "ugflags": "0x80000000",
+          "virtual_sys": "vsys1",
+          "vsys_id": "1"
+        }
+      },
+      "server": {
+        "port": "0"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "10.65.196.150",
+        "ip": "10.65.196.150",
+        "port": "0",
+        "user": {
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "panos",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-panw-panos-default",
+    "event_count": 13,
+    "numeric_keyword_fields": [],
+    "package": "panw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

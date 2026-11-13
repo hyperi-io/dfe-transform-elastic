@@ -1,0 +1,439 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-04-23T09:16:40.645Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "POLICY_OP",
+        "agent_id_status": "verified",
+        "code": "577",
+        "created": "2052-04-23T09:30:53.311Z",
+        "dataset": "microsoft_dnsserver.audit",
+        "ingested": "2052-04-23T09:31:03Z",
+        "kind": "event",
+        "provider": "Microsoft-Windows-DNSServer"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A server level policy BlackholePolicy for Query processing  has been created on server CB8EQEM-835CJ2A with following properties: Processing order:1; Criteria:FQDN=EQ,*.treyresearch.com; Action:Ignore; Condition:And; IsEnabled:True.",
+      "microsoft_dnsserver": {
+        "audit": {
+          "action": "Ignore",
+          "condition": "And",
+          "criteria": "FQDN=EQ,*.treyresearch.com",
+          "is_enabled": "True",
+          "name_server": "CB8EQEM-835CJ2A",
+          "policy": "BlackholePolicy",
+          "processing_order": "1",
+          "type": "Query processing"
+        }
+      },
+      "process": {
+        "pid": 852,
+        "thread": {
+          "id": 7708
+        }
+      },
+      "related": {
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Microsoft-Windows-DNSServer/Audit",
+        "computer_name": "CB8EQEM-835CJ2A",
+        "event_id": "577",
+        "keywords": [
+          "AUDIT_POLICY"
+        ],
+        "opcode": "Info",
+        "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+        "provider_name": "Microsoft-Windows-DNSServer",
+        "record_id": "27",
+        "task": "POLICY_OP",
+        "user": {
+          "domain": "CB8EQEM-835CJ2A",
+          "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+          "name": "Administrator",
+          "type": "User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-04-23T09:32:34.489Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Configuration",
+        "agent_id_status": "verified",
+        "category": [
+          "configuration"
+        ],
+        "code": "540",
+        "created": "2052-04-23T09:32:35.960Z",
+        "dataset": "microsoft_dnsserver.audit",
+        "ingested": "2052-04-23T09:32:46Z",
+        "kind": "event",
+        "provider": "Microsoft-Windows-DNSServer"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "The root hints have been modified.",
+      "process": {
+        "pid": 852,
+        "thread": {
+          "id": 2984
+        }
+      },
+      "related": {
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Microsoft-Windows-DNSServer/Audit",
+        "computer_name": "CB8EQEM-835CJ2A",
+        "event_id": "540",
+        "keywords": [
+          "AUDIT_ROOTHINTS"
+        ],
+        "opcode": "Info",
+        "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+        "provider_name": "Microsoft-Windows-DNSServer",
+        "record_id": "37",
+        "task": "Configuration",
+        "user": {
+          "domain": "CB8EQEM-835CJ2A",
+          "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+          "name": "Administrator",
+          "type": "User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-04-23T09:32:34.487Z",
+      "data_stream": {
+        "dataset": "microsoft_dnsserver.audit",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "dns": {
+        "question": {
+          "name": "B.ZPQR-LERMFRO.NET",
+          "registered_domain": "zpqr-lermfro.net",
+          "top_level_domain": "net",
+          "type": "AAAA"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "CACHE_OP",
+        "agent_id_status": "verified",
+        "code": "536",
+        "created": "2052-04-23T09:32:35.959Z",
+        "dataset": "microsoft_dnsserver.audit",
+        "ingested": "2052-04-23T09:32:46Z",
+        "kind": "event",
+        "provider": "Microsoft-Windows-DNSServer"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "cb8eqem-835cj2a",
+        "id": "6b629328-a601-4f77-8b6f-ea217e4e9873",
+        "ip": [
+          "fe80::dd4a:8121:e72b:6f21",
+          "172.30.18.182"
+        ],
+        "mac": [
+          "44-2E-F5-8A-C0-37"
+        ],
+        "name": "cb8eqem-835cj2a",
+        "os": {
+          "build": "20348.2322",
+          "family": "windows",
+          "kernel": "10.0.20348.2322 (WinBuild.160101.0800)",
+          "name": "Windows Server 2022 Datacenter",
+          "platform": "windows",
+          "type": "windows",
+          "version": "10.0"
+        }
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A record of type 28, QNAME B.ZPQR-LERMFRO.NET. was purged from scope Default in cache.",
+      "microsoft_dnsserver": {
+        "audit": {
+          "question_name": "B.ZPQR-LERMFRO.NET.",
+          "question_type": "AAAA",
+          "scope": "Default"
+        }
+      },
+      "process": {
+        "pid": 852,
+        "thread": {
+          "id": 2984
+        }
+      },
+      "related": {
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Microsoft-Windows-DNSServer/Audit",
+        "computer_name": "CB8EQEM-835CJ2A",
+        "event_id": "536",
+        "keywords": [
+          "AUDIT_CACHE"
+        ],
+        "opcode": "Info",
+        "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+        "provider_name": "Microsoft-Windows-DNSServer",
+        "record_id": "29",
+        "task": "CACHE_OP",
+        "user": {
+          "domain": "CB8EQEM-835CJ2A",
+          "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+          "name": "Administrator",
+          "type": "User"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-04-23T09:16:40.645Z",
+      "event": {
+        "action": "POLICY_OP",
+        "agent_id_status": "verified",
+        "code": "577",
+        "created": "2052-04-23T09:30:53.311Z",
+        "dataset": "microsoft_dnsserver.audit",
+        "ingested": "2052-04-23T09:31:03Z",
+        "kind": "event",
+        "provider": "Microsoft-Windows-DNSServer"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A server level policy BlackholePolicy for Query processing  has been created on server CB8EQEM-835CJ2A with following properties: Processing order:1; Criteria:FQDN=EQ,*.treyresearch.com; Action:Ignore; Condition:And; IsEnabled:True.",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Microsoft-Windows-DNSServer/Audit",
+        "computer_name": "CB8EQEM-835CJ2A",
+        "event_data": {
+          "Action": "Ignore",
+          "Condition": "And",
+          "Criteria": "FQDN=EQ,*.treyresearch.com",
+          "IsEnabled": "True",
+          "Policy": "BlackholePolicy",
+          "ProcessingOrder": "1",
+          "ServerName": "CB8EQEM-835CJ2A",
+          "Type": "Query processing"
+        },
+        "event_id": "577",
+        "keywords": [
+          "AUDIT_POLICY"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 852,
+          "thread": {
+            "id": 7708
+          }
+        },
+        "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+        "provider_name": "Microsoft-Windows-DNSServer",
+        "record_id": 27,
+        "task": "POLICY_OP",
+        "user": {
+          "domain": "CB8EQEM-835CJ2A",
+          "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+          "name": "Administrator",
+          "type": "User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-04-23T09:32:34.489Z",
+      "event": {
+        "action": "Configuration",
+        "agent_id_status": "verified",
+        "code": "540",
+        "created": "2052-04-23T09:32:35.960Z",
+        "dataset": "microsoft_dnsserver.audit",
+        "ingested": "2052-04-23T09:32:46Z",
+        "kind": "event",
+        "provider": "Microsoft-Windows-DNSServer"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "The root hints have been modified.",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Microsoft-Windows-DNSServer/Audit",
+        "computer_name": "CB8EQEM-835CJ2A",
+        "event_id": "540",
+        "keywords": [
+          "AUDIT_ROOTHINTS"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 852,
+          "thread": {
+            "id": 2984
+          }
+        },
+        "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+        "provider_name": "Microsoft-Windows-DNSServer",
+        "record_id": 37,
+        "task": "Configuration",
+        "user": {
+          "domain": "CB8EQEM-835CJ2A",
+          "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+          "name": "Administrator",
+          "type": "User"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-04-23T09:32:34.487Z",
+      "data_stream": {
+        "dataset": "microsoft_dnsserver.audit",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "event": {
+        "action": "CACHE_OP",
+        "agent_id_status": "verified",
+        "code": "536",
+        "created": "2052-04-23T09:32:35.959Z",
+        "dataset": "microsoft_dnsserver.audit",
+        "ingested": "2052-04-23T09:32:46Z",
+        "kind": "event",
+        "provider": "Microsoft-Windows-DNSServer"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "cb8eqem-835cj2a",
+        "id": "6b629328-a601-4f77-8b6f-ea217e4e9873",
+        "ip": [
+          "fe80::dd4a:8121:e72b:6f21",
+          "172.30.18.182"
+        ],
+        "mac": [
+          "44-2E-F5-8A-C0-37"
+        ],
+        "name": "cb8eqem-835cj2a",
+        "os": {
+          "build": "20348.2322",
+          "family": "windows",
+          "kernel": "10.0.20348.2322 (WinBuild.160101.0800)",
+          "name": "Windows Server 2022 Datacenter",
+          "platform": "windows",
+          "type": "windows",
+          "version": "10.0"
+        }
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "A record of type 28, QNAME B.ZPQR-LERMFRO.NET. was purged from scope Default in cache.",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "winlog": {
+        "api": "wineventlog",
+        "channel": "Microsoft-Windows-DNSServer/Audit",
+        "computer_name": "CB8EQEM-835CJ2A",
+        "event_data": {
+          "QNAME": "B.ZPQR-LERMFRO.NET.",
+          "QTYPE": "28",
+          "Scope": "Default"
+        },
+        "event_id": "536",
+        "keywords": [
+          "AUDIT_CACHE"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 852,
+          "thread": {
+            "id": 2984
+          }
+        },
+        "provider_guid": "{ee66415f-e189-4222-9933-2af8618187c9}",
+        "provider_name": "Microsoft-Windows-DNSServer",
+        "record_id": 29,
+        "task": "CACHE_OP",
+        "user": {
+          "domain": "CB8EQEM-835CJ2A",
+          "identifier": "S-1-5-21-2397692938-4146434421-2570431792-500",
+          "name": "Administrator",
+          "type": "User"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_dnsserver-audit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_dnsserver",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

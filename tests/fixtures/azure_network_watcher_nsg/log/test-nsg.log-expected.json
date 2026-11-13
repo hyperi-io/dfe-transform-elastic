@@ -1,0 +1,152 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-11-13T12:00:35.389Z",
+      "azure": {
+        "resource": {
+          "group": "FABRIKAMRG",
+          "id": "/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/FABRIKAMRG/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/FABRIAKMVM1-NSG",
+          "name": "FABRIAKMVM1-NSG",
+          "provider": "MICROSOFT.NETWORK/NETWORKSECURITYGROUPS"
+        },
+        "subscription_id": "00000000-0000-0000-0000-000000000000"
+      },
+      "azure_network_watcher_nsg": {
+        "log": {
+          "category": "NetworkSecurityGroupFlowEvent",
+          "operation_name": "NetworkSecurityGroupFlowEvents",
+          "properties": {
+            "flows": [
+              {
+                "flows": [
+                  {
+                    "mac": "00-0D-3A-F8-78-56",
+                    "tuples": [
+                      {
+                        "bytes": {
+                          "received": 66,
+                          "sent": 66
+                        },
+                        "destination": {
+                          "ip": "203.0.113.75",
+                          "port": 443
+                        },
+                        "flow_state": "End",
+                        "packets": {
+                          "received": 1,
+                          "sent": 1
+                        },
+                        "protocol": "TCP",
+                        "source": {
+                          "ip": "192.0.2.134",
+                          "port": 59932
+                        },
+                        "timestamp": "2018-11-13T11:59:39.000Z",
+                        "traffic": {
+                          "decision": "Allowed",
+                          "flow": "Outbound"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "rule": "DefaultRule_AllowInternetOutBound"
+              }
+            ],
+            "version": "2"
+          },
+          "resource_id": "/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/FABRIKAMRG/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/FABRIAKMVM1-NSG",
+          "system_id": "d3acc5ae-383e-40f2-9321-95950c70c6cb",
+          "time": "2046-11-13T12:00:35.389Z"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "destination": {
+        "bytes": [
+          66
+        ],
+        "ip": [
+          "203.0.113.75"
+        ],
+        "packets": [
+          1
+        ],
+        "port": [
+          443
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"time\":\"2046-11-13T12:00:35.3899262Z\",\"systemId\":\"d3acc5ae-383e-40f2-9321-95950c70c6cb\",\"category\":\"NetworkSecurityGroupFlowEvent\",\"resourceId\":\"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/FABRIKAMRG/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/FABRIAKMVM1-NSG\",\"operationName\":\"NetworkSecurityGroupFlowEvents\",\"properties\":{\"Version\":2,\"flows\":[{\"rule\":\"DefaultRule_AllowInternetOutBound\",\"flows\":[{\"mac\":\"000D3AF87856\",\"flowTuples\":[\"1542110379,192.0.2.134,203.0.113.75,59932,443,T,O,A,E,1,66,1,66\"]}]}]}}",
+        "type": [
+          "info"
+        ]
+      },
+      "network": {
+        "direction": [
+          "outbound"
+        ],
+        "transport": [
+          "tcp"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "192.0.2.134"
+        ]
+      },
+      "rule": {
+        "name": [
+          "DefaultRule_AllowInternetOutBound"
+        ]
+      },
+      "source": {
+        "bytes": [
+          66
+        ],
+        "ip": [
+          "192.0.2.134"
+        ],
+        "mac": [
+          "00-0D-3A-F8-78-56"
+        ],
+        "packets": [
+          1
+        ],
+        "port": [
+          59932
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2046-11-13T12:00:35.3899262Z\",\"systemId\":\"d3acc5ae-383e-40f2-9321-95950c70c6cb\",\"category\":\"NetworkSecurityGroupFlowEvent\",\"resourceId\":\"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/FABRIKAMRG/PROVIDERS/MICROSOFT.NETWORK/NETWORKSECURITYGROUPS/FABRIAKMVM1-NSG\",\"operationName\":\"NetworkSecurityGroupFlowEvents\",\"properties\":{\"Version\":2,\"flows\":[{\"rule\":\"DefaultRule_AllowInternetOutBound\",\"flows\":[{\"mac\":\"000D3AF87856\",\"flowTuples\":[\"1542110379,192.0.2.134,203.0.113.75,59932,443,T,O,A,E,1,66,1,66\"]}]}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_network_watcher_nsg-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure_network_watcher_nsg",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

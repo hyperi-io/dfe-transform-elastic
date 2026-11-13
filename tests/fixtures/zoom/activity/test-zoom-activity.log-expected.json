@@ -1,0 +1,266 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-06-07T10:00:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sign-in",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"client_type\":\"Browser\",\"email\":\"fnvfc@example.com\",\"ip_address\":\"192.0.2.10\",\"time\":\"2052-06-07T10:00:00Z\",\"type\":\"Sign in\",\"version\":\"6.0.0.1000\"}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.10"
+        ],
+        "user": [
+          "fnvfc@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.10"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "fnvfc@example.com",
+        "name": "fnvfc@example.com"
+      },
+      "zoom": {
+        "activity": {
+          "client_type": "Browser",
+          "client_version": "6.0.0.1000",
+          "type": "Sign in"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-06-07T11:15:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sign-out",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"client_type\":\"Windows\",\"email\":\"afre@example.com\",\"ip_address\":\"192.0.2.20\",\"time\":\"2052-06-07T11:15:00Z\",\"type\":\"Sign out\",\"version\":\"6.0.0.1000\"}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.20"
+        ],
+        "user": [
+          "afre@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.20"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "afre@example.com",
+        "name": "afre@example.com"
+      },
+      "zoom": {
+        "activity": {
+          "client_type": "Windows",
+          "client_version": "6.0.0.1000",
+          "type": "Sign out"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-06-07T15:45:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sign-out",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"client_type\":\"Mac\",\"email\":\"ebxhs@example.com\",\"ip_address\":\"203.0.113.55\",\"time\":\"2052-06-07T15:45:00Z\",\"type\":\"Sign out\",\"version\":\"6.0.0.1000\"}",
+        "outcome": "success",
+        "type": [
+          "end"
+        ]
+      },
+      "related": {
+        "ip": [
+          "203.0.113.55"
+        ],
+        "user": [
+          "ebxhs@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.55"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ebxhs@example.com",
+        "name": "ebxhs@example.com"
+      },
+      "zoom": {
+        "activity": {
+          "client_type": "Mac",
+          "client_version": "6.0.0.1000",
+          "type": "Sign out"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-06-07T14:30:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sign-in",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"email\":\"fpf@example.com\",\"time\":\"2052-06-07T14:30:00Z\",\"type\":\"Sign in\"}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "user": [
+          "fpf@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "fpf@example.com",
+        "name": "fpf@example.com"
+      },
+      "zoom": {
+        "activity": {
+          "type": "Sign in"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-06-08T09:00:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sign-in",
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "kind": "event",
+        "original": "{\"client_type\":\"Browser\",\"email\":\"cnbrj@example.com\",\"ip_address\":\"10.174.228.41\",\"time\":\"2052-06-08T09:00:00Z\",\"type\":\"Sign in\",\"version\":\"6.0.0.1000\"}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "ip": [
+          "10.174.228.41"
+        ],
+        "user": [
+          "cnbrj@example.com"
+        ]
+      },
+      "source": {
+        "ip": "10.174.228.41"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "cnbrj@example.com",
+        "name": "cnbrj@example.com"
+      },
+      "zoom": {
+        "activity": {
+          "client_type": "Browser",
+          "client_version": "6.0.0.1000",
+          "type": "Sign in"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"client_type\":\"Browser\",\"email\":\"fnvfc@example.com\",\"ip_address\":\"192.0.2.10\",\"time\":\"2052-06-07T10:00:00Z\",\"type\":\"Sign in\",\"version\":\"6.0.0.1000\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"client_type\":\"Windows\",\"email\":\"afre@example.com\",\"ip_address\":\"192.0.2.20\",\"time\":\"2052-06-07T11:15:00Z\",\"type\":\"Sign out\",\"version\":\"6.0.0.1000\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"client_type\":\"Mac\",\"email\":\"ebxhs@example.com\",\"ip_address\":\"203.0.113.55\",\"time\":\"2052-06-07T15:45:00Z\",\"type\":\"Sign out\",\"version\":\"6.0.0.1000\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"email\":\"fpf@example.com\",\"time\":\"2052-06-07T14:30:00Z\",\"type\":\"Sign in\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"client_type\":\"Browser\",\"email\":\"cnbrj@example.com\",\"ip_address\":\"10.174.228.41\",\"time\":\"2052-06-08T09:00:00Z\",\"type\":\"Sign in\",\"version\":\"6.0.0.1000\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zoom-activity-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "zoom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-09T14:43:35.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.10",
+          "flattened": {
+            "request_parameters": {
+              "alarmNames": [
+                "cpu-mon"
+              ]
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "000000000",
+          "request_id": "1281345d-2196-4dff-b9e1-0ff4768ead09",
+          "request_parameters": "{alarmNames=[cpu-mon]}",
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "cpu-mon"
+          ]
+        }
+      },
+      "event": {
+        "action": "DeleteAlarms",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "51a73690-f3cb-4b3b-abbf-43c0715bf8ff",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"51a73690-f3cb-4b3b-abbf-43c0715bf8ff\",\"eventName\":\"DeleteAlarms\",\"eventSource\":\"monitoring.amazonaws.com\",\"eventTime\":\"2052-10-09T14:43:35Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"1281345d-2196-4dff-b9e1-0ff4768ead09\",\"requestParameters\":{\"alarmNames\":[\"cpu-mon\"]},\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"monitoring.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_0f59f9a2-5173-4513-afce-1d51b8e76a79 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#cloudwatch.delete-alarms\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "monitoring.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "cpu-mon",
+          "ACCESSKEYID",
+          "sbgq@apejtlc.co",
+          "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "sbgq@apejtlc.co"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "cpu-mon"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "monitoring.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "sbgq@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "sbgq@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_0f59f9a2-5173-4513-afce-1d51b8e76a79 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#cloudwatch.delete-alarms",
+        "version": "2.17.60"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"51a73690-f3cb-4b3b-abbf-43c0715bf8ff\",\"eventName\":\"DeleteAlarms\",\"eventSource\":\"monitoring.amazonaws.com\",\"eventTime\":\"2052-10-09T14:43:35Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"1281345d-2196-4dff-b9e1-0ff4768ead09\",\"requestParameters\":{\"alarmNames\":[\"cpu-mon\"]},\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"monitoring.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_0f59f9a2-5173-4513-afce-1d51b8e76a79 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#cloudwatch.delete-alarms\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

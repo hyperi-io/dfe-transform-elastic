@@ -1,0 +1,124 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-13T12:36:17.517Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-03-13T12:36:17.517Z",
+        "id": "b8e7fe3d-9635-4bab-b31e-12c90e70d689",
+        "kind": "event",
+        "original": "{\"id\":\"b8e7fe3d-9635-4bab-b31e-12c90e70d689\",\"info\":{\"description\":\"Recommended changes. The following items should be changed to support the updates included in version 22.5.0.\\n\\nAlert rules:\\nNothing to change here\\n\\nAssertions:\\nNothing to change here\\n\\nQueries:\\nNothing to change here\\n\\nAlert rules:\\nNothing to change here\\n\\nReports:\\nNothing to change here\\n\\nSee the N2OS release notes for further explanations.\"},\"time\":2625481641845,\"record_created_at\":2625482177517,\"sensor_id\":\"8b66fe4e-a0d9-4132-b358-cdee2d2d1f23\",\"sensor_host\":\"Sandbox-TAE-Guardian3\",\"sensor_appliance_type\":\"guardian\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "Sandbox-TAE-Guardian3",
+        "id": "8b66fe4e-a0d9-4132-b358-cdee2d2d1f23"
+      },
+      "nozomi_networks": {
+        "health": {
+          "id": "b8e7fe3d-9635-4bab-b31e-12c90e70d689",
+          "info": {
+            "description": "Recommended changes. The following items should be changed to support the updates included in version 22.5.0.\n\nAlert rules:\nNothing to change here\n\nAssertions:\nNothing to change here\n\nQueries:\nNothing to change here\n\nAlert rules:\nNothing to change here\n\nReports:\nNothing to change here\n\nSee the N2OS release notes for further explanations."
+          },
+          "record_created_at": "2053-03-13T12:36:17.517Z",
+          "sensor_appliance_type": "guardian",
+          "sensor_host": "Sandbox-TAE-Guardian3",
+          "sensor_id": "8b66fe4e-a0d9-4132-b358-cdee2d2d1f23",
+          "time": "2053-03-13T12:27:21.845Z"
+        }
+      },
+      "related": {
+        "hosts": [
+          "Sandbox-TAE-Guardian3",
+          "8b66fe4e-a0d9-4132-b358-cdee2d2d1f23"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-13T12:36:17.517Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2053-03-13T12:36:17.517Z",
+        "id": "b2c0ed4a-4884-4cee-b93b-13e21a99b513",
+        "kind": "event",
+        "original": "{\"id\":\"b2c0ed4a-4884-4cee-b93b-13e21a99b513\",\"info\":{\"description\":\"Recommended changes. The following items should be changed to support the updates included in version 22.5.0.\\n\\nAlert rules:\\nNothing to change here\\n\\nAssertions:\\nNothing to change here\\n\\nQueries:\\nNothing to change here\\n\\nAlert rules:\\nNothing to change here\\n\\nReports:\\nNothing to change here\\n\\nSee the N2OS release notes for further explanations.\"},\"time\":2625481641845,\"record_created_at\":2625482177517,\"appliance_id\":\"8b66fe4e-a0d9-4132-b358-cdee2d2d1f23\",\"appliance_host\":\"Sandbox-TAE-Guardian3\",\"sensor_appliance_type\":\"guardian\",\"appliance_ip\":\"192.0.2.134\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "Sandbox-TAE-Guardian3",
+        "id": "8b66fe4e-a0d9-4132-b358-cdee2d2d1f23",
+        "ip": [
+          "192.0.2.134"
+        ],
+        "name": "Sandbox-TAE-Guardian3"
+      },
+      "nozomi_networks": {
+        "health": {
+          "appliance_host": "Sandbox-TAE-Guardian3",
+          "appliance_id": "8b66fe4e-a0d9-4132-b358-cdee2d2d1f23",
+          "appliance_ip": "192.0.2.134",
+          "id": "b2c0ed4a-4884-4cee-b93b-13e21a99b513",
+          "info": {
+            "description": "Recommended changes. The following items should be changed to support the updates included in version 22.5.0.\n\nAlert rules:\nNothing to change here\n\nAssertions:\nNothing to change here\n\nQueries:\nNothing to change here\n\nAlert rules:\nNothing to change here\n\nReports:\nNothing to change here\n\nSee the N2OS release notes for further explanations."
+          },
+          "record_created_at": "2053-03-13T12:36:17.517Z",
+          "sensor_appliance_type": "guardian",
+          "time": "2053-03-13T12:27:21.845Z"
+        }
+      },
+      "related": {
+        "hosts": [
+          "Sandbox-TAE-Guardian3",
+          "8b66fe4e-a0d9-4132-b358-cdee2d2d1f23"
+        ],
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"b8e7fe3d-9635-4bab-b31e-12c90e70d689\",\"info\":{\"description\":\"Recommended changes. The following items should be changed to support the updates included in version 22.5.0.\\n\\nAlert rules:\\nNothing to change here\\n\\nAssertions:\\nNothing to change here\\n\\nQueries:\\nNothing to change here\\n\\nAlert rules:\\nNothing to change here\\n\\nReports:\\nNothing to change here\\n\\nSee the N2OS release notes for further explanations.\"},\"time\":2625481641845,\"record_created_at\":2625482177517,\"sensor_id\":\"8b66fe4e-a0d9-4132-b358-cdee2d2d1f23\",\"sensor_host\":\"Sandbox-TAE-Guardian3\",\"sensor_appliance_type\":\"guardian\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"b2c0ed4a-4884-4cee-b93b-13e21a99b513\",\"info\":{\"description\":\"Recommended changes. The following items should be changed to support the updates included in version 22.5.0.\\n\\nAlert rules:\\nNothing to change here\\n\\nAssertions:\\nNothing to change here\\n\\nQueries:\\nNothing to change here\\n\\nAlert rules:\\nNothing to change here\\n\\nReports:\\nNothing to change here\\n\\nSee the N2OS release notes for further explanations.\"},\"time\":2625481641845,\"record_created_at\":2625482177517,\"appliance_id\":\"8b66fe4e-a0d9-4132-b358-cdee2d2d1f23\",\"appliance_host\":\"Sandbox-TAE-Guardian3\",\"sensor_appliance_type\":\"guardian\",\"appliance_ip\":\"192.0.2.134\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "health",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-nozomi_networks-health-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "nozomi_networks",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

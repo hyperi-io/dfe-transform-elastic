@@ -1,0 +1,1826 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-15T09:32:11.000Z",
+      "agent": {
+        "ephemeral_id": "c3cba074-8252-484a-9201-0decb3941eca",
+        "id": "25e31d5f-cc8f-431b-8548-8861be642935",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "action": {
+            "status": "Success",
+            "value": "Changed to Operational Mode"
+          },
+          "class_id": "ActivityLog",
+          "log_type": "System",
+          "message": "System was moved to [[Operational Mode]]",
+          "name": "Site  Mode",
+          "severity": 0,
+          "site": "Default",
+          "time": "2051-08-15T09:32:11.000Z",
+          "user": "ctduser",
+          "version": "0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "changed-to-operational-mode",
+        "kind": "event",
+        "original": "<30> 2051-08-15T06:33:33Z Site syslog-ActivityLog-Default - - - CEF:0|Claroty|CTD|4.10.0|ActivityLog|Site  Mode|0|CtdTimeGenerated=Aug 15 2051 09:32:11 CtdSite=Default CtdUser= CtdAction=Changed to Operational Mode CtdActionStatus=Success CtdMessage=System was moved to [[Operational Mode]] CtdLogType=System"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:50424"
+        }
+      },
+      "message": "System was moved to [[Operational Mode]]",
+      "observer": {
+        "hostname": "Default",
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "related": {
+        "user": [
+          "ctduser"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": [
+          "ctduser"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2021-06-17T12:39:15.000Z",
+      "agent": {
+        "ephemeral_id": "23318c1c-5aca-4e31-a09e-5c6c4a3555da",
+        "id": "edf8d01c-9349-416a-a287-19167489f9f4",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "alert": {
+            "link": "http://localhost:4200/detection/alert/31-1",
+            "score": 100,
+            "status": "Unresolved",
+            "type_id": "1001"
+          },
+          "assigned_to": "Alice",
+          "category": "Integrity/New Asset",
+          "class_id": "Alert",
+          "class_type": "New Asset",
+          "destination": {
+            "asset_type": "HMI",
+            "host": [
+              "EP-1002562"
+            ],
+            "ip": [
+              "10.201.100.215"
+            ],
+            "mac": [
+              "75:3a:8f:f2:09:1b"
+            ],
+            "zone": "HMI: Rockwell"
+          },
+          "device_external_id": "Default",
+          "external": {
+            "id": "47",
+            "links": "https://attack.mitre.org/techniques/T1102"
+          },
+          "message": "New asset Alert: A new plc was detec- ted in the “PLC: Rockwell” zone, which is a non-risky zone. It performed protocol operation communication: 10.201.100.215:Card 2  Addr 255",
+          "mitre_attack": {
+            "tactic_names": "Command and Control",
+            "technique_ids": "T1548"
+          },
+          "name": "New Asset",
+          "protocol": "TFTP",
+          "resolved": {
+            "as": "Unresolved",
+            "by": "Bob"
+          },
+          "severity": 10,
+          "signature": {
+            "confidence": "100%",
+            "criticality": "High",
+            "id": "22061",
+            "last_updated": "2023-08-27T14:54:00.000Z",
+            "name": "MALWARE-OTHER Alureon - Malicious IFRAME load attempt",
+            "powered_by": "Other",
+            "tags": "Generic Malware"
+          },
+          "source": {
+            "asset_type": "PLC",
+            "host": [
+              "EP-1002321"
+            ],
+            "ip": [
+              "10.127.41.24"
+            ],
+            "mac": [
+              "34:54:69:b6:b9:fd"
+            ],
+            "zone": "PLC: Rockwell"
+          },
+          "story_id": "87",
+          "time": "2021-06-17T12:39:15.000Z",
+          "version": "0"
+        }
+      },
+      "destination": {
+        "domain": [
+          "EP-1002562"
+        ],
+        "ip": [
+          "10.201.100.215"
+        ],
+        "mac": [
+          "75-3A-8F-F2-09-1B"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "id": "47",
+        "kind": "alert",
+        "original": "<14> 1 2051-08-15T01:00:00Z Site syslog-Alert-Default - - - CEF:0|Claroty|CTD|4.10.0|Alert/New Asset|New Asset|10|CtdSourceIp=10.127.41.24 CtdDestinationIp=10.201.100.215 CtdSourceMac=34:54:69:b6:b9:fd CtdDestinationMac=75:3a:8f:f2:09:1b CtdSourceHost=EP-1002321 CtdDestinationHost=EP-1002562 CtdTimeGenerated=Aug 14 2051 01:00:00 CtdExternalId=47 CtdDeviceExternalId=Default CtdMessage=New asset Alert: A new plc was detec- ted in the “PLC: Rockwell” zone, which is a non-risky zone. It performed protocol operation communication: 10.201.100.215:Card 2 \\ Addr 255 CtdProtocol=TFTP CtdCategory=Integrity/New Asset CtdSourceAssetType=PLC CtdDestinationAssetType=HMI CtdSourceZone=PLC: Rockwell CtdDestinationZone=HMI: Rockwell CtdAlertLink=http://localhost:4200/detection/alert/31-1 CtdAlertScore=100 CtdAlertTypeId=1001 CtdAlertStatus=Unresolved CtdResolvedAs=Unresolved CtdResolvedBy=Bob CtdAssignedTo=Alice CtdStoryId=87 CtdMitreAttackTacticNames=Command and Control CtdMitreAttackTechniqueIds=T1548 CtdSignatureId=22061 CtdSignatureName=MALWARE-OTHER Alureon - Malicious IFRAME load attempt CtdSignatureCriticality=High CtdSignatureConfidence=100% CtdSignatureTags=Generic Malware CtdSignatureExternalLinks=https://attack.mitre.org/techniques/T1102 CtdSignatureLastUpdatedByClaroty=27 Aug 2023, 14:54 CtdSignaturePoweredBy=Other",
+        "reference": [
+          "http://localhost:4200/detection/alert/31-1"
+        ],
+        "risk_score": 100,
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:57748"
+        }
+      },
+      "message": "New asset Alert: A new plc was detec- ted in the “PLC: Rockwell” zone, which is a non-risky zone. It performed protocol operation communication: 10.201.100.215:Card 2  Addr 255",
+      "network": {
+        "protocol": "tftp"
+      },
+      "observer": {
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "related": {
+        "hosts": [
+          "EP-1002562",
+          "EP-1002321"
+        ],
+        "ip": [
+          "10.201.100.215",
+          "10.127.41.24"
+        ],
+        "user": [
+          "Alice",
+          "Bob"
+        ]
+      },
+      "source": {
+        "domain": [
+          "EP-1002321"
+        ],
+        "ip": [
+          "10.127.41.24"
+        ],
+        "mac": [
+          "34-54-69-B6-B9-FD"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "indicator": {
+          "modified_at": "2023-08-27T14:54:00.000Z",
+          "name": "MALWARE-OTHER Alureon - Malicious IFRAME load attempt",
+          "reference": [
+            "https://attack.mitre.org/techniques/T1102"
+          ]
+        },
+        "tactic": {
+          "name": [
+            "Command and Control"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1548"
+          ]
+        }
+      },
+      "user": {
+        "name": [
+          "Alice",
+          "Bob"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2051-08-14T01:00:00.000Z",
+      "agent": {
+        "ephemeral_id": "23318c1c-5aca-4e31-a09e-5c6c4a3555da",
+        "id": "edf8d01c-9349-416a-a287-19167489f9f4",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "application": "RDP",
+          "class_id": "Insight",
+          "community": "public",
+          "cve": {
+            "id": "CVE-2020-3510",
+            "modified_date": "2020-08-25T00:00:00.000Z",
+            "pipe_service": "srvsvc",
+            "publish_date": "2020-08-24T00:00:00.000Z",
+            "score": 8.8
+          },
+          "default_password": false,
+          "destination": {
+            "asset_type": "Endpoint",
+            "host": [
+              "DISKVM"
+            ],
+            "ip": [
+              "10.18.92.157"
+            ],
+            "mac": [
+              "54:8b:da:6a:ed:b2"
+            ],
+            "zone": "Endpoint: Other"
+          },
+          "device_external_id": "Default",
+          "end_of_life_date": "2023-08-23T00:00:00.000Z",
+          "external": {
+            "id": "124"
+          },
+          "file_path": "DISKVMSHARE123",
+          "insight": {
+            "password_plaintext": true,
+            "state": "Remote Run Mode",
+            "user": "ABC-123xyz"
+          },
+          "insights": {
+            "protocol": "PCCC",
+            "protocol_version": "v1/v2",
+            "severity": "Medium"
+          },
+          "is_ghost": false,
+          "last_managed": "2023-05-13T00:00:00.000Z",
+          "message": "Modify arbitrary memory vulnerability in Wind River VxWorks 6",
+          "method": "Get",
+          "model": "1756-ENET",
+          "name": "Open Ports",
+          "no_password": true,
+          "number_of": {
+            "accesed_client": 5,
+            "interface": 3,
+            "neighbours": 26
+          },
+          "operating_system": "Windows XP",
+          "risk_score": 91,
+          "series": "none",
+          "severity": 2,
+          "source": {
+            "asset_type": "PLC",
+            "host": [
+              "EndPoint1A"
+            ],
+            "ip": [
+              "10.184.15.159"
+            ],
+            "mac": [
+              "20:98:94:b9:d4:c3"
+            ],
+            "zone": "PLC: Modbus"
+          },
+          "time": "2051-08-14T01:00:00.000Z",
+          "version": "0"
+        }
+      },
+      "destination": {
+        "domain": [
+          "DISKVM"
+        ],
+        "ip": [
+          "10.18.92.157"
+        ],
+        "mac": [
+          "54-8B-DA-6A-ED-B2"
+        ]
+      },
+      "device": {
+        "model": {
+          "identifier": "1756-ENET"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "124",
+        "kind": "event",
+        "original": "<14>1 2051-08-15T01:00:00Z Site syslog-Insight-Default - - - CEF:0|Claroty|CTD|4.10.0|Insight|Open Ports|2|CtdSourceIp=10.184.15.159 CtdDestinationIp=10.18.92.157 CtdSourceMac=20:98:94:b9:d4:c3 CtdDestinationMac=54:8b:da:6a:ed:b2 CtdSourceHost=EndPoint1A CtdDestinationHost=DISKVM CtdTimeGenerated=Aug 14 2051 01:00:00 CtdExternalId=124 CtdDeviceExternalId=Default CtdMessage=Modify arbitrary memory vulnerability in Wind River VxWorks 6 CtdFilePath=\\\\\\\\DISKVM\\\\SHARE123 CtdSourceAssetType=PLC CtdDestinationAssetType=Endpoint CtdSourceZone=PLC: Modbus CtdDestinationZone=Endpoint: Other CtdCveId=CVE-2020-3510 CtdCveScore=8.8 CtdCvePublishDate=24 Aug 2020 CtdCveModifiedDate=25 Aug 2020 CtdCvePipeService=srvsvc CtdInsightsSeverity=Medium CtdInsightState=Remote Run Mode CtdInsightUser=ABC-123\\xyz CtdInsightsProtocol=PCCC CtdInsightsProtocolVersion=v1/v2 CtdMethod=Get CtdCommunity=public CtdInsightsPasswordPlaintext=True CtdInsightsDefaultPassword=False CtdInsightsNoPassword=True CtdLastManaged=13 May 2023 CtdIsGhost=False CtdRiskScore=91 CtdNumberOfNeighbors=26 CtdNumberOfInterfaces=3 CtdNumberOfAccessedClients=5 CtdSeries=none CtdModel=1756-ENET CtdApplication=RDP CtdOperatingSystem=Windows XP CtdEndOfLifeDate=23 Aug 2023",
+        "severity": 5,
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "path": "DISKVMSHARE123"
+      },
+      "host": {
+        "name": "co8",
+        "os": {
+          "name": "Windows XP"
+        },
+        "risk": {
+          "calculated_score": 91
+        }
+      },
+      "http": {
+        "request": {
+          "method": "Get"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:58080"
+        }
+      },
+      "message": "Modify arbitrary memory vulnerability in Wind River VxWorks 6",
+      "observer": {
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "related": {
+        "hosts": [
+          "DISKVM",
+          "EndPoint1A"
+        ],
+        "ip": [
+          "10.18.92.157",
+          "10.184.15.159"
+        ],
+        "user": [
+          "ABC-123xyz"
+        ]
+      },
+      "source": {
+        "domain": [
+          "EndPoint1A"
+        ],
+        "ip": [
+          "10.184.15.159"
+        ],
+        "mac": [
+          "20-98-94-B9-D4-C3"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": [
+          "ABC-123xyz"
+        ]
+      },
+      "vulnerability": {
+        "id": "CVE-2020-3510",
+        "score": {
+          "base": 8.8
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-08-14T01:00:00.000Z",
+      "agent": {
+        "ephemeral_id": "cddf68f1-a75f-423a-aeb0-9da90144804d",
+        "id": "ac1bcd77-5e92-4b2a-b521-dddefa921b6d",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "alert": {
+            "id": "5",
+            "link": "http://localhost:4200/detection/alert/5-1"
+          },
+          "category": "Integrity/Asset Information Change",
+          "class_id": "Event",
+          "class_type": "Asset Information Change",
+          "destination": {
+            "asset_type": "Endpoint, HMI, PLC, PLC, PLC, HMI",
+            "host": [
+              "Endpoint2"
+            ],
+            "ip": [
+              "10.9.150.10"
+            ],
+            "mac": [
+              "FF:FF:FF:FF:FF:FF"
+            ],
+            "zone": "Broadcast/Multicast: Other"
+          },
+          "device_external_id": "Default",
+          "event_type_id": "4",
+          "external": {
+            "id": "150"
+          },
+          "message": "Information change has been detected on eModel to Model: 1756-ENBT/A",
+          "name": "Asset Information Change",
+          "protocol": "tftp",
+          "resolved": {
+            "as": "Unresolved"
+          },
+          "severity": 10,
+          "source": {
+            "asset_type": "PLC",
+            "host": [
+              "Endpoint1"
+            ],
+            "ip": [
+              "10.79.75.162"
+            ],
+            "mac": [
+              "75:3A:8F:F2:09:1B"
+            ],
+            "zone": "PLC: Rockwell"
+          },
+          "story_id": "3",
+          "time": "2051-08-14T01:00:00.000Z",
+          "version": "0"
+        }
+      },
+      "destination": {
+        "domain": [
+          "Endpoint2"
+        ],
+        "ip": [
+          "10.9.150.10"
+        ],
+        "mac": [
+          "FF-FF-FF-FF-FF-FF"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "150",
+        "kind": "event",
+        "original": "<14>1 2051-08-15T01:00:00Z Site syslog-Event-Default - - - CEF:0|Claroty|CTD|4.10.0|Event/Asset Information Change|Asset Information Change|10|CtdSourceIp=10.79.75.162 CtdDestinationIp=10.9.150.10 CtdSourceMac=75:3A:8F:F2:09:1B CtdDestinationMac=FF:FF:FF:FF:FF:FF CtdSourceHost=Endpoint1 CtdDestinationHost=Endpoint2 CtdTimeGenerated=Aug 14 2051 01:00:00 CtdExternalId=150 CtdDeviceExternalId=Default CtdMessage=Information change has been detected on eModel to Model: 1756-ENBT/A CtdProtocol=tftp CtdCategory=Integrity/Asset Information Change CtdSourceAssetType=PLC CtdDestinationAssetType=Endpoint, HMI, PLC, PLC, PLC, HMI CtdSourceZone=PLC: Rockwell CtdDestinationZone=Broadcast/Multicast: Other CtdAlertLink=http://localhost:4200/detection/alert/5-1 CtdAlertId=5 CtdStoryId=3 CtdEventTypeId=4 CtdResolvedAs=Unresolved",
+        "reference": [
+          "http://localhost:4200/detection/alert/5-1"
+        ],
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:48690"
+        }
+      },
+      "message": "Information change has been detected on eModel to Model: 1756-ENBT/A",
+      "network": {
+        "protocol": "tftp"
+      },
+      "observer": {
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "related": {
+        "hosts": [
+          "Endpoint2",
+          "Endpoint1"
+        ],
+        "ip": [
+          "10.9.150.10",
+          "10.79.75.162"
+        ]
+      },
+      "source": {
+        "domain": [
+          "Endpoint1"
+        ],
+        "ip": [
+          "10.79.75.162"
+        ],
+        "mac": [
+          "75-3A-8F-F2-09-1B"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-08-13T01:00:00.000Z",
+      "agent": {
+        "ephemeral_id": "cddf68f1-a75f-423a-aeb0-9da90144804d",
+        "id": "ac1bcd77-5e92-4b2a-b521-dddefa921b6d",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "busy": {
+            "dm": {
+              "a_value": 0.77,
+              "value": 0.66
+            },
+            "fd": 0.11,
+            "sda": {
+              "a_value": 0.33,
+              "b_value": 0.44,
+              "value": 0.22
+            },
+            "sr": 0.55
+          },
+          "capsaver": {
+            "folder_cleanup": true
+          },
+          "class_id": "HealthCheck",
+          "cpu": 12.21,
+          "dissection": {
+            "coverage": 44
+          },
+          "dissector_ng_packet_drops": 35,
+          "exceptions": 31,
+          "full_output_packet_drops": 34,
+          "input_packet_drops": 32,
+          "memory": 13.31,
+          "message": "Successfully ran health monitoring",
+          "name": "Health",
+          "output_packet_drops": 33,
+          "queue": {
+            "baseline_tracker": 1,
+            "bridge": 2,
+            "central_bridge": 3,
+            "concluding": 4,
+            "diode_feeder": 5,
+            "dissector": {
+              "a_value": 7,
+              "ng": 8,
+              "value": 6
+            },
+            "indicator_service": 9,
+            "leecher": 10,
+            "monitor": 11,
+            "network_statistics": 12,
+            "packets": {
+              "count": 13,
+              "errors": 14
+            },
+            "preprocessing": {
+              "count": 15,
+              "ng": 16
+            },
+            "priority_processing": 17,
+            "processing": {
+              "count": 18,
+              "high": 19
+            },
+            "purge": 22,
+            "statistics_ng": 20,
+            "syslog": {
+              "alerts": 23,
+              "events": 24,
+              "insights": 25
+            },
+            "zordon_updates": 21
+          },
+          "read_count": {
+            "dissector": {
+              "a_value": 27,
+              "count": 26,
+              "ng": 28
+            },
+            "preprocessing": {
+              "count": 29,
+              "ng": 30
+            }
+          },
+          "real_time": "2051-08-14T01:00:00.000Z",
+          "service": {
+            "docker": "Down",
+            "firewalld": "Down",
+            "icsranger": "Down",
+            "jwthenticator": "Down",
+            "mariadb": "Down",
+            "netunnel": "Down",
+            "postgres": "Down",
+            "rabbit_mq": "Down",
+            "redis": "Down",
+            "watchdog": "Down"
+          },
+          "severity": 0,
+          "site": "Default",
+          "tag_artifacts_drops": {
+            "dissector_pypy": {
+              "sum": 43,
+              "value": 42
+            },
+            "preprocessor": {
+              "sum": 37,
+              "value": 36
+            },
+            "processor": {
+              "sum": 39,
+              "value": 38
+            },
+            "sniffer": {
+              "sum": 41,
+              "value": 40
+            }
+          },
+          "time": "2051-08-13T01:00:00.000Z",
+          "used": {
+            "etc": 17.71,
+            "opt_icsranger": 14.41,
+            "tmp": 16.61,
+            "var": 15.51
+          },
+          "version": "0",
+          "worker": {
+            "active": {
+              "executer": {
+                "api": "Not Available",
+                "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+              },
+              "value": {
+                "api": "Not Available",
+                "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+              }
+            },
+            "authentication": {
+              "api": "Not Available",
+              "last_restart": "21 min, 18 sec"
+            },
+            "bridge": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "cacher": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "cloud": {
+              "agent": {
+                "api": "Not Available",
+                "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+              },
+              "client": {
+                "api": "Not Available",
+                "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+              }
+            },
+            "concluder": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "enricher": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "indicators": {
+              "api": {
+                "api": "Not Available",
+                "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+              },
+              "value": {
+                "api": "Not Available",
+                "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+              }
+            },
+            "insights": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "known_threats": {
+              "api": "Available",
+              "last_restart": "18 min, 58 sec"
+            },
+            "leecher": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "mailer": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "mitre": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "notifications": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "preprocessor": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "processor": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "scheduler": {
+              "api": "Available",
+              "last_restart": "21 min, 19 sec"
+            },
+            "sensor": {
+              "api": "Available",
+              "last_restart": "18 min, 34 sec"
+            },
+            "sync_manager": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "web": {
+              "auth": {
+                "api": "Not Available",
+                "last_restart": "21 min, 1 sec"
+              },
+              "ranger": {
+                "api": "Not Available",
+                "last_restart": "21 min, 6 sec"
+              },
+              "ws": {
+                "api": "Not Available",
+                "last_restart": "21 min, 1 sec"
+              }
+            },
+            "workers": {
+              "restart": 47,
+              "stop": 46
+            }
+          },
+          "yara_scanner_test": 45
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<134>1 2051-08-15T01:00:00Z Site syslog-HealthCheck-Default - - - CEF:0|Claroty|CTD|4.10.0|HealthCheck|Health|0|CtdRealTime=Aug 14 2051 01:00:00 CtdTimeGenerated=Aug 13 2051 01:00:00 CtdMessage=Successfully ran health monitoring CtdSite=Default CtdCpu=12.21 CtdMem=13.31 CtdUsedOptIcsranger=14.41 CtdUsedVar=15.51 CtdUsedTmp=16.61 CtdUsedEtc=17.71 CtdBusyFd=0.11 CtdBusySda=0.22 CtdBusySdaA=0.33 CtdBusySdaB=0.44 CtdBusySr=0.55 CtdBusyDm=0.66 CtdBusyDmA=0.77 CtdQuBaselineTracker=1 CtdQuBridge=2 CtdQuCentralBridge=3 CtdQuConcluding=4 CtdQuDiodeFeeder=5 CtdQuDissector=6 CtdQuDissectorA=7 CtdQuDissectorNg=8 CtdQuIndicatorService=9 CtdQuLeecher=10 CtdQuMonitor=11 CtdQuNetworkStatistics=12 CtdQuPackets=13 CtdQuPacketsErrors=14 CtdQuPreprocessing=15 CtdQuPreprocessingNg=16 CtdQuPriorityProcessing=17 CtdQuProcessing=18 CtdQuProcessingHigh=19 CtdQuStatisticsNg=20 CtdQuZordonUpdates=21 CtdQueuePurge=22 CtdQuSyslogAlerts=23 CtdQuSyslogEvents=24 CtdQuSyslogInsights=25 CtdRdDissector=26 CtdRdDissectorA=27 CtdRdDissectorNg=28 CtdRdPreprocessing=29 CtdRdPreprocessingNg=30 CtdSvcMariaDb=Down CtdSvcPostgres=Down CtdSvcRedis=Down CtdSvcRabbitMq=Down CtdSvcIcsranger=Down CtdSvcWatchdog=Down CtdSvcFirewalld=Down CtdSvcNetunnel=Down CtdSvcJwthenticator=Down CtdSvcDocker=Down CtdExceptions=31 CtdInputPacketDrops=32 CtdOutputPacketDrops=33 CtdFullOutputPacketDrops=34 CtdDissectorNgPacketDrops=35 CtdTagArtifactsDropsPreprocessor=36 CtdTagArtifactsDropsPreprocessorSum=37 CtdTagArtifactsDropsProcessor=38 CtdTagArtifactsDropsProcessorSum=39 CtdTagArtifactsDropsSniffer=40 CtdTagArtifactsDropsSnifferSum=41 CtdTagArtifactsDropsDissectorPypy=42 CtdTagArtifactsDropsDissectorPypySum=43 CtdCapsaverFolderCleanup=TRUE CtdDissectionCoverage=44 CtdCapsaverUtilzationTest=N/A CtdYaraScannerTest=45 CtdWrkrWorkersStop=46 CtdWrkrWorkersRestart=47 CtdWrkrActiveExecuter={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrSensor={'api': 'Available', 'last_restart': '18 min, 34 sec'} CtdWrkrAuthentication={'api': 'Not Available', 'last_restart': '21 min, 18 sec'} CtdWrkrMailer={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrMitre={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrNotifications={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrProcessor={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrCloudAgent={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrCloudClient={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrScheduler={'api': 'Available', 'last_restart': '21 min, 19 sec'} CtdWrkrknownThreats={'api': 'Available', 'last_restart': '18 min, 58 sec'} CtdWrkrCacher={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrInsights={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrActive={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrEnricher={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrIndicators={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrIndicatorsApi={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrConcluder={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrPreprocessor={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrLeecher={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrSyncManager={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrBridge={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrWebRanger={'api': 'Not Available', 'last_restart': '21 min, 6 sec'} CtdWrkrWebWs={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWebAuth={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWeb"
+      },
+      "host": {
+        "cpu": {
+          "usage": 12.21
+        },
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:37066"
+        }
+      },
+      "message": "Successfully ran health monitoring",
+      "observer": {
+        "hostname": "Default",
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-08-13T01:00:00.000Z",
+      "agent": {
+        "ephemeral_id": "9b1b70a1-777a-4201-b56d-67f4fb761e04",
+        "id": "4d59fea2-4cfa-4022-af4a-3e3a892a68a0",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "class_id": "HealthCheck",
+          "conclude_time": 50,
+          "ctrl_site": 48.0,
+          "dissection": {
+            "efficiency": {
+              "dcerpc": 4.2345,
+              "factory_talk_rna": 6.2345,
+              "ge_ifix": 15.2345,
+              "http": 11.2345,
+              "jrmi": 14.2345,
+              "ldap": 13.2345,
+              "llc": 16.2345,
+              "matrikon_nopc": 17.2345,
+              "modbus": 2.2345,
+              "rdp": 9.2345,
+              "smb": 3.2345,
+              "ssh": 10.2345,
+              "ssl": 7.2345,
+              "tcp_http": 12.2345,
+              "vnc": 18.2345,
+              "vrrp_protocol_matcher": 8.2345,
+              "zabbix": 5.2345
+            }
+          },
+          "dropped_entities": 51,
+          "loop_call_duration": {
+            "baseline_tracker_wrker_handle_network_statistics": 1.2345,
+            "cloud_client_wrkr_base_run_cloud_connected": 22.2345,
+            "poll_objects": 21.2345
+          },
+          "message": "Successfully ran health monitoring",
+          "mysql_query": 19.2345,
+          "name": "Health",
+          "postgres_query": 20.2345,
+          "psql_idle": {
+            "in_transaction_sessions": 53,
+            "sessions": 52
+          },
+          "real_time": "2051-08-14T01:00:00.000Z",
+          "sensor_name": "Sensor-1",
+          "severity": 0,
+          "sniffer_status": {
+            "site": 23.2345
+          },
+          "time": "2051-08-13T01:00:00.000Z",
+          "unhandled_events": 49,
+          "version": "0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<134>1 2051-08-15T01:00:00Z Site syslog-HealthCheck-Default - - - CEF:0|Claroty|CTD|4.10.0|HealthCheck|Health|0|CtdRealTime=Aug 14 2051 01:00:00 CtdTimeGenerated=Aug 13 2051 01:00:00 CtdMessage=Successfully ran health monitoring CtdSensorName=Sensor-1 CtdCtrlSite=48 CtdLoopCallDurationBaselineTrackerWrkerHandleNetworkStatistics=1.2345 CtdDissectionEfficiencyModbus=2.2345 CtdDissectionEfficiencySmb=3.2345 CtdDissectionEfficiencyDcerpc=4.2345 CtdDissectionEfficiencyZabbix=5.2345 CtdDissectionEfficiencyFactorytalkRna=6.2345 CtdDissectionEfficiencySsl=7.2345 CtdDissectionEfficiencyVrrpProtocolMatcher=8.2345 CtdDissectionEfficiencyRdp=9.2345 CtdDissectionEfficiencySsh=10.2345 CtdDissectionEfficiencyHttp=11.2345 CtdDissectionEfficiencyTcpHttp=12.2345 CtdDissectionEfficiencyLdap=13.2345 CtdDissectionEfficiencyJrmi=14.2345 CtdDissectionEfficiencyGeIfix=15.2345 CtdDissectionEfficiencyLlc=16.2345 CtdDissectionEfficiencyMatrikonNopc=17.2345 CtdDissectionEfficiencyVnc=18.2345 CtdUnhandledEvents=49 CtdConcludeTime=50 CtdMysqlQuery=19.2345 CtdPostgresQuery=20.2345 CtdDroppedEntities=51 CtdPsqlIdleSessions=52 CtdPsqlIdleInTransactionSessions=53 CtdSnifferStatus=N/A CtdLoopCallDurationPollObjects=21.2345 CtdLoopCallDurationCloudClientWrkrBaseRunCloudConnected=22.2345 CtdSnifferStatusCentral=N/A CtdSnifferStatusSite=23.2345"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:45620"
+        }
+      },
+      "message": "Successfully ran health monitoring",
+      "observer": {
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-08-13T01:00:00.000Z",
+      "agent": {
+        "ephemeral_id": "9b1b70a1-777a-4201-b56d-67f4fb761e04",
+        "id": "4d59fea2-4cfa-4022-af4a-3e3a892a68a0",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "class_id": "HealthCheck",
+          "conclude_time": 50,
+          "ctrl_site": 48.0,
+          "dissection": {
+            "efficiency": {
+              "modbus": 2.2345
+            }
+          },
+          "loop_call_duration": {
+            "baseline_tracker_wrker_handle_network_statistics": 1.2345,
+            "cloud_client_wrkr_base_run_cloud_connected": 22.2345,
+            "poll_objects": 21.2345
+          },
+          "message": "Successfully ran health monitoring",
+          "name": "Health",
+          "queue": {
+            "purge": 10
+          },
+          "real_time": "2051-08-14T01:00:00.000Z",
+          "sensor_name": "Sensor-1",
+          "severity": 0,
+          "time": "2051-08-13T01:00:00.000Z",
+          "version": "0",
+          "worker": {
+            "baseline_tracker": {
+              "api": "Not Available",
+              "last_restart": "19316 days, 15 hrs, 56 min, 43 sec"
+            },
+            "capsaver": {
+              "api": "Not Available",
+              "last_restart": "19 min, 17 sec"
+            },
+            "configurator": {
+              "nginx": {
+                "api": "Not Available",
+                "last_restart": "19 min, 17 sec"
+              },
+              "value": {
+                "api": "Available",
+                "last_restart": "21 min, 18 sec"
+              }
+            },
+            "dissector": {
+              "a_value": {
+                "api": "Available",
+                "last_restart": "18 min, 34 sec"
+              },
+              "value": {
+                "api": "Available",
+                "last_restart": "18 min, 34 sec"
+              }
+            },
+            "web": {
+              "auth": {
+                "api": "Not Available",
+                "last_restart": "21 min, 1 sec"
+              },
+              "nginx": {
+                "api": "Not Available",
+                "last_restart": "21 min, 1 sec"
+              },
+              "ws": {
+                "api": "Not Available",
+                "last_restart": "21 min, 1 sec"
+              }
+            },
+            "workers": {
+              "restart": 47,
+              "stop": 46
+            }
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<134>1 2051-08-15T01:00:00Z Site syslog-HealthCheck-Default - - - CEF:0|Claroty|CTD|4.10.0|HealthCheck|Health|0|CtdRealTime=Aug 14 2051 01:00:00 CtdTimeGenerated=Aug 13 2051 01:00:00 CtdQueuePurge=10 CtdQuSyslogSlerts=20 CtdLoopCallDurationCloudClientWrkrBaseRunCloudConnected=22.2345 CtdLoopCallDurationBaselineTrackerWrkerHandleNetworkStatistics=1.2345 CtdLoopCallDurationPollObjects=21.2345 CtdCtrlSite=48  CtdConcludeTime=50 CtdMessage=Successfully ran health monitoring CtdWrkrWorkersStop=46 CtdWrkrWorkersRestart=47 CtdWrkrWebWs={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWebAuth={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWebNginx={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrConfigurator={'api': 'Available', 'last_restart': '21 min, 18 sec'} CtdWrkrConfiguratorNginx={'api': 'Not Available', 'last_restart': '19 min, 17 sec'} CtdWrkrCapsaver={'api': 'Not Available', 'last_restart': '19 min, 17 sec'} CtdWrkrBaselineTracker={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrDissector={'api': 'Available', 'last_restart': '18 min, 34 sec'} CtdWrkrDissectorA={'api': 'Available', 'last_restart': '18 min, 34 sec'} CtdSensorName=Sensor-1 CtdDissectionEfficiencyModbus=2.2345"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:58864"
+        }
+      },
+      "message": "Successfully ran health monitoring",
+      "observer": {
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "4.10.0"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2054-04-10T02:38:27.000Z",
+      "agent": {
+        "ephemeral_id": "9b1b70a1-777a-4201-b56d-67f4fb761e04",
+        "id": "4d59fea2-4cfa-4022-af4a-3e3a892a68a0",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "claroty_ctd": {
+        "event": {
+          "class_id": "Insight",
+          "destination": {
+            "asset_type": "OT",
+            "host": [
+              "dsthost"
+            ],
+            "ip": [
+              "10.201.100.215",
+              "10.120.20.161"
+            ],
+            "mac": [
+              "27:13:0F:70:01:22"
+            ],
+            "zone": "Endpoint: Other"
+          },
+          "device_external_id": "sc-ssd-us-test-co-007",
+          "external": {
+            "id": "110010"
+          },
+          "insights": {
+            "protocol": "2",
+            "severity": "Low"
+          },
+          "name": "Highly Connected Assets",
+          "number_of": {
+            "neighbours": 315
+          },
+          "severity": 2,
+          "source": {
+            "asset_type": "OT",
+            "host": [
+              "srchost"
+            ],
+            "ip": [
+              "10.127.41.24",
+              "10.231.208.189"
+            ],
+            "mac": [
+              "19:65:1E:84:22:48"
+            ],
+            "zone": "Endpoint: Other"
+          },
+          "time": "2054-04-10T02:38:27.000Z",
+          "version": "0"
+        }
+      },
+      "destination": {
+        "domain": [
+          "dsthost"
+        ],
+        "ip": [
+          "10.201.100.215",
+          "10.120.20.161"
+        ],
+        "mac": [
+          "27-13-0F-70-01-22"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "id": "110010",
+        "kind": "event",
+        "original": "<14>1 2054-04-10T02:41:14Z hostname syslog-Insight-EMC - - - CEF:0|Claroty|CTD|192.0.2.72|Insight|Highly Connected Assets|2|CtdSourceIp=10.127.41.24, 10.231.208.189 CtdDestinationIp=10.201.100.215, 10.120.20.161 CtdSourceMac=19:65:1E:84:22:48 CtdDestinationMac=27:13:0F:70:01:22 CtdSourceHost=srchost CtdDestinationHost=dsthost CtdTimeGenerated=Apr 10 2054 02:38:27 CtdExternalId=110010 CtdDeviceExternalId=sc-ssd-us-test-co-007 CtdSourceAssetType=OT CtdDestinationAssetType=OT CtdSourceZone=Endpoint: Other CtdDestinationZone=Endpoint: Other CtdInsightsSeverity=Low CtdInsightsProtocol=2 CtdNumberOfNeighbors=315",
+        "severity": 2,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:58866"
+        }
+      },
+      "observer": {
+        "product": "CTD",
+        "vendor": "Claroty",
+        "version": "192.0.2.72"
+      },
+      "related": {
+        "hosts": [
+          "dsthost",
+          "srchost"
+        ],
+        "ip": [
+          "10.201.100.215",
+          "10.120.20.161",
+          "10.127.41.24",
+          "10.231.208.189"
+        ]
+      },
+      "source": {
+        "domain": [
+          "srchost"
+        ],
+        "ip": [
+          "10.127.41.24",
+          "10.231.208.189"
+        ],
+        "mac": [
+          "19-65-1E-84-22-48"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-07-10T13:14:13.252Z",
+      "agent": {
+        "ephemeral_id": "c3cba074-8252-484a-9201-0decb3941eca",
+        "id": "25e31d5f-cc8f-431b-8548-8861be642935",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "ActivityLog",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdAction": "Changed to Operational Mode",
+          "CtdActionStatus": "Success",
+          "CtdLogType": "System",
+          "CtdMessage": "System was moved to [[Operational Mode]]",
+          "CtdSite": "Default",
+          "CtdTimeGenerated": "Aug 15 2051 09:32:11",
+          "CtdUser": "ctduser"
+        },
+        "name": "Site  Mode",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<30> 2051-08-15T06:33:33Z Site syslog-ActivityLog-Default - - - CEF:0|Claroty|CTD|4.10.0|ActivityLog|Site  Mode|0|CtdTimeGenerated=Aug 15 2051 09:32:11 CtdSite=Default CtdUser= CtdAction=Changed to Operational Mode CtdActionStatus=Success CtdMessage=System was moved to [[Operational Mode]] CtdLogType=System"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:50424"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-11T11:23:50.082Z",
+      "agent": {
+        "ephemeral_id": "23318c1c-5aca-4e31-a09e-5c6c4a3555da",
+        "id": "edf8d01c-9349-416a-a287-19167489f9f4",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "Alert-New Asset",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdAlertLink": "http://localhost:4200/detection/alert/31-1",
+          "CtdAlertScore": "100",
+          "CtdAlertStatus": "Unresolved",
+          "CtdAlertTypeId": "1001",
+          "CtdAssignedTo": "Alice",
+          "CtdCategory": "Integrity/New Asset",
+          "CtdDestinationAssetType": "HMI",
+          "CtdDestinationHost": "EP-1002562",
+          "CtdDestinationIp": "10.201.100.215",
+          "CtdDestinationMac": "75:3a:8f:f2:09:1b",
+          "CtdDestinationZone": "HMI: Rockwell",
+          "CtdDeviceExternalId": "Default",
+          "CtdExternalId": "47",
+          "CtdMessage": "New asset Alert: A new plc was detec- ted in the “PLC: Rockwell” zone, which is a non-risky zone. It performed protocol operation communication: 10.201.100.215:Card 2  Addr 255",
+          "CtdMitreAttackTacticNames": "Command and Control",
+          "CtdMitreAttackTechniqueIds": "T1548",
+          "CtdProtocol": "TFTP",
+          "CtdResolvedAs": "Unresolved",
+          "CtdResolvedBy": "Bob",
+          "CtdSignatureConfidence": "100%",
+          "CtdSignatureCriticality": "High",
+          "CtdSignatureExternalLinks": "https://attack.mitre.org/techniques/T1102",
+          "CtdSignatureId": "22061",
+          "CtdSignatureLastUpdatedByClaroty": "27 Aug 2023, 14:54",
+          "CtdSignatureName": "MALWARE-OTHER Alureon - Malicious IFRAME load attempt",
+          "CtdSignaturePoweredBy": "Other",
+          "CtdSignatureTags": "Generic Malware",
+          "CtdSourceAssetType": "PLC",
+          "CtdSourceHost": "EP-1002321",
+          "CtdSourceIp": "10.127.41.24",
+          "CtdSourceMac": "34:54:69:b6:b9:fd",
+          "CtdSourceZone": "PLC: Rockwell",
+          "CtdStoryId": "87",
+          "CtdTimeGenerated": "6/17/2021 12:39:15"
+        },
+        "name": "New Asset",
+        "severity": "10",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<14> 1 2051-08-15T01:00:00Z Site syslog-Alert-Default - - - CEF:0|Claroty|CTD|4.10.0|Alert/New Asset|New Asset|10|CtdSourceIp=10.127.41.24 CtdDestinationIp=10.201.100.215 CtdSourceMac=34:54:69:b6:b9:fd CtdDestinationMac=75:3a:8f:f2:09:1b CtdSourceHost=EP-1002321 CtdDestinationHost=EP-1002562 CtdTimeGenerated=Aug 14 2051 01:00:00 CtdExternalId=47 CtdDeviceExternalId=Default CtdMessage=New asset Alert: A new plc was detec- ted in the “PLC: Rockwell” zone, which is a non-risky zone. It performed protocol operation communication: 10.201.100.215:Card 2 \\ Addr 255 CtdProtocol=TFTP CtdCategory=Integrity/New Asset CtdSourceAssetType=PLC CtdDestinationAssetType=HMI CtdSourceZone=PLC: Rockwell CtdDestinationZone=HMI: Rockwell CtdAlertLink=http://localhost:4200/detection/alert/31-1 CtdAlertScore=100 CtdAlertTypeId=1001 CtdAlertStatus=Unresolved CtdResolvedAs=Unresolved CtdResolvedBy=Bob CtdAssignedTo=Alice CtdStoryId=87 CtdMitreAttackTacticNames=Command and Control CtdMitreAttackTechniqueIds=T1548 CtdSignatureId=22061 CtdSignatureName=MALWARE-OTHER Alureon - Malicious IFRAME load attempt CtdSignatureCriticality=High CtdSignatureConfidence=100% CtdSignatureTags=Generic Malware CtdSignatureExternalLinks=https://attack.mitre.org/techniques/T1102 CtdSignatureLastUpdatedByClaroty=27 Aug 2023, 14:54 CtdSignaturePoweredBy=Other"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:57748"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-11T12:31:22.927Z",
+      "agent": {
+        "ephemeral_id": "23318c1c-5aca-4e31-a09e-5c6c4a3555da",
+        "id": "edf8d01c-9349-416a-a287-19167489f9f4",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "Insight",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdApplication": "RDP",
+          "CtdCommunity": "public",
+          "CtdCveId": "CVE-2020-3510",
+          "CtdCveModifiedDate": "25 Aug 2020",
+          "CtdCvePipeService": "srvsvc",
+          "CtdCvePublishDate": "24 Aug 2020",
+          "CtdCveScore": "8.8",
+          "CtdDestinationAssetType": "Endpoint",
+          "CtdDestinationHost": "DISKVM",
+          "CtdDestinationIp": "10.18.92.157",
+          "CtdDestinationMac": "54:8b:da:6a:ed:b2",
+          "CtdDestinationZone": "Endpoint: Other",
+          "CtdDeviceExternalId": "Default",
+          "CtdEndOfLifeDate": "23 Aug 2023",
+          "CtdExternalId": "124",
+          "CtdFilePath": "DISKVMSHARE123",
+          "CtdInsightState": "Remote Run Mode",
+          "CtdInsightUser": "ABC-123xyz",
+          "CtdInsightsDefaultPassword": "False",
+          "CtdInsightsNoPassword": "True",
+          "CtdInsightsPasswordPlaintext": "True",
+          "CtdInsightsProtocol": "PCCC",
+          "CtdInsightsProtocolVersion": "v1/v2",
+          "CtdInsightsSeverity": "Medium",
+          "CtdIsGhost": "False",
+          "CtdLastManaged": "13 May 2023",
+          "CtdMessage": "Modify arbitrary memory vulnerability in Wind River VxWorks 6",
+          "CtdMethod": "Get",
+          "CtdModel": "1756-ENET",
+          "CtdNumberOfAccessedClients": "5",
+          "CtdNumberOfInterfaces": "3",
+          "CtdNumberOfNeighbors": "26",
+          "CtdOperatingSystem": "Windows XP",
+          "CtdRiskScore": "91",
+          "CtdSeries": "none",
+          "CtdSourceAssetType": "PLC",
+          "CtdSourceHost": "EndPoint1A",
+          "CtdSourceIp": "10.184.15.159",
+          "CtdSourceMac": "20:98:94:b9:d4:c3",
+          "CtdSourceZone": "PLC: Modbus",
+          "CtdTimeGenerated": "Aug 14 2051 01:00:00"
+        },
+        "name": "Open Ports",
+        "severity": "2",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<14>1 2051-08-15T01:00:00Z Site syslog-Insight-Default - - - CEF:0|Claroty|CTD|4.10.0|Insight|Open Ports|2|CtdSourceIp=10.184.15.159 CtdDestinationIp=10.18.92.157 CtdSourceMac=20:98:94:b9:d4:c3 CtdDestinationMac=54:8b:da:6a:ed:b2 CtdSourceHost=EndPoint1A CtdDestinationHost=DISKVM CtdTimeGenerated=Aug 14 2051 01:00:00 CtdExternalId=124 CtdDeviceExternalId=Default CtdMessage=Modify arbitrary memory vulnerability in Wind River VxWorks 6 CtdFilePath=\\\\\\\\DISKVM\\\\SHARE123 CtdSourceAssetType=PLC CtdDestinationAssetType=Endpoint CtdSourceZone=PLC: Modbus CtdDestinationZone=Endpoint: Other CtdCveId=CVE-2020-3510 CtdCveScore=8.8 CtdCvePublishDate=24 Aug 2020 CtdCveModifiedDate=25 Aug 2020 CtdCvePipeService=srvsvc CtdInsightsSeverity=Medium CtdInsightState=Remote Run Mode CtdInsightUser=ABC-123\\xyz CtdInsightsProtocol=PCCC CtdInsightsProtocolVersion=v1/v2 CtdMethod=Get CtdCommunity=public CtdInsightsPasswordPlaintext=True CtdInsightsDefaultPassword=False CtdInsightsNoPassword=True CtdLastManaged=13 May 2023 CtdIsGhost=False CtdRiskScore=91 CtdNumberOfNeighbors=26 CtdNumberOfInterfaces=3 CtdNumberOfAccessedClients=5 CtdSeries=none CtdModel=1756-ENET CtdApplication=RDP CtdOperatingSystem=Windows XP CtdEndOfLifeDate=23 Aug 2023"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:58080"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-12T07:35:32.315Z",
+      "agent": {
+        "ephemeral_id": "cddf68f1-a75f-423a-aeb0-9da90144804d",
+        "id": "ac1bcd77-5e92-4b2a-b521-dddefa921b6d",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "Event/Asset Information Change",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdAlertId": "5",
+          "CtdAlertLink": "http://localhost:4200/detection/alert/5-1",
+          "CtdCategory": "Integrity/Asset Information Change",
+          "CtdDestinationAssetType": "Endpoint, HMI, PLC, PLC, PLC, HMI",
+          "CtdDestinationHost": "Endpoint2",
+          "CtdDestinationIp": "10.9.150.10",
+          "CtdDestinationMac": "FF:FF:FF:FF:FF:FF",
+          "CtdDestinationZone": "Broadcast/Multicast: Other",
+          "CtdDeviceExternalId": "Default",
+          "CtdEventTypeId": "4",
+          "CtdExternalId": "150",
+          "CtdMessage": "Information change has been detected on eModel to Model: 1756-ENBT/A",
+          "CtdProtocol": "tftp",
+          "CtdResolvedAs": "Unresolved",
+          "CtdSourceAssetType": "PLC",
+          "CtdSourceHost": "Endpoint1",
+          "CtdSourceIp": "10.79.75.162",
+          "CtdSourceMac": "75:3A:8F:F2:09:1B",
+          "CtdSourceZone": "PLC: Rockwell",
+          "CtdStoryId": "3",
+          "CtdTimeGenerated": "Aug 14 2051 01:00:00"
+        },
+        "name": "Asset Information Change",
+        "severity": "10",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<14>1 2051-08-15T01:00:00Z Site syslog-Event-Default - - - CEF:0|Claroty|CTD|4.10.0|Event/Asset Information Change|Asset Information Change|10|CtdSourceIp=10.79.75.162 CtdDestinationIp=10.9.150.10 CtdSourceMac=75:3A:8F:F2:09:1B CtdDestinationMac=FF:FF:FF:FF:FF:FF CtdSourceHost=Endpoint1 CtdDestinationHost=Endpoint2 CtdTimeGenerated=Aug 14 2051 01:00:00 CtdExternalId=150 CtdDeviceExternalId=Default CtdMessage=Information change has been detected on eModel to Model: 1756-ENBT/A CtdProtocol=tftp CtdCategory=Integrity/Asset Information Change CtdSourceAssetType=PLC CtdDestinationAssetType=Endpoint, HMI, PLC, PLC, PLC, HMI CtdSourceZone=PLC: Rockwell CtdDestinationZone=Broadcast/Multicast: Other CtdAlertLink=http://localhost:4200/detection/alert/5-1 CtdAlertId=5 CtdStoryId=3 CtdEventTypeId=4 CtdResolvedAs=Unresolved"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:48690"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-12T09:19:40.874Z",
+      "agent": {
+        "ephemeral_id": "cddf68f1-a75f-423a-aeb0-9da90144804d",
+        "id": "ac1bcd77-5e92-4b2a-b521-dddefa921b6d",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "HealthCheck",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdBusyDm": "0.66",
+          "CtdBusyDmA": "0.77",
+          "CtdBusyFd": "0.11",
+          "CtdBusySda": "0.22",
+          "CtdBusySdaA": "0.33",
+          "CtdBusySdaB": "0.44",
+          "CtdBusySr": "0.55",
+          "CtdCapsaverFolderCleanup": "TRUE",
+          "CtdCapsaverUtilzationTest": "N/A",
+          "CtdCpu": "12.21",
+          "CtdDissectionCoverage": "44",
+          "CtdDissectorNgPacketDrops": "35",
+          "CtdExceptions": "31",
+          "CtdFullOutputPacketDrops": "34",
+          "CtdInputPacketDrops": "32",
+          "CtdMem": "13.31",
+          "CtdMessage": "Successfully ran health monitoring",
+          "CtdOutputPacketDrops": "33",
+          "CtdQuBaselineTracker": "1",
+          "CtdQuBridge": "2",
+          "CtdQuCentralBridge": "3",
+          "CtdQuConcluding": "4",
+          "CtdQuDiodeFeeder": "5",
+          "CtdQuDissector": "6",
+          "CtdQuDissectorA": "7",
+          "CtdQuDissectorNg": "8",
+          "CtdQuIndicatorService": "9",
+          "CtdQuLeecher": "10",
+          "CtdQuMonitor": "11",
+          "CtdQuNetworkStatistics": "12",
+          "CtdQuPackets": "13",
+          "CtdQuPacketsErrors": "14",
+          "CtdQuPreprocessing": "15",
+          "CtdQuPreprocessingNg": "16",
+          "CtdQuPriorityProcessing": "17",
+          "CtdQuProcessing": "18",
+          "CtdQuProcessingHigh": "19",
+          "CtdQuStatisticsNg": "20",
+          "CtdQuSyslogAlerts": "23",
+          "CtdQuSyslogEvents": "24",
+          "CtdQuSyslogInsights": "25",
+          "CtdQuZordonUpdates": "21",
+          "CtdQueuePurge": "22",
+          "CtdRdDissector": "26",
+          "CtdRdDissectorA": "27",
+          "CtdRdDissectorNg": "28",
+          "CtdRdPreprocessing": "29",
+          "CtdRdPreprocessingNg": "30",
+          "CtdRealTime": "Aug 14 2051 01:00:00",
+          "CtdSite": "Default",
+          "CtdSvcDocker": "Down",
+          "CtdSvcFirewalld": "Down",
+          "CtdSvcIcsranger": "Down",
+          "CtdSvcJwthenticator": "Down",
+          "CtdSvcMariaDb": "Down",
+          "CtdSvcNetunnel": "Down",
+          "CtdSvcPostgres": "Down",
+          "CtdSvcRabbitMq": "Down",
+          "CtdSvcRedis": "Down",
+          "CtdSvcWatchdog": "Down",
+          "CtdTagArtifactsDropsDissectorPypy": "42",
+          "CtdTagArtifactsDropsDissectorPypySum": "43",
+          "CtdTagArtifactsDropsPreprocessor": "36",
+          "CtdTagArtifactsDropsPreprocessorSum": "37",
+          "CtdTagArtifactsDropsProcessor": "38",
+          "CtdTagArtifactsDropsProcessorSum": "39",
+          "CtdTagArtifactsDropsSniffer": "40",
+          "CtdTagArtifactsDropsSnifferSum": "41",
+          "CtdTimeGenerated": "Aug 13 2051 01:00:00",
+          "CtdUsedEtc": "17.71",
+          "CtdUsedOptIcsranger": "14.41",
+          "CtdUsedTmp": "16.61",
+          "CtdUsedVar": "15.51",
+          "CtdWrkrActive": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrActiveExecuter": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrAuthentication": "{'api': 'Not Available', 'last_restart': '21 min, 18 sec'}",
+          "CtdWrkrBridge": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrCacher": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrCloudAgent": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrCloudClient": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrConcluder": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrEnricher": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrIndicators": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrIndicatorsApi": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrInsights": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrLeecher": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrMailer": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrMitre": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrNotifications": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrPreprocessor": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrProcessor": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrScheduler": "{'api': 'Available', 'last_restart': '21 min, 19 sec'}",
+          "CtdWrkrSensor": "{'api': 'Available', 'last_restart': '18 min, 34 sec'}",
+          "CtdWrkrSyncManager": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrWebAuth": "{'api': 'Not Available', 'last_restart': '21 min, 1 sec'}",
+          "CtdWrkrWebRanger": "{'api': 'Not Available', 'last_restart': '21 min, 6 sec'}",
+          "CtdWrkrWebWs": "{'api': 'Not Available', 'last_restart': '21 min, 1 sec'}",
+          "CtdWrkrWorkersRestart": "47",
+          "CtdWrkrWorkersStop": "46",
+          "CtdWrkrknownThreats": "{'api': 'Available', 'last_restart': '18 min, 58 sec'}",
+          "CtdYaraScannerTest": "45"
+        },
+        "name": "Health",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<134>1 2051-08-15T01:00:00Z Site syslog-HealthCheck-Default - - - CEF:0|Claroty|CTD|4.10.0|HealthCheck|Health|0|CtdRealTime=Aug 14 2051 01:00:00 CtdTimeGenerated=Aug 13 2051 01:00:00 CtdMessage=Successfully ran health monitoring CtdSite=Default CtdCpu=12.21 CtdMem=13.31 CtdUsedOptIcsranger=14.41 CtdUsedVar=15.51 CtdUsedTmp=16.61 CtdUsedEtc=17.71 CtdBusyFd=0.11 CtdBusySda=0.22 CtdBusySdaA=0.33 CtdBusySdaB=0.44 CtdBusySr=0.55 CtdBusyDm=0.66 CtdBusyDmA=0.77 CtdQuBaselineTracker=1 CtdQuBridge=2 CtdQuCentralBridge=3 CtdQuConcluding=4 CtdQuDiodeFeeder=5 CtdQuDissector=6 CtdQuDissectorA=7 CtdQuDissectorNg=8 CtdQuIndicatorService=9 CtdQuLeecher=10 CtdQuMonitor=11 CtdQuNetworkStatistics=12 CtdQuPackets=13 CtdQuPacketsErrors=14 CtdQuPreprocessing=15 CtdQuPreprocessingNg=16 CtdQuPriorityProcessing=17 CtdQuProcessing=18 CtdQuProcessingHigh=19 CtdQuStatisticsNg=20 CtdQuZordonUpdates=21 CtdQueuePurge=22 CtdQuSyslogAlerts=23 CtdQuSyslogEvents=24 CtdQuSyslogInsights=25 CtdRdDissector=26 CtdRdDissectorA=27 CtdRdDissectorNg=28 CtdRdPreprocessing=29 CtdRdPreprocessingNg=30 CtdSvcMariaDb=Down CtdSvcPostgres=Down CtdSvcRedis=Down CtdSvcRabbitMq=Down CtdSvcIcsranger=Down CtdSvcWatchdog=Down CtdSvcFirewalld=Down CtdSvcNetunnel=Down CtdSvcJwthenticator=Down CtdSvcDocker=Down CtdExceptions=31 CtdInputPacketDrops=32 CtdOutputPacketDrops=33 CtdFullOutputPacketDrops=34 CtdDissectorNgPacketDrops=35 CtdTagArtifactsDropsPreprocessor=36 CtdTagArtifactsDropsPreprocessorSum=37 CtdTagArtifactsDropsProcessor=38 CtdTagArtifactsDropsProcessorSum=39 CtdTagArtifactsDropsSniffer=40 CtdTagArtifactsDropsSnifferSum=41 CtdTagArtifactsDropsDissectorPypy=42 CtdTagArtifactsDropsDissectorPypySum=43 CtdCapsaverFolderCleanup=TRUE CtdDissectionCoverage=44 CtdCapsaverUtilzationTest=N/A CtdYaraScannerTest=45 CtdWrkrWorkersStop=46 CtdWrkrWorkersRestart=47 CtdWrkrActiveExecuter={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrSensor={'api': 'Available', 'last_restart': '18 min, 34 sec'} CtdWrkrAuthentication={'api': 'Not Available', 'last_restart': '21 min, 18 sec'} CtdWrkrMailer={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrMitre={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrNotifications={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrProcessor={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrCloudAgent={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrCloudClient={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrScheduler={'api': 'Available', 'last_restart': '21 min, 19 sec'} CtdWrkrknownThreats={'api': 'Available', 'last_restart': '18 min, 58 sec'} CtdWrkrCacher={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrInsights={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrActive={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrEnricher={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrIndicators={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrIndicatorsApi={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrConcluder={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrPreprocessor={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrLeecher={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrSyncManager={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrBridge={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrWebRanger={'api': 'Not Available', 'last_restart': '21 min, 6 sec'} CtdWrkrWebWs={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWebAuth={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWeb"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:37066"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-15T10:37:45.660Z",
+      "agent": {
+        "ephemeral_id": "9b1b70a1-777a-4201-b56d-67f4fb761e04",
+        "id": "4d59fea2-4cfa-4022-af4a-3e3a892a68a0",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "HealthCheck",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdConcludeTime": "50",
+          "CtdCtrlSite": "48",
+          "CtdDissectionEfficiencyDcerpc": "4.2345",
+          "CtdDissectionEfficiencyFactorytalkRna": "6.2345",
+          "CtdDissectionEfficiencyGeIfix": "15.2345",
+          "CtdDissectionEfficiencyHttp": "11.2345",
+          "CtdDissectionEfficiencyJrmi": "14.2345",
+          "CtdDissectionEfficiencyLdap": "13.2345",
+          "CtdDissectionEfficiencyLlc": "16.2345",
+          "CtdDissectionEfficiencyMatrikonNopc": "17.2345",
+          "CtdDissectionEfficiencyModbus": "2.2345",
+          "CtdDissectionEfficiencyRdp": "9.2345",
+          "CtdDissectionEfficiencySmb": "3.2345",
+          "CtdDissectionEfficiencySsh": "10.2345",
+          "CtdDissectionEfficiencySsl": "7.2345",
+          "CtdDissectionEfficiencyTcpHttp": "12.2345",
+          "CtdDissectionEfficiencyVnc": "18.2345",
+          "CtdDissectionEfficiencyVrrpProtocolMatcher": "8.2345",
+          "CtdDissectionEfficiencyZabbix": "5.2345",
+          "CtdDroppedEntities": "51",
+          "CtdLoopCallDurationBaselineTrackerWrkerHandleNetworkStatistics": "1.2345",
+          "CtdLoopCallDurationCloudClientWrkrBaseRunCloudConnected": "22.2345",
+          "CtdLoopCallDurationPollObjects": "21.2345",
+          "CtdMessage": "Successfully ran health monitoring",
+          "CtdMysqlQuery": "19.2345",
+          "CtdPostgresQuery": "20.2345",
+          "CtdPsqlIdleInTransactionSessions": "53",
+          "CtdPsqlIdleSessions": "52",
+          "CtdRealTime": "Aug 14 2051 01:00:00",
+          "CtdSensorName": "Sensor-1",
+          "CtdSnifferStatus": "N/A",
+          "CtdSnifferStatusCentral": "N/A",
+          "CtdSnifferStatusSite": "23.2345",
+          "CtdTimeGenerated": "Aug 13 2051 01:00:00",
+          "CtdUnhandledEvents": "49"
+        },
+        "name": "Health",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<134>1 2051-08-15T01:00:00Z Site syslog-HealthCheck-Default - - - CEF:0|Claroty|CTD|4.10.0|HealthCheck|Health|0|CtdRealTime=Aug 14 2051 01:00:00 CtdTimeGenerated=Aug 13 2051 01:00:00 CtdMessage=Successfully ran health monitoring CtdSensorName=Sensor-1 CtdCtrlSite=48 CtdLoopCallDurationBaselineTrackerWrkerHandleNetworkStatistics=1.2345 CtdDissectionEfficiencyModbus=2.2345 CtdDissectionEfficiencySmb=3.2345 CtdDissectionEfficiencyDcerpc=4.2345 CtdDissectionEfficiencyZabbix=5.2345 CtdDissectionEfficiencyFactorytalkRna=6.2345 CtdDissectionEfficiencySsl=7.2345 CtdDissectionEfficiencyVrrpProtocolMatcher=8.2345 CtdDissectionEfficiencyRdp=9.2345 CtdDissectionEfficiencySsh=10.2345 CtdDissectionEfficiencyHttp=11.2345 CtdDissectionEfficiencyTcpHttp=12.2345 CtdDissectionEfficiencyLdap=13.2345 CtdDissectionEfficiencyJrmi=14.2345 CtdDissectionEfficiencyGeIfix=15.2345 CtdDissectionEfficiencyLlc=16.2345 CtdDissectionEfficiencyMatrikonNopc=17.2345 CtdDissectionEfficiencyVnc=18.2345 CtdUnhandledEvents=49 CtdConcludeTime=50 CtdMysqlQuery=19.2345 CtdPostgresQuery=20.2345 CtdDroppedEntities=51 CtdPsqlIdleSessions=52 CtdPsqlIdleInTransactionSessions=53 CtdSnifferStatus=N/A CtdLoopCallDurationPollObjects=21.2345 CtdLoopCallDurationCloudClientWrkrBaseRunCloudConnected=22.2345 CtdSnifferStatusCentral=N/A CtdSnifferStatusSite=23.2345"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:45620"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-15T12:00:38.524Z",
+      "agent": {
+        "ephemeral_id": "9b1b70a1-777a-4201-b56d-67f4fb761e04",
+        "id": "4d59fea2-4cfa-4022-af4a-3e3a892a68a0",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "HealthCheck",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "4.10.0"
+        },
+        "extensions": {
+          "CtdConcludeTime": "50",
+          "CtdCtrlSite": "48 ",
+          "CtdDissectionEfficiencyModbus": "2.2345",
+          "CtdLoopCallDurationBaselineTrackerWrkerHandleNetworkStatistics": "1.2345",
+          "CtdLoopCallDurationCloudClientWrkrBaseRunCloudConnected": "22.2345",
+          "CtdLoopCallDurationPollObjects": "21.2345",
+          "CtdMessage": "Successfully ran health monitoring",
+          "CtdQuSyslogSlerts": "20",
+          "CtdQueuePurge": "10",
+          "CtdRealTime": "Aug 14 2051 01:00:00",
+          "CtdSensorName": "Sensor-1",
+          "CtdTimeGenerated": "Aug 13 2051 01:00:00",
+          "CtdWrkrBaselineTracker": "{'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'}",
+          "CtdWrkrCapsaver": "{'api': 'Not Available', 'last_restart': '19 min, 17 sec'}",
+          "CtdWrkrConfigurator": "{'api': 'Available', 'last_restart': '21 min, 18 sec'}",
+          "CtdWrkrConfiguratorNginx": "{'api': 'Not Available', 'last_restart': '19 min, 17 sec'}",
+          "CtdWrkrDissector": "{'api': 'Available', 'last_restart': '18 min, 34 sec'}",
+          "CtdWrkrDissectorA": "{'api': 'Available', 'last_restart': '18 min, 34 sec'}",
+          "CtdWrkrWebAuth": "{'api': 'Not Available', 'last_restart': '21 min, 1 sec'}",
+          "CtdWrkrWebNginx": "{'api': 'Not Available', 'last_restart': '21 min, 1 sec'}",
+          "CtdWrkrWebWs": "{'api': 'Not Available', 'last_restart': '21 min, 1 sec'}",
+          "CtdWrkrWorkersRestart": "47",
+          "CtdWrkrWorkersStop": "46"
+        },
+        "name": "Health",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<134>1 2051-08-15T01:00:00Z Site syslog-HealthCheck-Default - - - CEF:0|Claroty|CTD|4.10.0|HealthCheck|Health|0|CtdRealTime=Aug 14 2051 01:00:00 CtdTimeGenerated=Aug 13 2051 01:00:00 CtdQueuePurge=10 CtdQuSyslogSlerts=20 CtdLoopCallDurationCloudClientWrkrBaseRunCloudConnected=22.2345 CtdLoopCallDurationBaselineTrackerWrkerHandleNetworkStatistics=1.2345 CtdLoopCallDurationPollObjects=21.2345 CtdCtrlSite=48  CtdConcludeTime=50 CtdMessage=Successfully ran health monitoring CtdWrkrWorkersStop=46 CtdWrkrWorkersRestart=47 CtdWrkrWebWs={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWebAuth={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrWebNginx={'api': 'Not Available', 'last_restart': '21 min, 1 sec'} CtdWrkrConfigurator={'api': 'Available', 'last_restart': '21 min, 18 sec'} CtdWrkrConfiguratorNginx={'api': 'Not Available', 'last_restart': '19 min, 17 sec'} CtdWrkrCapsaver={'api': 'Not Available', 'last_restart': '19 min, 17 sec'} CtdWrkrBaselineTracker={'api': 'Not Available', 'last_restart': '19316 days, 15 hrs, 56 min, 43 sec'} CtdWrkrDissector={'api': 'Available', 'last_restart': '18 min, 34 sec'} CtdWrkrDissectorA={'api': 'Available', 'last_restart': '18 min, 34 sec'} CtdSensorName=Sensor-1 CtdDissectionEfficiencyModbus=2.2345"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:58864"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-16T09:12:00.000Z",
+      "agent": {
+        "ephemeral_id": "9b1b70a1-777a-4201-b56d-67f4fb761e04",
+        "id": "4d59fea2-4cfa-4022-af4a-3e3a892a68a0",
+        "name": "co8",
+        "type": "filebeat",
+        "version": "8.14.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "Insight",
+          "product": "CTD",
+          "vendor": "Claroty",
+          "version": "192.0.2.72"
+        },
+        "extensions": {
+          "CtdDestinationAssetType": "OT",
+          "CtdDestinationHost": "dsthost",
+          "CtdDestinationIp": "10.201.100.215, 10.120.20.161",
+          "CtdDestinationMac": "27:13:0F:70:01:22",
+          "CtdDestinationZone": "Endpoint: Other",
+          "CtdDeviceExternalId": "sc-ssd-us-test-co-007",
+          "CtdExternalId": "110010",
+          "CtdInsightsProtocol": "2",
+          "CtdInsightsSeverity": "Low",
+          "CtdNumberOfNeighbors": "315",
+          "CtdSourceAssetType": "OT",
+          "CtdSourceHost": "srchost",
+          "CtdSourceIp": "10.127.41.24, 10.231.208.189",
+          "CtdSourceMac": "19:65:1E:84:22:48",
+          "CtdSourceZone": "Endpoint: Other",
+          "CtdTimeGenerated": "Apr 10 2054 02:38:27"
+        },
+        "name": "Highly Connected Assets",
+        "severity": "2",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "original": "<14>1 2054-04-10T02:41:14Z hostname syslog-Insight-EMC - - - CEF:0|Claroty|CTD|192.0.2.72|Insight|Highly Connected Assets|2|CtdSourceIp=10.127.41.24, 10.231.208.189 CtdDestinationIp=10.201.100.215, 10.120.20.161 CtdSourceMac=19:65:1E:84:22:48 CtdDestinationMac=27:13:0F:70:01:22 CtdSourceHost=srchost CtdDestinationHost=dsthost CtdTimeGenerated=Apr 10 2054 02:38:27 CtdExternalId=110010 CtdDeviceExternalId=sc-ssd-us-test-co-007 CtdSourceAssetType=OT CtdDestinationAssetType=OT CtdSourceZone=Endpoint: Other CtdDestinationZone=Endpoint: Other CtdInsightsSeverity=Low CtdInsightsProtocol=2 CtdNumberOfNeighbors=315"
+      },
+      "host": {
+        "name": "co8"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "127.0.0.1:58866"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claroty_ctd-event-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "claroty_ctd",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

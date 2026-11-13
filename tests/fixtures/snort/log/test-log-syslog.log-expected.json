@@ -1,0 +1,246 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-09-05T16:05:26.000-05:00",
+      "destination": {
+        "address": "10.86.193.167",
+        "ip": "10.86.193.167",
+        "port": 32414
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "Sep  5 16:05:26 adx snort: [1:1000017:0] UDP Connection [Classification: Misc activity] [Priority: 3] {UDP} 10.55.46.144:55776 -> 10.86.193.167:32414",
+        "severity": 3,
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:6NgcsEz2XMmCfnzbUZpZF6QjqEw=",
+        "direction": "internal",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "adx",
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "process": {
+        "name": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.55.46.144",
+          "10.86.193.167"
+        ]
+      },
+      "rule": {
+        "category": "Misc activity",
+        "description": "UDP Connection",
+        "id": "1000017",
+        "version": "0"
+      },
+      "snort": {
+        "gid": 1
+      },
+      "source": {
+        "address": "10.55.46.144",
+        "ip": "10.55.46.144",
+        "port": 55776
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-05T16:05:26.000-05:00",
+      "destination": {
+        "address": "10.86.108.149",
+        "ip": "10.86.108.149",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "Sep  5 16:05:26 adx snort: [1:1000016:0] TCP Connection [Priority: 3] {TCP} 10.219.81.93:58720 -> 10.86.108.149:22",
+        "severity": 3,
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:tlw0Rb+cOCVYH6YEHBer4dFfGh8=",
+        "direction": "internal",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "adx",
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "process": {
+        "name": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.219.81.93",
+          "10.86.108.149"
+        ]
+      },
+      "rule": {
+        "description": "TCP Connection",
+        "id": "1000016",
+        "version": "0"
+      },
+      "snort": {
+        "gid": 1
+      },
+      "source": {
+        "address": "10.219.81.93",
+        "ip": "10.219.81.93",
+        "port": 58720
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-05T16:02:55.000-05:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "Sep  5 16:02:55 adx snort: [1:1000015:0] Pinging... [Classification: Misc activity] [Priority: 3] {ICMP} 10.105.16.14 -> 192.0.2.87",
+        "severity": 3,
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:qyNGqbsT86O6XpGWWE+pEER/4zc=",
+        "direction": "outbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "adx",
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "process": {
+        "name": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.105.16.14",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "category": "Misc activity",
+        "description": "Pinging...",
+        "id": "1000015",
+        "version": "0"
+      },
+      "snort": {
+        "gid": 1
+      },
+      "source": {
+        "address": "10.105.16.14",
+        "ip": "10.105.16.14"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Sep  5 16:05:26 adx snort: [1:1000017:0] UDP Connection [Classification: Misc activity] [Priority: 3] {UDP} 10.55.46.144:55776 -> 10.86.193.167:32414",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Sep  5 16:05:26 adx snort: [1:1000016:0] TCP Connection [Priority: 3] {TCP} 10.219.81.93:58720 -> 10.86.108.149:22",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "Sep  5 16:02:55 adx snort: [1:1000015:0] Pinging... [Classification: Misc activity] [Priority: 3] {ICMP} 10.105.16.14 -> 192.0.2.87",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}-[0-9]{2}:[0-9]{2}$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-snort-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "snort",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

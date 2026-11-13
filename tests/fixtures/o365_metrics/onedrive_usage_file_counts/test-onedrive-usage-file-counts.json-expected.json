@@ -1,0 +1,64 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-23",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Active\":\"16\",\"Report Date\":\"2052-11-23\",\"Report Period\":\"7\",\"Site Type\":\"All\",\"Total\":\"164\",\"Report Refresh Date\":\"2052-11-29\"}"
+      },
+      "o365": {
+        "metrics": {
+          "onedrive": {
+            "usage": {
+              "file": {
+                "counts": {
+                  "active": {
+                    "count": 16
+                  },
+                  "report": {
+                    "date": "2052-11-23",
+                    "period": {
+                      "day": "7"
+                    },
+                    "refresh_date": "2052-11-29"
+                  },
+                  "site_type": "All",
+                  "total": {
+                    "count": 164
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "o365.metrics.onedrive_usage_file_counts"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "onedrive_usage_file_counts": "{\"Active\":\"16\",\"Report Date\":\"2052-11-23\",\"Report Period\":\"7\",\"Site Type\":\"All\",\"Total\":\"164\",\"Report Refresh Date\":\"2052-11-29\"}",
+      "tags": [
+        "preserve_original_event",
+        "o365.metrics.onedrive_usage_file_counts"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "onedrive_usage_file_counts",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-onedrive_usage_file_counts-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

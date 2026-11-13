@@ -1,0 +1,104 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-03-29T13:20:47.000Z",
+      "checkpoint": {
+        "logid": "0",
+        "match_id": "1",
+        "origin_sic_name": "cn=cp_mgmt,o=sk-cb88f9..tmn8s8",
+        "parent_rule": "0",
+        "rule_action": "Accept"
+      },
+      "destination": {
+        "ip": "192.168.124.110",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Accept",
+        "category": [
+          "network"
+        ],
+        "id": "{0x5e80a0af,0x3,0xbba3afa,0xd2c10858}",
+        "kind": "event",
+        "original": "<134>1 2048-03-29T13:20:47Z sk-cb88f9 CheckPoint 1930 - [action:\"Accept\"; flags:\"444676\"; ifdir:\"outbound\"; ifname:\"eth0\"; logid:\"0\"; loguid:\"{0x5e80a0af,0x3,0xbba3afa,0xd2c10858}\"; origin:\"192.168.125.99\"; originsicname:\"cn=cp_mgmt,o=sk-cb88f9..tmn8s8\"; sequencenum:\"5\"; version:\"5\"; __policy_id_tag:\"product=VPN-1 & FireWall-1[db_tag={AFAF5604-2ECE-6A40-B29A-C68B1529613B};mgmt=sk-cb88f9;date=2469100825;policy_name=Standard\\]\"; dst:\"192.168.124.110\"; inzone:\"Local\"; layer_name:\"Network\"; layer_uuid:\"81c5ab46-85b6-4500-bbe3-67bc77857e7a\"; match_id:\"1\"; parent_rule:\"0\"; rule_action:\"Accept\"; rule_uid:\"5abb979a-0795-4e5a-903e-c7f9b6d4c5e9\"; outzone:\"Internal\"; product:\"VPN-1 & FireWall-1\"; proto:\"17\"; s_port:\"37029\"; service:\"53\"; service_id:\"domain-udp\"; src:\"192.168.125.99\"]  ",
+        "outcome": "success",
+        "sequence": 5,
+        "timezone": "UTC",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "network": {
+        "application": "domain-udp",
+        "direction": "outbound",
+        "iana_number": "17",
+        "name": "Network",
+        "transport": "udp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "eth0"
+          },
+          "zone": "Internal"
+        },
+        "hostname": "cp_mgmt",
+        "ingress": {
+          "zone": "Local"
+        },
+        "ip": [
+          "192.168.125.99"
+        ],
+        "name": "192.168.125.99",
+        "product": "VPN-1 & FireWall-1",
+        "type": "firewall",
+        "vendor": "Checkpoint"
+      },
+      "related": {
+        "ip": [
+          "192.168.125.99",
+          "192.168.124.110"
+        ]
+      },
+      "rule": {
+        "uuid": "5abb979a-0795-4e5a-903e-c7f9b6d4c5e9"
+      },
+      "source": {
+        "ip": "192.168.125.99",
+        "port": 37029
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "<134>1 2048-03-29T13:20:47Z sk-cb88f9 CheckPoint 1930 - [action:\"Accept\"; flags:\"444676\"; ifdir:\"outbound\"; ifname:\"eth0\"; logid:\"0\"; loguid:\"{0x5e80a0af,0x3,0xbba3afa,0xd2c10858}\"; origin:\"192.168.125.99\"; originsicname:\"cn=cp_mgmt,o=sk-cb88f9..tmn8s8\"; sequencenum:\"5\"; version:\"5\"; __policy_id_tag:\"product=VPN-1 & FireWall-1[db_tag={AFAF5604-2ECE-6A40-B29A-C68B1529613B};mgmt=sk-cb88f9;date=2469100825;policy_name=Standard\\]\"; dst:\"192.168.124.110\"; inzone:\"Local\"; layer_name:\"Network\"; layer_uuid:\"81c5ab46-85b6-4500-bbe3-67bc77857e7a\"; match_id:\"1\"; parent_rule:\"0\"; rule_action:\"Accept\"; rule_uid:\"5abb979a-0795-4e5a-903e-c7f9b6d4c5e9\"; outzone:\"Internal\"; product:\"VPN-1 & FireWall-1\"; proto:\"17\"; s_port:\"37029\"; service:\"53\"; service_id:\"domain-udp\"; src:\"192.168.125.99\"]  ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "firewall",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-checkpoint-firewall-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "checkpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

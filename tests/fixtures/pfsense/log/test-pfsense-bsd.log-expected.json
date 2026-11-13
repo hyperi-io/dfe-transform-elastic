@@ -1,0 +1,2084 @@
+{
+  "expected": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:30 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12617,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12617,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:WtiiaN0kyEdSWJRfRJ+7nhliuHw=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 12617,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49724
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:30 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,32554,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49696,853,0,S,3995901112,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,32554,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49696,853,0,S,3995901112,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:NoxaOjMEdCO00vvz7jd7LxFEZrM=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 32554,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49696
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 123
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:30 filterlog[72237]: 176,,,1520797901,igb1.27,match,pass,in,4,0xb8,,64,58355,0,none,17,udp,76,10.246.143.98,192.0.2.87,123,123,56",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "176,,,1520797901,igb1.27,match,pass,in,4,0xb8,,64,58355,0,none,17,udp,76,10.246.143.98,192.0.2.87,123,123,56",
+      "network": {
+        "bytes": 76,
+        "community_id": "1:GaCxeuPiRPsfi1s5TYKQOwD7neQ=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "none",
+          "id": 58355,
+          "offset": 0,
+          "tos": "0xb8",
+          "ttl": 64
+        },
+        "udp": {
+          "length": 56
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.246.143.98"
+        ]
+      },
+      "rule": {
+        "id": "1520797901"
+      },
+      "source": {
+        "address": "10.246.143.98",
+        "ip": "10.246.143.98",
+        "port": 123
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:31 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,47260,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49726,853,0,S,2457553480,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,47260,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49726,853,0,S,2457553480,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:pvlyvz2Q7zsjo9M7elCrkPTWH/U=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 47260,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49726
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:31 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,23391,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56584,853,0,S,1118373581,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,23391,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56584,853,0,S,1118373581,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:wUr/4nveuhqUL/TLri4S93QsjJ0=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 23391,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 56584
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:31 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,547,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56542,853,0,S,3798927693,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,547,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56542,853,0,S,3798927693,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:HMCjRaYi6cRX+ackZqCSRAFS/LQ=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 547,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 56542
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "ff02::1:2",
+        "ip": "ff02::1:2",
+        "port": 547
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:31 filterlog[72237]: 6,,,1000000105,igb1.27,match,block,in,6,0x00,0xf6279,1,UDP,17,32,fe80::208:9bff:fef3:652b,ff02::1:2,546,547,32",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "6,,,1000000105,igb1.27,match,block,in,6,0x00,0xf6279,1,UDP,17,32,fe80::208:9bff:fef3:652b,ff02::1:2,546,547,32",
+      "network": {
+        "bytes": 32,
+        "community_id": "1:S6E0S9O3vdACB/y4guu8ivBG4KE=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv6",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "1",
+          "flow_label": "0xf6279",
+          "tos": "0x00"
+        },
+        "udp": {
+          "length": 32
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "ff02::1:2",
+          "fe80::208:9bff:fef3:652b"
+        ]
+      },
+      "rule": {
+        "id": "1000000105"
+      },
+      "source": {
+        "address": "fe80::208:9bff:fef3:652b",
+        "ip": "fe80::208:9bff:fef3:652b",
+        "port": 546
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,47261,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49726,853,0,S,2457553480,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,47261,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49726,853,0,S,2457553480,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:pvlyvz2Q7zsjo9M7elCrkPTWH/U=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 47261,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49726
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,1896,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49708,853,0,S,1224947595,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,1896,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49708,853,0,S,1224947595,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Df1eL3fIkEyEJqCaETKfIs8vJN0=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 1896,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49708
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,40620,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56578,853,0,S,3864182524,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,40620,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56578,853,0,S,3864182524,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Rke75KJ4LdKbZ8cP2IDrCPv2TxY=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 40620,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 56578
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,25977,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49728,853,0,S,796254558,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,25977,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49728,853,0,S,796254558,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Rmd7gnVMLMWdomJ/HSyhu7RNJLo=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 25977,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49728
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12618,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12618,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:WtiiaN0kyEdSWJRfRJ+7nhliuHw=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 12618,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49724
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:33 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,11515,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49710,853,0,S,3494229132,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,11515,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49710,853,0,S,3494229132,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:81B1HDWQuPEiE+AE+k/vXjGe6ZU=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 11515,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49710
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:33 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,48979,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49672,853,0,S,1436983722,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,48979,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49672,853,0,S,1436983722,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:rjCRXbQZ1CX5WH2Je7hkjpIdXno=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 48979,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49672
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "10.87.93.210",
+        "ip": "10.87.93.210",
+        "port": 137
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:33 filterlog[72237]: 176,,,1520797901,igb1.27,match,pass,in,4,0x0,,64,29691,0,DF,17,udp,78,10.70.128.42,10.87.93.210,137,137,58",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "176,,,1520797901,igb1.27,match,pass,in,4,0x0,,64,29691,0,DF,17,udp,78,10.70.128.42,10.87.93.210,137,137,58",
+      "network": {
+        "bytes": 78,
+        "community_id": "1:vg3BDSj7WU+H9e31+i+5JPD6IqQ=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "27"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.27"
+          },
+          "vlan": {
+            "id": "27"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 29691,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        },
+        "udp": {
+          "length": 58
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "10.87.93.210",
+          "10.70.128.42"
+        ]
+      },
+      "rule": {
+        "id": "1520797901"
+      },
+      "source": {
+        "address": "10.70.128.42",
+        "ip": "10.70.128.42",
+        "port": 137
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 853
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:33 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,25978,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49728,853,0,S,796254558,,64240,,mss;sackOK;TS;nop;wscale",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,25978,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49728,853,0,S,796254558,,64240,,mss;sackOK;TS;nop;wscale",
+      "network": {
+        "bytes": 60,
+        "community_id": "1:Rmd7gnVMLMWdomJ/HSyhu7RNJLo=",
+        "direction": "inbound",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 25978,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 63
+        },
+        "tcp": {
+          "flags": "S",
+          "length": 0,
+          "options": [
+            "mss",
+            "sackOK",
+            "TS",
+            "nop",
+            "wscale"
+          ],
+          "window": 64240
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.87.198.145"
+        ]
+      },
+      "rule": {
+        "id": "1535324496"
+      },
+      "source": {
+        "address": "10.87.198.145",
+        "ip": "10.87.198.145",
+        "port": 49728
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  3 19:10:33 filterlog[72237]: 199,,,1557957510,igb1.12,match,pass,in,4,0xc0,,1,0,0,DF,2,igmp,32,10.203.159.90,192.0.2.87,datalength=8",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "199,,,1557957510,igb1.12,match,pass,in,4,0xc0,,1,0,0,DF,2,igmp,32,10.203.159.90,192.0.2.87,datalength=8",
+      "network": {
+        "bytes": 32,
+        "community_id": "1:lzwP4buAQemNJRU87h+NkQU9haQ=",
+        "direction": "inbound",
+        "iana_number": "2",
+        "packets": 8,
+        "transport": "igmp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "12"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.12"
+          },
+          "vlan": {
+            "id": "12"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "DF",
+          "id": 0,
+          "offset": 0,
+          "tos": "0xc0",
+          "ttl": 1
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.203.159.90"
+        ]
+      },
+      "rule": {
+        "id": "1557957510"
+      },
+      "source": {
+        "address": "10.203.159.90",
+        "ip": "10.203.159.90"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  4 11:10:45 filterlog[72237]: 176,,,1520797901,igb1.10,match,pass,in,4,0x0,,64,62096,0,DF,1,icmp,84,10.89.11.220,192.0.2.87,request,37728,164",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "176,,,1520797901,igb1.10,match,pass,in,4,0x0,,64,62096,0,DF,1,icmp,84,10.89.11.220,192.0.2.87,request,37728,164",
+      "network": {
+        "bytes": 84,
+        "community_id": "1:UOTze2ktvcRhtyPdLKBKef1XKoU=",
+        "direction": "inbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "10"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.10"
+          },
+          "vlan": {
+            "id": "10"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "icmp": {
+          "id": 37728,
+          "seq": 164,
+          "type": "request"
+        },
+        "ip": {
+          "flags": "DF",
+          "id": 62096,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.89.11.220"
+        ]
+      },
+      "rule": {
+        "id": "1520797901"
+      },
+      "source": {
+        "address": "10.89.11.220",
+        "ip": "10.89.11.220"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "10.194.63.191",
+        "ip": "10.194.63.191"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>Jul  4 11:10:54 filterlog[72237]: 199,,,1557957510,igb1.15,match,pass,in,4,0x0,,64,0,0,DF,1,icmp,84,10.191.252.7,10.194.63.191,request,0,064",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "199,,,1557957510,igb1.15,match,pass,in,4,0x0,,64,0,0,DF,1,icmp,84,10.191.252.7,10.194.63.191,request,0,064",
+      "network": {
+        "bytes": 84,
+        "community_id": "1:jWibrRzIgc2/5rQR6MhjCW3CHwk=",
+        "direction": "inbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4",
+        "vlan": {
+          "id": "15"
+        }
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igb1.15"
+          },
+          "vlan": {
+            "id": "15"
+          }
+        },
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "icmp": {
+          "id": 0,
+          "seq": 64,
+          "type": "request"
+        },
+        "ip": {
+          "flags": "DF",
+          "id": 0,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 72237
+      },
+      "related": {
+        "ip": [
+          "10.194.63.191",
+          "10.191.252.7"
+        ]
+      },
+      "rule": {
+        "id": "1557957510"
+      },
+      "source": {
+        "address": "10.191.252.7",
+        "ip": "10.191.252.7"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "198.51.100.1",
+        "ip": "198.51.100.1",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<134>May  8 14:04:06 ovts-7.areggve.local filterlog[69300]: 52,,,97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e,igc2,match,pass,in,4,0x0,,64,9146,0,none,17,udp,94,198.51.100.10,198.51.100.1,42590,53,74",
+        "provider": "filterlog",
+        "reason": "match",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "52,,,97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e,igc2,match,pass,in,4,0x0,,64,9146,0,none,17,udp,94,198.51.100.10,198.51.100.1,42590,53,74",
+      "network": {
+        "bytes": 94,
+        "community_id": "1:qHzySLpI1Fayz9cWxDjhiopfuJw=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "igc2"
+          }
+        },
+        "name": "ovts-7.areggve.local",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "ip": {
+          "flags": "none",
+          "id": 9146,
+          "offset": 0,
+          "tos": "0x0",
+          "ttl": 64
+        },
+        "udp": {
+          "length": 74
+        }
+      },
+      "process": {
+        "name": "filterlog",
+        "pid": 69300
+      },
+      "related": {
+        "ip": [
+          "198.51.100.1",
+          "198.51.100.10"
+        ]
+      },
+      "rule": {
+        "id": "97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e"
+      },
+      "source": {
+        "address": "198.51.100.10",
+        "ip": "198.51.100.10",
+        "port": 42590
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:30 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12617,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:30 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,32554,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49696,853,0,S,3995901112,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:30 filterlog[72237]: 176,,,1520797901,igb1.27,match,pass,in,4,0xb8,,64,58355,0,none,17,udp,76,10.246.143.98,192.0.2.87,123,123,56",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:31 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,47260,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49726,853,0,S,2457553480,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:31 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,23391,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56584,853,0,S,1118373581,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:31 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,547,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56542,853,0,S,3798927693,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:31 filterlog[72237]: 6,,,1000000105,igb1.27,match,block,in,6,0x00,0xf6279,1,UDP,17,32,fe80::208:9bff:fef3:652b,ff02::1:2,546,547,32",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,47261,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49726,853,0,S,2457553480,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,1896,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49708,853,0,S,1224947595,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,40620,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,56578,853,0,S,3864182524,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,25977,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49728,853,0,S,796254558,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:32 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,12618,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49724,853,0,S,1891286705,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:33 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,11515,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49710,853,0,S,3494229132,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:33 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,48979,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49672,853,0,S,1436983722,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:33 filterlog[72237]: 176,,,1520797901,igb1.27,match,pass,in,4,0x0,,64,29691,0,DF,17,udp,78,10.70.128.42,10.87.93.210,137,137,58",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:33 filterlog[72237]: 146,,,1535324496,igb1.12,match,block,in,4,0x0,,63,25978,0,DF,6,tcp,60,10.87.198.145,192.0.2.87,49728,853,0,S,796254558,,64240,,mss;sackOK;TS;nop;wscale",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  3 19:10:33 filterlog[72237]: 199,,,1557957510,igb1.12,match,pass,in,4,0xc0,,1,0,0,DF,2,igmp,32,10.203.159.90,192.0.2.87,datalength=8",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  4 11:10:45 filterlog[72237]: 176,,,1520797901,igb1.10,match,pass,in,4,0x0,,64,62096,0,DF,1,icmp,84,10.89.11.220,192.0.2.87,request,37728,164",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>Jul  4 11:10:54 filterlog[72237]: 199,,,1557957510,igb1.15,match,pass,in,4,0x0,,64,0,0,DF,1,icmp,84,10.191.252.7,10.194.63.191,request,0,064",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<134>May  8 14:04:06 ovts-7.areggve.local filterlog[69300]: 52,,,97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e,igc2,match,pass,in,4,0x0,,64,9146,0,none,17,udp,94,198.51.100.10,198.51.100.1,42590,53,74",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 20,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

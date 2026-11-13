@@ -1,0 +1,132 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:46.973472836Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": -1,
+          "deletion_scheduled_at": "2027-02-06T23:07:46.973472836Z",
+          "expiration_ts": "9999-12-31T00:00:00.000Z",
+          "feed_id": 0,
+          "id": "235548934",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": true,
+          "itype": "apt_url",
+          "meta": {
+            "severity": "very-high"
+          },
+          "owner_organization_id": 70,
+          "retina_confidence": -1,
+          "source_reported_confidence": -1,
+          "status": "active",
+          "threat_type": "apt",
+          "type": "url",
+          "update_id": "467408247",
+          "uuid": "5238af34-0da6-41a3-b5f9-f97bf5d9090b",
+          "value": "http://www.bnmv3.com/"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2049-04-29T16:01:13.662Z",
+        "kind": "enrichment",
+        "severity": 99,
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "None",
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2049-04-29T16:01:13.662Z",
+          "name": "http://www.bnmv3.com/",
+          "provider": "Analyst",
+          "type": "url",
+          "url": {
+            "domain": "www.bnmv3.com",
+            "full": "http://www.bnmv3.com/",
+            "original": "http://www.bnmv3.com/",
+            "path": "/",
+            "scheme": "http"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": -1,
+        "created_by": null,
+        "created_ts": "2049-04-29T16:01:13.662Z",
+        "description": null,
+        "expiration_ts": "9999-12-31T00:00:00.000Z",
+        "feed_id": 0,
+        "id": 235548934,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": true,
+        "itype": "apt_url",
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 142",
+          "severity": "very-high"
+        },
+        "modified_ts": "2049-04-29T16:01:13.662Z",
+        "org": "",
+        "owner_organization_id": 70,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/235548934/",
+        "retina_confidence": -1,
+        "sort": [
+          467408247
+        ],
+        "source": "Analyst",
+        "source_locations": [],
+        "source_reported_confidence": -1,
+        "status": "active",
+        "subtype": null,
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "apt",
+        "threatscore": 0,
+        "tlp": null,
+        "trusted_circle_ids": null,
+        "type": "url",
+        "update_id": 467408247,
+        "uuid": "5238af34-0da6-41a3-b5f9-f97bf5d9090b",
+        "value": "http://www.bnmv3.com/",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "SmartGroupComputerMembershipChange",
+        "category": [
+          "host",
+          "iam"
+        ],
+        "kind": "event",
+        "type": [
+          "change",
+          "group"
+        ]
+      },
+      "host": {
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "group_added_devices": "METC3M",
+            "group_added_devices_ids": "ANPV60",
+            "group_removed_devices": "3U4YCS",
+            "group_removed_devices_ids": "Z2Q3SG",
+            "is_computer": true,
+            "jssid": "5415838551",
+            "name": "QXM5Z",
+            "smart_group": "O3DM4N"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": "9300670614",
+            "name": "6T07K",
+            "webhook_event": "SmartGroupComputerMembershipChange"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "computer": true,
+          "group_added_devices": "METC3M",
+          "group_added_devices_ids": "ANPV60",
+          "group_removed_devices": "3U4YCS",
+          "group_removed_devices_ids": "Z2Q3SG",
+          "jssid": "5415838551",
+          "name": "QXM5Z",
+          "smart_group": "O3DM4N"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": "9300670614",
+          "name": "6T07K",
+          "webhook_event": "SmartGroupComputerMembershipChange"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

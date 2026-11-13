@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:06:38.787Z",
+            "agent": {
+                "version": "8.0.0",
+                "ephemeral_id": "b2f9ff63-3f40-429c-b85e-ff78eed8530d",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "time_created": "2047-10-22T11:26:12.495Z",
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 4105,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "event_data": {
+                    "SubjectDomainName": "WLBEAT",
+                    "SidHistory": "-",
+                    "TargetUserName": "FvpMvabrdLpsoo",
+                    "TargetDomainName": "WLBEAT",
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "SOV-86VA2XP94FG$",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1110",
+                    "SubjectLogonId": "0x27438",
+                    "PrivilegeList": "-",
+                    "SamAccountName": "FvpMvabrdLpsoo"
+                },
+                "process": {
+                    "pid": 772,
+                    "thread": {
+                        "id": 1664
+                    }
+                },
+                "event_id": 4727,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "outcome": "success",
+                "level": "information"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4727,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4727.xml"
+                },
+                "level": "information"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            }
+        }
+    ]
+}

@@ -1,0 +1,6 @@
+2048-02-20T07:01:01.000Z Eae 20 07:01:01 ip-172-31-81-156 systemd: Stopping User Slice of root.
+2048-02-20T07:02:18.000Z Eae 20 07:02:18 ip-172-31-81-156 dhclient[3000]: XMT: Solicit on eth0, interval 125240ms.
+2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPREQUEST on eth0 to 172.31.167.169 port 67 (xid=0x4575af22)
+2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: DHCPACK from 172.31.167.169 (xid=0x4575af22)
+2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 dhclient[2898]: bound to 172.16.58.189 -- renewal in 1599 seconds.
+2048-02-20T07:02:37.000Z Eae 20 07:02:37 ip-172-31-81-156 ec2net: [get_meta] Trying to get http://169.254.169.254/latest/meta-data/network/interfaces/macs/06:b7:e5:09:4b:40/local-ipv4s

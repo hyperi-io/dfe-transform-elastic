@@ -1,0 +1,72 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "JSSShutdown",
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "host_address": "7DG6C0",
+            "institution": "HNVHCL",
+            "is_cluster_master": true,
+            "jss_url": "27RTB3",
+            "web_application_path": "5LYF6O"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 789,
+            "name": "AYW4V",
+            "webhook_event": "JSSShutdown"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "host_address": "7DG6C0",
+          "institution": "HNVHCL",
+          "is_cluster_master": true,
+          "jss_url": "27RTB3",
+          "web_application_path": "5LYF6O"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 789,
+          "name": "AYW4V",
+          "webhook_event": "JSSShutdown"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

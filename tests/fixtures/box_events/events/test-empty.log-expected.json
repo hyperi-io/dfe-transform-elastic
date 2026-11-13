@@ -1,0 +1,25 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"chunk_size\":0,\"entries\":[],\"next_stream_position\":564670747717431}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-box_events-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "box_events",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

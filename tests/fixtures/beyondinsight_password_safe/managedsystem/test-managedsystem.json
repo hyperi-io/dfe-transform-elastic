@@ -1,0 +1,9 @@
+{
+    "events": [
+        {
+            "event": {
+                "original": "{\"ManagedSystemID\":13,\"EntityTypeID\":1,\"AssetID\":13,\"DatabaseID\":5,\"DirectoryID\":3,\"CloudID\":1,\"WorkgroupID\":1,\"HostName\":\"AbwasakjCmobcgbpm\",\"DNSName\":\"AardvarkAgreement.example.com\",\"IPAddress\":\"198.51.100.10\",\"InstanceName\":\"InstanceOne\",\"IsDefaultInstance\":true,\"Template\":\"ServerTemplate\",\"ForestName\":\"PrimaryForest\",\"UseSSL\":true,\"OracleInternetDirectoryID\":\"062a3903-e66a-45d6-a418-493986792503\",\"OracleInternetDirectoryServiceName\":\"OiDService\",\"SystemName\":\"AbwasakjCmobcgbpm\",\"PlatformID\":4,\"NetBiosName\":\"AardvarkNet\",\"Port\":8080,\"Timeout\":30,\"Description\":\"Primary Managed System for AbwasakjCmobcgbpm\",\"ContactEmail\":\"admin@abwasakjcmobcgbpm.com\",\"PasswordRuleID\":0,\"DSSKeyRuleID\":0,\"ReleaseDuration\":120,\"MaxReleaseDuration\":525600,\"ISAReleaseDuration\":120,\"AutoManagementFlag\":true,\"FunctionalAccountID\":14,\"LoginAccountID\":20,\"ElevationCommand\":\"sudo\",\"SshKeyEnforcementMode\":1,\"CheckPasswordFlag\":false,\"ChangePasswordAfterAnyReleaseFlag\":false,\"ResetPasswordOnMismatchFlag\":false,\"ChangeFrequencyType\":\"first\",\"ChangeFrequencyDays\":30,\"ChangeTime\":\"23:30\",\"AccountNameFormat\":0,\"RemoteClientType\":\"None\",\"ApplicationHostID\":2,\"IsApplicationHost\":false,\"AccessURL\":\"http://aardvarkagreement.com/manage\"}"
+            }
+        }
+    ]
+}

@@ -1,0 +1,1250 @@
+{
+    "events": [
+        {
+            "json": {
+                "log_id": "90020211104001515271334544008635532534914988032684720226",
+                "data": {
+                    "date": "2049-11-04T00:15:10.706Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635984910474,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618223a4e3f49e006948565c",
+                                "stats": {
+                                    "loginsCount": 4
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635984900427,
+                                "completedAt": 1635984910503,
+                                "timers": {
+                                    "rules": 4
+                                },
+                                "user_id": "auth0|618223a4e3f49e006948565c",
+                                "user_name": "ceh@xcyx.com",
+                                "elapsedTime": 10076
+                            }
+                        ],
+                        "initiatedAt": 1635984900418,
+                        "completedAt": 1635984910705,
+                        "elapsedTime": 10287,
+                        "session_id": "z1QjznNKpodGCks_sDaIHTqrgHcdsGDu",
+                        "stats": {
+                            "loginsCount": 4
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618223a4e3f49e006948565c",
+                    "user_name": "ceh@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211104001515271334544008635532534914988032684720226"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103032530111223343147286033102509916061341581378",
+                "data": {
+                    "date": "2049-11-03T03:25:28.923Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (X11;Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635909903693,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "6182002f34f4dd006b05b5c7",
+                                "stats": {
+                                    "loginsCount": 1
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635908818843,
+                                "completedAt": 1635909903745,
+                                "timers": {
+                                    "rules": 5
+                                },
+                                "user_id": "auth0|6182002f34f4dd006b05b5c7",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 1084902
+                            },
+                            {
+                                "name": "consent",
+                                "flow": "consent",
+                                "initiatedAt": 1635909904974,
+                                "completedAt": 1635909928352,
+                                "grantInfo": {
+                                    "id": "618201284369c9b4f9cd6d52",
+                                    "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+                                    "scope": "openid profile",
+                                    "expiration": null
+                                },
+                                "elapsedTime": 23378
+                            }
+                        ],
+                        "initiatedAt": 1635908818831,
+                        "completedAt": 1635909928922,
+                        "elapsedTime": 1110091,
+                        "session_id": "5MDf-3rwYIvgIybmwfWWKO3b4o6C6HHf",
+                        "stats": {
+                            "loginsCount": 1
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|6182002f34f4dd006b05b5c7",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103032530111223343147286033102509916061341581378"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103055358897115394211080445765255360986168164402",
+                "data": {
+                    "date": "2049-11-03T05:53:54.497Z",
+                    "type": "s",
+                    "connection_id": "",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+                    "details": {
+                        "prompts": [],
+                        "completedAt": 1635918834496,
+                        "elapsedTime": null,
+                        "session_id": "5MDf-3rwYIvgIybmwfWWKO3b4o6C6HHf"
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|6182002f34f4dd006b05b5c7",
+                    "user_name": "jfx@xcyx.com",
+                    "log_id": "90020211103055358897115394211080445765255360986168164402"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103055417070115394218609635769815272723188809778",
+                "data": {
+                    "date": "2049-11-03T05:54:15.721Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (X11;Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635918849692,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618223a4e3f49e006948565c",
+                                "stats": {
+                                    "loginsCount": 1
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635918839167,
+                                "completedAt": 1635918849714,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|618223a4e3f49e006948565c",
+                                "user_name": "ceh@xcyx.com",
+                                "elapsedTime": 10547
+                            },
+                            {
+                                "name": "consent",
+                                "flow": "consent",
+                                "initiatedAt": 1635918849848,
+                                "completedAt": 1635918855600,
+                                "grantInfo": {
+                                    "id": "618224074369c9b4f979b8fd",
+                                    "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+                                    "scope": "openid profile",
+                                    "expiration": null
+                                },
+                                "elapsedTime": 5752
+                            }
+                        ],
+                        "initiatedAt": 1635918839161,
+                        "completedAt": 1635918855720,
+                        "elapsedTime": 16559,
+                        "session_id": "TTPvapjZTcLc4_YiWBTHV6d2vHFzrVoU",
+                        "stats": {
+                            "loginsCount": 1
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618223a4e3f49e006948565c",
+                    "user_name": "ceh@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103055417070115394218609635769815272723188809778"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103070023776106766408080709488401774690453946450",
+                "data": {
+                    "date": "2049-11-03T07:00:20.901Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (X11;Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635922802377,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618232c562bac1006935a7af",
+                                "stats": {
+                                    "loginsCount": 1
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635922789345,
+                                "completedAt": 1635922802403,
+                                "timers": {
+                                    "rules": 4
+                                },
+                                "user_id": "auth0|618232c562bac1006935a7af",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 13058
+                            },
+                            {
+                                "name": "consent",
+                                "flow": "consent",
+                                "initiatedAt": 1635922802608,
+                                "completedAt": 1635922820747,
+                                "grantInfo": {
+                                    "id": "618233844369c9b4f99bb257",
+                                    "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+                                    "scope": "openid profile",
+                                    "expiration": null
+                                },
+                                "elapsedTime": 18139
+                            }
+                        ],
+                        "initiatedAt": 1635922789338,
+                        "completedAt": 1635922820899,
+                        "elapsedTime": 31561,
+                        "session_id": "N_z_iOoDvA_Vxl8PaNZoBigZwEbRGrdP",
+                        "stats": {
+                            "loginsCount": 1
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618232c562bac1006935a7af",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103070023776106766408080709488401774690453946450"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103081328131115397696989032404368410264534515762",
+                "data": {
+                    "date": "2049-11-03T08:13:24.062Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (X11;Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635927203775,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618223a4e3f49e006948565c",
+                                "stats": {
+                                    "loginsCount": 2
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635927147098,
+                                "completedAt": 1635927203800,
+                                "timers": {
+                                    "rules": 5
+                                },
+                                "user_id": "auth0|618223a4e3f49e006948565c",
+                                "user_name": "ceh@xcyx.com",
+                                "elapsedTime": 56702
+                            }
+                        ],
+                        "initiatedAt": 1635927147085,
+                        "completedAt": 1635927204061,
+                        "elapsedTime": 56976,
+                        "session_id": "33p0dIRkPbskcYmJDj9EGVCaD3i6dA6Q",
+                        "stats": {
+                            "loginsCount": 2
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618223a4e3f49e006948565c",
+                    "user_name": "ceh@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103081328131115397696989032404368410264534515762"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103081746881223368292279380811829523597632733250",
+                "data": {
+                    "date": "2049-11-03T08:17:45.995Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (X11;Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635927465747,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618232c562bac1006935a7af",
+                                "stats": {
+                                    "loginsCount": 2
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635927411241,
+                                "completedAt": 1635927465771,
+                                "timers": {
+                                    "rules": 4
+                                },
+                                "user_id": "auth0|618232c562bac1006935a7af",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 54530
+                            }
+                        ],
+                        "initiatedAt": 1635927411233,
+                        "completedAt": 1635927465994,
+                        "elapsedTime": 54761,
+                        "session_id": "VXi8wUpaffNXhdONJ1hpWqAWpxp072uo",
+                        "stats": {
+                            "loginsCount": 2
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618232c562bac1006935a7af",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103081746881223368292279380811829523597632733250"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103082255307115397925598113819314440794590412850",
+                "data": {
+                    "date": "2049-11-03T08:22:52.918Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635927772715,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618232c562bac1006935a7af",
+                                "stats": {
+                                    "loginsCount": 3
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635927753721,
+                                "completedAt": 1635927772739,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|618232c562bac1006935a7af",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 19018
+                            }
+                        ],
+                        "initiatedAt": 1635927753713,
+                        "completedAt": 1635927772916,
+                        "elapsedTime": 19203,
+                        "session_id": "I7IcfnjR3PgSqNstXYRMMduzvG4G8tD-",
+                        "stats": {
+                            "loginsCount": 3
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618232c562bac1006935a7af",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103082255307115397925598113819314440794590412850"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103082502886106767165048402514282566829773684818",
+                "data": {
+                    "date": "2049-11-03T08:25:00.106Z",
+                    "type": "s",
+                    "connection_id": "",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [],
+                        "completedAt": 1635927900104,
+                        "elapsedTime": null,
+                        "session_id": "I7IcfnjR3PgSqNstXYRMMduzvG4G8tD-"
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618232c562bac1006935a7af",
+                    "user_name": "jfx@xcyx.com",
+                    "log_id": "90020211103082502886106767165048402514282566829773684818"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103082523938106767168777938667793699345570725970",
+                "data": {
+                    "date": "2049-11-03T08:25:22.927Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635927922758,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618223a4e3f49e006948565c",
+                                "stats": {
+                                    "loginsCount": 3
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635927908108,
+                                "completedAt": 1635927922781,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|618223a4e3f49e006948565c",
+                                "user_name": "ceh@xcyx.com",
+                                "elapsedTime": 14673
+                            }
+                        ],
+                        "initiatedAt": 1635927908100,
+                        "completedAt": 1635927922926,
+                        "elapsedTime": 14826,
+                        "session_id": "OePNWtcnjw8t4htPuyUQZx08UyJ27qxW",
+                        "stats": {
+                            "loginsCount": 3
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618223a4e3f49e006948565c",
+                    "user_name": "ceh@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103082523938106767168777938667793699345570725970"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103085743984334492679133419381702055446601269346",
+                "data": {
+                    "date": "2049-11-03T08:57:43.766Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635929857727,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "61823277a44a21007221a59a",
+                                "stats": {
+                                    "loginsCount": 1
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635929845687,
+                                "completedAt": 1635929857759,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|61823277a44a21007221a59a",
+                                "user_name": "kcj@xcyx.com",
+                                "elapsedTime": 12072
+                            },
+                            {
+                                "name": "consent",
+                                "flow": "consent",
+                                "initiatedAt": 1635929857904,
+                                "completedAt": 1635929863646,
+                                "grantInfo": {
+                                    "id": "61824f074369c9b4f98894d2",
+                                    "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+                                    "scope": "openid profile",
+                                    "expiration": null
+                                },
+                                "elapsedTime": 5742
+                            }
+                        ],
+                        "initiatedAt": 1635929845677,
+                        "completedAt": 1635929863765,
+                        "elapsedTime": 18088,
+                        "session_id": "dUZ7Tco3XjZAepqWUn-l3pfV5rJS_6ME",
+                        "stats": {
+                            "loginsCount": 1
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|61823277a44a21007221a59a",
+                    "user_name": "kcj@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103085743984334492679133419381702055446601269346"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103085846311106767482389012311483635020016386130",
+                "data": {
+                    "date": "2049-11-03T08:58:41.249Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635929921066,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "61823277a44a21007221a59a",
+                                "stats": {
+                                    "loginsCount": 2
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635929907870,
+                                "completedAt": 1635929921093,
+                                "timers": {
+                                    "rules": 4
+                                },
+                                "user_id": "auth0|61823277a44a21007221a59a",
+                                "user_name": "kcj@xcyx.com",
+                                "elapsedTime": 13223
+                            }
+                        ],
+                        "initiatedAt": 1635929907862,
+                        "completedAt": 1635929921248,
+                        "elapsedTime": 13386,
+                        "session_id": "j0dF-n9HfQIUhsfmURLiLAs4LSQH4MPI",
+                        "stats": {
+                            "loginsCount": 2
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|61823277a44a21007221a59a",
+                    "user_name": "kcj@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103085846311106767482389012311483635020016386130"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103102326019106768307490555605025312816601497682",
+                "data": {
+                    "date": "2049-11-03T10:23:21.134Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635935000929,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "61823277a44a21007221a59a",
+                                "stats": {
+                                    "loginsCount": 3
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635934987423,
+                                "completedAt": 1635935000954,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|61823277a44a21007221a59a",
+                                "user_name": "kcj@xcyx.com",
+                                "elapsedTime": 13531
+                            }
+                        ],
+                        "initiatedAt": 1635934987414,
+                        "completedAt": 1635935001133,
+                        "elapsedTime": 13719,
+                        "session_id": "e1zW5F7YC308P7_QJoL9sgYmHZi6pvfe",
+                        "stats": {
+                            "loginsCount": 3
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|61823277a44a21007221a59a",
+                    "user_name": "kcj@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103102326019106768307490555605025312816601497682"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103103601619106768431214441836025743766305374290",
+                "data": {
+                    "date": "2049-11-03T10:36:01.473Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635935761302,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "61823277a44a21007221a59a",
+                                "stats": {
+                                    "loginsCount": 4
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635935753453,
+                                "completedAt": 1635935761327,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|61823277a44a21007221a59a",
+                                "user_name": "kcj@xcyx.com",
+                                "elapsedTime": 7874
+                            }
+                        ],
+                        "initiatedAt": 1635935753446,
+                        "completedAt": 1635935761471,
+                        "elapsedTime": 8025,
+                        "session_id": "n8c8sWB0TJ0yEoTg9-UgQE6aayvwTrE_",
+                        "stats": {
+                            "loginsCount": 4
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|61823277a44a21007221a59a",
+                    "user_name": "kcj@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103103601619106768431214441836025743766305374290"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103103728977106768445798922923856636177274634322",
+                "data": {
+                    "date": "2049-11-03T10:37:24.815Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635935844611,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "6182002f34f4dd006b05b5c7",
+                                "stats": {
+                                    "loginsCount": 2
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635935832421,
+                                "completedAt": 1635935844636,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|6182002f34f4dd006b05b5c7",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 12215
+                            }
+                        ],
+                        "initiatedAt": 1635935832413,
+                        "completedAt": 1635935844814,
+                        "elapsedTime": 12401,
+                        "session_id": "EmuwYOrVwUdFt44ad2pTfQpOHfjuA3Rn",
+                        "stats": {
+                            "loginsCount": 2
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|6182002f34f4dd006b05b5c7",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103103728977106768445798922923856636177274634322"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103104329992334500305177724905858622502505283682",
+                "data": {
+                    "date": "2049-11-03T10:43:24.916Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635936204718,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618232c562bac1006935a7af",
+                                "stats": {
+                                    "loginsCount": 4
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635936193430,
+                                "completedAt": 1635936204745,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|618232c562bac1006935a7af",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 11315
+                            }
+                        ],
+                        "initiatedAt": 1635936193423,
+                        "completedAt": 1635936204915,
+                        "elapsedTime": 11492,
+                        "session_id": "-zcmr6nvLmNaQZ-ndPFqSZggr_tAR3Sx",
+                        "stats": {
+                            "loginsCount": 4
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618232c562bac1006935a7af",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103104329992334500305177724905858622502505283682"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103105137404334500886230995142155564051687538786",
+                "data": {
+                    "date": "2049-11-03T10:51:32.997Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635936692773,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "61823277a44a21007221a59a",
+                                "stats": {
+                                    "loginsCount": 5
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635936685031,
+                                "completedAt": 1635936692796,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|61823277a44a21007221a59a",
+                                "user_name": "kcj@xcyx.com",
+                                "elapsedTime": 7765
+                            }
+                        ],
+                        "initiatedAt": 1635936685023,
+                        "completedAt": 1635936692996,
+                        "elapsedTime": 7973,
+                        "session_id": "Qdxvt1f7_C70Yz7C9R96iyXhfW9webZ2",
+                        "stats": {
+                            "loginsCount": 5
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|61823277a44a21007221a59a",
+                    "user_name": "kcj@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103105137404334500886230995142155564051687538786"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103105337123223384318516938634385981199129509954",
+                "data": {
+                    "date": "2049-11-03T10:53:33.203Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635936813034,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "61823277a44a21007221a59a",
+                                "stats": {
+                                    "loginsCount": 6
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635936804034,
+                                "completedAt": 1635936813057,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|61823277a44a21007221a59a",
+                                "user_name": "kcj@xcyx.com",
+                                "elapsedTime": 9023
+                            }
+                        ],
+                        "initiatedAt": 1635936804026,
+                        "completedAt": 1635936813202,
+                        "elapsedTime": 9176,
+                        "session_id": "ouPdoFtAemaaTPvahpYLGCiRVz3HBcRd",
+                        "stats": {
+                            "loginsCount": 6
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|61823277a44a21007221a59a",
+                    "user_name": "kcj@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103105337123223384318516938634385981199129509954"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211103221641031334535841785515161071694533024022626",
+                "data": {
+                    "date": "2049-11-03T22:16:38.616Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635977798421,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618232c562bac1006935a7af",
+                                "stats": {
+                                    "loginsCount": 5
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635977789152,
+                                "completedAt": 1635977798445,
+                                "timers": {
+                                    "rules": 3
+                                },
+                                "user_id": "auth0|618232c562bac1006935a7af",
+                                "user_name": "jfx@xcyx.com",
+                                "elapsedTime": 9293
+                            }
+                        ],
+                        "initiatedAt": 1635977789145,
+                        "completedAt": 1635977798614,
+                        "elapsedTime": 9469,
+                        "session_id": "-vI6SPAo0rBYml2UWCLqX-hXSK9hknto",
+                        "stats": {
+                            "loginsCount": 5
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618232c562bac1006935a7af",
+                    "user_name": "jfx@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211103221641031334535841785515161071694533024022626"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211104001515271334544008635532534914988032684720226",
+                "data": {
+                    "date": "2049-11-04T00:15:10.706Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635984910474,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "618223a4e3f49e006948565c",
+                                "stats": {
+                                    "loginsCount": 4
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635984900427,
+                                "completedAt": 1635984910503,
+                                "timers": {
+                                    "rules": 4
+                                },
+                                "user_id": "auth0|618223a4e3f49e006948565c",
+                                "user_name": "ceh@xcyx.com",
+                                "elapsedTime": 10076
+                            }
+                        ],
+                        "initiatedAt": 1635984900418,
+                        "completedAt": 1635984910705,
+                        "elapsedTime": 10287,
+                        "session_id": "z1QjznNKpodGCks_sDaIHTqrgHcdsGDu",
+                        "stats": {
+                            "loginsCount": 4
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|618223a4e3f49e006948565c",
+                    "user_name": "ceh@xcyx.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211104001515271334544008635532534914988032684720226"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211104011629842115419891701676038855773484430131250",
+                "data": {
+                    "date": "2049-11-04T01:16:26.175Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635988582904,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "6183285d6e5071006a61f319",
+                                "stats": {
+                                    "loginsCount": 1
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635985386617,
+                                "completedAt": 1635988582930,
+                                "timers": {
+                                    "rules": 6
+                                },
+                                "user_id": "auth0|6183285d6e5071006a61f319",
+                                "user_name": "hel.gifkuc@gmail.com",
+                                "elapsedTime": 3196313
+                            },
+                            {
+                                "name": "consent",
+                                "flow": "consent",
+                                "initiatedAt": 1635988583097,
+                                "completedAt": 1635988585993,
+                                "grantInfo": {
+                                    "id": "618334694369c9b4f9944b99",
+                                    "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+                                    "scope": "openid profile",
+                                    "expiration": null
+                                },
+                                "elapsedTime": 2896
+                            }
+                        ],
+                        "initiatedAt": 1635985386610,
+                        "completedAt": 1635988586174,
+                        "elapsedTime": 3199564,
+                        "session_id": "V_QCm3HK4OyQ3t-2HAp6aNUSV4wj5nQP",
+                        "stats": {
+                            "loginsCount": 1
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|6183285d6e5071006a61f319",
+                    "user_name": "hel.gifkuc@gmail.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211104011629842115419891701676038855773484430131250"
+                }
+            }
+        },
+        {
+            "json": {
+                "log_id": "90020211104011629842115419891701676038855773484430131250",
+                "data": {
+                    "date": "2049-11-04T01:16:26.175Z",
+                    "type": "s",
+                    "connection": "Username-Password-Authentication",
+                    "connection_id": "con_1a5wCUmAs6VOU17n",
+                    "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                    "client_name": "Default App",
+                    "ip": "198.51.100.111",
+                    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                    "details": {
+                        "prompts": [
+                            {
+                                "name": "prompt-authenticate",
+                                "completedAt": 1635988582904,
+                                "connection": "Username-Password-Authentication",
+                                "connection_id": "con_1a5wCUmAs6VOU17n",
+                                "strategy": "auth0",
+                                "identity": "6183285d6e5071006a61f319",
+                                "stats": {
+                                    "loginsCount": 1
+                                },
+                                "elapsedTime": null
+                            },
+                            {
+                                "name": "login",
+                                "flow": "universal-login",
+                                "initiatedAt": 1635985386617,
+                                "completedAt": 1635988582930,
+                                "timers": {
+                                    "rules": 6
+                                },
+                                "user_id": "auth0|6183285d6e5071006a61f319",
+                                "user_name": "hel.gifkuc@gmail.com",
+                                "elapsedTime": 3196313
+                            },
+                            {
+                                "name": "consent",
+                                "flow": "consent",
+                                "initiatedAt": 1635988583097,
+                                "completedAt": 1635988585993,
+                                "grantInfo": {
+                                    "id": "618334694369c9b4f9944b99",
+                                    "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+                                    "scope": "openid profile",
+                                    "expiration": null
+                                },
+                                "elapsedTime": 2896
+                            }
+                        ],
+                        "initiatedAt": 1635985386610,
+                        "completedAt": 1635988586174,
+                        "elapsedTime": 3199564,
+                        "session_id": "V_QCm3HK4OyQ3t-2HAp6aNUSV4wj5nQP",
+                        "stats": {
+                            "loginsCount": 1
+                        }
+                    },
+                    "hostname": "adw-mml2dqgb.fk.dunv1.com",
+                    "user_id": "auth0|6183285d6e5071006a61f319",
+                    "user_name": "hel.gifkuc@gmail.com",
+                    "strategy": "auth0",
+                    "strategy_type": "database",
+                    "log_id": "90020211104011629842115419891701676038855773484430131250"
+                }
+            }
+        }
+    ]
+}

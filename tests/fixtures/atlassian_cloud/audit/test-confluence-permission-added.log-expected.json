@@ -1,0 +1,110 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-19T10:03:00.000Z",
+      "atlassian_cloud": {
+        "audit": {
+          "container": [
+            {
+              "attributes": {},
+              "id": "18521387-5815-3524-3092-243863832608",
+              "type": "unit"
+            }
+          ],
+          "context": [
+            {
+              "attributes": {
+                "permissionName": "Add Pages",
+                "siteHostName": "https://example-corp.atlassian.net",
+                "siteName": "example-corp"
+              },
+              "id": "74605075-7517-1111-1872-435506708175",
+              "type": "sites"
+            },
+            {
+              "attributes": {
+                "key": "EX",
+                "name": "Example Space"
+              },
+              "id": "85701150-5189-2547-2399-209277284548",
+              "type": "space"
+            }
+          ],
+          "message": {
+            "format": "simple"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "confluence_added_space_permission",
+        "category": [
+          "configuration"
+        ],
+        "created": "2054-05-19T10:03:01.000Z",
+        "id": "d8725174-1611-4238-8856-084014289671",
+        "kind": "event",
+        "original": "{\"type\":\"events\",\"id\":\"d8725174-1611-4238-8856-084014289671\",\"attributes\":{\"time\":\"2054-05-19T10:03:00.000Z\",\"processedAt\":\"2054-05-19T10:03:01.000Z\",\"action\":\"confluence_added_space_permission\",\"actor\":{\"id\":\"712020:ceeaefcd-ebcd-dbac-decc-fcdadececcfe\",\"name\":\"Dana Wilson\",\"email\":\"ddnf.wmoutn@example.com\"},\"context\":[{\"id\":\"74605075-7517-1111-1872-435506708175\",\"type\":\"sites\",\"attributes\":{\"siteName\":\"example-corp\",\"siteHostName\":\"https://example-corp.atlassian.net\",\"permissionName\":\"Add Pages\"}},{\"id\":\"85701150-5189-2547-2399-209277284548\",\"type\":\"space\",\"attributes\":{\"name\":\"Example Space\",\"key\":\"EX\"}}],\"container\":[{\"id\":\"18521387-5815-3524-3092-243863832608\",\"type\":\"unit\",\"attributes\":{}}],\"location\":{\"ip\":\"203.0.113.21\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Dana Wilson added Confluence space permission Add Pages on example-corp\",\"format\":\"simple\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Dana Wilson added Confluence space permission Add Pages on example-corp",
+      "observer": {
+        "product": "Atlassian Cloud",
+        "type": "saas",
+        "vendor": "Atlassian"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.21"
+        ],
+        "user": [
+          "Dana Wilson",
+          "ddnf.wmoutn@example.com"
+        ]
+      },
+      "source": {
+        "geo": {
+          "city_name": "Example City",
+          "country_name": "Example Country"
+        },
+        "ip": "203.0.113.21"
+      },
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ddnf.wmoutn@example.com",
+        "id": "712020:ceeaefcd-ebcd-dbac-decc-fcdadececcfe",
+        "name": "Dana Wilson"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"type\":\"events\",\"id\":\"d8725174-1611-4238-8856-084014289671\",\"attributes\":{\"time\":\"2054-05-19T10:03:00.000Z\",\"processedAt\":\"2054-05-19T10:03:01.000Z\",\"action\":\"confluence_added_space_permission\",\"actor\":{\"id\":\"712020:ceeaefcd-ebcd-dbac-decc-fcdadececcfe\",\"name\":\"Dana Wilson\",\"email\":\"ddnf.wmoutn@example.com\"},\"context\":[{\"id\":\"74605075-7517-1111-1872-435506708175\",\"type\":\"sites\",\"attributes\":{\"siteName\":\"example-corp\",\"siteHostName\":\"https://example-corp.atlassian.net\",\"permissionName\":\"Add Pages\"}},{\"id\":\"85701150-5189-2547-2399-209277284548\",\"type\":\"space\",\"attributes\":{\"name\":\"Example Space\",\"key\":\"EX\"}}],\"container\":[{\"id\":\"18521387-5815-3524-3092-243863832608\",\"type\":\"unit\",\"attributes\":{}}],\"location\":{\"ip\":\"203.0.113.21\",\"countryName\":\"Example Country\",\"city\":\"Example City\"}},\"message\":{\"content\":\"Dana Wilson added Confluence space permission Add Pages on example-corp\",\"format\":\"simple\"}}",
+      "tags": [
+        "forwarded",
+        "atlassian_cloud-audit",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_cloud-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

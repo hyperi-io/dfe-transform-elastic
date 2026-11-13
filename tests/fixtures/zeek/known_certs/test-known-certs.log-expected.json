@@ -1,0 +1,153 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-12-31T15:15:53.690Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "file"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2048-12-31T15:15:53.690221Z\",\"host\":\"192.168.131.47\",\"port_num\":443,\"subject\":\"L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US\",\"issuer_subject\":\"L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US\",\"serial\":\"98D0AD47D748CDD6\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.131.47"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.131.47"
+        ]
+      },
+      "server": {
+        "ip": [
+          "192.168.131.47"
+        ],
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "server": {
+          "issuer": "L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US",
+          "subject": "L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "UBNT Router UI"
+              ],
+              "distinguished_name": "L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US"
+            },
+            "serial_number": "98D0AD47D748CDD6",
+            "subject": {
+              "common_name": [
+                "UBNT Router UI"
+              ],
+              "distinguished_name": "L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US"
+            }
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-08-10T20:37:41.442Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "file"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2052-08-10T20:37:41.442359Z\",\"host\":\"192.168.64.62\",\"port_num\":443,\"subject\":\"L=Palo Alto,ST=CA,O=VMware, Inc,CN=localhost.localdomain,C=US\",\"issuer_subject\":\"O=VMware Installer\",\"serial\":\"00:FC:EA:68:10:B3:A8\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.64.62"
+        ]
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.64.62"
+        ]
+      },
+      "server": {
+        "ip": [
+          "192.168.64.62"
+        ],
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "server": {
+          "issuer": "O=VMware Installer",
+          "subject": "L=Palo Alto,ST=CA,O=VMware, Inc,CN=localhost.localdomain,C=US",
+          "x509": {
+            "issuer": {
+              "distinguished_name": "O=VMware Installer"
+            },
+            "serial_number": "00:FC:EA:68:10:B3:A8",
+            "subject": {
+              "common_name": [
+                "localhost.localdomain"
+              ],
+              "distinguished_name": "L=Palo Alto,ST=CA,O=VMware, Inc,CN=localhost.localdomain,C=US"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2048-12-31T15:15:53.690221Z\",\"host\":\"192.168.131.47\",\"port_num\":443,\"subject\":\"L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US\",\"issuer_subject\":\"L=San Jose,ST=CA,O=Ubiquiti Networks,CN=UBNT Router UI,C=US\",\"serial\":\"98D0AD47D748CDD6\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2052-08-10T20:37:41.442359Z\",\"host\":\"192.168.64.62\",\"port_num\":443,\"subject\":\"L=Palo Alto,ST=CA,O=VMware, Inc,CN=localhost.localdomain,C=US\",\"issuer_subject\":\"O=VMware Installer\",\"serial\":\"00:FC:EA:68:10:B3:A8\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "known_certs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-known_certs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

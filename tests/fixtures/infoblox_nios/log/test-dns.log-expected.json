@@ -1,0 +1,2831 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-04-07T08:08:10.043Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 57398
+      },
+      "dns": {
+        "answers": {
+          "class": [
+            "IN",
+            "IN"
+          ],
+          "data": [
+            "fxz.com",
+            "0.0.0.0"
+          ],
+          "name": [
+            "b4.fxz.com",
+            "b4.fxz.com"
+          ],
+          "ttl": [
+            28800,
+            28800
+          ],
+          "type": [
+            "A",
+            "A"
+          ]
+        },
+        "header_flags": [
+          "DO",
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "b4.fxz.com",
+          "registered_domain": "fxz.com",
+          "subdomain": "b4",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[11042]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: b4.fxz.com IN A response: NOERROR +ED b4.fxz.com 28800 IN A fxz.com; b4.fxz.com 28800 IN A 0.0.0.0;"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+ED"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: b4.fxz.com IN A response: NOERROR +ED b4.fxz.com 28800 IN A fxz.com; b4.fxz.com 28800 IN A 0.0.0.0;",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 11042
+      },
+      "related": {
+        "hosts": [
+          "fxz.com",
+          "b4.fxz.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "0.0.0.0",
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-04-07T08:08:10.043Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 50565
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "REFUSED"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<45>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#50565 UDP: query: xcyx.com IN A response: REFUSED -"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "-"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 45
+        }
+      },
+      "message": "07-Apr-2050 08:08:10.043 client 192.168.249.222#50565 UDP: query: xcyx.com IN A response: REFUSED -",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 17742
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-04-07T08:08:10.043Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 57398
+      },
+      "dns": {
+        "answers": {
+          "class": [
+            "IN"
+          ],
+          "data": [
+            "192.168.2.152"
+          ],
+          "name": [
+            "e4.fxz.com"
+          ],
+          "ttl": [
+            28800
+          ],
+          "type": [
+            "A"
+          ]
+        },
+        "header_flags": [
+          "AA",
+          "DO",
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "e4.fxz.com",
+          "registered_domain": "fxz.com",
+          "subdomain": "e4",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: e4.fxz.com IN A response: NOERROR +AED e4.fxz.com 28800 IN A 192.168.2.152;"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+AED"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: e4.fxz.com IN A response: NOERROR +AED e4.fxz.com 28800 IN A 192.168.2.152;",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 17742
+      },
+      "related": {
+        "hosts": [
+          "e4.fxz.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.2.152",
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-04-07T08:08:10.043Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 57398
+      },
+      "dns": {
+        "header_flags": [
+          "DO",
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "qqg-aothp.fxz.com",
+          "registered_domain": "fxz.com",
+          "subdomain": "qqg-aothp",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: qqg-aothp.fxz.com IN A response: NXDOMAIN +ED"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+ED"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: qqg-aothp.fxz.com IN A response: NXDOMAIN +ED",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 17742
+      },
+      "related": {
+        "hosts": [
+          "qqg-aothp.fxz.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-04-07T08:08:10.043Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 57398
+      },
+      "dns": {
+        "answers": {
+          "class": [
+            "IN",
+            "IN"
+          ],
+          "data": [
+            "192.168.96.209",
+            "192.168.2.152"
+          ],
+          "name": [
+            "b4.fxz.com",
+            "b4.fxz.com"
+          ],
+          "ttl": [
+            28800,
+            28800
+          ],
+          "type": [
+            "A",
+            "A"
+          ]
+        },
+        "header_flags": [
+          "DO",
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "b4.fxz.com",
+          "registered_domain": "fxz.com",
+          "subdomain": "b4",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<45>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: b4.fxz.com IN A response: NOERROR +ED b4.fxz.com 28800 IN A 192.168.96.209; b4.fxz.com 28800 IN A 192.168.2.152;"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+ED"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 45
+        }
+      },
+      "message": "07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: b4.fxz.com IN A response: NOERROR +ED b4.fxz.com 28800 IN A 192.168.96.209; b4.fxz.com 28800 IN A 192.168.2.152;",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 17742
+      },
+      "related": {
+        "hosts": [
+          "b4.fxz.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.2.152",
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-09T23:59:59.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 59735
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-09T23:59:59.000Z",
+        "original": "<30>Mar  9 23:59:59 ioajexpj.localdomain named[17742]: client @0x7f1dd4114af0 192.168.249.222#59735 (config.nos-avg.cz): query failed (REFUSED) for config.nos-avg.cz/IN/TXT at query.c:10288"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "(REFUSED) for config.nos-avg.cz/IN/TXT at query.c:10288"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7f1dd4114af0 192.168.249.222#59735 (config.nos-avg.cz): query failed (REFUSED) for config.nos-avg.cz/IN/TXT at query.c:10288",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 17742
+      },
+      "related": {
+        "hosts": [
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-09T23:59:59.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 59735
+      },
+      "dns": {
+        "header_flags": [
+          "RD"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "config.nos-avg.cz",
+          "registered_domain": "nos-avg.cz",
+          "subdomain": "config",
+          "top_level_domain": "cz",
+          "type": "TXT"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-09T23:59:59.000Z",
+        "original": "<30>Mar  9 23:59:59 ioajexpj.localdomain named[17742]: client @0x7f1dd4114af0 192.168.249.222#59735 (config.nos-avg.cz): query: config.nos-avg.cz IN TXT + (192.168.249.222)"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7f1dd4114af0 192.168.249.222#59735 (config.nos-avg.cz): query: config.nos-avg.cz IN TXT + (192.168.249.222)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 17742
+      },
+      "related": {
+        "hosts": [
+          "config.nos-avg.cz",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "server": {
+        "ip": "192.168.249.222"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[27014]: rpz: tqu4.com: reload start"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "rpz: tqu4.com: reload start"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "rpz: tqu4.com: reload start",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 27014
+      },
+      "related": {
+        "hosts": [
+          "ioajexpj.localdomain"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 50460
+      },
+      "dns": {
+        "question": {
+          "type": "A"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[29914]: client @0x7ff42c168b50 192.168.249.222#50460 (xcyx.com): rewriting query name 'xcyx.com' to 'htcrv513-84-667-12-63.xcyx.com', type A"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "after_query": "htcrv513-84-667-12-63.xcyx.com",
+            "before_query": "xcyx.com"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7ff42c168b50 192.168.249.222#50460 (xcyx.com): rewriting query name 'xcyx.com' to 'htcrv513-84-667-12-63.xcyx.com', type A",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 29914
+      },
+      "related": {
+        "hosts": [
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 36483
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "xcyu5.com",
+          "registered_domain": "xcyu5.com",
+          "top_level_domain": "com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[19204]: client @0x7fec7c11dab0 192.168.249.222#36483: updating zone 'xcyu5.com/IN': adding an RR at 'f6.xcyu5.com' A 192.168.96.209"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "adding an RR at 'f6.xcyu5.com' A 192.168.96.209"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7fec7c11dab0 192.168.249.222#36483: updating zone 'xcyu5.com/IN': adding an RR at 'f6.xcyu5.com' A 192.168.96.209",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 19204
+      },
+      "related": {
+        "hosts": [
+          "xcyu5.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 51424
+      },
+      "dns": {
+        "answers": {
+          "type": "QNAME"
+        },
+        "question": {
+          "type": "A"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[28468]: CEF:0|Infoblox|NIOS|8.6.2-49634-e88e9df276a8|RPZ-QNAME|NXDOMAIN|7|app=DNS dst=192.168.249.222 src=192.168.249.222 spt=51424 view=_default qtype=A msg=\"rpz QNAME NXDOMAIN rewrite gmf2.com [A] via gmf2.coo.tqu4.com\" CAT=RPZ"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "answers_policy": "NXDOMAIN",
+            "message": "rpz QNAME NXDOMAIN rewrite gmf2.com [A] via gmf2.coo.tqu4.com CAT=RPZ",
+            "rpz": {
+              "action": "rewrite",
+              "domain": "gmf2.com",
+              "domain_rewrite": "gmf2.coo.tqu4.com",
+              "query_class": "NXDOMAIN",
+              "query_class_rewrite": "[A]",
+              "rule_type": "QNAME",
+              "type": "RPZ"
+            },
+            "version": "8.6.2-49634-e88e9df276a8",
+            "view_name": "_default"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "CEF:0|Infoblox|NIOS|8.6.2-49634-e88e9df276a8|RPZ-QNAME|NXDOMAIN|7|app=DNS dst=192.168.249.222 src=192.168.249.222 spt=51424 view=_default qtype=A msg=\"rpz QNAME NXDOMAIN rewrite gmf2.com [A] via gmf2.coo.tqu4.com\" CAT=RPZ",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 28468
+      },
+      "related": {
+        "hosts": [
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "server": {
+        "ip": "192.168.249.222"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 46982
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "local_7.com",
+          "registered_domain": "local_7.com",
+          "top_level_domain": "com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[7741]: zone local_7.com/IN: notify from 192.168.249.222#46982: zone is up to date"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "zone is up to date"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "zone local_7.com/IN: notify from 192.168.249.222#46982: zone is up to date",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 7741
+      },
+      "related": {
+        "hosts": [
+          "local_7.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 46982
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[7741]: responses: client @0x7fb550117f90 192.168.249.222#46982: received notify for zone 'local_14.com'"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "category": "responses",
+            "message": "received notify for zone 'local_14.com'"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "responses: client @0x7fb550117f90 192.168.249.222#46982: received notify for zone 'local_14.com'",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 7741
+      },
+      "related": {
+        "hosts": [
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[15242]: transfer of 'xcyx.com/IN' from 192.168.249.222#53: Transfer status: success"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "Transfer status: success"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "transfer of 'xcyx.com/IN' from 192.168.249.222#53: Transfer status: success",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 15242
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 53
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[15242]: transfer of 'xcyx.com/IN' from 192.168.249.222#53: Transfer completed: 1 messages, 9 records, 326 bytes, 0.001 secs (326000 bytes/sec)"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "Transfer completed: 1 messages, 9 records, 326 bytes, 0.001 secs (326000 bytes/sec)"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "transfer of 'xcyx.com/IN' from 192.168.249.222#53: Transfer completed: 1 messages, 9 records, 326 bytes, 0.001 secs (326000 bytes/sec)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 15242
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 57027
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[56199]: client @0x7f7e6c2809f0 192.168.249.222#57027 (xcyx.com): transfer of 'xcyx.com/IN': AXFR started (serial 3)"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "AXFR started (serial 3)"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7f7e6c2809f0 192.168.249.222#57027 (xcyx.com): transfer of 'xcyx.com/IN': AXFR started (serial 3)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 56199
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "client": {
+        "ip": "192.168.249.222",
+        "port": 57027
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[56199]: client @0x7f7e6c2809f0 192.168.249.222#57027 (xcyx.com): transfer of 'xcyx.com/IN': AXFR ended"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "AXFR ended"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7f7e6c2809f0 192.168.249.222#57027 (xcyx.com): transfer of 'xcyx.com/IN': AXFR ended",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 56199
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ],
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[30325]: resolver priming query complete"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "resolver priming query complete"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "resolver priming query complete",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 30325
+      },
+      "related": {
+        "hosts": [
+          "ioajexpj.localdomain"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "dns": {
+        "question": {
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com",
+          "type": "DNSKEY"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[1127]: validating xcyx.com/DNSKEY: unable to find a DNSKEY which verifies the DNSKEY RRset and also matches a trusted key for 'xcyx.com'"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "unable to find a DNSKEY which verifies the DNSKEY RRset and also matches a trusted key for 'xcyx.com'"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "validating xcyx.com/DNSKEY: unable to find a DNSKEY which verifies the DNSKEY RRset and also matches a trusted key for 'xcyx.com'",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 1127
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "dns": {
+        "question": {
+          "name": "xcyx.com",
+          "registered_domain": "xcyx.com",
+          "top_level_domain": "com",
+          "type": "NSEC"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[1127]: validating xcyx.com/NSEC: bad cache hit (xcyx.com/DNSKEY)"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "bad cache hit (xcyx.com/DNSKEY)"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "validating xcyx.com/NSEC: bad cache hit (xcyx.com/DNSKEY)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 1127
+      },
+      "related": {
+        "hosts": [
+          "xcyx.com",
+          "ioajexpj.localdomain"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-11T23:51:31.000Z",
+      "dns": {
+        "question": {
+          "name": "qrzltae1.xcyx.com",
+          "registered_domain": "xcyx.com",
+          "subdomain": "qrzltae1",
+          "top_level_domain": "com",
+          "type": "NSEC"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-03-11T23:51:31.000Z",
+        "original": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[1127]: validating qrzltae1.xcyx.com/NSEC: bad cache hit (xcyx.com/DNSKEY)"
+      },
+      "host": {
+        "domain": "ioajexpj.localdomain"
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "message": "bad cache hit (xcyx.com/DNSKEY)"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "validating qrzltae1.xcyx.com/NSEC: bad cache hit (xcyx.com/DNSKEY)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 1127
+      },
+      "related": {
+        "hosts": [
+          "qrzltae1.xcyx.com",
+          "ioajexpj.localdomain"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-04-14T16:17:20.046Z",
+      "client": {
+        "ip": "192.168.12.36",
+        "port": 57738
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "name": "settings-win.data.microsoft.com",
+          "registered_domain": "microsoft.com",
+          "subdomain": "settings-win.data",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "REFUSED"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-04-14T16:17:20.000Z",
+        "original": "<30>Apr 14 16:17:20 10.65.62.33 named[2588]: infoblox-responses: 14-Apr-2050 16:17:20.046 client 192.168.12.36#57738: UDP: query: settings-win.data.microsoft.com IN A response: REFUSED -"
+      },
+      "host": {
+        "ip": [
+          "10.65.62.33"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "category": "infoblox-responses",
+            "header_flags": "-"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "infoblox-responses: 14-Apr-2050 16:17:20.046 client 192.168.12.36#57738: UDP: query: settings-win.data.microsoft.com IN A response: REFUSED -",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 2588
+      },
+      "related": {
+        "hosts": [
+          "settings-win.data.microsoft.com"
+        ],
+        "ip": [
+          "192.168.12.36",
+          "10.65.62.33"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-04-14T16:16:05.000Z",
+      "client": {
+        "ip": "192.168.12.36",
+        "port": 64727
+      },
+      "dns": {
+        "header_flags": [
+          "RD"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "qcoh.dihpabln.com",
+          "registered_domain": "dihpabln.com",
+          "subdomain": "qcoh",
+          "top_level_domain": "com",
+          "type": "A"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-04-14T16:16:05.000Z",
+        "original": "<30>Apr 14 16:16:05 10.65.62.33 named[2588]: queries: client @0x7f97e40eb500 192.168.12.36#64727 (qcoh.dihpabln.com): query: qcoh.dihpabln.com IN A + (192.168.26.209)"
+      },
+      "host": {
+        "ip": [
+          "10.65.62.33"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "category": "queries",
+            "header_flags": "+"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "queries: client @0x7f97e40eb500 192.168.12.36#64727 (qcoh.dihpabln.com): query: qcoh.dihpabln.com IN A + (192.168.26.209)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 2588
+      },
+      "related": {
+        "hosts": [
+          "qcoh.dihpabln.com"
+        ],
+        "ip": [
+          "192.168.12.36",
+          "192.168.26.209",
+          "10.65.62.33"
+        ]
+      },
+      "server": {
+        "ip": "192.168.26.209"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-04-14T16:16:05.000Z",
+      "client": {
+        "ip": "192.168.12.36",
+        "port": 64727
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-04-14T16:16:05.000Z",
+        "original": "<30>Apr 14 16:16:05 10.65.62.33 named[2588]: query-errors: client @0x7f97e40eb500 192.168.12.36#64727 (qcoh.dihpabln.com): query failed (REFUSED) for qcoh.dihpabln.com/IN/A at query.c:10288"
+      },
+      "host": {
+        "ip": [
+          "10.65.62.33"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "category": "query-errors",
+            "message": "(REFUSED) for qcoh.dihpabln.com/IN/A at query.c:10288"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "query-errors: client @0x7f97e40eb500 192.168.12.36#64727 (qcoh.dihpabln.com): query failed (REFUSED) for qcoh.dihpabln.com/IN/A at query.c:10288",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 2588
+      },
+      "related": {
+        "ip": [
+          "192.168.12.36",
+          "10.65.62.33"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-10-04T10:18:07.834Z",
+      "client": {
+        "ip": "203.0.113.177",
+        "port": 59605
+      },
+      "dns": {
+        "answers": {
+          "class": [
+            "IN"
+          ],
+          "data": [
+            "089.160.20.112.a1.foo.com"
+          ],
+          "name": [
+            "203.0.113.177.a1.foo.com"
+          ],
+          "ttl": [
+            21801
+          ],
+          "type": [
+            "PTR"
+          ]
+        },
+        "header_flags": [
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "203.0.113.177.a1.foo.com",
+          "registered_domain": "foo.com",
+          "subdomain": "203.0.113.177.a1",
+          "top_level_domain": "com",
+          "type": "PTR"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-10-04T10:18:07.000Z",
+        "original": "<30>Oct 4 10:18:07 b4.fxz.com 203.0.113.248 named[10750]: 04-Oct-2050 10:18:07.834 client 203.0.113.177#59605: UDP: query: 203.0.113.177.a1.foo.com IN PTR response: NOERROR + 203.0.113.177.a1.foo.com. 21801 IN PTR 089.160.20.112.a1.foo.com.;"
+      },
+      "host": {
+        "domain": "b4.fxz.com",
+        "ip": [
+          "203.0.113.248"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "04-Oct-2050 10:18:07.834 client 203.0.113.177#59605: UDP: query: 203.0.113.177.a1.foo.com IN PTR response: NOERROR + 203.0.113.177.a1.foo.com. 21801 IN PTR 089.160.20.112.a1.foo.com.;",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 10750
+      },
+      "related": {
+        "hosts": [
+          "089.160.20.112.a1.foo.com",
+          "203.0.113.177.a1.foo.com",
+          "b4.fxz.com"
+        ],
+        "ip": [
+          "203.0.113.177",
+          "203.0.113.248"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-09T11:54:36.185Z",
+      "client": {
+        "ip": "203.0.113.177",
+        "port": 59605
+      },
+      "dns": {
+        "answers": {
+          "class": [
+            "IN"
+          ],
+          "data": [
+            "\"k=rsa; p=abc\"",
+            "\"def\"",
+            "\"ghi\"",
+            "\"jkl\"",
+            "\"AB\""
+          ],
+          "name": [
+            "settings-win.data.microsoft.com"
+          ],
+          "ttl": [
+            3600
+          ],
+          "type": [
+            "TXT"
+          ]
+        },
+        "header_flags": [
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "settings-win.data.microsoft.com",
+          "registered_domain": "microsoft.com",
+          "subdomain": "settings-win.data",
+          "top_level_domain": "com",
+          "type": "TXT"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-05-09T11:54:36.000Z",
+        "original": "<30>May 9 11:54:36 b4.fxz.com 203.0.113.248 named[12261]: 09-May-2051 11:54:36.185 client 203.0.113.177#59605: view 12: UDP: query: settings-win.data.microsoft.com IN TXT response: NOERROR + settings-win.data.microsoft.com. 3600 IN TXT \"k=rsa; p=abc\" \"def\" \"ghi\" \"jkl\" \"AB\";"
+      },
+      "host": {
+        "domain": "b4.fxz.com",
+        "ip": [
+          "203.0.113.248"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "09-May-2051 11:54:36.185 client 203.0.113.177#59605: view 12: UDP: query: settings-win.data.microsoft.com IN TXT response: NOERROR + settings-win.data.microsoft.com. 3600 IN TXT \"k=rsa; p=abc\" \"def\" \"ghi\" \"jkl\" \"AB\";",
+      "network": {
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "process": {
+        "pid": 12261
+      },
+      "related": {
+        "hosts": [
+          "settings-win.data.microsoft.com",
+          "b4.fxz.com"
+        ],
+        "ip": [
+          "203.0.113.177",
+          "203.0.113.248"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-11-03T13:22:37.747Z",
+      "client": {
+        "ip": "192.168.124.110",
+        "port": 31645
+      },
+      "dns": {
+        "answers": {
+          "class": [
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN",
+            "IN"
+          ],
+          "data": [
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "192.0.2.159",
+            "203.0.113.195",
+            "203.0.113.132",
+            "203.0.113.179",
+            "192.0.2.187",
+            "198.51.100.139",
+            "192.0.2.193",
+            "198.51.100.11",
+            "198.51.100.233",
+            "198.51.100.110",
+            "203.0.113.23",
+            "192.0.2.123",
+            "203.0.113.224",
+            "198.51.100.118",
+            "198.51.100.93",
+            "198.51.100.67",
+            "198.51.100.231",
+            "192.0.2.160",
+            "203.0.113.213",
+            "203.0.113.31",
+            "192.0.2.217",
+            "198.51.100.166",
+            "192.0.2.197",
+            "192.0.2.155",
+            "203.0.113.122",
+            "203.0.113.93",
+            "192.0.2.43",
+            "198.51.100.62",
+            "203.0.113.149",
+            "192.0.2.182",
+            "203.0.113.234",
+            "198.51.100.54",
+            "198.51.100.60",
+            "192.0.2.173",
+            "198.51.100.239",
+            "203.0.113.238",
+            "203.0.113.188",
+            "203.0.113.24",
+            "198.51.100.73",
+            "203.0.113.168",
+            "192.0.2.75",
+            "192.0.2.167",
+            "198.51.100.184",
+            "192.0.2.171",
+            "192.0.2.33",
+            "203.0.113.90",
+            "203.0.113.46",
+            "198.51.100.143",
+            "198.51.100.126",
+            "198.51.100.250",
+            "203.0.113.86",
+            "198.51.100.71",
+            "198.51.100.17",
+            "203.0.113.144",
+            "203.0.113.231",
+            "198.51.100.177",
+            "192.0.2.168",
+            "198.51.100.35",
+            "198.51.100.200",
+            "198.51.100.69",
+            "203.0.113.202",
+            "192.0.2.209",
+            "192.0.2.161",
+            "198.51.100.235",
+            "192.0.2.149",
+            "192.0.2.128",
+            "203.0.113.96",
+            "192.0.2.183",
+            "198.51.100.91",
+            "192.0.2.76",
+            "198.51.100.162",
+            "192.0.2.87",
+            "192.0.2.54",
+            "192.0.2.61",
+            "203.0.113.47",
+            "198.51.100.240",
+            "198.51.100.137",
+            "203.0.113.171",
+            "192.0.2.19",
+            "198.51.100.122",
+            "203.0.113.34",
+            "192.0.2.206",
+            "198.51.100.66",
+            "203.0.113.94",
+            "198.51.100.79",
+            "192.0.2.62",
+            "203.0.113.12",
+            "192.0.2.170",
+            "198.51.100.74",
+            "192.0.2.36",
+            "203.0.113.59",
+            "198.51.100.12",
+            "198.51.100.80",
+            "192.0.2.172",
+            "203.0.113.41",
+            "192.0.2.231",
+            "203.0.113.50",
+            "198.51.100.116",
+            "203.0.113.198",
+            "203.0.113.246",
+            "203.0.113.229",
+            "192.0.2.92",
+            "203.0.113.147",
+            "203.0.113.83",
+            "198.51.100.10",
+            "203.0.113.237",
+            "192.0.2.121",
+            "203.0.113.123",
+            "192.0.2.198",
+            "192.0.2.148",
+            "198.51.100.225",
+            "203.0.113.11",
+            "198.51.100.144",
+            "203.0.113.225",
+            "192.0.2.210",
+            "203.0.113.205",
+            "203.0.113.68",
+            "203.0.113.178",
+            "192.0.2.42",
+            "203.0.113.221",
+            "192.0.2.82",
+            "198.51.100.206",
+            "192.0.2.88",
+            "192.0.2.138",
+            "192.0.2.64",
+            "192.0.2.6",
+            "192.0.2.18",
+            "203.0.113.69",
+            "192.0.2.119",
+            "192.0.2.24",
+            "192.0.2.63",
+            "198.51.100.151",
+            "198.51.100.204",
+            "203.0.113.72",
+            "198.51.100.3",
+            "198.51.100.106",
+            "192.0.2.56",
+            "192.0.2.89",
+            "192.0.2.246",
+            "203.0.113.120",
+            "198.51.100.212",
+            "192.0.2.38",
+            "192.0.2.254",
+            "192.0.2.166",
+            "198.51.100.241",
+            "198.51.100.221",
+            "203.0.113.203",
+            "203.0.113.247"
+          ],
+          "name": [
+            "www.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+            "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co"
+          ],
+          "ttl": [
+            1826,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190,
+            190
+          ],
+          "type": [
+            "CNAME",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A",
+            "A"
+          ]
+        },
+        "header_flags": [
+          "RA"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-05-09T11:54:36.000Z",
+        "original": "<30>May 9 11:54:36 b4.fxz.com 203.0.113.248 named[12261]: 03-Nov-2051 13:22:37.747 client 192.168.124.110#31645: view 1: TCP: query: www.apejtlc.co IN A response: NOERROR + www.apejtlc.co. 1826 IN CNAME dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co.; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.159; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.195; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.132; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.179; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.187; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.139; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.193; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.11; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.233; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.110; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.23; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.123; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.224; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.118; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.93; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.67; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.160; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.213; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.31; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.217; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.166; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.197; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.155; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.122; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.93; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.43; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.62; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.149; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.182; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.234; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.54; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.60; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.173; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.239; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.238; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.188; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.24; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.73; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.168; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.75; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.167; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.184; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.171; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.33; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.90; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.46; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.143; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.126; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.250; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.86; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.71; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.17; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.144; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.177; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.168; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.35; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.200; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.69; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.202; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.209; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.161; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.235; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.149; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.128; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.96; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.183; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.91; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.76; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.162; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.87; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.54; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.61; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.47; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.240; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.137; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.171; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.19; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.122; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.34; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.206; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.66; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.94; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.79; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.62; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.12; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.170; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.74; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.36; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.59; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.12; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.80; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.172; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.41; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.50; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.116; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.198; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.246; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.229; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.92; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.147; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.83; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.10; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.237; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.121; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.123; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.198; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.148; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.225; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.11; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.144; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.225; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.210; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.205; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.68; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.178; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.42; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.221; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.82; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.206; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.88; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.138; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.64; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.6; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.18; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.69; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.119; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.24; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.63; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.151; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.204; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.72; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.3; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.106; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.56; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.89; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.246; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.120; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.212; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.38; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.254; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.166; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.241; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.221; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.203; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.247; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co ..."
+      },
+      "host": {
+        "domain": "b4.fxz.com",
+        "ip": [
+          "203.0.113.248"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "03-Nov-2051 13:22:37.747 client 192.168.124.110#31645: view 1: TCP: query: www.apejtlc.co IN A response: NOERROR + www.apejtlc.co. 1826 IN CNAME dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co.; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.159; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.195; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.132; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.179; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.187; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.139; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.193; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.11; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.233; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.110; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.23; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.123; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.224; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.118; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.93; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.67; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.160; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.213; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.31; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.217; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.166; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.197; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.155; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.122; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.93; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.43; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.62; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.149; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.182; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.234; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.54; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.60; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.173; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.239; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.238; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.188; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.24; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.73; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.168; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.75; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.167; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.184; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.171; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.33; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.90; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.46; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.143; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.126; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.250; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.86; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.71; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.17; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.144; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.177; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.168; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.35; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.200; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.69; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.202; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.209; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.161; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.235; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.149; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.128; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.96; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.183; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.91; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.76; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.162; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.87; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.54; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.61; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.47; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.240; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.137; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.171; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.19; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.122; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.34; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.206; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.66; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.94; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.79; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.62; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.12; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.170; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.74; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.36; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.59; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.12; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.80; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.172; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.41; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.50; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.116; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.198; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.246; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.229; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.92; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.147; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.83; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.10; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.237; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.121; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.123; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.198; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.148; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.225; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.11; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.144; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.225; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.210; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.205; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.68; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.178; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.42; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.221; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.82; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.206; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.88; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.138; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.64; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.6; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.18; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.69; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.119; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.24; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.63; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.151; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.204; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.72; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.3; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.106; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.56; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.89; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.246; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.120; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.212; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.38; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.254; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.166; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.241; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.221; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.203; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.247; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co ...",
+      "network": {
+        "protocol": "dns",
+        "transport": "tcp"
+      },
+      "process": {
+        "pid": 12261
+      },
+      "related": {
+        "hosts": [
+          "dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co",
+          "www.apejtlc.co",
+          "b4.fxz.com"
+        ],
+        "ip": [
+          "203.0.113.247",
+          "192.168.124.110",
+          "203.0.113.248"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-27T13:03:52.000Z",
+      "client": {
+        "ip": "203.0.113.177",
+        "port": 24602
+      },
+      "dns": {
+        "header_flags": [
+          "RD"
+        ],
+        "question": {
+          "class": "IN",
+          "name": "abugtera.tun.p2.42",
+          "type": "A"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-11-27T13:03:52.000Z",
+        "original": "<30>Nov 27 13:03:52 198.51.100.211 named[27014]: client @0x7f1dd4114af0 203.0.113.177#24602 (abugtera.tun.p2.42): view 1: query: abugtera.tun.p2.42 IN A + (198.51.100.211)"
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+"
+          },
+          "service_name": "named",
+          "type": "DNS",
+          "view": "1"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7f1dd4114af0 203.0.113.177#24602 (abugtera.tun.p2.42): view 1: query: abugtera.tun.p2.42 IN A + (198.51.100.211)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 27014
+      },
+      "related": {
+        "hosts": [
+          "abugtera.tun.p2.42"
+        ],
+        "ip": [
+          "203.0.113.177",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-11-27T11:53:09.000Z",
+      "client": {
+        "ip": "10.6.98.40",
+        "port": 40026
+      },
+      "dns": {
+        "header_flags": [
+          "RD"
+        ],
+        "question": {
+          "class": "CH",
+          "name": "version.bind",
+          "type": "TXT"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2026-11-27T11:53:09.000Z",
+        "original": "<30>Nov 27 11:53:09 192.168.249.222 named[15242]: client @0x7fec7c11dab0 10.6.98.40#40026 (version.bind): query: version.bind CH TXT +T (192.168.249.222)"
+      },
+      "host": {
+        "ip": [
+          "192.168.249.222"
+        ]
+      },
+      "infoblox_nios": {
+        "log": {
+          "dns": {
+            "header_flags": "+T"
+          },
+          "service_name": "named",
+          "type": "DNS"
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 30
+        }
+      },
+      "message": "client @0x7fec7c11dab0 10.6.98.40#40026 (version.bind): query: version.bind CH TXT +T (192.168.249.222)",
+      "network": {
+        "protocol": "dns"
+      },
+      "process": {
+        "pid": 15242
+      },
+      "related": {
+        "hosts": [
+          "version.bind"
+        ],
+        "ip": [
+          "10.6.98.40",
+          "192.168.249.222"
+        ]
+      },
+      "server": {
+        "ip": "192.168.249.222"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[11042]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: b4.fxz.com IN A response: NOERROR +ED b4.fxz.com 28800 IN A fxz.com; b4.fxz.com 28800 IN A 0.0.0.0;",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<45>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#50565 UDP: query: xcyx.com IN A response: REFUSED -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: e4.fxz.com IN A response: NOERROR +AED e4.fxz.com 28800 IN A 192.168.2.152;",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: qqg-aothp.fxz.com IN A response: NXDOMAIN +ED",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<45>Mar 11 23:51:31 ioajexpj.localdomain named[17742]: 07-Apr-2050 08:08:10.043 client 192.168.249.222#57398 UDP: query: b4.fxz.com IN A response: NOERROR +ED b4.fxz.com 28800 IN A 192.168.96.209; b4.fxz.com 28800 IN A 192.168.2.152;",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar  9 23:59:59 ioajexpj.localdomain named[17742]: client @0x7f1dd4114af0 192.168.249.222#59735 (config.nos-avg.cz): query failed (REFUSED) for config.nos-avg.cz/IN/TXT at query.c:10288",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar  9 23:59:59 ioajexpj.localdomain named[17742]: client @0x7f1dd4114af0 192.168.249.222#59735 (config.nos-avg.cz): query: config.nos-avg.cz IN TXT + (192.168.249.222)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[27014]: rpz: tqu4.com: reload start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[29914]: client @0x7ff42c168b50 192.168.249.222#50460 (xcyx.com): rewriting query name 'xcyx.com' to 'htcrv513-84-667-12-63.xcyx.com', type A",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[19204]: client @0x7fec7c11dab0 192.168.249.222#36483: updating zone 'xcyu5.com/IN': adding an RR at 'f6.xcyu5.com' A 192.168.96.209",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[28468]: CEF:0|Infoblox|NIOS|8.6.2-49634-e88e9df276a8|RPZ-QNAME|NXDOMAIN|7|app=DNS dst=192.168.249.222 src=192.168.249.222 spt=51424 view=_default qtype=A msg=\"rpz QNAME NXDOMAIN rewrite gmf2.com [A] via gmf2.coo.tqu4.com\" CAT=RPZ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[7741]: zone local_7.com/IN: notify from 192.168.249.222#46982: zone is up to date",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[7741]: responses: client @0x7fb550117f90 192.168.249.222#46982: received notify for zone 'local_14.com'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[15242]: transfer of 'xcyx.com/IN' from 192.168.249.222#53: Transfer status: success",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[15242]: transfer of 'xcyx.com/IN' from 192.168.249.222#53: Transfer completed: 1 messages, 9 records, 326 bytes, 0.001 secs (326000 bytes/sec)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[56199]: client @0x7f7e6c2809f0 192.168.249.222#57027 (xcyx.com): transfer of 'xcyx.com/IN': AXFR started (serial 3)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[56199]: client @0x7f7e6c2809f0 192.168.249.222#57027 (xcyx.com): transfer of 'xcyx.com/IN': AXFR ended",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[30325]: resolver priming query complete",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[1127]: validating xcyx.com/DNSKEY: unable to find a DNSKEY which verifies the DNSKEY RRset and also matches a trusted key for 'xcyx.com'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[1127]: validating xcyx.com/NSEC: bad cache hit (xcyx.com/DNSKEY)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Mar 11 23:51:31 ioajexpj.localdomain named[1127]: validating qrzltae1.xcyx.com/NSEC: bad cache hit (xcyx.com/DNSKEY)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Apr 14 16:17:20 10.65.62.33 named[2588]: infoblox-responses: 14-Apr-2050 16:17:20.046 client 192.168.12.36#57738: UDP: query: settings-win.data.microsoft.com IN A response: REFUSED -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Apr 14 16:16:05 10.65.62.33 named[2588]: queries: client @0x7f97e40eb500 192.168.12.36#64727 (qcoh.dihpabln.com): query: qcoh.dihpabln.com IN A + (192.168.26.209)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Apr 14 16:16:05 10.65.62.33 named[2588]: query-errors: client @0x7f97e40eb500 192.168.12.36#64727 (qcoh.dihpabln.com): query failed (REFUSED) for qcoh.dihpabln.com/IN/A at query.c:10288",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Oct 4 10:18:07 b4.fxz.com 203.0.113.248 named[10750]: 04-Oct-2050 10:18:07.834 client 203.0.113.177#59605: UDP: query: 203.0.113.177.a1.foo.com IN PTR response: NOERROR + 203.0.113.177.a1.foo.com. 21801 IN PTR 089.160.20.112.a1.foo.com.;",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>May 9 11:54:36 b4.fxz.com 203.0.113.248 named[12261]: 09-May-2051 11:54:36.185 client 203.0.113.177#59605: view 12: UDP: query: settings-win.data.microsoft.com IN TXT response: NOERROR + settings-win.data.microsoft.com. 3600 IN TXT \"k=rsa; p=abc\" \"def\" \"ghi\" \"jkl\" \"AB\";",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>May 9 11:54:36 b4.fxz.com 203.0.113.248 named[12261]: 03-Nov-2051 13:22:37.747 client 192.168.124.110#31645: view 1: TCP: query: www.apejtlc.co IN A response: NOERROR + www.apejtlc.co. 1826 IN CNAME dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co.; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.159; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.195; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.132; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.179; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.187; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.139; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.193; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.11; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.233; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.110; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.23; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.123; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.224; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.118; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.93; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.67; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.160; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.213; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.31; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.217; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.166; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.197; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.155; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.122; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.93; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.43; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.62; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.149; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.182; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.234; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.54; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.60; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.173; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.239; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.238; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.188; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.24; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.73; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.168; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.75; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.167; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.184; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.171; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.33; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.90; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.46; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.143; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.126; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.250; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.86; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.71; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.17; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.144; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.177; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.168; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.35; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.200; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.69; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.202; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.209; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.161; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.235; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.149; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.128; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.96; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.183; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.91; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.76; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.162; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.87; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.54; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.61; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.47; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.240; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.137; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.171; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.19; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.122; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.34; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.206; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.66; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.94; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.79; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.62; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.12; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.170; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.74; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.36; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.59; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.12; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.80; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.172; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.41; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.231; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.50; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.116; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.198; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.246; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.229; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.92; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.147; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.83; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.10; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.237; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.121; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.123; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.198; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.148; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.225; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.11; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.144; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.225; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.210; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.205; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.68; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.178; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.42; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.221; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.82; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.206; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.88; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.138; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.64; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.6; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.18; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.69; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.119; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.24; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.63; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.151; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.204; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.72; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.3; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.106; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.56; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.89; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.246; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.120; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.212; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.38; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.254; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 192.0.2.166; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.241; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 198.51.100.221; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.203; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co. 190 IN A 203.0.113.247; dwjt.sfzjfz.mhjfwdmvhw.apejtlc.co ...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Nov 27 13:03:52 198.51.100.211 named[27014]: client @0x7f1dd4114af0 203.0.113.177#24602 (abugtera.tun.p2.42): view 1: query: abugtera.tun.p2.42 IN A + (198.51.100.211)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>Nov 27 11:53:09 192.168.249.222 named[15242]: client @0x7fec7c11dab0 10.6.98.40#40026 (version.bind): query: version.bind CH TXT +T (192.168.249.222)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}",
+      "event.created": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-infoblox_nios-log-default",
+    "event_count": 29,
+    "numeric_keyword_fields": [],
+    "package": "infoblox_nios",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

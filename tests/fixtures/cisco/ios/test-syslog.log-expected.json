@@ -1,0 +1,672 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-01-06T20:52:12.861Z",
+      "cisco": {
+        "ios": {
+          "facility": "SYS",
+          "message_count": 2360957
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "CONFIG_I",
+        "original": "<189>2360957: Jan  6 2050 20:52:12.861: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.228.218.6)",
+        "provider": "firewall",
+        "sequence": 2360957,
+        "severity": 5,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "notification",
+        "syslog": {
+          "priority": 189
+        }
+      },
+      "message": "Configured from console by akroh on vty0 (10.228.218.6)",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-06T20:54:26.961Z",
+      "cisco": {
+        "ios": {
+          "facility": "SYS"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "CONFIG_I",
+        "original": "<189>: Jan  6 2050 20:54:26.961: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.228.218.6)",
+        "provider": "firewall",
+        "severity": 5,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "notification",
+        "syslog": {
+          "priority": 189
+        }
+      },
+      "message": "Configured from console by akroh on vty0 (10.228.218.6)",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-06T20:55:50.671Z",
+      "cisco": {
+        "ios": {
+          "access_list": "100",
+          "facility": "SEC"
+        }
+      },
+      "destination": {
+        "address": "10.155.124.42",
+        "ip": "10.155.124.42"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "deny",
+        "category": [
+          "network"
+        ],
+        "code": "IPACCESSLOGDP",
+        "original": "<190>: Jan  6 2050 20:55:50.671: %SEC-6-IPACCESSLOGDP: list 100 denied icmp 172.21.13.91 -> 10.155.124.42 (3/3), 20 packets",
+        "provider": "firewall",
+        "severity": 6,
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "icmp": {
+        "code": "3",
+        "type": "3"
+      },
+      "log": {
+        "level": "informational",
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "list 100 denied icmp 172.21.13.91 -> 10.155.124.42 (3/3), 20 packets",
+      "network": {
+        "community_id": "1:t/ihwIpjZllKRzl4CluD333LGsE=",
+        "packets": 20,
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "IOS",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "172.21.13.91",
+          "10.155.124.42"
+        ]
+      },
+      "source": {
+        "address": "172.21.13.91",
+        "ip": "172.21.13.91",
+        "packets": 20
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-06T21:01:34.964Z",
+      "cisco": {
+        "ios": {
+          "facility": "SYS"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "CONFIG_I",
+        "original": "<189>: sw01: Jan  6 2050 21:01:34.964: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.228.218.6)",
+        "provider": "firewall",
+        "severity": 5,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "notification",
+        "syslog": {
+          "hostname": "sw01",
+          "priority": 189
+        }
+      },
+      "message": "Configured from console by akroh on vty0 (10.228.218.6)",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-08-18T07:15:04.461+02:00",
+      "cisco": {
+        "ios": {
+          "message_count": 2637085
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "<191>2637085: rt401-rk30409: Aug 18 07:15:04.461 CEST: NTP Core (NOTICE): Clock synchronization lost.",
+        "provider": "firewall",
+        "sequence": 2637085,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "hostname": "rt401-rk30409",
+          "priority": 191
+        }
+      },
+      "message": "NTP Core (NOTICE): Clock synchronization lost.",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-08-18T07:15:04.461+02:00",
+      "cisco": {
+        "ios": {
+          "message_count": 2637086
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "<191>2637086: rt401-rk30409: Aug 18 07:15:04.461 CEST: NTP Core (INFO): 10.58.207.252 961A 8A sys_peer",
+        "provider": "firewall",
+        "sequence": 2637086,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "hostname": "rt401-rk30409",
+          "priority": 191
+        }
+      },
+      "message": "NTP Core (INFO): 10.58.207.252 961A 8A sys_peer",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-08-18T07:15:04.461+02:00",
+      "cisco": {
+        "ios": {
+          "message_count": 2637087
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "<191>2637087: rt401-rk30409: Aug 18 07:15:04.461 CEST: NTP Core (NOTICE): Clock is synchronized.",
+        "provider": "firewall",
+        "sequence": 2637087,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "hostname": "rt401-rk30409",
+          "priority": 191
+        }
+      },
+      "message": "NTP Core (NOTICE): Clock is synchronized.",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-08-12T12:14:24.412-06:00",
+      "cisco": {
+        "ios": {
+          "facility": "FW",
+          "interface": {
+            "name": "GigabitEthernet10/0/2.6"
+          },
+          "message_count": 3352436,
+          "sequence": "3352457"
+        }
+      },
+      "destination": {
+        "bytes": 40,
+        "ip": "10.207.167.171",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "SESS_AUDIT_TRAIL",
+        "original": "<190>3352436: 3352457: Aug 12 2051 12:14:24.412 mdt: %IOSXE-6-PLATFORM: R0/0: cpp_cp: QFP:0.0 Thread:001 TS:00013807766185951588 %FW-6-SESS_AUDIT_TRAIL: (target:class) (ZP_PROCESS_TO_CORPORATE:CM_PROCESS_TO_CORPORATE):Stop dns session: initiator (10.217.222.223:33207) sent 48 bytes -- responder (10.207.167.171:53) sent 40 bytes, from GigabitEthernet10/0/2.6",
+        "provider": "firewall",
+        "sequence": 3352457,
+        "severity": 6,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "informational",
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "(target:class) (ZP_PROCESS_TO_CORPORATE:CM_PROCESS_TO_CORPORATE):Stop dns session: initiator (10.217.222.223:33207) sent 48 bytes -- responder (10.207.167.171:53) sent 40 bytes, from GigabitEthernet10/0/2.6",
+      "network": {
+        "bytes": 88,
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "IOS",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "10.217.222.223",
+          "10.207.167.171"
+        ]
+      },
+      "source": {
+        "bytes": 48,
+        "ip": "10.217.222.223",
+        "port": 33207
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-08-12T12:15:33.963-06:00",
+      "cisco": {
+        "ios": {
+          "facility": "FW",
+          "interface": {
+            "name": "GigabitEthernet1/0/2.6"
+          },
+          "message_count": 3352460,
+          "sequence": "3352481"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.177",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DROP_PKT",
+        "original": "<190>3352460: 3352481: Aug 12 2051 12:15:33.963 mdt: %IOSXE-6-PLATFORM: R0/0: cpp_cp: QFP:0.0 Thread:001 TS:00013807835737559120 %FW-6-DROP_PKT: Dropping tcp pkt from GigabitEthernet1/0/2.6 10.217.222.223:53836 => 203.0.113.177:80(target:class)-(ZP_PROCESS_TO_CORPORATE:class-default) due to Policy drop:classify result with ip ident 13017 tcp flag 0x2, seq 4266642156, ack 0",
+        "provider": "firewall",
+        "sequence": 3352481,
+        "severity": 6,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "informational",
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "Dropping tcp pkt from GigabitEthernet1/0/2.6 10.217.222.223:53836 => 203.0.113.177:80(target:class)-(ZP_PROCESS_TO_CORPORATE:class-default) due to Policy drop:classify result with ip ident 13017 tcp flag 0x2, seq 4266642156, ack 0",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "IOS",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "10.217.222.223",
+          "203.0.113.177"
+        ]
+      },
+      "source": {
+        "ip": "10.217.222.223",
+        "port": 53836
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-08-18T07:15:04.461+02:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "original": "<191>: rt401-rk30409: Aug 18 07:15:04.461 CEST: last message repeated 66 times",
+        "provider": "firewall",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "hostname": "rt401-rk30409",
+          "priority": 191
+        }
+      },
+      "message": "last message repeated 66 times",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-29T07:40:10.863-05:00",
+      "cisco": {
+        "ios": {
+          "facility": "ILPOWER",
+          "message_count": 1469087
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "SENSE_POWER_INVALID",
+        "original": "<189>1469087: chswitchm1: Mar 29 07:40:10.863 CDT: %ILPOWER-5-SENSE_POWER_INVALID: Interface Gi1/0/25: invalid power sense 78054 milliwatts current 515 mA voltage 151562 mV",
+        "provider": "firewall",
+        "sequence": 1469087,
+        "severity": 5,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "notification",
+        "syslog": {
+          "hostname": "chswitchm1",
+          "priority": 189
+        }
+      },
+      "message": "Interface Gi1/0/25: invalid power sense 78054 milliwatts current 515 mA voltage 151562 mV",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-29T07:40:10.863-05:00",
+      "cisco": {
+        "ios": {
+          "facility": "ILPOWER",
+          "message_count": 1469087
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "SENSE_POWER_INVALID",
+        "original": "<189>1469087: ch_switch_m-1: Mar 29 07:40:10.863 CDT: %ILPOWER-5-SENSE_POWER_INVALID: Interface Gi1/0/25: invalid power sense 78054 milliwatts current 515 mA voltage 151562 mV",
+        "provider": "firewall",
+        "sequence": 1469087,
+        "severity": 5,
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "notification",
+        "syslog": {
+          "hostname": "ch_switch_m-1",
+          "priority": 189
+        }
+      },
+      "message": "Interface Gi1/0/25: invalid power sense 78054 milliwatts current 515 mA voltage 151562 mV",
+      "observer": {
+        "product": "IOS",
+        "type": "router",
+        "vendor": "Cisco"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<189>2360957: Jan  6 2050 20:52:12.861: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.228.218.6)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<189>: Jan  6 2050 20:54:26.961: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.228.218.6)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>: Jan  6 2050 20:55:50.671: %SEC-6-IPACCESSLOGDP: list 100 denied icmp 172.21.13.91 -> 10.155.124.42 (3/3), 20 packets",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<189>: sw01: Jan  6 2050 21:01:34.964: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.228.218.6)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<191>2637085: rt401-rk30409: Aug 18 07:15:04.461 CEST: NTP Core (NOTICE): Clock synchronization lost.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<191>2637086: rt401-rk30409: Aug 18 07:15:04.461 CEST: NTP Core (INFO): 10.58.207.252 961A 8A sys_peer",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<191>2637087: rt401-rk30409: Aug 18 07:15:04.461 CEST: NTP Core (NOTICE): Clock is synchronized.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>3352436: 3352457: Aug 12 2051 12:14:24.412 mdt: %IOSXE-6-PLATFORM: R0/0: cpp_cp: QFP:0.0 Thread:001 TS:00013807766185951588 %FW-6-SESS_AUDIT_TRAIL: (target:class) (ZP_PROCESS_TO_CORPORATE:CM_PROCESS_TO_CORPORATE):Stop dns session: initiator (10.217.222.223:33207) sent 48 bytes -- responder (10.207.167.171:53) sent 40 bytes, from GigabitEthernet10/0/2.6",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>3352460: 3352481: Aug 12 2051 12:15:33.963 mdt: %IOSXE-6-PLATFORM: R0/0: cpp_cp: QFP:0.0 Thread:001 TS:00013807835737559120 %FW-6-DROP_PKT: Dropping tcp pkt from GigabitEthernet1/0/2.6 10.217.222.223:53836 => 203.0.113.177:80(target:class)-(ZP_PROCESS_TO_CORPORATE:class-default) due to Policy drop:classify result with ip ident 13017 tcp flag 0x2, seq 4266642156, ack 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<191>: rt401-rk30409: Aug 18 07:15:04.461 CEST: last message repeated 66 times",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<189>1469087: chswitchm1: Mar 29 07:40:10.863 CDT: %ILPOWER-5-SENSE_POWER_INVALID: Interface Gi1/0/25: invalid power sense 78054 milliwatts current 515 mA voltage 151562 mV",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<189>1469087: ch_switch_m-1: Mar 29 07:40:10.863 CDT: %ILPOWER-5-SENSE_POWER_INVALID: Interface Gi1/0/25: invalid power sense 78054 milliwatts current 515 mA voltage 151562 mV",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_ios-log-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "cisco_ios",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,4 @@
+# Test inputs for this directory's fixtures.
+dynamic_fields:
+  event.ingested: .*
+  user_agent.version: ^\d+\.\d+(\.|\..*)?$

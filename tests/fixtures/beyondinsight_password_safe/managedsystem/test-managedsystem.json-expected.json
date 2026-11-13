@@ -1,0 +1,114 @@
+{
+  "expected": [
+    {
+      "beyondinsight_password_safe": {
+        "managedsystem": {
+          "access_url": "http://aardvarkagreement.com/manage",
+          "account_name_format": 0,
+          "application_host_id": "2",
+          "asset_id": "13",
+          "auto_management_flag": true,
+          "change_frequency_days": 30,
+          "change_frequency_type": "first",
+          "change_password_after_any_release_flag": false,
+          "change_time": "23:30",
+          "check_password_flag": false,
+          "cloud_id": "1",
+          "contact_email": "admin@abwasakjcmobcgbpm.com",
+          "database_id": "5",
+          "description": "Primary Managed System for AbwasakjCmobcgbpm",
+          "directory_id": "3",
+          "dns_name": "AardvarkAgreement.example.com",
+          "dss_key_rule_id": "0",
+          "elevation_command": "sudo",
+          "entity_type_id": "1",
+          "forest_name": "PrimaryForest",
+          "functional_account_id": "14",
+          "host_name": "AbwasakjCmobcgbpm",
+          "instance_name": "InstanceOne",
+          "ip_address": "198.51.100.10",
+          "is_application_host": false,
+          "is_default_instance": true,
+          "isa_release_duration": 120,
+          "login_account_id": "20",
+          "managed_system_id": "13",
+          "max_release_duration": 525600,
+          "net_bios_name": "AardvarkNet",
+          "oracle_internet_directory_id": "062a3903-e66a-45d6-a418-493986792503",
+          "oracle_internet_directory_service_name": "OiDService",
+          "password_rule_id": "0",
+          "platform_id": "4",
+          "port": 8080,
+          "release_duration": 120,
+          "remote_client_type": "None",
+          "reset_password_on_mismatch_flag": false,
+          "ssh_key_enforcement_mode": "Auto",
+          "system_name": "AbwasakjCmobcgbpm",
+          "template": "ServerTemplate",
+          "timeout": 30,
+          "use_ssl": true,
+          "workgroup_id": "1"
+        }
+      },
+      "ecs": {
+        "version": "9.1.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"ManagedSystemID\":13,\"EntityTypeID\":1,\"AssetID\":13,\"DatabaseID\":5,\"DirectoryID\":3,\"CloudID\":1,\"WorkgroupID\":1,\"HostName\":\"AbwasakjCmobcgbpm\",\"DNSName\":\"AardvarkAgreement.example.com\",\"IPAddress\":\"198.51.100.10\",\"InstanceName\":\"InstanceOne\",\"IsDefaultInstance\":true,\"Template\":\"ServerTemplate\",\"ForestName\":\"PrimaryForest\",\"UseSSL\":true,\"OracleInternetDirectoryID\":\"062a3903-e66a-45d6-a418-493986792503\",\"OracleInternetDirectoryServiceName\":\"OiDService\",\"SystemName\":\"AbwasakjCmobcgbpm\",\"PlatformID\":4,\"NetBiosName\":\"AardvarkNet\",\"Port\":8080,\"Timeout\":30,\"Description\":\"Primary Managed System for AbwasakjCmobcgbpm\",\"ContactEmail\":\"admin@abwasakjcmobcgbpm.com\",\"PasswordRuleID\":0,\"DSSKeyRuleID\":0,\"ReleaseDuration\":120,\"MaxReleaseDuration\":525600,\"ISAReleaseDuration\":120,\"AutoManagementFlag\":true,\"FunctionalAccountID\":14,\"LoginAccountID\":20,\"ElevationCommand\":\"sudo\",\"SshKeyEnforcementMode\":1,\"CheckPasswordFlag\":false,\"ChangePasswordAfterAnyReleaseFlag\":false,\"ResetPasswordOnMismatchFlag\":false,\"ChangeFrequencyType\":\"first\",\"ChangeFrequencyDays\":30,\"ChangeTime\":\"23:30\",\"AccountNameFormat\":0,\"RemoteClientType\":\"None\",\"ApplicationHostID\":2,\"IsApplicationHost\":false,\"AccessURL\":\"http://aardvarkagreement.com/manage\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "AbwasakjCmobcgbpm",
+        "ip": [
+          "198.51.100.10"
+        ],
+        "name": "AardvarkAgreement.example.com"
+      },
+      "related": {
+        "hosts": [
+          "AbwasakjCmobcgbpm",
+          "AardvarkAgreement.example.com"
+        ],
+        "ip": [
+          "198.51.100.10"
+        ],
+        "user": [
+          "admin@abwasakjcmobcgbpm.com"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "full": "http://aardvarkagreement.com/manage"
+      },
+      "user": {
+        "email": "admin@abwasakjcmobcgbpm.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "original": "{\"ManagedSystemID\":13,\"EntityTypeID\":1,\"AssetID\":13,\"DatabaseID\":5,\"DirectoryID\":3,\"CloudID\":1,\"WorkgroupID\":1,\"HostName\":\"AbwasakjCmobcgbpm\",\"DNSName\":\"AardvarkAgreement.example.com\",\"IPAddress\":\"198.51.100.10\",\"InstanceName\":\"InstanceOne\",\"IsDefaultInstance\":true,\"Template\":\"ServerTemplate\",\"ForestName\":\"PrimaryForest\",\"UseSSL\":true,\"OracleInternetDirectoryID\":\"062a3903-e66a-45d6-a418-493986792503\",\"OracleInternetDirectoryServiceName\":\"OiDService\",\"SystemName\":\"AbwasakjCmobcgbpm\",\"PlatformID\":4,\"NetBiosName\":\"AardvarkNet\",\"Port\":8080,\"Timeout\":30,\"Description\":\"Primary Managed System for AbwasakjCmobcgbpm\",\"ContactEmail\":\"admin@abwasakjcmobcgbpm.com\",\"PasswordRuleID\":0,\"DSSKeyRuleID\":0,\"ReleaseDuration\":120,\"MaxReleaseDuration\":525600,\"ISAReleaseDuration\":120,\"AutoManagementFlag\":true,\"FunctionalAccountID\":14,\"LoginAccountID\":20,\"ElevationCommand\":\"sudo\",\"SshKeyEnforcementMode\":1,\"CheckPasswordFlag\":false,\"ChangePasswordAfterAnyReleaseFlag\":false,\"ResetPasswordOnMismatchFlag\":false,\"ChangeFrequencyType\":\"first\",\"ChangeFrequencyDays\":30,\"ChangeTime\":\"23:30\",\"AccountNameFormat\":0,\"RemoteClientType\":\"None\",\"ApplicationHostID\":2,\"IsApplicationHost\":false,\"AccessURL\":\"http://aardvarkagreement.com/manage\"}"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "managedsystem",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-beyondinsight_password_safe-managedsystem-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "beyondinsight_password_safe",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

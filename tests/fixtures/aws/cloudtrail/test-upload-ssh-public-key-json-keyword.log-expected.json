@@ -1,0 +1,120 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-01-10T16:06:40.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "recipient_account_id": "0123456789012",
+          "request_id": "BSBZXIC-58a3-48db-18e9-FKDPVSD",
+          "request_parameters": "{sSHPublicKeyBody=ssh-rsa AAAAdeadcodedeadcode Ekkcf@localhost.domain, userName=Ekkcf}",
+          "response_elements": "{sSHPublicKey={sSHPublicKeyBody=ssh-rsa AAAAdeadcodedeadcode Ekkcf@localhost.domain, sSHPublicKeyId=EXAMPLE_KEY_ID, uploadDate=Jan 10, 2048 4:06:40 PM, fingerprint=de:ad:c0:de:de:ad:c0:de:de:ad:c0:de:de:ad:c0:de, userName=Ekkcf, status=Active}}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "invoked_by": "signin.amazonaws.com",
+            "session_context": {
+              "creation_date": "2048-01-10T14:38:30.000Z",
+              "mfa_authenticated": "true"
+            },
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UploadSSHPublicKey",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-9a9d-4da4-9998-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_ID\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-10T14:38:30Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-10T16:06:40Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UploadSSHPublicKey\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"sSHPublicKeyBody\":\"ssh-rsa AAAAdeadcodedeadcode Ekkcf@localhost.domain\",\"userName\":\"Ekkcf\"},\"responseElements\":{\"sSHPublicKey\":{\"fingerprint\":\"de:ad:c0:de:de:ad:c0:de:de:ad:c0:de:de:ad:c0:de\",\"status\":\"Active\",\"uploadDate\":\"Jan 10, 2048 4:06:40 PM\",\"userName\":\"Ekkcf\",\"sSHPublicKeyId\":\"EXAMPLE_KEY_ID\",\"sSHPublicKeyBody\":\"ssh-rsa AAAAdeadcodedeadcode Ekkcf@localhost.domain\"}},\"requestID\":\"BSBZXIC-58a3-48db-18e9-FKDPVSD\",\"eventID\":\"EXAMPLE-9a9d-4da4-9998-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "success",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY",
+          "Ekkcf",
+          "arn:aws:iam::0123456789012:user/Ekkcf"
+        ],
+        "user": [
+          "Ekkcf",
+          "EXAMPLE_ID"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "EXAMPLE_ID",
+        "name": "Ekkcf",
+        "target": {
+          "name": "Ekkcf"
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "signin.amazonaws.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "keyword"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_ID\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-10T14:38:30Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-10T16:06:40Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UploadSSHPublicKey\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"sSHPublicKeyBody\":\"ssh-rsa AAAAdeadcodedeadcode Ekkcf@localhost.domain\",\"userName\":\"Ekkcf\"},\"responseElements\":{\"sSHPublicKey\":{\"fingerprint\":\"de:ad:c0:de:de:ad:c0:de:de:ad:c0:de:de:ad:c0:de\",\"status\":\"Active\",\"uploadDate\":\"Jan 10, 2048 4:06:40 PM\",\"userName\":\"Ekkcf\",\"sSHPublicKeyId\":\"EXAMPLE_KEY_ID\",\"sSHPublicKeyBody\":\"ssh-rsa AAAAdeadcodedeadcode Ekkcf@localhost.domain\"}},\"requestID\":\"BSBZXIC-58a3-48db-18e9-FKDPVSD\",\"eventID\":\"EXAMPLE-9a9d-4da4-9998-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

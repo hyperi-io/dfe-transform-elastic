@@ -1,0 +1,1020 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-01-17T01:32:16.805Z",
+      "client": {
+        "address": "10.6.58.226"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 9243
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CAOvs1BMFCX2Eh0Y3",
+        "kind": "event",
+        "original": "{\"ts\":2431301536.805088,\"uid\":\"CAOvs1BMFCX2Eh0Y3\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":63199,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":9243,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\",\"curve\":\"secp256r1\",\"server_name\":\"bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"FebkbHWVCV8rEEEne\",\"F4BDY41MGUBT6URZMd\",\"FWlfEfiHVkv8evDL3\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"issuer\":\"CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US\",\"validation_status\":\"ok\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:DimOYOU6Hyo+e/YE0As5WaO+Erc=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.6.58.226",
+          "198.51.100.144"
+        ]
+      },
+      "server": {
+        "address": "198.51.100.144"
+      },
+      "source": {
+        "address": "10.6.58.226",
+        "ip": "10.6.58.226",
+        "port": 63199
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+        "curve": "secp256r1",
+        "established": true,
+        "resumed": false,
+        "server": {
+          "issuer": "CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US",
+          "subject": "CN=*.gcp.cloud.es.io,O=Elasticsearch Inc.,L=Mountain View,ST=California,C=US",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "DigiCert SHA2 Secure Server CA"
+              ],
+              "country": [
+                "US"
+              ],
+              "organization": [
+                "DigiCert Inc"
+              ]
+            },
+            "subject": {
+              "common_name": [
+                "*.gcp.cloud.es.io"
+              ],
+              "country": [
+                "US"
+              ],
+              "locality": [
+                "Mountain View"
+              ],
+              "organization": [
+                "Elasticsearch Inc."
+              ],
+              "state_or_province": [
+                "California"
+              ]
+            }
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "zeek": {
+        "session_id": "CAOvs1BMFCX2Eh0Y3",
+        "ssl": {
+          "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+          "curve": "secp256r1",
+          "established": true,
+          "resumed": false,
+          "server": {
+            "cert_chain_fuids": [
+              "FebkbHWVCV8rEEEne",
+              "F4BDY41MGUBT6URZMd",
+              "FWlfEfiHVkv8evDL3"
+            ],
+            "issuer": {
+              "common_name": "DigiCert SHA2 Secure Server CA",
+              "country": "US",
+              "organization": "DigiCert Inc"
+            },
+            "name": "bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io",
+            "subject": {
+              "common_name": "*.gcp.cloud.es.io",
+              "country": "US",
+              "locality": "Mountain View",
+              "organization": "Elasticsearch Inc.",
+              "state": "California"
+            }
+          },
+          "validation": {
+            "status": "ok"
+          },
+          "version": "TLSv12"
+        }
+      }
+    },
+    {
+      "@timestamp": "2047-01-17T01:32:16.805Z",
+      "client": {
+        "address": "10.6.58.226"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 9243
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C3mki91FnnNtm0u1ok",
+        "kind": "event",
+        "original": "{\"ts\":2431301536.80509,\"uid\":\"C3mki91FnnNtm0u1ok\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":63198,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":9243,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\",\"curve\":\"secp256r1\",\"server_name\":\"bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"Fue9H32OmuitQk2zR\",\"FpbiBP215tk2xftxM6\",\"FEdROj1vUzTGw3BIUa\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"issuer\":\"CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US\",\"validation_status\":\"ok\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YGBJHkSxFgl7kfB1RwskiFTDE2c=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.6.58.226",
+          "198.51.100.144"
+        ]
+      },
+      "server": {
+        "address": "198.51.100.144"
+      },
+      "source": {
+        "address": "10.6.58.226",
+        "ip": "10.6.58.226",
+        "port": 63198
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+        "curve": "secp256r1",
+        "established": true,
+        "resumed": false,
+        "server": {
+          "issuer": "CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US",
+          "subject": "CN=*.gcp.cloud.es.io,O=Elasticsearch Inc.,L=Mountain View,ST=California,C=US",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "DigiCert SHA2 Secure Server CA"
+              ],
+              "country": [
+                "US"
+              ],
+              "organization": [
+                "DigiCert Inc"
+              ]
+            },
+            "subject": {
+              "common_name": [
+                "*.gcp.cloud.es.io"
+              ],
+              "country": [
+                "US"
+              ],
+              "locality": [
+                "Mountain View"
+              ],
+              "organization": [
+                "Elasticsearch Inc."
+              ],
+              "state_or_province": [
+                "California"
+              ]
+            }
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "zeek": {
+        "session_id": "C3mki91FnnNtm0u1ok",
+        "ssl": {
+          "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+          "curve": "secp256r1",
+          "established": true,
+          "resumed": false,
+          "server": {
+            "cert_chain_fuids": [
+              "Fue9H32OmuitQk2zR",
+              "FpbiBP215tk2xftxM6",
+              "FEdROj1vUzTGw3BIUa"
+            ],
+            "issuer": {
+              "common_name": "DigiCert SHA2 Secure Server CA",
+              "country": "US",
+              "organization": "DigiCert Inc"
+            },
+            "name": "bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io",
+            "subject": {
+              "common_name": "*.gcp.cloud.es.io",
+              "country": "US",
+              "locality": "Mountain View",
+              "organization": "Elasticsearch Inc.",
+              "state": "California"
+            }
+          },
+          "validation": {
+            "status": "ok"
+          },
+          "version": "TLSv12"
+        }
+      }
+    },
+    {
+      "@timestamp": "2047-01-17T01:32:16.805Z",
+      "client": {
+        "address": "10.6.58.226"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 9243
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CfGBt82PzCXzHa0iek",
+        "kind": "event",
+        "original": "{\"ts\":2431301536.805527,\"uid\":\"CfGBt82PzCXzHa0iek\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":63197,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":9243,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\",\"curve\":\"secp256r1\",\"server_name\":\"bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"FiFLYv3UjeWyv2gcW\",\"FvSsiB1Xi816EMagI9\",\"FWpPS4mjGaAhTRXLf\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"issuer\":\"CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US\",\"validation_status\":\"ok\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:CzYOUKjI8fKHbwfulBhccvth7Mg=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.6.58.226",
+          "198.51.100.144"
+        ]
+      },
+      "server": {
+        "address": "198.51.100.144"
+      },
+      "source": {
+        "address": "10.6.58.226",
+        "ip": "10.6.58.226",
+        "port": 63197
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+        "curve": "secp256r1",
+        "established": true,
+        "resumed": false,
+        "server": {
+          "issuer": "CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US",
+          "subject": "CN=*.gcp.cloud.es.io,O=Elasticsearch Inc.,L=Mountain View,ST=California,C=US",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "DigiCert SHA2 Secure Server CA"
+              ],
+              "country": [
+                "US"
+              ],
+              "organization": [
+                "DigiCert Inc"
+              ]
+            },
+            "subject": {
+              "common_name": [
+                "*.gcp.cloud.es.io"
+              ],
+              "country": [
+                "US"
+              ],
+              "locality": [
+                "Mountain View"
+              ],
+              "organization": [
+                "Elasticsearch Inc."
+              ],
+              "state_or_province": [
+                "California"
+              ]
+            }
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "zeek": {
+        "session_id": "CfGBt82PzCXzHa0iek",
+        "ssl": {
+          "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+          "curve": "secp256r1",
+          "established": true,
+          "resumed": false,
+          "server": {
+            "cert_chain_fuids": [
+              "FiFLYv3UjeWyv2gcW",
+              "FvSsiB1Xi816EMagI9",
+              "FWpPS4mjGaAhTRXLf"
+            ],
+            "issuer": {
+              "common_name": "DigiCert SHA2 Secure Server CA",
+              "country": "US",
+              "organization": "DigiCert Inc"
+            },
+            "name": "bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io",
+            "subject": {
+              "common_name": "*.gcp.cloud.es.io",
+              "country": "US",
+              "locality": "Mountain View",
+              "organization": "Elasticsearch Inc.",
+              "state": "California"
+            }
+          },
+          "validation": {
+            "status": "ok"
+          },
+          "version": "TLSv12"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-10-08T17:50:57.352Z",
+      "client": {
+        "address": "10.26.137.145"
+      },
+      "destination": {
+        "address": "192.168.213.251",
+        "ip": "192.168.213.251",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CK17Dl2SB8bZOVonSl",
+        "kind": "event",
+        "original": "{\"ts\":2485792257.352156,\"uid\":\"CK17Dl2SB8bZOVonSl\",\"id.orig_h\":\"10.26.137.145\",\"id.orig_p\":49228,\"id.resp_h\":\"192.168.213.251\",\"id.resp_p\":443,\"version\":\"TLSv12\",\"cipher\":\"TLS_RSA_WITH_AES_128_CBC_SHA256\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"FOLwYQ6rs70bIMSf9\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=foo,OU=foo@bar,O=org,L=locality,C=LO\",\"issuer\":\"CN=CA,OU=FB@example.com,O=Example Corp,L=foo,C=HI\",\"validation_status\":\"self signed certificate\",\"ja3\":\"17908a119a0a7efcf8dd6ebc80f1b182\",\"ja3s\":\"23f1b44adbd4037a8c1eed42d70b820e\",\"resp_certificate_sha1\":\"6fea5b00103b0d2c40819f9b93905ea951e98a44\",\"not_valid_before\":1562022421,\"not_valid_after\":1577748224}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:w6gmRoZUHsFTTpnLnrGCkTLIo1w=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "23f1b44adbd4037a8c1eed42d70b820e",
+          "17908a119a0a7efcf8dd6ebc80f1b182"
+        ],
+        "ip": [
+          "10.26.137.145",
+          "192.168.213.251"
+        ]
+      },
+      "server": {
+        "address": "192.168.213.251"
+      },
+      "source": {
+        "address": "10.26.137.145",
+        "ip": "10.26.137.145",
+        "port": 49228
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_RSA_WITH_AES_128_CBC_SHA256",
+        "client": {
+          "ja3": "17908a119a0a7efcf8dd6ebc80f1b182"
+        },
+        "established": true,
+        "resumed": false,
+        "server": {
+          "hash": {
+            "sha1": "6FEA5B00103B0D2C40819F9B93905EA951E98A44"
+          },
+          "issuer": "CN=CA,OU=FB@example.com,O=Example Corp,L=foo,C=HI",
+          "ja3s": "23f1b44adbd4037a8c1eed42d70b820e",
+          "not_after": "2019-12-30T23:23:44.000Z",
+          "not_before": "2019-07-01T23:07:01.000Z",
+          "subject": "CN=foo,OU=foo@bar,O=org,L=locality,C=LO",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "CA"
+              ],
+              "country": [
+                "HI"
+              ],
+              "locality": [
+                "foo"
+              ],
+              "organization": [
+                "Example Corp"
+              ],
+              "organizational_unit": [
+                "FB@example.com"
+              ]
+            },
+            "subject": {
+              "common_name": [
+                "foo"
+              ],
+              "country": [
+                "LO"
+              ],
+              "locality": [
+                "locality"
+              ],
+              "organization": [
+                "org"
+              ],
+              "organizational_unit": [
+                "foo@bar"
+              ]
+            }
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "zeek": {
+        "session_id": "CK17Dl2SB8bZOVonSl",
+        "ssl": {
+          "cipher": "TLS_RSA_WITH_AES_128_CBC_SHA256",
+          "established": true,
+          "resumed": false,
+          "server": {
+            "cert_chain_fuids": [
+              "FOLwYQ6rs70bIMSf9"
+            ],
+            "issuer": {
+              "common_name": "CA",
+              "country": "HI",
+              "locality": "foo",
+              "organization": "Example Corp",
+              "organizational_unit": "FB@example.com"
+            },
+            "subject": {
+              "common_name": "foo",
+              "country": "LO",
+              "locality": "locality",
+              "organization": "org",
+              "organizational_unit": "foo@bar"
+            }
+          },
+          "validation": {
+            "status": "self signed certificate"
+          },
+          "version": "TLSv12"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T08:00:51.151Z",
+      "client": {
+        "address": "10.55.23.134"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CLQiVH1VcpvT3ruEak",
+        "kind": "event",
+        "original": "{\"ts\":2500704051.151303,\"uid\":\"CLQiVH1VcpvT3ruEak\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52730,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256\",\"resumed\":false,\"established\":false}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:SK4AY4Fk+dqqs5LxeJMYN8IyP2c=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "server": {
+        "address": "198.51.100.144"
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 52730
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+        "established": false,
+        "resumed": false,
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "zeek": {
+        "session_id": "CLQiVH1VcpvT3ruEak",
+        "ssl": {
+          "cipher": "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+          "established": false,
+          "resumed": false,
+          "version": "TLSv12"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T07:55:55.826Z",
+      "client": {
+        "address": "198.51.100.144"
+      },
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CBiXOC4IqYxMv1xzf9",
+        "kind": "event",
+        "original": "{\"ts\":2500703755.826099,\"uid\":\"CBiXOC4IqYxMv1xzf9\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":52678,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"qqpgwr-egh.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:M4d8VYG9E+6fD6m7XiL+yHGVZPc=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "server": {
+        "address": "10.55.23.134"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 52678
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "established": false,
+        "resumed": false
+      },
+      "zeek": {
+        "session_id": "CBiXOC4IqYxMv1xzf9",
+        "ssl": {
+          "established": false,
+          "resumed": false,
+          "server": {
+            "name": "qqpgwr-egh.otmczbqnppu.com"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T08:00:53.726Z",
+      "client": {
+        "address": "198.51.100.144"
+      },
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C4jH9IqWGZwc1PPUh",
+        "kind": "event",
+        "original": "{\"ts\":2500704053.726384,\"uid\":\"C4jH9IqWGZwc1PPUh\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":53368,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"lyasayo.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:AxtiPFeSCm9flkl9y396sfZcnX4=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "server": {
+        "address": "10.55.23.134"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 53368
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "established": false,
+        "resumed": false
+      },
+      "zeek": {
+        "session_id": "C4jH9IqWGZwc1PPUh",
+        "ssl": {
+          "established": false,
+          "resumed": false,
+          "server": {
+            "name": "lyasayo.otmczbqnppu.com"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T08:00:53.918Z",
+      "client": {
+        "address": "198.51.100.144"
+      },
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CXVMSq6Dainy4WFN9",
+        "kind": "event",
+        "original": "{\"ts\":2500704053.91861,\"uid\":\"CXVMSq6Dainy4WFN9\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":53382,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"pxlfdcn.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:Zo1rsKuMmWBCPJosq1mP6GOdaGM=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "server": {
+        "address": "10.55.23.134"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 53382
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "established": false,
+        "resumed": false
+      },
+      "zeek": {
+        "session_id": "CXVMSq6Dainy4WFN9",
+        "ssl": {
+          "established": false,
+          "resumed": false,
+          "server": {
+            "name": "pxlfdcn.otmczbqnppu.com"
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T08:00:54.325Z",
+      "client": {
+        "address": "10.55.23.134"
+      },
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CsgtQe4AikDZBsIM6k",
+        "kind": "event",
+        "original": "{\"ts\":2500704054.325291,\"uid\":\"CsgtQe4AikDZBsIM6k\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":55120,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\",\"curve\":\"secp256r1\",\"resumed\":false,\"established\":false,\"cert_chain_fuids\":[\"FeyRIk4nUtwwcUcnRf\"],\"client_cert_chain_fuids\":[],\"validation_status\":\"self signed certificate\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:05mbQnZ3wO1Em3lS6unJtYAO4zI=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "server": {
+        "address": "198.51.100.144"
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 55120
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "cipher": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+        "curve": "secp256r1",
+        "established": false,
+        "resumed": false,
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "zeek": {
+        "session_id": "CsgtQe4AikDZBsIM6k",
+        "ssl": {
+          "cipher": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+          "curve": "secp256r1",
+          "established": false,
+          "resumed": false,
+          "server": {
+            "cert_chain_fuids": [
+              "FeyRIk4nUtwwcUcnRf"
+            ]
+          },
+          "validation": {
+            "status": "self signed certificate"
+          },
+          "version": "TLSv12"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T08:00:55.065Z",
+      "client": {
+        "address": "198.51.100.144"
+      },
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CPGhJS3UPpcnR96NQc",
+        "kind": "event",
+        "original": "{\"ts\":2500704055.065602,\"uid\":\"CPGhJS3UPpcnR96NQc\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":53095,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"qqpgwr-egh.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:6jEmqwQndouF3f7wYTnOSFXPTvE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "server": {
+        "address": "10.55.23.134"
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 53095
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "established": false,
+        "resumed": false
+      },
+      "zeek": {
+        "session_id": "CPGhJS3UPpcnR96NQc",
+        "ssl": {
+          "established": false,
+          "resumed": false,
+          "server": {
+            "name": "qqpgwr-egh.otmczbqnppu.com"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2431301536.805088,\"uid\":\"CAOvs1BMFCX2Eh0Y3\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":63199,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":9243,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\",\"curve\":\"secp256r1\",\"server_name\":\"bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"FebkbHWVCV8rEEEne\",\"F4BDY41MGUBT6URZMd\",\"FWlfEfiHVkv8evDL3\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"issuer\":\"CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US\",\"validation_status\":\"ok\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2431301536.80509,\"uid\":\"C3mki91FnnNtm0u1ok\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":63198,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":9243,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\",\"curve\":\"secp256r1\",\"server_name\":\"bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"Fue9H32OmuitQk2zR\",\"FpbiBP215tk2xftxM6\",\"FEdROj1vUzTGw3BIUa\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"issuer\":\"CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US\",\"validation_status\":\"ok\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2431301536.805527,\"uid\":\"CfGBt82PzCXzHa0iek\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":63197,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":9243,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\",\"curve\":\"secp256r1\",\"server_name\":\"bf714bbc3eb76772d560072cd9ea1bf4.us-west1.gcp.cloud.es.io\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"FiFLYv3UjeWyv2gcW\",\"FvSsiB1Xi816EMagI9\",\"FWpPS4mjGaAhTRXLf\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"issuer\":\"CN=DigiCert SHA2 Secure Server CA,O=DigiCert Inc,C=US\",\"validation_status\":\"ok\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2485792257.352156,\"uid\":\"CK17Dl2SB8bZOVonSl\",\"id.orig_h\":\"10.26.137.145\",\"id.orig_p\":49228,\"id.resp_h\":\"192.168.213.251\",\"id.resp_p\":443,\"version\":\"TLSv12\",\"cipher\":\"TLS_RSA_WITH_AES_128_CBC_SHA256\",\"resumed\":false,\"established\":true,\"cert_chain_fuids\":[\"FOLwYQ6rs70bIMSf9\"],\"client_cert_chain_fuids\":[],\"subject\":\"CN=foo,OU=foo@bar,O=org,L=locality,C=LO\",\"issuer\":\"CN=CA,OU=FB@example.com,O=Example Corp,L=foo,C=HI\",\"validation_status\":\"self signed certificate\",\"ja3\":\"17908a119a0a7efcf8dd6ebc80f1b182\",\"ja3s\":\"23f1b44adbd4037a8c1eed42d70b820e\",\"resp_certificate_sha1\":\"6fea5b00103b0d2c40819f9b93905ea951e98a44\",\"not_valid_before\":1562022421,\"not_valid_after\":1577748224}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500704051.151303,\"uid\":\"CLQiVH1VcpvT3ruEak\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52730,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256\",\"resumed\":false,\"established\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500703755.826099,\"uid\":\"CBiXOC4IqYxMv1xzf9\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":52678,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"qqpgwr-egh.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500704053.726384,\"uid\":\"C4jH9IqWGZwc1PPUh\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":53368,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"lyasayo.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500704053.91861,\"uid\":\"CXVMSq6Dainy4WFN9\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":53382,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"pxlfdcn.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500704054.325291,\"uid\":\"CsgtQe4AikDZBsIM6k\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":55120,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"version\":\"TLSv12\",\"cipher\":\"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\",\"curve\":\"secp256r1\",\"resumed\":false,\"established\":false,\"cert_chain_fuids\":[\"FeyRIk4nUtwwcUcnRf\"],\"client_cert_chain_fuids\":[],\"validation_status\":\"self signed certificate\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500704055.065602,\"uid\":\"CPGhJS3UPpcnR96NQc\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":53095,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":443,\"server_name\":\"qqpgwr-egh.otmczbqnppu.com\",\"resumed\":false,\"established\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ssl",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-ssl-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

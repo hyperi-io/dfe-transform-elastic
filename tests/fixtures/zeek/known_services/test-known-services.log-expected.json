@@ -1,0 +1,68 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-03T01:19:36.242Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-01-03T01:19:36.242774Z\",\"host\":\"192.168.131.47\",\"port_num\":53,\"port_proto\":\"udp\",\"service\":[\"DNS\"]}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.168.131.47"
+        ]
+      },
+      "network": {
+        "application": [
+          "DNS"
+        ],
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.168.131.47"
+        ]
+      },
+      "server": {
+        "ip": [
+          "192.168.131.47"
+        ],
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-01-03T01:19:36.242774Z\",\"host\":\"192.168.131.47\",\"port_num\":53,\"port_proto\":\"udp\",\"service\":[\"DNS\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "known_services",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-known_services-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

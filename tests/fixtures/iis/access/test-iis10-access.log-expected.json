@@ -1,0 +1,693 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-05-09T17:10:04.000Z",
+      "destination": {
+        "address": "10.9.78.10",
+        "ip": "10.9.78.10",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 26000000,
+        "kind": "event",
+        "original": "2050-05-09 17:10:04 10.9.78.10 POST /civault/Cryptology/Cryptology.svc - 443 - 10.243.72.230 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+10.0;+Win64;+x64;+Trident/7.0;+.NET4.0C;+.NET4.0E;+.NET+CLR+2.0.50727;+.NET+CLR+3.0.30729;+.NET+CLR+3.5.30729) - [dkcljw25098.corp.bfqnsy.net](https://apcvwp00049.corp.acxiom.net/) 200 0 0 26",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "referrer": "[dkcljw25098.corp.bfqnsy.net](https://apcvwp00049.corp.acxiom.net/)"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "related": {
+        "ip": [
+          "10.243.72.230",
+          "10.9.78.10"
+        ]
+      },
+      "source": {
+        "address": "10.243.72.230",
+        "ip": "10.243.72.230"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "svc",
+        "original": "/civault/Cryptology/Cryptology.svc",
+        "path": "/civault/Cryptology/Cryptology.svc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "IE",
+        "original": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; Win64; x64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "11.0"
+      }
+    },
+    {
+      "@timestamp": "2050-05-08T01:26:01.000Z",
+      "destination": {
+        "address": "10.9.78.10",
+        "ip": "10.9.78.10",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 232000000,
+        "kind": "event",
+        "original": "2050-05-08 01:26:01 10.9.78.10 POST /NamingServiceANSWS/ANSWS.svc - 443 - 10.91.226.108 - - nrobccbvh.bfqnsy.com 200 0 0 232",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "POST",
+          "referrer": "nrobccbvh.bfqnsy.com"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "related": {
+        "ip": [
+          "10.91.226.108",
+          "10.9.78.10"
+        ]
+      },
+      "source": {
+        "address": "10.91.226.108",
+        "ip": "10.91.226.108"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "svc",
+        "original": "/NamingServiceANSWS/ANSWS.svc",
+        "path": "/NamingServiceANSWS/ANSWS.svc"
+      }
+    },
+    {
+      "@timestamp": "2049-06-10T23:26:57.000Z",
+      "destination": {
+        "address": "10.0.131.184",
+        "ip": "10.0.131.184",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 23000000,
+        "kind": "event",
+        "original": "2049-06-10 23:26:57 10.0.131.184 GET / - 80 - 10.250.170.120 Mozilla/4.0+(compatible;+MSIE+8.0;+Windows+NT+5.1;+Trident/4.0) BIGipServerYAkgvoMHHYQAGkWEWadfsadfnyAqAere=27246369425.20480.0000 ktzbb.eai.co 200 0 0 23",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "ktzbb.eai.co"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "cookie": "BIGipServerYAkgvoMHHYQAGkWEWadfsadfnyAqAere=27246369425.20480.0000",
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "related": {
+        "ip": [
+          "10.250.170.120",
+          "10.0.131.184"
+        ]
+      },
+      "source": {
+        "address": "10.250.170.120",
+        "ip": "10.250.170.120"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "IE",
+        "original": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)",
+        "os": {
+          "full": "Windows XP",
+          "name": "Windows",
+          "version": "XP"
+        },
+        "version": "8.0"
+      }
+    },
+    {
+      "@timestamp": "2051-08-28T07:37:00.000Z",
+      "destination": {
+        "address": "10.4.153.67",
+        "ip": "10.4.153.67",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 52000000,
+        "kind": "event",
+        "original": "2051-08-28 07:37:00 exchange01 10.4.153.67 POST /EWS/Exchange.asmx &CorrelationID=<empty>;&cafeReqId=91a79003-18c9-0718-a1b0-a7b308adc5b0; 443 EXAMPLE\\user01 10.91.146.249 OC/16.0.5266.1000+(Skype+for+Business) - 200 0 0 52 10.159.232.220 59050",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "exchange01"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "server_name": "exchange01",
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "network": {
+        "forwarded_ip": "10.159.232.220"
+      },
+      "related": {
+        "hosts": [
+          "exchange01"
+        ],
+        "ip": [
+          "10.91.146.249",
+          "10.4.153.67"
+        ],
+        "user": [
+          "user01"
+        ]
+      },
+      "source": {
+        "address": "10.91.146.249",
+        "ip": "10.91.146.249"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "asmx",
+        "original": "/EWS/Exchange.asmx",
+        "path": "/EWS/Exchange.asmx",
+        "query": "&CorrelationID=<empty>;&cafeReqId=91a79003-18c9-0718-a1b0-a7b308adc5b0;"
+      },
+      "user": {
+        "domain": "EXAMPLE",
+        "name": "user01"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Skype",
+        "original": "OC/16.0.5266.1000 (Skype for Business)",
+        "version": "16.0.5266.1000"
+      }
+    },
+    {
+      "@timestamp": "2051-08-28T08:58:45.000Z",
+      "destination": {
+        "address": "fe80::d9e3:e981:da2d:427b%3",
+        "ip": "fe80::d9e3:e981:da2d:427b",
+        "port": 444
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 4000000,
+        "kind": "event",
+        "original": "2051-08-28 08:58:45 exchange02 fe80::d9e3:e981:da2d:427b%3 POST /mapi/emsmdb/ MailboxId=ab6fd0db-129d-0908-a10b-6cb80ab94f29@example.com 444 Anonymous fe80::d9e3:e981:da2d:427b%3 Microsoft+Office/16.0+(Windows+NT+6.2;+ucmapi+16.0.5404;+Pro) - 200 0 0 4 10.11.163.56,10.52.209.87 36391",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "exchange02"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "server_name": "exchange02",
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "network": {
+        "forwarded_ip": "10.11.163.56"
+      },
+      "related": {
+        "hosts": [
+          "exchange02"
+        ],
+        "ip": [
+          "fe80::d9e3:e981:da2d:427b"
+        ],
+        "user": [
+          "Anonymous"
+        ]
+      },
+      "source": {
+        "address": "fe80::d9e3:e981:da2d:427b%3",
+        "ip": "fe80::d9e3:e981:da2d:427b"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/mapi/emsmdb/",
+        "path": "/mapi/emsmdb/",
+        "query": "MailboxId=ab6fd0db-129d-0908-a10b-6cb80ab94f29@example.com"
+      },
+      "user": {
+        "name": "Anonymous"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Microsoft Office/16.0 (Windows NT 6.2; ucmapi 16.0.5404; Pro)",
+        "os": {
+          "full": "Windows 8",
+          "name": "Windows",
+          "version": "8"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-08-28T08:58:33.000Z",
+      "destination": {
+        "address": "fe80::d9e3:e981:da2d:427b%3",
+        "ip": "fe80::d9e3:e981:da2d:427b",
+        "port": 444
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 78000000,
+        "kind": "event",
+        "original": "2051-08-28 08:58:33 exchange02 fe80::d9e3:e981:da2d:427b%3 POST /autodiscover/autodiscover.xml &reqId=eb6902ae-f3a4-0428-9f12-fc98ae75b7bf 444 EXAMPLE\\user02 fe80::d9e3:e981:da2d:427b%3 Microsoft+Office/16.0+(Windows+NT+10.0;+Microsoft+Outlook+16.0.5404;+Pro) - 200 0 0 78 10.51.240.112,10.52.209.87 51385",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "exchange02"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "server_name": "exchange02",
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "network": {
+        "forwarded_ip": "10.51.240.112"
+      },
+      "related": {
+        "hosts": [
+          "exchange02"
+        ],
+        "ip": [
+          "fe80::d9e3:e981:da2d:427b"
+        ],
+        "user": [
+          "user02"
+        ]
+      },
+      "source": {
+        "address": "fe80::d9e3:e981:da2d:427b%3",
+        "ip": "fe80::d9e3:e981:da2d:427b"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "xml",
+        "original": "/autodiscover/autodiscover.xml",
+        "path": "/autodiscover/autodiscover.xml",
+        "query": "&reqId=eb6902ae-f3a4-0428-9f12-fc98ae75b7bf"
+      },
+      "user": {
+        "domain": "EXAMPLE",
+        "name": "user02"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Outlook",
+        "original": "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.5404; Pro)",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "2016"
+      }
+    },
+    {
+      "@timestamp": "2051-08-28T08:58:43.000Z",
+      "destination": {
+        "address": "fe80::e478:3abc:f96c:ea94%4",
+        "ip": "fe80::e478:3abc:f96c:ea94",
+        "port": 444
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 3000000,
+        "kind": "event",
+        "original": "2051-08-28 08:58:43 exchange03 fe80::e478:3abc:f96c:ea94%4 POST /mapi/nspi/ MailboxId=26357c45-84fe-0833-a0d6-189f626d03ea@example.com&FrontEnd=EXCHANGE03.EXAMPLE.COM&RequestId=d685c91f-7fa8-0005-aa48-2404a60740b2&ClientRequestInfo=R:{CD59542B-3B4C-4893-9367-DA3623CE8CAB}:106;RT:GetProps;CI:{BC95484F-1738-4381-BA7B-72326E5071D2}:5;CID:{44EDB884-4FC3-4C69-A48E-B5B772DA781D}&ResponseInfo=XRC:0;SC:0;RC:263040&Stage=BegR:2051-08-28T08:58:44.6445336Z;PostAR:1;PreH:1;PostH:3;EndR:3 444 Anonymous fe80::e478:3abc:f96c:ea94%4 Microsoft+Office/16.0+(Windows+NT+10.0;+Microsoft+Outlook+16.0.5404;+Pro) - 200 0 0 3 10.76.145.140,10.52.209.87 56041",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "exchange03"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "server_name": "exchange03",
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "network": {
+        "forwarded_ip": "10.76.145.140"
+      },
+      "related": {
+        "hosts": [
+          "exchange03"
+        ],
+        "ip": [
+          "fe80::e478:3abc:f96c:ea94"
+        ],
+        "user": [
+          "Anonymous"
+        ]
+      },
+      "source": {
+        "address": "fe80::e478:3abc:f96c:ea94%4",
+        "ip": "fe80::e478:3abc:f96c:ea94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/mapi/nspi/",
+        "path": "/mapi/nspi/",
+        "query": "MailboxId=26357c45-84fe-0833-a0d6-189f626d03ea@example.com&FrontEnd=EXCHANGE03.EXAMPLE.COM&RequestId=d685c91f-7fa8-0005-aa48-2404a60740b2&ClientRequestInfo=R:{CD59542B-3B4C-4893-9367-DA3623CE8CAB}:106;RT:GetProps;CI:{BC95484F-1738-4381-BA7B-72326E5071D2}:5;CID:{44EDB884-4FC3-4C69-A48E-B5B772DA781D}&ResponseInfo=XRC:0;SC:0;RC:263040&Stage=BegR:2051-08-28T08:58:44.6445336Z;PostAR:1;PreH:1;PostH:3;EndR:3"
+      },
+      "user": {
+        "name": "Anonymous"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Outlook",
+        "original": "Microsoft Office/16.0 (Windows NT 10.0; Microsoft Outlook 16.0.5404; Pro)",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "2016"
+      }
+    },
+    {
+      "@timestamp": "2054-02-18T00:53:38.000Z",
+      "destination": {
+        "address": "172.21.113.232",
+        "ip": "172.21.113.232",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 12000000,
+        "kind": "event",
+        "original": "2054-02-18 00:53:38 172.21.113.232 GET /website/naaffh_wrdhb@6j.png - 80 - 172.29.177.86 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/144.0.0.0+Safari/537.36+Edg/144.0.0.0 https://example.org/website/Login.css 200 0 0 862954 907 12 10.178.13.239",
+        "outcome": "success",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 907
+          },
+          "method": "GET",
+          "referrer": "https://example.org/website/Login.css"
+        },
+        "response": {
+          "body": {
+            "bytes": 862954
+          },
+          "status_code": 200
+        }
+      },
+      "iis": {
+        "access": {
+          "sub_status": 0,
+          "win32_status": 0
+        }
+      },
+      "network": {
+        "forwarded_ip": "10.178.13.239"
+      },
+      "related": {
+        "ip": [
+          "172.29.177.86",
+          "172.21.113.232"
+        ]
+      },
+      "source": {
+        "address": "172.29.177.86",
+        "ip": "172.29.177.86"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "png",
+        "original": "/website/naaffh_wrdhb@6j.png",
+        "path": "/website/naaffh_wrdhb@6j.png"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36 Edg/144.0.0.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "144.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "2050-05-09 17:10:04 10.9.78.10 POST /civault/Cryptology/Cryptology.svc - 443 - 10.243.72.230 Mozilla/4.0+(compatible;+MSIE+7.0;+Windows+NT+10.0;+Win64;+x64;+Trident/7.0;+.NET4.0C;+.NET4.0E;+.NET+CLR+2.0.50727;+.NET+CLR+3.0.30729;+.NET+CLR+3.5.30729) - [dkcljw25098.corp.bfqnsy.net](https://apcvwp00049.corp.acxiom.net/) 200 0 0 26",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2050-05-08 01:26:01 10.9.78.10 POST /NamingServiceANSWS/ANSWS.svc - 443 - 10.91.226.108 - - nrobccbvh.bfqnsy.com 200 0 0 232",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2049-06-10 23:26:57 10.0.131.184 GET / - 80 - 10.250.170.120 Mozilla/4.0+(compatible;+MSIE+8.0;+Windows+NT+5.1;+Trident/4.0) BIGipServerYAkgvoMHHYQAGkWEWadfsadfnyAqAere=27246369425.20480.0000 ktzbb.eai.co 200 0 0 23",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2051-08-28 07:37:00 exchange01 10.4.153.67 POST /EWS/Exchange.asmx &CorrelationID=<empty>;&cafeReqId=91a79003-18c9-0718-a1b0-a7b308adc5b0; 443 EXAMPLE\\user01 10.91.146.249 OC/16.0.5266.1000+(Skype+for+Business) - 200 0 0 52 10.159.232.220 59050",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2051-08-28 08:58:45 exchange02 fe80::d9e3:e981:da2d:427b%3 POST /mapi/emsmdb/ MailboxId=ab6fd0db-129d-0908-a10b-6cb80ab94f29@example.com 444 Anonymous fe80::d9e3:e981:da2d:427b%3 Microsoft+Office/16.0+(Windows+NT+6.2;+ucmapi+16.0.5404;+Pro) - 200 0 0 4 10.11.163.56,10.52.209.87 36391",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2051-08-28 08:58:33 exchange02 fe80::d9e3:e981:da2d:427b%3 POST /autodiscover/autodiscover.xml &reqId=eb6902ae-f3a4-0428-9f12-fc98ae75b7bf 444 EXAMPLE\\user02 fe80::d9e3:e981:da2d:427b%3 Microsoft+Office/16.0+(Windows+NT+10.0;+Microsoft+Outlook+16.0.5404;+Pro) - 200 0 0 78 10.51.240.112,10.52.209.87 51385",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2051-08-28 08:58:43 exchange03 fe80::e478:3abc:f96c:ea94%4 POST /mapi/nspi/ MailboxId=26357c45-84fe-0833-a0d6-189f626d03ea@example.com&FrontEnd=EXCHANGE03.EXAMPLE.COM&RequestId=d685c91f-7fa8-0005-aa48-2404a60740b2&ClientRequestInfo=R:{CD59542B-3B4C-4893-9367-DA3623CE8CAB}:106;RT:GetProps;CI:{BC95484F-1738-4381-BA7B-72326E5071D2}:5;CID:{44EDB884-4FC3-4C69-A48E-B5B772DA781D}&ResponseInfo=XRC:0;SC:0;RC:263040&Stage=BegR:2051-08-28T08:58:44.6445336Z;PostAR:1;PreH:1;PostH:3;EndR:3 444 Anonymous fe80::e478:3abc:f96c:ea94%4 Microsoft+Office/16.0+(Windows+NT+10.0;+Microsoft+Outlook+16.0.5404;+Pro) - 200 0 0 3 10.76.145.140,10.52.209.87 56041",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2054-02-18 00:53:38 172.21.113.232 GET /website/naaffh_wrdhb@6j.png - 80 - 172.29.177.86 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/144.0.0.0+Safari/537.36+Edg/144.0.0.0 https://example.org/website/Login.css 200 0 0 862954 907 12 10.178.13.239",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access",
+    "dynamic_fields": {
+      "user_agent.version": "^(\\d+\\.\\d+(\\.|\\..*)?|\\d+)$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-iis-access-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "iis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

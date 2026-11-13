@@ -1,0 +1,254 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2025-11-12T00:02:19.000Z",
+      "axonius": {
+        "compute": {
+          "accurate_for_datetime": "2025-11-12T00:02:19.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "axonius_findings_adapter"
+          ],
+          "application_and_account_name": "chef/chef-demo",
+          "asset_entity_info": "ARP",
+          "asset_type": "databases",
+          "connected_assets": "asset1",
+          "data_asset_type": "Endpoint",
+          "entry_point": "index.handler",
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra",
+              "Containers",
+              "Virtualization"
+            ],
+            "client_used": "67fd09bdfe1c8e812a176bbd",
+            "initial_plugin_unique_name": "chef_adapter_0",
+            "plugin_name": "chef_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "chef_adapter_0",
+            "quick_id": "chef_adapter_0!fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-11-12T00:02:18.000Z",
+          "first_fetch_time": "2025-11-12T00:02:18.000Z",
+          "from_last_fetch": true,
+          "id": "fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com",
+          "id_raw": "axonius_catalog_adapter!Zoom",
+          "internal_axon_id": "161123c1974e19e60d0b32bcc4c401af",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09bdfe1c8e812a176bbd",
+          "last_fetch_connection_label": "chef-demo",
+          "memory_size": 768.0,
+          "name": "monitor1871068-stg",
+          "not_fetched_count": 0,
+          "os": {
+            "type": "Linux"
+          },
+          "owner": "pfrir.xppaswdf@abui.local",
+          "relatable_ids": [
+            "image_id::35bfd498-0ea0-4495-8f82-f35cafaec8e0"
+          ],
+          "source_application": "Chef",
+          "status": "closed",
+          "subscription_id": "subs_id_1",
+          "subscription_name": "subs_name_user1",
+          "tags": [
+            {
+              "tag_key": "AUDIT SCOPE",
+              "tag_value": "Yes"
+            }
+          ],
+          "tenant_number": [
+            3
+          ],
+          "transform_unique_id": "qBiIFRXMq+FNbDA0BYInnHANnUM=",
+          "type": "SaasApplications"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host",
+          "vulnerability"
+        ],
+        "created": "2018-12-06T19:11:27.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"databases\",\"adapter_list_length\":1,\"adapters\":[\"axonius_findings_adapter\"],\"internal_axon_id\":\"161123c1974e19e60d0b32bcc4c401af\",\"event\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"adapter_categories\":[\"Cloud Infra\",\"Containers\",\"Virtualization\"],\"client_used\":\"67fd09bdfe1c8e812a176bbd\",\"data\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"application_and_account_name\":\"chef\\/chef-demo\",\"asset_entity_info\":\"ARP\",\"asset_type\":\"Endpoint\",\"connected_assets\":\"asset1\",\"fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"first_fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"from_last_fetch\":\"TRUE\",\"id\":\"fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"id_raw\":\"axonius_catalog_adapter!Zoom\",\"is_fetched_from_adapter\":\"TRUE\",\"last_fetch_connection_id\":\"67fd09bdfe1c8e812a176bbd\",\"last_fetch_connection_label\":\"chef-demo\",\"name\":\"monitor1871068-stg\",\"not_fetched_count\":0,\"os\":{\"type\":\"Linux\"},\"owner\":\"pfrir.xppaswdf@abui.local\",\"relatable_ids\":[\"image_id::35bfd498-0ea0-4495-8f82-f35cafaec8e0\"],\"source_application\":\"Chef\",\"tags\":[{\"tag_key\":\"AUDIT SCOPE\",\"tag_value\":\"Yes\"}],\"tenant_number\":[\"3\"],\"type\":\"SaasApplications\",\"entry_point\":\"index.handler\",\"memory_size\":768,\"subscription_id\":\"subs_id_1\",\"subscription_name\":\"subs_name_user1\",\"creation_date\":\"Mon,06 Dec 2018 19:11:27 GMT\",\"status\":\"closed\"},\"initial_plugin_unique_name\":\"chef_adapter_0\",\"plugin_name\":\"chef_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"chef_adapter_0\",\"quick_id\":\"chef_adapter_0!fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "os": {
+          "type": "linux"
+        }
+      },
+      "related": {
+        "user": [
+          "pfrir.xppaswdf@abui.local"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-11-13T00:02:36.000Z",
+      "axonius": {
+        "compute": {
+          "accurate_for_datetime": "2025-11-13T00:02:36.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "aws_adapter"
+          ],
+          "application_and_account_name": "aws/aws-demo",
+          "asset_type": "databases",
+          "data_asset_type": "AWS RDS Instance",
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ab731ccb57309230fc",
+            "initial_plugin_unique_name": "aws_adapter_0",
+            "plugin_name": "aws_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "aws_adapter_0",
+            "quick_id": "aws_adapter_0!19676c927f1b0656a3e3",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-11-13T00:02:35.000Z",
+          "first_fetch_time": "2025-04-14T13:27:03.000Z",
+          "from_last_fetch": true,
+          "id": "19676c927f1b0656a3e3",
+          "id_raw": "92f6d18c-7c5f-46f0-971c-4f7fa392af8a",
+          "internal_axon_id": "9f130d5128b3605a87406ded981074e9",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ab731ccb57309230fc",
+          "last_fetch_connection_label": "aws-demo",
+          "name": "data-api",
+          "not_fetched_count": 0,
+          "source_application": "AWS",
+          "status": "available",
+          "tenant_number": [
+            1
+          ],
+          "transform_unique_id": "qmZHPB/99f1yUiyRMDn4tHhh8X0=",
+          "type": "Databases"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host",
+          "vulnerability"
+        ],
+        "created": "2024-10-18T07:34:55.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"9f130d5128b3605a87406ded981074e9\",\"adapters\":[\"aws_adapter\"],\"adapter_list_length\":1,\"asset_type\":\"databases\",\"event\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:36 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:36 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"AWS RDS Instance\",\"creation_date\":\"Fri, 18 Oct 2024 07:34:55 GMT\",\"fetch_time\":\"Thu, 13 Nov 2025 00:02:35 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:03 GMT\",\"from_last_fetch\":true,\"id\":\"19676c927f1b0656a3e3\",\"id_raw\":\"92f6d18c-7c5f-46f0-971c-4f7fa392af8a\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"data-api\",\"not_fetched_count\":0,\"software_cves\":[],\"source_application\":\"AWS\",\"status\":\"available\",\"tenant_number\":[\"1\"],\"type\":\"Databases\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!19676c927f1b0656a3e3\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-11-13T00:02:11.000Z",
+      "axonius": {
+        "compute": {
+          "accurate_for_datetime": "2025-11-13T00:02:11.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_adapter"
+          ],
+          "application_and_account_name": "azure/azure-demo",
+          "asset_entity_info": "AzureEntityType.KubernetesCluster",
+          "asset_type": "containers",
+          "connected_assets": [
+            "subscription_id::b808285b-64da-4210-aca9-588aea74f5b3"
+          ],
+          "data_asset_type": "Kubernetes Container",
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ca731ccb5730923106",
+            "initial_plugin_unique_name": "azure_adapter_0",
+            "plugin_name": "azure_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "azure_adapter_0",
+            "quick_id": "azure_adapter_0!5e54b18351b5c6f8b34f",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-11-13T00:02:09.000Z",
+          "first_fetch_time": "2025-04-14T13:26:37.000Z",
+          "from_last_fetch": true,
+          "id": "5e54b18351b5c6f8b34f",
+          "id_raw": "064bd832-f901-49c5-827e-2e07b1d6bcb3",
+          "internal_axon_id": "f37b0ec5dd233745a277716374831075",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ca731ccb5730923106",
+          "last_fetch_connection_label": "azure-demo",
+          "name": "aks-incident-rnd-east",
+          "not_fetched_count": 0,
+          "source_application": "Azure",
+          "subscription_id": "86f748d5-f029-4b77-ae72-12927f0084ed",
+          "subscription_name": "Azure Public Cloud",
+          "tags": [
+            {
+              "tag_key": "AUDIT SCOPE",
+              "tag_value": "Yes"
+            },
+            {
+              "tag_key": "Application",
+              "tag_value": "Shared"
+            },
+            {
+              "tag_key": "Assigned VP",
+              "tag_value": "Vesta Mosser"
+            }
+          ],
+          "tenant_number": [
+            2
+          ],
+          "transform_unique_id": "HD1L1OlXz9vpL2IBhaRPhxzyznQ=",
+          "type": "Containers"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host",
+          "vulnerability"
+        ],
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"f37b0ec5dd233745a277716374831075\",\"adapters\":[\"azure_adapter\"],\"adapter_list_length\":1,\"asset_type\":\"containers\",\"event\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:11 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ca731ccb5730923106\",\"data\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:11 GMT\",\"application_and_account_name\":\"azure\\/azure-demo\",\"asset_entity_info\":\"AzureEntityType.KubernetesCluster\",\"asset_type\":\"Kubernetes Container\",\"connected_assets\":[\"subscription_id::b808285b-64da-4210-aca9-588aea74f5b3\"],\"fetch_time\":\"Thu, 13 Nov 2025 00:02:09 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:26:37 GMT\",\"from_last_fetch\":true,\"id\":\"5e54b18351b5c6f8b34f\",\"id_raw\":\"064bd832-f901-49c5-827e-2e07b1d6bcb3\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ca731ccb5730923106\",\"last_fetch_connection_label\":\"azure-demo\",\"name\":\"aks-incident-rnd-east\",\"not_fetched_count\":0,\"relatable_ids\":[],\"software_cves\":[],\"source_application\":\"Azure\",\"subscription_id\":\"86f748d5-f029-4b77-ae72-12927f0084ed\",\"subscription_name\":\"Azure Public Cloud\",\"tags\":[{\"tag_key\":\"AUDIT SCOPE\",\"tag_value\":\"Yes\"},{\"tag_key\":\"Application\",\"tag_value\":\"Shared\"},{\"tag_key\":\"Assigned VP\",\"tag_value\":\"Vesta Mosser\"}],\"tenant_number\":[\"2\"],\"type\":\"Containers\"},\"initial_plugin_unique_name\":\"azure_adapter_0\",\"plugin_name\":\"azure_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_adapter_0\",\"quick_id\":\"azure_adapter_0!5e54b18351b5c6f8b34f\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"databases\",\"adapter_list_length\":1,\"adapters\":[\"axonius_findings_adapter\"],\"internal_axon_id\":\"161123c1974e19e60d0b32bcc4c401af\",\"event\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"adapter_categories\":[\"Cloud Infra\",\"Containers\",\"Virtualization\"],\"client_used\":\"67fd09bdfe1c8e812a176bbd\",\"data\":{\"accurate_for_datetime\":\"Wed, 12 Nov 2025 00:02:19 GMT\",\"application_and_account_name\":\"chef\\/chef-demo\",\"asset_entity_info\":\"ARP\",\"asset_type\":\"Endpoint\",\"connected_assets\":\"asset1\",\"fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"first_fetch_time\":\"Wed, 12 Nov 2025 00:02:18 GMT\",\"from_last_fetch\":\"TRUE\",\"id\":\"fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"id_raw\":\"axonius_catalog_adapter!Zoom\",\"is_fetched_from_adapter\":\"TRUE\",\"last_fetch_connection_id\":\"67fd09bdfe1c8e812a176bbd\",\"last_fetch_connection_label\":\"chef-demo\",\"name\":\"monitor1871068-stg\",\"not_fetched_count\":0,\"os\":{\"type\":\"Linux\"},\"owner\":\"pfrir.xppaswdf@abui.local\",\"relatable_ids\":[\"image_id::35bfd498-0ea0-4495-8f82-f35cafaec8e0\"],\"source_application\":\"Chef\",\"tags\":[{\"tag_key\":\"AUDIT SCOPE\",\"tag_value\":\"Yes\"}],\"tenant_number\":[\"3\"],\"type\":\"SaasApplications\",\"entry_point\":\"index.handler\",\"memory_size\":768,\"subscription_id\":\"subs_id_1\",\"subscription_name\":\"subs_name_user1\",\"creation_date\":\"Mon,06 Dec 2018 19:11:27 GMT\",\"status\":\"closed\"},\"initial_plugin_unique_name\":\"chef_adapter_0\",\"plugin_name\":\"chef_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"chef_adapter_0\",\"quick_id\":\"chef_adapter_0!fro-whxniwj5824827-wut.qbcryjacke-szcppbpdqs.com\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"9f130d5128b3605a87406ded981074e9\",\"adapters\":[\"aws_adapter\"],\"adapter_list_length\":1,\"asset_type\":\"databases\",\"event\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:36 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:36 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"AWS RDS Instance\",\"creation_date\":\"Fri, 18 Oct 2024 07:34:55 GMT\",\"fetch_time\":\"Thu, 13 Nov 2025 00:02:35 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:03 GMT\",\"from_last_fetch\":true,\"id\":\"19676c927f1b0656a3e3\",\"id_raw\":\"92f6d18c-7c5f-46f0-971c-4f7fa392af8a\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"data-api\",\"not_fetched_count\":0,\"software_cves\":[],\"source_application\":\"AWS\",\"status\":\"available\",\"tenant_number\":[\"1\"],\"type\":\"Databases\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!19676c927f1b0656a3e3\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"f37b0ec5dd233745a277716374831075\",\"adapters\":[\"azure_adapter\"],\"adapter_list_length\":1,\"asset_type\":\"containers\",\"event\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:11 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ca731ccb5730923106\",\"data\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:11 GMT\",\"application_and_account_name\":\"azure\\/azure-demo\",\"asset_entity_info\":\"AzureEntityType.KubernetesCluster\",\"asset_type\":\"Kubernetes Container\",\"connected_assets\":[\"subscription_id::b808285b-64da-4210-aca9-588aea74f5b3\"],\"fetch_time\":\"Thu, 13 Nov 2025 00:02:09 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:26:37 GMT\",\"from_last_fetch\":true,\"id\":\"5e54b18351b5c6f8b34f\",\"id_raw\":\"064bd832-f901-49c5-827e-2e07b1d6bcb3\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ca731ccb5730923106\",\"last_fetch_connection_label\":\"azure-demo\",\"name\":\"aks-incident-rnd-east\",\"not_fetched_count\":0,\"relatable_ids\":[],\"software_cves\":[],\"source_application\":\"Azure\",\"subscription_id\":\"86f748d5-f029-4b77-ae72-12927f0084ed\",\"subscription_name\":\"Azure Public Cloud\",\"tags\":[{\"tag_key\":\"AUDIT SCOPE\",\"tag_value\":\"Yes\"},{\"tag_key\":\"Application\",\"tag_value\":\"Shared\"},{\"tag_key\":\"Assigned VP\",\"tag_value\":\"Vesta Mosser\"}],\"tenant_number\":[\"2\"],\"type\":\"Containers\"},\"initial_plugin_unique_name\":\"azure_adapter_0\",\"plugin_name\":\"azure_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_adapter_0\",\"quick_id\":\"azure_adapter_0!5e54b18351b5c6f8b34f\",\"type\":\"entitydata\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "compute",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-compute-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

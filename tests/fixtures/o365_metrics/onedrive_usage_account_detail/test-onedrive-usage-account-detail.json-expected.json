@@ -1,0 +1,156 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-23",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Active File Count\":\"1\",\"File Count\":\"7\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"2052-12-23\",\"Owner Display Name\":\"ABC\",\"Owner Principal Name\":\"IS@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"Site Id\":\"c8e9f19f-fb35-48e5-9e93-dc5848787ce4\",\"Site URL\":\"\",\"Storage Allocated (Byte)\":\"1099511627776\",\"Storage Used (Byte)\":\"1305970\",\"report\":{\"api_path\":\"/reports/getOneDriveUsageAccountDetail\",\"name\":\"OneDrive Usage Account Detail\"},\"﻿Report Refresh Date\":\"2052-12-23\"}"
+      },
+      "o365": {
+        "metrics": {
+          "onedrive": {
+            "usage": {
+              "account": {
+                "detail": {
+                  "active_file": {
+                    "count": 1
+                  },
+                  "file": {
+                    "count": 7
+                  },
+                  "is_deleted": false,
+                  "last_activity_date": "2052-12-23T00:00:00.000Z",
+                  "owner_display_name": "ABC",
+                  "owner_principal_name": "IS@abc.onmicrosoft.com",
+                  "report": {
+                    "period": {
+                      "day": "1"
+                    },
+                    "refresh_date": "2052-12-23"
+                  },
+                  "site_id": "c8e9f19f-fb35-48e5-9e93-dc5848787ce4",
+                  "storage_allocated": {
+                    "byte": 1099511627776
+                  },
+                  "storage_used": {
+                    "byte": 1305970
+                  }
+                }
+              }
+            }
+          },
+          "report": {
+            "api_path": "/reports/getOneDriveUsageAccountDetail",
+            "name": "OneDrive Usage Account Detail"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "IS",
+          "IS@abc.onmicrosoft.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "abc.onmicrosoft.com",
+        "email": "IS@abc.onmicrosoft.com",
+        "name": "IS"
+      }
+    },
+    {
+      "@timestamp": "2052-12-16",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Active File Count\":\"3\",\"File Count\":\"5\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"2052-12-16\",\"Owner Display Name\":\"ABC\",\"Owner Principal Name\":\"AC@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"Site Id\":\"b2f6b14a-fb05-49d9-9e24-ad9050894aa1\",\"Site URL\":\"\",\"Storage Allocated (Byte)\":\"1099511627776\",\"Storage Used (Byte)\":\"1250898\",\"report\":{\"api_path\":\"/reports/getOneDriveUsageAccountDetail\",\"name\":\"OneDrive Usage Account Detail\"},\"﻿Report Refresh Date\":\"2052-12-16\"}"
+      },
+      "o365": {
+        "metrics": {
+          "onedrive": {
+            "usage": {
+              "account": {
+                "detail": {
+                  "active_file": {
+                    "count": 3
+                  },
+                  "file": {
+                    "count": 5
+                  },
+                  "is_deleted": false,
+                  "last_activity_date": "2052-12-16T00:00:00.000Z",
+                  "owner_display_name": "ABC",
+                  "owner_principal_name": "AC@abc.onmicrosoft.com",
+                  "report": {
+                    "period": {
+                      "day": "1"
+                    },
+                    "refresh_date": "2052-12-16"
+                  },
+                  "site_id": "b2f6b14a-fb05-49d9-9e24-ad9050894aa1",
+                  "storage_allocated": {
+                    "byte": 1099511627776
+                  },
+                  "storage_used": {
+                    "byte": 1250898
+                  }
+                }
+              }
+            }
+          },
+          "report": {
+            "api_path": "/reports/getOneDriveUsageAccountDetail",
+            "name": "OneDrive Usage Account Detail"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "AC",
+          "AC@abc.onmicrosoft.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "abc.onmicrosoft.com",
+        "email": "AC@abc.onmicrosoft.com",
+        "name": "AC"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Active File Count\":\"1\",\"File Count\":\"7\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"2052-12-23\",\"Owner Display Name\":\"ABC\",\"Owner Principal Name\":\"IS@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"Site Id\":\"c8e9f19f-fb35-48e5-9e93-dc5848787ce4\",\"Site URL\":\"\",\"Storage Allocated (Byte)\":\"1099511627776\",\"Storage Used (Byte)\":\"1305970\",\"report\":{\"api_path\":\"/reports/getOneDriveUsageAccountDetail\",\"name\":\"OneDrive Usage Account Detail\"},\"﻿Report Refresh Date\":\"2052-12-23\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Active File Count\":\"3\",\"File Count\":\"5\",\"Is Deleted\":\"False\",\"Last Activity Date\":\"2052-12-16\",\"Owner Display Name\":\"ABC\",\"Owner Principal Name\":\"AC@abc.onmicrosoft.com\",\"Report Period\":\"1\",\"Site Id\":\"b2f6b14a-fb05-49d9-9e24-ad9050894aa1\",\"Site URL\":\"\",\"Storage Allocated (Byte)\":\"1099511627776\",\"Storage Used (Byte)\":\"1250898\",\"report\":{\"api_path\":\"/reports/getOneDriveUsageAccountDetail\",\"name\":\"OneDrive Usage Account Detail\"},\"﻿Report Refresh Date\":\"2052-12-16\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "onedrive_usage_account_detail",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-onedrive_usage_account_detail-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

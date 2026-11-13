@@ -1,0 +1,1684 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-10-22T21:01:42.548-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:42,548 INFO  [org.keycloak.services] (ServerService Thread Pool -- 64) KC-SERVICES0009: Added user 'admin' to realm 'master'",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.keycloak.services"
+      },
+      "message": "KC-SERVICES0009: Added user 'admin' to realm 'master'",
+      "process": {
+        "thread": {
+          "name": "ServerService Thread Pool -- 64"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:42.667-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:42,667 INFO  [org.jboss.resteasy.resteasy_jaxrs.i18n] (ServerService Thread Pool -- 64) RESTEASY002220: Adding singleton resource org.keycloak.services.resources.admin.AdminRoot from Application class org.keycloak.services.resources.KeycloakApplication",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.jboss.resteasy.resteasy_jaxrs.i18n"
+      },
+      "message": "RESTEASY002220: Adding singleton resource org.keycloak.services.resources.admin.AdminRoot from Application class org.keycloak.services.resources.KeycloakApplication",
+      "process": {
+        "thread": {
+          "name": "ServerService Thread Pool -- 64"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:42.912-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:42,912 INFO  [org.wildfly.extension.undertow] (ServerService Thread Pool -- 64) WFLYUT002021-10-22 21: Registered web context: '/auth' for server 'default-server'       ",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.wildfly.extension.undertow"
+      },
+      "message": "WFLYUT002021-10-22 21: Registered web context: '/auth' for server 'default-server'       ",
+      "process": {
+        "thread": {
+          "name": "ServerService Thread Pool -- 64"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:43.208-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:43,208 INFO  [org.jboss.as.server] (ServerService Thread Pool -- 46) WFLYSRV0010: Deployed \"keycloak-server.war\" (runtime-name : \"keycloak-server.war\")       ",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.jboss.as.server"
+      },
+      "message": "WFLYSRV0010: Deployed \"keycloak-server.war\" (runtime-name : \"keycloak-server.war\")       ",
+      "process": {
+        "thread": {
+          "name": "ServerService Thread Pool -- 46"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:43.299-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:43,299 INFO  [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0212: Resuming server",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.jboss.as.server"
+      },
+      "message": "WFLYSRV0212: Resuming server",
+      "process": {
+        "thread": {
+          "name": "Controller Boot Thread"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:43.307-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:43,307 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: Keycloak 15.0.2 (WildFly Core 15.0.1.Final) started in 28315ms - Started 692 of 977 services (686 services are lazy, passive or on-demand)",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.jboss.as"
+      },
+      "message": "WFLYSRV0025: Keycloak 15.0.2 (WildFly Core 15.0.1.Final) started in 28315ms - Started 692 of 977 services (686 services are lazy, passive or on-demand)",
+      "process": {
+        "thread": {
+          "name": "Controller Boot Thread"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:43.327-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:43,327 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.jboss.as"
+      },
+      "message": "WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management",
+      "process": {
+        "thread": {
+          "name": "Controller Boot Thread"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:43.327-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2049-10-22 21:01:43,327 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051: Admin console listening on http://127.0.0.1:9990",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.jboss.as"
+      },
+      "message": "WFLYSRV0051: Admin console listening on http://127.0.0.1:9990",
+      "process": {
+        "thread": {
+          "name": "Controller Boot Thread"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T21:01:45.403-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGIN_ERROR",
+        "category": [
+          "authentication"
+        ],
+        "code": "invalid_redirect_uri",
+        "kind": "event",
+        "original": "2049-10-22 21:01:45,403 WARN  [org.keycloak.events] (default task-1) type=LOGIN_ERROR, realmId=test, clientId=test, userId=null, ipAddress=172.17.190.181, error=invalid_redirect_uri, redirect_uri=http://localhost:8080",
+        "outcome": "failure",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "test"
+        },
+        "event_type": "login",
+        "login": {
+          "redirect_uri": "http://localhost:8080",
+          "type": "LOGIN_ERROR"
+        },
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "WARN",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "localhost"
+        ],
+        "ip": [
+          "172.17.190.181"
+        ]
+      },
+      "source": {
+        "address": "172.17.190.181",
+        "ip": "172.17.190.181"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "localhost",
+        "original": "http://localhost:8080",
+        "port": 8080,
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T21:20:42.120-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGIN_ERROR",
+        "category": [
+          "authentication"
+        ],
+        "code": "invalid_user_credentials",
+        "kind": "event",
+        "original": "2049-10-22 21:20:42,120 WARN  [org.keycloak.events] (default task-2) type=LOGIN_ERROR, realmId=test, clientId=test, userId=ac24684f-dc7c-477f-97d6-a502af4d80ac, ipAddress=172.17.190.181, error=invalid_user_credentials, auth_method=openid-connect, auth_type=code, redirect_uri=http://127.0.0.1:8080, code_id=4d68d410-f809-40b3-ab24-5a4f32d96ec2, username=admin, authSessionParentId=4d68d410-f809-40b3-ab24-5a4f32d96ec2, authSessionTabId=oJpF-WjDC04",
+        "outcome": "failure",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "test"
+        },
+        "event_type": "login",
+        "login": {
+          "auth_method": "openid-connect",
+          "auth_session_parent_id": "4d68d410-f809-40b3-ab24-5a4f32d96ec2",
+          "auth_session_tab_id": "oJpF-WjDC04",
+          "auth_type": "code",
+          "code_id": "4d68d410-f809-40b3-ab24-5a4f32d96ec2",
+          "redirect_uri": "http://127.0.0.1:8080",
+          "type": "LOGIN_ERROR"
+        },
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "WARN",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-2"
+        }
+      },
+      "related": {
+        "hosts": [
+          "127.0.0.1"
+        ],
+        "ip": [
+          "172.17.190.181"
+        ],
+        "user": [
+          "ac24684f-dc7c-477f-97d6-a502af4d80ac"
+        ]
+      },
+      "source": {
+        "address": "172.17.190.181",
+        "ip": "172.17.190.181"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "127.0.0.1",
+        "original": "http://127.0.0.1:8080",
+        "port": 8080,
+        "scheme": "http"
+      },
+      "user": {
+        "id": "ac24684f-dc7c-477f-97d6-a502af4d80ac",
+        "name": "admin"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T21:24:41.076-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGIN_ERROR",
+        "category": [
+          "authentication"
+        ],
+        "code": "user_not_found",
+        "kind": "event",
+        "original": "2049-10-22 21:24:41,076 WARN  [org.keycloak.events] (default task-10) type=LOGIN_ERROR, realmId=master, clientId=security-admin-console, userId=null, ipAddress=172.17.190.181, error=user_not_found, auth_method=openid-connect, auth_type=code, redirect_uri=http://127.0.0.1:9090/auth/admin/master/console/, code_id=e6d6666e-f131-4fe5-9dce-d7cdf594b39f, authSessionParentId=e6d6666e-f131-4fe5-9dce-d7cdf594b39f, authSessionTabId=C8EtUrcFMsg",
+        "outcome": "failure",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "security-admin-console"
+        },
+        "event_type": "login",
+        "login": {
+          "auth_method": "openid-connect",
+          "auth_session_parent_id": "e6d6666e-f131-4fe5-9dce-d7cdf594b39f",
+          "auth_session_tab_id": "C8EtUrcFMsg",
+          "auth_type": "code",
+          "code_id": "e6d6666e-f131-4fe5-9dce-d7cdf594b39f",
+          "redirect_uri": "http://127.0.0.1:9090/auth/admin/master/console/",
+          "type": "LOGIN_ERROR"
+        },
+        "realm": {
+          "id": "master"
+        }
+      },
+      "log": {
+        "level": "WARN",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-10"
+        }
+      },
+      "related": {
+        "hosts": [
+          "127.0.0.1"
+        ],
+        "ip": [
+          "172.17.190.181"
+        ]
+      },
+      "source": {
+        "address": "172.17.190.181",
+        "ip": "172.17.190.181"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "127.0.0.1",
+        "original": "http://127.0.0.1:9090/auth/admin/master/console/",
+        "path": "/auth/admin/master/console/",
+        "port": 9090,
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T21:31:31.555-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGIN_ERROR",
+        "category": [
+          "authentication"
+        ],
+        "code": "invalid_redirect_uri",
+        "kind": "event",
+        "original": "2049-10-22 21:31:31,555 WARN  [org.keycloak.events] (default task-10) type=LOGIN_ERROR, realmId=test, clientId=test, userId=null, ipAddress=172.17.190.181, error=invalid_redirect_uri, redirect_uri=http://localhost:8080",
+        "outcome": "failure",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "test"
+        },
+        "event_type": "login",
+        "login": {
+          "redirect_uri": "http://localhost:8080",
+          "type": "LOGIN_ERROR"
+        },
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "WARN",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-10"
+        }
+      },
+      "related": {
+        "hosts": [
+          "localhost"
+        ],
+        "ip": [
+          "172.17.190.181"
+        ]
+      },
+      "source": {
+        "address": "172.17.190.181",
+        "ip": "172.17.190.181"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "localhost",
+        "original": "http://localhost:8080",
+        "port": 8080,
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T20:58:02.700-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGIN_ERROR",
+        "category": [
+          "authentication"
+        ],
+        "code": "invalid_user_credentials",
+        "kind": "event",
+        "original": "2049-10-22 20:58:02,700 WARN  [org.keycloak.events] (default task-18) type=LOGIN_ERROR, realmId=ABCD TEST, clientId=https://www.example.com/shibboleth, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, error=invalid_user_credentials, auth_method=saml, redirect_uri=https://www.example.com/Shibboleth.sso/SAML2/POST, code_id=abbba0db-ca69-49c1-b4ee-e7c10c868728, username=admin, authSessionParentId=abbba0db-ca69-49c1-b4ee-e7c10c868728, authSessionTabId=97qImXws36A",
+        "outcome": "failure",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "https://www.example.com/shibboleth"
+        },
+        "event_type": "login",
+        "login": {
+          "auth_method": "saml",
+          "auth_session_parent_id": "abbba0db-ca69-49c1-b4ee-e7c10c868728",
+          "auth_session_tab_id": "97qImXws36A",
+          "code_id": "abbba0db-ca69-49c1-b4ee-e7c10c868728",
+          "redirect_uri": "https://www.example.com/Shibboleth.sso/SAML2/POST",
+          "type": "LOGIN_ERROR"
+        },
+        "realm": {
+          "id": "ABCD TEST"
+        }
+      },
+      "log": {
+        "level": "WARN",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-18"
+        }
+      },
+      "related": {
+        "hosts": [
+          "www.example.com"
+        ],
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "www.example.com",
+        "original": "https://www.example.com/Shibboleth.sso/SAML2/POST",
+        "path": "/Shibboleth.sso/SAML2/POST",
+        "scheme": "https"
+      },
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01",
+        "name": "admin"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:11:31.257-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGIN",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "2049-10-22 22:11:31,257 DEBUG [org.keycloak.events] (default task-2) type=LOGIN, realmId=test, clientId=security-admin-console, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, auth_method=openid-connect, auth_type=code, redirect_uri=https://www.example.com/auth/admin/test/console/#/realms/test/events, consent=no_consent_required, code_id=bab0e90d-219b-4173-81f6-42bda4100c0c, username=admin, authSessionParentId=bab0e90d-219b-4173-81f6-42bda4100c0c, authSessionTabId=Kz_ye2UvP6M",
+        "outcome": "success",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "security-admin-console"
+        },
+        "event_type": "login",
+        "login": {
+          "auth_method": "openid-connect",
+          "auth_session_parent_id": "bab0e90d-219b-4173-81f6-42bda4100c0c",
+          "auth_session_tab_id": "Kz_ye2UvP6M",
+          "auth_type": "code",
+          "code_id": "bab0e90d-219b-4173-81f6-42bda4100c0c",
+          "redirect_uri": "https://www.example.com/auth/admin/test/console/#/realms/test/events",
+          "type": "LOGIN"
+        },
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-2"
+        }
+      },
+      "related": {
+        "hosts": [
+          "www.example.com"
+        ],
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "www.example.com",
+        "fragment": "/realms/test/events",
+        "original": "https://www.example.com/auth/admin/test/console/#/realms/test/events",
+        "path": "/auth/admin/test/console/",
+        "scheme": "https"
+      },
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01",
+        "name": "admin"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:11:32.131-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CODE_TO_TOKEN",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "2049-10-22 22:11:32,131 DEBUG [org.keycloak.events] (default task-3) type=CODE_TO_TOKEN, realmId=test, clientId=security-admin-console, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, token_id=873704c7-60d7-49b5-985d-c3d66b29e214, grant_type=authorization_code, refresh_token_type=Refresh, scope=openid, refresh_token_id=45579686-ab25-406b-99a3-c9b13e35c1e9, code_id=bab0e90d-219b-4173-81f6-42bda4100c0c, client_auth_method=client-secret",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "security-admin-console"
+        },
+        "event_type": "login",
+        "login": {
+          "code_id": "bab0e90d-219b-4173-81f6-42bda4100c0c",
+          "type": "CODE_TO_TOKEN"
+        },
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-3"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:12:09.871-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CREATE-USER",
+        "category": [
+          "iam"
+        ],
+        "code": "CREATE-USER",
+        "kind": "event",
+        "original": "2049-10-22 22:12:09,871 DEBUG [org.keycloak.events] (default task-3) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=USER, resourcePath=users/09705c23-d626-4e70-896f-36f696955b75",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "admin",
+          "creation"
+        ]
+      },
+      "keycloak": {
+        "admin": {
+          "operation": "CREATE",
+          "resource": {
+            "path": "users/09705c23-d626-4e70-896f-36f696955b75",
+            "type": "USER"
+          }
+        },
+        "client": {
+          "id": "4adeb7de-292c-47e8-97fd-28cbe48be65e"
+        },
+        "event_type": "admin",
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-3"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01",
+          "09705c23-d626-4e70-896f-36f696955b75"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01",
+        "target": {
+          "id": "09705c23-d626-4e70-896f-36f696955b75"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:12:13.599-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UPDATE-USER",
+        "category": [
+          "iam"
+        ],
+        "code": "UPDATE-USER",
+        "kind": "event",
+        "original": "2049-10-22 22:12:13,599 DEBUG [org.keycloak.events] (default task-1) operationType=UPDATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=USER, resourcePath=users/09705c23-d626-4e70-896f-36f696955b75",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "admin",
+          "change"
+        ]
+      },
+      "keycloak": {
+        "admin": {
+          "operation": "UPDATE",
+          "resource": {
+            "path": "users/09705c23-d626-4e70-896f-36f696955b75",
+            "type": "USER"
+          }
+        },
+        "client": {
+          "id": "4adeb7de-292c-47e8-97fd-28cbe48be65e"
+        },
+        "event_type": "admin",
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-1"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01",
+          "09705c23-d626-4e70-896f-36f696955b75"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01",
+        "target": {
+          "id": "09705c23-d626-4e70-896f-36f696955b75"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:14:29.031-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CREATE-GROUP",
+        "category": [
+          "iam"
+        ],
+        "code": "CREATE-GROUP",
+        "kind": "event",
+        "original": "2049-10-22 22:14:29,031 DEBUG [org.keycloak.events] (default task-9) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=GROUP, resourcePath=groups/e986f0dc-6180-476e-9a28-a9f33c0352e9",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "admin",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "e986f0dc-6180-476e-9a28-a9f33c0352e9"
+      },
+      "keycloak": {
+        "admin": {
+          "operation": "CREATE",
+          "resource": {
+            "path": "groups/e986f0dc-6180-476e-9a28-a9f33c0352e9",
+            "type": "GROUP"
+          }
+        },
+        "client": {
+          "id": "4adeb7de-292c-47e8-97fd-28cbe48be65e"
+        },
+        "event_type": "admin",
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-9"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:16:12.150-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CREATE-CLIENT_SCOPE",
+        "category": [
+          "iam"
+        ],
+        "code": "CREATE-CLIENT_SCOPE",
+        "kind": "event",
+        "original": "2049-10-22 22:16:12,150 DEBUG [org.keycloak.events] (default task-8) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=CLIENT_SCOPE, resourcePath=client-scopes/1a6516c6-10f0-4735-82e6-71ef9ead28d9",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "admin",
+          "creation"
+        ]
+      },
+      "keycloak": {
+        "admin": {
+          "operation": "CREATE",
+          "resource": {
+            "path": "client-scopes/1a6516c6-10f0-4735-82e6-71ef9ead28d9",
+            "type": "CLIENT_SCOPE"
+          }
+        },
+        "client": {
+          "id": "4adeb7de-292c-47e8-97fd-28cbe48be65e"
+        },
+        "event_type": "admin",
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-8"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:45:12.592-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGOUT",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "2049-10-22 22:45:12,592 DEBUG [org.keycloak.events] (default task-8) type=LOGOUT, realmId=test, clientId=null, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, redirect_uri=https://www.example.com/auth/admin/test/console/#/realms/test/admin-events, authSessionParentId=bab0e90d-219b-4173-81f6-42bda4100c0c, authSessionTabId=GbBi74IWYc4",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "end"
+        ]
+      },
+      "keycloak": {
+        "event_type": "login",
+        "login": {
+          "auth_session_parent_id": "bab0e90d-219b-4173-81f6-42bda4100c0c",
+          "auth_session_tab_id": "GbBi74IWYc4",
+          "redirect_uri": "https://www.example.com/auth/admin/test/console/#/realms/test/admin-events",
+          "type": "LOGOUT"
+        },
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-8"
+        }
+      },
+      "related": {
+        "hosts": [
+          "www.example.com"
+        ],
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "www.example.com",
+        "fragment": "/realms/test/admin-events",
+        "original": "https://www.example.com/auth/admin/test/console/#/realms/test/admin-events",
+        "path": "/auth/admin/test/console/",
+        "scheme": "https"
+      },
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01"
+      }
+    },
+    {
+      "@timestamp": "2049-10-22T22:46:14.913-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DELETE-GROUP",
+        "category": [
+          "iam"
+        ],
+        "code": "DELETE-GROUP",
+        "kind": "event",
+        "original": "2049-10-22 22:46:14,913 DEBUG [org.keycloak.events] (default task-1) operationType=DELETE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=GROUP, resourcePath=groups/e986f0dc-6180-476e-9a28-a9f33c0352e9",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "admin",
+          "deletion"
+        ]
+      },
+      "group": {
+        "id": "e986f0dc-6180-476e-9a28-a9f33c0352e9"
+      },
+      "keycloak": {
+        "admin": {
+          "operation": "DELETE",
+          "resource": {
+            "path": "groups/e986f0dc-6180-476e-9a28-a9f33c0352e9",
+            "type": "GROUP"
+          }
+        },
+        "client": {
+          "id": "4adeb7de-292c-47e8-97fd-28cbe48be65e"
+        },
+        "event_type": "admin",
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-1"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01"
+      }
+    },
+    {
+      "@timestamp": "2051-08-22T07:19:22.081-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "2051-08-22 07:19:22,081 ERROR [com.example.BaseUserProvider] (default task-8) Error getting user: org.apache.http.conn.HttpHostConnectException: Connect to vxln.fxblds.internal:8080 [vxln.fxblds.internal/10.2.2.156] failed: Connection refused (Connection refused)\n    at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:156)\n    at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:376)\n    at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:393)\n    at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:236)\n    at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:186)\n    at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89)",
+        "timezone": "America/Chicago"
+      },
+      "log": {
+        "level": "ERROR",
+        "logger": "com.example.BaseUserProvider"
+      },
+      "message": "Error getting user: org.apache.http.conn.HttpHostConnectException: Connect to vxln.fxblds.internal:8080 [vxln.fxblds.internal/10.2.2.156] failed: Connection refused (Connection refused)\n    at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:156)\n    at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:376)\n    at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:393)\n    at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:236)\n    at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:186)\n    at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89)",
+      "process": {
+        "thread": {
+          "name": "default task-8"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-22T23:05:03.371-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CREATE-GROUP",
+        "category": [
+          "iam"
+        ],
+        "code": "CREATE-GROUP",
+        "kind": "event",
+        "original": "2049-10-22 23:05:03,371 DEBUG [org.keycloak.events] (default task-8) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=GROUP, resourcePath=groups/f94fd94b-ecdb-4f39-9fe1-5d96ae30e1e2/children",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "admin",
+          "creation"
+        ]
+      },
+      "group": {
+        "id": "f94fd94b-ecdb-4f39-9fe1-5d96ae30e1e2"
+      },
+      "keycloak": {
+        "admin": {
+          "operation": "CREATE",
+          "resource": {
+            "path": "groups/f94fd94b-ecdb-4f39-9fe1-5d96ae30e1e2/children",
+            "type": "GROUP"
+          }
+        },
+        "client": {
+          "id": "4adeb7de-292c-47e8-97fd-28cbe48be65e"
+        },
+        "event_type": "admin",
+        "realm": {
+          "id": "test"
+        }
+      },
+      "log": {
+        "level": "DEBUG",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "default task-8"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.37.198.128"
+        ],
+        "user": [
+          "fd484d16-d04c-4dee-9188-8eda0c048a01"
+        ]
+      },
+      "source": {
+        "address": "10.37.198.128",
+        "ip": "10.37.198.128"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "fd484d16-d04c-4dee-9188-8eda0c048a01"
+      }
+    },
+    {
+      "@timestamp": "2052-07-17T12:05:32.104-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGOUT",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "2052-07-17 12:05:32,104 INFO [org.keycloak.events] (main-thread-1) type=\\\"LOGOUT\\\", realmId=\\\"47334614-7cfd-dfc4-1247-47333cbcdda0\\\", clientId=\\\"user-console\\\", userId=\\\"dcdffa58-2496-7642-abcf-cc1965714724\\\", sessionId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", ipAddress=\\\"192.168.124.110\\\", auth_method=\\\"oauth2\\\", auth_type=\\\"token\\\", response_type=\\\"token\\\", redirect_uri=\\\"https://example.com/realms/demo/account/\\\", consent=\\\"consent_required\\\", code_id=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", response_mode=\\\"fragment\\\", username=\\\"diskzgrds\\\", authSessionParentId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", authSessionTabId=\\\"zXY987wvuTsr\\\"",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "end"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "user-console"
+        },
+        "event_type": "login",
+        "login": {
+          "auth_method": "oauth2",
+          "auth_session_parent_id": "aafe0141-0868-94fb-ccca-4500460896ff",
+          "auth_session_tab_id": "zXY987wvuTsr",
+          "auth_type": "token",
+          "code_id": "aafe0141-0868-94fb-ccca-4500460896ff",
+          "redirect_uri": "https://example.com/realms/demo/account/",
+          "type": "LOGOUT"
+        },
+        "realm": {
+          "id": "47334614-7cfd-dfc4-1247-47333cbcdda0"
+        },
+        "session": {
+          "id": "aafe0141-0868-94fb-ccca-4500460896ff"
+        }
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "main-thread-1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "example.com"
+        ],
+        "ip": [
+          "192.168.124.110"
+        ],
+        "user": [
+          "dcdffa58-2496-7642-abcf-cc1965714724"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/realms/demo/account/",
+        "path": "/realms/demo/account/",
+        "scheme": "https"
+      },
+      "user": {
+        "id": "dcdffa58-2496-7642-abcf-cc1965714724",
+        "name": "diskzgrds"
+      }
+    },
+    {
+      "@timestamp": "2052-07-17T12:05:32.104-05:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "LOGOUT",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "2052-07-17T12:05:32,104 INFO [org.keycloak.events] (main-thread-1) type=\\\"LOGOUT\\\", realmId=\\\"47334614-7cfd-dfc4-1247-47333cbcdda0\\\", clientId=\\\"user-console\\\", userId=\\\"dcdffa58-2496-7642-abcf-cc1965714724\\\", sessionId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", ipAddress=\\\"192.168.124.110\\\", auth_method=\\\"oauth2\\\", auth_type=\\\"token\\\", response_type=\\\"token\\\", redirect_uri=\\\"https://example.com/realms/demo/account/\\\", consent=\\\"consent_required\\\", code_id=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", response_mode=\\\"fragment\\\", username=\\\"diskzgrds\\\", authSessionParentId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", authSessionTabId=\\\"zXY987wvuTsr\\\"",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info",
+          "end"
+        ]
+      },
+      "keycloak": {
+        "client": {
+          "id": "user-console"
+        },
+        "event_type": "login",
+        "login": {
+          "auth_method": "oauth2",
+          "auth_session_parent_id": "aafe0141-0868-94fb-ccca-4500460896ff",
+          "auth_session_tab_id": "zXY987wvuTsr",
+          "auth_type": "token",
+          "code_id": "aafe0141-0868-94fb-ccca-4500460896ff",
+          "redirect_uri": "https://example.com/realms/demo/account/",
+          "type": "LOGOUT"
+        },
+        "realm": {
+          "id": "47334614-7cfd-dfc4-1247-47333cbcdda0"
+        },
+        "session": {
+          "id": "aafe0141-0868-94fb-ccca-4500460896ff"
+        }
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "main-thread-1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "example.com"
+        ],
+        "ip": [
+          "192.168.124.110"
+        ],
+        "user": [
+          "dcdffa58-2496-7642-abcf-cc1965714724"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/realms/demo/account/",
+        "path": "/realms/demo/account/",
+        "scheme": "https"
+      },
+      "user": {
+        "id": "dcdffa58-2496-7642-abcf-cc1965714724",
+        "name": "diskzgrds"
+      }
+    },
+    {
+      "@timestamp": "2053-12-09T09:49:17.971-06:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "IMPERSONATE",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "2053-12-09T08:49:18.495105+00:00 ixdllyjfy_6 service[keycloak-qk] 2053-12-09 09:49:17,971 INFO [org.keycloak.events] (executor-thread-399) type=\"IMPERSONATE\", realmId=\"realm1\", clientId=\"null\", userId=\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\", sessionId=\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\", ipAddress=\"\", impersonator_realm=\"master\", impersonator=\"admin\"",
+        "outcome": "unknown",
+        "timezone": "America/Chicago",
+        "type": [
+          "info"
+        ]
+      },
+      "keycloak": {
+        "event_type": "login",
+        "impersonator": "admin",
+        "impersonator_realm": "master",
+        "login": {
+          "type": "IMPERSONATE"
+        },
+        "realm": {
+          "id": "realm1"
+        },
+        "session": {
+          "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+        }
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "org.keycloak.events"
+      },
+      "process": {
+        "thread": {
+          "name": "executor-thread-399"
+        }
+      },
+      "related": {
+        "user": [
+          "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:42,548 INFO  [org.keycloak.services] (ServerService Thread Pool -- 64) KC-SERVICES0009: Added user 'admin' to realm 'master'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:42,667 INFO  [org.jboss.resteasy.resteasy_jaxrs.i18n] (ServerService Thread Pool -- 64) RESTEASY002220: Adding singleton resource org.keycloak.services.resources.admin.AdminRoot from Application class org.keycloak.services.resources.KeycloakApplication",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:42,912 INFO  [org.wildfly.extension.undertow] (ServerService Thread Pool -- 64) WFLYUT002021-10-22 21: Registered web context: '/auth' for server 'default-server'       ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:43,208 INFO  [org.jboss.as.server] (ServerService Thread Pool -- 46) WFLYSRV0010: Deployed \"keycloak-server.war\" (runtime-name : \"keycloak-server.war\")       ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:43,299 INFO  [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0212: Resuming server",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:43,307 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: Keycloak 15.0.2 (WildFly Core 15.0.1.Final) started in 28315ms - Started 692 of 977 services (686 services are lazy, passive or on-demand)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:43,327 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:43,327 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051: Admin console listening on http://127.0.0.1:9990",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:01:45,403 WARN  [org.keycloak.events] (default task-1) type=LOGIN_ERROR, realmId=test, clientId=test, userId=null, ipAddress=172.17.190.181, error=invalid_redirect_uri, redirect_uri=http://localhost:8080",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:20:42,120 WARN  [org.keycloak.events] (default task-2) type=LOGIN_ERROR, realmId=test, clientId=test, userId=ac24684f-dc7c-477f-97d6-a502af4d80ac, ipAddress=172.17.190.181, error=invalid_user_credentials, auth_method=openid-connect, auth_type=code, redirect_uri=http://127.0.0.1:8080, code_id=4d68d410-f809-40b3-ab24-5a4f32d96ec2, username=admin, authSessionParentId=4d68d410-f809-40b3-ab24-5a4f32d96ec2, authSessionTabId=oJpF-WjDC04",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:24:41,076 WARN  [org.keycloak.events] (default task-10) type=LOGIN_ERROR, realmId=master, clientId=security-admin-console, userId=null, ipAddress=172.17.190.181, error=user_not_found, auth_method=openid-connect, auth_type=code, redirect_uri=http://127.0.0.1:9090/auth/admin/master/console/, code_id=e6d6666e-f131-4fe5-9dce-d7cdf594b39f, authSessionParentId=e6d6666e-f131-4fe5-9dce-d7cdf594b39f, authSessionTabId=C8EtUrcFMsg",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 21:31:31,555 WARN  [org.keycloak.events] (default task-10) type=LOGIN_ERROR, realmId=test, clientId=test, userId=null, ipAddress=172.17.190.181, error=invalid_redirect_uri, redirect_uri=http://localhost:8080",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 20:58:02,700 WARN  [org.keycloak.events] (default task-18) type=LOGIN_ERROR, realmId=ABCD TEST, clientId=https://www.example.com/shibboleth, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, error=invalid_user_credentials, auth_method=saml, redirect_uri=https://www.example.com/Shibboleth.sso/SAML2/POST, code_id=abbba0db-ca69-49c1-b4ee-e7c10c868728, username=admin, authSessionParentId=abbba0db-ca69-49c1-b4ee-e7c10c868728, authSessionTabId=97qImXws36A",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:11:31,257 DEBUG [org.keycloak.events] (default task-2) type=LOGIN, realmId=test, clientId=security-admin-console, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, auth_method=openid-connect, auth_type=code, redirect_uri=https://www.example.com/auth/admin/test/console/#/realms/test/events, consent=no_consent_required, code_id=bab0e90d-219b-4173-81f6-42bda4100c0c, username=admin, authSessionParentId=bab0e90d-219b-4173-81f6-42bda4100c0c, authSessionTabId=Kz_ye2UvP6M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:11:32,131 DEBUG [org.keycloak.events] (default task-3) type=CODE_TO_TOKEN, realmId=test, clientId=security-admin-console, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, token_id=873704c7-60d7-49b5-985d-c3d66b29e214, grant_type=authorization_code, refresh_token_type=Refresh, scope=openid, refresh_token_id=45579686-ab25-406b-99a3-c9b13e35c1e9, code_id=bab0e90d-219b-4173-81f6-42bda4100c0c, client_auth_method=client-secret",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:12:09,871 DEBUG [org.keycloak.events] (default task-3) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=USER, resourcePath=users/09705c23-d626-4e70-896f-36f696955b75",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:12:13,599 DEBUG [org.keycloak.events] (default task-1) operationType=UPDATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=USER, resourcePath=users/09705c23-d626-4e70-896f-36f696955b75",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:14:29,031 DEBUG [org.keycloak.events] (default task-9) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=GROUP, resourcePath=groups/e986f0dc-6180-476e-9a28-a9f33c0352e9",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:16:12,150 DEBUG [org.keycloak.events] (default task-8) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=CLIENT_SCOPE, resourcePath=client-scopes/1a6516c6-10f0-4735-82e6-71ef9ead28d9",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:45:12,592 DEBUG [org.keycloak.events] (default task-8) type=LOGOUT, realmId=test, clientId=null, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, redirect_uri=https://www.example.com/auth/admin/test/console/#/realms/test/admin-events, authSessionParentId=bab0e90d-219b-4173-81f6-42bda4100c0c, authSessionTabId=GbBi74IWYc4",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 22:46:14,913 DEBUG [org.keycloak.events] (default task-1) operationType=DELETE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=GROUP, resourcePath=groups/e986f0dc-6180-476e-9a28-a9f33c0352e9",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2051-08-22 07:19:22,081 ERROR [com.example.BaseUserProvider] (default task-8) Error getting user: org.apache.http.conn.HttpHostConnectException: Connect to vxln.fxblds.internal:8080 [vxln.fxblds.internal/10.2.2.156] failed: Connection refused (Connection refused)\n    at org.apache.http.impl.conn.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:156)\n    at org.apache.http.impl.conn.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:376)\n    at org.apache.http.impl.execchain.MainClientExec.establishRoute(MainClientExec.java:393)\n    at org.apache.http.impl.execchain.MainClientExec.execute(MainClientExec.java:236)\n    at org.apache.http.impl.execchain.ProtocolExec.execute(ProtocolExec.java:186)\n    at org.apache.http.impl.execchain.RetryExec.execute(RetryExec.java:89)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2049-10-22 23:05:03,371 DEBUG [org.keycloak.events] (default task-8) operationType=CREATE, realmId=test, clientId=4adeb7de-292c-47e8-97fd-28cbe48be65e, userId=fd484d16-d04c-4dee-9188-8eda0c048a01, ipAddress=10.37.198.128, resourceType=GROUP, resourcePath=groups/f94fd94b-ecdb-4f39-9fe1-5d96ae30e1e2/children",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2052-07-17 12:05:32,104 INFO [org.keycloak.events] (main-thread-1) type=\\\"LOGOUT\\\", realmId=\\\"47334614-7cfd-dfc4-1247-47333cbcdda0\\\", clientId=\\\"user-console\\\", userId=\\\"dcdffa58-2496-7642-abcf-cc1965714724\\\", sessionId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", ipAddress=\\\"192.168.124.110\\\", auth_method=\\\"oauth2\\\", auth_type=\\\"token\\\", response_type=\\\"token\\\", redirect_uri=\\\"https://example.com/realms/demo/account/\\\", consent=\\\"consent_required\\\", code_id=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", response_mode=\\\"fragment\\\", username=\\\"diskzgrds\\\", authSessionParentId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", authSessionTabId=\\\"zXY987wvuTsr\\\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2052-07-17T12:05:32,104 INFO [org.keycloak.events] (main-thread-1) type=\\\"LOGOUT\\\", realmId=\\\"47334614-7cfd-dfc4-1247-47333cbcdda0\\\", clientId=\\\"user-console\\\", userId=\\\"dcdffa58-2496-7642-abcf-cc1965714724\\\", sessionId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", ipAddress=\\\"192.168.124.110\\\", auth_method=\\\"oauth2\\\", auth_type=\\\"token\\\", response_type=\\\"token\\\", redirect_uri=\\\"https://example.com/realms/demo/account/\\\", consent=\\\"consent_required\\\", code_id=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", response_mode=\\\"fragment\\\", username=\\\"diskzgrds\\\", authSessionParentId=\\\"aafe0141-0868-94fb-ccca-4500460896ff\\\", authSessionTabId=\\\"zXY987wvuTsr\\\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp": {
+        "only_user_events": false,
+        "tz_offset": "America/Chicago"
+      },
+      "message": "2053-12-09T08:49:18.495105+00:00 ixdllyjfy_6 service[keycloak-qk] 2053-12-09 09:49:17,971 INFO [org.keycloak.events] (executor-thread-399) type=\"IMPERSONATE\", realmId=\"realm1\", clientId=\"null\", userId=\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\", sessionId=\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\", ipAddress=\"\", impersonator_realm=\"master\", impersonator=\"admin\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": "^.*$",
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-keycloak-log-default",
+    "event_count": 26,
+    "numeric_keyword_fields": [],
+    "package": "keycloak",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

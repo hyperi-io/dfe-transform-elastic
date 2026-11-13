@@ -1,0 +1,70 @@
+{
+    "events": [
+        {
+            "@timestamp": "2053-03-19T05:33:46.294Z",
+            "ecs": {
+              "version": "8.0.0"
+            },
+            "agent": {
+              "version": "9.1.0",
+              "ephemeral_id": "0feb083c-e961-42b8-b35e-cb5025a687a7",
+              "id": "e9df01e5-82c6-4b60-a47f-bd341c8405b2",
+              "name": "WIN2K19-50-13-53",
+              "type": "filebeat"
+            },
+            "event": {
+              "kind": "event",
+              "provider": "Microsoft-Windows-Security-Auditing",
+              "outcome": "success",
+              "action": "Other System Events",
+              "created": "2053-04-29T08:59:28.618Z",
+              "code": "5059"
+            },
+            "log": {
+              "level": "information"
+            },
+            "message": "Key migration operation.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-19\n\tAccount Name:\t\tLOCAL SERVICE\n\tAccount Domain:\t\tNT AUTHORITY\n\tLogon ID:\t\t0x3e5\n\nProcess Information:\n\tProcess ID:\t\t688\n\tProcess Creation Time:\t2053-03-19 05:33:45.9196243 +0000 UTC\n\nCryptographic Parameters:\n\tProvider Name:\tMicrosoft Software Key Storage Provider\n\tAlgorithm Name:\tECDSA_P256\n\tKey Name:\tMicrosoft Connected Devices Platform device certificate\n\tKey Type:\tUser key.\n\nAdditional Information:\n\tOperation:\tExport of persistent cryptographic key.\n\tReturn Code:\t0x0",
+            "host": {
+              "name": "RJH-C4HNQ420X94"
+            },
+            "winlog": {
+              "event_id": "5059",
+              "record_id": 13902,
+              "task": "Other System Events",
+              "computer_name": "RJH-C4HNQ420X94",
+              "version": 1,
+              "activity_id": "{4AEBDEDF-7968-0937-CABF-DA7D3079BE96}",
+              "provider_name": "Microsoft-Windows-Security-Auditing",
+              "opcode": "Info",
+              "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+              "keywords": [
+                "Audit Success"
+              ],
+              "event_data": {
+                "SubjectUserName": "LOCAL SERVICE",
+                "KeyType": "User key.",
+                "ReturnCode": "0x0",
+                "SubjectUserSid": "S-1-5-19",
+                "ClientCreationTime": "2053-03-19 05:33:45.9196243 +0000 UTC",
+                "ProviderName": "Microsoft Software Key Storage Provider",
+                "SubjectDomainName": "NT AUTHORITY",
+                "AlgorithmName": "ECDSA_P256",
+                "KeyName": "Microsoft Connected Devices Platform device certificate",
+                "Operation": "Export of persistent cryptographic key.",
+                "SubjectLogonId": "0x3e5",
+                "ClientProcessId": "688"
+              },
+              "process": {
+                "pid": 680,
+                "thread": {
+                  "id": 808
+                }
+              },
+              "channel": "Security"
+            },
+            "input": {
+              "type": "winlog"
+            }
+          }
+    ]
+}

@@ -1,0 +1,67 @@
+{
+  "events": [
+    {
+      "@timestamp": "2053-03-19T05:33:46.125Z",
+      "message": "Cryptographic operation.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-19\n\tAccount Name:\t\tLOCAL SERVICE\n\tAccount Domain:\t\tNT AUTHORITY\n\tLogon ID:\t\t0x3e5\n\nCryptographic Parameters:\n\tProvider Name:\tMicrosoft Software Key Storage Provider\n\tAlgorithm Name:\tECDSA_P256\n\tKey Name:\tMicrosoft Connected Devices Platform device certificate\n\tKey Type:\tUser key.\n\nCryptographic Operation:\n\tOperation:\tOpen Key.\n\tReturn Code:\t0x0",
+      "host": {
+        "name": "RJH-C4HNQ420X94"
+      },
+      "input": {
+        "type": "winlog"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "agent": {
+        "version": "9.1.0",
+        "ephemeral_id": "dbaba478-c8ba-4b57-a67f-ae9be931dfa5",
+        "id": "1172f772-b8fb-4e80-8e39-a58d789ae5c5",
+        "name": "WIN2K19-50-13-53",
+        "type": "filebeat"
+      },
+      "winlog": {
+        "event_id": "5061",
+        "event_data": {
+          "KeyType": "User key.",
+          "ReturnCode": "0x1",
+          "SubjectUserSid": "S-1-5-19",
+          "SubjectDomainName": "NT AUTHORITY",
+          "AlgorithmName": "ECDSA_P256",
+          "KeyName": "Microsoft Connected Devices Platform device certificate",
+          "Operation": "Open Key.",
+          "SubjectUserName": "LOCAL SERVICE",
+          "SubjectLogonId": "0x3e5",
+          "ProviderName": "Microsoft Software Key Storage Provider"
+        },
+        "activity_id": "{4AEBDEDF-7968-0937-CABF-DA7D3079BE96}",
+        "task": "System Integrity",
+        "opcode": "Info",
+        "process": {
+          "pid": 680,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "channel": "Security",
+        "computer_name": "RJH-C4HNQ420X94",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 13893,
+        "keywords": [
+          "Audit Success"
+        ]
+      },
+      "event": {
+        "created": "2053-04-29T08:57:28.307Z",
+        "code": "5061",
+        "kind": "event",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "outcome": "success",
+        "action": "System Integrity"
+      },
+      "log": {
+        "level": "information"
+      }
+    }
+  ]
+}

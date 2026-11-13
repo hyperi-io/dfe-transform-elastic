@@ -1,0 +1,181 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:47.039746209Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 100,
+          "deletion_scheduled_at": "2027-02-06T23:07:47.039746209Z",
+          "expiration_ts": "2318-07-09T20:41:16.995Z",
+          "feed_id": 0,
+          "id": "185006459",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": false,
+          "itype": "phish_ip",
+          "meta": {
+            "severity": "very-high"
+          },
+          "owner_organization_id": 1,
+          "retina_confidence": -1,
+          "source_reported_confidence": 100,
+          "status": "active",
+          "threat_type": "phish",
+          "trusted_circle_ids": [
+            "10015"
+          ],
+          "type": "ip",
+          "update_id": "376567461",
+          "uuid": "141a6fdc-e055-4322-87c3-5312b9e2a1b2",
+          "value": "198.51.100.106"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-10-09T18:33:57.504Z",
+        "kind": "enrichment",
+        "severity": 99,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.106"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "first_seen=08.10.2020_13:10",
+        "industry=Bank",
+        "IP=198.51.100.106",
+        "kaspersky",
+        "Kaspersky_Phishing_URL_Exact_Feed",
+        "mask=198.51.100.106",
+        "popularity=low"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "geo": {
+            "country_iso_code": "JP"
+          },
+          "ip": "198.51.100.106",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "modified_at": "2048-10-09T18:33:57.504Z",
+          "name": "198.51.100.106",
+          "provider": "Default Organization",
+          "type": "ipv4-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 100,
+        "country": "JP",
+        "created_by": null,
+        "created_ts": "2048-10-09T18:33:57.504Z",
+        "description": null,
+        "expiration_ts": "2318-07-09T20:41:16.995Z",
+        "feed_id": 0,
+        "id": 185006459,
+        "ip": "198.51.100.106",
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": false,
+        "itype": "phish_ip",
+        "latitude": 34.6851,
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 1",
+          "severity": "very-high"
+        },
+        "modified_ts": "2048-10-09T18:33:57.504Z",
+        "org": "",
+        "owner_organization_id": 1,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/185006459/",
+        "retina_confidence": -1,
+        "sort": [
+          376567461
+        ],
+        "source": "Default Organization",
+        "source_locations": [],
+        "source_reported_confidence": 100,
+        "status": "active",
+        "subtype": null,
+        "tags": [
+          {
+            "id": "qyg",
+            "name": "first_seen=08.10.2020_13:10"
+          },
+          {
+            "id": "o90",
+            "name": "industry=Bank"
+          },
+          {
+            "id": "d80",
+            "name": "IP=198.51.100.106"
+          },
+          {
+            "id": "qjc",
+            "name": "kaspersky"
+          },
+          {
+            "id": "8xj",
+            "name": "Kaspersky_Phishing_URL_Exact_Feed"
+          },
+          {
+            "id": "wcc",
+            "name": "mask=198.51.100.106"
+          },
+          {
+            "id": "nah",
+            "name": "popularity=low"
+          }
+        ],
+        "target_industry": [],
+        "threat_type": "phish",
+        "threatscore": 80,
+        "tlp": null,
+        "trusted_circle_ids": [
+          10015
+        ],
+        "type": "ip",
+        "update_id": 376567461,
+        "uuid": "141a6fdc-e055-4322-87c3-5312b9e2a1b2",
+        "value": "198.51.100.106",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

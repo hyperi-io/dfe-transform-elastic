@@ -1,0 +1,990 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-26T00:01:52.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:01:52.000Z",
+          "activity_status_active": 0,
+          "activity_status_active_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.activity_status",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Active"
+            }
+          ],
+          "activity_status_inactive": 24,
+          "activity_status_inactive_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.activity_status",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Inactive"
+            }
+          ],
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_ad_adapter"
+          ],
+          "app_id": "Dc4BA8FbB6B934216b9c",
+          "application_and_account_name": "microsoft/azure_ad-demo",
+          "asset_type": "user_initiated_extensions",
+          "event": {
+            "adapter_categories": [
+              "Directory",
+              "IAM",
+              "SaaS Management"
+            ],
+            "client_used": "67fd09bbfe1c8e812a176bb5",
+            "initial_plugin_unique_name": "azure_ad_adapter_0",
+            "plugin_name": "azure_ad_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "azure_ad_adapter_0",
+            "quick_id": "azure_ad_adapter_0!8655fb5cf4615f067976",
+            "type": "entitydata"
+          },
+          "excessive_read": 0,
+          "excessive_read_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "IN",
+              "field": "internal_axon_id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            }
+          ],
+          "excessive_write": 24,
+          "excessive_write_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "IN",
+              "field": "internal_axon_id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0,
+              "value": "8df33df0fac189906459f18314b5bc5d,8be8afade4124dc3b71cae4e076c2a17,a20a7c45ea038d17cbcd0dcbfd3a4ccd,e37ee3b55eae52cf7bfdf3da50c1951f,00173b1b24099c8dbf91bcf0c866741e,826e65a8e23239b1c0c6091bd1038f7e,97a0dcdceafe7571ace5ebb34e16eeb2,c4665882bfd27dd66a66c2f77759bb2b,571653d352050900a1092ec4a24815c0,9472a196fbdd78fc2239be833cdc41f7,553c3f3fe434ba5847be40edb0a07a60,a6967c5264ffe1faff8f026f6c343d1f,a79478b7eb13e0246282d42618e0449a,6bd925df912e5ee9333d38cbb2d5c3b1,06f9dfdfcb553fc32047d3b253220cd3,3329bc9d7bc393d14c9a6f882f212c27,07b0f8cc70db29bb231aa4f78056a77d,7172c966ffeb75f900bdd81a08ea4ca1,090abcc15bfb7a1650893c6a735d2fe4,47ee93a88184d3ed3147b749ae3a232b,6539aebc374488f880eccc8287a5119b,37bb7e3ce8386d45fb2b7d2a6da5dc41,e54916d99c4f1b85aaacd90d3c925b03,b090ab46d553e69723a41c5681491e2b"
+            }
+          ],
+          "extension_type": "User Consent",
+          "fetch_time": "2026-05-26T00:01:30.000Z",
+          "first_fetch_time": "2025-12-14T16:49:53.000Z",
+          "first_seen": "2025-05-15T23:41:48.000Z",
+          "from_last_fetch": true,
+          "id": "8655fb5cf4615f067976",
+          "id_raw": "azure_ad_adapter_0!Dc4BA8FbB6B934216b9c",
+          "integration_type": "User Initiated",
+          "internal_axon_id": "1f359ba6a5448d73d37b7487e5a254e7",
+          "is_admin": 0,
+          "is_admin_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "true",
+              "field": "specific_data.data.permissions.is_admin",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0
+            }
+          ],
+          "is_fetched_from_adapter": true,
+          "is_identity": 0,
+          "is_identity_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "true",
+              "field": "specific_data.data.permissions.is_identity",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0
+            }
+          ],
+          "is_operational": true,
+          "last_fetch_connection_id": "67fd09bbfe1c8e812a176bb5",
+          "last_fetch_connection_label": "azure_ad-demo",
+          "last_seen": "2025-12-07T00:41:34.000Z",
+          "last_used": "2025-12-07T00:41:34.000Z",
+          "name": "Jira Cloud for Excel",
+          "not_fetched_count": 0,
+          "permissions": [
+            {
+              "name": "offline_access",
+              "users_amount": 24
+            },
+            {
+              "alias": "Write Files Drive",
+              "hash_id": "AJbuNnBc/JoPDXIe",
+              "name": "Files.ReadWrite",
+              "scope_tag": "Drive",
+              "users_amount": 24
+            },
+            {
+              "name": "User.Read",
+              "users_amount": 24
+            },
+            {
+              "is_admin": false,
+              "name": "allow_language_selection",
+              "users_amount": 16
+            },
+            {
+              "is_admin": false,
+              "name": "allow_user_modification",
+              "users_amount": 11
+            },
+            {
+              "is_admin": false,
+              "name": "allow_account_management",
+              "users_amount": 18
+            },
+            {
+              "is_admin": false,
+              "name": "bulk_apply_settings",
+              "users_amount": 15
+            },
+            {
+              "is_admin": false,
+              "name": "allow_basic_access",
+              "users_amount": 14
+            }
+          ],
+          "related_vendor_name": "Jira",
+          "scope_tag_calendar": 0,
+          "scope_tag_calendar_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.permissions.scope_tag",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Calendar"
+            }
+          ],
+          "scope_tag_drive": 24,
+          "scope_tag_drive_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.permissions.scope_tag",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Drive"
+            }
+          ],
+          "scope_tag_mail": 0,
+          "scope_tag_mail_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Jira Cloud for Excel"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Dc4BA8FbB6B934216b9c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.permissions.scope_tag",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Mail"
+            }
+          ],
+          "source_application": "Microsoft",
+          "transform_unique_id": "FQAEJBXnEFsB9q/YKEqnEgRljEQ=",
+          "type": "Extensions",
+          "user_count": 24,
+          "user_count_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "IN",
+              "field": "specific_data.data.mail",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0,
+              "value": "ptjvdz.yizdbt@abui.local,ityrfp.kqaecxo@abui.local,qscunf.ioaosylg@abui.local,vburt.dvqiep@abui.local,oetzq.znwcsek@abui.local,kcirr.rxnrdz@abui.local,uulzwrv.acqxnmmx@abui.local,jux.lmjvlv@abui.local,jfvtakac.jsfojfs@abui.local,wpgd.ecudbj@abui.local,jbhfnf.vbwjekal@abui.local,qyfpeld.xuucsbg@abui.local,ugnicm.aaiscnw@abui.local,xlql.hdubi@abui.local,vjrseu.gadotqw@abui.local,waqrfkdb.sevo@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,gkmga.ftbigkbr@abui.local,vwpocz.blzveia@abui.local,jpfnki.oeedc@abui.local,tuctchd.ycbmvukfu@abui.local,tdkhekfe.iqkickpmnu@abui.local,mbhd.gbfqob@abui.local"
+            }
+          ],
+          "users_amount": 24
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2025-01-11T10:55:57.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"user_initiated_extensions\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"activity_status_active\":0,\"activity_status_active_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Active\"}],\"activity_status_inactive\":24,\"activity_status_inactive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Inactive\"}],\"app_id\":\"Dc4BA8FbB6B934216b9c\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"auth_type\":[],\"created\":\"Sat, 11 Jan 2025 10:55:57 GMT\",\"excessive_read\":0,\"excessive_read_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"\"}],\"excessive_write\":24,\"excessive_write_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"8df33df0fac189906459f18314b5bc5d,8be8afade4124dc3b71cae4e076c2a17,a20a7c45ea038d17cbcd0dcbfd3a4ccd,e37ee3b55eae52cf7bfdf3da50c1951f,00173b1b24099c8dbf91bcf0c866741e,826e65a8e23239b1c0c6091bd1038f7e,97a0dcdceafe7571ace5ebb34e16eeb2,c4665882bfd27dd66a66c2f77759bb2b,571653d352050900a1092ec4a24815c0,9472a196fbdd78fc2239be833cdc41f7,553c3f3fe434ba5847be40edb0a07a60,a6967c5264ffe1faff8f026f6c343d1f,a79478b7eb13e0246282d42618e0449a,6bd925df912e5ee9333d38cbb2d5c3b1,06f9dfdfcb553fc32047d3b253220cd3,3329bc9d7bc393d14c9a6f882f212c27,07b0f8cc70db29bb231aa4f78056a77d,7172c966ffeb75f900bdd81a08ea4ca1,090abcc15bfb7a1650893c6a735d2fe4,47ee93a88184d3ed3147b749ae3a232b,6539aebc374488f880eccc8287a5119b,37bb7e3ce8386d45fb2b7d2a6da5dc41,e54916d99c4f1b85aaacd90d3c925b03,b090ab46d553e69723a41c5681491e2b\"}],\"extension_type\":\"User Consent\",\"fetch_time\":\"Tue, 26 May 2026 00:01:30 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:53 GMT\",\"first_seen\":\"Thu, 15 May 2025 23:41:48 GMT\",\"from_last_fetch\":true,\"grant_types\":[],\"id\":\"8655fb5cf4615f067976\",\"id_raw\":\"azure_ad_adapter_0!Dc4BA8FbB6B934216b9c\",\"integration_type\":\"User Initiated\",\"is_admin\":0,\"is_admin_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_admin\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_fetched_from_adapter\":true,\"is_identity\":0,\"is_identity_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_identity\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_operational\":true,\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"last_seen\":\"Sun, 07 Dec 2025 00:41:34 GMT\",\"last_used\":\"Sun, 07 Dec 2025 00:41:34 GMT\",\"name\":\"Jira Cloud for Excel\",\"not_fetched_count\":0,\"permissions\":[{\"name\":\"offline_access\",\"users_amount\":24},{\"alias\":\"Write Files Drive\",\"hash_id\":\"AJbuNnBc/JoPDXIe\",\"name\":\"Files.ReadWrite\",\"scope_tag\":\"Drive\",\"users_amount\":24},{\"name\":\"User.Read\",\"users_amount\":24},{\"is_admin\":false,\"name\":\"allow_language_selection\",\"users_amount\":16},{\"is_admin\":false,\"name\":\"allow_user_modification\",\"users_amount\":11},{\"is_admin\":false,\"name\":\"allow_account_management\",\"users_amount\":18},{\"is_admin\":false,\"name\":\"bulk_apply_settings\",\"users_amount\":15},{\"is_admin\":false,\"name\":\"allow_basic_access\",\"users_amount\":14}],\"redirect_uris\":[],\"related_vendor_name\":\"Jira\",\"scope_tag_calendar\":0,\"scope_tag_calendar_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Calendar\"}],\"scope_tag_drive\":24,\"scope_tag_drive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Drive\"}],\"scope_tag_mail\":0,\"scope_tag_mail_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Mail\"}],\"source_application\":\"Microsoft\",\"tags\":[],\"type\":\"Extensions\",\"urls\":[],\"user_count\":24,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"ptjvdz.yizdbt@abui.local,ityrfp.kqaecxo@abui.local,qscunf.ioaosylg@abui.local,vburt.dvqiep@abui.local,oetzq.znwcsek@abui.local,kcirr.rxnrdz@abui.local,uulzwrv.acqxnmmx@abui.local,jux.lmjvlv@abui.local,jfvtakac.jsfojfs@abui.local,wpgd.ecudbj@abui.local,jbhfnf.vbwjekal@abui.local,qyfpeld.xuucsbg@abui.local,ugnicm.aaiscnw@abui.local,xlql.hdubi@abui.local,vjrseu.gadotqw@abui.local,waqrfkdb.sevo@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,gkmga.ftbigkbr@abui.local,vwpocz.blzveia@abui.local,jpfnki.oeedc@abui.local,tuctchd.ycbmvukfu@abui.local,tdkhekfe.iqkickpmnu@abui.local,mbhd.gbfqob@abui.local\"}],\"username_formats\":[],\"users_amount\":24},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!8655fb5cf4615f067976\",\"type\":\"entitydata\"},\"internal_axon_id\":\"1f359ba6a5448d73d37b7487e5a254e7\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "ptjvdz.yizdbt@abui.local,ityrfp.kqaecxo@abui.local,qscunf.ioaosylg@abui.local,vburt.dvqiep@abui.local,oetzq.znwcsek@abui.local,kcirr.rxnrdz@abui.local,uulzwrv.acqxnmmx@abui.local,jux.lmjvlv@abui.local,jfvtakac.jsfojfs@abui.local,wpgd.ecudbj@abui.local,jbhfnf.vbwjekal@abui.local,qyfpeld.xuucsbg@abui.local,ugnicm.aaiscnw@abui.local,xlql.hdubi@abui.local,vjrseu.gadotqw@abui.local,waqrfkdb.sevo@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,gkmga.ftbigkbr@abui.local,vwpocz.blzveia@abui.local,jpfnki.oeedc@abui.local,tuctchd.ycbmvukfu@abui.local,tdkhekfe.iqkickpmnu@abui.local,mbhd.gbfqob@abui.local"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2026-05-26T00:01:52.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:01:52.000Z",
+          "activity_status_active": 0,
+          "activity_status_active_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.activity_status",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Active"
+            }
+          ],
+          "activity_status_inactive": 119,
+          "activity_status_inactive_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.activity_status",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Inactive"
+            }
+          ],
+          "adapter_list_length": 1,
+          "adapters": [
+            "azure_ad_adapter"
+          ],
+          "app_id": "BF2BEa12B26d8c4F947c",
+          "application_and_account_name": "microsoft/azure_ad-demo",
+          "asset_type": "user_initiated_extensions",
+          "event": {
+            "adapter_categories": [
+              "Directory",
+              "IAM",
+              "SaaS Management"
+            ],
+            "client_used": "67fd09bbfe1c8e812a176bb5",
+            "initial_plugin_unique_name": "azure_ad_adapter_0",
+            "plugin_name": "azure_ad_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "azure_ad_adapter_0",
+            "quick_id": "azure_ad_adapter_0!0a791faa636f9da04072",
+            "type": "entitydata"
+          },
+          "excessive_read": 0,
+          "excessive_read_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "IN",
+              "field": "internal_axon_id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            }
+          ],
+          "excessive_write": 119,
+          "excessive_write_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "IN",
+              "field": "internal_axon_id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0,
+              "value": "6d21f36b98af5a21837dcd36ffb57640,e97bb062260971e7c25688bd9b51b625,50a5b64dbca306cef3caad89128b8852,1183655991fd4feec48c9ad4bb839be9,d1dc046ab654b9355a4678c9499110a7,ef85eb43c79ab4a781fba9c7f283ea39,f47cb85d0a3ad1e1249155cdfd4fd73f,43e1aa73bbee7c297bd47ffc86b49a1f,f74da260b126d0f9ad7f1aaa96c4fb43,fcd7ecbf78d6a066424b047b64ccd551,edbe893c30364e0e061d86425dff0756,2664833f0280115b76061b216b40041f,37bf9de2df531f5591d950081df23025,510156bfc01827003649c0e95c4fe9ca,84e8598393e6678c9362025f139a496e,8b239493c6dd66e9ff056ed14110c2ab,63dc7980db09398dd5338ba657a44a98,f5a7749f6ed6eb40d3254af8174e5929,866882f1aead631c1cd2666e42129018,5d049f53ed2d791ce0d254e9a7509cf1,bc2afd9aeff5cce8e9d0eb73f61063ca,50a34e0fb1cb265f14de8914a6db8436,d444c662e434af56033435f108dc77e4,947cc7a86803caef6ec3c0959d69f562,e5a57c5be8c35354b8e849bd60040780,37af436d21a76f23516f8986c14ba467,710a746df463d0514ceb2099c5708451,5557d45ae6b744352be9ee681726e3bf,d3c0cc69d96069b1be51f791aec67980,3d0d496f0e5e2e562ead55b82c18a41f,0d4b50935d03eff95e8a530a838c326b,369248ba449b0dc79206ac3fa08b9694,30a320d6f96f1111f9df7c72159fa177,e158313e31a1d463792d3cb9844309dd,65006634a8e83e304d4c7a0404a8fa0b,fae1e441391d2dbd8438045df51cad43,6cf421441f1174357b648107ff1db2b4,70a913349cfe0a8da0368ed2277b2475,d30e0de9e34b9bb18216e4f1e943a550,507e4dd94f44681ac310cf0153eaa71b,405dfec69dcde1c526e448c327fa2346,e310f0c83b577095fbe181cb8f22d5e7,1859229eebf386436858eb59f428b2a3,dd2cb7412fce4e5e2e821f89e5026c67,5bd17bf116c9699c77da1ef7a0c5fd55,1381260c4eaacea6e056087b29a1a960,6710dce4313ad7758925e18ea76afceb,ea710176bf2ee3c2c1693cd4c838760b,770f28aa5293e845fceb4c2140b22e3d,6fe019453bc01dad494808756ac1b0b1,5c22da5970be8a896aa6102870a31b93,672fc7ddae120b4453b0450bd6efe18d,bf4c58b0aeefcec53cc6a3093f3194a9,c8ea93759f5a3025770dfeaecf8d09aa,b013f01a926a0e88c0fa489ecffb3baa,569b2e067f03d86c3b0eb81c107baecc,0e20edcbb0a13c2ce6a15625fc77e674,3aedfd6ef8874e29c29713c33dfb1f4c,a49826b2cb668e261e1fc7b40eadd464,9153339f3712480f558526d5beffe054,ef334efa4ab964ba354cbb3ba91bb51f,923e25821566c24f4e46226d184efa67,0ddc847ce3c5e884596b3f6151e66fb7,0cf4e2f1bcd1b554bfc91665d9b56880,4599b5dac0c05887864cd1cefffa3d8a,9e3400dfeb44bab162891c2cf5c30d8c,b4df715cb2fa12766d585829d34cf3b2,e0a22f9eba61e162a53f3f14d6643930,15e0fa36e5febb97b54c59d0cbcd7c4f,11f905736f0abc32b82a4efe9925a723,9464a4648c87435d780dc96904ed0364,d0f3c7656b3e4492da3070c9575886a9,f2602d2425424a0ecf031030e987755e,fab8ca2153abcaff22b74ac180d989b4,5bdf9e23e0968edad1ef7ed5b4617d7b,43133a419ea88a141b1975dd8fa7d75a,94c2abd0147f9e4da914f0e82367c36e,cf68bd063d0caad09e9280b59669ef79,d3d562fe320f382d44097ca6bfd629bb,48b1c0c8de87a77ea710457a38684d7b,8ff7bcb467ca80f3637bcbf9f3f63065,dc8718a5abf8ba03d13633f53bd7131a,85309bcb41fa003bd510a0173fc9094c,ffe4681382376661790429755970c353,41cb080457889cda78ca72f27c242667,3b4da0c937ed9c2c544d15ad5e4d9b87,7f47730c7b4ed99295219d00e783f5f2,63d45a42d7477af5c814bd89d891c099,30d685bb9638fcaade3c2bd41968add8,e911dfab11d580ab13469d4e02955e57,a639fbd51c556141f39938c1096973ad,bedf146252eb2089c87f8c5627fbf648,bf5806d80d5d0c52ad19be87791d0cc8,cc259241c2daedd15276c30142094cd2,420df76f759fdb3e6243febe7f510fe6,b007a21113f171b756ba694c3249729d,c913a00b9f07eaa5331ece66e6d2f469,a5b5423fb2e474175b8bb67b96150cd0,d3c08316a37b0cf908f44f823a486529,1f21da1ea18e20f13fb449ff4622d500,bbfffd4fe661be84ff225a4101510c43,05bdc0cd26620098d520cd8d311bff4d,e6c4edca0930d26ce4db7cf9266ea0ae,384ede4b291df87b148886524c086800,416944b8b9d8fa051ab87bdc695501db,5e90678c16ed1faeccef732f69a73646,a6c89449a613036dd6f2be2f82930b78,6ae2a61e4e73663d0e991ca13041ce13,e988d323d1dc915bbecf58607cadb3fb,7a8398e0213edb75ce143e9b855b9ab9,63a5ec3f7034aa3c5d3a19f0d4daf9cc,30051276ac9a14a46d7cd52b0dc35d3f,a2045b4bbfeb829c338636312ca1118b,3dd4b1b55ee64b21c5792fd17480edcf,266f79938eef559b2c312215eef4893b,bb5ec5fd3fb0e6e2f65f6711c0440a80,bb3c6b4fa79551a5b530519d34a3b316,e04a798c2ec2513d28e12fad6ed6d055,bbe9cd43dfa3bd788a109bce84176ee3"
+            }
+          ],
+          "extension_type": "User Consent",
+          "fetch_time": "2026-05-26T00:01:30.000Z",
+          "first_fetch_time": "2025-12-14T16:49:53.000Z",
+          "first_seen": "2024-12-14T02:41:46.000Z",
+          "from_last_fetch": true,
+          "id": "0a791faa636f9da04072",
+          "id_raw": "azure_ad_adapter_0!BF2BEa12B26d8c4F947c",
+          "integration_type": "User Initiated",
+          "internal_axon_id": "e77b20bf9839fa3e79ea14d7ae094b9c",
+          "is_admin": 6,
+          "is_admin_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "true",
+              "field": "specific_data.data.permissions.is_admin",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0
+            }
+          ],
+          "is_fetched_from_adapter": true,
+          "is_identity": 0,
+          "is_identity_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "true",
+              "field": "specific_data.data.permissions.is_identity",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0
+            }
+          ],
+          "is_operational": true,
+          "last_fetch_connection_id": "67fd09bbfe1c8e812a176bb5",
+          "last_fetch_connection_label": "azure_ad-demo",
+          "last_seen": "2025-12-07T10:13:05.000Z",
+          "last_used": "2025-12-07T10:13:05.000Z",
+          "name": "EafCudss.com",
+          "not_fetched_count": 0,
+          "permissions": [
+            {
+              "name": "openid",
+              "users_amount": 119
+            },
+            {
+              "alias": "Calendar Write",
+              "hash_id": "n0tfg7G6a1+i87ZA",
+              "name": "Calendars.ReadWrite",
+              "scope_tag": "Calendar",
+              "users_amount": 119
+            },
+            {
+              "name": "Extended permissions",
+              "users_amount": 119
+            },
+            {
+              "is_admin": false,
+              "name": "bulk_apply_settings",
+              "users_amount": 79
+            },
+            {
+              "is_admin": false,
+              "name": "allow_language_selection",
+              "users_amount": 70
+            },
+            {
+              "is_admin": false,
+              "name": "allow_user_modification",
+              "users_amount": 69
+            },
+            {
+              "is_admin": false,
+              "name": "allow_basic_access",
+              "users_amount": 69
+            },
+            {
+              "is_admin": false,
+              "name": "allow_account_management",
+              "users_amount": 62
+            },
+            {
+              "is_admin": true,
+              "name": "create_users",
+              "users_amount": 4
+            },
+            {
+              "is_admin": true,
+              "name": "super_admin_only",
+              "users_amount": 4
+            },
+            {
+              "is_admin": true,
+              "name": "admin_only",
+              "users_amount": 3
+            },
+            {
+              "is_admin": true,
+              "name": "allow_api_access_to_account",
+              "users_amount": 3
+            }
+          ],
+          "related_vendor_name": "ADDEVENT",
+          "scope_tag_calendar": 119,
+          "scope_tag_calendar_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.permissions.scope_tag",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Calendar"
+            }
+          ],
+          "scope_tag_drive": 0,
+          "scope_tag_drive_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.permissions.scope_tag",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Drive"
+            }
+          ],
+          "scope_tag_mail": 0,
+          "scope_tag_mail_hyperlink": [
+            {
+              "bracketWeight": 0,
+              "compOp": "exists",
+              "field": "adapters_data.azure_ad_adapter.id",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.name",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "EafCudss.com"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.extension_type",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "User Consent"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.app_id",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "BF2BEa12B26d8c4F947c"
+            },
+            {
+              "compOp": "equals",
+              "field": "specific_data.data.permissions.scope_tag",
+              "leftBracket": 0,
+              "logicOp": "and",
+              "not": false,
+              "rightBracket": 0,
+              "value": "Mail"
+            }
+          ],
+          "source_application": "Microsoft",
+          "transform_unique_id": "CcM6HR9qzTxJPQfaU53TvDXJiY4=",
+          "type": "Extensions",
+          "user_count": 119,
+          "user_count_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "IN",
+              "field": "specific_data.data.mail",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0,
+              "value": "bhhirrn.yerwtlp@abui.local,ptjvdz.yizdbt@abui.local,bkdyxf.ivncke@abui.local,oetzq.znwcsek@abui.local,aazpe.kene@abui.local,cqdci.cqcbby@abui.local,bpfufa.akxqogl@abui.local,ahdjc.fdnmamyfn@abui.local,elkfxf.wqvtkoh@abui.local,wpgd.ecudbj@abui.local,xlql.hdubi@abui.local,csdiauafg.jehrgdkex@abui.local,waqrfkdb.sevo@abui.local,elivtta.wfgkiviwr@abui.local,dcholtl.riunphgrqxb@abui.local,dkbau.ubzspr@abui.local,albzzco.odlcxd@abui.local,ecsvd.bnckn@abui.local,diuynb.hff@abui.local,centhkvb.qdqdcbxax@abui.local,bqold.qvbcjtskd@abui.local,abnxsf.sguzkkj@abui.local,aelk.qsbzqaipov@abui.local,bdyrk.vbive@abui.local,edeqm.okrxgxcy@abui.local,fczld.yfrjbt@abui.local,bxifdsaohq.mzzz@abui.local,vburt.dvqiep@abui.local,cjqrs.kcheo@abui.local,bbljp.jfwuxv@abui.local,fdixcxe.coqechbrtt@abui.local,uulzwrv.acqxnmmx@abui.local,eqcd.liefinx@abui.local,jux.lmjvlv@abui.local,dabgsy.qbzdoirc@abui.local,bkfkwdp.kbrdq@abui.local,erj.mbyufhya@abui.local,bmpf.lffxfi@abui.local,encvbhcqc.nvfqli@abui.local,qyfpeld.xuucsbg@abui.local,euhtixo.aeei@abui.local,gkmga.ftbigkbr@abui.local,jpfnki.oeedc@abui.local,bssba.ptsvv@abui.local,abnjxxs.aahdcnso@abui.local,enpew.wcpswdl@abui.local,aznte.aoon@abui.local,enelan.uzelcz@abui.local,ejuqi.urqxag@abui.local,andrwfm.kehr@abui.local,daepf.cjcyat@abui.local,ehjaq.mrjzibx@abui.local,fmrre.jzhmaa@abui.local,dchp.huofsaj@abui.local,esdya.fbdwufj@abui.local,bkeoff.ebtleq@abui.local,desschwme.xcjzjobk@abui.local,dpponqqgnbv.jnbbn@abui.local,ityrfp.kqaecxo@abui.local,fsdwfa.dukx@abui.local,amzhkly.ybkhfdtxp@abui.local,dohqlvqsa.kuylaycm@abui.local,bfjwdlv.uizjw@abui.local,cdlhb.dlpyzsv@abui.local,clbmcb.hdxyglg@abui.local,eohbkb.zdbtnhl@abui.local,fbrslso.ncavpay@abui.local,fqlf.inkqyvbv@abui.local,foimiwn.uideq@abui.local,bgeubtcbh.rzfdzbtxd@abui.local,aibnep.ycqdxtw@abui.local,dwwmipa.zsvapr@abui.local,ugnicm.aaiscnw@abui.local,vjrseu.gadotqw@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,eywbsb.mquwp@abui.local,clpcwa.fgdibyy@abui.local,czxco.mavp@abui.local,vwpocz.blzveia@abui.local,fggej.rgisfg@abui.local,aboacun.ptprd@abui.local,ddizjec.nasl@abui.local,aunpvpwlufv.gozw@abui.local,tdkhekfe.iqkickpmnu@abui.local,agnrjft.guwp@abui.local,dus.ewqvq@abui.local,eczwr.ybbbdx@abui.local,dkxola.awgqux@abui.local,abyzqn.boduqpj@abui.local,ffypm.ieubeit@abui.local,fcunj.ahniurnm@abui.local,qscunf.ioaosylg@abui.local,kcirr.rxnrdz@abui.local,dcsqg.eibfvwcn@abui.local,carord.ghuqdq@abui.local,blye.kejvjuc@abui.local,jfvtakac.jsfojfs@abui.local,cydhad.beyvevg@abui.local,bmnmirqjuaq.ajdua@abui.local,bfuqsqv.pokymjl@abui.local,eczk.ohvchou@abui.local,dfnic.esfqm@abui.local,ellmr.dmrldmbtte@abui.local,jbhfnf.vbwjekal@abui.local,awgqf.lemfv@abui.local,csfqngr.eztfj@abui.local,bpscy.vslifu@abui.local,flfbj.pyhnwg@abui.local,brb.prrzgrv@abui.local,cfsia.uegwdx@abui.local,eymca.edswww@abui.local,tuctchd.ycbmvukfu@abui.local,dfusghxf.azahi@abui.local,aosa.qvydcod@abui.local,aethn.guiil@abui.local,dmqcqa.erhxycw@abui.local,crpb.meae@abui.local,mbhd.gbfqob@abui.local"
+            }
+          ],
+          "users_amount": 119
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2025-08-23T00:16:58.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"user_initiated_extensions\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"activity_status_active\":0,\"activity_status_active_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Active\"}],\"activity_status_inactive\":119,\"activity_status_inactive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Inactive\"}],\"app_id\":\"BF2BEa12B26d8c4F947c\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"auth_type\":[],\"created\":\"Sat, 23 Aug 2025 00:16:58 GMT\",\"excessive_read\":0,\"excessive_read_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"\"}],\"excessive_write\":119,\"excessive_write_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"6d21f36b98af5a21837dcd36ffb57640,e97bb062260971e7c25688bd9b51b625,50a5b64dbca306cef3caad89128b8852,1183655991fd4feec48c9ad4bb839be9,d1dc046ab654b9355a4678c9499110a7,ef85eb43c79ab4a781fba9c7f283ea39,f47cb85d0a3ad1e1249155cdfd4fd73f,43e1aa73bbee7c297bd47ffc86b49a1f,f74da260b126d0f9ad7f1aaa96c4fb43,fcd7ecbf78d6a066424b047b64ccd551,edbe893c30364e0e061d86425dff0756,2664833f0280115b76061b216b40041f,37bf9de2df531f5591d950081df23025,510156bfc01827003649c0e95c4fe9ca,84e8598393e6678c9362025f139a496e,8b239493c6dd66e9ff056ed14110c2ab,63dc7980db09398dd5338ba657a44a98,f5a7749f6ed6eb40d3254af8174e5929,866882f1aead631c1cd2666e42129018,5d049f53ed2d791ce0d254e9a7509cf1,bc2afd9aeff5cce8e9d0eb73f61063ca,50a34e0fb1cb265f14de8914a6db8436,d444c662e434af56033435f108dc77e4,947cc7a86803caef6ec3c0959d69f562,e5a57c5be8c35354b8e849bd60040780,37af436d21a76f23516f8986c14ba467,710a746df463d0514ceb2099c5708451,5557d45ae6b744352be9ee681726e3bf,d3c0cc69d96069b1be51f791aec67980,3d0d496f0e5e2e562ead55b82c18a41f,0d4b50935d03eff95e8a530a838c326b,369248ba449b0dc79206ac3fa08b9694,30a320d6f96f1111f9df7c72159fa177,e158313e31a1d463792d3cb9844309dd,65006634a8e83e304d4c7a0404a8fa0b,fae1e441391d2dbd8438045df51cad43,6cf421441f1174357b648107ff1db2b4,70a913349cfe0a8da0368ed2277b2475,d30e0de9e34b9bb18216e4f1e943a550,507e4dd94f44681ac310cf0153eaa71b,405dfec69dcde1c526e448c327fa2346,e310f0c83b577095fbe181cb8f22d5e7,1859229eebf386436858eb59f428b2a3,dd2cb7412fce4e5e2e821f89e5026c67,5bd17bf116c9699c77da1ef7a0c5fd55,1381260c4eaacea6e056087b29a1a960,6710dce4313ad7758925e18ea76afceb,ea710176bf2ee3c2c1693cd4c838760b,770f28aa5293e845fceb4c2140b22e3d,6fe019453bc01dad494808756ac1b0b1,5c22da5970be8a896aa6102870a31b93,672fc7ddae120b4453b0450bd6efe18d,bf4c58b0aeefcec53cc6a3093f3194a9,c8ea93759f5a3025770dfeaecf8d09aa,b013f01a926a0e88c0fa489ecffb3baa,569b2e067f03d86c3b0eb81c107baecc,0e20edcbb0a13c2ce6a15625fc77e674,3aedfd6ef8874e29c29713c33dfb1f4c,a49826b2cb668e261e1fc7b40eadd464,9153339f3712480f558526d5beffe054,ef334efa4ab964ba354cbb3ba91bb51f,923e25821566c24f4e46226d184efa67,0ddc847ce3c5e884596b3f6151e66fb7,0cf4e2f1bcd1b554bfc91665d9b56880,4599b5dac0c05887864cd1cefffa3d8a,9e3400dfeb44bab162891c2cf5c30d8c,b4df715cb2fa12766d585829d34cf3b2,e0a22f9eba61e162a53f3f14d6643930,15e0fa36e5febb97b54c59d0cbcd7c4f,11f905736f0abc32b82a4efe9925a723,9464a4648c87435d780dc96904ed0364,d0f3c7656b3e4492da3070c9575886a9,f2602d2425424a0ecf031030e987755e,fab8ca2153abcaff22b74ac180d989b4,5bdf9e23e0968edad1ef7ed5b4617d7b,43133a419ea88a141b1975dd8fa7d75a,94c2abd0147f9e4da914f0e82367c36e,cf68bd063d0caad09e9280b59669ef79,d3d562fe320f382d44097ca6bfd629bb,48b1c0c8de87a77ea710457a38684d7b,8ff7bcb467ca80f3637bcbf9f3f63065,dc8718a5abf8ba03d13633f53bd7131a,85309bcb41fa003bd510a0173fc9094c,ffe4681382376661790429755970c353,41cb080457889cda78ca72f27c242667,3b4da0c937ed9c2c544d15ad5e4d9b87,7f47730c7b4ed99295219d00e783f5f2,63d45a42d7477af5c814bd89d891c099,30d685bb9638fcaade3c2bd41968add8,e911dfab11d580ab13469d4e02955e57,a639fbd51c556141f39938c1096973ad,bedf146252eb2089c87f8c5627fbf648,bf5806d80d5d0c52ad19be87791d0cc8,cc259241c2daedd15276c30142094cd2,420df76f759fdb3e6243febe7f510fe6,b007a21113f171b756ba694c3249729d,c913a00b9f07eaa5331ece66e6d2f469,a5b5423fb2e474175b8bb67b96150cd0,d3c08316a37b0cf908f44f823a486529,1f21da1ea18e20f13fb449ff4622d500,bbfffd4fe661be84ff225a4101510c43,05bdc0cd26620098d520cd8d311bff4d,e6c4edca0930d26ce4db7cf9266ea0ae,384ede4b291df87b148886524c086800,416944b8b9d8fa051ab87bdc695501db,5e90678c16ed1faeccef732f69a73646,a6c89449a613036dd6f2be2f82930b78,6ae2a61e4e73663d0e991ca13041ce13,e988d323d1dc915bbecf58607cadb3fb,7a8398e0213edb75ce143e9b855b9ab9,63a5ec3f7034aa3c5d3a19f0d4daf9cc,30051276ac9a14a46d7cd52b0dc35d3f,a2045b4bbfeb829c338636312ca1118b,3dd4b1b55ee64b21c5792fd17480edcf,266f79938eef559b2c312215eef4893b,bb5ec5fd3fb0e6e2f65f6711c0440a80,bb3c6b4fa79551a5b530519d34a3b316,e04a798c2ec2513d28e12fad6ed6d055,bbe9cd43dfa3bd788a109bce84176ee3\"}],\"extension_type\":\"User Consent\",\"fetch_time\":\"Tue, 26 May 2026 00:01:30 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:53 GMT\",\"first_seen\":\"Sat, 14 Dec 2024 02:41:46 GMT\",\"from_last_fetch\":true,\"grant_types\":[],\"id\":\"0a791faa636f9da04072\",\"id_raw\":\"azure_ad_adapter_0!BF2BEa12B26d8c4F947c\",\"integration_type\":\"User Initiated\",\"is_admin\":6,\"is_admin_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_admin\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_fetched_from_adapter\":true,\"is_identity\":0,\"is_identity_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_identity\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_operational\":true,\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"last_seen\":\"Sun, 07 Dec 2025 10:13:05 GMT\",\"last_used\":\"Sun, 07 Dec 2025 10:13:05 GMT\",\"name\":\"EafCudss.com\",\"not_fetched_count\":0,\"permissions\":[{\"name\":\"openid\",\"users_amount\":119},{\"alias\":\"Calendar Write\",\"hash_id\":\"n0tfg7G6a1+i87ZA\",\"name\":\"Calendars.ReadWrite\",\"scope_tag\":\"Calendar\",\"users_amount\":119},{\"name\":\"Extended permissions\",\"users_amount\":119},{\"is_admin\":false,\"name\":\"bulk_apply_settings\",\"users_amount\":79},{\"is_admin\":false,\"name\":\"allow_language_selection\",\"users_amount\":70},{\"is_admin\":false,\"name\":\"allow_user_modification\",\"users_amount\":69},{\"is_admin\":false,\"name\":\"allow_basic_access\",\"users_amount\":69},{\"is_admin\":false,\"name\":\"allow_account_management\",\"users_amount\":62},{\"is_admin\":true,\"name\":\"create_users\",\"users_amount\":4},{\"is_admin\":true,\"name\":\"super_admin_only\",\"users_amount\":4},{\"is_admin\":true,\"name\":\"admin_only\",\"users_amount\":3},{\"is_admin\":true,\"name\":\"allow_api_access_to_account\",\"users_amount\":3}],\"redirect_uris\":[],\"related_vendor_name\":\"ADDEVENT\",\"scope_tag_calendar\":119,\"scope_tag_calendar_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Calendar\"}],\"scope_tag_drive\":0,\"scope_tag_drive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Drive\"}],\"scope_tag_mail\":0,\"scope_tag_mail_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Mail\"}],\"source_application\":\"Microsoft\",\"tags\":[],\"type\":\"Extensions\",\"urls\":[],\"user_count\":119,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"bhhirrn.yerwtlp@abui.local,ptjvdz.yizdbt@abui.local,bkdyxf.ivncke@abui.local,oetzq.znwcsek@abui.local,aazpe.kene@abui.local,cqdci.cqcbby@abui.local,bpfufa.akxqogl@abui.local,ahdjc.fdnmamyfn@abui.local,elkfxf.wqvtkoh@abui.local,wpgd.ecudbj@abui.local,xlql.hdubi@abui.local,csdiauafg.jehrgdkex@abui.local,waqrfkdb.sevo@abui.local,elivtta.wfgkiviwr@abui.local,dcholtl.riunphgrqxb@abui.local,dkbau.ubzspr@abui.local,albzzco.odlcxd@abui.local,ecsvd.bnckn@abui.local,diuynb.hff@abui.local,centhkvb.qdqdcbxax@abui.local,bqold.qvbcjtskd@abui.local,abnxsf.sguzkkj@abui.local,aelk.qsbzqaipov@abui.local,bdyrk.vbive@abui.local,edeqm.okrxgxcy@abui.local,fczld.yfrjbt@abui.local,bxifdsaohq.mzzz@abui.local,vburt.dvqiep@abui.local,cjqrs.kcheo@abui.local,bbljp.jfwuxv@abui.local,fdixcxe.coqechbrtt@abui.local,uulzwrv.acqxnmmx@abui.local,eqcd.liefinx@abui.local,jux.lmjvlv@abui.local,dabgsy.qbzdoirc@abui.local,bkfkwdp.kbrdq@abui.local,erj.mbyufhya@abui.local,bmpf.lffxfi@abui.local,encvbhcqc.nvfqli@abui.local,qyfpeld.xuucsbg@abui.local,euhtixo.aeei@abui.local,gkmga.ftbigkbr@abui.local,jpfnki.oeedc@abui.local,bssba.ptsvv@abui.local,abnjxxs.aahdcnso@abui.local,enpew.wcpswdl@abui.local,aznte.aoon@abui.local,enelan.uzelcz@abui.local,ejuqi.urqxag@abui.local,andrwfm.kehr@abui.local,daepf.cjcyat@abui.local,ehjaq.mrjzibx@abui.local,fmrre.jzhmaa@abui.local,dchp.huofsaj@abui.local,esdya.fbdwufj@abui.local,bkeoff.ebtleq@abui.local,desschwme.xcjzjobk@abui.local,dpponqqgnbv.jnbbn@abui.local,ityrfp.kqaecxo@abui.local,fsdwfa.dukx@abui.local,amzhkly.ybkhfdtxp@abui.local,dohqlvqsa.kuylaycm@abui.local,bfjwdlv.uizjw@abui.local,cdlhb.dlpyzsv@abui.local,clbmcb.hdxyglg@abui.local,eohbkb.zdbtnhl@abui.local,fbrslso.ncavpay@abui.local,fqlf.inkqyvbv@abui.local,foimiwn.uideq@abui.local,bgeubtcbh.rzfdzbtxd@abui.local,aibnep.ycqdxtw@abui.local,dwwmipa.zsvapr@abui.local,ugnicm.aaiscnw@abui.local,vjrseu.gadotqw@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,eywbsb.mquwp@abui.local,clpcwa.fgdibyy@abui.local,czxco.mavp@abui.local,vwpocz.blzveia@abui.local,fggej.rgisfg@abui.local,aboacun.ptprd@abui.local,ddizjec.nasl@abui.local,aunpvpwlufv.gozw@abui.local,tdkhekfe.iqkickpmnu@abui.local,agnrjft.guwp@abui.local,dus.ewqvq@abui.local,eczwr.ybbbdx@abui.local,dkxola.awgqux@abui.local,abyzqn.boduqpj@abui.local,ffypm.ieubeit@abui.local,fcunj.ahniurnm@abui.local,qscunf.ioaosylg@abui.local,kcirr.rxnrdz@abui.local,dcsqg.eibfvwcn@abui.local,carord.ghuqdq@abui.local,blye.kejvjuc@abui.local,jfvtakac.jsfojfs@abui.local,cydhad.beyvevg@abui.local,bmnmirqjuaq.ajdua@abui.local,bfuqsqv.pokymjl@abui.local,eczk.ohvchou@abui.local,dfnic.esfqm@abui.local,ellmr.dmrldmbtte@abui.local,jbhfnf.vbwjekal@abui.local,awgqf.lemfv@abui.local,csfqngr.eztfj@abui.local,bpscy.vslifu@abui.local,flfbj.pyhnwg@abui.local,brb.prrzgrv@abui.local,cfsia.uegwdx@abui.local,eymca.edswww@abui.local,tuctchd.ycbmvukfu@abui.local,dfusghxf.azahi@abui.local,aosa.qvydcod@abui.local,aethn.guiil@abui.local,dmqcqa.erhxycw@abui.local,crpb.meae@abui.local,mbhd.gbfqob@abui.local\"}],\"username_formats\":[],\"users_amount\":119},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!0a791faa636f9da04072\",\"type\":\"entitydata\"},\"internal_axon_id\":\"e77b20bf9839fa3e79ea14d7ae094b9c\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "bhhirrn.yerwtlp@abui.local,ptjvdz.yizdbt@abui.local,bkdyxf.ivncke@abui.local,oetzq.znwcsek@abui.local,aazpe.kene@abui.local,cqdci.cqcbby@abui.local,bpfufa.akxqogl@abui.local,ahdjc.fdnmamyfn@abui.local,elkfxf.wqvtkoh@abui.local,wpgd.ecudbj@abui.local,xlql.hdubi@abui.local,csdiauafg.jehrgdkex@abui.local,waqrfkdb.sevo@abui.local,elivtta.wfgkiviwr@abui.local,dcholtl.riunphgrqxb@abui.local,dkbau.ubzspr@abui.local,albzzco.odlcxd@abui.local,ecsvd.bnckn@abui.local,diuynb.hff@abui.local,centhkvb.qdqdcbxax@abui.local,bqold.qvbcjtskd@abui.local,abnxsf.sguzkkj@abui.local,aelk.qsbzqaipov@abui.local,bdyrk.vbive@abui.local,edeqm.okrxgxcy@abui.local,fczld.yfrjbt@abui.local,bxifdsaohq.mzzz@abui.local,vburt.dvqiep@abui.local,cjqrs.kcheo@abui.local,bbljp.jfwuxv@abui.local,fdixcxe.coqechbrtt@abui.local,uulzwrv.acqxnmmx@abui.local,eqcd.liefinx@abui.local,jux.lmjvlv@abui.local,dabgsy.qbzdoirc@abui.local,bkfkwdp.kbrdq@abui.local,erj.mbyufhya@abui.local,bmpf.lffxfi@abui.local,encvbhcqc.nvfqli@abui.local,qyfpeld.xuucsbg@abui.local,euhtixo.aeei@abui.local,gkmga.ftbigkbr@abui.local,jpfnki.oeedc@abui.local,bssba.ptsvv@abui.local,abnjxxs.aahdcnso@abui.local,enpew.wcpswdl@abui.local,aznte.aoon@abui.local,enelan.uzelcz@abui.local,ejuqi.urqxag@abui.local,andrwfm.kehr@abui.local,daepf.cjcyat@abui.local,ehjaq.mrjzibx@abui.local,fmrre.jzhmaa@abui.local,dchp.huofsaj@abui.local,esdya.fbdwufj@abui.local,bkeoff.ebtleq@abui.local,desschwme.xcjzjobk@abui.local,dpponqqgnbv.jnbbn@abui.local,ityrfp.kqaecxo@abui.local,fsdwfa.dukx@abui.local,amzhkly.ybkhfdtxp@abui.local,dohqlvqsa.kuylaycm@abui.local,bfjwdlv.uizjw@abui.local,cdlhb.dlpyzsv@abui.local,clbmcb.hdxyglg@abui.local,eohbkb.zdbtnhl@abui.local,fbrslso.ncavpay@abui.local,fqlf.inkqyvbv@abui.local,foimiwn.uideq@abui.local,bgeubtcbh.rzfdzbtxd@abui.local,aibnep.ycqdxtw@abui.local,dwwmipa.zsvapr@abui.local,ugnicm.aaiscnw@abui.local,vjrseu.gadotqw@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,eywbsb.mquwp@abui.local,clpcwa.fgdibyy@abui.local,czxco.mavp@abui.local,vwpocz.blzveia@abui.local,fggej.rgisfg@abui.local,aboacun.ptprd@abui.local,ddizjec.nasl@abui.local,aunpvpwlufv.gozw@abui.local,tdkhekfe.iqkickpmnu@abui.local,agnrjft.guwp@abui.local,dus.ewqvq@abui.local,eczwr.ybbbdx@abui.local,dkxola.awgqux@abui.local,abyzqn.boduqpj@abui.local,ffypm.ieubeit@abui.local,fcunj.ahniurnm@abui.local,qscunf.ioaosylg@abui.local,kcirr.rxnrdz@abui.local,dcsqg.eibfvwcn@abui.local,carord.ghuqdq@abui.local,blye.kejvjuc@abui.local,jfvtakac.jsfojfs@abui.local,cydhad.beyvevg@abui.local,bmnmirqjuaq.ajdua@abui.local,bfuqsqv.pokymjl@abui.local,eczk.ohvchou@abui.local,dfnic.esfqm@abui.local,ellmr.dmrldmbtte@abui.local,jbhfnf.vbwjekal@abui.local,awgqf.lemfv@abui.local,csfqngr.eztfj@abui.local,bpscy.vslifu@abui.local,flfbj.pyhnwg@abui.local,brb.prrzgrv@abui.local,cfsia.uegwdx@abui.local,eymca.edswww@abui.local,tuctchd.ycbmvukfu@abui.local,dfusghxf.azahi@abui.local,aosa.qvydcod@abui.local,aethn.guiil@abui.local,dmqcqa.erhxycw@abui.local,crpb.meae@abui.local,mbhd.gbfqob@abui.local"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"user_initiated_extensions\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"activity_status_active\":0,\"activity_status_active_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Active\"}],\"activity_status_inactive\":24,\"activity_status_inactive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Inactive\"}],\"app_id\":\"Dc4BA8FbB6B934216b9c\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"auth_type\":[],\"created\":\"Sat, 11 Jan 2025 10:55:57 GMT\",\"excessive_read\":0,\"excessive_read_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"\"}],\"excessive_write\":24,\"excessive_write_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"8df33df0fac189906459f18314b5bc5d,8be8afade4124dc3b71cae4e076c2a17,a20a7c45ea038d17cbcd0dcbfd3a4ccd,e37ee3b55eae52cf7bfdf3da50c1951f,00173b1b24099c8dbf91bcf0c866741e,826e65a8e23239b1c0c6091bd1038f7e,97a0dcdceafe7571ace5ebb34e16eeb2,c4665882bfd27dd66a66c2f77759bb2b,571653d352050900a1092ec4a24815c0,9472a196fbdd78fc2239be833cdc41f7,553c3f3fe434ba5847be40edb0a07a60,a6967c5264ffe1faff8f026f6c343d1f,a79478b7eb13e0246282d42618e0449a,6bd925df912e5ee9333d38cbb2d5c3b1,06f9dfdfcb553fc32047d3b253220cd3,3329bc9d7bc393d14c9a6f882f212c27,07b0f8cc70db29bb231aa4f78056a77d,7172c966ffeb75f900bdd81a08ea4ca1,090abcc15bfb7a1650893c6a735d2fe4,47ee93a88184d3ed3147b749ae3a232b,6539aebc374488f880eccc8287a5119b,37bb7e3ce8386d45fb2b7d2a6da5dc41,e54916d99c4f1b85aaacd90d3c925b03,b090ab46d553e69723a41c5681491e2b\"}],\"extension_type\":\"User Consent\",\"fetch_time\":\"Tue, 26 May 2026 00:01:30 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:53 GMT\",\"first_seen\":\"Thu, 15 May 2025 23:41:48 GMT\",\"from_last_fetch\":true,\"grant_types\":[],\"id\":\"8655fb5cf4615f067976\",\"id_raw\":\"azure_ad_adapter_0!Dc4BA8FbB6B934216b9c\",\"integration_type\":\"User Initiated\",\"is_admin\":0,\"is_admin_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_admin\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_fetched_from_adapter\":true,\"is_identity\":0,\"is_identity_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_identity\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_operational\":true,\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"last_seen\":\"Sun, 07 Dec 2025 00:41:34 GMT\",\"last_used\":\"Sun, 07 Dec 2025 00:41:34 GMT\",\"name\":\"Jira Cloud for Excel\",\"not_fetched_count\":0,\"permissions\":[{\"name\":\"offline_access\",\"users_amount\":24},{\"alias\":\"Write Files Drive\",\"hash_id\":\"AJbuNnBc/JoPDXIe\",\"name\":\"Files.ReadWrite\",\"scope_tag\":\"Drive\",\"users_amount\":24},{\"name\":\"User.Read\",\"users_amount\":24},{\"is_admin\":false,\"name\":\"allow_language_selection\",\"users_amount\":16},{\"is_admin\":false,\"name\":\"allow_user_modification\",\"users_amount\":11},{\"is_admin\":false,\"name\":\"allow_account_management\",\"users_amount\":18},{\"is_admin\":false,\"name\":\"bulk_apply_settings\",\"users_amount\":15},{\"is_admin\":false,\"name\":\"allow_basic_access\",\"users_amount\":14}],\"redirect_uris\":[],\"related_vendor_name\":\"Jira\",\"scope_tag_calendar\":0,\"scope_tag_calendar_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Calendar\"}],\"scope_tag_drive\":24,\"scope_tag_drive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Drive\"}],\"scope_tag_mail\":0,\"scope_tag_mail_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Jira Cloud for Excel\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Dc4BA8FbB6B934216b9c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Mail\"}],\"source_application\":\"Microsoft\",\"tags\":[],\"type\":\"Extensions\",\"urls\":[],\"user_count\":24,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"ptjvdz.yizdbt@abui.local,ityrfp.kqaecxo@abui.local,qscunf.ioaosylg@abui.local,vburt.dvqiep@abui.local,oetzq.znwcsek@abui.local,kcirr.rxnrdz@abui.local,uulzwrv.acqxnmmx@abui.local,jux.lmjvlv@abui.local,jfvtakac.jsfojfs@abui.local,wpgd.ecudbj@abui.local,jbhfnf.vbwjekal@abui.local,qyfpeld.xuucsbg@abui.local,ugnicm.aaiscnw@abui.local,xlql.hdubi@abui.local,vjrseu.gadotqw@abui.local,waqrfkdb.sevo@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,gkmga.ftbigkbr@abui.local,vwpocz.blzveia@abui.local,jpfnki.oeedc@abui.local,tuctchd.ycbmvukfu@abui.local,tdkhekfe.iqkickpmnu@abui.local,mbhd.gbfqob@abui.local\"}],\"username_formats\":[],\"users_amount\":24},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!8655fb5cf4615f067976\",\"type\":\"entitydata\"},\"internal_axon_id\":\"1f359ba6a5448d73d37b7487e5a254e7\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}"
+    },
+    {
+      "message": "{\"asset_type\":\"user_initiated_extensions\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"adapter_categories\":[\"Directory\",\"IAM\",\"SaaS Management\"],\"client_used\":\"67fd09bbfe1c8e812a176bb5\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:01:52 GMT\",\"activity_status_active\":0,\"activity_status_active_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Active\"}],\"activity_status_inactive\":119,\"activity_status_inactive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.activity_status\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Inactive\"}],\"app_id\":\"BF2BEa12B26d8c4F947c\",\"application_and_account_name\":\"microsoft/azure_ad-demo\",\"auth_type\":[],\"created\":\"Sat, 23 Aug 2025 00:16:58 GMT\",\"excessive_read\":0,\"excessive_read_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"\"}],\"excessive_write\":119,\"excessive_write_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"internal_axon_id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"6d21f36b98af5a21837dcd36ffb57640,e97bb062260971e7c25688bd9b51b625,50a5b64dbca306cef3caad89128b8852,1183655991fd4feec48c9ad4bb839be9,d1dc046ab654b9355a4678c9499110a7,ef85eb43c79ab4a781fba9c7f283ea39,f47cb85d0a3ad1e1249155cdfd4fd73f,43e1aa73bbee7c297bd47ffc86b49a1f,f74da260b126d0f9ad7f1aaa96c4fb43,fcd7ecbf78d6a066424b047b64ccd551,edbe893c30364e0e061d86425dff0756,2664833f0280115b76061b216b40041f,37bf9de2df531f5591d950081df23025,510156bfc01827003649c0e95c4fe9ca,84e8598393e6678c9362025f139a496e,8b239493c6dd66e9ff056ed14110c2ab,63dc7980db09398dd5338ba657a44a98,f5a7749f6ed6eb40d3254af8174e5929,866882f1aead631c1cd2666e42129018,5d049f53ed2d791ce0d254e9a7509cf1,bc2afd9aeff5cce8e9d0eb73f61063ca,50a34e0fb1cb265f14de8914a6db8436,d444c662e434af56033435f108dc77e4,947cc7a86803caef6ec3c0959d69f562,e5a57c5be8c35354b8e849bd60040780,37af436d21a76f23516f8986c14ba467,710a746df463d0514ceb2099c5708451,5557d45ae6b744352be9ee681726e3bf,d3c0cc69d96069b1be51f791aec67980,3d0d496f0e5e2e562ead55b82c18a41f,0d4b50935d03eff95e8a530a838c326b,369248ba449b0dc79206ac3fa08b9694,30a320d6f96f1111f9df7c72159fa177,e158313e31a1d463792d3cb9844309dd,65006634a8e83e304d4c7a0404a8fa0b,fae1e441391d2dbd8438045df51cad43,6cf421441f1174357b648107ff1db2b4,70a913349cfe0a8da0368ed2277b2475,d30e0de9e34b9bb18216e4f1e943a550,507e4dd94f44681ac310cf0153eaa71b,405dfec69dcde1c526e448c327fa2346,e310f0c83b577095fbe181cb8f22d5e7,1859229eebf386436858eb59f428b2a3,dd2cb7412fce4e5e2e821f89e5026c67,5bd17bf116c9699c77da1ef7a0c5fd55,1381260c4eaacea6e056087b29a1a960,6710dce4313ad7758925e18ea76afceb,ea710176bf2ee3c2c1693cd4c838760b,770f28aa5293e845fceb4c2140b22e3d,6fe019453bc01dad494808756ac1b0b1,5c22da5970be8a896aa6102870a31b93,672fc7ddae120b4453b0450bd6efe18d,bf4c58b0aeefcec53cc6a3093f3194a9,c8ea93759f5a3025770dfeaecf8d09aa,b013f01a926a0e88c0fa489ecffb3baa,569b2e067f03d86c3b0eb81c107baecc,0e20edcbb0a13c2ce6a15625fc77e674,3aedfd6ef8874e29c29713c33dfb1f4c,a49826b2cb668e261e1fc7b40eadd464,9153339f3712480f558526d5beffe054,ef334efa4ab964ba354cbb3ba91bb51f,923e25821566c24f4e46226d184efa67,0ddc847ce3c5e884596b3f6151e66fb7,0cf4e2f1bcd1b554bfc91665d9b56880,4599b5dac0c05887864cd1cefffa3d8a,9e3400dfeb44bab162891c2cf5c30d8c,b4df715cb2fa12766d585829d34cf3b2,e0a22f9eba61e162a53f3f14d6643930,15e0fa36e5febb97b54c59d0cbcd7c4f,11f905736f0abc32b82a4efe9925a723,9464a4648c87435d780dc96904ed0364,d0f3c7656b3e4492da3070c9575886a9,f2602d2425424a0ecf031030e987755e,fab8ca2153abcaff22b74ac180d989b4,5bdf9e23e0968edad1ef7ed5b4617d7b,43133a419ea88a141b1975dd8fa7d75a,94c2abd0147f9e4da914f0e82367c36e,cf68bd063d0caad09e9280b59669ef79,d3d562fe320f382d44097ca6bfd629bb,48b1c0c8de87a77ea710457a38684d7b,8ff7bcb467ca80f3637bcbf9f3f63065,dc8718a5abf8ba03d13633f53bd7131a,85309bcb41fa003bd510a0173fc9094c,ffe4681382376661790429755970c353,41cb080457889cda78ca72f27c242667,3b4da0c937ed9c2c544d15ad5e4d9b87,7f47730c7b4ed99295219d00e783f5f2,63d45a42d7477af5c814bd89d891c099,30d685bb9638fcaade3c2bd41968add8,e911dfab11d580ab13469d4e02955e57,a639fbd51c556141f39938c1096973ad,bedf146252eb2089c87f8c5627fbf648,bf5806d80d5d0c52ad19be87791d0cc8,cc259241c2daedd15276c30142094cd2,420df76f759fdb3e6243febe7f510fe6,b007a21113f171b756ba694c3249729d,c913a00b9f07eaa5331ece66e6d2f469,a5b5423fb2e474175b8bb67b96150cd0,d3c08316a37b0cf908f44f823a486529,1f21da1ea18e20f13fb449ff4622d500,bbfffd4fe661be84ff225a4101510c43,05bdc0cd26620098d520cd8d311bff4d,e6c4edca0930d26ce4db7cf9266ea0ae,384ede4b291df87b148886524c086800,416944b8b9d8fa051ab87bdc695501db,5e90678c16ed1faeccef732f69a73646,a6c89449a613036dd6f2be2f82930b78,6ae2a61e4e73663d0e991ca13041ce13,e988d323d1dc915bbecf58607cadb3fb,7a8398e0213edb75ce143e9b855b9ab9,63a5ec3f7034aa3c5d3a19f0d4daf9cc,30051276ac9a14a46d7cd52b0dc35d3f,a2045b4bbfeb829c338636312ca1118b,3dd4b1b55ee64b21c5792fd17480edcf,266f79938eef559b2c312215eef4893b,bb5ec5fd3fb0e6e2f65f6711c0440a80,bb3c6b4fa79551a5b530519d34a3b316,e04a798c2ec2513d28e12fad6ed6d055,bbe9cd43dfa3bd788a109bce84176ee3\"}],\"extension_type\":\"User Consent\",\"fetch_time\":\"Tue, 26 May 2026 00:01:30 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:49:53 GMT\",\"first_seen\":\"Sat, 14 Dec 2024 02:41:46 GMT\",\"from_last_fetch\":true,\"grant_types\":[],\"id\":\"0a791faa636f9da04072\",\"id_raw\":\"azure_ad_adapter_0!BF2BEa12B26d8c4F947c\",\"integration_type\":\"User Initiated\",\"is_admin\":6,\"is_admin_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_admin\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_fetched_from_adapter\":true,\"is_identity\":0,\"is_identity_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"true\",\"field\":\"specific_data.data.permissions.is_identity\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0}],\"is_operational\":true,\"last_fetch_connection_id\":\"67fd09bbfe1c8e812a176bb5\",\"last_fetch_connection_label\":\"azure_ad-demo\",\"last_seen\":\"Sun, 07 Dec 2025 10:13:05 GMT\",\"last_used\":\"Sun, 07 Dec 2025 10:13:05 GMT\",\"name\":\"EafCudss.com\",\"not_fetched_count\":0,\"permissions\":[{\"name\":\"openid\",\"users_amount\":119},{\"alias\":\"Calendar Write\",\"hash_id\":\"n0tfg7G6a1+i87ZA\",\"name\":\"Calendars.ReadWrite\",\"scope_tag\":\"Calendar\",\"users_amount\":119},{\"name\":\"Extended permissions\",\"users_amount\":119},{\"is_admin\":false,\"name\":\"bulk_apply_settings\",\"users_amount\":79},{\"is_admin\":false,\"name\":\"allow_language_selection\",\"users_amount\":70},{\"is_admin\":false,\"name\":\"allow_user_modification\",\"users_amount\":69},{\"is_admin\":false,\"name\":\"allow_basic_access\",\"users_amount\":69},{\"is_admin\":false,\"name\":\"allow_account_management\",\"users_amount\":62},{\"is_admin\":true,\"name\":\"create_users\",\"users_amount\":4},{\"is_admin\":true,\"name\":\"super_admin_only\",\"users_amount\":4},{\"is_admin\":true,\"name\":\"admin_only\",\"users_amount\":3},{\"is_admin\":true,\"name\":\"allow_api_access_to_account\",\"users_amount\":3}],\"redirect_uris\":[],\"related_vendor_name\":\"ADDEVENT\",\"scope_tag_calendar\":119,\"scope_tag_calendar_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Calendar\"}],\"scope_tag_drive\":0,\"scope_tag_drive_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Drive\"}],\"scope_tag_mail\":0,\"scope_tag_mail_hyperlink\":[{\"bracketWeight\":0,\"compOp\":\"exists\",\"field\":\"adapters_data.azure_ad_adapter.id\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0},{\"compOp\":\"equals\",\"field\":\"specific_data.data.name\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"EafCudss.com\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.extension_type\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"User Consent\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.app_id\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"BF2BEa12B26d8c4F947c\"},{\"compOp\":\"equals\",\"field\":\"specific_data.data.permissions.scope_tag\",\"leftBracket\":0,\"logicOp\":\"and\",\"not\":false,\"rightBracket\":0,\"value\":\"Mail\"}],\"source_application\":\"Microsoft\",\"tags\":[],\"type\":\"Extensions\",\"urls\":[],\"user_count\":119,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"IN\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"bhhirrn.yerwtlp@abui.local,ptjvdz.yizdbt@abui.local,bkdyxf.ivncke@abui.local,oetzq.znwcsek@abui.local,aazpe.kene@abui.local,cqdci.cqcbby@abui.local,bpfufa.akxqogl@abui.local,ahdjc.fdnmamyfn@abui.local,elkfxf.wqvtkoh@abui.local,wpgd.ecudbj@abui.local,xlql.hdubi@abui.local,csdiauafg.jehrgdkex@abui.local,waqrfkdb.sevo@abui.local,elivtta.wfgkiviwr@abui.local,dcholtl.riunphgrqxb@abui.local,dkbau.ubzspr@abui.local,albzzco.odlcxd@abui.local,ecsvd.bnckn@abui.local,diuynb.hff@abui.local,centhkvb.qdqdcbxax@abui.local,bqold.qvbcjtskd@abui.local,abnxsf.sguzkkj@abui.local,aelk.qsbzqaipov@abui.local,bdyrk.vbive@abui.local,edeqm.okrxgxcy@abui.local,fczld.yfrjbt@abui.local,bxifdsaohq.mzzz@abui.local,vburt.dvqiep@abui.local,cjqrs.kcheo@abui.local,bbljp.jfwuxv@abui.local,fdixcxe.coqechbrtt@abui.local,uulzwrv.acqxnmmx@abui.local,eqcd.liefinx@abui.local,jux.lmjvlv@abui.local,dabgsy.qbzdoirc@abui.local,bkfkwdp.kbrdq@abui.local,erj.mbyufhya@abui.local,bmpf.lffxfi@abui.local,encvbhcqc.nvfqli@abui.local,qyfpeld.xuucsbg@abui.local,euhtixo.aeei@abui.local,gkmga.ftbigkbr@abui.local,jpfnki.oeedc@abui.local,bssba.ptsvv@abui.local,abnjxxs.aahdcnso@abui.local,enpew.wcpswdl@abui.local,aznte.aoon@abui.local,enelan.uzelcz@abui.local,ejuqi.urqxag@abui.local,andrwfm.kehr@abui.local,daepf.cjcyat@abui.local,ehjaq.mrjzibx@abui.local,fmrre.jzhmaa@abui.local,dchp.huofsaj@abui.local,esdya.fbdwufj@abui.local,bkeoff.ebtleq@abui.local,desschwme.xcjzjobk@abui.local,dpponqqgnbv.jnbbn@abui.local,ityrfp.kqaecxo@abui.local,fsdwfa.dukx@abui.local,amzhkly.ybkhfdtxp@abui.local,dohqlvqsa.kuylaycm@abui.local,bfjwdlv.uizjw@abui.local,cdlhb.dlpyzsv@abui.local,clbmcb.hdxyglg@abui.local,eohbkb.zdbtnhl@abui.local,fbrslso.ncavpay@abui.local,fqlf.inkqyvbv@abui.local,foimiwn.uideq@abui.local,bgeubtcbh.rzfdzbtxd@abui.local,aibnep.ycqdxtw@abui.local,dwwmipa.zsvapr@abui.local,ugnicm.aaiscnw@abui.local,vjrseu.gadotqw@abui.local,kpmk.cdocrcy@abui.local,yofiuhn.lgct@abui.local,eywbsb.mquwp@abui.local,clpcwa.fgdibyy@abui.local,czxco.mavp@abui.local,vwpocz.blzveia@abui.local,fggej.rgisfg@abui.local,aboacun.ptprd@abui.local,ddizjec.nasl@abui.local,aunpvpwlufv.gozw@abui.local,tdkhekfe.iqkickpmnu@abui.local,agnrjft.guwp@abui.local,dus.ewqvq@abui.local,eczwr.ybbbdx@abui.local,dkxola.awgqux@abui.local,abyzqn.boduqpj@abui.local,ffypm.ieubeit@abui.local,fcunj.ahniurnm@abui.local,qscunf.ioaosylg@abui.local,kcirr.rxnrdz@abui.local,dcsqg.eibfvwcn@abui.local,carord.ghuqdq@abui.local,blye.kejvjuc@abui.local,jfvtakac.jsfojfs@abui.local,cydhad.beyvevg@abui.local,bmnmirqjuaq.ajdua@abui.local,bfuqsqv.pokymjl@abui.local,eczk.ohvchou@abui.local,dfnic.esfqm@abui.local,ellmr.dmrldmbtte@abui.local,jbhfnf.vbwjekal@abui.local,awgqf.lemfv@abui.local,csfqngr.eztfj@abui.local,bpscy.vslifu@abui.local,flfbj.pyhnwg@abui.local,brb.prrzgrv@abui.local,cfsia.uegwdx@abui.local,eymca.edswww@abui.local,tuctchd.ycbmvukfu@abui.local,dfusghxf.azahi@abui.local,aosa.qvydcod@abui.local,aethn.guiil@abui.local,dmqcqa.erhxycw@abui.local,crpb.meae@abui.local,mbhd.gbfqob@abui.local\"}],\"username_formats\":[],\"users_amount\":119},\"initial_plugin_unique_name\":\"azure_ad_adapter_0\",\"plugin_name\":\"azure_ad_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"azure_ad_adapter_0\",\"quick_id\":\"azure_ad_adapter_0!0a791faa636f9da04072\",\"type\":\"entitydata\"},\"internal_axon_id\":\"e77b20bf9839fa3e79ea14d7ae094b9c\",\"adapters\":[\"azure_ad_adapter\"],\"adapter_list_length\":1}"
+    }
+  ],
+  "meta": {
+    "data_stream": "application",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-application-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

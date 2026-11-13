@@ -1,0 +1,136 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-30T12:23:52.442Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.421422873Z",
+        "original": "98738:M 30 May 12:23:52.442 * Saving the final RDB snapshot before exiting."
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Saving the final RDB snapshot before exiting.",
+      "process": {
+        "pid": 98738
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T10:05:20.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.421431853Z",
+        "original": "30 May 10:05:20 . 0 clients connected (0 slaves), 618932 bytes in use, 0 shared objects."
+      },
+      "log": {
+        "level": "debug"
+      },
+      "message": "0 clients connected (0 slaves), 618932 bytes in use, 0 shared objects.",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.421432823Z",
+        "original": "[2932] 31 May 04:32:08 * The server is now ready to accept connections on port 6379\""
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "The server is now ready to accept connections on port 6379\"",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2017-05-30T10:57:24.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.421433473Z",
+        "original": "5092:signal-handler (1496141844) Received SIGINT scheduling shutdown..."
+      },
+      "message": "Received SIGINT scheduling shutdown...",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "98738:M 30 May 12:23:52.442 * Saving the final RDB snapshot before exiting.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "30 May 10:05:20 . 0 clients connected (0 slaves), 618932 bytes in use, 0 shared objects.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:08 * The server is now ready to accept connections on port 6379\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:signal-handler (1496141844) Received SIGINT scheduling shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-redis-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "redis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,7 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  - cyberark_pta
+dynamic_fields:
+  event.ingested: .*

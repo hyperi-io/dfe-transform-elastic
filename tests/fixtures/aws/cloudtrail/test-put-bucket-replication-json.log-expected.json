@@ -1,0 +1,180 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-15T08:46:52.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "additional_eventdata": "{SignatureVersion=SigV4, CipherSuite=TLS_AES_128_GCM_SHA256, bytesTransferredIn=432, AuthenticationMethod=AuthHeader, x-amz-id-2=t1ezq3QX/xD76i3a2lwJ2OW4SEldbPcATlix13BdMVohQ/nZfl3xnwAUPbpMEyTkGUD1tZCQZaU=, bytesTransferredOut=0}",
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.09",
+          "flattened": {
+            "additional_eventdata": {
+              "AuthenticationMethod": "AuthHeader",
+              "CipherSuite": "TLS_AES_128_GCM_SHA256",
+              "SignatureVersion": "SigV4",
+              "bytesTransferredIn": 432,
+              "bytesTransferredOut": 0,
+              "x-amz-id-2": "t1ezq3QX/xD76i3a2lwJ2OW4SEldbPcATlix13BdMVohQ/nZfl3xnwAUPbpMEyTkGUD1tZCQZaU="
+            },
+            "request_parameters": {
+              "Host": "elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com",
+              "ReplicationConfiguration": {
+                "Role": "arn:aws:iam::000000000:role/s3-replication-role",
+                "Rule": {
+                  "DeleteMarkerReplication": {
+                    "Status": "Disabled"
+                  },
+                  "Destination": {
+                    "Bucket": "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2"
+                  },
+                  "Priority": 1,
+                  "Status": "Enabled"
+                },
+                "xmlns": "http://s3.amazonaws.com/doc/2034-03-01/"
+              },
+              "bucketName": "elastic-cspm-cloudtrail-test-bucket"
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "000000000",
+          "request_id": "AKH3R1BJD88BR1U7",
+          "request_parameters": "{bucketName=elastic-cspm-cloudtrail-test-bucket, Host=elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com, ReplicationConfiguration={Role=arn:aws:iam::000000000:role/s3-replication-role, xmlns=http://s3.amazonaws.com/doc/2034-03-01/, Rule={Status=Enabled, Destination={Bucket=arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2}, Priority=1, DeleteMarkerReplication={Status=Disabled}}}}",
+          "resources": [
+            {
+              "account_id": "000000000",
+              "arn": "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket",
+              "type": "AWS::S3::Bucket"
+            }
+          ],
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "PutBucketReplication",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "ae616cf3-957f-4669-9aba-f0f0565f1507",
+        "kind": "event",
+        "original": "{\"additionalEventData\":{\"AuthenticationMethod\":\"AuthHeader\",\"CipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"SignatureVersion\":\"SigV4\",\"bytesTransferredIn\":432,\"bytesTransferredOut\":0,\"x-amz-id-2\":\"t1ezq3QX/xD76i3a2lwJ2OW4SEldbPcATlix13BdMVohQ/nZfl3xnwAUPbpMEyTkGUD1tZCQZaU=\"},\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"ae616cf3-957f-4669-9aba-f0f0565f1507\",\"eventName\":\"PutBucketReplication\",\"eventSource\":\"s3.amazonaws.com\",\"eventTime\":\"2052-10-15T08:46:52Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.09\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"AKH3R1BJD88BR1U7\",\"requestParameters\":{\"Host\":\"elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com\",\"ReplicationConfiguration\":{\"Role\":\"arn:aws:iam::000000000:role/s3-replication-role\",\"Rule\":{\"DeleteMarkerReplication\":{\"Status\":\"Disabled\"},\"Destination\":{\"Bucket\":\"arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2\"},\"Filter\":{\"Prefix\":\"\"},\"Priority\":1,\"Status\":\"Enabled\"},\"xmlns\":\"http://s3.amazonaws.com/doc/2034-03-01/\"},\"bucketName\":\"elastic-cspm-cloudtrail-test-bucket\",\"replication\":\"\"},\"resources\":[{\"ARN\":\"arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket\",\"accountId\":\"000000000\",\"type\":\"AWS::S3::Bucket\"}],\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"[aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_34ca9714-8788-4b3f-8c81-9910507f8bc7 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#s3api.put-bucket-replication]\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "s3.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket",
+          "elastic-cspm-cloudtrail-test-bucket",
+          "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2",
+          "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+          "ACCESSKEYID",
+          "sbgq@apejtlc.co"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "sbgq@apejtlc.co"
+        ]
+      },
+      "service": {
+        "target": {
+          "entity": {
+            "id": [
+              "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket",
+              "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2"
+            ]
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket",
+            "arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "sbgq@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "sbgq@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "[aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_34ca9714-8788-4b3f-8c81-9910507f8bc7 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#s3api.put-bucket-replication]",
+        "version": "2.17.60"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"additionalEventData\":{\"AuthenticationMethod\":\"AuthHeader\",\"CipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"SignatureVersion\":\"SigV4\",\"bytesTransferredIn\":432,\"bytesTransferredOut\":0,\"x-amz-id-2\":\"t1ezq3QX/xD76i3a2lwJ2OW4SEldbPcATlix13BdMVohQ/nZfl3xnwAUPbpMEyTkGUD1tZCQZaU=\"},\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"ae616cf3-957f-4669-9aba-f0f0565f1507\",\"eventName\":\"PutBucketReplication\",\"eventSource\":\"s3.amazonaws.com\",\"eventTime\":\"2052-10-15T08:46:52Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.09\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"AKH3R1BJD88BR1U7\",\"requestParameters\":{\"Host\":\"elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com\",\"ReplicationConfiguration\":{\"Role\":\"arn:aws:iam::000000000:role/s3-replication-role\",\"Rule\":{\"DeleteMarkerReplication\":{\"Status\":\"Disabled\"},\"Destination\":{\"Bucket\":\"arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket-replication-2\"},\"Filter\":{\"Prefix\":\"\"},\"Priority\":1,\"Status\":\"Enabled\"},\"xmlns\":\"http://s3.amazonaws.com/doc/2034-03-01/\"},\"bucketName\":\"elastic-cspm-cloudtrail-test-bucket\",\"replication\":\"\"},\"resources\":[{\"ARN\":\"arn:aws:s3:::elastic-cspm-cloudtrail-test-bucket\",\"accountId\":\"000000000\",\"type\":\"AWS::S3::Bucket\"}],\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"elastic-cspm-cloudtrail-test-bucket.s3.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"[aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_34ca9714-8788-4b3f-8c81-9910507f8bc7 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#s3api.put-bucket-replication]\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

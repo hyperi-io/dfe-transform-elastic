@@ -1,0 +1,94 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-03-17T18:31:14.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "content_scanner"
+          },
+          "message": "PF: Starting multi-threaded Perceptive server (pid=17729)",
+          "object_category": "multi-threaded Perceptive server",
+          "vendor_action": "Starting"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<166>Mar 17 18:31:14 content_scanner: Info: PF: Starting multi-threaded Perceptive server (pid=17729)",
+        "timezone": "UTC"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 166
+        }
+      },
+      "process": {
+        "pid": 17729
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-17T18:31:14.000Z",
+      "cisco_secure_email_gateway": {
+        "log": {
+          "category": {
+            "name": "content_scanner"
+          },
+          "message": "PF: Restarting content_scanner service.",
+          "object": "content_scanner",
+          "object_category": "service.",
+          "vendor_action": "Restarting"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "<166>Mar 17 18:31:14 content_scanner: Info: PF: Restarting content_scanner service.",
+        "timezone": "UTC"
+      },
+      "log": {
+        "level": "info",
+        "syslog": {
+          "priority": 166
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<166>Mar 17 18:31:14 content_scanner: Info: PF: Starting multi-threaded Perceptive server (pid=17729)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<166>Mar 17 18:31:14 content_scanner: Info: PF: Restarting content_scanner service.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_secure_email_gateway-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cisco_secure_email_gateway",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

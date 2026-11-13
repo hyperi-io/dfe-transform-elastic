@@ -1,0 +1,63 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-25",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "o365": {
+        "metrics": {
+          "teams": {
+            "user": {
+              "activity": {
+                "user": {
+                  "counts": {
+                    "calls": {
+                      "count": 10
+                    },
+                    "meetings": {
+                      "count": 8
+                    },
+                    "other_actions": {
+                      "count": 7
+                    },
+                    "private_chat_messages": {
+                      "count": 15
+                    },
+                    "report": {
+                      "date": "2052-12-25",
+                      "period": {
+                        "day": "7"
+                      },
+                      "refresh_date": "2052-12-31"
+                    },
+                    "team_chat_messages": {
+                      "count": 9
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "teams_user_activity_user_counts": "{\"Calls\":\"10\",\"Meetings\":\"8\",\"Other Actions\":\"7\",\"Private Chat Messages\":\"15\",\"Report Date\":\"2052-12-25\",\"Report Period\":\"7\",\"Team Chat Messages\":\"9\",\"Report Refresh Date\":\"2052-12-31\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "teams_user_activity_user_counts",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-teams_user_activity_user_counts-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,819 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-10-26T13:36:53.000Z",
+      "destination": {
+        "ip": "192.0.2.87",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_NETWORK_INTRUSION",
+          "context": {
+            "circumstances": "Malware: Win32/PSW.Fareit.A",
+            "device_uuid": "xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+            "process": {
+              "path": "C:\\Windows\\explorer.exe"
+            },
+            "user_name": "ndjvynuje\\user"
+          },
+          "network_communication": {
+            "protocol_name": "0",
+            "remote": {
+              "ip_address": "192.0.2.87",
+              "port": 443
+            }
+          },
+          "object_hash_sha1": "BFA9F82ADCD1F6E0BEBBFF8E0D974ED7FEA2836A",
+          "object_type_name": "File",
+          "object_url": "file:///C:/Users/Administrator/Downloads/xls/YICT080714.xls",
+          "occur_time": "2051-10-26T13:36:53.000Z",
+          "responses": [
+            {
+              "device_restart_required": true
+            }
+          ],
+          "severity_level": "SEVERITY_LEVEL_HIGH",
+          "type_name": "TCP Port scanning attack",
+          "uuid": "xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        }
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_NETWORK_INTRUSION\",\"typeName\":\"TCP Port scanning attack\",\"objectUrl\":\"file:///C:/Users/Administrator/Downloads/xls/YICT080714.xls\",\"uuid\":\"xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_HIGH\",\"responses\":[{\"deviceRestartRequired\":true}],\"occurTime\":\"2051-10-26T13:36:53Z\",\"objectTypeName\":\"File\",\"objectHashSha1\":\"BFA9F82ADCD1F6E0BEBBFF8E0D974ED7FEA2836A\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"192.0.2.87\",\"remotePort\": 443},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\explorer.exe\"},\"deviceUuid\":\"xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",\"userName\":\"ndjvynuje\\\\user\",\"circumstances\":\"Malware: Win32/PSW.Fareit.A\"}}",
+        "reason": "Malware: Win32/PSW.Fareit.A",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        }
+      },
+      "host": {
+        "id": "xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      },
+      "message": "Malware: Win32/PSW.Fareit.A",
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "C:\\Windows\\explorer.exe",
+        "name": "explorer.exe"
+      },
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "hosts": [
+          "xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "user"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_NETWORK_INTRUSION"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "TCP Port scanning attack"
+          ]
+        }
+      },
+      "user": {
+        "domain": "ndjvynuje",
+        "name": "user"
+      }
+    },
+    {
+      "@timestamp": "2051-10-26T13:36:53.000Z",
+      "destination": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_NETWORK_INTRUSION",
+          "context": {
+            "circumstances": "Eicar",
+            "device_uuid": "xxx-xxxx-1234-5678-xxxxxxxxxxxx",
+            "process": {
+              "path": "C:\\Windows\\chrome.exe"
+            },
+            "user_name": "ndjvynuje\\dsbxpsf"
+          },
+          "network_communication": {
+            "protocol_name": "0",
+            "remote": {
+              "ip_address": "203.0.113.248",
+              "port": 443
+            }
+          },
+          "object_hash_sha1": "ACC0C20BEFF1B0B1EDCBCC4F3D2073171040179C",
+          "object_type_name": "File",
+          "object_url": "file:///C:/Users/Ydly/AppData/Local/Temp/e9a9286d-c6cd-4696-xxxx-2d63fa12cc28_c78b9b5dabcdefghijkl5c158d856be56b7ff8fcc7ea6e12109552d1a78df967.zip.c28/c55a7f5b50909c08bb641e610e080ee89e1ea3bdf8fe2f041909587957008361",
+          "occur_time": "2051-10-26T13:36:53.000Z",
+          "severity_level": "SEVERITY_LEVEL_MEDIUM",
+          "type_name": "TCP Port scanning attack",
+          "uuid": "xxx-xxxx-xxxx-1234-xxxxxxxxxxxx"
+        }
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "xxx-xxxx-xxxx-1234-xxxxxxxxxxxx",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_NETWORK_INTRUSION\",\"typeName\":\"TCP Port scanning attack\",\"objectUrl\":\"file:///C:/Users/Ydly/AppData/Local/Temp/e9a9286d-c6cd-4696-xxxx-2d63fa12cc28_c78b9b5dabcdefghijkl5c158d856be56b7ff8fcc7ea6e12109552d1a78df967.zip.c28/c55a7f5b50909c08bb641e610e080ee89e1ea3bdf8fe2f041909587957008361\",\"uuid\":\"xxx-xxxx-xxxx-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_MEDIUM\",\"responses\":[{}],\"occurTime\":\"2051-10-26T13:36:53Z\",\"objectTypeName\":\"File\",\"objectHashSha1\":\"ACC0C20BEFF1B0B1EDCBCC4F3D2073171040179C\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"203.0.113.248\",\"remotePort\":443},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\chrome.exe\"},\"deviceUuid\":\"xxx-xxxx-1234-5678-xxxxxxxxxxxx\",\"userName\":\"ndjvynuje\\\\dsbxpsf\",\"circumstances\":\"Eicar\"}}",
+        "reason": "Eicar",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "acc0c20beff1b0b1edcbcc4f3d2073171040179c"
+        }
+      },
+      "host": {
+        "id": "xxx-xxxx-1234-5678-xxxxxxxxxxxx"
+      },
+      "message": "Eicar",
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "C:\\Windows\\chrome.exe",
+        "name": "chrome.exe"
+      },
+      "related": {
+        "hash": [
+          "acc0c20beff1b0b1edcbcc4f3d2073171040179c"
+        ],
+        "hosts": [
+          "xxx-xxxx-1234-5678-xxxxxxxxxxxx"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "dsbxpsf"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_NETWORK_INTRUSION"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "TCP Port scanning attack"
+          ]
+        }
+      },
+      "user": {
+        "domain": "ndjvynuje",
+        "name": "dsbxpsf"
+      }
+    },
+    {
+      "@timestamp": "2051-10-27T10:36:53.000Z",
+      "destination": {
+        "ip": "203.0.113.212",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_ANTIVIRUS",
+          "context": {
+            "circumstances": "Eicar",
+            "device_uuid": "xxx-xxxx-1234-1234-xxxxxxxxxxxx",
+            "process": {
+              "path": "C:\\Windows\\example.exe"
+            },
+            "user_name": "ewaknhdpb\\sbgq"
+          },
+          "network_communication": {
+            "direction": "NETWORK_COMMUNICATION_DIRECTION_INBOUND",
+            "local": {
+              "ip_address": "203.0.113.248",
+              "port": 80
+            },
+            "protocol_name": "0",
+            "remote": {
+              "ip_address": "203.0.113.212",
+              "port": 443
+            }
+          },
+          "object_hash_sha1": "DBB5C23CFDE8C0B6DACABF4E4A5368265145725D",
+          "object_type_name": "File",
+          "object_url": "C:\\Temp\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4",
+          "occur_time": "2051-10-27T10:36:53.000Z",
+          "severity_level": "SEVERITY_LEVEL_LOW",
+          "type_name": "Trojan",
+          "uuid": "xxx-xxxx-5678-1234-xxxxxxxxxxxx"
+        }
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "xxx-xxxx-5678-1234-xxxxxxxxxxxx",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_ANTIVIRUS\",\"typeName\":\"Trojan\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-xxxx-5678-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_LOW\",\"responses\":[{}],\"occurTime\":\"2051-10-27T10:36:53Z\",\"objectTypeName\":\"File\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"203.0.113.212\",\"remotePort\":443,\"localIpAddress\":\"203.0.113.248\",\"localPort\":80,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_INBOUND\"},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\example.exe\"},\"deviceUuid\":\"xxx-xxxx-1234-1234-xxxxxxxxxxxx\",\"userName\":\"ewaknhdpb\\\\sbgq\",\"circumstances\":\"Eicar\"}}",
+        "reason": "Eicar",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "dbb5c23cfde8c0b6dacabf4e4a5368265145725d"
+        }
+      },
+      "host": {
+        "id": "xxx-xxxx-1234-1234-xxxxxxxxxxxx"
+      },
+      "message": "Eicar",
+      "network": {
+        "direction": "inbound"
+      },
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "C:\\Windows\\example.exe",
+        "name": "example.exe"
+      },
+      "related": {
+        "hash": [
+          "dbb5c23cfde8c0b6dacabf4e4a5368265145725d"
+        ],
+        "hosts": [
+          "xxx-xxxx-1234-1234-xxxxxxxxxxxx"
+        ],
+        "ip": [
+          "203.0.113.248",
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_ANTIVIRUS"
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 80
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "Trojan"
+          ]
+        }
+      },
+      "user": {
+        "domain": "ewaknhdpb",
+        "name": "sbgq"
+      }
+    },
+    {
+      "@timestamp": "2051-10-28T10:36:53.000Z",
+      "destination": {
+        "ip": "203.0.113.212",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_VULNERABILITY",
+          "context": {
+            "circumstances": "Win32/Injector.DTLK",
+            "device_uuid": "xxx-0985-1234-1234-xxxxxxxxxxxx",
+            "process": {
+              "path": "C:\\Windows\\exampletest.exe"
+            },
+            "user_name": "Administrator"
+          },
+          "network_communication": {
+            "direction": "NETWORK_COMMUNICATION_DIRECTION_OUTBOUND",
+            "local": {
+              "ip_address": "198.51.100.124",
+              "port": 80
+            },
+            "protocol_name": "0",
+            "remote": {
+              "ip_address": "203.0.113.212",
+              "port": 443
+            }
+          },
+          "object_hash_sha1": "DBB5C23CFDE8C0B6DACABF4E4A5368265145725D",
+          "object_type_name": "Memory",
+          "object_url": "C:\\Temp\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4",
+          "occur_time": "2051-10-28T10:36:53.000Z",
+          "severity_level": "SEVERITY_LEVEL_HIGH",
+          "uuid": "xxx-xxxx-0987-1234-xxxxxxxxxxxx"
+        }
+      },
+      "event": {
+        "category": [
+          "vulnerability"
+        ],
+        "id": "xxx-xxxx-0987-1234-xxxxxxxxxxxx",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_VULNERABILITY\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-xxxx-0987-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_HIGH\",\"responses\":[{}],\"occurTime\":\"2051-10-28T10:36:53Z\",\"objectTypeName\":\"Memory\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"203.0.113.212\",\"remotePort\":443,\"localIpAddress\":\"198.51.100.124\",\"localPort\":80,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_OUTBOUND\"},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\exampletest.exe\"},\"deviceUuid\":\"xxx-0985-1234-1234-xxxxxxxxxxxx\",\"userName\":\"Administrator\",\"circumstances\":\"Win32/Injector.DTLK\"}}",
+        "reason": "Win32/Injector.DTLK",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "xxx-0985-1234-1234-xxxxxxxxxxxx"
+      },
+      "message": "Win32/Injector.DTLK",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "C:\\Windows\\exampletest.exe",
+        "name": "exampletest.exe"
+      },
+      "related": {
+        "hash": [
+          "dbb5c23cfde8c0b6dacabf4e4a5368265145725d"
+        ],
+        "hosts": [
+          "xxx-0985-1234-1234-xxxxxxxxxxxx"
+        ],
+        "ip": [
+          "198.51.100.124",
+          "203.0.113.212"
+        ],
+        "user": [
+          "Administrator"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_VULNERABILITY"
+      },
+      "source": {
+        "ip": "198.51.100.124",
+        "port": 80
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "Administrator"
+      }
+    },
+    {
+      "@timestamp": "2051-07-28T10:36:53.000Z",
+      "destination": {
+        "ip": "192.0.2.87",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_UNSPECIFIED",
+          "context": {
+            "circumstances": "Win32/Injector.DTLK",
+            "device_uuid": "xxx-1234-1234-1234-xxxxxxxxxxxx",
+            "process": {
+              "path": "C:\\exampletest.exe"
+            },
+            "user_name": "areggve\\dhnzregyak"
+          },
+          "network_communication": {
+            "direction": "NETWORK_COMMUNICATION_DIRECTION_OUTBOUND",
+            "local": {
+              "ip_address": "198.51.100.124",
+              "port": 80
+            },
+            "protocol_name": "0",
+            "remote": {
+              "ip_address": "192.0.2.87",
+              "port": 8080
+            }
+          },
+          "object_hash_sha1": "DBB5C23CFDE8C0B6DACABF4E4A5368265145725D",
+          "object_type_name": "Memory",
+          "object_url": "C:\\Temp\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4",
+          "occur_time": "2051-07-28T10:36:53.000Z",
+          "severity_level": "SEVERITY_LEVEL_UNSPECIFIED",
+          "type_name": "Ydly file",
+          "uuid": "xxx-xxxx-9789-1234-xxxxxxxxxxxx"
+        }
+      },
+      "event": {
+        "id": "xxx-xxxx-9789-1234-xxxxxxxxxxxx",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_UNSPECIFIED\",\"typeName\":\"Ydly file\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-xxxx-9789-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_UNSPECIFIED\",\"responses\":[{}],\"occurTime\":\"2051-07-28T10:36:53Z\",\"objectTypeName\":\"Memory\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"192.0.2.87\",\"remotePort\":8080,\"localIpAddress\":\"198.51.100.124\",\"localPort\":80,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_OUTBOUND\"},\"context\":{\"process\":{\"path\":\"C:\\\\exampletest.exe\"},\"deviceUuid\":\"xxx-1234-1234-1234-xxxxxxxxxxxx\",\"userName\":\"areggve\\\\dhnzregyak\",\"circumstances\":\"Win32/Injector.DTLK\"}}",
+        "reason": "Win32/Injector.DTLK",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "xxx-1234-1234-1234-xxxxxxxxxxxx"
+      },
+      "message": "Win32/Injector.DTLK",
+      "network": {
+        "direction": "outbound"
+      },
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "C:\\exampletest.exe",
+        "name": "exampletest.exe"
+      },
+      "related": {
+        "hash": [
+          "dbb5c23cfde8c0b6dacabf4e4a5368265145725d"
+        ],
+        "hosts": [
+          "xxx-1234-1234-1234-xxxxxxxxxxxx"
+        ],
+        "ip": [
+          "198.51.100.124",
+          "192.0.2.87"
+        ],
+        "user": [
+          "dhnzregyak"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_UNSPECIFIED"
+      },
+      "source": {
+        "ip": "198.51.100.124",
+        "port": 80
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "Ydly file"
+          ]
+        }
+      },
+      "user": {
+        "domain": "areggve",
+        "name": "dhnzregyak"
+      }
+    },
+    {
+      "@timestamp": "2051-07-15T10:36:53.000Z",
+      "destination": {
+        "ip": "192.0.2.134",
+        "port": 56
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_HIPS_RULE",
+          "context": {
+            "circumstances": "Blocked by Administrator",
+            "device_uuid": "xxx-1234-2345-1234-xxxxxxxxxxxx",
+            "process": {
+              "path": "C:\\exampletest.exe"
+            },
+            "user_name": "dsbxpsf"
+          },
+          "network_communication": {
+            "direction": "NETWORK_COMMUNICATION_DIRECTION_UNSPECIFIED",
+            "local": {
+              "ip_address": "203.0.113.189",
+              "port": 8080
+            },
+            "protocol_name": "http",
+            "remote": {
+              "ip_address": "192.0.2.134",
+              "port": 56
+            }
+          },
+          "object_hash_sha1": "DBB5C23CFDE8C0B6DACABF4E4A5368265145725D",
+          "object_type_name": "Memory",
+          "object_url": "C:\\Temp\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4",
+          "occur_time": "2051-07-15T10:36:53.000Z",
+          "severity_level": "SEVERITY_LEVEL_DIAGNOSTIC",
+          "type_name": "Potentially unwanted application",
+          "uuid": "xxx-1234-9789-1234-xxxxxxxxxxxx"
+        }
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "xxx-1234-9789-1234-xxxxxxxxxxxx",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_HIPS_RULE\",\"typeName\":\"Potentially unwanted application\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-1234-9789-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_DIAGNOSTIC\",\"responses\":[{}],\"occurTime\":\"2051-07-15T10:36:53Z\",\"objectTypeName\":\"Memory\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"http\",\"remoteIpAddress\":\"192.0.2.134\",\"remotePort\":56,\"localIpAddress\":\"203.0.113.189\",\"localPort\":8080,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_UNSPECIFIED\"},\"context\":{\"process\":{\"path\":\"C:\\\\exampletest.exe\"},\"deviceUuid\":\"xxx-1234-2345-1234-xxxxxxxxxxxx\",\"userName\":\"dsbxpsf\",\"circumstances\":\"Blocked by Administrator\"}}",
+        "reason": "Blocked by Administrator",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "xxx-1234-2345-1234-xxxxxxxxxxxx"
+      },
+      "message": "Blocked by Administrator",
+      "network": {
+        "transport": "http"
+      },
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "C:\\exampletest.exe",
+        "name": "exampletest.exe"
+      },
+      "related": {
+        "hash": [
+          "dbb5c23cfde8c0b6dacabf4e4a5368265145725d"
+        ],
+        "hosts": [
+          "xxx-1234-2345-1234-xxxxxxxxxxxx"
+        ],
+        "ip": [
+          "203.0.113.189",
+          "192.0.2.134"
+        ],
+        "user": [
+          "dsbxpsf"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_HIPS_RULE"
+      },
+      "source": {
+        "ip": "203.0.113.189",
+        "port": 8080
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "Potentially unwanted application"
+          ]
+        }
+      },
+      "user": {
+        "name": "dsbxpsf"
+      }
+    },
+    {
+      "@timestamp": "2052-03-27T09:54:20.000Z",
+      "destination": {
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "eset_protect": {
+        "detection": {
+          "category": "DETECTION_CATEGORY_UNSPECIFIED",
+          "context": {
+            "circumstances": "Malware: VBS/TrojanDownloader.Agent.YUI",
+            "device_uuid": "18d460cd-d722-4a00-95cc-67aee69f2f89",
+            "process": {
+              "path": "%SYSTEM%\\windowspowershell\\v1.0\\powershell.exe"
+            },
+            "user_name": "vcia-ebfcfnt\\sauc"
+          },
+          "network_communication": {
+            "direction": "NETWORK_COMMUNICATION_DIRECTION_UNSPECIFIED",
+            "local": {
+              "port": 0
+            },
+            "protocol_name": "0",
+            "remote": {
+              "port": 0
+            }
+          },
+          "object_hash_sha1": "36F1C75E253C4D8220BEA732C87632037CDCA4EA",
+          "object_type_name": "File",
+          "object_url": "script",
+          "occur_time": "2052-03-27T09:54:20.000Z",
+          "responses": [
+            {
+              "device_restart_required": false
+            }
+          ],
+          "severity_level": "SEVERITY_LEVEL_LOW",
+          "type_name": "nil",
+          "uuid": "ee2b690d-2249-e729-0f06-204f0d0bdd15"
+        }
+      },
+      "event": {
+        "id": "ee2b690d-2249-e729-0f06-204f0d0bdd15",
+        "kind": "alert",
+        "original": "{\"category\":\"DETECTION_CATEGORY_UNSPECIFIED\",\"context\":{\"circumstances\":\"Malware: VBS/TrojanDownloader.Agent.YUI\",\"deviceUuid\":\"18d460cd-d722-4a00-95cc-67aee69f2f89\",\"process\":{\"path\":\"%SYSTEM%\\\\windowspowershell\\\\v1.0\\\\powershell.exe\"},\"userName\":\"vcia-ebfcfnt\\\\sauc\"},\"displayName\":\"\",\"networkCommunication\":{\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_UNSPECIFIED\",\"localIpAddress\":\"\",\"localPort\":0,\"protocolName\":\"0\",\"remoteIpAddress\":\"\",\"remotePort\":0},\"objectHashSha1\":\"36F1C75E253C4D8220BEA732C87632037CDCA4EA\",\"objectName\":\"\",\"objectTypeName\":\"File\",\"objectUrl\":\"script\",\"occurTime\":\"2052-03-27T09:54:20Z\",\"responses\":[{\"description\":\"\",\"deviceRestartRequired\":false,\"displayName\":\"\",\"protectionName\":\"\"}],\"severityLevel\":\"SEVERITY_LEVEL_LOW\",\"typeName\":\"nil\",\"uuid\":\"ee2b690d-2249-e729-0f06-204f0d0bdd15\"}",
+        "reason": "Malware: VBS/TrojanDownloader.Agent.YUI",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "36f1c75e253c4d8220bea732c87632037cdca4ea"
+        }
+      },
+      "host": {
+        "id": "18d460cd-d722-4a00-95cc-67aee69f2f89"
+      },
+      "message": "Malware: VBS/TrojanDownloader.Agent.YUI",
+      "observer": {
+        "product": "ESET PROTECT",
+        "type": "ids",
+        "vendor": "ESET"
+      },
+      "process": {
+        "executable": "%SYSTEM%\\windowspowershell\\v1.0\\powershell.exe",
+        "name": "powershell.exe"
+      },
+      "related": {
+        "hash": [
+          "36f1c75e253c4d8220bea732c87632037cdca4ea"
+        ],
+        "hosts": [
+          "18d460cd-d722-4a00-95cc-67aee69f2f89"
+        ],
+        "user": [
+          "sauc"
+        ]
+      },
+      "rule": {
+        "category": "DETECTION_CATEGORY_UNSPECIFIED"
+      },
+      "source": {
+        "port": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "nil"
+          ]
+        }
+      },
+      "user": {
+        "domain": "vcia-ebfcfnt",
+        "name": "sauc"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_NETWORK_INTRUSION\",\"typeName\":\"TCP Port scanning attack\",\"objectUrl\":\"file:///C:/Users/Administrator/Downloads/xls/YICT080714.xls\",\"uuid\":\"xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_HIGH\",\"responses\":[{\"deviceRestartRequired\":true}],\"occurTime\":\"2051-10-26T13:36:53Z\",\"objectTypeName\":\"File\",\"objectHashSha1\":\"BFA9F82ADCD1F6E0BEBBFF8E0D974ED7FEA2836A\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"192.0.2.87\",\"remotePort\": 443},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\explorer.exe\"},\"deviceUuid\":\"xxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",\"userName\":\"ndjvynuje\\\\user\",\"circumstances\":\"Malware: Win32/PSW.Fareit.A\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_NETWORK_INTRUSION\",\"typeName\":\"TCP Port scanning attack\",\"objectUrl\":\"file:///C:/Users/Ydly/AppData/Local/Temp/e9a9286d-c6cd-4696-xxxx-2d63fa12cc28_c78b9b5dabcdefghijkl5c158d856be56b7ff8fcc7ea6e12109552d1a78df967.zip.c28/c55a7f5b50909c08bb641e610e080ee89e1ea3bdf8fe2f041909587957008361\",\"uuid\":\"xxx-xxxx-xxxx-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_MEDIUM\",\"responses\":[{}],\"occurTime\":\"2051-10-26T13:36:53Z\",\"objectTypeName\":\"File\",\"objectHashSha1\":\"ACC0C20BEFF1B0B1EDCBCC4F3D2073171040179C\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"203.0.113.248\",\"remotePort\":443},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\chrome.exe\"},\"deviceUuid\":\"xxx-xxxx-1234-5678-xxxxxxxxxxxx\",\"userName\":\"ndjvynuje\\\\dsbxpsf\",\"circumstances\":\"Eicar\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_ANTIVIRUS\",\"typeName\":\"Trojan\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-xxxx-5678-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_LOW\",\"responses\":[{}],\"occurTime\":\"2051-10-27T10:36:53Z\",\"objectTypeName\":\"File\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"203.0.113.212\",\"remotePort\":443,\"localIpAddress\":\"203.0.113.248\",\"localPort\":80,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_INBOUND\"},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\example.exe\"},\"deviceUuid\":\"xxx-xxxx-1234-1234-xxxxxxxxxxxx\",\"userName\":\"ewaknhdpb\\\\sbgq\",\"circumstances\":\"Eicar\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_VULNERABILITY\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-xxxx-0987-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_HIGH\",\"responses\":[{}],\"occurTime\":\"2051-10-28T10:36:53Z\",\"objectTypeName\":\"Memory\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"203.0.113.212\",\"remotePort\":443,\"localIpAddress\":\"198.51.100.124\",\"localPort\":80,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_OUTBOUND\"},\"context\":{\"process\":{\"path\":\"C:\\\\Windows\\\\exampletest.exe\"},\"deviceUuid\":\"xxx-0985-1234-1234-xxxxxxxxxxxx\",\"userName\":\"Administrator\",\"circumstances\":\"Win32/Injector.DTLK\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_UNSPECIFIED\",\"typeName\":\"Ydly file\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-xxxx-9789-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_UNSPECIFIED\",\"responses\":[{}],\"occurTime\":\"2051-07-28T10:36:53Z\",\"objectTypeName\":\"Memory\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"0\",\"remoteIpAddress\":\"192.0.2.87\",\"remotePort\":8080,\"localIpAddress\":\"198.51.100.124\",\"localPort\":80,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_OUTBOUND\"},\"context\":{\"process\":{\"path\":\"C:\\\\exampletest.exe\"},\"deviceUuid\":\"xxx-1234-1234-1234-xxxxxxxxxxxx\",\"userName\":\"areggve\\\\dhnzregyak\",\"circumstances\":\"Win32/Injector.DTLK\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_HIPS_RULE\",\"typeName\":\"Potentially unwanted application\",\"objectUrl\":\"C:\\\\Temp\\\\06516f11-xxxx-xxxx-xxxx-37da66b5de99_fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4.zip.e99\\\\fff0217fd2a3a51c324485e909ccc86e57ba79517a1f6bae5b0aaad296aa7de4\",\"uuid\":\"xxx-1234-9789-1234-xxxxxxxxxxxx\",\"severityLevel\":\"SEVERITY_LEVEL_DIAGNOSTIC\",\"responses\":[{}],\"occurTime\":\"2051-07-15T10:36:53Z\",\"objectTypeName\":\"Memory\",\"objectHashSha1\":\"DBB5C23CFDE8C0B6DACABF4E4A5368265145725D\",\"networkCommunication\":{\"protocolName\":\"http\",\"remoteIpAddress\":\"192.0.2.134\",\"remotePort\":56,\"localIpAddress\":\"203.0.113.189\",\"localPort\":8080,\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_UNSPECIFIED\"},\"context\":{\"process\":{\"path\":\"C:\\\\exampletest.exe\"},\"deviceUuid\":\"xxx-1234-2345-1234-xxxxxxxxxxxx\",\"userName\":\"dsbxpsf\",\"circumstances\":\"Blocked by Administrator\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DETECTION_CATEGORY_UNSPECIFIED\",\"context\":{\"circumstances\":\"Malware: VBS/TrojanDownloader.Agent.YUI\",\"deviceUuid\":\"18d460cd-d722-4a00-95cc-67aee69f2f89\",\"process\":{\"path\":\"%SYSTEM%\\\\windowspowershell\\\\v1.0\\\\powershell.exe\"},\"userName\":\"vcia-ebfcfnt\\\\sauc\"},\"displayName\":\"\",\"networkCommunication\":{\"direction\":\"NETWORK_COMMUNICATION_DIRECTION_UNSPECIFIED\",\"localIpAddress\":\"\",\"localPort\":0,\"protocolName\":\"0\",\"remoteIpAddress\":\"\",\"remotePort\":0},\"objectHashSha1\":\"36F1C75E253C4D8220BEA732C87632037CDCA4EA\",\"objectName\":\"\",\"objectTypeName\":\"File\",\"objectUrl\":\"script\",\"occurTime\":\"2052-03-27T09:54:20Z\",\"responses\":[{\"description\":\"\",\"deviceRestartRequired\":false,\"displayName\":\"\",\"protectionName\":\"\"}],\"severityLevel\":\"SEVERITY_LEVEL_LOW\",\"typeName\":\"nil\",\"uuid\":\"ee2b690d-2249-e729-0f06-204f0d0bdd15\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "detection",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-eset_protect-detection-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "eset_protect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

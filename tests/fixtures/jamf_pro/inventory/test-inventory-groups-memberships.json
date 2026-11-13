@@ -1,0 +1,102 @@
+{
+    "events": [
+        {
+            "message": {
+                "id": "3",
+                "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                },
+                "diskEncryption": null,
+                "localUserAccounts": null,
+                "purchasing": null,
+                "printers": null,
+                "storage": null,
+                "applications": null,
+                "userAndLocation": null,
+                "configurationProfiles": null,
+                "services": null,
+                "plugins": null,
+                "hardware": null,
+                "certificates": null,
+                "attachments": null,
+                "packageReceipts": null,
+                "fonts": null,
+                "security": null,
+                "operatingSystem": null,
+                "licensedSoftware": null,
+                "softwareUpdates": null,
+                "groupMemberships": [
+                    {
+                        "groupId": "1",
+                        "groupName": "All Managed Clients",
+                        "smartGroup": true
+                    },
+                    {
+                        "groupId": "4",
+                        "groupName": "Computers with updates",
+                        "smartGroup": true
+                    },
+                    {
+                        "groupId": "5",
+                        "groupName": "All Managed Computers",
+                        "smartGroup": true
+                    }
+                ],
+                "extensionAttributes": null,
+                "contentCaching": null,
+                "ibeacons": null
+            }
+        },
+        {
+            "message": {
+                "id": "4",
+                "udid": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                },
+                "diskEncryption": null,
+                "localUserAccounts": null,
+                "purchasing": null,
+                "printers": null,
+                "storage": null,
+                "applications": null,
+                "userAndLocation": null,
+                "configurationProfiles": null,
+                "services": null,
+                "plugins": null,
+                "hardware": null,
+                "certificates": null,
+                "attachments": null,
+                "packageReceipts": null,
+                "fonts": null,
+                "security": null,
+                "operatingSystem": null,
+                "licensedSoftware": null,
+                "softwareUpdates": null,
+                "groupMemberships": [
+                    {
+                        "groupId": "1",
+                        "groupName": "All Managed Clients",
+                        "smartGroup": true
+                    },
+                    {
+                        "groupId": "5",
+                        "groupName": "All Managed Computers",
+                        "smartGroup": true
+                    },
+                    {
+                        "groupId": "7",
+                        "groupName": "App Installed: Microsoft Outlook",
+                        "smartGroup": true
+                    }
+                ],
+                "extensionAttributes": null,
+                "contentCaching": null,
+                "ibeacons": null
+            }
+        }
+    ]
+}

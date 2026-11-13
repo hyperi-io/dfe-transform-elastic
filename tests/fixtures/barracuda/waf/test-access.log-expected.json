@@ -1,0 +1,2996 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-03-20T16:24:08.959Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 8210
+          },
+          "response_timetaken": 3,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 8210
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2051-03-20T16:24:08.959Z",
+        "id": "186ffd5d3fc-db6c9f3",
+        "kind": "event",
+        "original": "<134>2051-03-20 17:24:08.959 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 8210 \"-\" \"-\" GET TLSv1.2 192.0.2.127 HTTP/1.1 404 791 293 0 3 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / XDEBUG_SESSION_START=phpstorm http://203.0.113.231:80/?XDEBUG_SESSION_START=phpstorm \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\" 198.51.100.124 8210 \"-\" \"-\" \"-\" \"-\" 186ffd5d3fc-db6c9f3",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.127"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 293,
+          "method": "GET",
+          "referrer": "http://203.0.113.231:80/?XDEBUG_SESSION_START=phpstorm"
+        },
+        "response": {
+          "bytes": 791,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 8210
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/",
+        "query": "XDEBUG_SESSION_START=phpstorm"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "78.0.3904.108"
+      }
+    },
+    {
+      "@timestamp": "2051-03-20T16:24:05.197Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 20783
+          },
+          "response_timetaken": 189,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 20783
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2051-03-20T16:24:05.197Z",
+        "id": "186ffd5c490-e0b89cc7",
+        "kind": "event",
+        "original": "<134>2051-03-20 17:24:05.197 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 20783 \"-\" \"-\" GET TLSv1.2 192.0.2.127 HTTP/1.1 503 877 113 0 189 203.0.113.75 443 0 \"-\" INTERNAL PROFILED PROTECTED INVALID /t4 \"-\" \"-\" \"-\" \"Mozilla/5.0\" 198.51.100.124 20783 \"-\" \"-\" \"-\" \"-\" 186ffd5c490-e0b89cc7",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.127"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 113,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 877,
+          "status_code": 503
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 20783
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/t4"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2051-03-20T16:23:52.432Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PASSIVE",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 29444
+          },
+          "response_timetaken": 128,
+          "response_type": "SERVER",
+          "server_time": 1,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 29444
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2051-03-20T16:23:52.432Z",
+        "id": "186ffd592ef-9baa30e",
+        "kind": "event",
+        "original": "<134>2051-03-20 17:23:52.432 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 29444 \"-\" \"-\" GET TLSv1.2 rbnmxoxa.tee-ublfdwkcu.nl HTTP/1.1 200 14877 292 0 128 203.0.113.75 9000 1 \"-\" SERVER PROFILED PASSIVE VALID /api/swagger.json \"-\" https://192.0.2.21/?XDEBUG_SESSION_START=phpstorm \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\" 198.51.100.124 29444 \"-\" \"-\" \"-\" \"-\" 186ffd592ef-9baa30e",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "rbnmxoxa.tee-ublfdwkcu.nl"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 292,
+          "method": "GET",
+          "referrer": "https://192.0.2.21/?XDEBUG_SESSION_START=phpstorm"
+        },
+        "response": {
+          "bytes": 14877,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 9000
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 29444
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/api/swagger.json"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "78.0.3904.108"
+      }
+    },
+    {
+      "@timestamp": "2051-03-20T16:23:03.264Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 11610
+          },
+          "response_timetaken": 1,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 11610
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2051-03-20T16:23:03.264Z",
+        "id": "186ffd4d35f-e2c1ae09",
+        "kind": "event",
+        "original": "<134>2051-03-20 17:23:03.264 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 11610 \"-\" \"-\" POST TLSv1.2 192.0.2.127 HTTP/1.1 404 791 322 0 1 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID /aws.env \"-\" \"-\" \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36\" 198.51.100.124 11610 \"-\" \"-\" \"-\" \"-\" 186ffd4d35f-e2c1ae09",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.127"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 322,
+          "method": "POST"
+        },
+        "response": {
+          "bytes": 791,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 11610
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/aws.env"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
+        "os": {
+          "name": "Linux"
+        },
+        "version": "81.0.4044.129"
+      }
+    },
+    {
+      "@timestamp": "2051-03-20T16:22:36.102Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 65483
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 65483
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2051-03-20T16:22:36.102Z",
+        "id": "186ffd46946-e5bacdd0",
+        "kind": "event",
+        "original": "<134>2051-03-20 17:22:36.102 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 65483 \"-\" \"-\" GET TLSv1.2 192.0.2.127 HTTP/1.1 404 791 240 0 0 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID /sendgrid.env \"-\" \"-\" \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36\" 198.51.100.124 65483 \"-\" \"-\" \"-\" \"-\" 186ffd46946-e5bacdd0 ",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.127"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 240,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 791,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 65483
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/sendgrid.env"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36",
+        "os": {
+          "name": "Linux"
+        },
+        "version": "81.0.4044.129"
+      }
+    },
+    {
+      "@timestamp": "2042-04-11T06:41:24.964Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "accept_encoding": "gzip,deflate",
+            "connection": "keep-alive",
+            "host": "2001:db8:69a1:4dbd:5471:4ae9:da5e:d4df"
+          },
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PASSIVE",
+          "proxy": {
+            "ip": "203.0.113.75",
+            "port": 43740
+          },
+          "request_cookie": "name=askdj",
+          "response_timetaken": 1008,
+          "response_type": "SERVER",
+          "server_time": 10,
+          "sessionid": "REQ-0+RES-0",
+          "unit_name": "wafbox1",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 43740
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2042-04-11T06:41:24.964Z",
+        "id": "186ffd46946-e5bacdd0",
+        "kind": "event",
+        "original": "<134>2042-04-11 12:11:24.964 +0530  wafbox1 TR 198.51.100.211 80 203.0.113.75 43740 \"-\" \"-\" GET HTTP 198.51.100.211 HTTP/1.1 200 2837 232 0 1008 203.0.113.75 80 10 REQ-0+RES-0   SERVER DEFAULT PASSIVE VALID /index.html name=yes http://198.51.100.211/index.cgi name=askdj \"Mozilla/5.0 (X11; Linux i686; rv:12.0) Gecko/20100101 Firefox/12.0\" 203.0.113.75 43740 John gzip,deflate 2001:db8:69a1:4dbd:5471:4ae9:da5e:d4df keep-alive 186ffd46946-e5bacdd0",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 232,
+          "method": "GET",
+          "referrer": "http://198.51.100.211/index.cgi"
+        },
+        "response": {
+          "bytes": 2837,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 43740
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/index.html",
+        "query": "name=yes"
+      },
+      "user": {
+        "name": "John"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (X11; Linux i686; rv:12.0) Gecko/20100101 Firefox/12.0",
+        "os": {
+          "name": "Linux"
+        },
+        "version": "12.0"
+      }
+    },
+    {
+      "@timestamp": "2052-08-05T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 45418
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 45418
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-08-05T13:41:57.830Z",
+        "id": "19122c677c6-761287a1",
+        "kind": "event",
+        "original": "<190>2052-08-05 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.75 45418 \"-\" \"-\" \"-\" HTTP 198.51.100.211 \"-\" 400 0 120 0 0 203.0.113.75 80 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID  \"-\" \"-\" \"-\" \"Unknown\" 198.51.100.124 45418 \"-\" \"-\" \"-\" \"-\" 19122c677c6-761287a1",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 120
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 400
+        }
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211",
+          "198.51.100.124"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 45418
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-05T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "accept_encoding": "fe80::7caf:a6ff:feed:c2a8"
+          },
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 38972
+          },
+          "response_timetaken": 291,
+          "response_type": "SERVER",
+          "server_time": 277,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 38972
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-05T13:41:57.830Z",
+        "id": "192061e3e12-4f4cb88",
+        "kind": "event",
+        "original": "<190>2052-09-05 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.75 38972 \"-\" \"-\" GET TLSv1.3 blog.example.com HTTP/1.1 200 10916 934 0 291 203.0.113.75 443 277 \"-\" SERVER DEFAULT PROTECTED VALID /sm/appliances/au/ lm blog.example.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 198.51.100.124 38972 unknown(md5(5) fe80::7caf:a6ff:feed:c2a8 \"-\" \"-\" 192061e3e12-4f4cb88",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "blog.example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 934,
+          "method": "GET",
+          "referrer": "blog.example.com"
+        },
+        "response": {
+          "bytes": 10916,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.3"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211",
+          "198.51.100.124"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 38972
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/sm/appliances/au/",
+        "query": "lm"
+      },
+      "user": {
+        "name": "unknown(md5(5)"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37",
+        "os": {
+          "full": "Windows Vista",
+          "name": "Windows",
+          "version": "Vista"
+        },
+        "version": "58.0.1145.75"
+      }
+    },
+    {
+      "@timestamp": "2052-09-06T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "connection": "203.0.113.75"
+          },
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 52336
+          },
+          "response_timetaken": 32,
+          "response_type": "SERVER",
+          "server_time": 29,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 52336
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-06T13:41:57.830Z",
+        "id": "192062078be-37ac5160",
+        "kind": "event",
+        "original": "<190>2052-09-06 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 52336 \"-\" \"-\" GET HTTP aybzone-olfiglksv.com HTTP/1.0 404 3490 649 0 32 203.0.113.75 80 29 \"-\" SERVER PROFILED PROTECTED VALID /index.php \"-\" aybzone-olfiglksv.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 198.51.100.124 52336 unknown(md5(5) \"-\" \"-\" 203.0.113.75 192062078be-37ac5160",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "aybzone-olfiglksv.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 649,
+          "method": "GET",
+          "referrer": "aybzone-olfiglksv.com"
+        },
+        "response": {
+          "bytes": 3490,
+          "status_code": 404
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 52336
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/index.php"
+      },
+      "user": {
+        "name": "unknown(md5(5)"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37",
+        "os": {
+          "full": "Windows Vista",
+          "name": "Windows",
+          "version": "Vista"
+        },
+        "version": "58.0.1145.75"
+      }
+    },
+    {
+      "@timestamp": "2052-09-07T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 58944
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 58944
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-07T13:41:57.830Z",
+        "id": "19205a1d2f6-accb8ac",
+        "kind": "event",
+        "original": "<190>2052-09-07 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 58944 \"-\" \"-\" GARBAGE TLSv1.3 198.51.100.211 HTTP/1.1 404 954 206 0 0 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / \"-\" \"-\" \"-\" \"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36\" 198.51.100.124 58944 \"-\" \"-\" \"-\" \"-\" 19205a1d2f6-accb8ac",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 206,
+          "method": "GARBAGE"
+        },
+        "response": {
+          "bytes": 954,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.3"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 58944
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "88.0.4324.190"
+      }
+    },
+    {
+      "@timestamp": "2052-09-08T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.124",
+            "port": 5753
+          },
+          "request_cookie": "prs=AAABBBBBBBBccccDDDeee==",
+          "response_timetaken": 36,
+          "response_type": "SERVER",
+          "server_time": 15,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 5753
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-08T13:41:57.830Z",
+        "id": "191fb222f6a-4e95e2aa",
+        "kind": "event",
+        "original": "<190>2052-09-08 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 5753 \"-\" \"-\" GET TLSv1.2 dp-ps.hewynjp-enfhxpf.com HTTP/1.1 304 1041 444 0 36 203.0.113.75 443 15 \"-\" SERVER DEFAULT PROTECTED VALID /w/template/logo_example_202x25.png \"-\" \"-\" prs=AAABBBBBBBBccccDDDeee== \"Mozilla/4.0 (compatible; ms-office; MSOffice 16)\" 198.51.100.124 5753 \"-\" \"-\" \"-\" \"-\" 191fb222f6a-4e95e2aa",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "dp-ps.hewynjp-enfhxpf.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 444,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 1041,
+          "status_code": 304
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211",
+          "198.51.100.124",
+          "203.0.113.75"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.75",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 5753
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/w/template/logo_example_202x25.png"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Outlook",
+        "original": "Mozilla/4.0 (compatible; ms-office; MSOffice 16)",
+        "version": "2016"
+      }
+    },
+    {
+      "@timestamp": "2052-09-09T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "accept_encoding": "2001:db8:63b3:e567:9f78:d57c:c861:cd27"
+          },
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 38972
+          },
+          "response_timetaken": 291,
+          "response_type": "SERVER",
+          "server_time": 277,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 38972
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-09T13:41:57.830Z",
+        "id": "192061e3e12-4f4cb88",
+        "kind": "event",
+        "original": "<190>2052-09-09 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 38972 \"-\" \"-\" GET TLSv1.3 blog.example.com HTTP/1.1 200 10916 934 0 291 203.0.113.248 443 277 \"-\" SERVER DEFAULT PROTECTED VALID /sm/appliances/au/ lm blog.example.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 203.0.113.248 38972 unknown(md5(5) 2001:db8:63b3:e567:9f78:d57c:c861:cd27 \"-\" \"-\" 192061e3e12-4f4cb88",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "blog.example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 934,
+          "method": "GET",
+          "referrer": "blog.example.com"
+        },
+        "response": {
+          "bytes": 10916,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.3"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 38972
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/sm/appliances/au/",
+        "query": "lm"
+      },
+      "user": {
+        "name": "unknown(md5(5)"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37",
+        "os": {
+          "full": "Windows Vista",
+          "name": "Windows",
+          "version": "Vista"
+        },
+        "version": "58.0.1145.75"
+      }
+    },
+    {
+      "@timestamp": "2052-09-10T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "connection": "192.0.2.7"
+          },
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 52336
+          },
+          "response_timetaken": 32,
+          "response_type": "SERVER",
+          "server_time": 29,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 52336
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-10T13:41:57.830Z",
+        "id": "192062078be-37ac5160",
+        "kind": "event",
+        "original": "<190>2052-09-10 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 52336 \"-\" \"-\" GET HTTP aybzone-olfiglksv.com HTTP/1.0 404 3490 649 0 32 203.0.113.248 80 29 \"-\" SERVER PROFILED PROTECTED VALID /index.php \"-\" aybzone-olfiglksv.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 203.0.113.248 52336 unknown(md5(5) \"-\" \"-\" 192.0.2.7 192062078be-37ac5160",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "aybzone-olfiglksv.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 649,
+          "method": "GET",
+          "referrer": "aybzone-olfiglksv.com"
+        },
+        "response": {
+          "bytes": 3490,
+          "status_code": 404
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 52336
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/index.php"
+      },
+      "user": {
+        "name": "unknown(md5(5)"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37",
+        "os": {
+          "full": "Windows Vista",
+          "name": "Windows",
+          "version": "Vista"
+        },
+        "version": "58.0.1145.75"
+      }
+    },
+    {
+      "@timestamp": "2052-09-11T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 58944
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 58944
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-11T13:41:57.830Z",
+        "id": "19205a1d2f6-accb8ac",
+        "kind": "event",
+        "original": "<190>2052-09-11 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 58944 \"-\" \"-\" GARBAGE TLSv1.3 198.51.100.211 HTTP/1.1 404 954 206 0 0 203.0.113.248 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / \"-\" \"-\" \"-\" \"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36\" 203.0.113.248 58944 \"-\" \"-\" \"-\" \"-\" 19205a1d2f6-accb8ac",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 206,
+          "method": "GARBAGE"
+        },
+        "response": {
+          "bytes": 954,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.3"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 58944
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "88.0.4324.190"
+      }
+    },
+    {
+      "@timestamp": "2052-09-12T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.211",
+            "port": 5753
+          },
+          "request_cookie": "prs=YAAABBBBBBBBccccDDDeee-AAABBBBBBBBccccDDDeee==",
+          "response_timetaken": 36,
+          "response_type": "SERVER",
+          "server_time": 15,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 5753
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-12T13:41:57.830Z",
+        "id": "191fb222f6a-4e95e2aa",
+        "kind": "event",
+        "original": "<190>2052-09-12 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 198.51.100.211 5753 \"-\" \"-\" GET TLSv1.2 example_hr-it.mailing-example.com HTTP/1.1 304 1041 444 0 36 203.0.113.248 443 15 \"-\" SERVER DEFAULT PROTECTED VALID /w/template/logo_example_202x25.png \"-\" \"-\" prs=YAAABBBBBBBBccccDDDeee-AAABBBBBBBBccccDDDeee== \"Mozilla/4.0 (compatible; ms-office; MSOffice 16)\" 198.51.100.211 5753 \"-\" \"-\" \"-\" \"-\" 191fb222f6a-4e95e2aa",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "example_hr-it.mailing-example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 444,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 1041,
+          "status_code": 304
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "203.0.113.248"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 5753
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/w/template/logo_example_202x25.png"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Outlook",
+        "original": "Mozilla/4.0 (compatible; ms-office; MSOffice 16)",
+        "version": "2016"
+      }
+    },
+    {
+      "@timestamp": "2052-09-13T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 61470
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 61470
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-13T13:41:57.830Z",
+        "id": "191ead4a41c-a3033459",
+        "kind": "event",
+        "original": "<190>2052-09-13 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 61470 \"-\" \"-\" USER HTTP 198.51.100.211 \"-\" 404 954 16 0 0 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID anonymous \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 61470 \"-\" \"-\" \"-\" \"-\" 191ead4a41c-a3033459",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 16,
+          "method": "USER"
+        },
+        "response": {
+          "bytes": 954,
+          "status_code": 404
+        }
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 61470
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "anonymous"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-14T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 45418
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 45418
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-14T13:41:57.830Z",
+        "id": "19122c677c6-761287a1",
+        "kind": "event",
+        "original": "<190>2052-09-14 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 45418 \"-\" \"-\" \"-\" HTTP 198.51.100.211 \"-\" 400 0 120 0 0 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID \"-\" \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 45418 \"-\" \"-\" \"-\" \"-\" 19122c677c6-761287a1",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 120
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 400
+        }
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 45418
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-15T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "UNPROTECTED",
+          "proxy": {
+            "ip": "203.0.113.75",
+            "port": 22213
+          },
+          "response_timetaken": 7501,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 22213
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-15T13:41:57.830Z",
+        "id": "191218e9fc3-3e56910f",
+        "kind": "event",
+        "original": "<190>2052-09-15 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.75 22213 \"-\" \"-\" HELP HTTP \"-\" \"-\" 408 0 6 0 7501 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT UNPROTECTED VALID \"-\" \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 22213 \"-\" \"-\" \"-\" \"-\" 191218e9fc3-3e56910f",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 6,
+          "method": "HELP"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 408
+        }
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 22213
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-16T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "connection": "203.0.113.75"
+          },
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 37924
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 37924
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-16T13:41:57.830Z",
+        "id": "191213b1d0f-1656db25",
+        "kind": "event",
+        "original": "<190>2052-09-16 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 37924 \"-\" \"-\" GET HTTP wwws.example.com HTTP/1.0 301 155 350 0 0 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT PROTECTED VALID /login/ user=|\"`id`\"| \"-\" \"-\" \"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)\" 203.0.113.248 37924 \"-\" \"-\" \"-\" 203.0.113.75 191213b1d0f-1656db25",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "wwws.example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 350,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 155,
+          "status_code": 301
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 37924
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/login/",
+        "query": "user=|\"`id`\"|"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "IE",
+        "original": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)",
+        "os": {
+          "full": "Windows XP",
+          "name": "Windows",
+          "version": "XP"
+        },
+        "version": "8.0"
+      }
+    },
+    {
+      "@timestamp": "2052-09-17T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.75",
+            "port": 59494
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 59494
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-17T13:41:57.830Z",
+        "id": "1911d1f152a-37719640",
+        "kind": "event",
+        "original": "<190>2052-09-17 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.75 59494 \"-\" \"-\" CONNECT HTTP google.com HTTP/1.1 404 954 89 0 0 198.51.100.211 80 0 \"-\" INTERNAL PROFILED PROTECTED INVALID google.com:443 \"-\" \"-\" \"-\" \"Go-http-client/1.1\" 203.0.113.75 59494 \"-\" \"-\" \"-\" \"-\" 1911d1f152a-37719640",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "google.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 89,
+          "method": "CONNECT"
+        },
+        "response": {
+          "bytes": 954,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 59494
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "google.com:443"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/1.1",
+        "version": "1.1"
+      }
+    },
+    {
+      "@timestamp": "2052-09-18T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+            "port": 46388
+          },
+          "response_timetaken": 33,
+          "response_type": "SERVER",
+          "server_time": 32,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 46388
+      },
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-18T13:41:57.830Z",
+        "id": "1911872a706-af21eab9",
+        "kind": "event",
+        "original": "<190>2052-09-18 15:41:57.830 +0200  barracuda TR 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 80 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 46388 \"-\" \"-\" GET HTTP [2001:db8:dfd5:c2d1:ef97:9e27:1831:3153] HTTP/1.1 404 2728 115 0 33 203.0.113.248 80 32 \"-\" SERVER PROFILED PROTECTED VALID /.well-known/example.txt \"-\" \"-\" \"-\" \"Unknown\" 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 46388 \"-\" \"-\" \"-\" \"-\" 1911872a706-af21eab9",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "[2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 115,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 2728,
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "HTTP"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "203.0.113.248"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 80
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 46388
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/.well-known/example.txt"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-19T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "PROFILED",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+            "port": 52774
+          },
+          "response_timetaken": 11,
+          "response_type": "SERVER",
+          "server_time": 1,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 52774
+      },
+      "destination": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-19T13:41:57.830Z",
+        "id": "1910e368fbf-c179f842",
+        "kind": "event",
+        "original": "<190>2052-09-19 15:41:57.830 +0200  barracuda TR 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 443 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 52774 \"-\" \"-\" HEAD TLSv1.2 [2001:db8:dfd5:c2d1:ef97:9e27:1831:3153] HTTP/1.1 200 2989 415 0 11 203.0.113.248 443 1 \"-\" SERVER PROFILED PROTECTED VALID /example.txt \"-\" https://[2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]/example.txt \"-\" \"Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)\" 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 52774 \"-\" \"-\" \"-\" \"-\" 1910e368fbf-c179f842",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "[2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 415,
+          "method": "HEAD",
+          "referrer": "https://[2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]/example.txt"
+        },
+        "response": {
+          "bytes": 2989,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "203.0.113.248"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "source": {
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 52774
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/example.txt"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "UptimeRobot",
+        "original": "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2052-09-20T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.75",
+            "port": 15125
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 15125
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-20T13:41:57.830Z",
+        "id": "1910db1e12e-14908221",
+        "kind": "event",
+        "original": "<190>2052-09-20 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.75 15125 \"-\" \"-\" OPTIONS TLSv1.3 198.51.100.211 RTSP/1.0 400 0 22 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 15125 \"-\" \"-\" \"-\" \"-\" 1910db1e12e-14908221",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 22,
+          "method": "OPTIONS"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 400
+        },
+        "version": "RTSP/1.0"
+      },
+      "network": {
+        "protocol": "TLSv1.3"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 15125
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-21T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.75",
+            "port": 18086
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 18086
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-21T13:41:57.830Z",
+        "id": "19105690ecb-3cfb4eb6",
+        "kind": "event",
+        "original": "<190>2052-09-21 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.75 18086 \"-\" \"-\" NUTELLA TLSv1.2 198.51.100.211 \"-\" 404 954 24 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID CONNECT/0.4 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 18086 \"-\" \"-\" \"-\" \"-\" 19105690ecb-3cfb4eb6",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 24,
+          "method": "NUTELLA"
+        },
+        "response": {
+          "bytes": 954,
+          "status_code": 404
+        }
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 18086
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "CONNECT/0.4"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-22T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "198.51.100.211",
+            "port": 61382
+          },
+          "request_cookie": "Login=bbb8; .ASPXAUTH=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+          "response_timetaken": 107,
+          "response_type": "SERVER",
+          "server_time": 107,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "198.51.100.211",
+        "port": 61382,
+        "user": {
+          "name": "Gail Maths"
+        }
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-22T13:41:57.830Z",
+        "id": "190e41fd0ab-eb60a6c3",
+        "kind": "event",
+        "original": "<190>2052-09-22 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 198.51.100.211 61382 \"-\" Gail Maths GET TLSv1.3 mpi.example.com HTTP/1.1 200 16002 1010 0 107 203.0.113.248 80 107 \"-\" SERVER DEFAULT PROTECTED VALID /aaa/api/sync/gs clientId=&container=0f804669-c599-42fa-b739-ff041ac317dd&segment=1&model=Article&pluginName=Abc.Article&format=json https://mpi.example.com/abc/Home/Start Login=bbb8; .ASPXAUTH=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD \"L-device OfflineClient device Emulation 203.0.113.26\" 198.51.100.211 61382 \"-\" \"-\" \"-\" \"-\" 190e41fd0ab-eb60a6c3",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "mpi.example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 1010,
+          "method": "GET",
+          "referrer": "https://mpi.example.com/abc/Home/Start"
+        },
+        "response": {
+          "bytes": 16002,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.3"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "203.0.113.248"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 80
+      },
+      "source": {
+        "ip": "198.51.100.211",
+        "port": 61382,
+        "user": {
+          "name": "Gail Maths"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/aaa/api/sync/gs",
+        "query": "clientId=&container=0f804669-c599-42fa-b739-ff041ac317dd&segment=1&model=Article&pluginName=Abc.Article&format=json"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "L-device OfflineClient device Emulation 203.0.113.26"
+      }
+    },
+    {
+      "@timestamp": "2052-09-23T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "custom_header": {
+            "accept_encoding": "eyJ"
+          },
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.75",
+            "port": 9038
+          },
+          "response_timetaken": 520,
+          "response_type": "SERVER",
+          "server_time": 477,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.75",
+        "port": 9038,
+        "user": {
+          "name": "EXP_Example"
+        }
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 8443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-23T13:41:57.830Z",
+        "id": "190dabfcd9e-ab7ceb6",
+        "kind": "event",
+        "original": "<190>2052-09-23 15:41:57.830 +0200  barracuda TR 198.51.100.211 8443 203.0.113.75 9038 \"-\" EXP_Example POST TLSv1.2 api.example.com HTTP/1.1 200 43352 5165 0 520 203.0.113.248 443 477 \"-\"  SERVER DEFAULT PROTECTED VALID /api/v4/machines/l4-to-l6 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 9038 Bearer eyJ \"-\" \"-\" \"-\" 190dabfcd9e-ab7ceb6",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "api.example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 5165,
+          "method": "POST"
+        },
+        "response": {
+          "bytes": 43352,
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.75",
+          "198.51.100.211",
+          "203.0.113.248"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.75",
+        "port": 9038,
+        "user": {
+          "name": "EXP_Example"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/api/v4/machines/l4-to-l6"
+      },
+      "user": {
+        "name": "Bearer"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    },
+    {
+      "@timestamp": "2052-09-24T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 1,
+          "custom_header": {
+            "accept_encoding": "198.51.100.211"
+          },
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 47436
+          },
+          "response_timetaken": 1,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "VALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 47436
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-24T13:41:57.830Z",
+        "id": "190daf82ffd-37bcfcaf",
+        "kind": "event",
+        "original": "<190>2052-09-24 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 47436 \"-\" \"-\" GET TLSv1.2 www.example.com HTTP/2.0 200 21514 862 1 1 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED VALID /_public/patterns-st4.entry.js \"-\" https://www.example.com/de-at/p/aaaa-5i-2224629 \"-\" \"\"Mozilla/4.0 (compatible; Win32; WinHttp.WinHttpRequest.5) AAABBBBBBBBccccDDDeee\"\" 203.0.113.248 47436 \"-\" 198.51.100.211 \"-\" \"-\" 190daf82ffd-37bcfcaf",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": [
+          "www.example.com"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 862,
+          "method": "GET",
+          "referrer": "https://www.example.com/de-at/p/aaaa-5i-2224629"
+        },
+        "response": {
+          "bytes": 21514,
+          "status_code": 200
+        },
+        "version": "2.0"
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 47436
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "/_public/patterns-st4.entry.js"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "Other",
+        "original": "Mozilla/4.0 (compatible; Win32; WinHttp.WinHttpRequest.5) AAABBBBBBBBccccDDDeee",
+        "os": {
+          "full": "Windows 95",
+          "name": "Windows",
+          "version": "95"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-09-25T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "log_type": "TR",
+          "unit_name": "barracuda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor grok with tag grok_temp_remMessage_access in pipeline compat-barracuda-waf-access failed with message: Provided Grok expressions do not match field value: [198.51.100.211 443 203.0.113.248 38914 \"-\" \"-\" \"-\" TLSv1.2 198.51.100.211 \"-\" 400 0 14 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID 0]",
+          "field [client] not present as part of path [client]"
+        ]
+      },
+      "event": {
+        "created": "2052-09-25T13:41:57.830Z",
+        "kind": "pipeline_error",
+        "original": "<190>2052-09-25 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 38914 \"-\" \"-\" \"-\" TLSv1.2 198.51.100.211 \"-\" 400 0 14 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID 0"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Provided Grok expressions do not match field value: [\u0002\u0001\u0001`\u0007\u0002\u0001\u0002\u0004 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 38914 \"-\" \"-\" \"-\" \"-\" 1911cf21246-d88e8ecf]"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "\u0002\u0001\u0001`\u0007\u0002\u0001\u0002\u0004 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 38914 \"-\" \"-\" \"-\" \"-\" 1911cf21246-d88e8ecf"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-09-26T13:41:57.830Z",
+      "barracuda": {
+        "waf": {
+          "cache_hit": 0,
+          "log_type": "TR",
+          "profile_matched": "DEFAULT",
+          "protected": "PROTECTED",
+          "proxy": {
+            "ip": "203.0.113.248",
+            "port": 23715
+          },
+          "response_timetaken": 0,
+          "response_type": "INTERNAL",
+          "server_time": 0,
+          "unit_name": "barracuda",
+          "wf_matched": "INVALID"
+        }
+      },
+      "client": {
+        "ip": "203.0.113.248",
+        "port": 23715
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-09-26T13:41:57.830Z",
+        "id": "19119393926-23833f74",
+        "kind": "event",
+        "original": "<190>2052-09-26 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 23715 \"-\" \"-\" \"-\" TLSv1.2 198.51.100.211 \"-\" 400 0 14 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID 0`\u0007\u0002\u0001\u0002\u0004 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 23715 \"-\" \"-\" \"-\" \"-\" 19119393926-23833f74",
+        "type": [
+          "access",
+          "connection"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 14
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 400
+        }
+      },
+      "network": {
+        "protocol": "TLSv1.2"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "ip": "198.51.100.211",
+        "port": 443
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "port": 23715
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "path": "0`"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Unknown"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "<134>2051-03-20 17:24:08.959 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 8210 \"-\" \"-\" GET TLSv1.2 192.0.2.127 HTTP/1.1 404 791 293 0 3 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / XDEBUG_SESSION_START=phpstorm http://203.0.113.231:80/?XDEBUG_SESSION_START=phpstorm \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\" 198.51.100.124 8210 \"-\" \"-\" \"-\" \"-\" 186ffd5d3fc-db6c9f3",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>2051-03-20 17:24:05.197 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 20783 \"-\" \"-\" GET TLSv1.2 192.0.2.127 HTTP/1.1 503 877 113 0 189 203.0.113.75 443 0 \"-\" INTERNAL PROFILED PROTECTED INVALID /t4 \"-\" \"-\" \"-\" \"Mozilla/5.0\" 198.51.100.124 20783 \"-\" \"-\" \"-\" \"-\" 186ffd5c490-e0b89cc7",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>2051-03-20 17:23:52.432 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 29444 \"-\" \"-\" GET TLSv1.2 rbnmxoxa.tee-ublfdwkcu.nl HTTP/1.1 200 14877 292 0 128 203.0.113.75 9000 1 \"-\" SERVER PROFILED PASSIVE VALID /api/swagger.json \"-\" https://192.0.2.21/?XDEBUG_SESSION_START=phpstorm \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36\" 198.51.100.124 29444 \"-\" \"-\" \"-\" \"-\" 186ffd592ef-9baa30e",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>2051-03-20 17:23:03.264 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 11610 \"-\" \"-\" POST TLSv1.2 192.0.2.127 HTTP/1.1 404 791 322 0 1 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID /aws.env \"-\" \"-\" \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36\" 198.51.100.124 11610 \"-\" \"-\" \"-\" \"-\" 186ffd4d35f-e2c1ae09",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>2051-03-20 17:22:36.102 +0100  barracuda TR 198.51.100.211 443 203.0.113.248 65483 \"-\" \"-\" GET TLSv1.2 192.0.2.127 HTTP/1.1 404 791 240 0 0 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID /sendgrid.env \"-\" \"-\" \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36\" 198.51.100.124 65483 \"-\" \"-\" \"-\" \"-\" 186ffd46946-e5bacdd0 ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>2042-04-11 12:11:24.964 +0530  wafbox1 TR 198.51.100.211 80 203.0.113.75 43740 \"-\" \"-\" GET HTTP 198.51.100.211 HTTP/1.1 200 2837 232 0 1008 203.0.113.75 80 10 REQ-0+RES-0   SERVER DEFAULT PASSIVE VALID /index.html name=yes http://198.51.100.211/index.cgi name=askdj \"Mozilla/5.0 (X11; Linux i686; rv:12.0) Gecko/20100101 Firefox/12.0\" 203.0.113.75 43740 John gzip,deflate 2001:db8:69a1:4dbd:5471:4ae9:da5e:d4df keep-alive 186ffd46946-e5bacdd0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-08-05 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.75 45418 \"-\" \"-\" \"-\" HTTP 198.51.100.211 \"-\" 400 0 120 0 0 203.0.113.75 80 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID  \"-\" \"-\" \"-\" \"Unknown\" 198.51.100.124 45418 \"-\" \"-\" \"-\" \"-\" 19122c677c6-761287a1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-05 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.75 38972 \"-\" \"-\" GET TLSv1.3 blog.example.com HTTP/1.1 200 10916 934 0 291 203.0.113.75 443 277 \"-\" SERVER DEFAULT PROTECTED VALID /sm/appliances/au/ lm blog.example.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 198.51.100.124 38972 unknown(md5(5) fe80::7caf:a6ff:feed:c2a8 \"-\" \"-\" 192061e3e12-4f4cb88",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-06 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 52336 \"-\" \"-\" GET HTTP aybzone-olfiglksv.com HTTP/1.0 404 3490 649 0 32 203.0.113.75 80 29 \"-\" SERVER PROFILED PROTECTED VALID /index.php \"-\" aybzone-olfiglksv.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 198.51.100.124 52336 unknown(md5(5) \"-\" \"-\" 203.0.113.75 192062078be-37ac5160",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-07 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 58944 \"-\" \"-\" GARBAGE TLSv1.3 198.51.100.211 HTTP/1.1 404 954 206 0 0 203.0.113.75 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / \"-\" \"-\" \"-\" \"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36\" 198.51.100.124 58944 \"-\" \"-\" \"-\" \"-\" 19205a1d2f6-accb8ac",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-08 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 5753 \"-\" \"-\" GET TLSv1.2 dp-ps.hewynjp-enfhxpf.com HTTP/1.1 304 1041 444 0 36 203.0.113.75 443 15 \"-\" SERVER DEFAULT PROTECTED VALID /w/template/logo_example_202x25.png \"-\" \"-\" prs=AAABBBBBBBBccccDDDeee== \"Mozilla/4.0 (compatible; ms-office; MSOffice 16)\" 198.51.100.124 5753 \"-\" \"-\" \"-\" \"-\" 191fb222f6a-4e95e2aa",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-09 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 38972 \"-\" \"-\" GET TLSv1.3 blog.example.com HTTP/1.1 200 10916 934 0 291 203.0.113.248 443 277 \"-\" SERVER DEFAULT PROTECTED VALID /sm/appliances/au/ lm blog.example.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 203.0.113.248 38972 unknown(md5(5) 2001:db8:63b3:e567:9f78:d57c:c861:cd27 \"-\" \"-\" 192061e3e12-4f4cb88",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-10 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 52336 \"-\" \"-\" GET HTTP aybzone-olfiglksv.com HTTP/1.0 404 3490 649 0 32 203.0.113.248 80 29 \"-\" SERVER PROFILED PROTECTED VALID /index.php \"-\" aybzone-olfiglksv.com \"-\" \"Mozilla/5.1 (Windows NT 6.0; WOW64) AppleWebKit/537.37 (KHTML, like Gecko) Chrome/58.0.1145.75 Safari/537.37\" 203.0.113.248 52336 unknown(md5(5) \"-\" \"-\" 192.0.2.7 192062078be-37ac5160",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-11 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 58944 \"-\" \"-\" GARBAGE TLSv1.3 198.51.100.211 HTTP/1.1 404 954 206 0 0 203.0.113.248 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / \"-\" \"-\" \"-\" \"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36\" 203.0.113.248 58944 \"-\" \"-\" \"-\" \"-\" 19205a1d2f6-accb8ac",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-12 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 198.51.100.211 5753 \"-\" \"-\" GET TLSv1.2 example_hr-it.mailing-example.com HTTP/1.1 304 1041 444 0 36 203.0.113.248 443 15 \"-\" SERVER DEFAULT PROTECTED VALID /w/template/logo_example_202x25.png \"-\" \"-\" prs=YAAABBBBBBBBccccDDDeee-AAABBBBBBBBccccDDDeee== \"Mozilla/4.0 (compatible; ms-office; MSOffice 16)\" 198.51.100.211 5753 \"-\" \"-\" \"-\" \"-\" 191fb222f6a-4e95e2aa",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-13 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 61470 \"-\" \"-\" USER HTTP 198.51.100.211 \"-\" 404 954 16 0 0 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID anonymous \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 61470 \"-\" \"-\" \"-\" \"-\" 191ead4a41c-a3033459",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-14 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 45418 \"-\" \"-\" \"-\" HTTP 198.51.100.211 \"-\" 400 0 120 0 0 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID \"-\" \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 45418 \"-\" \"-\" \"-\" \"-\" 19122c677c6-761287a1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-15 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.75 22213 \"-\" \"-\" HELP HTTP \"-\" \"-\" 408 0 6 0 7501 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT UNPROTECTED VALID \"-\" \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 22213 \"-\" \"-\" \"-\" \"-\" 191218e9fc3-3e56910f",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-16 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.248 37924 \"-\" \"-\" GET HTTP wwws.example.com HTTP/1.0 301 155 350 0 0 198.51.100.211 80 0 \"-\" INTERNAL DEFAULT PROTECTED VALID /login/ user=|\"`id`\"| \"-\" \"-\" \"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)\" 203.0.113.248 37924 \"-\" \"-\" \"-\" 203.0.113.75 191213b1d0f-1656db25",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-17 15:41:57.830 +0200  barracuda TR 198.51.100.211 80 203.0.113.75 59494 \"-\" \"-\" CONNECT HTTP google.com HTTP/1.1 404 954 89 0 0 198.51.100.211 80 0 \"-\" INTERNAL PROFILED PROTECTED INVALID google.com:443 \"-\" \"-\" \"-\" \"Go-http-client/1.1\" 203.0.113.75 59494 \"-\" \"-\" \"-\" \"-\" 1911d1f152a-37719640",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-18 15:41:57.830 +0200  barracuda TR 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 80 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 46388 \"-\" \"-\" GET HTTP [2001:db8:dfd5:c2d1:ef97:9e27:1831:3153] HTTP/1.1 404 2728 115 0 33 203.0.113.248 80 32 \"-\" SERVER PROFILED PROTECTED VALID /.well-known/example.txt \"-\" \"-\" \"-\" \"Unknown\" 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 46388 \"-\" \"-\" \"-\" \"-\" 1911872a706-af21eab9",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-19 15:41:57.830 +0200  barracuda TR 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 443 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 52774 \"-\" \"-\" HEAD TLSv1.2 [2001:db8:dfd5:c2d1:ef97:9e27:1831:3153] HTTP/1.1 200 2989 415 0 11 203.0.113.248 443 1 \"-\" SERVER PROFILED PROTECTED VALID /example.txt \"-\" https://[2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]/example.txt \"-\" \"Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)\" 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 52774 \"-\" \"-\" \"-\" \"-\" 1910e368fbf-c179f842",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-20 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.75 15125 \"-\" \"-\" OPTIONS TLSv1.3 198.51.100.211 RTSP/1.0 400 0 22 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID / \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 15125 \"-\" \"-\" \"-\" \"-\" 1910db1e12e-14908221",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-21 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.75 18086 \"-\" \"-\" NUTELLA TLSv1.2 198.51.100.211 \"-\" 404 954 24 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID CONNECT/0.4 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 18086 \"-\" \"-\" \"-\" \"-\" 19105690ecb-3cfb4eb6",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-22 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 198.51.100.211 61382 \"-\" Gail Maths GET TLSv1.3 mpi.example.com HTTP/1.1 200 16002 1010 0 107 203.0.113.248 80 107 \"-\" SERVER DEFAULT PROTECTED VALID /aaa/api/sync/gs clientId=&container=0f804669-c599-42fa-b739-ff041ac317dd&segment=1&model=Article&pluginName=Abc.Article&format=json https://mpi.example.com/abc/Home/Start Login=bbb8; .ASPXAUTH=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD \"L-device OfflineClient device Emulation 203.0.113.26\" 198.51.100.211 61382 \"-\" \"-\" \"-\" \"-\" 190e41fd0ab-eb60a6c3",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-23 15:41:57.830 +0200  barracuda TR 198.51.100.211 8443 203.0.113.75 9038 \"-\" EXP_Example POST TLSv1.2 api.example.com HTTP/1.1 200 43352 5165 0 520 203.0.113.248 443 477 \"-\"  SERVER DEFAULT PROTECTED VALID /api/v4/machines/l4-to-l6 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.75 9038 Bearer eyJ \"-\" \"-\" \"-\" 190dabfcd9e-ab7ceb6",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-24 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 47436 \"-\" \"-\" GET TLSv1.2 www.example.com HTTP/2.0 200 21514 862 1 1 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED VALID /_public/patterns-st4.entry.js \"-\" https://www.example.com/de-at/p/aaaa-5i-2224629 \"-\" \"\"Mozilla/4.0 (compatible; Win32; WinHttp.WinHttpRequest.5) AAABBBBBBBBccccDDDeee\"\" 203.0.113.248 47436 \"-\" 198.51.100.211 \"-\" \"-\" 190daf82ffd-37bcfcaf",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-25 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 38914 \"-\" \"-\" \"-\" TLSv1.2 198.51.100.211 \"-\" 400 0 14 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID 0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "\u0002\u0001\u0001`\u0007\u0002\u0001\u0002\u0004 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 38914 \"-\" \"-\" \"-\" \"-\" 1911cf21246-d88e8ecf",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<190>2052-09-26 15:41:57.830 +0200  barracuda TR 198.51.100.211 443 203.0.113.248 23715 \"-\" \"-\" \"-\" TLSv1.2 198.51.100.211 \"-\" 400 0 14 0 0 198.51.100.211 443 0 \"-\" INTERNAL DEFAULT PROTECTED INVALID 0`\u0007\u0002\u0001\u0002\u0004 \"-\" \"-\" \"-\" \"Unknown\" 203.0.113.248 23715 \"-\" \"-\" \"-\" \"-\" 19119393926-23833f74",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "waf",
+    "dynamic_fields": {
+      "user_agent.version": "^(\\d+\\.\\d+(\\.|\\..*)?|\\d+)$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-barracuda-waf-default",
+    "event_count": 30,
+    "numeric_keyword_fields": [],
+    "package": "barracuda",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,287 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-07-22T10:46:45.000Z",
+      "cisco": {
+        "umbrella": {
+          "audit": {
+            "after": [
+              "version: 5"
+            ],
+            "after_values": {
+              "version": "5"
+            },
+            "before": [
+              "version: 4"
+            ],
+            "before_values": {
+              "version": "4"
+            },
+            "type": "logexportconfigurations"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890",
+        "kind": "event",
+        "original": "\"1234567890\",\"2049-07-22 10:46:45\",\"user@dwofop.com\",\"user\", \"logexportconfigurations\", \"update\",\"198.51.100.211\",\"version: 4\",\"version: 5\"",
+        "type": [
+          "change"
+        ]
+      },
+      "log": {
+        "file": {
+          "path": "/test/path/auditlogs"
+        }
+      },
+      "observer": {
+        "product": "Umbrella",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "user"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "user@dwofop.com",
+        "id": "user@dwofop.com",
+        "name": "user"
+      }
+    },
+    {
+      "@timestamp": "2051-03-28T08:08:07.000Z",
+      "cisco": {
+        "umbrella": {
+          "audit": {
+            "after": [
+              "id: 33333333",
+              "originId: 222222222",
+              "organizationId: 1111111",
+              "onpremActionId: 2",
+              "onpremUser: SYSTEM",
+              "description: name: Host-1234",
+              "action: uninstall",
+              "user: SYSTEM",
+              "",
+              "originTypeId: 34",
+              "createdAt: 2051-03-28 08:08:06"
+            ],
+            "after_values": {
+              "action": "uninstall",
+              "description": "name: Host-1234",
+              "id": "33333333",
+              "onpremActionId": "2",
+              "onpremUser": "SYSTEM",
+              "organizationId": "1111111",
+              "originId": "222222222",
+              "user": "SYSTEM"
+            },
+            "type": "onpremlogentry"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor kv with tag kv_audit_after in pipeline compat-cisco_umbrella-log-default failed with message: field [cisco.umbrella.audit.after] does not contain value_split [:\\s*]"
+        ]
+      },
+      "event": {
+        "action": "create",
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567891",
+        "kind": "event",
+        "original": "\"1234567891\",\"2051-03-28 08:08:07\",\"null\",\"null\",\"onpremlogentry\",\"create\",\"198.51.100.211\",\"\",\"id: 33333333\noriginId: 222222222\norganizationId: 1111111\nonpremActionId: 2\nonpremUser: SYSTEM\ndescription: name: Host-1234\naction: uninstall\nuser: SYSTEM\n\noriginTypeId: 34\ncreatedAt: 2051-03-28 08:08:06\n\"",
+        "type": [
+          "creation"
+        ]
+      },
+      "log": {
+        "file": {
+          "path": "/test/path/auditlogs"
+        }
+      },
+      "observer": {
+        "product": "Umbrella",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-03-24T12:52:25.000Z",
+      "cisco": {
+        "umbrella": {
+          "audit": {
+            "before": [
+              "deviceKey: 1111::2222222",
+              "label: 1787",
+              "bundle: minimal",
+              "phishing: 1",
+              "createdAt: 2051-03-16 09:37:31",
+              "timeZoneName: GMT",
+              "originId: 222222222",
+              "deviceTypeId: 1",
+              "maxBlockedDomains: 25",
+              "maxNoredirectDomains: 25",
+              "maxWhitelistDomains: 10",
+              "organizationId: 1111111",
+              "originTypeId: 34",
+              "modifiedAt: 2051-03-16 09:37:31"
+            ],
+            "before_values": {
+              "bundle": "minimal",
+              "createdAt": "2051-03-16 09:37:31",
+              "deviceKey": "1111::2222222",
+              "deviceTypeId": "1",
+              "label": "1787",
+              "maxBlockedDomains": "25",
+              "maxNoredirectDomains": "25",
+              "maxWhitelistDomains": "10",
+              "modifiedAt": "2051-03-16 09:37:31",
+              "organizationId": "1111111",
+              "originId": "222222222",
+              "originTypeId": "34",
+              "phishing": "1",
+              "timeZoneName": "GMT"
+            },
+            "type": "roamingdevices"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete",
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567892",
+        "kind": "event",
+        "original": "\"1234567892\",\"2051-03-24 12:52:25\",\"duclh@example.com\",\"Firstname Surname\",\"roamingdevices\",\"delete\",\"198.51.100.211\",\"deviceKey: 1111::2222222\nlabel: 1787\nbundle: minimal\nphishing: 1\ncreatedAt: 2051-03-16 09:37:31\ntimeZoneName: GMT\noriginId: 222222222\ndeviceTypeId: 1\nmaxBlockedDomains: 25\nmaxNoredirectDomains: 25\nmaxWhitelistDomains: 10\norganizationId: 1111111\noriginTypeId: 34\nmodifiedAt: 2051-03-16 09:37:31\n\",\"\"",
+        "type": [
+          "deletion"
+        ]
+      },
+      "log": {
+        "file": {
+          "path": "/test/path/auditlogs"
+        }
+      },
+      "observer": {
+        "product": "Umbrella",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "Firstname Surname"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "duclh@example.com",
+        "id": "duclh@example.com",
+        "name": "Firstname Surname"
+      }
+    }
+  ],
+  "input": [
+    {
+      "log": {
+        "file": {
+          "path": "/test/path/auditlogs"
+        }
+      },
+      "message": "\"1234567890\",\"2049-07-22 10:46:45\",\"user@dwofop.com\",\"user\", \"logexportconfigurations\", \"update\",\"198.51.100.211\",\"version: 4\",\"version: 5\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "/test/path/auditlogs"
+        }
+      },
+      "message": "\"1234567891\",\"2051-03-28 08:08:07\",\"null\",\"null\",\"onpremlogentry\",\"create\",\"198.51.100.211\",\"\",\"id: 33333333\noriginId: 222222222\norganizationId: 1111111\nonpremActionId: 2\nonpremUser: SYSTEM\ndescription: name: Host-1234\naction: uninstall\nuser: SYSTEM\n\noriginTypeId: 34\ncreatedAt: 2051-03-28 08:08:06\n\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "log": {
+        "file": {
+          "path": "/test/path/auditlogs"
+        }
+      },
+      "message": "\"1234567892\",\"2051-03-24 12:52:25\",\"duclh@example.com\",\"Firstname Surname\",\"roamingdevices\",\"delete\",\"198.51.100.211\",\"deviceKey: 1111::2222222\nlabel: 1787\nbundle: minimal\nphishing: 1\ncreatedAt: 2051-03-16 09:37:31\ntimeZoneName: GMT\noriginId: 222222222\ndeviceTypeId: 1\nmaxBlockedDomains: 25\nmaxNoredirectDomains: 25\nmaxWhitelistDomains: 10\norganizationId: 1111111\noriginTypeId: 34\nmodifiedAt: 2051-03-16 09:37:31\n\",\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_umbrella-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cisco_umbrella",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

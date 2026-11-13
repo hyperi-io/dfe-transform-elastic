@@ -1,0 +1,4 @@
+2023:04:28-00:00:04 sophos-test-vm1 dhcpd: DHCPDISCOVER from 50:8a:de:b3:c2:84 via eth7: unknown client
+2023:04:28-06:50:45 sophos-test-vm1 dhcpd: DHCPACK on 203.0.113.88 to 50:8a:de:b3:c2:84 (CLIENTHOST) via eth1
+2023:04:28-03:30:27 sophos-test-vm2 dhcpd: Listening on LPF/eth0/50:8a:de:b3:c2:84/89.160.20.0/24
+2023:04:28-03:30:27 sophos-test-vm2 dhcpd: Sending on   LPF/eth0/50:8a:de:b3:c2:84/89.160.20.0/24

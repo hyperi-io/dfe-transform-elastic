@@ -1,0 +1,205 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-04T22:55:23.248Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "elasticsearch",
+          "uuid": "sh0FdC0tRUGgzD6U7OsO3g"
+        },
+        "index": {
+          "id": "AtF5QvIATyu1w2_FUAYsmA",
+          "name": "test_1"
+        },
+        "node": {
+          "id": "rsRsMdvhREeQqLkk3twtqA",
+          "name": "16f5806fc421"
+        },
+        "slowlog": {
+          "id": "3T23CoMBFSKrNP-ROAZr",
+          "source": "{\\\"a\\\":\\\"b\\\"}",
+          "took": "1.1ms"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:55:23.248Z",
+        "dataset": "elasticsearch.slowlog",
+        "duration": 1000000,
+        "ingested": "2026-11-13T23:04:19.022569675Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "rsRsMdvhREeQqLkk3twtqA",
+        "name": "16f5806fc421"
+      },
+      "log": {
+        "level": "TRACE",
+        "logger": "index.indexing.slowlog.index"
+      },
+      "message": "[test_1/AtF5QvIATyu1w2_FUAYsmA]",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[16f5806fc421][write][T#5]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      },
+      "trace": {
+        "id": "3ed4375487aa05cb4427eb215c10322e"
+      }
+    },
+    {
+      "@timestamp": "2050-09-04T22:55:33.323Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "elasticsearch",
+          "uuid": "sh0FdC0tRUGgzD6U7OsO3g"
+        },
+        "index": {
+          "id": "AtF5QvIATyu1w2_FUAYsmA",
+          "name": "test_1"
+        },
+        "node": {
+          "id": "rsRsMdvhREeQqLkk3twtqA",
+          "name": "16f5806fc421"
+        },
+        "slowlog": {
+          "id": "3j23CoMBFSKrNP-RXwbD",
+          "source": "{\\\"a\\\":\\\"b\\\"}",
+          "took": "3.7ms"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:55:33.323Z",
+        "dataset": "elasticsearch.slowlog",
+        "duration": 3000000,
+        "ingested": "2026-11-13T23:04:19.022582565Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "rsRsMdvhREeQqLkk3twtqA",
+        "name": "16f5806fc421"
+      },
+      "log": {
+        "level": "TRACE",
+        "logger": "index.indexing.slowlog.index"
+      },
+      "message": "[test_1/AtF5QvIATyu1w2_FUAYsmA]",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[16f5806fc421][write][T#7]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      },
+      "trace": {
+        "id": "3ed4375487aa05cb4427eb215c10322e"
+      }
+    },
+    {
+      "@timestamp": "2050-09-04T22:55:43.413Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "elasticsearch": {
+        "cluster": {
+          "name": "elasticsearch",
+          "uuid": "sh0FdC0tRUGgzD6U7OsO3g"
+        },
+        "index": {
+          "id": "AtF5QvIATyu1w2_FUAYsmA",
+          "name": "test_1"
+        },
+        "node": {
+          "id": "rsRsMdvhREeQqLkk3twtqA",
+          "name": "16f5806fc421"
+        },
+        "slowlog": {
+          "id": "3z23CoMBFSKrNP-RhwYx",
+          "source": "{\\\"a\\\":\\\"b\\\"}",
+          "took": "1ms"
+        }
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-04T22:55:43.413Z",
+        "dataset": "elasticsearch.slowlog",
+        "duration": 1000000,
+        "ingested": "2026-11-13T23:04:19.022583925Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "rsRsMdvhREeQqLkk3twtqA",
+        "name": "16f5806fc421"
+      },
+      "log": {
+        "level": "TRACE",
+        "logger": "index.indexing.slowlog.index"
+      },
+      "message": "[test_1/AtF5QvIATyu1w2_FUAYsmA]",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[16f5806fc421][write][T#1]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      },
+      "trace": {
+        "id": "3ed4375487aa05cb4427eb215c10322e"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"@timestamp\":\"2050-09-04T22:55:23.248Z\", \"log.level\":\"TRACE\",  \"elasticsearch.slowlog.id\":\"3T23CoMBFSKrNP-ROAZr\",\"elasticsearch.slowlog.message\":\"[test_1/AtF5QvIATyu1w2_FUAYsmA]\",\"elasticsearch.slowlog.source\":\"{\\\\\\\"a\\\\\\\":\\\\\\\"b\\\\\\\"}\",\"elasticsearch.slowlog.took\":\"1.1ms\",\"elasticsearch.slowlog.took_millis\":\"1\" , \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.slowlog\",\"process.thread.name\":\"elasticsearch[16f5806fc421][write][T#5]\",\"log.logger\":\"index.indexing.slowlog.index\",\"trace.id\":\"3ed4375487aa05cb4427eb215c10322e\",\"elasticsearch.cluster.uuid\":\"sh0FdC0tRUGgzD6U7OsO3g\",\"elasticsearch.node.id\":\"rsRsMdvhREeQqLkk3twtqA\",\"elasticsearch.node.name\":\"16f5806fc421\",\"elasticsearch.cluster.name\":\"elasticsearch\"}"
+    },
+    {
+      "message": "{\"@timestamp\":\"2050-09-04T22:55:33.323Z\", \"log.level\":\"TRACE\",  \"elasticsearch.slowlog.id\":\"3j23CoMBFSKrNP-RXwbD\",\"elasticsearch.slowlog.message\":\"[test_1/AtF5QvIATyu1w2_FUAYsmA]\",\"elasticsearch.slowlog.source\":\"{\\\\\\\"a\\\\\\\":\\\\\\\"b\\\\\\\"}\",\"elasticsearch.slowlog.took\":\"3.7ms\",\"elasticsearch.slowlog.took_millis\":\"3\" , \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.slowlog\",\"process.thread.name\":\"elasticsearch[16f5806fc421][write][T#7]\",\"log.logger\":\"index.indexing.slowlog.index\",\"trace.id\":\"3ed4375487aa05cb4427eb215c10322e\",\"elasticsearch.cluster.uuid\":\"sh0FdC0tRUGgzD6U7OsO3g\",\"elasticsearch.node.id\":\"rsRsMdvhREeQqLkk3twtqA\",\"elasticsearch.node.name\":\"16f5806fc421\",\"elasticsearch.cluster.name\":\"elasticsearch\"}"
+    },
+    {
+      "message": "{\"@timestamp\":\"2050-09-04T22:55:43.413Z\", \"log.level\":\"TRACE\",  \"elasticsearch.slowlog.id\":\"3z23CoMBFSKrNP-RhwYx\",\"elasticsearch.slowlog.message\":\"[test_1/AtF5QvIATyu1w2_FUAYsmA]\",\"elasticsearch.slowlog.source\":\"{\\\\\\\"a\\\\\\\":\\\\\\\"b\\\\\\\"}\",\"elasticsearch.slowlog.took\":\"1ms\",\"elasticsearch.slowlog.took_millis\":\"1\" , \"ecs.version\": \"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.slowlog\",\"process.thread.name\":\"elasticsearch[16f5806fc421][write][T#1]\",\"log.logger\":\"index.indexing.slowlog.index\",\"trace.id\":\"3ed4375487aa05cb4427eb215c10322e\",\"elasticsearch.cluster.uuid\":\"sh0FdC0tRUGgzD6U7OsO3g\",\"elasticsearch.node.id\":\"rsRsMdvhREeQqLkk3twtqA\",\"elasticsearch.node.name\":\"16f5806fc421\",\"elasticsearch.cluster.name\":\"elasticsearch\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "slowlog",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-elasticsearch-slowlog-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "elasticsearch",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

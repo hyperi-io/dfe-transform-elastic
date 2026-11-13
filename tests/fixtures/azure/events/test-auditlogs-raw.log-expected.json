@@ -1,0 +1,32 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.auditlogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"AuditLogs\"}",
+      "routing": {
+        "category": "AuditLogs"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"AuditLogs\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,388 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-22T16:44:31.000Z",
+      "agent": {
+        "ephemeral_id": "95f95ec1-ceeb-4627-ad3b-97fc9eef4c25",
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "name": "docker-fleet-agent",
+        "type": "filebeat",
+        "version": "8.15.3"
+      },
+      "destination": {
+        "domain": "10.97.123.53",
+        "user": {
+          "name": "hpe.local\\Dan (ADMIN)"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "elastic_agent": {
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "snapshot": false,
+        "version": "8.15.3"
+      },
+      "event": {
+        "action": "File opened",
+        "agent_id_status": "verified",
+        "category": [
+          "configuration"
+        ],
+        "code": "1",
+        "dataset": "varonis.logs",
+        "end": "2052-11-22T16:34:33.000Z",
+        "kind": "event",
+        "module": "varonis",
+        "original": "CEF:0|Varonis Inc.|DatAdvantage|8.6.51|1|File opened|2|rt=Nov 22 2052 16:44:31 cat=Alert cs2=Dani Test - access of credentials cs2Label=RuleName cn1=184 cn1Label=RuleID end=Nov 22 2052 16:34:33 duser=hpe.local\\\\Dani Lulli (ADMIN) dhost=10.97.123.53 filePath=E:\\\\Share\\\\Share\\\\B4\\\\Project mgmt\\\\U3 projects11.txt:Zone.Identifier fname=U3 projects11.txt:Zone.Identifier act=File opened dvchost= outcome=Success msg= cs3= cs3Label=AttachmentName cs4=test cs4Label=ClientAccessType deviceCustomDate1= fileType=pdf cs1=sbgq@gmail.com cs1Label=MailRecipient suser=Admin cs5=test cs5Label=MailboxAccessType cnt=5 cs6=None cs6Label=ChangedPermissions oldFilePermission=Read filePermission=None dpriv= start=",
+        "outcome": "success",
+        "severity": 2,
+        "severity_label": "critical",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "group": "None",
+        "name": "U3 projects11.txt:Zone.Identifier",
+        "path": "E:\\Share\\Share\\B4\\Project mgmt\\U3 projects11.txt:Zone.Identifier",
+        "type": "pdf"
+      },
+      "input": {
+        "type": "udp"
+      },
+      "message": "File opened",
+      "observer": {
+        "product": "DatAdvantage",
+        "vendor": "Varonis Inc.",
+        "version": "8.6.51"
+      },
+      "source": {
+        "user": {
+          "name": "Admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "cef",
+        "forwarded"
+      ],
+      "varonis": {
+        "logs": {
+          "base_event_count": 5,
+          "changed_permissions": "None",
+          "client_access_type": "test",
+          "device_event_category": "Alert",
+          "mail_recipient": "sbgq@gmail.com",
+          "mailbox_access_type": "test",
+          "old_file_permission": "Read",
+          "rule_id": 184,
+          "rule_name": "Dani Test - access of credentials"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-11-22T16:19:09.000Z",
+      "agent": {
+        "ephemeral_id": "95f95ec1-ceeb-4627-ad3b-97fc9eef4c25",
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "name": "docker-fleet-agent",
+        "type": "filebeat",
+        "version": "8.15.3"
+      },
+      "destination": {
+        "domain": "10.97.123.53",
+        "user": {
+          "group": {
+            "name": "Everyone"
+          },
+          "name": "hpe.local\\Sam (ADMIN)"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "elastic_agent": {
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "snapshot": false,
+        "version": "8.15.3"
+      },
+      "event": {
+        "action": "Folder permissions added",
+        "agent_id_status": "verified",
+        "category": [
+          "configuration"
+        ],
+        "code": "6000",
+        "dataset": "varonis.logs",
+        "end": "2052-11-22T16:19:05.000Z",
+        "kind": "event",
+        "module": "varonis",
+        "original": "CEF:0|Varonis Inc.|DatAdvantage|8.6.51|6000|Folder permissions added|3|rt=Nov 22 2052 16:19:09 cat=Alert cs2=Permissions granted to Global Access Groups cs2Label=RuleName cn1=132 cn1Label=RuleID end=Nov 22 2052 16:19:05 duser=hpe.local\\\\Dani Lulli (ADMIN) dhost=10.97.123.53 filePath=E:\\\\Share\\\\Share\\\\Finance fname=Finance act=Folder permissions added dvchost= outcome=Success msg=Read & Execute permissions for This folder, subfolders and files (not inherited) was added to  Everyone on E:\\\\Share\\\\Share\\\\Finance cs3= cs3Label=AttachmentName cs4=test cs4Label=ClientAccessType deviceCustomDate1= fileType=csv cs1=admin@xcyx.com cs1Label=MailRecipient suser=Admin cs5=test cs5Label=MailboxAccessType cnt=10 cs6=Read & Execute cs6Label=ChangedPermissions oldFilePermission=Read filePermission=Read & Execute dpriv=Everyone start=",
+        "outcome": "success",
+        "severity": 3,
+        "severity_label": "error",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "group": "Read & Execute",
+        "name": "Finance",
+        "path": "E:\\Share\\Share\\Finance",
+        "type": "csv"
+      },
+      "input": {
+        "type": "udp"
+      },
+      "message": "Read & Execute permissions for This folder, subfolders and files (not inherited) was added to  Everyone on E:\\Share\\Share\\Finance",
+      "observer": {
+        "product": "DatAdvantage",
+        "vendor": "Varonis Inc.",
+        "version": "8.6.51"
+      },
+      "source": {
+        "user": {
+          "name": "Admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "cef",
+        "forwarded"
+      ],
+      "varonis": {
+        "logs": {
+          "base_event_count": 10,
+          "changed_permissions": "Read & Execute",
+          "client_access_type": "test",
+          "device_event_category": "Alert",
+          "mail_recipient": "admin@xcyx.com",
+          "mailbox_access_type": "test",
+          "old_file_permission": "Read",
+          "rule_id": 132,
+          "rule_name": "Permissions granted to Global Access Groups"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-11-22T16:44:31.000Z",
+      "agent": {
+        "ephemeral_id": "95f95ec1-ceeb-4627-ad3b-97fc9eef4c25",
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "name": "docker-fleet-agent",
+        "type": "filebeat",
+        "version": "8.15.3"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "1",
+          "product": "DatAdvantage",
+          "vendor": "Varonis Inc.",
+          "version": "8.6.51"
+        },
+        "extensions": {
+          "baseEventCount": 5,
+          "destinationHostName": "10.97.123.53",
+          "destinationUserName": "hpe.local\\Dani (ADMIN)",
+          "deviceAction": "File opened",
+          "deviceCustomNumber1": 184,
+          "deviceCustomNumber1Label": "RuleID",
+          "deviceCustomString1": "sbgq@gmail.com",
+          "deviceCustomString1Label": "MailRecipient",
+          "deviceCustomString2": "Dani Test - access of credentials",
+          "deviceCustomString2Label": "RuleName",
+          "deviceCustomString3Label": "AttachmentName",
+          "deviceCustomString4": "test",
+          "deviceCustomString4Label": "ClientAccessType",
+          "deviceCustomString5": "test",
+          "deviceCustomString5Label": "MailboxAccessType",
+          "deviceCustomString6": "None",
+          "deviceCustomString6Label": "ChangedPermissions",
+          "deviceEventCategory": "Alert",
+          "deviceReceiptTime": "2052-11-22T16:44:31.000Z",
+          "endTime": "2052-11-22T16:34:33.000Z",
+          "eventOutcome": "Success",
+          "filePath": "E:\\Share\\Share\\B4\\Project mgmt\\U3 projects11.txt:Zone.Identifier",
+          "filePermission": "None",
+          "fileType": "pdf",
+          "filename": "U3 projects11.txt:Zone.Identifier",
+          "oldFilePermission": "Read",
+          "sourceUserName": "Admin"
+        },
+        "name": "File opened",
+        "severity": "2",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "10.97.123.53",
+        "user": {
+          "name": "hpe.local\\Dan (ADMIN)"
+        }
+      },
+      "elastic_agent": {
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "snapshot": false,
+        "version": "8.15.3"
+      },
+      "event": {
+        "action": "File opened",
+        "agent_id_status": "verified",
+        "code": "1",
+        "end": "2052-11-22T16:34:33.000Z",
+        "original": "CEF:0|Varonis Inc.|DatAdvantage|8.6.51|1|File opened|2|rt=Nov 22 2052 16:44:31 cat=Alert cs2=Dani Test - access of credentials cs2Label=RuleName cn1=184 cn1Label=RuleID end=Nov 22 2052 16:34:33 duser=hpe.local\\\\Dani Lulli (ADMIN) dhost=10.97.123.53 filePath=E:\\\\Share\\\\Share\\\\B4\\\\Project mgmt\\\\U3 projects11.txt:Zone.Identifier fname=U3 projects11.txt:Zone.Identifier act=File opened dvchost= outcome=Success msg= cs3= cs3Label=AttachmentName cs4=test cs4Label=ClientAccessType deviceCustomDate1= fileType=pdf cs1=sbgq@gmail.com cs1Label=MailRecipient suser=Admin cs5=test cs5Label=MailboxAccessType cnt=5 cs6=None cs6Label=ChangedPermissions oldFilePermission=Read filePermission=None dpriv= start=",
+        "outcome": "Success",
+        "severity": 2
+      },
+      "file": {
+        "group": "None",
+        "name": "U3 projects11.txt:Zone.Identifier",
+        "path": "E:\\Share\\Share\\B4\\Project mgmt\\U3 projects11.txt:Zone.Identifier",
+        "type": "pdf"
+      },
+      "input": {
+        "type": "udp"
+      },
+      "log": {
+        "source": {
+          "address": "172.18.178.250:58319"
+        }
+      },
+      "message": "File opened",
+      "observer": {
+        "product": "DatAdvantage",
+        "vendor": "Varonis Inc.",
+        "version": "8.6.51"
+      },
+      "source": {
+        "user": {
+          "name": "Admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "cef",
+        "forwarded"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-22T16:19:09.000Z",
+      "agent": {
+        "ephemeral_id": "95f95ec1-ceeb-4627-ad3b-97fc9eef4c25",
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "name": "docker-fleet-agent",
+        "type": "filebeat",
+        "version": "8.15.3"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "6000",
+          "product": "DatAdvantage",
+          "vendor": "Varonis Inc.",
+          "version": "8.6.51"
+        },
+        "extensions": {
+          "baseEventCount": 10,
+          "destinationHostName": "10.97.123.53",
+          "destinationUserName": "hpe.local\\Sam(ADMIN)",
+          "destinationUserPrivileges": "Everyone",
+          "deviceAction": "Folder permissions added",
+          "deviceCustomNumber1": 132,
+          "deviceCustomNumber1Label": "RuleID",
+          "deviceCustomString1": "admin@xcyx.com",
+          "deviceCustomString1Label": "MailRecipient",
+          "deviceCustomString2": "Permissions granted to Global Access Groups",
+          "deviceCustomString2Label": "RuleName",
+          "deviceCustomString3Label": "AttachmentName",
+          "deviceCustomString4": "test",
+          "deviceCustomString4Label": "ClientAccessType",
+          "deviceCustomString5": "test",
+          "deviceCustomString5Label": "MailboxAccessType",
+          "deviceCustomString6": "Read & Execute",
+          "deviceCustomString6Label": "ChangedPermissions",
+          "deviceEventCategory": "Alert",
+          "deviceReceiptTime": "2052-11-22T16:19:09.000Z",
+          "endTime": "2052-11-22T16:19:05.000Z",
+          "eventOutcome": "Success",
+          "filePath": "E:\\Share\\Share\\Finance",
+          "filePermission": "Read & Execute",
+          "fileType": "csv",
+          "filename": "Finance",
+          "message": "Read & Execute permissions for This folder, subfolders and files (not inherited) was added to  Everyone on E:\\Share\\Share\\Finance",
+          "oldFilePermission": "Read",
+          "sourceUserName": "Admin"
+        },
+        "name": "Folder permissions added",
+        "severity": "3",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "10.97.123.53",
+        "user": {
+          "group": {
+            "name": "Everyone"
+          },
+          "name": "hpe.local\\Sam (ADMIN)"
+        }
+      },
+      "elastic_agent": {
+        "id": "371fb3e6-c2cc-4bb9-a502-7a3220110eaa",
+        "snapshot": false,
+        "version": "8.15.3"
+      },
+      "event": {
+        "action": "Folder permissions added",
+        "agent_id_status": "verified",
+        "code": "6000",
+        "end": "2052-11-22T16:19:05.000Z",
+        "original": "CEF:0|Varonis Inc.|DatAdvantage|8.6.51|6000|Folder permissions added|3|rt=Nov 22 2052 16:19:09 cat=Alert cs2=Permissions granted to Global Access Groups cs2Label=RuleName cn1=132 cn1Label=RuleID end=Nov 22 2052 16:19:05 duser=hpe.local\\\\Dani Lulli (ADMIN) dhost=10.97.123.53 filePath=E:\\\\Share\\\\Share\\\\Finance fname=Finance act=Folder permissions added dvchost= outcome=Success msg=Read & Execute permissions for This folder, subfolders and files (not inherited) was added to  Everyone on E:\\\\Share\\\\Share\\\\Finance cs3= cs3Label=AttachmentName cs4=test cs4Label=ClientAccessType deviceCustomDate1= fileType=csv cs1=admin@xcyx.com cs1Label=MailRecipient suser=Admin cs5=test cs5Label=MailboxAccessType cnt=10 cs6=Read & Execute cs6Label=ChangedPermissions oldFilePermission=Read filePermission=Read & Execute dpriv=Everyone start=",
+        "outcome": "Success",
+        "severity": 3
+      },
+      "file": {
+        "group": "Read & Execute",
+        "name": "Finance",
+        "path": "E:\\Share\\Share\\Finance",
+        "type": "csv"
+      },
+      "input": {
+        "type": "udp"
+      },
+      "log": {
+        "source": {
+          "address": "172.18.178.250:59639"
+        }
+      },
+      "message": "Read & Execute permissions for This folder, subfolders and files (not inherited) was added to  Everyone on E:\\Share\\Share\\Finance",
+      "observer": {
+        "product": "DatAdvantage",
+        "vendor": "Varonis Inc.",
+        "version": "8.6.51"
+      },
+      "source": {
+        "user": {
+          "name": "Admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "cef",
+        "forwarded"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-varonis-logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "varonis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

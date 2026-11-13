@@ -1,0 +1,1964 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-06-11T09:26:11.000Z",
+      "agent": {
+        "ephemeral_id": "f630ad55-011c-4978-b0e7-07415b0d8d12",
+        "id": "19270d45-fb0c-4cda-b399-347970163c34",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "fx.gov."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "ANY"
+        },
+        "response_code": "NOTIMPL"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-11T09:26:11.000Z",
+        "kind": "event",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN ANY NOTIMPL|1|InfobloxAnCount=0 app=DNS InfobloxArCount=1 InfobloxB1DNSTags=APP_Uncategorized,CAT_Government Sponsored dvc=192.0.2.54 dvchost=192.0.2.54 InfobloxB1DHCPFingerprint= InfobloxB1OPHName=SAMPLE_DFP InfobloxB1OPHIPAddress=203.0.113.138 smac= InfobloxB1Network=SAMPLE_DFP (DFP) InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=dfp suser= InfobloxDNSQFlags=-EV msg=. 0 Reserved OPT  InfobloxNsCount=0 InfobloxDNSQClass=IN src=192.0.2.54 destinationDnsDomain=fx.gov. spt=31988 InfobloxDNSQType=ANY InfobloxDNSRCode=NOTIMPL InfobloxB1Region=us-east-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.54"
+        ],
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-11T09:26:11.000Z",
+          "destination": {
+            "dns_domain": "fx.gov."
+          },
+          "device": {
+            "address": "192.0.2.54",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.54",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "1",
+            "b1": {
+              "connection_type": "dfp",
+              "dns_tags": "APP_Uncategorized,CAT_Government Sponsored",
+              "network": "SAMPLE_DFP (DFP)",
+              "oph": {
+                "ip_address": "203.0.113.138",
+                "name": "SAMPLE_DFP"
+              },
+              "region": "us-east-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "-EV",
+              "type": "ANY"
+            },
+            "dns_r_code": "NOTIMPL",
+            "ns_count": "0"
+          },
+          "message": ". 0 Reserved OPT ",
+          "name": "DNS Response IN ANY NOTIMPL",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.54",
+            "port": 31988
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "message": ". 0 Reserved OPT ",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.54",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "203.0.113.138"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 31988
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:41.168Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "jgenp5223.fdqzrmla.de."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-09T06:11:41.168Z",
+        "kind": "event",
+        "original": "<134>1 2053-06-08T15:42:47Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.54 dvchost=192.0.2.54 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress=203.0.113.138 smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3594 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749397237 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.54 destinationDnsDomain=jgenp5223.fdqzrmla.de. spt=10069 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.54"
+        ],
+        "name": "co7-50-9-149",
+        "os": {
+          "full": "Windows Server 2025 Datacenter"
+        }
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-09T06:11:41.168Z",
+          "destination": {
+            "dns_domain": "jgenp5223.fdqzrmla.de."
+          },
+          "device": {
+            "address": "192.0.2.54",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.54",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "0",
+            "b1": {
+              "connection_type": "remote_office",
+              "dhcp_fingerprint": "Sample Fingerprint value",
+              "dns_tags": "APP_Uncategorized,CAT_Uncategorized",
+              "network": "SAMPLE_DFP (DFP)",
+              "oph": {
+                "ip_address": "203.0.113.138",
+                "name": "SAMPLE_DFP"
+              },
+              "region": "us-west-1",
+              "src_os_version": "Windows Server 2025 Datacenter"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "+EV",
+              "type": "A"
+            },
+            "dns_r_code": "NXDOMAIN",
+            "ns_count": "1"
+          },
+          "message": "de. 3594 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749397237 7200 7200 3600000 7200",
+          "name": "DNS Response IN A NXDOMAIN",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.54",
+            "port": 10069
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "message": "de. 3594 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749397237 7200 7200 3600000 7200",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.54",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "203.0.113.138"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 10069
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.133Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "yge-ailrej.kfqlipqd.de."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "ANY"
+        },
+        "response_code": "NOTIMPL"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-09T06:11:38.133Z",
+        "kind": "event",
+        "original": "<134>1 2053-06-08T15:42:25Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN ANY NOTIMPL|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.54 dvchost=192.0.2.54 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=-EV msg= InfobloxNsCount=0 InfobloxDNSQClass=IN src=192.0.2.54 destinationDnsDomain=yge-ailrej.kfqlipqd.de. spt=10069 InfobloxDNSQType=ANY InfobloxDNSRCode=NOTIMPL InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.54"
+        ],
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-09T06:11:38.133Z",
+          "destination": {
+            "dns_domain": "yge-ailrej.kfqlipqd.de."
+          },
+          "device": {
+            "address": "192.0.2.54",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.54",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "0",
+            "b1": {
+              "connection_type": "remote_office",
+              "dns_tags": "APP_Uncategorized,CAT_Uncategorized",
+              "region": "us-west-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "-EV",
+              "type": "ANY"
+            },
+            "dns_r_code": "NOTIMPL",
+            "ns_count": "0"
+          },
+          "name": "DNS Response IN ANY NOTIMPL",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.54",
+            "port": 10069
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.54",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 10069
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.137Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "opfpt4662.dfydiycn.de."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-09T06:11:38.137Z",
+        "kind": "event",
+        "original": "<134>1 2053-06-08T23:44:38Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.87 dvchost=192.0.2.87 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3543 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.87 destinationDnsDomain=opfpt4662.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-09T06:11:38.137Z",
+          "destination": {
+            "dns_domain": "opfpt4662.dfydiycn.de."
+          },
+          "device": {
+            "address": "192.0.2.87",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.87",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "0",
+            "b1": {
+              "connection_type": "remote_office",
+              "dns_tags": "APP_Uncategorized,CAT_Uncategorized",
+              "region": "us-west-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "+EV",
+              "type": "A"
+            },
+            "dns_r_code": "NXDOMAIN",
+            "ns_count": "1"
+          },
+          "message": "de. 3543 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "name": "DNS Response IN A NXDOMAIN",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.87",
+            "port": 58659
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "message": "de. 3543 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.87",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.144Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "utbwl1977.dfydiycn.de."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-09T06:11:38.144Z",
+        "kind": "event",
+        "original": "<134>1 2053-06-08T23:44:45Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.87 dvchost=192.0.2.87 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3536 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.87 destinationDnsDomain=utbwl1977.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-09T06:11:38.144Z",
+          "destination": {
+            "dns_domain": "utbwl1977.dfydiycn.de."
+          },
+          "device": {
+            "address": "192.0.2.87",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.87",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "0",
+            "b1": {
+              "connection_type": "remote_office",
+              "dns_tags": "APP_Uncategorized,CAT_Uncategorized",
+              "region": "us-west-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "+EV",
+              "type": "A"
+            },
+            "dns_r_code": "NXDOMAIN",
+            "ns_count": "1"
+          },
+          "message": "de. 3536 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "name": "DNS Response IN A NXDOMAIN",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.87",
+            "port": 58659
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "message": "de. 3536 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.87",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.145Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "tnbui3747.dfydiycn.de."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-09T06:11:38.145Z",
+        "kind": "event",
+        "original": "<134>1 2053-06-08T23:44:46Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.87 dvchost=192.0.2.87 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3525 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.87 destinationDnsDomain=tnbui3747.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-09T06:11:38.145Z",
+          "destination": {
+            "dns_domain": "tnbui3747.dfydiycn.de."
+          },
+          "device": {
+            "address": "192.0.2.87",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.87",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "0",
+            "b1": {
+              "connection_type": "remote_office",
+              "dns_tags": "APP_Uncategorized,CAT_Uncategorized",
+              "region": "us-west-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "+EV",
+              "type": "A"
+            },
+            "dns_r_code": "NXDOMAIN",
+            "ns_count": "1"
+          },
+          "message": "de. 3525 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "name": "DNS Response IN A NXDOMAIN",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.87",
+            "port": 58659
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "message": "de. 3525 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.87",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.139Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "vlcgq0118.dfydiycn.de."
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "A"
+        },
+        "response_code": "NXDOMAIN"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2053-06-09T06:11:38.139Z",
+        "kind": "event",
+        "original": "<134>1 2053-06-08T23:44:37Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.134 dvchost=192.0.2.134 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3544 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.134 destinationDnsDomain=vlcgq0118.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.134"
+        ],
+        "name": "co7-50-9-149"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2053-06-09T06:11:38.139Z",
+          "destination": {
+            "dns_domain": "vlcgq0118.dfydiycn.de."
+          },
+          "device": {
+            "address": "192.0.2.134",
+            "event_class_id": "DNS Response",
+            "host_ip": "192.0.2.134",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "0",
+            "ar_count": "0",
+            "b1": {
+              "connection_type": "remote_office",
+              "dns_tags": "APP_Uncategorized,CAT_Uncategorized",
+              "region": "us-west-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "+EV",
+              "type": "A"
+            },
+            "dns_r_code": "NXDOMAIN",
+            "ns_count": "1"
+          },
+          "message": "de. 3544 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "name": "DNS Response IN A NXDOMAIN",
+          "severity": 1,
+          "source": {
+            "address": "192.0.2.134",
+            "port": 58659
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "hostname": "TDXHLB_GMOP",
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        }
+      },
+      "message": "de. 3544 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.134",
+        "ip": [
+          "192.0.2.134"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co7-50-9-149"
+        ],
+        "ip": [
+          "192.0.2.134"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.134",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-03-03T12:07:35.000Z",
+      "agent": {
+        "ephemeral_id": "0f350d7b-3a1f-4672-9d9a-f2abe707a5a4",
+        "id": "56ee9273-585c-4af9-94da-7a22b52957c9",
+        "name": "co8-50-6-111",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "destination": {
+        "domain": "uj.cnimf.net.",
+        "ip": "203.0.113.212"
+      },
+      "dns": {
+        "question": {
+          "class": "IN",
+          "type": "AAAA"
+        },
+        "response_code": "NOERROR"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "DNS Response",
+        "created": "2049-03-03T12:07:35.000Z",
+        "kind": "event",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN AAAA NOERROR|1|dst=203.0.113.212 src=203.0.113.248 spt=14024 proto=TCP app=DNS InfobloxDNSView=someview destinationDnsDomain=uj.cnimf.net. InfobloxDNSQClass=IN InfobloxDNSQType=AAAA InfobloxDNSQFlags=+EV InfobloxDNSRCode=NOERROR msg=\"uj.cnimf.net. 300 IN CNAME f2bx5bx6qsz55o.eusxffjlhk.net.; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bab1:ee54:a15d:bea1:d7b2:b7fa; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:329b:e34:d702:f4aa:4f60:196; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:21f1:6745:ea16:1ce7:37c7:3804; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:d8ac:85d2:12a9:68ad:4f41:fdac; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:a1c3:af4b:fe4e:5439:da0a:73c7; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bbf4:8049:bb9a:ce7c:76b2:a003; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:571f:9c:529b:9178:4658:58d4; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:dea0:6a53:ac81:eedd:83b3:3c24; . 0 4096 OPT \" InfobloxAnCount=9 InfobloxNsCount=0 InfobloxArCount=1 InfobloxB1Region=us-east-1 InfobloxB1ConnectionType= InfobloxB1OPHName= InfobloxB1OPHIPAddress= InfobloxB1Network= suser=zqay7 dvchost= smac=28:0d:79:f2:46:24 dvc= InfobloxB1SrcOSVersion= InfobloxB1DHCPFingerprint= InfobloxB1DNSTags=",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "co8-50-6-111"
+      },
+      "infoblox_threat_defense": {
+        "event": {
+          "application_protocol": "DNS",
+          "created": "2049-03-03T12:07:35.000Z",
+          "destination": {
+            "address": "203.0.113.212",
+            "dns_domain": "uj.cnimf.net."
+          },
+          "device": {
+            "event_class_id": "DNS Response",
+            "product": "Data Connector",
+            "vendor": "Infoblox",
+            "version": "2.1.3"
+          },
+          "infoblox": {
+            "an_count": "9",
+            "ar_count": "1",
+            "b1": {
+              "region": "us-east-1"
+            },
+            "dns_q": {
+              "class": "IN",
+              "flags": "+EV",
+              "type": "AAAA"
+            },
+            "dns_r_code": "NOERROR",
+            "dns_view": "someview",
+            "ns_count": "0"
+          },
+          "message": "uj.cnimf.net. 300 IN CNAME f2bx5bx6qsz55o.eusxffjlhk.net.; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bab1:ee54:a15d:bea1:d7b2:b7fa; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:329b:e34:d702:f4aa:4f60:196; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:21f1:6745:ea16:1ce7:37c7:3804; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:d8ac:85d2:12a9:68ad:4f41:fdac; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:a1c3:af4b:fe4e:5439:da0a:73c7; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bbf4:8049:bb9a:ce7c:76b2:a003; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:571f:9c:529b:9178:4658:58d4; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:dea0:6a53:ac81:eedd:83b3:3c24; . 0 4096 OPT ",
+          "name": "DNS Response IN AAAA NOERROR",
+          "severity": 1,
+          "source": {
+            "address": "203.0.113.248",
+            "mac_address": "28:0d:79:f2:46:24",
+            "port": 14024,
+            "user_name": "zqay7"
+          },
+          "syslog": {
+            "appname": "dataconnector",
+            "facility": {
+              "code": 16,
+              "name": "local0"
+            },
+            "msgid": "DNS-RESPONSE",
+            "priority": 134,
+            "severity": {
+              "code": 6,
+              "name": "Informational"
+            },
+            "version": "1"
+          },
+          "transport_protocol": "TCP",
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "offset": 4882
+      },
+      "message": "uj.cnimf.net. 300 IN CNAME f2bx5bx6qsz55o.eusxffjlhk.net.; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bab1:ee54:a15d:bea1:d7b2:b7fa; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:329b:e34:d702:f4aa:4f60:196; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:21f1:6745:ea16:1ce7:37c7:3804; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:d8ac:85d2:12a9:68ad:4f41:fdac; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:a1c3:af4b:fe4e:5439:da0a:73c7; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bbf4:8049:bb9a:ce7c:76b2:a003; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:571f:9c:529b:9178:4658:58d4; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:dea0:6a53:ac81:eedd:83b3:3c24; . 0 4096 OPT ",
+      "network": {
+        "application": "dns",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "related": {
+        "hosts": [
+          "co8-50-6-111"
+        ],
+        "ip": [
+          "203.0.113.248",
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "mac": "59-3F-57-C4-00-91",
+        "port": 14024,
+        "user": {
+          "name": "zqay7"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-06-11T09:26:11.000Z",
+      "agent": {
+        "ephemeral_id": "f630ad55-011c-4978-b0e7-07415b0d8d12",
+        "id": "19270d45-fb0c-4cda-b399-347970163c34",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "1",
+          "InfobloxB1ConnectionType": "dfp",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Government Sponsored",
+          "InfobloxB1Network": "SAMPLE_DFP (DFP)",
+          "InfobloxB1OPHIPAddress": "203.0.113.138",
+          "InfobloxB1OPHName": "SAMPLE_DFP",
+          "InfobloxB1Region": "us-east-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "-EV",
+          "InfobloxDNSQType": "ANY",
+          "InfobloxDNSRCode": "NOTIMPL",
+          "InfobloxNsCount": "0",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "fx.gov.",
+          "deviceAddress": "192.0.2.54",
+          "deviceHostName": "192.0.2.54",
+          "message": ". 0 Reserved OPT ",
+          "sourceAddress": "192.0.2.54",
+          "sourcePort": 31988,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN ANY NOTIMPL",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "fx.gov."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN ANY NOTIMPL|1|InfobloxAnCount=0 app=DNS InfobloxArCount=1 InfobloxB1DNSTags=APP_Uncategorized,CAT_Government Sponsored dvc=192.0.2.54 dvchost=192.0.2.54 InfobloxB1DHCPFingerprint= InfobloxB1OPHName=SAMPLE_DFP InfobloxB1OPHIPAddress=203.0.113.138 smac= InfobloxB1Network=SAMPLE_DFP (DFP) InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=dfp suser= InfobloxDNSQFlags=-EV msg=. 0 Reserved OPT  InfobloxNsCount=0 InfobloxDNSQClass=IN src=192.0.2.54 destinationDnsDomain=fx.gov. spt=31988 InfobloxDNSQType=ANY InfobloxDNSRCode=NOTIMPL InfobloxB1Region=us-east-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": ". 0 Reserved OPT ",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.54",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 31988
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:41.168Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "0",
+          "InfobloxB1ConnectionType": "remote_office",
+          "InfobloxB1DHCPFingerprint": "Sample Fingerprint value",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Uncategorized",
+          "InfobloxB1Network": "SAMPLE_DFP (DFP)",
+          "InfobloxB1OPHIPAddress": "203.0.113.138",
+          "InfobloxB1OPHName": "SAMPLE_DFP",
+          "InfobloxB1Region": "us-west-1",
+          "InfobloxB1SrcOSVersion": "Windows Server 2025 Datacenter",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "+EV",
+          "InfobloxDNSQType": "A",
+          "InfobloxDNSRCode": "NXDOMAIN",
+          "InfobloxNsCount": "1",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "jgenp5223.fdqzrmla.de.",
+          "deviceAddress": "192.0.2.54",
+          "deviceHostName": "192.0.2.54",
+          "message": "de. 3594 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749397237 7200 7200 3600000 7200",
+          "sourceAddress": "192.0.2.54",
+          "sourcePort": 10069,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN A NXDOMAIN",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "jgenp5223.fdqzrmla.de."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "<134>1 2053-06-08T15:42:47Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.54 dvchost=192.0.2.54 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress=203.0.113.138 smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3594 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749397237 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.54 destinationDnsDomain=jgenp5223.fdqzrmla.de. spt=10069 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "de. 3594 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749397237 7200 7200 3600000 7200",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.54",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 10069
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.133Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "0",
+          "InfobloxB1ConnectionType": "remote_office",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Uncategorized",
+          "InfobloxB1Network": "",
+          "InfobloxB1OPHIPAddress": "",
+          "InfobloxB1OPHName": "",
+          "InfobloxB1Region": "us-west-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "-EV",
+          "InfobloxDNSQType": "ANY",
+          "InfobloxDNSRCode": "NOTIMPL",
+          "InfobloxNsCount": "0",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "yge-ailrej.kfqlipqd.de.",
+          "deviceAddress": "192.0.2.54",
+          "deviceHostName": "192.0.2.54",
+          "sourceAddress": "192.0.2.54",
+          "sourcePort": 10069,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN ANY NOTIMPL",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "yge-ailrej.kfqlipqd.de."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "<134>1 2053-06-08T15:42:25Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN ANY NOTIMPL|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.54 dvchost=192.0.2.54 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=-EV msg= InfobloxNsCount=0 InfobloxDNSQClass=IN src=192.0.2.54 destinationDnsDomain=yge-ailrej.kfqlipqd.de. spt=10069 InfobloxDNSQType=ANY InfobloxDNSRCode=NOTIMPL InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "DNS Response IN ANY NOTIMPL",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.54",
+        "ip": [
+          "192.0.2.54"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 10069
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.137Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "0",
+          "InfobloxB1ConnectionType": "remote_office",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Uncategorized",
+          "InfobloxB1Network": "",
+          "InfobloxB1OPHIPAddress": "",
+          "InfobloxB1OPHName": "",
+          "InfobloxB1Region": "us-west-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "+EV",
+          "InfobloxDNSQType": "A",
+          "InfobloxDNSRCode": "NXDOMAIN",
+          "InfobloxNsCount": "1",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "opfpt4662.dfydiycn.de.",
+          "deviceAddress": "192.0.2.87",
+          "deviceHostName": "192.0.2.87",
+          "message": "de. 3543 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "sourceAddress": "192.0.2.87",
+          "sourcePort": 58659,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN A NXDOMAIN",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "opfpt4662.dfydiycn.de."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "<134>1 2053-06-08T23:44:38Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.87 dvchost=192.0.2.87 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3543 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.87 destinationDnsDomain=opfpt4662.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "de. 3543 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.87",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.144Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "0",
+          "InfobloxB1ConnectionType": "remote_office",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Uncategorized",
+          "InfobloxB1Network": "",
+          "InfobloxB1OPHIPAddress": "",
+          "InfobloxB1OPHName": "",
+          "InfobloxB1Region": "us-west-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "+EV",
+          "InfobloxDNSQType": "A",
+          "InfobloxDNSRCode": "NXDOMAIN",
+          "InfobloxNsCount": "1",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "utbwl1977.dfydiycn.de.",
+          "deviceAddress": "192.0.2.87",
+          "deviceHostName": "192.0.2.87",
+          "message": "de. 3536 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "sourceAddress": "192.0.2.87",
+          "sourcePort": 58659,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN A NXDOMAIN",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "utbwl1977.dfydiycn.de."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "<134>1 2053-06-08T23:44:45Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.87 dvchost=192.0.2.87 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3536 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.87 destinationDnsDomain=utbwl1977.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "de. 3536 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.87",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.145Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "0",
+          "InfobloxB1ConnectionType": "remote_office",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Uncategorized",
+          "InfobloxB1Network": "",
+          "InfobloxB1OPHIPAddress": "",
+          "InfobloxB1OPHName": "",
+          "InfobloxB1Region": "us-west-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "+EV",
+          "InfobloxDNSQType": "A",
+          "InfobloxDNSRCode": "NXDOMAIN",
+          "InfobloxNsCount": "1",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "tnbui3747.dfydiycn.de.",
+          "deviceAddress": "192.0.2.87",
+          "deviceHostName": "192.0.2.87",
+          "message": "de. 3525 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "sourceAddress": "192.0.2.87",
+          "sourcePort": 58659,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN A NXDOMAIN",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "tnbui3747.dfydiycn.de."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "<134>1 2053-06-08T23:44:46Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.87 dvchost=192.0.2.87 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3525 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.87 destinationDnsDomain=tnbui3747.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "de. 3525 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.87",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-09T06:11:38.139Z",
+      "agent": {
+        "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+        "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+        "name": "co7-50-9-149",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "0",
+          "InfobloxArCount": "0",
+          "InfobloxB1ConnectionType": "remote_office",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1DNSTags": "APP_Uncategorized,CAT_Uncategorized",
+          "InfobloxB1Network": "",
+          "InfobloxB1OPHIPAddress": "",
+          "InfobloxB1OPHName": "",
+          "InfobloxB1Region": "us-west-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "+EV",
+          "InfobloxDNSQType": "A",
+          "InfobloxDNSRCode": "NXDOMAIN",
+          "InfobloxNsCount": "1",
+          "applicationProtocol": "DNS",
+          "destinationDnsDomain": "vlcgq0118.dfydiycn.de.",
+          "deviceAddress": "192.0.2.134",
+          "deviceHostName": "192.0.2.134",
+          "message": "de. 3544 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+          "sourceAddress": "192.0.2.134",
+          "sourcePort": 58659,
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN A NXDOMAIN",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "vlcgq0118.dfydiycn.de."
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "<134>1 2053-06-08T23:44:37Z TDXHLB_GMOP dataconnector - DNS-RESPONSE - CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN A NXDOMAIN|1|InfobloxAnCount=0 app=DNS InfobloxArCount=0 InfobloxB1DNSTags=APP_Uncategorized,CAT_Uncategorized dvc=192.0.2.134 dvchost=192.0.2.134 InfobloxB1DHCPFingerprint= InfobloxB1OPHName= InfobloxB1OPHIPAddress= smac= InfobloxB1Network= InfobloxB1SrcOSVersion= InfobloxB1ConnectionType=remote_office suser= InfobloxDNSQFlags=+EV msg=de. 3544 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200 InfobloxNsCount=1 InfobloxDNSQClass=IN src=192.0.2.134 destinationDnsDomain=vlcgq0118.dfydiycn.de. spt=58659 InfobloxDNSQType=A InfobloxDNSRCode=NXDOMAIN InfobloxB1Region=us-west-1 dst= proto=TCP InfobloxDNSView=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co7-50-9-149"
+      },
+      "input": {
+        "type": "tcp"
+      },
+      "log": {
+        "source": {
+          "address": "192.0.2.54:39126"
+        },
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "hostname": "TDXHLB_GMOP",
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "de. 3544 IN SOA f.trf.de. bqx-indpdtymux.afyxa.de. 1749426160 7200 7200 3600000 7200",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "hostname": "192.0.2.134",
+        "ip": [
+          "192.0.2.134"
+        ],
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "192.0.2.134",
+        "port": 58659
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2049-03-03T12:07:35.000Z",
+      "agent": {
+        "ephemeral_id": "0f350d7b-3a1f-4672-9d9a-f2abe707a5a4",
+        "id": "56ee9273-585c-4af9-94da-7a22b52957c9",
+        "name": "co8-50-6-111",
+        "type": "filebeat",
+        "version": "9.1.0"
+      },
+      "cef": {
+        "device": {
+          "event_class_id": "DNS Response",
+          "product": "Data Connector",
+          "vendor": "Infoblox",
+          "version": "2.1.3"
+        },
+        "extensions": {
+          "InfobloxAnCount": "9",
+          "InfobloxArCount": "1",
+          "InfobloxB1ConnectionType": "",
+          "InfobloxB1DHCPFingerprint": "",
+          "InfobloxB1Network": "",
+          "InfobloxB1OPHIPAddress": "",
+          "InfobloxB1OPHName": "",
+          "InfobloxB1Region": "us-east-1",
+          "InfobloxB1SrcOSVersion": "",
+          "InfobloxDNSQClass": "IN",
+          "InfobloxDNSQFlags": "+EV",
+          "InfobloxDNSQType": "AAAA",
+          "InfobloxDNSRCode": "NOERROR",
+          "InfobloxDNSView": "someview",
+          "InfobloxNsCount": "0",
+          "applicationProtocol": "DNS",
+          "destinationAddress": "203.0.113.212",
+          "destinationDnsDomain": "uj.cnimf.net.",
+          "message": "\"uj.cnimf.net. 300 IN CNAME f2bx5bx6qsz55o.eusxffjlhk.net.; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bab1:ee54:a15d:bea1:d7b2:b7fa; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:329b:e34:d702:f4aa:4f60:196; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:21f1:6745:ea16:1ce7:37c7:3804; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:d8ac:85d2:12a9:68ad:4f41:fdac; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:a1c3:af4b:fe4e:5439:da0a:73c7; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bbf4:8049:bb9a:ce7c:76b2:a003; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:571f:9c:529b:9178:4658:58d4; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:dea0:6a53:ac81:eedd:83b3:3c24; . 0 4096 OPT \"",
+          "sourceAddress": "203.0.113.248",
+          "sourceMacAddress": "28:0d:79:f2:46:24",
+          "sourcePort": 14024,
+          "sourceUserName": "zqay7",
+          "transportProtocol": "TCP"
+        },
+        "name": "DNS Response IN AAAA NOERROR",
+        "severity": "1",
+        "version": "0"
+      },
+      "destination": {
+        "domain": "uj.cnimf.net.",
+        "ip": "203.0.113.212"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "code": "DNS Response",
+        "original": "CEF:0|Infoblox|Data Connector|2.1.3|DNS Response|DNS Response IN AAAA NOERROR|1|dst=203.0.113.212 src=203.0.113.248 spt=14024 proto=TCP app=DNS InfobloxDNSView=someview destinationDnsDomain=uj.cnimf.net. InfobloxDNSQClass=IN InfobloxDNSQType=AAAA InfobloxDNSQFlags=+EV InfobloxDNSRCode=NOERROR msg=\"uj.cnimf.net. 300 IN CNAME f2bx5bx6qsz55o.eusxffjlhk.net.; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bab1:ee54:a15d:bea1:d7b2:b7fa; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:329b:e34:d702:f4aa:4f60:196; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:21f1:6745:ea16:1ce7:37c7:3804; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:d8ac:85d2:12a9:68ad:4f41:fdac; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:a1c3:af4b:fe4e:5439:da0a:73c7; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bbf4:8049:bb9a:ce7c:76b2:a003; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:571f:9c:529b:9178:4658:58d4; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:dea0:6a53:ac81:eedd:83b3:3c24; . 0 4096 OPT \" InfobloxAnCount=9 InfobloxNsCount=0 InfobloxArCount=1 InfobloxB1Region=us-east-1 InfobloxB1ConnectionType= InfobloxB1OPHName= InfobloxB1OPHIPAddress= InfobloxB1Network= suser=zqay7 dvchost= smac=28:0d:79:f2:46:24 dvc= InfobloxB1SrcOSVersion= InfobloxB1DHCPFingerprint= InfobloxB1DNSTags=",
+        "severity": 1
+      },
+      "host": {
+        "name": "co8-50-6-111"
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "offset": 4882,
+        "syslog": {
+          "appname": "dataconnector",
+          "facility": {
+            "code": 16,
+            "name": "local0"
+          },
+          "msgid": "DNS-RESPONSE",
+          "priority": 134,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          },
+          "version": "1"
+        }
+      },
+      "message": "\"uj.cnimf.net. 300 IN CNAME f2bx5bx6qsz55o.eusxffjlhk.net.; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bab1:ee54:a15d:bea1:d7b2:b7fa; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:329b:e34:d702:f4aa:4f60:196; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:21f1:6745:ea16:1ce7:37c7:3804; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:d8ac:85d2:12a9:68ad:4f41:fdac; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:a1c3:af4b:fe4e:5439:da0a:73c7; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:bbf4:8049:bb9a:ce7c:76b2:a003; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:571f:9c:529b:9178:4658:58d4; f2bx5bx6qsz55o.eusxffjlhk.net. 60 IN AAAA 2001:db8:dea0:6a53:ac81:eedd:83b3:3c24; . 0 4096 OPT \"",
+      "network": {
+        "application": "DNS",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Data Connector",
+        "vendor": "Infoblox",
+        "version": "2.1.3"
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "mac": "59-3F-57-C4-00-91",
+        "port": 14024,
+        "user": {
+          "name": "zqay7"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-infoblox_threat_defense-event-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "infoblox_threat_defense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-02-10T06:20:16.000Z",
+      "destination": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "alert",
+        "original": "{ \"_bkt\": \"notable~70~E57B27EA-1F63-4B71-B296-89DCDEF5A240\", \"_cd\": \"70:13771\", \"_indextime\": \"2622781216\", \"_raw\": \"1739168412, search_name=\\\"Access - Excessive Failed Logins - Rule\\\", app=\\\"ssl-web\\\", craction=\\\"4\\\", count=\\\"5\\\", ip=\\\"198.51.100.144\\\", tz=\\\"555\\\", time=\\\"10/01/24 18:57:12\\\", vd=\\\"avc\\\", annotations.mitre_attack.mitre_tactic_id=\\\"mite\\\", annotations.mitre_attack.mitre_tactic=\\\"mite\\\", annotations.mitre_attack.mitre_technique_id=\\\"mite\\\", annotations.mitre_attack.mitre_technique=\\\"mite\\\", dest_count=\\\"1\\\", info_max_time=\\\"2622780900.000000000\\\", info_min_time=\\\"2622777300.000000000\\\", info_search_time=\\\"2622781203.176027000\\\", src=\\\"203.0.113.248\\\", orig_tag=\\\"authentication\\\", orig_tag=\\\"default\\\", orig_tag=\\\"error\\\", orig_tag=\\\"failure\\\", user_count=\\\"1\\\"\", \"_serial\": \"476\", \"_si\": [ \"198.51.100.144\", \"notable\" ], \"_sourcetype\": \"stash\", \"_time\": \"2053-02-10T11:50:16.000+05:30\", \"host\": \"198.51.100.144\", \"index\": \"notable\", \"linecount\": \"1\", \"source\": \"Access - Excessive Failed Logins - Rule\", \"sourcetype\": \"stash\", \"splunk_server\": \"198.51.100.144\" }",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "message": "1739168412, search_name=\"Access - Excessive Failed Logins - Rule\", app=\"ssl-web\", craction=\"4\", count=\"5\", ip=\"198.51.100.144\", tz=\"555\", time=\"10/01/24 18:57:12\", vd=\"avc\", annotations.mitre_attack.mitre_tactic_id=\"mite\", annotations.mitre_attack.mitre_tactic=\"mite\", annotations.mitre_attack.mitre_technique_id=\"mite\", annotations.mitre_attack.mitre_technique=\"mite\", dest_count=\"1\", info_max_time=\"2622780900.000000000\", info_min_time=\"2622777300.000000000\", info_search_time=\"2622781203.176027000\", src=\"203.0.113.248\", orig_tag=\"authentication\", orig_tag=\"default\", orig_tag=\"error\", orig_tag=\"failure\", user_count=\"1\"",
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "name": "Access - Excessive Failed Logins - Rule"
+      },
+      "source": {
+        "address": "203.0.113.248",
+        "ip": [
+          "203.0.113.248"
+        ]
+      },
+      "splunk": {
+        "alert": {
+          "_bkt": "notable~70~E57B27EA-1F63-4B71-B296-89DCDEF5A240",
+          "_cd": "70:13771",
+          "_indextime": "2053-02-10T06:20:16.000Z",
+          "_raw": "1739168412, search_name=\"Access - Excessive Failed Logins - Rule\", app=\"ssl-web\", craction=\"4\", count=\"5\", ip=\"198.51.100.144\", tz=\"555\", time=\"10/01/24 18:57:12\", vd=\"avc\", annotations.mitre_attack.mitre_tactic_id=\"mite\", annotations.mitre_attack.mitre_tactic=\"mite\", annotations.mitre_attack.mitre_technique_id=\"mite\", annotations.mitre_attack.mitre_technique=\"mite\", dest_count=\"1\", info_max_time=\"2622780900.000000000\", info_min_time=\"2622777300.000000000\", info_search_time=\"2622781203.176027000\", src=\"203.0.113.248\", orig_tag=\"authentication\", orig_tag=\"default\", orig_tag=\"error\", orig_tag=\"failure\", user_count=\"1\"",
+          "_serial": "476",
+          "_si": [
+            "198.51.100.144",
+            "notable"
+          ],
+          "_sourcetype": "stash",
+          "_time": "2053-02-10T06:20:16.000Z",
+          "annotations": {
+            "mitre_attack": {
+              "mitre_tactic": "mite",
+              "mitre_tactic_id": "mite",
+              "mitre_technique": "mite",
+              "mitre_technique_id": "mite"
+            }
+          },
+          "app": "ssl-web",
+          "count": 5.0,
+          "craction": 4,
+          "dest_count": 1,
+          "friendly_name": "Access - Excessive Failed Logins - Rule",
+          "host": "198.51.100.144",
+          "index": "notable",
+          "info_max_time": "2053-02-10T06:15:00.000Z",
+          "info_min_time": "2053-02-10T05:15:00.000Z",
+          "info_search_time": "2053-02-10T06:20:03.176Z",
+          "ip": "198.51.100.144",
+          "linecount": 1,
+          "orig_tag": [
+            "authentication",
+            "default",
+            "error",
+            "failure"
+          ],
+          "raw_timestamp": "2025-02-10T06:20:12.000Z",
+          "search_name": "Access - Excessive Failed Logins - Rule",
+          "source": "Access - Excessive Failed Logins - Rule",
+          "sourcetype": "stash",
+          "splunk_server": "198.51.100.144",
+          "src": "203.0.113.248",
+          "time": "2024-10-01T18:57:12.000Z",
+          "tz": 555,
+          "user_count": 1,
+          "vd": "avc"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "mite"
+          ],
+          "name": [
+            "mite"
+          ]
+        },
+        "technique": {
+          "id": [
+            "mite"
+          ],
+          "name": [
+            "mite"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-02-11T08:07:05.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "blocked",
+        "kind": "alert",
+        "original": "{ \"_bkt\": \"notable~70~E57B27EA-1F63-4B71-B296-89DCDEF5A240\", \"_cd\": \"70:13771\", \"_indextime\": \"2622781216\", \"_raw\": \"1739259266.000, search_name=\\\"Threat - Crowdstrike - Detection Found - Rule\\\", orig_time=\\\"2622872066.000\\\", action=\\\"blocked\\\", event.SeverityName=\\\"Low\\\", event.UserName=\\\"jdidu.xcapbgx\\\", file_hash=\\\"c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7\\\", file_name=\\\"go.exe\\\", file_path=\\\"\\\\\\\\Device\\\\\\\\HarddiskVolume3\\\\\\\\Program Files\\\\\\\\Go\\\\\\\\bin\\\\\\\\go.exe\\\", info_max_time=\\\"2622873420.000000000\\\", info_min_time=\\\"2622871620.000000000\\\", info_search_time=\\\"2622874021.082071000\\\"\", \"_serial\": \"476\", \"_si\": [ \"198.51.100.144\", \"notable\" ], \"_sourcetype\": \"stash\", \"_time\": \"2053-02-11T13:37:05.000+05:30\", \"host\": \"198.51.100.144\", \"index\": \"notable\", \"linecount\": \"1\", \"source\": \"Threat - Crowdstrike - Detection Found - Rule\", \"sourcetype\": \"stash\", \"splunk_server\": \"198.51.100.144\"  }",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha256": [
+            "c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7"
+          ]
+        },
+        "name": "go.exe",
+        "path": "Device\\\\HarddiskVolume3\\\\Program Files\\\\Go\\\\bin\\\\go.exe"
+      },
+      "host": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "message": "1739259266.000, search_name=\"Threat - Crowdstrike - Detection Found - Rule\", orig_time=\"2622872066.000\", action=\"blocked\", event.SeverityName=\"Low\", event.UserName=\"jdidu.xcapbgx\", file_hash=\"c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7\", file_name=\"go.exe\", file_path=\"\\\\Device\\\\HarddiskVolume3\\\\Program Files\\\\Go\\\\bin\\\\go.exe\", info_max_time=\"2622873420.000000000\", info_min_time=\"2622871620.000000000\", info_search_time=\"2622874021.082071000\"",
+      "related": {
+        "hash": [
+          "c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "jdidu.xcapbgx"
+        ]
+      },
+      "rule": {
+        "name": "Threat - Crowdstrike - Detection Found - Rule"
+      },
+      "splunk": {
+        "alert": {
+          "_bkt": "notable~70~E57B27EA-1F63-4B71-B296-89DCDEF5A240",
+          "_cd": "70:13771",
+          "_indextime": "2053-02-10T06:20:16.000Z",
+          "_raw": "1739259266.000, search_name=\"Threat - Crowdstrike - Detection Found - Rule\", orig_time=\"2622872066.000\", action=\"blocked\", event.SeverityName=\"Low\", event.UserName=\"jdidu.xcapbgx\", file_hash=\"c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7\", file_name=\"go.exe\", file_path=\"\\\\Device\\\\HarddiskVolume3\\\\Program Files\\\\Go\\\\bin\\\\go.exe\", info_max_time=\"2622873420.000000000\", info_min_time=\"2622871620.000000000\", info_search_time=\"2622874021.082071000\"",
+          "_serial": "476",
+          "_si": [
+            "198.51.100.144",
+            "notable"
+          ],
+          "_sourcetype": "stash",
+          "_time": "2053-02-11T08:07:05.000Z",
+          "action": "blocked",
+          "event": {
+            "SeverityName": "Low",
+            "UserName": "jdidu.xcapbgx"
+          },
+          "file_hash": "c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7",
+          "file_name": "go.exe",
+          "file_path": "Device\\\\HarddiskVolume3\\\\Program Files\\\\Go\\\\bin\\\\go.exe",
+          "friendly_name": "Threat - Crowdstrike - Detection Found - Rule",
+          "host": "198.51.100.144",
+          "index": "notable",
+          "info_max_time": "2053-02-11T07:57:00.000Z",
+          "info_min_time": "2053-02-11T07:27:00.000Z",
+          "info_search_time": "2053-02-11T08:07:01.082Z",
+          "linecount": 1,
+          "orig_time": "2053-02-11T07:34:26.000Z",
+          "raw_timestamp": "2025-02-11T07:34:26.000Z",
+          "search_name": "Threat - Crowdstrike - Detection Found - Rule",
+          "source": "Threat - Crowdstrike - Detection Found - Rule",
+          "sourcetype": "stash",
+          "splunk_server": "198.51.100.144"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"_bkt\": \"notable~70~E57B27EA-1F63-4B71-B296-89DCDEF5A240\", \"_cd\": \"70:13771\", \"_indextime\": \"2622781216\", \"_raw\": \"1739168412, search_name=\\\"Access - Excessive Failed Logins - Rule\\\", app=\\\"ssl-web\\\", craction=\\\"4\\\", count=\\\"5\\\", ip=\\\"198.51.100.144\\\", tz=\\\"555\\\", time=\\\"10/01/24 18:57:12\\\", vd=\\\"avc\\\", annotations.mitre_attack.mitre_tactic_id=\\\"mite\\\", annotations.mitre_attack.mitre_tactic=\\\"mite\\\", annotations.mitre_attack.mitre_technique_id=\\\"mite\\\", annotations.mitre_attack.mitre_technique=\\\"mite\\\", dest_count=\\\"1\\\", info_max_time=\\\"2622780900.000000000\\\", info_min_time=\\\"2622777300.000000000\\\", info_search_time=\\\"2622781203.176027000\\\", src=\\\"203.0.113.248\\\", orig_tag=\\\"authentication\\\", orig_tag=\\\"default\\\", orig_tag=\\\"error\\\", orig_tag=\\\"failure\\\", user_count=\\\"1\\\"\", \"_serial\": \"476\", \"_si\": [ \"198.51.100.144\", \"notable\" ], \"_sourcetype\": \"stash\", \"_time\": \"2053-02-10T11:50:16.000+05:30\", \"host\": \"198.51.100.144\", \"index\": \"notable\", \"linecount\": \"1\", \"source\": \"Access - Excessive Failed Logins - Rule\", \"sourcetype\": \"stash\", \"splunk_server\": \"198.51.100.144\" }",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{ \"_bkt\": \"notable~70~E57B27EA-1F63-4B71-B296-89DCDEF5A240\", \"_cd\": \"70:13771\", \"_indextime\": \"2622781216\", \"_raw\": \"1739259266.000, search_name=\\\"Threat - Crowdstrike - Detection Found - Rule\\\", orig_time=\\\"2622872066.000\\\", action=\\\"blocked\\\", event.SeverityName=\\\"Low\\\", event.UserName=\\\"jdidu.xcapbgx\\\", file_hash=\\\"c0aa53d176578e2dc53519384efa8710e21343ccc7db594081cbaf0d752965a7\\\", file_name=\\\"go.exe\\\", file_path=\\\"\\\\\\\\Device\\\\\\\\HarddiskVolume3\\\\\\\\Program Files\\\\\\\\Go\\\\\\\\bin\\\\\\\\go.exe\\\", info_max_time=\\\"2622873420.000000000\\\", info_min_time=\\\"2622871620.000000000\\\", info_search_time=\\\"2622874021.082071000\\\"\", \"_serial\": \"476\", \"_si\": [ \"198.51.100.144\", \"notable\" ], \"_sourcetype\": \"stash\", \"_time\": \"2053-02-11T13:37:05.000+05:30\", \"host\": \"198.51.100.144\", \"index\": \"notable\", \"linecount\": \"1\", \"source\": \"Threat - Crowdstrike - Detection Found - Rule\", \"sourcetype\": \"stash\", \"splunk_server\": \"198.51.100.144\"  }",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alert",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-splunk-alert-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "splunk",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

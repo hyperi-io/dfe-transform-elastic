@@ -1,0 +1,148 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-17T22:18:03.557Z",
+      "destination": {
+        "ip": "255.255.255.255",
+        "port": 1947
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "windows-firewall-packet-drop",
+        "category": [
+          "network"
+        ],
+        "code": "5152",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "connection",
+          "info",
+          "denied"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "network": {
+        "community_id": "1:73aPivUA6idV4S50ze0pnXanDmQ=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "255.255.255.255",
+          "::ffff:10.38.147.236",
+          "10.38.147.236"
+        ]
+      },
+      "source": {
+        "ip": "10.38.147.236",
+        "port": 58231
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "activity_id": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "Direction": "%%14592",
+          "FilterOrigin": "Stealth",
+          "FilterRTID": "122003",
+          "LayerName": "%%14597",
+          "LayerNameDescription": "Transport",
+          "LayerRTID": "13",
+          "ProcessId": "0",
+          "Protocol": "17"
+        },
+        "event_id": "5152",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959006",
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "5152",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "Application": "-",
+          "DestAddress": "255.255.255.255",
+          "DestPort": "1947",
+          "Direction": "%%14592",
+          "FilterOrigin": "Stealth",
+          "FilterRTID": "122003",
+          "LayerName": "%%14597",
+          "LayerRTID": "13",
+          "ProcessId": "0",
+          "Protocol": "17",
+          "SourceAddress": "::ffff:10.38.147.236",
+          "SourcePort": "58231"
+        },
+        "event_id": "5152",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959006,
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

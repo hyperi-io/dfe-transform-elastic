@@ -1,0 +1,248 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "jamf_pro": {
+        "inventory": {
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "group_memberships": [
+            {
+              "group_id": "1",
+              "group_name": "All Managed Clients",
+              "smart_group": true
+            },
+            {
+              "group_id": "4",
+              "group_name": "Computers with updates",
+              "smart_group": true
+            },
+            {
+              "group_id": "5",
+              "group_name": "All Managed Computers",
+              "smart_group": true
+            }
+          ],
+          "id": "3",
+          "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": [
+            "1",
+            "4",
+            "5"
+          ],
+          "name": [
+            "All Managed Clients",
+            "Computers with updates",
+            "All Managed Computers"
+          ]
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "asset"
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "id": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "jamf_pro": {
+        "inventory": {
+          "general": {
+            "last_ip_address": "198.51.100.144",
+            "report_date": "2052-06-19T15:54:37.692Z"
+          },
+          "group_memberships": [
+            {
+              "group_id": "1",
+              "group_name": "All Managed Clients",
+              "smart_group": true
+            },
+            {
+              "group_id": "5",
+              "group_name": "All Managed Computers",
+              "smart_group": true
+            },
+            {
+              "group_id": "7",
+              "group_name": "App Installed: Microsoft Outlook",
+              "smart_group": true
+            }
+          ],
+          "id": "4",
+          "udid": "EFCEE4C8-08E3-5422-A220-C473B06E7A72"
+        }
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": [
+            "1",
+            "5",
+            "7"
+          ],
+          "name": [
+            "All Managed Clients",
+            "All Managed Computers",
+            "App Installed: Microsoft Outlook"
+          ]
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": {
+        "applications": null,
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": null,
+        "contentCaching": null,
+        "diskEncryption": null,
+        "extensionAttributes": null,
+        "fonts": null,
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "groupMemberships": [
+          {
+            "groupId": "1",
+            "groupName": "All Managed Clients",
+            "smartGroup": true
+          },
+          {
+            "groupId": "4",
+            "groupName": "Computers with updates",
+            "smartGroup": true
+          },
+          {
+            "groupId": "5",
+            "groupName": "All Managed Computers",
+            "smartGroup": true
+          }
+        ],
+        "hardware": null,
+        "ibeacons": null,
+        "id": "3",
+        "licensedSoftware": null,
+        "localUserAccounts": null,
+        "operatingSystem": null,
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "security": null,
+        "services": null,
+        "softwareUpdates": null,
+        "storage": null,
+        "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+        "userAndLocation": null
+      }
+    },
+    {
+      "message": {
+        "applications": null,
+        "attachments": null,
+        "certificates": null,
+        "configurationProfiles": null,
+        "contentCaching": null,
+        "diskEncryption": null,
+        "extensionAttributes": null,
+        "fonts": null,
+        "general": {
+          "lastIpAddress": "198.51.100.144",
+          "reportDate": "2052-06-19T15:54:37.692Z"
+        },
+        "groupMemberships": [
+          {
+            "groupId": "1",
+            "groupName": "All Managed Clients",
+            "smartGroup": true
+          },
+          {
+            "groupId": "5",
+            "groupName": "All Managed Computers",
+            "smartGroup": true
+          },
+          {
+            "groupId": "7",
+            "groupName": "App Installed: Microsoft Outlook",
+            "smartGroup": true
+          }
+        ],
+        "hardware": null,
+        "ibeacons": null,
+        "id": "4",
+        "licensedSoftware": null,
+        "localUserAccounts": null,
+        "operatingSystem": null,
+        "packageReceipts": null,
+        "plugins": null,
+        "printers": null,
+        "purchasing": null,
+        "security": null,
+        "services": null,
+        "softwareUpdates": null,
+        "storage": null,
+        "udid": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+        "userAndLocation": null
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "inventory",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-inventory-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

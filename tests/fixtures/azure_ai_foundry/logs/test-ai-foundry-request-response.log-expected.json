@@ -1,0 +1,122 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-06-08T12:23:02.435Z",
+      "azure": {
+        "ai_foundry": {
+          "caller_ip_address": "81.2.69.***",
+          "category": "RequestResponse",
+          "correlation_id": "7a0b8c07-cf16-46b0-85fc-4bc999c6f9e4",
+          "duration_ms": 102,
+          "event": "ShoeboxCallResult",
+          "location": "eastus",
+          "operation_name": "Create_Thread",
+          "properties": {
+            "api_name": "Azure AI FOUNDRY API version 2024-02-15-preview",
+            "request_length": 2,
+            "request_time": 638481757794854611,
+            "response_length": 113,
+            "response_time": 638481757795877942
+          },
+          "result_signature": "200",
+          "tenant": "eastus"
+        },
+        "resource": {
+          "group": "obs-aifoundry-service-rs",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/obs-aifoundry-service-rs/providers/microsoft.cognitiveservices/accounts/obs-aifoundry-test-01",
+          "name": "obs-aifoundry-test-01",
+          "provider": "microsoft.cognitiveservices/accounts"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+      },
+      "cloud": {
+        "account": {
+          "id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+        },
+        "provider": "azure"
+      },
+      "event": {
+        "duration": 102000000,
+        "original": "{\"Tenant\":\"eastus\",\"callerIpAddress\":\"81.2.69.***\",\"category\":\"RequestResponse\",\"correlationId\":\"7a0b8c07-cf16-46b0-85fc-4bc999c6f9e4\",\"durationMs\":102,\"event\":\"ShoeboxCallResult\",\"location\":\"eastus\",\"operationName\":\"Create_Thread\",\"properties\":\"{\\\"apiName\\\":\\\"Azure AI FOUNDRY API version 2024-02-15-preview\\\",\\\"requestTime\\\":638481757794854611,\\\"requestLength\\\":2,\\\"responseTime\\\":638481757795877942,\\\"responseLength\\\":113,\\\"objectId\\\":\\\"\\\"}\",\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-AIFOUNDRY-SERVICE-RS/PROVIDERS/MICROSOFT.COGNITIVESERVICES/ACCOUNTS/OBS-AIFOUNDRY-TEST-01\",\"resultSignature\":\"200\",\"time\":\"2053-06-08T12:23:02.4350000Z\"}"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-06-24T12:23:02.435Z",
+      "azure": {
+        "ai_foundry": {
+          "caller_ip_address": "81.2.69.***",
+          "category": "RequestResponse",
+          "correlation_id": "e785d910-6ca3-4e64-9dbf-3235645d5338",
+          "duration_ms": 1021,
+          "event": "ShoeboxCallResult",
+          "location": "eastus",
+          "operation_name": "ChatCompletions_Create",
+          "properties": {
+            "api_name": "Azure AI FOUNDRY API version 2023-07-01-preview",
+            "model_deployment_name": "gpt-chat-pilot",
+            "model_name": "gpt-35-turbo",
+            "model_version": "0301",
+            "request_length": 128,
+            "request_time": 638515262815394150,
+            "response_length": 1411,
+            "response_time": 638515262825606520,
+            "stream_type": "Non-Streaming"
+          },
+          "result_signature": "200",
+          "tenant": "eastus"
+        },
+        "resource": {
+          "group": "obs-aifoundry-service-rs",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/obs-aifoundry-service-rs/providers/microsoft.cognitiveservices/accounts/obs-aifoundry-test-01",
+          "name": "obs-aifoundry-test-01",
+          "provider": "microsoft.cognitiveservices/accounts"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+      },
+      "cloud": {
+        "account": {
+          "id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+        },
+        "provider": "azure"
+      },
+      "event": {
+        "duration": 1021000000,
+        "original": "{\"Tenant\":\"eastus\",\"callerIpAddress\":\"81.2.69.***\",\"category\":\"RequestResponse\",\"correlationId\":\"e785d910-6ca3-4e64-9dbf-3235645d5338\",\"durationMs\":1021,\"event\":\"ShoeboxCallResult\",\"location\":\"eastus\",\"operationName\":\"ChatCompletions_Create\",\"properties\":{\"apiName\":\"Azure AI FOUNDRY API version 2023-07-01-preview\",\"requestTime\":638515262815394150,\"requestLength\":128,\"responseTime\":638515262825606520,\"responseLength\":1411,\"objectId\":\"\",\"streamType\":\"Non-Streaming\",\"modelDeploymentName\":\"gpt-chat-pilot\",\"modelName\":\"gpt-35-turbo\",\"modelVersion\":\"0301\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-AIFOUNDRY-SERVICE-RS/PROVIDERS/MICROSOFT.COGNITIVESERVICES/ACCOUNTS/OBS-AIFOUNDRY-TEST-01\",\"resultSignature\":\"200\",\"time\":\"2053-06-24T12:23:02.4350000Z\"}"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Tenant\":\"eastus\",\"callerIpAddress\":\"81.2.69.***\",\"category\":\"RequestResponse\",\"correlationId\":\"7a0b8c07-cf16-46b0-85fc-4bc999c6f9e4\",\"durationMs\":102,\"event\":\"ShoeboxCallResult\",\"location\":\"eastus\",\"operationName\":\"Create_Thread\",\"properties\":\"{\\\"apiName\\\":\\\"Azure AI FOUNDRY API version 2024-02-15-preview\\\",\\\"requestTime\\\":638481757794854611,\\\"requestLength\\\":2,\\\"responseTime\\\":638481757795877942,\\\"responseLength\\\":113,\\\"objectId\\\":\\\"\\\"}\",\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-AIFOUNDRY-SERVICE-RS/PROVIDERS/MICROSOFT.COGNITIVESERVICES/ACCOUNTS/OBS-AIFOUNDRY-TEST-01\",\"resultSignature\":\"200\",\"time\":\"2053-06-08T12:23:02.4350000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"eastus\",\"callerIpAddress\":\"81.2.69.***\",\"category\":\"RequestResponse\",\"correlationId\":\"e785d910-6ca3-4e64-9dbf-3235645d5338\",\"durationMs\":1021,\"event\":\"ShoeboxCallResult\",\"location\":\"eastus\",\"operationName\":\"ChatCompletions_Create\",\"properties\":{\"apiName\":\"Azure AI FOUNDRY API version 2023-07-01-preview\",\"requestTime\":638515262815394150,\"requestLength\":128,\"responseTime\":638515262825606520,\"responseLength\":1411,\"objectId\":\"\",\"streamType\":\"Non-Streaming\",\"modelDeploymentName\":\"gpt-chat-pilot\",\"modelName\":\"gpt-35-turbo\",\"modelVersion\":\"0301\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-AIFOUNDRY-SERVICE-RS/PROVIDERS/MICROSOFT.COGNITIVESERVICES/ACCOUNTS/OBS-AIFOUNDRY-TEST-01\",\"resultSignature\":\"200\",\"time\":\"2053-06-24T12:23:02.4350000Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_ai_foundry-logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure_ai_foundry",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

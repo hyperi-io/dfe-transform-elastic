@@ -1,0 +1,798 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-04-04T19:35:00.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "cloud_ioc": {
+            "description": "A known malicious file was executed. This increases the likelihood of a successful breach and this event should be promptly investigated.",
+            "short_description": "ExecutedMalware.ioc"
+          },
+          "command_line": {
+            "arguments": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s NetSetupSvc"
+          },
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "detection": "W32.E6FDBB79FC-90.SBX.TG",
+          "event_type_id": 1107296274,
+          "file": {
+            "disposition": "Unknown",
+            "parent": {
+              "disposition": "Clean"
+            }
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Cloud IOC",
+        "category": [
+          "file"
+        ],
+        "code": "1107296274",
+        "id": "6761826132415096000",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":6761826132415096000,\"timestamp\":2532713700,\"timestamp_nanoseconds\":603000000,\"date\":\"2050-04-04T19:35:00+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"detection\":\"W32.E6FDBB79FC-90.SBX.TG\",\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"High\",\"start_timestamp\":2532713698,\"start_date\":\"2050-04-04T19:34:58+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"SVRP-FIL01.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/ba9e4a64-5a63-41ce-a709-af4177084141\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/ba9e4a64-5a63-41ce-a709-af4177084141/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"A known malicious file was executed. This increases the likelihood of a successful breach and this event should be promptly investigated.\",\"short_description\":\"ExecutedMalware.ioc\"},\"file\":{\"disposition\":\"Unknown\",\"file_name\":\"svchost.exe\",\"file_path\":\"file:///C%3A/Windows/System32/svchost.exe\",\"identity\":{\"sha256\":\"cb85dc31a0f445e37e98a090d2760333b0a2c6bb4016fab7fd0b7e91915190c1\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"8ac025fc46499b1c5a2e27fdb4167cab3fd1fabd08ea458f83673882419c551a\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\System32\\\\svchost.exe -k netsvcs -p -s NetSetupSvc\"},\"tactics\":[\"TA0002\"]}}",
+        "severity": 3,
+        "start": "2050-04-04T19:34:58.000Z"
+      },
+      "file": {
+        "hash": {
+          "sha256": "cb85dc31a0f445e37e98a090d2760333b0a2c6bb4016fab7fd0b7e91915190c1"
+        },
+        "name": "svchost.exe",
+        "path": "file:///C%3A/Windows/System32/svchost.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "SVRP-FIL01",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "svrp-fil01.example.com"
+      },
+      "process": {
+        "args": [
+          "C:\\Windows\\System32\\svchost.exe",
+          "-k",
+          "netsvcs",
+          "-p",
+          "-s",
+          "NetSetupSvc"
+        ],
+        "args_count": 6,
+        "command_line": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s NetSetupSvc",
+        "executable": "C:\\Windows\\System32\\svchost.exe",
+        "hash": {
+          "sha256": "8ac025fc46499b1c5a2e27fdb4167cab3fd1fabd08ea458f83673882419c551a"
+        }
+      },
+      "related": {
+        "hash": [
+          "cb85dc31a0f445e37e98a090d2760333b0a2c6bb4016fab7fd0b7e91915190c1"
+        ],
+        "hosts": [
+          "svrp-fil01.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "TA0002"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T00:22:37.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "cloud_ioc": {
+            "description": "An attempt was made to delete the system event logs. This can be an indication of an attacker trying to cover their tracks.",
+            "short_description": "W32.ClearEventLogs.ioc"
+          },
+          "command_line": {
+            "arguments": "C:\\Windows\\system32\\wevtutil.exe cl Application"
+          },
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "event_type_id": 1107296274,
+          "file": {
+            "disposition": "Clean",
+            "parent": {
+              "disposition": "Unknown"
+            }
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Cloud IOC",
+        "category": [
+          "file"
+        ],
+        "code": "1107296274",
+        "id": "1484854607882482200",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":1484854607882482200,\"timestamp\":2532817357,\"timestamp_nanoseconds\":527000000,\"date\":\"2050-04-06T00:22:37+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Medium\",\"start_timestamp\":2532817356,\"start_date\":\"2050-04-06T00:22:36+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-xanme03.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/a62cbf74-ab22-4820-ad00-eb2b69a914ed\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/a62cbf74-ab22-4820-ad00-eb2b69a914ed/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"An attempt was made to delete the system event logs. This can be an indication of an attacker trying to cover their tracks.\",\"short_description\":\"W32.ClearEventLogs.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"wevtutil.exe\",\"file_path\":\"file:///C%3A/Windows/system32/wevtutil.exe\",\"identity\":{\"sha256\":\"b72e52a637ddf4790c080a12be708c35b2011ce0d2a61246c56c36485528c287\"},\"parent\":{\"disposition\":\"Unknown\",\"identity\":{\"sha256\":\"a0bdd94847b983b0da32613504832af01ded0b379732b0ae714e072d9031d209\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\system32\\\\wevtutil.exe cl Application\"},\"tactics\":[\"TA0005\"],\"techniques\":[\"T1070\"]}}",
+        "severity": 2,
+        "start": "2050-04-06T00:22:36.000Z"
+      },
+      "file": {
+        "hash": {
+          "sha256": "b72e52a637ddf4790c080a12be708c35b2011ce0d2a61246c56c36485528c287"
+        },
+        "name": "wevtutil.exe",
+        "path": "file:///C%3A/Windows/system32/wevtutil.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "svrp-xanme03",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "svrp-xanme03.example.com"
+      },
+      "process": {
+        "args": [
+          "C:\\Windows\\system32\\wevtutil.exe",
+          "cl",
+          "Application"
+        ],
+        "args_count": 3,
+        "command_line": "C:\\Windows\\system32\\wevtutil.exe cl Application",
+        "executable": "C:\\Windows\\system32\\wevtutil.exe",
+        "hash": {
+          "sha256": "a0bdd94847b983b0da32613504832af01ded0b379732b0ae714e072d9031d209"
+        }
+      },
+      "related": {
+        "hash": [
+          "b72e52a637ddf4790c080a12be708c35b2011ce0d2a61246c56c36485528c287"
+        ],
+        "hosts": [
+          "svrp-xanme03.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "TA0005"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1070"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T11:58:24.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "cloud_ioc": {
+            "description": "Ping command set towards localhost with a count argument, followed by the deletion or overwriting of a file, was detected in a command-line execution. This combination is common with malware droppers.",
+            "short_description": "W32.PingPredicatedDel.ioc"
+          },
+          "command_line": {
+            "arguments": "C:\\Windows\\system32\\cmd.exe /C ping -n 2 127.0.0.1 && rmdir /s /q C:\\Program Files\\Elastic\\Agent\\data\\elastic-agent-da4d9c"
+          },
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "event_type_id": 1107296274,
+          "file": {
+            "disposition": "Clean",
+            "parent": {
+              "disposition": "Unknown"
+            }
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Cloud IOC",
+        "category": [
+          "file"
+        ],
+        "code": "1107296274",
+        "id": "3920465274873318000",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":3920465274873318000,\"timestamp\":2532859104,\"timestamp_nanoseconds\":900000000,\"date\":\"2050-04-06T11:58:24+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Low\",\"start_timestamp\":2532859103,\"start_date\":\"2050-04-06T11:58:23+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-nps01.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/86db0fe7-bb5c-413d-902c-4a0f751b56ab\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/86db0fe7-bb5c-413d-902c-4a0f751b56ab/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"Ping command set towards localhost with a count argument, followed by the deletion or overwriting of a file, was detected in a command-line execution. This combination is common with malware droppers.\",\"short_description\":\"W32.PingPredicatedDel.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"cmd.exe\",\"file_path\":\"file:///C%3A/Windows/system32/cmd.exe\",\"identity\":{\"sha256\":\"ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955\"},\"parent\":{\"disposition\":\"Unknown\",\"identity\":{\"sha256\":\"83df45d8960e9709ce953e2f3916735ac460d4da79b85ecc5f05f414c302a525\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\system32\\\\cmd.exe /C ping -n 2 127.0.0.1 && rmdir /s /q C:\\\\Program Files\\\\Elastic\\\\Agent\\\\data\\\\elastic-agent-da4d9c\"},\"tactics\":[\"TA0007\",\"TA0005\"],\"techniques\":[\"T1070.004\"]}}",
+        "severity": 1,
+        "start": "2050-04-06T11:58:23.000Z"
+      },
+      "file": {
+        "hash": {
+          "sha256": "ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955"
+        },
+        "name": "cmd.exe",
+        "path": "file:///C%3A/Windows/system32/cmd.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "svrp-nps01",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "svrp-nps01.example.com"
+      },
+      "process": {
+        "args": [
+          "C:\\Windows\\system32\\cmd.exe",
+          "/C",
+          "ping",
+          "-n",
+          "2",
+          "127.0.0.1",
+          "&&",
+          "rmdir",
+          "/s",
+          "/q",
+          "C:\\Program",
+          "Files\\Elastic\\Agent\\data\\elastic-agent-da4d9c"
+        ],
+        "args_count": 12,
+        "command_line": "C:\\Windows\\system32\\cmd.exe /C ping -n 2 127.0.0.1 && rmdir /s /q C:\\Program Files\\Elastic\\Agent\\data\\elastic-agent-da4d9c",
+        "executable": "C:\\Windows\\system32\\cmd.exe",
+        "hash": {
+          "sha256": "83df45d8960e9709ce953e2f3916735ac460d4da79b85ecc5f05f414c302a525"
+        }
+      },
+      "related": {
+        "hash": [
+          "ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955"
+        ],
+        "hosts": [
+          "svrp-nps01.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "TA0007",
+            "TA0005"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1070.004"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-01T12:21:49.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "cloud_ioc": {
+            "description": "PowerShell is a Windows utility that allows access to many Microsoft APIs within a shell environment. In this case, a shell was launched with an encoded command or to use Base64 to decode or encode an existing file or command. Malware authors may use this technique to bypass antivirus tools.",
+            "short_description": "W32.PowershellEncodedBuffer.ioc"
+          },
+          "command_line": {
+            "arguments": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Version 5.1 -s -NoLogo -NoProfile -EncodedCommand IABJAG0AcABvAHIAdAAtAE0AbwBkAHUAbABlACAAIgBDADoAXABQAHIAbwBnAHIAYQBtACAARgBpAGwAZQBzAFwAVABpAHYAbwBsAGkAXABmAGwAYQBzAGgAYwBvAHAAeQBtAGEAbgBhAGcAZQByAFwAZgBtAG0AbwBkAHUAbABlAHMAcQBsAC4AZABsAGwAIgAgAA== (Decoded:  Import-Module \"C:\\Program Files\\Tivoli\\flashcopymanager\\fmmodulesql.dll\" )"
+          },
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "event_type_id": 1107296274,
+          "file": {
+            "disposition": "Clean",
+            "parent": {
+              "disposition": "Clean"
+            }
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Cloud IOC",
+        "category": [
+          "file"
+        ],
+        "code": "1107296274",
+        "id": "7007136034206387000",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":7007136034206387000,\"timestamp\":2532428509,\"timestamp_nanoseconds\":197000000,\"date\":\"2050-04-01T12:21:49+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Low\",\"start_timestamp\":2532428507,\"start_date\":\"2050-04-01T12:21:47+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-sql03.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/504bd2e8-0d71-4f7a-9647-f6fb4bf1df30\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/504bd2e8-0d71-4f7a-9647-f6fb4bf1df30/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"PowerShell is a Windows utility that allows access to many Microsoft APIs within a shell environment. In this case, a shell was launched with an encoded command or to use Base64 to decode or encode an existing file or command. Malware authors may use this technique to bypass antivirus tools.\",\"short_description\":\"W32.PowershellEncodedBuffer.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"powershell.exe\",\"file_path\":\"file:///C%3A/Windows/System32/WindowsPowerShell/v1.0/powershell.exe\",\"identity\":{\"sha256\":\"af27a8f63708975289ea7aa800819651866e0ece9d02231db5ea1a9e115ba60d\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"37713e1f464fe54eb31969822e3b2d115d4e30192a0a6a92bc67a2f053995a1e\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe -Version 5.1 -s -NoLogo -NoProfile -EncodedCommand IABJAG0AcABvAHIAdAAtAE0AbwBkAHUAbABlACAAIgBDADoAXABQAHIAbwBnAHIAYQBtACAARgBpAGwAZQBzAFwAVABpAHYAbwBsAGkAXABmAGwAYQBzAGgAYwBvAHAAeQBtAGEAbgBhAGcAZQByAFwAZgBtAG0AbwBkAHUAbABlAHMAcQBsAC4AZABsAGwAIgAgAA== (Decoded:  Import-Module \\\"C:\\\\Program Files\\\\Tivoli\\\\flashcopymanager\\\\fmmodulesql.dll\\\" )\"},\"tactics\":[\"TA0005\",\"TA0002\"],\"techniques\":[\"T1059.001\",\"T1059\"]}}",
+        "severity": 1,
+        "start": "2050-04-01T12:21:47.000Z"
+      },
+      "file": {
+        "hash": {
+          "sha256": "af27a8f63708975289ea7aa800819651866e0ece9d02231db5ea1a9e115ba60d"
+        },
+        "name": "powershell.exe",
+        "path": "file:///C%3A/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "svrp-sql03",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "svrp-sql03.example.com"
+      },
+      "process": {
+        "args": [
+          "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "-Version",
+          "5.1",
+          "-s",
+          "-NoLogo",
+          "-NoProfile",
+          "-EncodedCommand",
+          "IABJAG0AcABvAHIAdAAtAE0AbwBkAHUAbABlACAAIgBDADoAXABQAHIAbwBnAHIAYQBtACAARgBpAGwAZQBzAFwAVABpAHYAbwBsAGkAXABmAGwAYQBzAGgAYwBvAHAAeQBtAGEAbgBhAGcAZQByAFwAZgBtAG0AbwBkAHUAbABlAHMAcQBsAC4AZABsAGwAIgAgAA==",
+          "(Decoded:",
+          "Import-Module",
+          "\"C:\\Program",
+          "Files\\Tivoli\\flashcopymanager\\fmmodulesql.dll\"",
+          ")"
+        ],
+        "args_count": 13,
+        "command_line": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Version 5.1 -s -NoLogo -NoProfile -EncodedCommand IABJAG0AcABvAHIAdAAtAE0AbwBkAHUAbABlACAAIgBDADoAXABQAHIAbwBnAHIAYQBtACAARgBpAGwAZQBzAFwAVABpAHYAbwBsAGkAXABmAGwAYQBzAGgAYwBvAHAAeQBtAGEAbgBhAGcAZQByAFwAZgBtAG0AbwBkAHUAbABlAHMAcQBsAC4AZABsAGwAIgAgAA== (Decoded:  Import-Module \"C:\\Program Files\\Tivoli\\flashcopymanager\\fmmodulesql.dll\" )",
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "hash": {
+          "sha256": "37713e1f464fe54eb31969822e3b2d115d4e30192a0a6a92bc67a2f053995a1e"
+        }
+      },
+      "related": {
+        "hash": [
+          "af27a8f63708975289ea7aa800819651866e0ece9d02231db5ea1a9e115ba60d"
+        ],
+        "hosts": [
+          "svrp-sql03.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "TA0005",
+            "TA0002"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1059.001",
+            "T1059"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-03-10T12:10:09.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "cloud_ioc": {
+            "description": "The WMI Provider Host (wmiprvse.exe) is a component of the Microsoft Windows operating system that provides management information and control in an enterprise environment. Regsvr32.exe (Register Server) is a utility used to register dynamic link library files (DLL files) and ActiveX controls. Malware authors may use regsvr32 to register malicious DLLs. In this case, wmiprvse was used to launch regsvr32 to register a DLL, which is suspicious.",
+            "short_description": "W32.WMIPRVSEExecutedRegsvr32.ioc"
+          },
+          "command_line": {
+            "arguments": "regsvr32.exe /s C:\\Windows\\DOMAINx64.dll"
+          },
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "event_type_id": 1107296274,
+          "file": {
+            "disposition": "Clean",
+            "parent": {
+              "disposition": "Clean"
+            }
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Cloud IOC",
+        "category": [
+          "file"
+        ],
+        "code": "1107296274",
+        "id": "514956699676630800",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":514956699676630800,\"timestamp\":2530527009,\"timestamp_nanoseconds\":727000000,\"date\":\"2050-03-10T12:10:09+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Medium\",\"start_timestamp\":2530527008,\"start_date\":\"2050-03-10T12:10:08+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"DOM-PC4061.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/47e27344-0869-4df2-9725-9c44f5b66b1b\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/47e27344-0869-4df2-9725-9c44f5b66b1b/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/2e786926-3b5f-4cf3-9782-491330d4334a\"}},\"cloud_ioc\":{\"description\":\"The WMI Provider Host (wmiprvse.exe) is a component of the Microsoft Windows operating system that provides management information and control in an enterprise environment. Regsvr32.exe (Register Server) is a utility used to register dynamic link library files (DLL files) and ActiveX controls. Malware authors may use regsvr32 to register malicious DLLs. In this case, wmiprvse was used to launch regsvr32 to register a DLL, which is suspicious.\",\"short_description\":\"W32.WMIPRVSEExecutedRegsvr32.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"regsvr32.exe\",\"file_path\":\"file:///C%3A/WINDOWS/system32/regsvr32.exe\",\"identity\":{\"sha256\":\"739ce263c74b89fbf818aa12cca072d51a1446cf920598afeab1ad824ae158e1\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"8617d3b51fcdd316699d831ecaa5df8edf09088e0063f8a040f127b8714844f7\"}}},\"command_line\":{\"arguments\":\"regsvr32.exe /s C:\\\\Windows\\\\DOMAINx64.dll\"},\"tactics\":[\"TA0002\",\"TA0005\"],\"techniques\":[\"T1047\",\"T1218\"]}}",
+        "severity": 2,
+        "start": "2050-03-10T12:10:08.000Z"
+      },
+      "file": {
+        "hash": {
+          "sha256": "739ce263c74b89fbf818aa12cca072d51a1446cf920598afeab1ad824ae158e1"
+        },
+        "name": "regsvr32.exe",
+        "path": "file:///C%3A/WINDOWS/system32/regsvr32.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "DOM-PC4061",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "dom-pc4061.example.com"
+      },
+      "process": {
+        "args": [
+          "regsvr32.exe",
+          "/s",
+          "C:\\Windows\\DOMAINx64.dll"
+        ],
+        "args_count": 3,
+        "command_line": "regsvr32.exe /s C:\\Windows\\DOMAINx64.dll",
+        "executable": "regsvr32.exe",
+        "hash": {
+          "sha256": "8617d3b51fcdd316699d831ecaa5df8edf09088e0063f8a040f127b8714844f7"
+        }
+      },
+      "related": {
+        "hash": [
+          "739ce263c74b89fbf818aa12cca072d51a1446cf920598afeab1ad824ae158e1"
+        ],
+        "hosts": [
+          "dom-pc4061.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "TA0002",
+            "TA0005"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1047",
+            "T1218"
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-03-30T07:35:08.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "cloud_ioc": {
+            "description": "The windows scripting host (wscript.exe) was observed launching a script file from a temporary directory. While this is not necessarily malicious, it is unusual behaviour which might warrant a review.",
+            "short_description": "W32.WscriptLaunchTemp.ioc"
+          },
+          "command_line": {
+            "arguments": "C:\\Windows\\System32\\WScript.exe C:\\temp\\Umbrella\\OpenDNS-WindowsConfigurationScript-2050-03-30.wsf"
+          },
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "event_type_id": 1107296274,
+          "file": {
+            "disposition": "Clean",
+            "parent": {
+              "disposition": "Clean"
+            }
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Cloud IOC",
+        "category": [
+          "file"
+        ],
+        "code": "1107296274",
+        "id": "1358819610141813800",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":1358819610141813800,\"timestamp\":2532238508,\"timestamp_nanoseconds\":592000000,\"date\":\"2050-03-30T07:35:08+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Low\",\"start_timestamp\":2532238506,\"start_date\":\"2050-03-30T07:35:06+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-dc01.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/9517f97f-b67e-4cba-ada8-5c8fc064725d\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/9517f97f-b67e-4cba-ada8-5c8fc064725d/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/99bc9710-8aa2-44bb-863e-d0f4c5181c3c\"}},\"cloud_ioc\":{\"description\":\"The windows scripting host (wscript.exe) was observed launching a script file from a temporary directory. While this is not necessarily malicious, it is unusual behaviour which might warrant a review.\",\"short_description\":\"W32.WscriptLaunchTemp.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"WScript.exe\",\"file_path\":\"file:///C%3A/Windows/System32/WScript.exe\",\"identity\":{\"sha256\":\"60eaab39c06308454b649653985d5a998a0156610076617b49dd83f56dad4e17\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\System32\\\\WScript.exe C:\\\\temp\\\\Umbrella\\\\OpenDNS-WindowsConfigurationScript-2050-03-30.wsf\"},\"tactics\":[\"TA0005\",\"TA0002\"],\"techniques\":[\"T1564.001\",\"T1059\"]}}",
+        "severity": 1,
+        "start": "2050-03-30T07:35:06.000Z"
+      },
+      "file": {
+        "hash": {
+          "sha256": "60eaab39c06308454b649653985d5a998a0156610076617b49dd83f56dad4e17"
+        },
+        "name": "WScript.exe",
+        "path": "file:///C%3A/Windows/System32/WScript.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "svrp-dc01",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "svrp-dc01.example.com"
+      },
+      "process": {
+        "args": [
+          "C:\\Windows\\System32\\WScript.exe",
+          "C:\\temp\\Umbrella\\OpenDNS-WindowsConfigurationScript-2050-03-30.wsf"
+        ],
+        "args_count": 2,
+        "command_line": "C:\\Windows\\System32\\WScript.exe C:\\temp\\Umbrella\\OpenDNS-WindowsConfigurationScript-2050-03-30.wsf",
+        "executable": "C:\\Windows\\System32\\WScript.exe",
+        "hash": {
+          "sha256": "ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955"
+        }
+      },
+      "related": {
+        "hash": [
+          "60eaab39c06308454b649653985d5a998a0156610076617b49dd83f56dad4e17"
+        ],
+        "hosts": [
+          "svrp-dc01.example.com"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "TA0005",
+            "TA0002"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1564.001",
+            "T1059"
+          ]
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":6761826132415096000,\"timestamp\":2532713700,\"timestamp_nanoseconds\":603000000,\"date\":\"2050-04-04T19:35:00+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"detection\":\"W32.E6FDBB79FC-90.SBX.TG\",\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"High\",\"start_timestamp\":2532713698,\"start_date\":\"2050-04-04T19:34:58+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"SVRP-FIL01.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/ba9e4a64-5a63-41ce-a709-af4177084141\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/ba9e4a64-5a63-41ce-a709-af4177084141/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"A known malicious file was executed. This increases the likelihood of a successful breach and this event should be promptly investigated.\",\"short_description\":\"ExecutedMalware.ioc\"},\"file\":{\"disposition\":\"Unknown\",\"file_name\":\"svchost.exe\",\"file_path\":\"file:///C%3A/Windows/System32/svchost.exe\",\"identity\":{\"sha256\":\"cb85dc31a0f445e37e98a090d2760333b0a2c6bb4016fab7fd0b7e91915190c1\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"8ac025fc46499b1c5a2e27fdb4167cab3fd1fabd08ea458f83673882419c551a\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\System32\\\\svchost.exe -k netsvcs -p -s NetSetupSvc\"},\"tactics\":[\"TA0002\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":1484854607882482200,\"timestamp\":2532817357,\"timestamp_nanoseconds\":527000000,\"date\":\"2050-04-06T00:22:37+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Medium\",\"start_timestamp\":2532817356,\"start_date\":\"2050-04-06T00:22:36+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-xanme03.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/a62cbf74-ab22-4820-ad00-eb2b69a914ed\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/a62cbf74-ab22-4820-ad00-eb2b69a914ed/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"An attempt was made to delete the system event logs. This can be an indication of an attacker trying to cover their tracks.\",\"short_description\":\"W32.ClearEventLogs.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"wevtutil.exe\",\"file_path\":\"file:///C%3A/Windows/system32/wevtutil.exe\",\"identity\":{\"sha256\":\"b72e52a637ddf4790c080a12be708c35b2011ce0d2a61246c56c36485528c287\"},\"parent\":{\"disposition\":\"Unknown\",\"identity\":{\"sha256\":\"a0bdd94847b983b0da32613504832af01ded0b379732b0ae714e072d9031d209\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\system32\\\\wevtutil.exe cl Application\"},\"tactics\":[\"TA0005\"],\"techniques\":[\"T1070\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":3920465274873318000,\"timestamp\":2532859104,\"timestamp_nanoseconds\":900000000,\"date\":\"2050-04-06T11:58:24+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Low\",\"start_timestamp\":2532859103,\"start_date\":\"2050-04-06T11:58:23+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-nps01.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/86db0fe7-bb5c-413d-902c-4a0f751b56ab\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/86db0fe7-bb5c-413d-902c-4a0f751b56ab/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"Ping command set towards localhost with a count argument, followed by the deletion or overwriting of a file, was detected in a command-line execution. This combination is common with malware droppers.\",\"short_description\":\"W32.PingPredicatedDel.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"cmd.exe\",\"file_path\":\"file:///C%3A/Windows/system32/cmd.exe\",\"identity\":{\"sha256\":\"ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955\"},\"parent\":{\"disposition\":\"Unknown\",\"identity\":{\"sha256\":\"83df45d8960e9709ce953e2f3916735ac460d4da79b85ecc5f05f414c302a525\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\system32\\\\cmd.exe /C ping -n 2 127.0.0.1 && rmdir /s /q C:\\\\Program Files\\\\Elastic\\\\Agent\\\\data\\\\elastic-agent-da4d9c\"},\"tactics\":[\"TA0007\",\"TA0005\"],\"techniques\":[\"T1070.004\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":7007136034206387000,\"timestamp\":2532428509,\"timestamp_nanoseconds\":197000000,\"date\":\"2050-04-01T12:21:49+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Low\",\"start_timestamp\":2532428507,\"start_date\":\"2050-04-01T12:21:47+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-sql03.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/504bd2e8-0d71-4f7a-9647-f6fb4bf1df30\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/504bd2e8-0d71-4f7a-9647-f6fb4bf1df30/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/6ec45bf9-b985-4235-ae02-44df8a4c38ab\"}},\"cloud_ioc\":{\"description\":\"PowerShell is a Windows utility that allows access to many Microsoft APIs within a shell environment. In this case, a shell was launched with an encoded command or to use Base64 to decode or encode an existing file or command. Malware authors may use this technique to bypass antivirus tools.\",\"short_description\":\"W32.PowershellEncodedBuffer.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"powershell.exe\",\"file_path\":\"file:///C%3A/Windows/System32/WindowsPowerShell/v1.0/powershell.exe\",\"identity\":{\"sha256\":\"af27a8f63708975289ea7aa800819651866e0ece9d02231db5ea1a9e115ba60d\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"37713e1f464fe54eb31969822e3b2d115d4e30192a0a6a92bc67a2f053995a1e\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe -Version 5.1 -s -NoLogo -NoProfile -EncodedCommand IABJAG0AcABvAHIAdAAtAE0AbwBkAHUAbABlACAAIgBDADoAXABQAHIAbwBnAHIAYQBtACAARgBpAGwAZQBzAFwAVABpAHYAbwBsAGkAXABmAGwAYQBzAGgAYwBvAHAAeQBtAGEAbgBhAGcAZQByAFwAZgBtAG0AbwBkAHUAbABlAHMAcQBsAC4AZABsAGwAIgAgAA== (Decoded:  Import-Module \\\"C:\\\\Program Files\\\\Tivoli\\\\flashcopymanager\\\\fmmodulesql.dll\\\" )\"},\"tactics\":[\"TA0005\",\"TA0002\"],\"techniques\":[\"T1059.001\",\"T1059\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":514956699676630800,\"timestamp\":2530527009,\"timestamp_nanoseconds\":727000000,\"date\":\"2050-03-10T12:10:09+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Medium\",\"start_timestamp\":2530527008,\"start_date\":\"2050-03-10T12:10:08+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"DOM-PC4061.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/47e27344-0869-4df2-9725-9c44f5b66b1b\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/47e27344-0869-4df2-9725-9c44f5b66b1b/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/2e786926-3b5f-4cf3-9782-491330d4334a\"}},\"cloud_ioc\":{\"description\":\"The WMI Provider Host (wmiprvse.exe) is a component of the Microsoft Windows operating system that provides management information and control in an enterprise environment. Regsvr32.exe (Register Server) is a utility used to register dynamic link library files (DLL files) and ActiveX controls. Malware authors may use regsvr32 to register malicious DLLs. In this case, wmiprvse was used to launch regsvr32 to register a DLL, which is suspicious.\",\"short_description\":\"W32.WMIPRVSEExecutedRegsvr32.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"regsvr32.exe\",\"file_path\":\"file:///C%3A/WINDOWS/system32/regsvr32.exe\",\"identity\":{\"sha256\":\"739ce263c74b89fbf818aa12cca072d51a1446cf920598afeab1ad824ae158e1\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"8617d3b51fcdd316699d831ecaa5df8edf09088e0063f8a040f127b8714844f7\"}}},\"command_line\":{\"arguments\":\"regsvr32.exe /s C:\\\\Windows\\\\DOMAINx64.dll\"},\"tactics\":[\"TA0002\",\"TA0005\"],\"techniques\":[\"T1047\",\"T1218\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?event_type=1107296274\"},\"results\":{\"total\":136,\"current_item_count\":136,\"index\":0,\"items_per_page\":500}},\"data\":{\"id\":1358819610141813800,\"timestamp\":2532238508,\"timestamp_nanoseconds\":592000000,\"date\":\"2050-03-30T07:35:08+00:00\",\"event_type\":\"Cloud IOC\",\"event_type_id\":1107296274,\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Low\",\"start_timestamp\":2532238506,\"start_date\":\"2050-03-30T07:35:06+00:00\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"svrp-dc01.example.com\",\"external_ip\":\"198.51.100.211\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/9517f97f-b67e-4cba-ada8-5c8fc064725d\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/9517f97f-b67e-4cba-ada8-5c8fc064725d/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/99bc9710-8aa2-44bb-863e-d0f4c5181c3c\"}},\"cloud_ioc\":{\"description\":\"The windows scripting host (wscript.exe) was observed launching a script file from a temporary directory. While this is not necessarily malicious, it is unusual behaviour which might warrant a review.\",\"short_description\":\"W32.WscriptLaunchTemp.ioc\"},\"file\":{\"disposition\":\"Clean\",\"file_name\":\"WScript.exe\",\"file_path\":\"file:///C%3A/Windows/System32/WScript.exe\",\"identity\":{\"sha256\":\"60eaab39c06308454b649653985d5a998a0156610076617b49dd83f56dad4e17\"},\"parent\":{\"disposition\":\"Clean\",\"identity\":{\"sha256\":\"ec021cfecce23f46bc5649fd975e8f7a4d04306cf20a8ec319e62765b4c8f955\"}}},\"command_line\":{\"arguments\":\"C:\\\\Windows\\\\System32\\\\WScript.exe C:\\\\temp\\\\Umbrella\\\\OpenDNS-WindowsConfigurationScript-2050-03-30.wsf\"},\"tactics\":[\"TA0005\",\"TA0002\"],\"techniques\":[\"T1564.001\",\"T1059\"]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_secure_endpoint-event-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "cisco_secure_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,796 @@
+{
+  "expected": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_VER=3.git:released:662eae9a:Release",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_VER=3.git:released:662eae9a:Release",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_VER=3.git:released:662eae9a:Release"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_PLAT=android",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_PLAT=android",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_PLAT=android"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_NCP=2",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_NCP=2",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_NCP=2"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_TCPNL=1",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_TCPNL=1",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_TCPNL=1"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_GUI_VER=net.openvpn.connect.android_3.2.4-5891",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_GUI_VER=net.openvpn.connect.android_3.2.4-5891",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_GUI_VER=net.openvpn.connect.android_3.2.4-5891"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_PROTO=2",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_PROTO=2",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_PROTO=2"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_SSO=openurl",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 peer info: IV_SSO=openurl",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "pfsense": {
+        "openvpn": {
+          "peer_info": "IV_SSO=openurl"
+        }
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 [bob] Peer Connection Initiated with [AF_INET]10.65.232.68:37849",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info",
+          "start"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "10.65.232.68:37849 [bob] Peer Connection Initiated with [AF_INET]10.65.232.68:37849",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.65.232.68"
+        ],
+        "user": [
+          "bob"
+        ]
+      },
+      "source": {
+        "address": "10.65.232.68",
+        "ip": "10.65.232.68",
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "bob"
+      }
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication",
+          "network"
+        ],
+        "kind": "event",
+        "original": "<37>Jul  3 21:42:57 openvpn[19830]: user 'bob' authenticated",
+        "provider": "openvpn",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 37
+        }
+      },
+      "message": "user 'bob' authenticated",
+      "network": {
+        "protocol": "openvpn"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 19830
+      },
+      "related": {
+        "user": [
+          "bob"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "bob"
+      }
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<29>Jul  3 21:42:57 openvpn[66026]: bob/10.170.120.149:37849 MULTI_sva: pool returned IPv4=10.149.157.148, IPv6=(Not enabled)",
+        "provider": "openvpn",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 29
+        }
+      },
+      "message": "bob/10.170.120.149:37849 MULTI_sva: pool returned IPv4=10.149.157.148, IPv6=(Not enabled)",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "10.170.120.149",
+          "10.149.157.148"
+        ],
+        "user": [
+          "bob"
+        ]
+      },
+      "source": {
+        "address": "10.170.120.149",
+        "ip": "10.170.120.149",
+        "nat": {
+          "ip": "10.149.157.148"
+        },
+        "port": 37849
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "bob"
+      }
+    },
+    {
+      "@timestamp": "2049-07-04T03:17:01.074Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "<27>1 2049-07-03T22:17:01.074560-05:00 pfSense.example.com openvpn 66026 - - TLS Error: cannot locate HMAC in incoming packet from [AF_INET]192.0.2.87:34745",
+        "outcome": [
+          "failure"
+        ],
+        "provider": "openvpn",
+        "timezone": "-05:00",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 27
+        }
+      },
+      "message": "TLS Error: cannot locate HMAC in incoming packet from [AF_INET]192.0.2.87:34745",
+      "network": {
+        "protocol": "openvpn",
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 66026
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "port": 34745
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-04T03:40:38.477Z",
+      "_tmp.tz_offset": "-04:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication",
+          "network"
+        ],
+        "kind": "event",
+        "original": "<36>1 2049-07-03T22:40:38.477134-05:00 pfSense.example.com openvpn 68813 - - user 'bob' could not authenticate.",
+        "outcome": [
+          "failure"
+        ],
+        "provider": "openvpn",
+        "timezone": "-05:00",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "priority": 36
+        }
+      },
+      "message": "user 'bob' could not authenticate.",
+      "network": {
+        "protocol": "openvpn"
+      },
+      "observer": {
+        "name": "pfSense.example.com",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "openvpn",
+        "pid": 68813
+      },
+      "related": {
+        "user": [
+          "bob"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "bob"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_VER=3.git:released:662eae9a:Release",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_PLAT=android",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_NCP=2",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_TCPNL=1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_GUI_VER=net.openvpn.connect.android_3.2.4-5891",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_PROTO=2",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 peer info: IV_SSO=openurl",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: 10.65.232.68:37849 [bob] Peer Connection Initiated with [AF_INET]10.65.232.68:37849",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<37>Jul  3 21:42:57 openvpn[19830]: user 'bob' authenticated",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<29>Jul  3 21:42:57 openvpn[66026]: bob/10.170.120.149:37849 MULTI_sva: pool returned IPv4=10.149.157.148, IPv6=(Not enabled)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<27>1 2049-07-03T22:17:01.074560-05:00 pfSense.example.com openvpn 66026 - - TLS Error: cannot locate HMAC in incoming packet from [AF_INET]192.0.2.87:34745",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<36>1 2049-07-03T22:40:38.477134-05:00 pfSense.example.com openvpn 68813 - - user 'bob' could not authenticate.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-08-19T07:56:17.112Z",
+      "agent": {
+        "ephemeral_id": "f90184a2-7305-4e43-b429-37e6d23522b8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "audit-setting-changed",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4907",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4907_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\WinSxS\\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.14393.1883_none_7ed84bd822106081\\TiWorker.exe",
+        "name": "TiWorker.exe",
+        "pid": 4300
+      },
+      "related": {
+        "user": [
+          "ZVK-EPQ9VR7G6I6$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST",
+        "id": "S-1-5-18",
+        "name": "ZVK-EPQ9VR7G6I6$"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "HandleId": "0x93c",
+          "NewSd": "S:ARAI(AU;SAFA;DCLCRPCRSDWDWO;;;WD)",
+          "NewSdSacl0": "Everyone :System Audit ([Delete All Child Objects, List Contents, Read All Properties, All Extended Rights, Delete, Modify Permissions, Modify Owner])",
+          "ObjectName": "C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\Modules\\RemoteAccess\\RemoteAccess.psd1",
+          "ObjectServer": "Security",
+          "ObjectType": "File",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": "4907",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 408
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "146933",
+        "time_created": "2048-08-19T07:56:17.112Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:05:13.376Z",
+      "agent": {
+        "ephemeral_id": "f90184a2-7305-4e43-b429-37e6d23522b8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4907,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4907_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "HandleId": "0x93c",
+          "NewSd": "S:ARAI(AU;SAFA;DCLCRPCRSDWDWO;;;WD)",
+          "ObjectName": "C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\Modules\\RemoteAccess\\RemoteAccess.psd1",
+          "ObjectServer": "Security",
+          "ObjectType": "File",
+          "ProcessId": "0x10cc",
+          "ProcessName": "C:\\Windows\\WinSxS\\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.14393.1883_none_7ed84bd822106081\\TiWorker.exe",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": 4907,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 408
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 146933,
+        "time_created": "2048-08-19T07:56:17.112Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

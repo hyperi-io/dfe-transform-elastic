@@ -1,0 +1,108 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-30T16:09:16.825Z",
+      "destination": {
+        "ip": "10.104.14.126"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "zqay7@example.com"
+          ]
+        },
+        "subject": "Test1516",
+        "to": {
+          "address": [
+            "pvdx4@example.com"
+          ]
+        }
+      },
+      "event": {
+        "code": "0300003065",
+        "kind": "event",
+        "original": "<190>date=2051-01-30,time=16:09:16.825,device_id=FEVM02TM23000064,log_id=0300003065,type=spam,subtype=default,pri=information,session_id=\"k6ZU5akL027920-w4IV3fhI392350\",client_name=\"\",client_ip=\"192.168.92.219\",dst_ip=\"10.104.14.126\",from=\"zqay7@example.com\",to=\"pvdx4@example.com\",subject=\"Test1516\",msg=\"mailfilterd: Starting\""
+      },
+      "fortinet_fortimail": {
+        "log": {
+          "client": {
+            "ip": "192.168.92.219"
+          },
+          "date": "2051-01-30",
+          "destination_ip": "10.104.14.126",
+          "device_id": "FEVM02TM23000064",
+          "from": "zqay7@example.com",
+          "id": "0300003065",
+          "message": "mailfilterd: Starting",
+          "priority": "information",
+          "priority_number": 190,
+          "session_id": "k6ZU5akL027920-w4IV3fhI392350",
+          "sub_type": "default",
+          "subject": "Test1516",
+          "time": "16:09:16.825",
+          "to": "pvdx4@example.com",
+          "type": "spam"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "mailfilterd: Starting",
+      "observer": {
+        "product": "FortiMail",
+        "serial_number": "FEVM02TM23000064",
+        "type": "firewall",
+        "vendor": "Fortinet"
+      },
+      "related": {
+        "ip": [
+          "192.168.92.219",
+          "10.104.14.126"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "pvdx4@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.92.219"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<190>date=2051-01-30,time=16:09:16.825,device_id=FEVM02TM23000064,log_id=0300003065,type=spam,subtype=default,pri=information,session_id=\"k6ZU5akL027920-w4IV3fhI392350\",client_name=\"\",client_ip=\"192.168.92.219\",dst_ip=\"10.104.14.126\",from=\"zqay7@example.com\",to=\"pvdx4@example.com\",subject=\"Test1516\",msg=\"mailfilterd: Starting\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-fortinet_fortimail-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "fortinet_fortimail",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,196 @@
+{
+    "events": [
+        {
+            "@timestamp": "2052-11-04T14:47:03.792Z",
+            "process": {
+                "args_count": 2,
+                "pid": 523,
+                "command_line": "/lib/systemd/systemd --user",
+                "args": [
+                    "/lib/systemd/systemd",
+                    "--user"
+                ]
+            },
+            "event": {
+                "created": "2052-11-04T16:47:24.336Z",
+                "kind": "event"
+            },
+            "journald": {
+                "process": {
+                    "name": "systemd",
+                    "executable": "/usr/lib/systemd/systemd",
+                    "capabilities": "0",
+                    "command_line": "/lib/systemd/systemd --user"
+                },
+                "code": {
+                    "file": "src/core/job.c",
+                    "line": 940,
+                    "func": "job_log_done_status_message"
+                },
+                "pid": 523,
+                "audit": {
+                    "login_uid": 1000,
+                    "session": "2"
+                },
+                "uid": 1000,
+                "gid": 1000,
+                "host": {
+                    "boot_id": "8e52bb29e9774f0cfdf6211072ad6899"
+                },
+                "custom": {
+                    "user_invocation_id": "f0eb58567a7f1f4c442ba521b15c8ff5",
+                    "selinux_context": "unconfined\n",
+                    "job_id": "20",
+                    "user_unit": "basic.target",
+                    "tid": "523",
+                    "job_type": "stop",
+                    "job_result": "done"
+                }
+            },
+            "input": {
+                "type": "journald"
+            },
+            "user": {
+                "id": "1000",
+                "group": {
+                    "id": "1000"
+                }
+            },
+            "systemd": {
+                "owner_uid": 1000,
+                "slice": "user-1000.slice",
+                "unit": "user@7144.service",
+                "transport": "journal",
+                "user_unit": "init.scope",
+                "user_slice": "-.slice",
+                "cgroup": "/user.slice/user-1000.slice/user@7144.service/init.scope"
+            },
+            "log": {
+                "syslog": {
+                    "facility": {
+                        "code": 3
+                    },
+                    "priority": 6
+                }
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "host": {
+                "hostname": "apgyucne",
+                "id": "5a9db650160d48d3a29167c79232ddd2",
+                "name": "apgyucne"
+            },
+            "message": "Stopped target Basic System.",
+            "syslog": {
+                "priority": 6,
+                "facility": 3,
+                "identifier": "systemd"
+            },
+            "message_id": "3f6dcb26c80016df82856646bfe72488",
+            "agent": {
+                "id": "f9251740-92cf-4196-a81c-4844a5d18ad7",
+                "name": "apgyucne",
+                "type": "filebeat",
+                "version": "8.15.42",
+                "ephemeral_id": "c0c39b37-2c31-44f1-b7cc-942d826e9198"
+            }
+        },
+        {
+            "@timestamp": "2052-11-01T16:33:54.711Z",
+            "log": {
+                "syslog": {
+                    "facility": {
+                        "code": 3
+                    },
+                    "priority": 6
+                }
+            },
+            "input": {
+                "type": "journald"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "journald": {
+                "audit": {
+                    "session": "2",
+                    "login_uid": 1000
+                },
+                "gid": 1000,
+                "uid": 1000,
+                "host": {
+                    "boot_id": "0884e6afffac521f1ee97e811d83a4e0"
+                },
+                "code": {
+                    "file": "src/core/job.c",
+                    "line": 940,
+                    "func": "job_log_done_status_message"
+                },
+                "pid": 671,
+                "custom": {
+                    "user_unit": "paths.target",
+                    "user_invocation_id": "19add9b80a04150fd39181592cb76944",
+                    "job_result": "done",
+                    "job_id": "11",
+                    "selinux_context": "unconfined\n",
+                    "tid": "671",
+                    "job_type": "stop"
+                },
+                "process": {
+                    "name": "systemd",
+                    "command_line": "/lib/systemd/systemd --user",
+                    "capabilities": "0",
+                    "executable": "/usr/lib/systemd/systemd"
+                }
+            },
+            "process": {
+                "args": [
+                    "/lib/systemd/systemd",
+                    "--user"
+                ],
+                "args_count": 2,
+                "pid": 671,
+                "command_line": "/lib/systemd/systemd --user"
+            },
+            "event": {
+                "created": "2052-11-04T16:47:24.337Z",
+                "kind": "event"
+            },
+            "host": {
+                "hostname": "apgyucne",
+                "id": "5a9db650160d48d3a29167c79232ddd2",
+                "name": "apgyucne"
+            },
+            "systemd": {
+                "cgroup": "/user.slice/user-1000.slice/user@7144.service/init.scope",
+                "transport": "journal",
+                "slice": "user-1000.slice",
+                "user_unit": "init.scope",
+                "unit": "user@7144.service",
+                "user_slice": "-.slice",
+                "owner_uid": 1000
+            },
+            "agent": {
+                "name": "apgyucne",
+                "type": "filebeat",
+                "version": "8.15.42",
+                "ephemeral_id": "c0c39b37-2c31-44f1-b7cc-942d826e9198",
+                "id": "f9251740-92cf-4196-a81c-4844a5d18ad7"
+            },
+            "message_id": "3f6dcb26c80016df82856646bfe72488",
+            "user": {
+                "group": {
+                    "id": "1000"
+                },
+                "id": "1000"
+            },
+            "message": "Stopped target Paths.",
+            "syslog": {
+                "priority": 6,
+                "identifier": "systemd",
+                "facility": 3
+            }
+        }
+    ]
+}

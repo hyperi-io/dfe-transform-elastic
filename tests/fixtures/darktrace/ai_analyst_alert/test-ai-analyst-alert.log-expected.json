@@ -1,0 +1,508 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-08-03T14:48:09.240Z",
+      "darktrace": {
+        "ai_analyst_alert": {
+          "activity_id": "abcd1234",
+          "aia_score": 98.0,
+          "attack_phases": [
+            5
+          ],
+          "breach_devices": [
+            {
+              "did": 10,
+              "hostname": "sghko.local",
+              "ip": "198.51.100.211",
+              "sid": 12,
+              "subnet": "VPN"
+            }
+          ],
+          "category": "critical",
+          "children": [
+            "eabcdef0-1234-1234-1234-cabcdefghij9"
+          ],
+          "created_at": "2049-08-03T14:48:09.240Z",
+          "current_group": "eabc1234-1234-1234-1234-cabcdefg0011",
+          "details": [
+            [
+              {
+                "contents": [
+                  {
+                    "type": "device",
+                    "values": [
+                      {
+                        "did": 10,
+                        "ip": "192.0.2.87",
+                        "sid": 12,
+                        "subnet": "VPN"
+                      }
+                    ]
+                  }
+                ],
+                "header": "Breaching Device"
+              }
+            ],
+            [
+              {
+                "contents": [
+                  {
+                    "key": "Time",
+                    "type": "timestampRange",
+                    "values": [
+                      {
+                        "end": 2511612941220,
+                        "start": 2511598098683
+                      }
+                    ]
+                  },
+                  {
+                    "key": "Number of unique IPs",
+                    "type": "integer",
+                    "values": [
+                      16
+                    ]
+                  },
+                  {
+                    "key": "Targeted IP ranges include",
+                    "type": "device",
+                    "values": [
+                      {
+                        "ip": "192.0.2.218"
+                      },
+                      {
+                        "ip": "192.0.2.87"
+                      },
+                      {
+                        "ip": "198.51.100.36"
+                      }
+                    ]
+                  },
+                  {
+                    "key": "Destination port",
+                    "type": "integer",
+                    "values": [
+                      22
+                    ]
+                  },
+                  {
+                    "key": "Connection count",
+                    "type": "integer",
+                    "values": [
+                      40
+                    ]
+                  },
+                  {
+                    "key": "Percentage successful",
+                    "type": "percentage",
+                    "values": [
+                      100
+                    ]
+                  }
+                ],
+                "header": "SSH Activity"
+              }
+            ]
+          ],
+          "group_by_activity": false,
+          "group_category": "critical",
+          "group_score": 72.9174234,
+          "grouping_ids": [
+            "abcdef12"
+          ],
+          "id": "eabc0011-1234-1234-1234-cabcdefg0011",
+          "is_acknowledged": false,
+          "is_external_triggered": false,
+          "is_pinned": true,
+          "is_user_triggered": false,
+          "periods": [
+            {
+              "end": "2049-08-03T14:15:41.220Z",
+              "start": "2049-08-03T10:08:18.683Z"
+            }
+          ],
+          "related_breaches": [
+            {
+              "model_name": "Unusual Activity / Unusual Activity from Re-Activated Device",
+              "pbid": 1234,
+              "threat_score": 37,
+              "timestamp": "2049-08-03T13:25:57.000Z"
+            }
+          ],
+          "summariser": "AdminConnSummary",
+          "summary": "The device 192.0.2.87 was observed making unusual internal SSH connections to a wide range of devices.\n\nThough this behaviour could be the result of legitimate remote access or administration, it could also be a sign of attempted lateral movement by a compromised machine.\n\nConsequently, if this activity was not expected, the security team may wish to investigate further.",
+          "title": "Extensive Unusual SSH Connections"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "duration": [
+          14842537000000
+        ],
+        "end": [
+          "2049-08-03T14:15:41.220Z"
+        ],
+        "id": "eabc0011-1234-1234-1234-cabcdefg0011",
+        "kind": "alert",
+        "original": "{\"summariser\":\"AdminConnSummary\",\"acknowledged\":false,\"pinned\":true,\"createdAt\":2511614889240,\"attackPhases\":[5],\"title\":\"Extensive Unusual SSH Connections\",\"id\":\"eabc0011-1234-1234-1234-cabcdefg0011\",\"children\":[\"eabcdef0-1234-1234-1234-cabcdefghij9\"],\"category\":\"critical\",\"currentGroup\":\"eabc1234-1234-1234-1234-cabcdefg0011\",\"groupCategory\":\"critical\",\"groupScore\":\"72.9174234\",\"groupPreviousGroups\":null,\"activityId\":\"abcd1234\",\"groupingIds\":[\"abcdef12\"],\"groupByActivity\":false,\"userTriggered\":false,\"externalTriggered\":false,\"aiaScore\":98,\"summary\":\"The device 192.0.2.87 was observed making unusual internal SSH connections to a wide range of devices.\\n\\nThough this behaviour could be the result of legitimate remote access or administration, it could also be a sign of attempted lateral movement by a compromised machine.\\n\\nConsequently, if this activity was not expected, the security team may wish to investigate further.\",\"periods\":[{\"start\":2511598098683,\"end\":2511612941220}],\"breachDevices\":[{\"identifier\":null,\"hostname\":\"sghko.local\",\"ip\":\"198.51.100.211\",\"mac\":null,\"subnet\":\"VPN\",\"did\":10,\"sid\":12}],\"relatedBreaches\":[{\"modelName\":\"Unusual Activity / Unusual Activity from Re-Activated Device\",\"pbid\":1234,\"threatScore\":37,\"timestamp\":2511609957000}],\"details\":[[{\"header\":\"Breaching Device\",\"contents\":[{\"key\":null,\"type\":\"device\",\"values\":[{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.87\",\"mac\":null,\"subnet\":\"VPN\",\"did\":10,\"sid\":12}]}]}],[{\"header\":\"SSH Activity\",\"contents\":[{\"key\":\"Time\",\"type\":\"timestampRange\",\"values\":[{\"start\":2511598098683,\"end\":2511612941220}]},{\"key\":\"Number of unique IPs\",\"type\":\"integer\",\"values\":[16]},{\"key\":\"Targeted IP ranges include\",\"type\":\"device\",\"values\":[{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.218\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null},{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.87\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null},{\"identifier\":null,\"hostname\":null,\"ip\":\"198.51.100.36\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null}]},{\"key\":\"Destination port\",\"type\":\"integer\",\"values\":[22]},{\"key\":\"Connection count\",\"type\":\"integer\",\"values\":[40]},{\"key\":\"Percentage successful\",\"type\":\"percentage\",\"values\":[100]}]}]]}",
+        "reason": "Extensive Unusual SSH Connections",
+        "risk_score": 98.0,
+        "risk_score_norm": 98.0,
+        "start": [
+          "2049-08-03T10:08:18.683Z"
+        ],
+        "type": [
+          "indicator"
+        ]
+      },
+      "host": {
+        "hostname": [
+          "sghko.local"
+        ],
+        "id": [
+          "10"
+        ],
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "message": "The device 192.0.2.87 was observed making unusual internal SSH connections to a wide range of devices.\n\nThough this behaviour could be the result of legitimate remote access or administration, it could also be a sign of attempted lateral movement by a compromised machine.\n\nConsequently, if this activity was not expected, the security team may wish to investigate further.",
+      "related": {
+        "hosts": [
+          "sghko.local"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "192.0.2.87",
+          "192.0.2.218",
+          "198.51.100.36"
+        ]
+      },
+      "rule": {
+        "name": [
+          "Unusual Activity / Unusual Activity from Re-Activated Device"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "enrichments": {
+          "matched": {
+            "id": [
+              "eabcdef0-1234-1234-1234-cabcdefghij9"
+            ]
+          }
+        },
+        "group": {
+          "id": "eabc1234-1234-1234-1234-cabcdefg0011"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-07-13T21:57:17.781Z",
+      "darktrace": {
+        "ai_analyst_alert": {
+          "activity_id": "abcdefee",
+          "aia_score": 64.0,
+          "attack_phases": [
+            4
+          ],
+          "breach_devices": [
+            {
+              "did": 7,
+              "hostname": "sghko.local",
+              "identifier": "sghko.local",
+              "ip": "192.0.2.87/24",
+              "sid": 1
+            }
+          ],
+          "category": "suspicious",
+          "children": [
+            "eabcdef0-1234-1234-1234-cabcdefghij9"
+          ],
+          "created_at": "2050-07-13T21:57:17.781Z",
+          "current_group": "eae19348-9380-1310-1290-bcbaccb78261",
+          "details": [
+            [
+              {
+                "contents": [
+                  {
+                    "key": "Time",
+                    "type": "timestampRange",
+                    "values": [
+                      {
+                        "end": 2541362205342,
+                        "start": 2541359820967
+                      }
+                    ]
+                  },
+                  {
+                    "key": "Source device",
+                    "type": "device",
+                    "values": [
+                      {
+                        "did": 7,
+                        "hostname": "sghko.local",
+                        "identifier": "sghko.local",
+                        "ip": "198.51.100.36/28",
+                        "sid": 1
+                      }
+                    ]
+                  },
+                  {
+                    "key": "Scanned IPs",
+                    "type": "device",
+                    "values": [
+                      {
+                        "ip": "198.51.100.211"
+                      },
+                      {
+                        "ip": "192.0.2.218"
+                      }
+                    ]
+                  },
+                  {
+                    "key": "Username observed prior to activity",
+                    "type": "string",
+                    "values": [
+                      "user1"
+                    ]
+                  },
+                  {
+                    "key": "Source of username",
+                    "type": "string",
+                    "values": [
+                      "User login"
+                    ]
+                  },
+                  {
+                    "key": "Time observed",
+                    "type": "timestamp",
+                    "values": [
+                      1657739323000
+                    ]
+                  },
+                  {
+                    "key": "Event UID",
+                    "type": "string",
+                    "values": [
+                      "CABCDabcdABCDabcd000"
+                    ]
+                  }
+                ],
+                "header": "Overview of Scan"
+              }
+            ],
+            [
+              {
+                "contents": [
+                  {
+                    "key": "Total connections",
+                    "type": "integer",
+                    "values": [
+                      4537
+                    ]
+                  },
+                  {
+                    "key": "Total ports scanned",
+                    "type": "integer",
+                    "values": [
+                      996
+                    ]
+                  },
+                  {
+                    "key": "Port range",
+                    "type": "integerRange",
+                    "values": [
+                      {
+                        "end": "65389",
+                        "start": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "key": "Key ports",
+                    "type": "integer",
+                    "values": [
+                      21,
+                      22,
+                      23,
+                      80,
+                      389,
+                      443,
+                      1433,
+                      3128,
+                      3306,
+                      4444,
+                      4899,
+                      8080
+                    ]
+                  }
+                ],
+                "header": "TCP Scanning Activity"
+              }
+            ],
+            [
+              {
+                "contents": [
+                  {
+                    "key": "Total connections",
+                    "type": "integer",
+                    "values": [
+                      116
+                    ]
+                  },
+                  {
+                    "key": "Port",
+                    "type": "integer",
+                    "values": [
+                      137
+                    ]
+                  }
+                ],
+                "header": "UDP Scanning Activity"
+              }
+            ]
+          ],
+          "group_by_activity": false,
+          "group_category": "suspicious",
+          "group_score": 6.857722547303857,
+          "grouping_ids": [
+            "ab123456"
+          ],
+          "id": "eabcdef0-1234-1234-1234-cabcdefghij9",
+          "incident_event_url": {
+            "domain": "www.example.com",
+            "fragment": "aiaincidentevent/eabcdef0-1234-1234-1234-cabcdefghij9",
+            "original": "https://www.example.com/#aiaincidentevent/eabcdef0-1234-1234-1234-cabcdefghij9",
+            "path": "/",
+            "scheme": "https"
+          },
+          "is_acknowledged": false,
+          "is_external_triggered": false,
+          "is_pinned": false,
+          "is_user_triggered": false,
+          "periods": [
+            {
+              "end": "2050-07-13T21:56:45.342Z",
+              "start": "2050-07-13T21:17:00.967Z"
+            }
+          ],
+          "related_breaches": [
+            {
+              "model_name": "Device / Attack and Recon Tools",
+              "pbid": 6,
+              "threat_score": 88,
+              "timestamp": "2050-07-13T21:46:48.000Z"
+            }
+          ],
+          "summariser": "ScanSummary",
+          "summary": "The device sghko.local was observed making an unusually large number of internal connection attempts to multiple devices, suggesting scanning activity.\n\nNetwork scanning can be used during reconnaissance to gather information about internal devices, such as their list of open ports, and is thus a possible indicator of preparation for malicious or unauthorised internal activity.\n\nIf the activity from the device was not expected, it is recommended that the security team investigate it further to determine whether it was part of legitimate network activity.",
+          "title": "Port Scanning"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "duration": [
+          2384375000000
+        ],
+        "end": [
+          "2050-07-13T21:56:45.342Z"
+        ],
+        "id": "eabcdef0-1234-1234-1234-cabcdefghij9",
+        "kind": "alert",
+        "original": "{\"summariser\":\"ScanSummary\",\"acknowledged\":false,\"pinned\":false,\"createdAt\":2541362237781,\"attackPhases\":[4],\"title\":\"Port Scanning\",\"id\":\"eabcdef0-1234-1234-1234-cabcdefghij9\",\"incidentEventUrl\":\"https://www.example.com/#aiaincidentevent/eabcdef0-1234-1234-1234-cabcdefghij9\",\"children\":[\"eabcdef0-1234-1234-1234-cabcdefghij9\"],\"category\":\"suspicious\",\"currentGroup\":\"eae19348-9380-1310-1290-bcbaccb78261\",\"groupCategory\":\"suspicious\",\"groupScore\":6.857722547303857,\"groupPreviousGroups\":[],\"activityId\":\"abcdefee\",\"groupingIds\":[\"ab123456\"],\"groupByActivity\":false,\"userTriggered\":false,\"externalTriggered\":false,\"aiaScore\":64,\"summary\":\"The device sghko.local was observed making an unusually large number of internal connection attempts to multiple devices, suggesting scanning activity.\\n\\nNetwork scanning can be used during reconnaissance to gather information about internal devices, such as their list of open ports, and is thus a possible indicator of preparation for malicious or unauthorised internal activity.\\n\\nIf the activity from the device was not expected, it is recommended that the security team investigate it further to determine whether it was part of legitimate network activity.\",\"periods\":[{\"start\":2541359820967,\"end\":2541362205342}],\"breachDevices\":[{\"identifier\":\"sghko.local\",\"hostname\":\"sghko.local\",\"ip\":\"192.0.2.87/24\",\"mac\":null,\"subnet\":null,\"did\":7,\"sid\":1}],\"relatedBreaches\":[{\"modelName\":\"Device / Attack and Recon Tools\",\"pbid\":6,\"threatScore\":88,\"timestamp\":2541361608000}],\"details\":[[{\"header\":\"Overview of Scan\",\"contents\":[{\"key\":\"Time\",\"type\":\"timestampRange\",\"values\":[{\"start\":2541359820967,\"end\":2541362205342}]},{\"key\":\"Source device\",\"type\":\"device\",\"values\":[{\"identifier\":\"sghko.local\",\"hostname\":\"sghko.local\",\"ip\":\"198.51.100.36/28\",\"mac\":null,\"subnet\":null,\"did\":7,\"sid\":1}]},{\"key\":\"Scanned IPs\",\"type\":\"device\",\"values\":[{\"identifier\":null,\"hostname\":null,\"ip\":\"198.51.100.211\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null},{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.218\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null}]},{\"key\":\"Username observed prior to activity\",\"type\":\"string\",\"values\":[\"user1\"]},{\"key\":\"Source of username\",\"type\":\"string\",\"values\":[\"User login\"]},{\"key\":\"Time observed\",\"type\":\"timestamp\",\"values\":[1657739323000]},{\"key\":\"Event UID\",\"type\":\"string\",\"values\":[\"CABCDabcdABCDabcd000\"]}]}],[{\"header\":\"TCP Scanning Activity\",\"contents\":[{\"key\":\"Total connections\",\"type\":\"integer\",\"values\":[4537]},{\"key\":\"Total ports scanned\",\"type\":\"integer\",\"values\":[996]},{\"key\":\"Port range\",\"type\":\"integerRange\",\"values\":[{\"start\":\"1\",\"end\":\"65389\"}]},{\"key\":\"Key ports\",\"type\":\"integer\",\"values\":[21,22,23,80,389,443,1433,3128,3306,4444,4899,8080]}]}],[{\"header\":\"UDP Scanning Activity\",\"contents\":[{\"key\":\"Total connections\",\"type\":\"integer\",\"values\":[116]},{\"key\":\"Port\",\"type\":\"integer\",\"values\":[137]}]}]]}",
+        "reason": "Port Scanning",
+        "risk_score": 64.0,
+        "risk_score_norm": 64.0,
+        "start": [
+          "2050-07-13T21:17:00.967Z"
+        ],
+        "type": [
+          "indicator"
+        ],
+        "url": "https://www.example.com/#aiaincidentevent/eabcdef0-1234-1234-1234-cabcdefghij9"
+      },
+      "host": {
+        "hostname": [
+          "sghko.local"
+        ],
+        "id": [
+          "7"
+        ],
+        "name": [
+          "sghko.local"
+        ]
+      },
+      "message": "The device sghko.local was observed making an unusually large number of internal connection attempts to multiple devices, suggesting scanning activity.\n\nNetwork scanning can be used during reconnaissance to gather information about internal devices, such as their list of open ports, and is thus a possible indicator of preparation for malicious or unauthorised internal activity.\n\nIf the activity from the device was not expected, it is recommended that the security team investigate it further to determine whether it was part of legitimate network activity.",
+      "related": {
+        "hosts": [
+          "sghko.local"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "192.0.2.218"
+        ]
+      },
+      "rule": {
+        "name": [
+          "Device / Attack and Recon Tools"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "enrichments": {
+          "matched": {
+            "id": [
+              "eabcdef0-1234-1234-1234-cabcdefghij9"
+            ]
+          }
+        },
+        "group": {
+          "id": "eae19348-9380-1310-1290-bcbaccb78261"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"summariser\":\"AdminConnSummary\",\"acknowledged\":false,\"pinned\":true,\"createdAt\":2511614889240,\"attackPhases\":[5],\"title\":\"Extensive Unusual SSH Connections\",\"id\":\"eabc0011-1234-1234-1234-cabcdefg0011\",\"children\":[\"eabcdef0-1234-1234-1234-cabcdefghij9\"],\"category\":\"critical\",\"currentGroup\":\"eabc1234-1234-1234-1234-cabcdefg0011\",\"groupCategory\":\"critical\",\"groupScore\":\"72.9174234\",\"groupPreviousGroups\":null,\"activityId\":\"abcd1234\",\"groupingIds\":[\"abcdef12\"],\"groupByActivity\":false,\"userTriggered\":false,\"externalTriggered\":false,\"aiaScore\":98,\"summary\":\"The device 192.0.2.87 was observed making unusual internal SSH connections to a wide range of devices.\\n\\nThough this behaviour could be the result of legitimate remote access or administration, it could also be a sign of attempted lateral movement by a compromised machine.\\n\\nConsequently, if this activity was not expected, the security team may wish to investigate further.\",\"periods\":[{\"start\":2511598098683,\"end\":2511612941220}],\"breachDevices\":[{\"identifier\":null,\"hostname\":\"sghko.local\",\"ip\":\"198.51.100.211\",\"mac\":null,\"subnet\":\"VPN\",\"did\":10,\"sid\":12}],\"relatedBreaches\":[{\"modelName\":\"Unusual Activity / Unusual Activity from Re-Activated Device\",\"pbid\":1234,\"threatScore\":37,\"timestamp\":2511609957000}],\"details\":[[{\"header\":\"Breaching Device\",\"contents\":[{\"key\":null,\"type\":\"device\",\"values\":[{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.87\",\"mac\":null,\"subnet\":\"VPN\",\"did\":10,\"sid\":12}]}]}],[{\"header\":\"SSH Activity\",\"contents\":[{\"key\":\"Time\",\"type\":\"timestampRange\",\"values\":[{\"start\":2511598098683,\"end\":2511612941220}]},{\"key\":\"Number of unique IPs\",\"type\":\"integer\",\"values\":[16]},{\"key\":\"Targeted IP ranges include\",\"type\":\"device\",\"values\":[{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.218\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null},{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.87\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null},{\"identifier\":null,\"hostname\":null,\"ip\":\"198.51.100.36\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null}]},{\"key\":\"Destination port\",\"type\":\"integer\",\"values\":[22]},{\"key\":\"Connection count\",\"type\":\"integer\",\"values\":[40]},{\"key\":\"Percentage successful\",\"type\":\"percentage\",\"values\":[100]}]}]]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"summariser\":\"ScanSummary\",\"acknowledged\":false,\"pinned\":false,\"createdAt\":2541362237781,\"attackPhases\":[4],\"title\":\"Port Scanning\",\"id\":\"eabcdef0-1234-1234-1234-cabcdefghij9\",\"incidentEventUrl\":\"https://www.example.com/#aiaincidentevent/eabcdef0-1234-1234-1234-cabcdefghij9\",\"children\":[\"eabcdef0-1234-1234-1234-cabcdefghij9\"],\"category\":\"suspicious\",\"currentGroup\":\"eae19348-9380-1310-1290-bcbaccb78261\",\"groupCategory\":\"suspicious\",\"groupScore\":6.857722547303857,\"groupPreviousGroups\":[],\"activityId\":\"abcdefee\",\"groupingIds\":[\"ab123456\"],\"groupByActivity\":false,\"userTriggered\":false,\"externalTriggered\":false,\"aiaScore\":64,\"summary\":\"The device sghko.local was observed making an unusually large number of internal connection attempts to multiple devices, suggesting scanning activity.\\n\\nNetwork scanning can be used during reconnaissance to gather information about internal devices, such as their list of open ports, and is thus a possible indicator of preparation for malicious or unauthorised internal activity.\\n\\nIf the activity from the device was not expected, it is recommended that the security team investigate it further to determine whether it was part of legitimate network activity.\",\"periods\":[{\"start\":2541359820967,\"end\":2541362205342}],\"breachDevices\":[{\"identifier\":\"sghko.local\",\"hostname\":\"sghko.local\",\"ip\":\"192.0.2.87/24\",\"mac\":null,\"subnet\":null,\"did\":7,\"sid\":1}],\"relatedBreaches\":[{\"modelName\":\"Device / Attack and Recon Tools\",\"pbid\":6,\"threatScore\":88,\"timestamp\":2541361608000}],\"details\":[[{\"header\":\"Overview of Scan\",\"contents\":[{\"key\":\"Time\",\"type\":\"timestampRange\",\"values\":[{\"start\":2541359820967,\"end\":2541362205342}]},{\"key\":\"Source device\",\"type\":\"device\",\"values\":[{\"identifier\":\"sghko.local\",\"hostname\":\"sghko.local\",\"ip\":\"198.51.100.36/28\",\"mac\":null,\"subnet\":null,\"did\":7,\"sid\":1}]},{\"key\":\"Scanned IPs\",\"type\":\"device\",\"values\":[{\"identifier\":null,\"hostname\":null,\"ip\":\"198.51.100.211\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null},{\"identifier\":null,\"hostname\":null,\"ip\":\"192.0.2.218\",\"mac\":null,\"subnet\":null,\"did\":null,\"sid\":null}]},{\"key\":\"Username observed prior to activity\",\"type\":\"string\",\"values\":[\"user1\"]},{\"key\":\"Source of username\",\"type\":\"string\",\"values\":[\"User login\"]},{\"key\":\"Time observed\",\"type\":\"timestamp\",\"values\":[1657739323000]},{\"key\":\"Event UID\",\"type\":\"string\",\"values\":[\"CABCDabcdABCDabcd000\"]}]}],[{\"header\":\"TCP Scanning Activity\",\"contents\":[{\"key\":\"Total connections\",\"type\":\"integer\",\"values\":[4537]},{\"key\":\"Total ports scanned\",\"type\":\"integer\",\"values\":[996]},{\"key\":\"Port range\",\"type\":\"integerRange\",\"values\":[{\"start\":\"1\",\"end\":\"65389\"}]},{\"key\":\"Key ports\",\"type\":\"integer\",\"values\":[21,22,23,80,389,443,1433,3128,3306,4444,4899,8080]}]}],[{\"header\":\"UDP Scanning Activity\",\"contents\":[{\"key\":\"Total connections\",\"type\":\"integer\",\"values\":[116]},{\"key\":\"Port\",\"type\":\"integer\",\"values\":[137]}]}]]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ai_analyst_alert",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-darktrace-ai_analyst_alert-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "darktrace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

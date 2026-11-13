@@ -1,0 +1,1077 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-22T06:19:37.000Z",
+      "application": {
+        "name": "Office 365"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "logonsuccess",
+        "category": [
+          "authentication"
+        ],
+        "id": "1234",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-IdentityLogonEvents\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2050-11-22T06:19:37Z\",\"TargetDeviceName\":\"\",\"DestinationIPAddress\":\"\",\"DestinationPort\":\"\",\"DeviceName\":\"zbxnvcemhyb1\",\"IPAddress\":\"203.0.113.248\",\"OSPlatform\":\"Windows 10\",\"DeviceType\":\"Desktop\",\"Protocol\":\"NTLM\",\"AccountDomain\":\"\",\"AccountSid\":\"S-1-5-21-1874808502-2282212345-3464712345-500\",\"AccountName\":\"acvztnyqkfxhq2\",\"AccountDisplayName\":\"\",\"AccountObjectId\":\"\",\"AccountUpn\":\"\",\"ActionType\":\"LogonSuccess\",\"AdditionalFields\":\"{\\\"CallerProcessID\\\":4248}\",\"Application\":\"Office 365\",\"DestinationDeviceName\":\"\",\"FailureReason\":\"\",\"Isp\":\"\",\"Location\":\"\",\"LogonType\":\"Login:resume\",\"Port\":\"\",\"ReportId\":\"1234\",\"TargetAccountDisplayName\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-22T06:20:58.5237104Z\"}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "name": "zbxnvcemhyb1",
+        "os": {
+          "name": "Windows 10",
+          "type": "windows"
+        },
+        "type": "Desktop"
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "name": "acvztnyqkfxhq2",
+            "sid": "S-1-5-21-1874808502-2282212345-3464712345-500"
+          },
+          "action": {
+            "type": "LogonSuccess"
+          },
+          "additional_fields": {
+            "CallerProcessID": 4248
+          },
+          "application": "Office 365",
+          "category": "AdvancedHunting-IdentityLogonEvents",
+          "device": {
+            "name": "zbxnvcemhyb1",
+            "type": "Desktop"
+          },
+          "ip_address": "203.0.113.248",
+          "logon": {
+            "type": "Login:resume"
+          },
+          "operation_name": "Publish",
+          "os": {
+            "platform": "Windows 10"
+          },
+          "protocol": "NTLM",
+          "report_id": "1234",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-22T06:20:58.523Z",
+          "timestamp": "2050-11-22T06:19:37.000Z"
+        }
+      },
+      "network": {
+        "protocol": "ntlm"
+      },
+      "related": {
+        "hosts": [
+          "zbxnvcemhyb1"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "S-1-5-21-1874808502-2282212345-3464712345-500",
+          "acvztnyqkfxhq2"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "S-1-5-21-1874808502-2282212345-3464712345-500",
+        "name": "acvztnyqkfxhq2"
+      }
+    },
+    {
+      "@timestamp": "2050-11-22T06:19:37.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "processcreated",
+        "id": "1234",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-IdentityQueryEvents\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2050-11-22T06:19:37Z\",\"TargetDeviceName\":\"\",\"DestinationIPAddress\":\"\",\"DestinationPort\":\"\",\"DeviceName\":\"zbxnvcemhyb1\",\"IPAddress\":\"\",\"Protocol\":\"NTLM\",\"AccountDomain\":\"testmachine6\",\"AccountSid\":\"S-1-5-21-1874808502-2282282112-3464708742-500\",\"AccountName\":\"acvztnyqkfxhq2\",\"AccountDisplayName\":\"\",\"AccountObjectId\":\"\",\"AccountUpn\":\"\",\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"CallerProcessID\\\":4248}\",\"Application\":\"\",\"DestinationDeviceName\":\"\",\"IsAdminOperation\":null,\"Location\":\"\",\"Port\":\"\",\"Query\":\"\",\"QueryTarget\":\"\",\"QueryType\":\"\",\"ReportId\":\"1234\",\"TargetAccountDisplayName\":\"\",\"TargetAccountUpn\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-22T06:20:58.5237104Z\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "zbxnvcemhyb1"
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "domain": "testmachine6",
+            "name": "acvztnyqkfxhq2",
+            "sid": "S-1-5-21-1874808502-2282282112-3464708742-500"
+          },
+          "action": {
+            "type": "ProcessCreated"
+          },
+          "additional_fields": {
+            "CallerProcessID": 4248
+          },
+          "category": "AdvancedHunting-IdentityQueryEvents",
+          "device": {
+            "name": "zbxnvcemhyb1"
+          },
+          "operation_name": "Publish",
+          "protocol": "NTLM",
+          "report_id": "1234",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-22T06:20:58.523Z",
+          "timestamp": "2050-11-22T06:19:37.000Z"
+        }
+      },
+      "network": {
+        "protocol": "ntlm"
+      },
+      "related": {
+        "hosts": [
+          "zbxnvcemhyb1",
+          "testmachine6"
+        ],
+        "user": [
+          "acvztnyqkfxhq2"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "testmachine6",
+        "name": "acvztnyqkfxhq2"
+      }
+    },
+    {
+      "@timestamp": "2050-11-22T06:19:37.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "processcreated",
+        "id": "1234",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-IdentityDirectoryEvents\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2050-11-22T06:19:37Z\",\"TargetDeviceName\":\"\",\"DestinationIPAddress\":\"\",\"DestinationPort\":\"\",\"DeviceName\":\"zbxnvcemhyb1\",\"IPAddress\":\"\",\"Protocol\":\"NTLM\",\"AccountDomain\":\"testmachine6\",\"AccountSid\":\"S-1-5-21-1874808502-2282282112-3464708742-500\",\"AccountName\":\"acvztnyqkfxhq2\",\"AccountDisplayName\":\"\",\"AccountObjectId\":\"\",\"AccountUpn\":\"\",\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"CallerProcessID\\\":4248}\",\"Application\":\"\",\"DestinationDeviceName\":\"\",\"IsAdminOperation\":\"\",\"ISP\":\"\",\"Location\":\"\",\"Port\":\"\",\"ReportId\":\"1234\",\"TargetAccountDisplayName\":\"\",\"TargetAccountUpn\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-22T06:20:58.5237104Z\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "zbxnvcemhyb1"
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "domain": "testmachine6",
+            "name": "acvztnyqkfxhq2",
+            "sid": "S-1-5-21-1874808502-2282282112-3464708742-500"
+          },
+          "action": {
+            "type": "ProcessCreated"
+          },
+          "additional_fields": {
+            "CallerProcessID": 4248
+          },
+          "category": "AdvancedHunting-IdentityDirectoryEvents",
+          "device": {
+            "name": "zbxnvcemhyb1"
+          },
+          "operation_name": "Publish",
+          "protocol": "NTLM",
+          "report_id": "1234",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-11-22T06:20:58.523Z",
+          "timestamp": "2050-11-22T06:19:37.000Z"
+        }
+      },
+      "network": {
+        "protocol": "ntlm"
+      },
+      "related": {
+        "hosts": [
+          "zbxnvcemhyb1",
+          "testmachine6"
+        ],
+        "user": [
+          "acvztnyqkfxhq2"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "testmachine6",
+        "name": "acvztnyqkfxhq2"
+      }
+    },
+    {
+      "@timestamp": "2050-12-08T12:48:45.833Z",
+      "application": {
+        "name": "Microsoft Azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "write-deployments",
+        "id": "755d9e5c816866d345ee78ba00c35d9b585c9d67251af71d51dc34f28a482006",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-CloudAppEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"name\",\"AccountId\":\"936e180a-46d8-4002-b7d4-55db5fd73671\",\"AccountObjectId\":\"185f055e-20a6-4485-b9c8-52af8aef125a\",\"AccountType\":\"Admin\",\"ActionType\":\"Write Deployments\",\"ActivityObjects\":\"\",\"ActivityType\":\"Basic\",\"AdditionalFields\":\"{\\\"IsSatelliteProvider\\\":false}\",\"AppInstanceId\":0,\"Application\":\"Microsoft Azure\",\"ApplicationId\":12260,\"City\":\"\",\"CountryCode\":\"\",\"DeviceType\":null,\"IPAddress\":\"203.0.113.138\",\"IPCategory\":null,\"IPTags\":null,\"ISP\":\"\",\"IsAdminOperation\":0,\"IsAnonymousProxy\":false,\"IsExternalUser\":false,\"IsImpersonated\":false,\"OSPlatform\":null,\"ObjectId\":\"\",\"ObjectName\":\"\",\"ObjectType\":\"Resource\",\"RawEventData\":\"{\\\"AccountMoniker\\\":\\\"MdsResourceStackRPFCentralUS\\\",\\\"AccountMonikerLocation\\\":\\\"centralus\\\"}\",\"ReportId\":\"755d9e5c816866d345ee78ba00c35d9b585c9d67251af71d51dc34f28a482006\",\"Timestamp\":\"2050-12-08T12:48:45.833Z\",\"UserAgent\":null,\"UserAgentTags\":null},\"tenantId\":\"7af54cf0-de9a-4f76-b20e-75621a708704\",\"time\":\"2050-12-08T12:52:23.6440369Z\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "display_name": "name",
+            "id": "936e180a-46d8-4002-b7d4-55db5fd73671",
+            "object_id": "185f055e-20a6-4485-b9c8-52af8aef125a",
+            "type": "Admin"
+          },
+          "action": {
+            "type": "Write Deployments"
+          },
+          "activity": {
+            "type": "Basic"
+          },
+          "additional_fields": {
+            "IsSatelliteProvider": false
+          },
+          "app_instance_id": 0,
+          "application": "Microsoft Azure",
+          "application_id": "12260",
+          "category": "AdvancedHunting-CloudAppEvents",
+          "ip_address": "203.0.113.138",
+          "is_admin_operation": false,
+          "is_anonymous_proxy": false,
+          "is_external_user": false,
+          "is_impersonated": false,
+          "object": {
+            "type": "Resource"
+          },
+          "operation_name": "Publish",
+          "raw_event_data": {
+            "AccountMoniker": "MdsResourceStackRPFCentralUS",
+            "AccountMonikerLocation": "centralus"
+          },
+          "report_id": "755d9e5c816866d345ee78ba00c35d9b585c9d67251af71d51dc34f28a482006",
+          "tenant": {
+            "id": "7af54cf0-de9a-4f76-b20e-75621a708704",
+            "name": "DefaultTenant"
+          },
+          "time": "2050-12-08T12:52:23.644Z",
+          "timestamp": "2050-12-08T12:48:45.833Z"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "936e180a-46d8-4002-b7d4-55db5fd73671",
+          "name"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "936e180a-46d8-4002-b7d4-55db5fd73671",
+        "name": "name"
+      }
+    },
+    {
+      "@timestamp": "2051-06-21T11:50:29.598Z",
+      "application": {
+        "name": "Active Directory"
+      },
+      "destination": {
+        "ip": "10.163.219.157",
+        "port": 445
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "samr-query",
+        "id": "4956eaab-59e3-4420-8263-3297def978cc_108408875_1687348229598_20940",
+        "kind": "event",
+        "original": "{\"time\": \"2051-06-21T11:55:44.4674988Z\", \"tenantId\": \"41eed71a-7082-4c99-b264-7ec35b147004\", \"operationName\": \"Publish\", \"category\": \"AdvancedHunting-IdentityQueryEvents\", \"properties\": {\"ActionType\":\"SAMR query\",\"QueryTarget\":\"Server_Admin\",\"Protocol\":\"Samr\",\"AccountDisplayName\":\"D2WXA1303R$\",\"AccountUpn\":null,\"AccountName\":null,\"AccountDomain\":null,\"AccountSid\":null,\"AccountObjectId\":null,\"Query\":null,\"IPAddress\":\"10.102.158.187\",\"Location\":null,\"DeviceName\":\"c1kkf2038z.c262b.dbhuby.com\",\"QueryType\":\"QueryGroup\",\"DestinationDeviceName\":\"a0kym94r.c262b.dbhuby.com\",\"IsAdminOperation\":\"0\",\"TargetAccountDisplayName\":null,\"TargetDeviceName\":null,\"Port\":58210,\"DestinationPort\":445,\"DestinationIPAddress\":\"10.163.219.157\",\"TargetAccountUpn\":null,\"AdditionalFields\":{\"AttackTechniques\":\"Permission Groups Discovery (T1069), Account Discovery (T1087), Domain Groups (T1069.002), Domain Account (T1087.002)\",\"Category\":\"Discovery\",\"TO.DEVICE\":\"D2WIN02R\",\"ACTOR.DEVICE\":\"D2WXA1303R\",\"DestinationComputerOperatingSystemType\":\"windows\",\"SourceComputerOperatingSystem\":\"windows server 2019 datacenter\",\"Count\":\"1\",\"SourceComputerOperatingSystemType\":\"windows\",\"SourceAccountId\":\"a5c2e5c7-4463-4f64-8511-d0400360750d\",\"SourceComputerOperatingSystemVersion\":\"10.0 (17763)\",\"DestinationComputerOperatingSystem\":\"windows server 2012 datacenter\",\"SourceComputerObjectGuid\":\"a5c2e5c7-4463-4f64-8511-d0400360750d\",\"DestinationComputerOperatingSystemVersion\":\"6.2 (9200)\",\"SourceAccountSid\":\"S-1-5-21-621940831-1238047941-1264475144-86894\",\"FROM.DEVICE\":\"D2WXA1303R\",\"DestinationComputerObjectGuid\":\"048d6388-efc6-4619-8c51-d36a5d3f5423\"},\"ReportId\":\"4956eaab-59e3-4420-8263-3297def978cc_108408875_1687348229598_20940\",\"Timestamp\":\"2051-06-21T11:50:29.598Z\",\"Application\":\"Active Directory\"}, \"Tenant\": \"DefaultTenant\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "10.102.158.187"
+        ],
+        "name": "c1kkf2038z.c262b.dbhuby.com",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "display_name": "D2WXA1303R$"
+          },
+          "action": {
+            "type": "SAMR query"
+          },
+          "additional_fields": {
+            "ACTOR.DEVICE": "D2WXA1303R",
+            "AttackTechniques": "Permission Groups Discovery (T1069), Account Discovery (T1087), Domain Groups (T1069.002), Domain Account (T1087.002)",
+            "Category": "Discovery",
+            "Count": "1",
+            "DestinationComputerObjectGuid": "048d6388-efc6-4619-8c51-d36a5d3f5423",
+            "DestinationComputerOperatingSystem": "windows server 2012 datacenter",
+            "DestinationComputerOperatingSystemType": "windows",
+            "DestinationComputerOperatingSystemVersion": "6.2 (9200)",
+            "FROM.DEVICE": "D2WXA1303R",
+            "SourceAccountId": "a5c2e5c7-4463-4f64-8511-d0400360750d",
+            "SourceAccountSid": "S-1-5-21-621940831-1238047941-1264475144-86894",
+            "SourceComputerObjectGuid": "a5c2e5c7-4463-4f64-8511-d0400360750d",
+            "SourceComputerOperatingSystem": "windows server 2019 datacenter",
+            "SourceComputerOperatingSystemType": "windows",
+            "SourceComputerOperatingSystemVersion": "10.0 (17763)",
+            "TO.DEVICE": "D2WIN02R"
+          },
+          "application": "Active Directory",
+          "category": "AdvancedHunting-IdentityQueryEvents",
+          "destination": {
+            "device_name": "a0kym94r.c262b.dbhuby.com",
+            "ip_address": "10.163.219.157",
+            "port": 445
+          },
+          "device": {
+            "name": "c1kkf2038z.c262b.dbhuby.com"
+          },
+          "ip_address": "10.102.158.187",
+          "is_admin_operation": false,
+          "operation_name": "Publish",
+          "port": 58210,
+          "protocol": "Samr",
+          "query": {
+            "target": "Server_Admin",
+            "type": "QueryGroup"
+          },
+          "report_id": "4956eaab-59e3-4420-8263-3297def978cc_108408875_1687348229598_20940",
+          "tenant": {
+            "id": "41eed71a-7082-4c99-b264-7ec35b147004",
+            "name": "DefaultTenant"
+          },
+          "time": "2051-06-21T11:55:44.467Z",
+          "timestamp": "2051-06-21T11:50:29.598Z"
+        }
+      },
+      "network": {
+        "protocol": "samr"
+      },
+      "related": {
+        "hosts": [
+          "c1kkf2038z.c262b.dbhuby.com"
+        ],
+        "ip": [
+          "10.163.219.157",
+          "10.102.158.187"
+        ],
+        "user": [
+          "D2WXA1303R$"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "D2WXA1303R$"
+      }
+    },
+    {
+      "@timestamp": "2051-06-21T11:53:18.643Z",
+      "application": {
+        "name": "Active Directory"
+      },
+      "destination": {
+        "ip": "10.20.177.18",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "dns-query",
+        "id": "4206333a-9cf0-4802-aca2-7095aef58a0e_108408875_1687348398643_20940",
+        "kind": "event",
+        "original": "{\"time\": \"2051-06-21T11:55:46.0067676Z\", \"tenantId\": \"41eed71a-7082-4c99-b264-7ec35b147004\", \"operationName\": \"Publish\", \"category\": \"AdvancedHunting-IdentityQueryEvents\", \"properties\": {\"ActionType\":\"DNS query\",\"QueryTarget\":\"_grpc_config.useast-comms.dgsecure.com\",\"Protocol\":\"Dns\",\"AccountDisplayName\":null,\"AccountUpn\":null,\"AccountName\":null,\"AccountDomain\":null,\"AccountSid\":null,\"AccountObjectId\":null,\"Query\":null,\"IPAddress\":\"10.136.59.26\",\"Location\":null,\"DeviceName\":\"b7oxhlh86c.c262b.dbhuby.com\",\"QueryType\":\"Text\",\"DestinationDeviceName\":\"a4xij56j.c262b.dbhuby.com\",\"IsAdminOperation\":false,\"TargetAccountDisplayName\":null,\"TargetDeviceName\":null,\"Port\":57396,\"DestinationPort\":53,\"DestinationIPAddress\":\"10.20.177.18\",\"TargetAccountUpn\":null,\"AdditionalFields\":{\"SourceComputerOperatingSystemVersion\":\"10.0 (19044)\",\"TO.DEVICE\":\"D1WIN02P\",\"DestinationComputerOperatingSystem\":\"windows server 2012 datacenter\",\"DestinationComputerOperatingSystemType\":\"windows\",\"SourceComputerObjectGuid\":\"94948d15-245d-4d58-9c07-abb0e5534814\",\"DestinationComputerOperatingSystemVersion\":\"6.2 (9200)\",\"SourceComputerOperatingSystem\":\"windows 10 enterprise\",\"Count\":\"2\",\"SourceComputerOperatingSystemType\":\"windows\",\"FROM.DEVICE\":\"D1WRPWS12D\",\"DestinationComputerObjectGuid\":\"fad78fd0-4e1b-468d-8924-8e6070fd9ae5\"},\"ReportId\":\"4206333a-9cf0-4802-aca2-7095aef58a0e_108408875_1687348398643_20940\",\"Timestamp\":\"2051-06-21T11:53:18.643Z\",\"Application\":\"Active Directory\"}, \"Tenant\": \"DefaultTenant\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "10.136.59.26"
+        ],
+        "name": "b7oxhlh86c.c262b.dbhuby.com",
+        "os": {
+          "type": "windows"
+        }
+      },
+      "m365_defender": {
+        "event": {
+          "action": {
+            "type": "DNS query"
+          },
+          "additional_fields": {
+            "Count": "2",
+            "DestinationComputerObjectGuid": "fad78fd0-4e1b-468d-8924-8e6070fd9ae5",
+            "DestinationComputerOperatingSystem": "windows server 2012 datacenter",
+            "DestinationComputerOperatingSystemType": "windows",
+            "DestinationComputerOperatingSystemVersion": "6.2 (9200)",
+            "FROM.DEVICE": "D1WRPWS12D",
+            "SourceComputerObjectGuid": "94948d15-245d-4d58-9c07-abb0e5534814",
+            "SourceComputerOperatingSystem": "windows 10 enterprise",
+            "SourceComputerOperatingSystemType": "windows",
+            "SourceComputerOperatingSystemVersion": "10.0 (19044)",
+            "TO.DEVICE": "D1WIN02P"
+          },
+          "application": "Active Directory",
+          "category": "AdvancedHunting-IdentityQueryEvents",
+          "destination": {
+            "device_name": "a4xij56j.c262b.dbhuby.com",
+            "ip_address": "10.20.177.18",
+            "port": 53
+          },
+          "device": {
+            "name": "b7oxhlh86c.c262b.dbhuby.com"
+          },
+          "ip_address": "10.136.59.26",
+          "is_admin_operation": false,
+          "operation_name": "Publish",
+          "port": 57396,
+          "protocol": "Dns",
+          "query": {
+            "target": "_grpc_config.useast-comms.dgsecure.com",
+            "type": "Text"
+          },
+          "report_id": "4206333a-9cf0-4802-aca2-7095aef58a0e_108408875_1687348398643_20940",
+          "tenant": {
+            "id": "41eed71a-7082-4c99-b264-7ec35b147004",
+            "name": "DefaultTenant"
+          },
+          "time": "2051-06-21T11:55:46.006Z",
+          "timestamp": "2051-06-21T11:53:18.643Z"
+        }
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "related": {
+        "hosts": [
+          "b7oxhlh86c.c262b.dbhuby.com"
+        ],
+        "ip": [
+          "10.20.177.18",
+          "10.136.59.26"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-12-30T20:47:45.776Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "id": "39e04284-5591-440a-bbe0-692dee9dd6f6",
+        "kind": "asset",
+        "original": "{ \"Tenant\": \"DefaultTenant\", \"_TimeReceivedBySvc\": \"2052-12-30T23:47:59.3940000Z\", \"category\": \"AdvancedHunting-IdentityInfo\", \"operationName\": \"Publish\", \"properties\": { \"AccountDisplayName\": \"Kmjo Cse\", \"AccountDomain\": \"cc.egmukjj.com\", \"AccountName\": \"lamf\", \"AccountObjectId\": \"d27a0fa4-2786-4103-ae8f-655b3eed7d2d\", \"AccountUpn\": \"lamf@contoso.com\", \"Address\": null, \"BlastRadius\": null, \"ChangeSource\": \"AzureActiveDirectory\", \"City\": null, \"CloudSid\": \"S-1-12-1-144444441-444444444-44444444-44444\", \"CompanyName\": null, \"Country\": null, \"CreatedDateTime\": \"2045-01-11T17:39:42Z\", \"CriticalityLevel\": null, \"DeletedDateTime\": null, \"Department\": \"Accounting\", \"DistinguishedName\": \"CN=lamf,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com\", \"EmailAddress\": \"lamf@contoso.com\", \"EmployeeId\": null, \"GivenName\": \"Kmjo\", \"IsAccountEnabled\": true, \"JobTitle\": \"Accountant\", \"Manager\": null, \"OnPremSid\": \"S-1-5-21-444444444-444444444-44444444-44444\", \"OtherMailAddresses\": null, \"Phone\": \"617-000-0000\", \"ReportId\": \"39e04284-5591-440a-bbe0-692dee9dd6f6\", \"RiskLevel\": null, \"RiskLevelDetails\": null, \"SipProxyAddress\": \"\", \"SourceProvider\": \"AzureActiveDirectory\", \"State\": null, \"Surname\": \"Cse\", \"Tags\": [], \"Timestamp\": \"2052-12-30T20:47:45.7760199Z\", \"Type\": \"User\" }, \"tenantId\": \"cccc58fc-54ae-4279-b3f3-cdc0a47a98c7\", \"time\": \"2052-12-30T20:47:48.8482854Z\" }",
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "cloud_sid": "S-1-12-1-144444441-444444444-44444444-44444",
+            "created": "2045-01-11T17:39:42Z",
+            "department": "Accounting",
+            "display_name": "Kmjo Cse",
+            "distinguished_name": "CN=lamf,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com",
+            "domain": "cc.egmukjj.com",
+            "email_address": "lamf@contoso.com",
+            "given_name": "Kmjo",
+            "is_enabled": true,
+            "job_title": "Accountant",
+            "name": "lamf",
+            "object_id": "d27a0fa4-2786-4103-ae8f-655b3eed7d2d",
+            "on_prem_sid": "S-1-5-21-444444444-444444444-44444444-44444",
+            "phone": "617-000-0000",
+            "surname": "Cse",
+            "upn": "lamf@contoso.com"
+          },
+          "category": "AdvancedHunting-IdentityInfo",
+          "change_source": "AzureActiveDirectory",
+          "operation_name": "Publish",
+          "report_id": "39e04284-5591-440a-bbe0-692dee9dd6f6",
+          "source_provider": "AzureActiveDirectory",
+          "tenant": {
+            "id": "cccc58fc-54ae-4279-b3f3-cdc0a47a98c7",
+            "name": "DefaultTenant"
+          },
+          "time": "2052-12-30T20:47:48.848Z",
+          "timestamp": "2052-12-30T20:47:45.776Z",
+          "type": "User"
+        }
+      },
+      "related": {
+        "hosts": [
+          "cc.egmukjj.com"
+        ],
+        "user": [
+          "d27a0fa4-2786-4103-ae8f-655b3eed7d2d",
+          "Kmjo Cse",
+          "S-1-12-1-144444441-444444444-44444444-44444",
+          "S-1-5-21-444444444-444444444-44444444-44444",
+          "lamf@contoso.com",
+          "lamf"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "cc.egmukjj.com",
+        "email": "lamf@contoso.com",
+        "full_name": "Kmjo Cse",
+        "id": "d27a0fa4-2786-4103-ae8f-655b3eed7d2d",
+        "name": "lamf"
+      }
+    },
+    {
+      "@timestamp": "2052-12-31T10:59:47.866Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "id": "56d57463-7f84-4ed1-a23f-517c02169cf",
+        "kind": "asset",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2052-12-31T10:59:49.6150000Z\",\"category\":\"AdvancedHunting-IdentityInfo\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"Fkdi Ijznh\",\"AccountDomain\":\"cc.egmukjj.com\",\"AccountName\":\"duiowj\",\"AccountObjectId\":\"b66a8bb2-0574-4054-ad8c-699b1dda1338\",\"AccountUpn\":\"duiowj@contoso.com\",\"Address\":null,\"BlastRadius\":null,\"ChangeSource\":\"AzureActiveDirectory\",\"City\":\"Cloud City\",\"CloudSid\":\"S-1-12-1-144444441-444444444-44444444-44443\",\"CompanyName\":\"Contoso\" ,\"Country\":\" US\",\"CreatedDateTime\":\"2052-12-31T10:53:59Z\",\"CriticalityLevel\":null,\"DeletedDateTime\":null,\"Department\":\"Accounting\",\"DistinguishedName\":\"CN=duiowj,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com\",\"EmailAddress\":\"duiowj@contoso.com\",\"EmployeeId\":null,\"GivenName\":\"Fkdi\",\"IsAccountEnabled\":false,\"JobTitle\":\"Junior Accountant\",\"Manager\":\"Kmjo Cse\",\"OnPremSid\":\"S-1-5-21-444444444-444444444-44444444-44440\",\"OtherMailAddresses\":null,\"Phone\":null,\"ReportId\":\"56d57463-7f84-4ed1-a23f-517c02169cf\",\"RiskLevel\":null,\"RiskLevelDetails\":null,\"SipProxyAddress\":\"\",\"SourceProvider\":\"AzureActiveDirectory\",\"State\":\"Iowa\",\"Surname\":\"Ijznh\",\"Tags\":[\"new_account\" , \"alert_on_me\"],\"Timestamp\":\"2052-12-31T10:59:47.8661818Z\",\"Type\":\"User\"},\"tenantId\":\"cccc58fc-54ae-4279-b3f3-cdc0a47a98c7\",\"time\":\"2052-12-31T10:59:49.6461344Z\"}",
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "city": "Cloud City",
+            "cloud_sid": "S-1-12-1-144444441-444444444-44444444-44443",
+            "company_name": "Contoso",
+            "country": " US",
+            "created": "2052-12-31T10:53:59Z",
+            "department": "Accounting",
+            "display_name": "Fkdi Ijznh",
+            "distinguished_name": "CN=duiowj,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com",
+            "domain": "cc.egmukjj.com",
+            "email_address": "duiowj@contoso.com",
+            "given_name": "Fkdi",
+            "is_enabled": false,
+            "job_title": "Junior Accountant",
+            "manager": "Kmjo Cse",
+            "name": "duiowj",
+            "object_id": "b66a8bb2-0574-4054-ad8c-699b1dda1338",
+            "on_prem_sid": "S-1-5-21-444444444-444444444-44444444-44440",
+            "state": "Iowa",
+            "surname": "Ijznh",
+            "tags": [
+              "new_account",
+              "alert_on_me"
+            ],
+            "upn": "duiowj@contoso.com"
+          },
+          "category": "AdvancedHunting-IdentityInfo",
+          "change_source": "AzureActiveDirectory",
+          "operation_name": "Publish",
+          "report_id": "56d57463-7f84-4ed1-a23f-517c02169cf",
+          "source_provider": "AzureActiveDirectory",
+          "tenant": {
+            "id": "cccc58fc-54ae-4279-b3f3-cdc0a47a98c7",
+            "name": "DefaultTenant"
+          },
+          "time": "2052-12-31T10:59:49.646Z",
+          "timestamp": "2052-12-31T10:59:47.866Z",
+          "type": "User"
+        }
+      },
+      "related": {
+        "hosts": [
+          "cc.egmukjj.com"
+        ],
+        "user": [
+          "b66a8bb2-0574-4054-ad8c-699b1dda1338",
+          "Fkdi Ijznh",
+          "S-1-12-1-144444441-444444444-44444444-44443",
+          "S-1-5-21-444444444-444444444-44444444-44440",
+          "duiowj@contoso.com",
+          "duiowj"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "cc.egmukjj.com",
+        "email": "duiowj@contoso.com",
+        "full_name": "Fkdi Ijznh",
+        "id": "b66a8bb2-0574-4054-ad8c-699b1dda1338",
+        "name": "duiowj"
+      }
+    },
+    {
+      "@timestamp": "2052-12-30T20:47:45.776Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "id": "07d15222-2364-484f-bda6-635bfa3ca8c3",
+        "kind": "asset",
+        "original": "{ \"Tenant\": \"DefaultTenant\", \"_TimeReceivedBySvc\": \"2052-12-18T22:47:15.3040000Z\", \"category\": \"AdvancedHunting-IdentityInfo\", \"operationName\": \"Publish\", \"properties\": { \"AccountDisplayName\": \"Les Yfwgza\", \"AccountDomain\": \"cc.egmukjj.com\", \"AccountName\": \"nlbsjva\", \"AccountObjectId\": \"e24f0bf8-5316-4217-ba0d-263e5efc7e3b\", \"AccountUpn\": \"nlbsjva@contoso.com\", \"Address\": \"1 Generic Street\", \"BlastRadius\": \"High\", \"ChangeSource\": \"Criticality\", \"City\": \"Boston\", \"CloudSid\": \"S-1-12-1-144444441-444444444-44444444-44444\", \"CompanyName\": \"Contoso\", \"Country\": \"US\", \"CreatedDateTime\": \"2045-01-11T17:39:42Z\", \"CriticalityLevel\": \"0\", \"DeletedDateTime\": null, \"Department\": \"Engineering\", \"DistinguishedName\": \"CN=nlbsjva,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com\", \"EmailAddress\": \"nlbsjva@contoso.com\", \"EmployeeId\": \"EMP0001\", \"GivenName\": \"Les\", \"IsAccountEnabled\": true, \"JobTitle\": \"Developer\", \"Manager\": \"Pat Patterson\", \"OnPremSid\": \"S-1-5-21-444444444-444444444-44444444-09876\", \"OtherMailAddresses\": [\"vbhvyaiak@egmukjj.com\", \"ubk@egmukjj.com\"], \"Phone\": \"16170001111\", \"ReportId\": \"07d15222-2364-484f-bda6-635bfa3ca8c3\", \"RiskLevel\": \"low\", \"RiskLevelDetails\": null, \"SipProxyAddress\": \"\", \"SourceProvider\": \"AzureActiveDirectory\", \"State\": \"Massachusetts\", \"Surname\": \"Yfwgza\", \"Tags\": [], \"Timestamp\": \"2052-12-30T20:47:45.7760199Z\", \"Type\": \"User\" }, \"tenantId\": \"cccc58fc-54ae-4279-b3f3-cdc0a47a98c7\", \"time\": \"2052-12-18T21:45:20.5482855Z\" }",
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "address": "1 Generic Street",
+            "blast_radius": "High",
+            "city": "Boston",
+            "cloud_sid": "S-1-12-1-144444441-444444444-44444444-44444",
+            "company_name": "Contoso",
+            "country": "US",
+            "created": "2045-01-11T17:39:42Z",
+            "criticality_level": "0",
+            "department": "Engineering",
+            "display_name": "Les Yfwgza",
+            "distinguished_name": "CN=nlbsjva,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com",
+            "domain": "cc.egmukjj.com",
+            "email_address": "nlbsjva@contoso.com",
+            "employee_id": "EMP0001",
+            "given_name": "Les",
+            "is_enabled": true,
+            "job_title": "Developer",
+            "manager": "Pat Patterson",
+            "name": "nlbsjva",
+            "object_id": "e24f0bf8-5316-4217-ba0d-263e5efc7e3b",
+            "on_prem_sid": "S-1-5-21-444444444-444444444-44444444-09876",
+            "other_mail_addresses": [
+              "vbhvyaiak@egmukjj.com",
+              "ubk@egmukjj.com"
+            ],
+            "phone": "16170001111",
+            "risk_level": "low",
+            "state": "Massachusetts",
+            "surname": "Yfwgza",
+            "upn": "nlbsjva@contoso.com"
+          },
+          "category": "AdvancedHunting-IdentityInfo",
+          "change_source": "Criticality",
+          "operation_name": "Publish",
+          "report_id": "07d15222-2364-484f-bda6-635bfa3ca8c3",
+          "source_provider": "AzureActiveDirectory",
+          "tenant": {
+            "id": "cccc58fc-54ae-4279-b3f3-cdc0a47a98c7",
+            "name": "DefaultTenant"
+          },
+          "time": "2052-12-18T21:45:20.548Z",
+          "timestamp": "2052-12-30T20:47:45.776Z",
+          "type": "User"
+        }
+      },
+      "related": {
+        "hosts": [
+          "cc.egmukjj.com"
+        ],
+        "user": [
+          "e24f0bf8-5316-4217-ba0d-263e5efc7e3b",
+          "Les Yfwgza",
+          "S-1-12-1-144444441-444444444-44444444-44444",
+          "S-1-5-21-444444444-444444444-44444444-09876",
+          "nlbsjva@contoso.com",
+          "nlbsjva"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "cc.egmukjj.com",
+        "email": "nlbsjva@contoso.com",
+        "full_name": "Les Yfwgza",
+        "id": "e24f0bf8-5316-4217-ba0d-263e5efc7e3b",
+        "name": "nlbsjva"
+      }
+    },
+    {
+      "@timestamp": "2053-04-11T16:32:52.000Z",
+      "application": {
+        "name": "Microsoft Teams"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "messagereadreceiptreceived",
+        "id": "<SANITIZED VALUE>",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2053-04-11T16:33:16.3320000Z\",\"category\":\"AdvancedHunting-CloudAppEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"<FIRST NAME, LAST NAME>\",\"AccountId\":\"<SANITIZED VALUE>\",\"AccountObjectId\":\"<SANITIZED VALUE>\",\"AccountType\":\"Regular\",\"ActionType\":\"MessageReadReceiptReceived\",\"ActivityObjects\":[{\"Role\":\"Parameter\",\"ServiceObjectType\":\"Microsoft Team\",\"Type\":\"Structured object\"},{\"ApplicationId\":11161,\"ApplicationInstance\":0,\"Id\":\"<SANITIZED VALUE>\",\"Name\":\"<FIRST NAME, LAST NAME>\",\"Role\":\"Actor\",\"Type\":\"User\"}],\"ActivityType\":\"Basic\",\"AdditionalFields\":{},\"AppInstanceId\":0,\"Application\":\"Microsoft Teams\",\"ApplicationId\":28375,\"AuditSource\":\"Defender for Cloud Apps app connector\",\"City\":null,\"CountryCode\":null,\"DeviceType\":null,\"IPAddress\":null,\"IPCategory\":null,\"IPTags\":null,\"ISP\":null,\"IsAdminOperation\":false,\"IsAnonymousProxy\":null,\"IsExternalUser\":false,\"IsImpersonated\":false,\"LastSeenForUser\":null,\"OAuthAppId\":null,\"OSPlatform\":null,\"ObjectId\":null,\"ObjectName\":null,\"ObjectType\":null,\"RawEventData\":{\"ChatThreadId\":\"<SANITIZED VALUE>\",\"CommunicationType\":\"GroupChat\",\"CreationTime\":\"2053-04-11T16:32:52Z\",\"ExtraProperties\":[{\"Key\":\"OriginEnvironment\",\"Value\":\"<SANITIZED VALUE>\"}],\"Id\":\"<SANITIZED VALUE>\",\"ItemName\":\"<SANITIZED VALUE>\",\"MessageId\":\"<SANITIZED VALUE>\",\"MessageVersion\":\"0\",\"MessageVisibilityTime\":\"2050-11-18T16:51:43Z\",\"Operation\":\"MessageReadReceiptReceived\",\"OrganizationId\":\"<SANITIZED VALUE>\",\"ParticipantInfo\":{\"HasForeignTenantUsers\":false,\"HasGuestUsers\":false,\"HasOtherGuestUsers\":false,\"HasUnauthenticatedUsers\":false,\"ParticipatingDomains\":[],\"ParticipatingSIPDomains\":[],\"ParticipatingTenantIds\":[\"<SANITIZED VALUE>\"]},\"RecordType\":25,\"ResourceTenantId\":\"3c6f55a4-f2ad-4d37-b1d1-ce2587b2e57a\",\"UserId\":\"<FIRST>.<LAST>@<DOMAIN>.gov\",\"UserKey\":\"<SANITIZED VALUE>\",\"UserType\":0,\"Version\":1,\"Workload\":\"MicrosoftTeams\"},\"ReportId\":\"<SANITIZED VALUE>\",\"SessionData\":null,\"Timestamp\":\"2053-04-11T16:32:52Z\",\"UncommonForUser\":null,\"UserAgent\":null,\"UserAgentTags\":null},\"tenantId\":\"<SANITIZED VALUE>\",\"time\":\"2053-04-11T16:34:02.0002252Z\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "display_name": "<FIRST NAME, LAST NAME>",
+            "id": "<SANITIZED VALUE>",
+            "object_id": "<SANITIZED VALUE>",
+            "type": "Regular"
+          },
+          "action": {
+            "type": "MessageReadReceiptReceived"
+          },
+          "activity": {
+            "objects": [
+              {
+                "Role": "Parameter",
+                "ServiceObjectType": "Microsoft Team",
+                "Type": "Structured object"
+              },
+              {
+                "ApplicationId": 11161,
+                "ApplicationInstance": 0,
+                "Id": "<SANITIZED VALUE>",
+                "Name": "<FIRST NAME, LAST NAME>",
+                "Role": "Actor",
+                "Type": "User"
+              }
+            ],
+            "type": "Basic"
+          },
+          "app_instance_id": 0,
+          "application": "Microsoft Teams",
+          "application_id": "28375",
+          "category": "AdvancedHunting-CloudAppEvents",
+          "is_admin_operation": false,
+          "is_external_user": false,
+          "is_impersonated": false,
+          "operation_name": "Publish",
+          "raw_event_data": {
+            "ChatThreadId": "<SANITIZED VALUE>",
+            "CommunicationType": "GroupChat",
+            "CreationTime": "2053-04-11T16:32:52Z",
+            "ExtraProperties": [
+              {
+                "Key": "OriginEnvironment",
+                "Value": "<SANITIZED VALUE>"
+              }
+            ],
+            "Id": "<SANITIZED VALUE>",
+            "ItemName": "<SANITIZED VALUE>",
+            "MessageId": "<SANITIZED VALUE>",
+            "MessageVersion": "0",
+            "MessageVisibilityTime": "2050-11-18T16:51:43Z",
+            "Operation": "MessageReadReceiptReceived",
+            "OrganizationId": "<SANITIZED VALUE>",
+            "ParticipantInfo": {
+              "HasForeignTenantUsers": false,
+              "HasGuestUsers": false,
+              "HasOtherGuestUsers": false,
+              "HasUnauthenticatedUsers": false,
+              "ParticipatingTenantIds": [
+                "<SANITIZED VALUE>"
+              ]
+            },
+            "RecordType": 25,
+            "ResourceTenantId": "3c6f55a4-f2ad-4d37-b1d1-ce2587b2e57a",
+            "UserId": "<FIRST>.<LAST>@<DOMAIN>.gov",
+            "UserKey": "<SANITIZED VALUE>",
+            "UserType": 0,
+            "Version": 1,
+            "Workload": "MicrosoftTeams"
+          },
+          "report_id": "<SANITIZED VALUE>",
+          "tenant": {
+            "id": "<SANITIZED VALUE>",
+            "name": "DefaultTenant"
+          },
+          "time": "2053-04-11T16:34:02.000Z",
+          "timestamp": "2053-04-11T16:32:52.000Z"
+        }
+      },
+      "related": {
+        "user": [
+          "<SANITIZED VALUE>",
+          "<FIRST NAME, LAST NAME>"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "<SANITIZED VALUE>",
+        "name": "<FIRST>.<LAST>@<DOMAIN>.gov"
+      }
+    },
+    {
+      "@timestamp": "2053-04-11T16:32:52.000Z",
+      "application": {
+        "name": "Microsoft Teams"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "messagereadreceiptreceived",
+        "id": "<SANITIZED VALUE>",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2053-04-11T16:33:16.3320000Z\",\"category\":\"AdvancedHunting-CloudAppEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"<FIRST NAME, LAST NAME>\",\"AccountId\":\"<SANITIZED VALUE>\",\"AccountName\":\"<SANITIZED VALUE>\",\"AccountObjectId\":\"<SANITIZED VALUE>\",\"AccountType\":\"Regular\",\"ActionType\":\"MessageReadReceiptReceived\",\"ActivityObjects\":[{\"Role\":\"Parameter\",\"ServiceObjectType\":\"Microsoft Team\",\"Type\":\"Structured object\"},{\"ApplicationId\":11161,\"ApplicationInstance\":0,\"Id\":\"<SANITIZED VALUE>\",\"Name\":\"<FIRST NAME, LAST NAME>\",\"Role\":\"Actor\",\"Type\":\"User\"}],\"ActivityType\":\"Basic\",\"AdditionalFields\":{},\"AppInstanceId\":0,\"Application\":\"Microsoft Teams\",\"ApplicationId\":28375,\"AuditSource\":\"Defender for Cloud Apps app connector\",\"City\":null,\"CountryCode\":null,\"DeviceType\":null,\"IPAddress\":null,\"IPCategory\":null,\"IPTags\":null,\"ISP\":null,\"IsAdminOperation\":false,\"IsAnonymousProxy\":null,\"IsExternalUser\":false,\"IsImpersonated\":false,\"LastSeenForUser\":null,\"OAuthAppId\":null,\"OSPlatform\":null,\"ObjectId\":null,\"ObjectName\":null,\"ObjectType\":null,\"RawEventData\":{\"ChatThreadId\":\"<SANITIZED VALUE>\",\"CommunicationType\":\"GroupChat\",\"CreationTime\":\"2053-04-11T16:32:52Z\",\"ExtraProperties\":[{\"Key\":\"OriginEnvironment\",\"Value\":\"<SANITIZED VALUE>\"}],\"Id\":\"<SANITIZED VALUE>\",\"ItemName\":\"<SANITIZED VALUE>\",\"MessageId\":\"<SANITIZED VALUE>\",\"MessageVersion\":\"0\",\"MessageVisibilityTime\":\"2050-11-18T16:51:43Z\",\"Operation\":\"MessageReadReceiptReceived\",\"OrganizationId\":\"<SANITIZED VALUE>\",\"ParticipantInfo\":{\"HasForeignTenantUsers\":false,\"HasGuestUsers\":false,\"HasOtherGuestUsers\":false,\"HasUnauthenticatedUsers\":false,\"ParticipatingDomains\":[],\"ParticipatingSIPDomains\":[],\"ParticipatingTenantIds\":[\"<SANITIZED VALUE>\"]},\"RecordType\":25,\"ResourceTenantId\":\"3c6f55a4-f2ad-4d37-b1d1-ce2587b2e57a\",\"UserId\":\"<FIRST>.<LAST>@<DOMAIN>.gov\",\"UserKey\":\"<SANITIZED VALUE>\",\"UserType\":0,\"Version\":1,\"Workload\":\"MicrosoftTeams\"},\"ReportId\":\"<SANITIZED VALUE>\",\"SessionData\":null,\"Timestamp\":\"2053-04-11T16:32:52Z\",\"UncommonForUser\":null,\"UserAgent\":null,\"UserAgentTags\":null},\"tenantId\":\"<SANITIZED VALUE>\",\"time\":\"2053-04-11T16:34:02.0002252Z\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "display_name": "<FIRST NAME, LAST NAME>",
+            "id": "<SANITIZED VALUE>",
+            "name": "<SANITIZED VALUE>",
+            "object_id": "<SANITIZED VALUE>",
+            "type": "Regular"
+          },
+          "action": {
+            "type": "MessageReadReceiptReceived"
+          },
+          "activity": {
+            "objects": [
+              {
+                "Role": "Parameter",
+                "ServiceObjectType": "Microsoft Team",
+                "Type": "Structured object"
+              },
+              {
+                "ApplicationId": 11161,
+                "ApplicationInstance": 0,
+                "Id": "<SANITIZED VALUE>",
+                "Name": "<FIRST NAME, LAST NAME>",
+                "Role": "Actor",
+                "Type": "User"
+              }
+            ],
+            "type": "Basic"
+          },
+          "app_instance_id": 0,
+          "application": "Microsoft Teams",
+          "application_id": "28375",
+          "category": "AdvancedHunting-CloudAppEvents",
+          "is_admin_operation": false,
+          "is_external_user": false,
+          "is_impersonated": false,
+          "operation_name": "Publish",
+          "raw_event_data": {
+            "ChatThreadId": "<SANITIZED VALUE>",
+            "CommunicationType": "GroupChat",
+            "CreationTime": "2053-04-11T16:32:52Z",
+            "ExtraProperties": [
+              {
+                "Key": "OriginEnvironment",
+                "Value": "<SANITIZED VALUE>"
+              }
+            ],
+            "Id": "<SANITIZED VALUE>",
+            "ItemName": "<SANITIZED VALUE>",
+            "MessageId": "<SANITIZED VALUE>",
+            "MessageVersion": "0",
+            "MessageVisibilityTime": "2050-11-18T16:51:43Z",
+            "Operation": "MessageReadReceiptReceived",
+            "OrganizationId": "<SANITIZED VALUE>",
+            "ParticipantInfo": {
+              "HasForeignTenantUsers": false,
+              "HasGuestUsers": false,
+              "HasOtherGuestUsers": false,
+              "HasUnauthenticatedUsers": false,
+              "ParticipatingTenantIds": [
+                "<SANITIZED VALUE>"
+              ]
+            },
+            "RecordType": 25,
+            "ResourceTenantId": "3c6f55a4-f2ad-4d37-b1d1-ce2587b2e57a",
+            "UserId": "<FIRST>.<LAST>@<DOMAIN>.gov",
+            "UserKey": "<SANITIZED VALUE>",
+            "UserType": 0,
+            "Version": 1,
+            "Workload": "MicrosoftTeams"
+          },
+          "report_id": "<SANITIZED VALUE>",
+          "tenant": {
+            "id": "<SANITIZED VALUE>",
+            "name": "DefaultTenant"
+          },
+          "time": "2053-04-11T16:34:02.000Z",
+          "timestamp": "2053-04-11T16:32:52.000Z"
+        }
+      },
+      "related": {
+        "user": [
+          "<SANITIZED VALUE>",
+          "<FIRST NAME, LAST NAME>"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "<SANITIZED VALUE>",
+        "name": "<SANITIZED VALUE>"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-IdentityLogonEvents\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2050-11-22T06:19:37Z\",\"TargetDeviceName\":\"\",\"DestinationIPAddress\":\"\",\"DestinationPort\":\"\",\"DeviceName\":\"zbxnvcemhyb1\",\"IPAddress\":\"203.0.113.248\",\"OSPlatform\":\"Windows 10\",\"DeviceType\":\"Desktop\",\"Protocol\":\"NTLM\",\"AccountDomain\":\"\",\"AccountSid\":\"S-1-5-21-1874808502-2282212345-3464712345-500\",\"AccountName\":\"acvztnyqkfxhq2\",\"AccountDisplayName\":\"\",\"AccountObjectId\":\"\",\"AccountUpn\":\"\",\"ActionType\":\"LogonSuccess\",\"AdditionalFields\":\"{\\\"CallerProcessID\\\":4248}\",\"Application\":\"Office 365\",\"DestinationDeviceName\":\"\",\"FailureReason\":\"\",\"Isp\":\"\",\"Location\":\"\",\"LogonType\":\"Login:resume\",\"Port\":\"\",\"ReportId\":\"1234\",\"TargetAccountDisplayName\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-22T06:20:58.5237104Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-IdentityQueryEvents\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2050-11-22T06:19:37Z\",\"TargetDeviceName\":\"\",\"DestinationIPAddress\":\"\",\"DestinationPort\":\"\",\"DeviceName\":\"zbxnvcemhyb1\",\"IPAddress\":\"\",\"Protocol\":\"NTLM\",\"AccountDomain\":\"testmachine6\",\"AccountSid\":\"S-1-5-21-1874808502-2282282112-3464708742-500\",\"AccountName\":\"acvztnyqkfxhq2\",\"AccountDisplayName\":\"\",\"AccountObjectId\":\"\",\"AccountUpn\":\"\",\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"CallerProcessID\\\":4248}\",\"Application\":\"\",\"DestinationDeviceName\":\"\",\"IsAdminOperation\":null,\"Location\":\"\",\"Port\":\"\",\"Query\":\"\",\"QueryTarget\":\"\",\"QueryType\":\"\",\"ReportId\":\"1234\",\"TargetAccountDisplayName\":\"\",\"TargetAccountUpn\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-22T06:20:58.5237104Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-IdentityDirectoryEvents\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2050-11-22T06:19:37Z\",\"TargetDeviceName\":\"\",\"DestinationIPAddress\":\"\",\"DestinationPort\":\"\",\"DeviceName\":\"zbxnvcemhyb1\",\"IPAddress\":\"\",\"Protocol\":\"NTLM\",\"AccountDomain\":\"testmachine6\",\"AccountSid\":\"S-1-5-21-1874808502-2282282112-3464708742-500\",\"AccountName\":\"acvztnyqkfxhq2\",\"AccountDisplayName\":\"\",\"AccountObjectId\":\"\",\"AccountUpn\":\"\",\"ActionType\":\"ProcessCreated\",\"AdditionalFields\":\"{\\\"CallerProcessID\\\":4248}\",\"Application\":\"\",\"DestinationDeviceName\":\"\",\"IsAdminOperation\":\"\",\"ISP\":\"\",\"Location\":\"\",\"Port\":\"\",\"ReportId\":\"1234\",\"TargetAccountDisplayName\":\"\",\"TargetAccountUpn\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2050-11-22T06:20:58.5237104Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-CloudAppEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"name\",\"AccountId\":\"936e180a-46d8-4002-b7d4-55db5fd73671\",\"AccountObjectId\":\"185f055e-20a6-4485-b9c8-52af8aef125a\",\"AccountType\":\"Admin\",\"ActionType\":\"Write Deployments\",\"ActivityObjects\":\"\",\"ActivityType\":\"Basic\",\"AdditionalFields\":\"{\\\"IsSatelliteProvider\\\":false}\",\"AppInstanceId\":0,\"Application\":\"Microsoft Azure\",\"ApplicationId\":12260,\"City\":\"\",\"CountryCode\":\"\",\"DeviceType\":null,\"IPAddress\":\"203.0.113.138\",\"IPCategory\":null,\"IPTags\":null,\"ISP\":\"\",\"IsAdminOperation\":0,\"IsAnonymousProxy\":false,\"IsExternalUser\":false,\"IsImpersonated\":false,\"OSPlatform\":null,\"ObjectId\":\"\",\"ObjectName\":\"\",\"ObjectType\":\"Resource\",\"RawEventData\":\"{\\\"AccountMoniker\\\":\\\"MdsResourceStackRPFCentralUS\\\",\\\"AccountMonikerLocation\\\":\\\"centralus\\\"}\",\"ReportId\":\"755d9e5c816866d345ee78ba00c35d9b585c9d67251af71d51dc34f28a482006\",\"Timestamp\":\"2050-12-08T12:48:45.833Z\",\"UserAgent\":null,\"UserAgentTags\":null},\"tenantId\":\"7af54cf0-de9a-4f76-b20e-75621a708704\",\"time\":\"2050-12-08T12:52:23.6440369Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"time\": \"2051-06-21T11:55:44.4674988Z\", \"tenantId\": \"41eed71a-7082-4c99-b264-7ec35b147004\", \"operationName\": \"Publish\", \"category\": \"AdvancedHunting-IdentityQueryEvents\", \"properties\": {\"ActionType\":\"SAMR query\",\"QueryTarget\":\"Server_Admin\",\"Protocol\":\"Samr\",\"AccountDisplayName\":\"D2WXA1303R$\",\"AccountUpn\":null,\"AccountName\":null,\"AccountDomain\":null,\"AccountSid\":null,\"AccountObjectId\":null,\"Query\":null,\"IPAddress\":\"10.102.158.187\",\"Location\":null,\"DeviceName\":\"c1kkf2038z.c262b.dbhuby.com\",\"QueryType\":\"QueryGroup\",\"DestinationDeviceName\":\"a0kym94r.c262b.dbhuby.com\",\"IsAdminOperation\":\"0\",\"TargetAccountDisplayName\":null,\"TargetDeviceName\":null,\"Port\":58210,\"DestinationPort\":445,\"DestinationIPAddress\":\"10.163.219.157\",\"TargetAccountUpn\":null,\"AdditionalFields\":{\"AttackTechniques\":\"Permission Groups Discovery (T1069), Account Discovery (T1087), Domain Groups (T1069.002), Domain Account (T1087.002)\",\"Category\":\"Discovery\",\"TO.DEVICE\":\"D2WIN02R\",\"ACTOR.DEVICE\":\"D2WXA1303R\",\"DestinationComputerOperatingSystemType\":\"windows\",\"SourceComputerOperatingSystem\":\"windows server 2019 datacenter\",\"Count\":\"1\",\"SourceComputerOperatingSystemType\":\"windows\",\"SourceAccountId\":\"a5c2e5c7-4463-4f64-8511-d0400360750d\",\"SourceComputerOperatingSystemVersion\":\"10.0 (17763)\",\"DestinationComputerOperatingSystem\":\"windows server 2012 datacenter\",\"SourceComputerObjectGuid\":\"a5c2e5c7-4463-4f64-8511-d0400360750d\",\"DestinationComputerOperatingSystemVersion\":\"6.2 (9200)\",\"SourceAccountSid\":\"S-1-5-21-621940831-1238047941-1264475144-86894\",\"FROM.DEVICE\":\"D2WXA1303R\",\"DestinationComputerObjectGuid\":\"048d6388-efc6-4619-8c51-d36a5d3f5423\"},\"ReportId\":\"4956eaab-59e3-4420-8263-3297def978cc_108408875_1687348229598_20940\",\"Timestamp\":\"2051-06-21T11:50:29.598Z\",\"Application\":\"Active Directory\"}, \"Tenant\": \"DefaultTenant\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"time\": \"2051-06-21T11:55:46.0067676Z\", \"tenantId\": \"41eed71a-7082-4c99-b264-7ec35b147004\", \"operationName\": \"Publish\", \"category\": \"AdvancedHunting-IdentityQueryEvents\", \"properties\": {\"ActionType\":\"DNS query\",\"QueryTarget\":\"_grpc_config.useast-comms.dgsecure.com\",\"Protocol\":\"Dns\",\"AccountDisplayName\":null,\"AccountUpn\":null,\"AccountName\":null,\"AccountDomain\":null,\"AccountSid\":null,\"AccountObjectId\":null,\"Query\":null,\"IPAddress\":\"10.136.59.26\",\"Location\":null,\"DeviceName\":\"b7oxhlh86c.c262b.dbhuby.com\",\"QueryType\":\"Text\",\"DestinationDeviceName\":\"a4xij56j.c262b.dbhuby.com\",\"IsAdminOperation\":false,\"TargetAccountDisplayName\":null,\"TargetDeviceName\":null,\"Port\":57396,\"DestinationPort\":53,\"DestinationIPAddress\":\"10.20.177.18\",\"TargetAccountUpn\":null,\"AdditionalFields\":{\"SourceComputerOperatingSystemVersion\":\"10.0 (19044)\",\"TO.DEVICE\":\"D1WIN02P\",\"DestinationComputerOperatingSystem\":\"windows server 2012 datacenter\",\"DestinationComputerOperatingSystemType\":\"windows\",\"SourceComputerObjectGuid\":\"94948d15-245d-4d58-9c07-abb0e5534814\",\"DestinationComputerOperatingSystemVersion\":\"6.2 (9200)\",\"SourceComputerOperatingSystem\":\"windows 10 enterprise\",\"Count\":\"2\",\"SourceComputerOperatingSystemType\":\"windows\",\"FROM.DEVICE\":\"D1WRPWS12D\",\"DestinationComputerObjectGuid\":\"fad78fd0-4e1b-468d-8924-8e6070fd9ae5\"},\"ReportId\":\"4206333a-9cf0-4802-aca2-7095aef58a0e_108408875_1687348398643_20940\",\"Timestamp\":\"2051-06-21T11:53:18.643Z\",\"Application\":\"Active Directory\"}, \"Tenant\": \"DefaultTenant\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{ \"Tenant\": \"DefaultTenant\", \"_TimeReceivedBySvc\": \"2052-12-30T23:47:59.3940000Z\", \"category\": \"AdvancedHunting-IdentityInfo\", \"operationName\": \"Publish\", \"properties\": { \"AccountDisplayName\": \"Kmjo Cse\", \"AccountDomain\": \"cc.egmukjj.com\", \"AccountName\": \"lamf\", \"AccountObjectId\": \"d27a0fa4-2786-4103-ae8f-655b3eed7d2d\", \"AccountUpn\": \"lamf@contoso.com\", \"Address\": null, \"BlastRadius\": null, \"ChangeSource\": \"AzureActiveDirectory\", \"City\": null, \"CloudSid\": \"S-1-12-1-144444441-444444444-44444444-44444\", \"CompanyName\": null, \"Country\": null, \"CreatedDateTime\": \"2045-01-11T17:39:42Z\", \"CriticalityLevel\": null, \"DeletedDateTime\": null, \"Department\": \"Accounting\", \"DistinguishedName\": \"CN=lamf,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com\", \"EmailAddress\": \"lamf@contoso.com\", \"EmployeeId\": null, \"GivenName\": \"Kmjo\", \"IsAccountEnabled\": true, \"JobTitle\": \"Accountant\", \"Manager\": null, \"OnPremSid\": \"S-1-5-21-444444444-444444444-44444444-44444\", \"OtherMailAddresses\": null, \"Phone\": \"617-000-0000\", \"ReportId\": \"39e04284-5591-440a-bbe0-692dee9dd6f6\", \"RiskLevel\": null, \"RiskLevelDetails\": null, \"SipProxyAddress\": \"\", \"SourceProvider\": \"AzureActiveDirectory\", \"State\": null, \"Surname\": \"Cse\", \"Tags\": [], \"Timestamp\": \"2052-12-30T20:47:45.7760199Z\", \"Type\": \"User\" }, \"tenantId\": \"cccc58fc-54ae-4279-b3f3-cdc0a47a98c7\", \"time\": \"2052-12-30T20:47:48.8482854Z\" }",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2052-12-31T10:59:49.6150000Z\",\"category\":\"AdvancedHunting-IdentityInfo\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"Fkdi Ijznh\",\"AccountDomain\":\"cc.egmukjj.com\",\"AccountName\":\"duiowj\",\"AccountObjectId\":\"b66a8bb2-0574-4054-ad8c-699b1dda1338\",\"AccountUpn\":\"duiowj@contoso.com\",\"Address\":null,\"BlastRadius\":null,\"ChangeSource\":\"AzureActiveDirectory\",\"City\":\"Cloud City\",\"CloudSid\":\"S-1-12-1-144444441-444444444-44444444-44443\",\"CompanyName\":\"Contoso\" ,\"Country\":\" US\",\"CreatedDateTime\":\"2052-12-31T10:53:59Z\",\"CriticalityLevel\":null,\"DeletedDateTime\":null,\"Department\":\"Accounting\",\"DistinguishedName\":\"CN=duiowj,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com\",\"EmailAddress\":\"duiowj@contoso.com\",\"EmployeeId\":null,\"GivenName\":\"Fkdi\",\"IsAccountEnabled\":false,\"JobTitle\":\"Junior Accountant\",\"Manager\":\"Kmjo Cse\",\"OnPremSid\":\"S-1-5-21-444444444-444444444-44444444-44440\",\"OtherMailAddresses\":null,\"Phone\":null,\"ReportId\":\"56d57463-7f84-4ed1-a23f-517c02169cf\",\"RiskLevel\":null,\"RiskLevelDetails\":null,\"SipProxyAddress\":\"\",\"SourceProvider\":\"AzureActiveDirectory\",\"State\":\"Iowa\",\"Surname\":\"Ijznh\",\"Tags\":[\"new_account\" , \"alert_on_me\"],\"Timestamp\":\"2052-12-31T10:59:47.8661818Z\",\"Type\":\"User\"},\"tenantId\":\"cccc58fc-54ae-4279-b3f3-cdc0a47a98c7\",\"time\":\"2052-12-31T10:59:49.6461344Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{ \"Tenant\": \"DefaultTenant\", \"_TimeReceivedBySvc\": \"2052-12-18T22:47:15.3040000Z\", \"category\": \"AdvancedHunting-IdentityInfo\", \"operationName\": \"Publish\", \"properties\": { \"AccountDisplayName\": \"Les Yfwgza\", \"AccountDomain\": \"cc.egmukjj.com\", \"AccountName\": \"nlbsjva\", \"AccountObjectId\": \"e24f0bf8-5316-4217-ba0d-263e5efc7e3b\", \"AccountUpn\": \"nlbsjva@contoso.com\", \"Address\": \"1 Generic Street\", \"BlastRadius\": \"High\", \"ChangeSource\": \"Criticality\", \"City\": \"Boston\", \"CloudSid\": \"S-1-12-1-144444441-444444444-44444444-44444\", \"CompanyName\": \"Contoso\", \"Country\": \"US\", \"CreatedDateTime\": \"2045-01-11T17:39:42Z\", \"CriticalityLevel\": \"0\", \"DeletedDateTime\": null, \"Department\": \"Engineering\", \"DistinguishedName\": \"CN=nlbsjva,OU=Employees,OU=Users,DC=ad,DC=contoso,DC=com\", \"EmailAddress\": \"nlbsjva@contoso.com\", \"EmployeeId\": \"EMP0001\", \"GivenName\": \"Les\", \"IsAccountEnabled\": true, \"JobTitle\": \"Developer\", \"Manager\": \"Pat Patterson\", \"OnPremSid\": \"S-1-5-21-444444444-444444444-44444444-09876\", \"OtherMailAddresses\": [\"vbhvyaiak@egmukjj.com\", \"ubk@egmukjj.com\"], \"Phone\": \"16170001111\", \"ReportId\": \"07d15222-2364-484f-bda6-635bfa3ca8c3\", \"RiskLevel\": \"low\", \"RiskLevelDetails\": null, \"SipProxyAddress\": \"\", \"SourceProvider\": \"AzureActiveDirectory\", \"State\": \"Massachusetts\", \"Surname\": \"Yfwgza\", \"Tags\": [], \"Timestamp\": \"2052-12-30T20:47:45.7760199Z\", \"Type\": \"User\" }, \"tenantId\": \"cccc58fc-54ae-4279-b3f3-cdc0a47a98c7\", \"time\": \"2052-12-18T21:45:20.5482855Z\" }",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2053-04-11T16:33:16.3320000Z\",\"category\":\"AdvancedHunting-CloudAppEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"<FIRST NAME, LAST NAME>\",\"AccountId\":\"<SANITIZED VALUE>\",\"AccountObjectId\":\"<SANITIZED VALUE>\",\"AccountType\":\"Regular\",\"ActionType\":\"MessageReadReceiptReceived\",\"ActivityObjects\":[{\"Role\":\"Parameter\",\"ServiceObjectType\":\"Microsoft Team\",\"Type\":\"Structured object\"},{\"ApplicationId\":11161,\"ApplicationInstance\":0,\"Id\":\"<SANITIZED VALUE>\",\"Name\":\"<FIRST NAME, LAST NAME>\",\"Role\":\"Actor\",\"Type\":\"User\"}],\"ActivityType\":\"Basic\",\"AdditionalFields\":{},\"AppInstanceId\":0,\"Application\":\"Microsoft Teams\",\"ApplicationId\":28375,\"AuditSource\":\"Defender for Cloud Apps app connector\",\"City\":null,\"CountryCode\":null,\"DeviceType\":null,\"IPAddress\":null,\"IPCategory\":null,\"IPTags\":null,\"ISP\":null,\"IsAdminOperation\":false,\"IsAnonymousProxy\":null,\"IsExternalUser\":false,\"IsImpersonated\":false,\"LastSeenForUser\":null,\"OAuthAppId\":null,\"OSPlatform\":null,\"ObjectId\":null,\"ObjectName\":null,\"ObjectType\":null,\"RawEventData\":{\"ChatThreadId\":\"<SANITIZED VALUE>\",\"CommunicationType\":\"GroupChat\",\"CreationTime\":\"2053-04-11T16:32:52Z\",\"ExtraProperties\":[{\"Key\":\"OriginEnvironment\",\"Value\":\"<SANITIZED VALUE>\"}],\"Id\":\"<SANITIZED VALUE>\",\"ItemName\":\"<SANITIZED VALUE>\",\"MessageId\":\"<SANITIZED VALUE>\",\"MessageVersion\":\"0\",\"MessageVisibilityTime\":\"2050-11-18T16:51:43Z\",\"Operation\":\"MessageReadReceiptReceived\",\"OrganizationId\":\"<SANITIZED VALUE>\",\"ParticipantInfo\":{\"HasForeignTenantUsers\":false,\"HasGuestUsers\":false,\"HasOtherGuestUsers\":false,\"HasUnauthenticatedUsers\":false,\"ParticipatingDomains\":[],\"ParticipatingSIPDomains\":[],\"ParticipatingTenantIds\":[\"<SANITIZED VALUE>\"]},\"RecordType\":25,\"ResourceTenantId\":\"3c6f55a4-f2ad-4d37-b1d1-ce2587b2e57a\",\"UserId\":\"<FIRST>.<LAST>@<DOMAIN>.gov\",\"UserKey\":\"<SANITIZED VALUE>\",\"UserType\":0,\"Version\":1,\"Workload\":\"MicrosoftTeams\"},\"ReportId\":\"<SANITIZED VALUE>\",\"SessionData\":null,\"Timestamp\":\"2053-04-11T16:32:52Z\",\"UncommonForUser\":null,\"UserAgent\":null,\"UserAgentTags\":null},\"tenantId\":\"<SANITIZED VALUE>\",\"time\":\"2053-04-11T16:34:02.0002252Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"_TimeReceivedBySvc\":\"2053-04-11T16:33:16.3320000Z\",\"category\":\"AdvancedHunting-CloudAppEvents\",\"operationName\":\"Publish\",\"properties\":{\"AccountDisplayName\":\"<FIRST NAME, LAST NAME>\",\"AccountId\":\"<SANITIZED VALUE>\",\"AccountName\":\"<SANITIZED VALUE>\",\"AccountObjectId\":\"<SANITIZED VALUE>\",\"AccountType\":\"Regular\",\"ActionType\":\"MessageReadReceiptReceived\",\"ActivityObjects\":[{\"Role\":\"Parameter\",\"ServiceObjectType\":\"Microsoft Team\",\"Type\":\"Structured object\"},{\"ApplicationId\":11161,\"ApplicationInstance\":0,\"Id\":\"<SANITIZED VALUE>\",\"Name\":\"<FIRST NAME, LAST NAME>\",\"Role\":\"Actor\",\"Type\":\"User\"}],\"ActivityType\":\"Basic\",\"AdditionalFields\":{},\"AppInstanceId\":0,\"Application\":\"Microsoft Teams\",\"ApplicationId\":28375,\"AuditSource\":\"Defender for Cloud Apps app connector\",\"City\":null,\"CountryCode\":null,\"DeviceType\":null,\"IPAddress\":null,\"IPCategory\":null,\"IPTags\":null,\"ISP\":null,\"IsAdminOperation\":false,\"IsAnonymousProxy\":null,\"IsExternalUser\":false,\"IsImpersonated\":false,\"LastSeenForUser\":null,\"OAuthAppId\":null,\"OSPlatform\":null,\"ObjectId\":null,\"ObjectName\":null,\"ObjectType\":null,\"RawEventData\":{\"ChatThreadId\":\"<SANITIZED VALUE>\",\"CommunicationType\":\"GroupChat\",\"CreationTime\":\"2053-04-11T16:32:52Z\",\"ExtraProperties\":[{\"Key\":\"OriginEnvironment\",\"Value\":\"<SANITIZED VALUE>\"}],\"Id\":\"<SANITIZED VALUE>\",\"ItemName\":\"<SANITIZED VALUE>\",\"MessageId\":\"<SANITIZED VALUE>\",\"MessageVersion\":\"0\",\"MessageVisibilityTime\":\"2050-11-18T16:51:43Z\",\"Operation\":\"MessageReadReceiptReceived\",\"OrganizationId\":\"<SANITIZED VALUE>\",\"ParticipantInfo\":{\"HasForeignTenantUsers\":false,\"HasGuestUsers\":false,\"HasOtherGuestUsers\":false,\"HasUnauthenticatedUsers\":false,\"ParticipatingDomains\":[],\"ParticipatingSIPDomains\":[],\"ParticipatingTenantIds\":[\"<SANITIZED VALUE>\"]},\"RecordType\":25,\"ResourceTenantId\":\"3c6f55a4-f2ad-4d37-b1d1-ce2587b2e57a\",\"UserId\":\"<FIRST>.<LAST>@<DOMAIN>.gov\",\"UserKey\":\"<SANITIZED VALUE>\",\"UserType\":0,\"Version\":1,\"Workload\":\"MicrosoftTeams\"},\"ReportId\":\"<SANITIZED VALUE>\",\"SessionData\":null,\"Timestamp\":\"2053-04-11T16:32:52Z\",\"UncommonForUser\":null,\"UserAgent\":null,\"UserAgentTags\":null},\"tenantId\":\"<SANITIZED VALUE>\",\"time\":\"2053-04-11T16:34:02.0002252Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-m365_defender-event-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "m365_defender",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-07-26T09:52:00.000Z",
+      "azure": {
+        "compute_vm": {
+          "disk_read_bytes": {
+            "total": 380741.72
+          },
+          "inbound_flows_maximum_creation_rate": {
+            "avg": 203
+          },
+          "network_in": {
+            "total": 5183139.0
+          },
+          "network_in_total": {
+            "total": 5100050.0
+          },
+          "outbound_flows_maximum_creation_rate": {
+            "avg": 203
+          },
+          "percentage_cpu": {
+            "avg": 2.7239999999999998
+          }
+        },
+        "namespace": "Microsoft.Compute/virtualMachines",
+        "resource": {
+          "group": "obs-infrastructure",
+          "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.Compute/virtualMachines/obstestmemleak",
+          "name": "obstestmemleak",
+          "tags": {
+            "vmtest": "value1, value 2",
+            "vmtest1": "value3"
+          },
+          "type": "Microsoft.Compute/virtualMachines"
+        },
+        "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+        "timegrain": "PT5M"
+      },
+      "cloud": {
+        "account": {
+          "id": "69fd8b08-6b7d-4897-8555-fb37d8acd234"
+        },
+        "instance": {
+          "id": "8db212de-88a0-42fe-bfb4-a18468cb0c12",
+          "name": "obstestmemleak"
+        },
+        "machine": {
+          "type": "Standard_B2ms"
+        },
+        "provider": "azure",
+        "region": "westeurope"
+      },
+      "data_stream": {
+        "dataset": "azure.compute_vm",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "azure.compute_vm",
+        "duration": 1585511300,
+        "ingested": "2049-07-26T10:02:20.417443300Z",
+        "module": "azure"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": true,
+        "cpu": {
+          "usage": 0.027239999999999997
+        },
+        "disk": {
+          "read": {
+            "bytes": 380741.72
+          }
+        },
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "f7512aff323cc3de64d5c928b009c7bd",
+        "ip": [
+          "172.26.228.241"
+        ],
+        "mac": [
+          "93:53:ca:27:11:68"
+        ],
+        "name": "obstestmemleak",
+        "network": {
+          "ingress": {
+            "bytes": 5100050.0,
+            "packets": 5183139.0
+          }
+        },
+        "os": {
+          "codename": "Core",
+          "family": "redhat",
+          "kernel": "4.19.128-microsoft-standard",
+          "name": "CentOS Linux",
+          "platform": "centos",
+          "type": "linux",
+          "version": "7 (Core)"
+        }
+      },
+      "metricset": {
+        "name": "monitor",
+        "period": 300000
+      },
+      "service": {
+        "type": "azure"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-07-26T09:52:00.000Z",
+      "azure": {
+        "monitor": {
+          "disk_read_bytes": {
+            "total": 380741.72
+          },
+          "inbound_flows_maximum_creation_rate": {
+            "avg": 203
+          },
+          "network_in": {
+            "total": 5183139.0
+          },
+          "network_in_total": {
+            "total": 5100050.0
+          },
+          "outbound_flows_maximum_creation_rate": {
+            "avg": 203
+          },
+          "percentage_cpu": {
+            "avg": 2.7239999999999998
+          }
+        },
+        "namespace": "Microsoft.Compute/virtualMachines",
+        "resource": {
+          "group": "obs-infrastructure",
+          "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.Compute/virtualMachines/obstestmemleak",
+          "name": "obstestmemleak",
+          "tags": {
+            "vmtest": "value1, value 2",
+            "vmtest1": "value3"
+          },
+          "type": "Microsoft.Compute/virtualMachines"
+        },
+        "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+        "timegrain": "PT5M"
+      },
+      "cloud": {
+        "account": {
+          "id": "69fd8b08-6b7d-4897-8555-fb37d8acd234"
+        },
+        "instance": {
+          "id": "8db212de-88a0-42fe-bfb4-a18468cb0c12",
+          "name": "obstestmemleak"
+        },
+        "machine": {
+          "type": "Standard_B2ms"
+        },
+        "provider": "azure",
+        "region": "westeurope"
+      },
+      "data_stream": {
+        "dataset": "azure.compute_vm",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "azure.compute_vm",
+        "duration": 1585511300,
+        "ingested": "2049-07-26T10:02:20.417443300Z",
+        "module": "azure"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": true,
+        "cpu": {
+          "usage": 0.027239999999999997
+        },
+        "disk": {
+          "read": {
+            "bytes": 380741.72
+          }
+        },
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "f7512aff323cc3de64d5c928b009c7bd",
+        "ip": [
+          "172.26.228.241"
+        ],
+        "mac": [
+          "93:53:ca:27:11:68"
+        ],
+        "name": "obstestmemleak",
+        "network": {
+          "ingress": {
+            "bytes": 5100050.0,
+            "packets": 5183139.0
+          }
+        },
+        "os": {
+          "codename": "Core",
+          "family": "redhat",
+          "kernel": "4.19.128-microsoft-standard",
+          "name": "CentOS Linux",
+          "platform": "centos",
+          "type": "linux",
+          "version": "7 (Core)"
+        }
+      },
+      "metricset": {
+        "name": "monitor",
+        "period": 300000
+      },
+      "service": {
+        "type": "azure"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "compute_vm",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_metrics-compute_vm-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

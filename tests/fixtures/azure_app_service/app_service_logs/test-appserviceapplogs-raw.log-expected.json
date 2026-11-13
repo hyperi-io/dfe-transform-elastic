@@ -1,0 +1,88 @@
+{
+  "expected": [
+    {
+      "azure": {
+        "app_service": {
+          "category": "AppServiceAppLogs",
+          "event_ip_address": "10.181.181.123",
+          "event_primary_stamp_name": "waws-prod-blu-219",
+          "event_stamp_name": "waws-prod-blu-219",
+          "event_stamp_type": "Stamp",
+          "host": "lw1sdlwk0008EK",
+          "level": "Error",
+          "result_description": "Exception on /favicon.ico [GET]"
+        },
+        "resource": {
+          "id": "/SUBSCRIPTIONS/0E072EC1-C22F-44L8-ADDE-DA36ED609CCD/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55",
+          "provider": "MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{ \"resultDescription\": \"Exception on /favicon.ico [GET]\", \"resourceId\": \"/SUBSCRIPTIONS/0E072EC1-C22F-44L8-ADDE-DA36ED609CCD/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"category\": \"AppServiceAppLogs\", \"time\": \"2051-02-16 10:18:01Z\", \"level\": \"Error\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.181.181.123\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "azure": {
+        "app_service": {
+          "category": "AppServiceAppLogs",
+          "event_ip_address": "10.181.181.123",
+          "event_primary_stamp_name": "waws-prod-blu-219",
+          "event_stamp_name": "waws-prod-blu-219",
+          "event_stamp_type": "Stamp",
+          "host": "lw1sdlwk0008EK",
+          "level": "Informational",
+          "result_description": "hi there"
+        },
+        "resource": {
+          "id": "/SUBSCRIPTIONS/0E0733C1-C22F-4408-ADDE-DA35XD609CCD/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55",
+          "provider": "MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55"
+        }
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{ \"resultDescription\": \"hi there\", \"resourceId\": \"/SUBSCRIPTIONS/0E0733C1-C22F-4408-ADDE-DA35XD609CCD/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"category\": \"AppServiceAppLogs\", \"time\": \"2051-02-16 10:18:46Z\", \"level\": \"Informational\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.181.181.123\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"resultDescription\": \"Exception on /favicon.ico [GET]\", \"resourceId\": \"/SUBSCRIPTIONS/0E072EC1-C22F-44L8-ADDE-DA36ED609CCD/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"category\": \"AppServiceAppLogs\", \"time\": \"2051-02-16 10:18:01Z\", \"level\": \"Error\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.181.181.123\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{ \"resultDescription\": \"hi there\", \"resourceId\": \"/SUBSCRIPTIONS/0E0733C1-C22F-4408-ADDE-DA35XD609CCD/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"category\": \"AppServiceAppLogs\", \"time\": \"2051-02-16 10:18:46Z\", \"level\": \"Informational\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.181.181.123\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "app_service_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_app_service-app_service_logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure_app_service",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

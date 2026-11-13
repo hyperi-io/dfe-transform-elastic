@@ -1,0 +1,181 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "view",
+        "category": [
+          "iam"
+        ],
+        "code": "10004",
+        "kind": "event",
+        "original": "Nov 10 13:13:32 THYCOTICSS02 CEF:0|Thycotic Software|Secret Server|11.3.000001|10004|SECRET - VIEW|2|msg=[[SecretServer]] Event: [Secret] Action: [View] By User: U.Admin Item Name: Admin User Personal Admin Account - example\\adminuser (Item Id: 12) Container Name: Admin User (Container Id: 11)  suid=2 suser=U.Admin cs4=Unlimited Administrator cs4Label=suser Display Name src=172.30.186.186 rt=Nov 10 2050 13:13:23 fname=Admin User Personal Admin Account - example\\adminuser fileType=Secret fileId=12 cs3Label=Folder cs3=Admin User",
+        "provider": "secret",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "[[SecretServer]] Event: [Secret] Action: [View] By User: U.Admin Item Name: Admin User Personal Admin Account - example\\adminuser (Item Id: 12) Container Name: Admin User (Container Id: 11)",
+      "observer": {
+        "product": "Secret Server",
+        "vendor": "Thycotic Software",
+        "version": "11.3.000001"
+      },
+      "related": {
+        "ip": [
+          "172.30.186.186"
+        ],
+        "user": [
+          "U.Admin"
+        ]
+      },
+      "source": {
+        "ip": "172.30.186.186"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "thycotic_ss": {
+        "event": {
+          "secret": {
+            "folder": "Admin User",
+            "id": "12",
+            "name": "Admin User Personal Admin Account - example\\adminuser"
+          },
+          "time": "2050-11-10T13:13:23.000Z"
+        }
+      },
+      "user": {
+        "full_name": "Unlimited Administrator",
+        "id": "2",
+        "name": "U.Admin"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "password_displayed",
+        "category": [
+          "iam"
+        ],
+        "code": "10039",
+        "kind": "event",
+        "original": "CEF:0|Thycotic Software|Secret Server|11.7.000061|10039|SECRET - PASSWORD_DISPLAYED|2|msg=[[SecretServer]] Event: [Secret] Action: [Password displayed] By User: Example.com\\user.ad Item name: File Name (Item Id: 5631) Container name: Sample User(admin) (Container Id: 1493) Details: Fields: (Password) suid=971 suser=Example.com\\s.adm cs4=Example.com\\Sample User(admin) cs4Label=suser Display Name src=10.3.146.30 rt=Okt 15 2025 14:25:56 fname=File Name fileType=Secret fileId=5631 cs3Label=Folder cs3=Sample User(admin)",
+        "provider": "secret",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Secret Server",
+        "vendor": "Thycotic Software",
+        "version": "11.7.000061"
+      },
+      "related": {
+        "ip": [
+          "172.22.29.194"
+        ]
+      },
+      "source": {
+        "ip": "172.22.29.194"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "thycotic_ss": {
+        "event": {
+          "secret": {
+            "folder": "Sample User(admin)",
+            "id": "5631",
+            "name": "Sample File"
+          }
+        }
+      },
+      "user": {
+        "id": "971"
+      }
+    }
+  ],
+  "input": [
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "10004",
+          "product": "Secret Server",
+          "vendor": "Thycotic Software",
+          "version": "11.3.000001"
+        },
+        "extensions": {
+          "deviceCustomString3": "Admin User",
+          "deviceCustomString3Label": "Folder",
+          "deviceCustomString4": "Unlimited Administrator",
+          "deviceCustomString4Label": "suser Display Name",
+          "deviceReceiptTime": "2050-11-10T13:13:23.000Z",
+          "fileId": "12",
+          "fileType": "Secret",
+          "filename": "Admin User Personal Admin Account - example\\adminuser",
+          "message": "[[SecretServer]] Event: [Secret] Action: [View] By User: U.Admin Item Name: Admin User Personal Admin Account - example\\adminuser (Item Id: 12) Container Name: Admin User (Container Id: 11)",
+          "sourceAddress": "172.30.186.186",
+          "sourceUserId": "2",
+          "sourceUserName": "U.Admin"
+        },
+        "name": "SECRET - VIEW",
+        "severity": "2",
+        "version": "0"
+      },
+      "event": {
+        "original": "Nov 10 13:13:32 THYCOTICSS02 CEF:0|Thycotic Software|Secret Server|11.3.000001|10004|SECRET - VIEW|2|msg=[[SecretServer]] Event: [Secret] Action: [View] By User: U.Admin Item Name: Admin User Personal Admin Account - example\\adminuser (Item Id: 12) Container Name: Admin User (Container Id: 11)  suid=2 suser=U.Admin cs4=Unlimited Administrator cs4Label=suser Display Name src=172.30.186.186 rt=Nov 10 2050 13:13:23 fname=Admin User Personal Admin Account - example\\adminuser fileType=Secret fileId=12 cs3Label=Folder cs3=Admin User"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "10039",
+          "product": "Secret Server",
+          "vendor": "Thycotic Software",
+          "version": "11.7.000061"
+        },
+        "extensions": {
+          "deviceCustomString3": "Sample User(admin)",
+          "deviceCustomString3Label": "Folder",
+          "deviceCustomString4Label": "suser Display Name",
+          "fileId": "5631",
+          "fileType": "Secret",
+          "filename": "Sample File",
+          "sourceAddress": "172.22.29.194",
+          "sourceUserId": "971"
+        },
+        "name": "SECRET - PASSWORD_DISPLAYED",
+        "severity": "2",
+        "version": "0"
+      },
+      "event": {
+        "original": "CEF:0|Thycotic Software|Secret Server|11.7.000061|10039|SECRET - PASSWORD_DISPLAYED|2|msg=[[SecretServer]] Event: [Secret] Action: [Password displayed] By User: Example.com\\user.ad Item name: File Name (Item Id: 5631) Container name: Sample User(admin) (Container Id: 1493) Details: Fields: (Password) suid=971 suser=Example.com\\s.adm cs4=Example.com\\Sample User(admin) cs4Label=suser Display Name src=10.3.146.30 rt=Okt 15 2025 14:25:56 fname=File Name fileType=Secret fileId=5631 cs3Label=Folder cs3=Sample User(admin)"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-thycotic_ss-logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "thycotic_ss",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

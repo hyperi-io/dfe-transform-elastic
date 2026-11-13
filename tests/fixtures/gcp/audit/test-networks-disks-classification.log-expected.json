@@ -1,0 +1,280 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-26T14:30:00.123Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+            "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+          ]
+        }
+      },
+      "client": {
+        "user": {
+          "email": "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+          "id": "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+        }
+      },
+      "cloud": {
+        "availability_zone": "us-central1",
+        "project": {
+          "id": "elastic-security-test"
+        },
+        "provider": "gcp"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "compute.disks.list",
+        "category": [
+          "network",
+          "configuration"
+        ],
+        "id": "test-disks-networks-class-1",
+        "kind": "event",
+        "original": "{\"insertId\":\"test-disks-networks-class-1\",\"logName\":\"projects/elastic-security-test/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\",\"principalSubject\":\"serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"compute.disks.list\",\"permissionType\":\"ADMIN_READ\"}],\"methodName\":\"compute.disks.list\",\"requestMetadata\":{\"callerIp\":\"203.0.113.42\",\"callerSuppliedUserAgent\":\"google-cloud-sdk gcloud/450.0.0\"},\"resourceLocation\":{\"currentLocations\":[\"us-central1\"]},\"resourceName\":\"projects/elastic-security-test/regions/us-central1/disks\",\"serviceName\":\"compute.googleapis.com\"},\"receiveTimestamp\":\"2052-11-26T14:30:00.456789Z\",\"resource\":{\"labels\":{\"location\":\"us-central1\",\"project_id\":\"elastic-security-test\"},\"type\":\"compute.disk\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-26T14:30:00.123456Z\"}",
+        "outcome": "success",
+        "provider": "activity",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "gcp": {
+        "audit": {
+          "authorization_info": [
+            {
+              "granted": true,
+              "permission": "compute.disks.list",
+              "permissionType": "ADMIN_READ"
+            }
+          ],
+          "receive_timestamp": "2052-11-26T14:30:00.456Z",
+          "resource": {
+            "type": "compute.disk"
+          },
+          "resource_location": {
+            "current_locations": [
+              "us-central1"
+            ]
+          },
+          "resource_name": "projects/elastic-security-test/regions/us-central1/disks",
+          "type": "type.googleapis.com/google.cloud.audit.AuditLog"
+        }
+      },
+      "log": {
+        "level": "NOTICE",
+        "logger": "projects/elastic-security-test/logs/cloudaudit.googleapis.com%2Factivity"
+      },
+      "related": {
+        "entity": [
+          "projects/elastic-security-test/regions/us-central1/disks",
+          "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+          "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+        ],
+        "ip": [
+          "203.0.113.42"
+        ],
+        "user": [
+          "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+        ]
+      },
+      "service": {
+        "entity": {
+          "id": [
+            "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+          ]
+        },
+        "name": "compute.googleapis.com",
+        "target": {
+          "entity": {
+            "id": [
+              "projects/elastic-security-test/regions/us-central1/disks"
+            ]
+          }
+        }
+      },
+      "source": {
+        "ip": "203.0.113.42"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "projects/elastic-security-test/regions/us-central1/disks"
+          ]
+        }
+      },
+      "user": {
+        "email": "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+        "entity": {
+          "id": [
+            "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+          ]
+        },
+        "id": "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "google-cloud-sdk gcloud/450.0.0"
+      }
+    },
+    {
+      "@timestamp": "2052-11-26T14:31:00.123Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+            "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+          ]
+        }
+      },
+      "client": {
+        "user": {
+          "email": "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+          "id": "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+        }
+      },
+      "cloud": {
+        "project": {
+          "id": "elastic-security-test"
+        },
+        "provider": "gcp"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "compute.networks.get",
+        "category": [
+          "network",
+          "configuration"
+        ],
+        "id": "test-disks-networks-class-2",
+        "kind": "event",
+        "original": "{\"insertId\":\"test-disks-networks-class-2\",\"logName\":\"projects/elastic-security-test/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\",\"principalSubject\":\"serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"compute.networks.get\",\"permissionType\":\"ADMIN_READ\"}],\"methodName\":\"compute.networks.get\",\"requestMetadata\":{\"callerIp\":\"203.0.113.42\",\"callerSuppliedUserAgent\":\"google-cloud-sdk gcloud/450.0.0\"},\"resourceName\":\"projects/elastic-security-test/global/networks/test-network\",\"serviceName\":\"compute.googleapis.com\"},\"receiveTimestamp\":\"2052-11-26T14:31:00.456789Z\",\"resource\":{\"labels\":{\"project_id\":\"elastic-security-test\"},\"type\":\"gce_network\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-26T14:31:00.123456Z\"}",
+        "outcome": "success",
+        "provider": "activity",
+        "type": [
+          "access",
+          "allowed"
+        ]
+      },
+      "gcp": {
+        "audit": {
+          "authorization_info": [
+            {
+              "granted": true,
+              "permission": "compute.networks.get",
+              "permissionType": "ADMIN_READ"
+            }
+          ],
+          "receive_timestamp": "2052-11-26T14:31:00.456Z",
+          "resource": {
+            "type": "gce_network"
+          },
+          "resource_name": "projects/elastic-security-test/global/networks/test-network",
+          "type": "type.googleapis.com/google.cloud.audit.AuditLog"
+        }
+      },
+      "log": {
+        "level": "NOTICE",
+        "logger": "projects/elastic-security-test/logs/cloudaudit.googleapis.com%2Factivity"
+      },
+      "related": {
+        "entity": [
+          "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+          "projects/elastic-security-test/global/networks/test-network",
+          "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+        ],
+        "ip": [
+          "203.0.113.42"
+        ],
+        "user": [
+          "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+        ]
+      },
+      "service": {
+        "entity": {
+          "id": [
+            "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+          ]
+        },
+        "name": "compute.googleapis.com",
+        "target": {
+          "entity": {
+            "id": [
+              "projects/elastic-security-test/global/networks/test-network"
+            ]
+          }
+        }
+      },
+      "source": {
+        "ip": "203.0.113.42"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "projects/elastic-security-test/global/networks/test-network"
+          ]
+        }
+      },
+      "user": {
+        "email": "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com",
+        "entity": {
+          "id": [
+            "dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+          ]
+        },
+        "id": "serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "google-cloud-sdk gcloud/450.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"insertId\":\"test-disks-networks-class-1\",\"logName\":\"projects/elastic-security-test/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\",\"principalSubject\":\"serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"compute.disks.list\",\"permissionType\":\"ADMIN_READ\"}],\"methodName\":\"compute.disks.list\",\"requestMetadata\":{\"callerIp\":\"203.0.113.42\",\"callerSuppliedUserAgent\":\"google-cloud-sdk gcloud/450.0.0\"},\"resourceLocation\":{\"currentLocations\":[\"us-central1\"]},\"resourceName\":\"projects/elastic-security-test/regions/us-central1/disks\",\"serviceName\":\"compute.googleapis.com\"},\"receiveTimestamp\":\"2052-11-26T14:30:00.456789Z\",\"resource\":{\"labels\":{\"location\":\"us-central1\",\"project_id\":\"elastic-security-test\"},\"type\":\"compute.disk\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-26T14:30:00.123456Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"insertId\":\"test-disks-networks-class-2\",\"logName\":\"projects/elastic-security-test/logs/cloudaudit.googleapis.com%2Factivity\",\"protoPayload\":{\"@type\":\"type.googleapis.com/google.cloud.audit.AuditLog\",\"authenticationInfo\":{\"principalEmail\":\"dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\",\"principalSubject\":\"serviceAccount:dwvkqcwkos@dqbswrf-nbbtwzxg-nbrh.mcl.nsfsqpbdccazotr.com\"},\"authorizationInfo\":[{\"granted\":true,\"permission\":\"compute.networks.get\",\"permissionType\":\"ADMIN_READ\"}],\"methodName\":\"compute.networks.get\",\"requestMetadata\":{\"callerIp\":\"203.0.113.42\",\"callerSuppliedUserAgent\":\"google-cloud-sdk gcloud/450.0.0\"},\"resourceName\":\"projects/elastic-security-test/global/networks/test-network\",\"serviceName\":\"compute.googleapis.com\"},\"receiveTimestamp\":\"2052-11-26T14:31:00.456789Z\",\"resource\":{\"labels\":{\"project_id\":\"elastic-security-test\"},\"type\":\"gce_network\"},\"severity\":\"NOTICE\",\"timestamp\":\"2052-11-26T14:31:00.123456Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-gcp-audit-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "gcp",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

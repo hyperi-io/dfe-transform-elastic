@@ -1,0 +1,122 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-03-06T22:30:06.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "end": "2051-04-07T23:50:00.000Z",
+        "kind": "event",
+        "original": "{\"id\":1,\"type\":\"account\",\"entity_id\":2,\"entity_name\":\"O365:pozslr@iadtqc.ai\",\"lock_event_timestamp\":\"2051-03-06T22:30:06Z\",\"locked_by\":\"vadmin\",\"certainty\":0,\"unlock_event_timestamp\":\"2051-04-07T23:50:00Z\"}",
+        "start": "2051-03-06T22:30:06.000Z"
+      },
+      "observer": {
+        "product": "Vectra RUX"
+      },
+      "related": {
+        "user": [
+          "2",
+          "O365:pozslr@iadtqc.ai",
+          "vadmin"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "O365:pozslr@iadtqc.ai",
+        "id": "2",
+        "name": "vadmin"
+      },
+      "vectra_rux": {
+        "lockdown": {
+          "certainty": 0,
+          "entity_id": "2",
+          "entity_name": "O365:pozslr@iadtqc.ai",
+          "id": "1",
+          "lock_event_timestamp": "2051-03-06T22:30:06.000Z",
+          "locked_by": "vadmin",
+          "type": "account",
+          "unlock_event_timestamp": "2051-04-07T23:50:00.000Z"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-03-01T18:20:20.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "end": "2052-03-04T22:30:16.000Z",
+        "kind": "event",
+        "original": "{\"id\":1,\"type\":\"host\",\"entity_id\":1184,\"entity_name\":\"Windows10_Jump\",\"lock_event_timestamp\":\"2052-03-01T18:20:20Z\",\"locked_by\":\"vadmin\",\"certainty\":0,\"unlock_event_timestamp\":\"2052-03-04T22:30:16Z\"}",
+        "start": "2052-03-01T18:20:20.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "1184",
+        "name": "Windows10_Jump"
+      },
+      "observer": {
+        "product": "Vectra RUX"
+      },
+      "related": {
+        "hosts": [
+          "1184",
+          "Windows10_Jump"
+        ],
+        "user": [
+          "vadmin"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "vadmin"
+      },
+      "vectra_rux": {
+        "lockdown": {
+          "certainty": 0,
+          "entity_id": "1184",
+          "entity_name": "Windows10_Jump",
+          "id": "1",
+          "lock_event_timestamp": "2052-03-01T18:20:20.000Z",
+          "locked_by": "vadmin",
+          "type": "host",
+          "unlock_event_timestamp": "2052-03-04T22:30:16.000Z"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":1,\"type\":\"account\",\"entity_id\":2,\"entity_name\":\"O365:pozslr@iadtqc.ai\",\"lock_event_timestamp\":\"2051-03-06T22:30:06Z\",\"locked_by\":\"vadmin\",\"certainty\":0,\"unlock_event_timestamp\":\"2051-04-07T23:50:00Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":1,\"type\":\"host\",\"entity_id\":1184,\"entity_name\":\"Windows10_Jump\",\"lock_event_timestamp\":\"2052-03-01T18:20:20Z\",\"locked_by\":\"vadmin\",\"certainty\":0,\"unlock_event_timestamp\":\"2052-03-04T22:30:16Z\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "lockdown",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-vectra_rux-lockdown-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "vectra_rux",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,1306 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-05-22T20:30:05.131Z",
+      "backstage": {
+        "is_audit_event": true,
+        "query": {
+          "fields": [
+            "metadata",
+            "kind",
+            "spec.profile"
+          ],
+          "filter": [
+            "kind=group,relations.hasMember=user:default/guest"
+          ],
+          "type": "all"
+        },
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-fetch:initiated",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"localhost\",\"ip\":\"127.0.0.1\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"query\":{\"fields\":[\"metadata\",\"kind\",\"spec.profile\"],\"filter\":[\"kind=group,relations.hasMember=user:default/guest\"]},\"queryType\":\"all\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities?fields=metadata,kind,spec.profile&filter=kind%3Dgroup%2Crelations.hasMember%3Duser%3Adefault%2Fguest\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\",\"timestamp\":\"2054-05-22T20:30:05.131Z\"}",
+        "outcome": "unknown",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "start"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch",
+      "related": {
+        "hosts": [
+          "localhost"
+        ],
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/catalog/entities?fields=metadata,kind,spec.profile&filter=kind%3Dgroup%2Crelations.hasMember%3Duser%3Adefault%2Fguest",
+        "path": "/api/catalog/entities",
+        "query": "fields=metadata,kind,spec.profile&filter=kind=group,relations.hasMember=user:default/guest"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "148.0.0.0"
+      }
+    },
+    {
+      "backstage": {
+        "is_audit_event": true,
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-facets:initiated",
+        "category": [
+          "api"
+        ],
+        "code": "entity-facets",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:203.0.113.248\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0\"},\"eventId\":\"entity-facets\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-facets\",\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entity-facets?facet=metadata.namespace&filter=kind%3Dcomponent\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+        "outcome": "unknown",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "start"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-facets",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:203.0.113.248"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/catalog/entity-facets?facet=metadata.namespace&filter=kind%3Dcomponent",
+        "path": "/api/catalog/entity-facets",
+        "query": "facet=metadata.namespace&filter=kind=component"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "os": {
+          "full": "Mac OS X 10.15",
+          "name": "Mac OS X",
+          "version": "10.15"
+        },
+        "version": "152.0"
+      }
+    },
+    {
+      "backstage": {
+        "is_audit_event": true,
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-facets:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "entity-facets",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:198.51.100.211\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0\"},\"eventId\":\"entity-facets\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-facets\",\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entity-facets?facet=metadata.tags&filter=kind%3Dcomponent\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+        "outcome": "success",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-facets",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:198.51.100.211"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/catalog/entity-facets?facet=metadata.tags&filter=kind%3Dcomponent",
+        "path": "/api/catalog/entity-facets",
+        "query": "facet=metadata.tags&filter=kind=component"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "os": {
+          "full": "Mac OS X 10.15",
+          "name": "Mac OS X",
+          "version": "10.15"
+        },
+        "version": "152.0"
+      }
+    },
+    {
+      "backstage": {
+        "is_audit_event": true,
+        "query": {
+          "filter": [
+            "kind=Resource,spec.type=github-repository,spec.implementation.apiVersion=github.example.com/v1",
+            "kind=Resource,spec.type=github-repository-v2,spec.implementation.apiVersion=github.example.com/v1"
+          ],
+          "type": "all"
+        },
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-fetch:initiated",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"proxy-service\",\"ip\":\"::ffff:198.51.100.124\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"query\":{\"filter\":[\"kind=Resource,spec.type=github-repository,spec.implementation.apiVersion=github.example.com/v1\", \"kind=Resource,spec.type=github-repository-v2,spec.implementation.apiVersion=github.example.com/v1\"]},\"queryType\":\"all\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/?filter=kind%3DResource%2Cspec.type%3Dgithub-repository%2Cspec.implementation.apiVersion%3Dgithub.example.com%2Fv1\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+        "outcome": "unknown",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "start"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:198.51.100.124"
+        ],
+        "user": [
+          "proxy-service"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/catalog/entities/?filter=kind%3DResource%2Cspec.type%3Dgithub-repository%2Cspec.implementation.apiVersion%3Dgithub.example.com%2Fv1",
+        "path": "/api/catalog/entities/",
+        "query": "filter=kind=Resource,spec.type=github-repository,spec.implementation.apiVersion=github.example.com/v1"
+      },
+      "user": {
+        "id": "proxy-service"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "api-service"
+      }
+    },
+    {
+      "backstage": {
+        "is_audit_event": true,
+        "query": {
+          "filter": [
+            "kind=NothingOfThisKind"
+          ],
+          "type": "all"
+        },
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-fetch:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"proxy-service\",\"ip\":\"::ffff:203.0.113.177\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"query\":{\"filter\":[\"kind=NothingOfThisKind\"]},\"queryType\":\"all\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities?filter=kind%3DNothingOfThisKind\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+        "outcome": "success",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:203.0.113.177"
+        ],
+        "user": [
+          "proxy-service"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/catalog/entities?filter=kind%3DNothingOfThisKind",
+        "path": "/api/catalog/entities",
+        "query": "filter=kind=NothingOfThisKind"
+      },
+      "user": {
+        "id": "proxy-service"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "api-service"
+      }
+    },
+    {
+      "backstage": {
+        "entity": {
+          "ref": "user:default/alice.johnson"
+        },
+        "is_audit_event": true,
+        "query": {
+          "type": "by-name"
+        },
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-fetch:failed",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"proxy-service\",\"ip\":\"::ffff:192.0.2.11\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch No entity named 'alice.johnson' found, with kind 'user' in namespace 'default'\",\"meta\":{\"entityRef\":\"user:default/alice.johnson\",\"queryType\":\"by-name\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-name/user/default/alice.johnson?\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"failed\"}",
+        "outcome": "failure",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch No entity named 'alice.johnson' found, with kind 'user' in namespace 'default'",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:192.0.2.11"
+        ],
+        "user": [
+          "proxy-service"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:192.0.2.11"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/catalog/entities/by-name/user/default/alice.johnson?",
+        "path": "/api/catalog/entities/by-name/user/default/alice.johnson",
+        "query": ""
+      },
+      "user": {
+        "id": "proxy-service"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "api-service"
+      }
+    },
+    {
+      "backstage": {
+        "action_type": "stream",
+        "is_audit_event": true,
+        "severity_level": "low",
+        "task": {
+          "id": "b2a7899e-8a78-4391-a2bd-525da34aabbf"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "task:initiated",
+        "category": [
+          "api"
+        ],
+        "code": "task",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:203.0.113.248\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"task\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.task\",\"meta\":{\"actionType\":\"stream\",\"taskId\":\"b2a7899e-8a78-4391-a2bd-525da34aabbf\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+        "outcome": "unknown",
+        "provider": "scaffolder",
+        "severity": 3,
+        "type": [
+          "access",
+          "start"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "scaffolder.task",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:203.0.113.248"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream",
+        "path": "/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "149.0.0.0"
+      }
+    },
+    {
+      "backstage": {
+        "action_type": "stream",
+        "is_audit_event": true,
+        "severity_level": "low",
+        "task": {
+          "id": "b2a7899e-8a78-4391-a2bd-525da34aabbf"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "task:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "task",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:203.0.113.248\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"task\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.task\",\"meta\":{\"actionType\":\"stream\",\"taskId\":\"b2a7899e-8a78-4391-a2bd-525da34aabbf\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+        "outcome": "success",
+        "provider": "scaffolder",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "scaffolder.task",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:203.0.113.248"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream",
+        "path": "/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "149.0.0.0"
+      }
+    },
+    {
+      "backstage": {
+        "action_type": "execution",
+        "is_audit_event": true,
+        "severity_level": "medium",
+        "task": {
+          "created_by": "user:default/alice.johnson",
+          "id": "9e41eec5-56a4-4efa-92d0-6e07bbe7af45",
+          "parameters": "{owner=group:default/example-platform-engineering, securityLevel=high, createBoilerplateInGuestRepo=false, division=engineering, org=platform, name=ansible-example-cloud-enterprise, mainBranch=main, githubOrg=example-org}"
+        },
+        "template": {
+          "ref": "template:default/register-in-catalog"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "task:failed",
+        "category": [
+          "api"
+        ],
+        "code": "task",
+        "kind": "event",
+        "original": "{\"actor\":{\"actorId\":\"plugin:scaffolder\"},\"eventId\":\"task\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.task Could not find main. {data={\\\"what\\\":\\\"main\\\"}}\",\"meta\":{\"actionType\":\"execution\",\"templateRef\":\"template:default/register-in-catalog\",\"createdBy\":\"user:default/alice.johnson\",\"taskParameters\":{\"owner\":\"group:default/example-platform-engineering\",\"securityLevel\":\"high\",\"createBoilerplateInGuestRepo\":false,\"division\":\"engineering\",\"org\":\"platform\",\"name\":\"ansible-example-cloud-enterprise\",\"mainBranch\":\"main\",\"githubOrg\":\"example-org\"},\"taskId\":\"9e41eec5-56a4-4efa-92d0-6e07bbe7af45\"},\"plugin\":\"scaffolder\",\"service\":\"backstage\",\"severityLevel\":\"medium\",\"status\":\"failed\"}",
+        "outcome": "failure",
+        "provider": "scaffolder",
+        "severity": 5,
+        "type": [
+          "end"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "scaffolder.task Could not find main. {data={\"what\":\"main\"}}",
+      "related": {
+        "user": [
+          "plugin:scaffolder",
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "plugin:scaffolder"
+      }
+    },
+    {
+      "backstage": {
+        "is_audit_event": true,
+        "severity_level": "low",
+        "template": {
+          "ref": "template:default/starter-kit"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "template-parameter-schema:initiated",
+        "category": [
+          "api"
+        ],
+        "code": "template-parameter-schema",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:198.51.100.57\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"template-parameter-schema\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.template-parameter-schema\",\"meta\":{\"templateRef\":\"template:default/starter-kit\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+        "outcome": "unknown",
+        "provider": "scaffolder",
+        "severity": 3,
+        "type": [
+          "access",
+          "start"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "scaffolder.template-parameter-schema",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:198.51.100.57"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:198.51.100.57"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema",
+        "path": "/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "149.0.0.0"
+      }
+    },
+    {
+      "backstage": {
+        "is_audit_event": true,
+        "severity_level": "low",
+        "template": {
+          "ref": "Template:default/starter-kit"
+        }
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "template-parameter-schema:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "template-parameter-schema",
+        "kind": "event",
+        "original": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:198.51.100.57\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"template-parameter-schema\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.template-parameter-schema\",\"meta\":{\"templateRef\":\"Template:default/starter-kit\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+        "outcome": "success",
+        "provider": "scaffolder",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "scaffolder.template-parameter-schema",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:198.51.100.57"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:198.51.100.57"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema",
+        "path": "/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "149.0.0.0"
+      }
+    },
+    {
+      "backstage": {
+        "entity": {
+          "ref": "system:default/holodeck"
+        },
+        "is_audit_event": true,
+        "query": {
+          "type": "by-name"
+        },
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "error": {
+        "stack_trace": "NotFoundError: No entity named 'holodeck' found, with kind 'system' in namespace 'default'\n    at Object.writeSingleEntityResponse (/app/node_modules/@backstage/plugin-catalog-backend/dist/service/response/write.cjs.js:16:13)",
+        "type": "NotFoundError"
+      },
+      "event": {
+        "action": "entity-fetch:failed",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"actorId\":\"user:default/alice.johnson\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:203.0.113.206\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch No entity named 'holodeck' found, with kind 'system' in namespace 'default'\",\"meta\":{\"entityRef\":\"system:default/holodeck\",\"queryType\":\"by-name\"},\"name\":\"NotFoundError\",\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-name/system/default/holodeck\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"span_id\":\"33920108847d15f2\",\"stack\":\"NotFoundError: No entity named 'holodeck' found, with kind 'system' in namespace 'default'\\n    at Object.writeSingleEntityResponse (/app/node_modules/@backstage/plugin-catalog-backend/dist/service/response/write.cjs.js:16:13)\",\"status\":\"failed\",\"trace_flags\":\"01\",\"trace_id\":\"18e0568b967b1cb95574046adafdbf8d\"}",
+        "outcome": "failure",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch No entity named 'holodeck' found, with kind 'system' in namespace 'default'",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:203.0.113.206"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:203.0.113.206"
+      },
+      "span": {
+        "id": "33920108847d15f2"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "trace": {
+        "id": "18e0568b967b1cb95574046adafdbf8d"
+      },
+      "url": {
+        "original": "/api/catalog/entities/by-name/system/default/holodeck",
+        "path": "/api/catalog/entities/by-name/system/default/holodeck"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "149.0.0.0"
+      }
+    },
+    {
+      "backstage": {
+        "action_type": "ancestry",
+        "ancestry": [
+          {
+            "entityRef": "component:default/billing-service",
+            "parentEntityRefs": [
+              "location:default/github-repository-cloud"
+            ]
+          },
+          {
+            "entityRef": "location:default/github-repository-cloud",
+            "parentEntityRefs": []
+          }
+        ],
+        "is_audit_event": true,
+        "severity_level": "low"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-fetch:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"actorId\":\"proxy-service\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:192.0.2.114\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"actionType\":\"ancestry\",\"ancestry\":[{\"entityRef\":\"component:default/billing-service\",\"parentEntityRefs\":[\"location:default/github-repository-cloud\"]},{\"entityRef\":\"location:default/github-repository-cloud\",\"parentEntityRefs\":[]}]},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-name/component/default/billing-service/ancestry\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\",\"trace_id\":\"f9e7a9e4d5a3f0a9c2f4c8f1c0e9b2e8\",\"span_id\":\"0104662146839446\"}",
+        "outcome": "success",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:192.0.2.114"
+        ],
+        "user": [
+          "proxy-service"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:192.0.2.114"
+      },
+      "span": {
+        "id": "0104662146839446"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "trace": {
+        "id": "f9e7a9e4d5a3f0a9c2f4c8f1c0e9b2e8"
+      },
+      "url": {
+        "original": "/api/catalog/entities/by-name/component/default/billing-service/ancestry",
+        "path": "/api/catalog/entities/by-name/component/default/billing-service/ancestry"
+      },
+      "user": {
+        "id": "proxy-service"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "api-service"
+      }
+    },
+    {
+      "backstage": {
+        "entity": {
+          "refs": [
+            "group:default/ingest-fp"
+          ],
+          "root_ref": "component:default/billing-service"
+        },
+        "is_audit_event": true,
+        "query": {
+          "fields": [
+            "metadata.labels"
+          ],
+          "filter": [
+            "kind=Component"
+          ],
+          "type": "by-refs"
+        },
+        "severity_level": "low",
+        "total_items": 404
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-fetch:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "entity-fetch",
+        "kind": "event",
+        "original": "{\"actor\":{\"actorId\":\"proxy-service\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:192.0.2.26\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"entityRefs\":[\"group:default/ingest-fp\"],\"rootEntityRef\":\"component:default/billing-service\",\"totalItems\":404,\"pageInfo\":{\"nextCursor\":\"eyJvcmRlckZpZWxkcyI6W119\"},\"query\":{\"fields\":[\"metadata.labels\"],\"filter\":[\"kind=Component\"]},\"queryType\":\"by-refs\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-refs\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\",\"trace_id\":\"a9e8a6f3b5d0c7a1a5e0e2d1c3c1c3b3\",\"span_id\":\"4456184633253411\"}",
+        "outcome": "success",
+        "provider": "catalog",
+        "severity": 3,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-fetch",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:192.0.2.26"
+        ],
+        "user": [
+          "proxy-service"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:192.0.2.26"
+      },
+      "span": {
+        "id": "4456184633253411"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "trace": {
+        "id": "a9e8a6f3b5d0c7a1a5e0e2d1c3c1c3b3"
+      },
+      "url": {
+        "original": "/api/catalog/entities/by-refs",
+        "path": "/api/catalog/entities/by-refs"
+      },
+      "user": {
+        "id": "proxy-service"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "api-service"
+      }
+    },
+    {
+      "backstage": {
+        "entity": {
+          "ref": "component:default/legacy-billing-service"
+        },
+        "is_audit_event": true,
+        "query": {
+          "type": "by-uid"
+        },
+        "severity_level": "high"
+      },
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "entity-deletion:succeeded",
+        "category": [
+          "api"
+        ],
+        "code": "entity-deletion",
+        "kind": "event",
+        "original": "{\"actor\":{\"actorId\":\"user:default/alice.johnson\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:198.51.100.211\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36\"},\"eventId\":\"entity-deletion\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-deletion\",\"meta\":{\"entityRef\":\"component:default/legacy-billing-service\",\"queryType\":\"by-uid\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"DELETE\",\"url\":\"/api/catalog/entities/by-uid/97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e\"},\"service\":\"backstage\",\"severityLevel\":\"high\",\"span_id\":\"f0d8028759120402\",\"status\":\"succeeded\",\"trace_flags\":\"01\",\"trace_id\":\"3c4e30144efcffec2d7e6c9a6a1a0e4e\"}",
+        "outcome": "success",
+        "provider": "catalog",
+        "severity": 7,
+        "type": [
+          "access",
+          "end"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "DELETE"
+        }
+      },
+      "log": {
+        "level": "info"
+      },
+      "message": "catalog.entity-deletion",
+      "related": {
+        "hosts": [
+          "efdzqgeta.areggve.internal"
+        ],
+        "ip": [
+          "::ffff:198.51.100.211"
+        ],
+        "user": [
+          "user:default/alice.johnson"
+        ]
+      },
+      "service": {
+        "name": "backstage"
+      },
+      "source": {
+        "ip": "::ffff:198.51.100.211"
+      },
+      "span": {
+        "id": "f0d8028759120402"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "trace": {
+        "id": "3c4e30144efcffec2d7e6c9a6a1a0e4e"
+      },
+      "url": {
+        "original": "/api/catalog/entities/by-uid/97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e",
+        "path": "/api/catalog/entities/by-uid/97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e"
+      },
+      "user": {
+        "id": "user:default/alice.johnson"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "150.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"actor\":{\"hostname\":\"localhost\",\"ip\":\"127.0.0.1\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"query\":{\"fields\":[\"metadata\",\"kind\",\"spec.profile\"],\"filter\":[\"kind=group,relations.hasMember=user:default/guest\"]},\"queryType\":\"all\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities?fields=metadata,kind,spec.profile&filter=kind%3Dgroup%2Crelations.hasMember%3Duser%3Adefault%2Fguest\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\",\"timestamp\":\"2054-05-22T20:30:05.131Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:203.0.113.248\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0\"},\"eventId\":\"entity-facets\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-facets\",\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entity-facets?facet=metadata.namespace&filter=kind%3Dcomponent\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:198.51.100.211\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0\"},\"eventId\":\"entity-facets\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-facets\",\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entity-facets?facet=metadata.tags&filter=kind%3Dcomponent\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"proxy-service\",\"ip\":\"::ffff:198.51.100.124\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"query\":{\"filter\":[\"kind=Resource,spec.type=github-repository,spec.implementation.apiVersion=github.example.com/v1\", \"kind=Resource,spec.type=github-repository-v2,spec.implementation.apiVersion=github.example.com/v1\"]},\"queryType\":\"all\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/?filter=kind%3DResource%2Cspec.type%3Dgithub-repository%2Cspec.implementation.apiVersion%3Dgithub.example.com%2Fv1\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"proxy-service\",\"ip\":\"::ffff:203.0.113.177\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"query\":{\"filter\":[\"kind=NothingOfThisKind\"]},\"queryType\":\"all\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities?filter=kind%3DNothingOfThisKind\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"proxy-service\",\"ip\":\"::ffff:192.0.2.11\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch No entity named 'alice.johnson' found, with kind 'user' in namespace 'default'\",\"meta\":{\"entityRef\":\"user:default/alice.johnson\",\"queryType\":\"by-name\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-name/user/default/alice.johnson?\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"failed\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:203.0.113.248\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"task\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.task\",\"meta\":{\"actionType\":\"stream\",\"taskId\":\"b2a7899e-8a78-4391-a2bd-525da34aabbf\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:203.0.113.248\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"task\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.task\",\"meta\":{\"actionType\":\"stream\",\"taskId\":\"b2a7899e-8a78-4391-a2bd-525da34aabbf\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/tasks/b2a7899e-8a78-4391-a2bd-525da34aabbf/eventstream\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"actorId\":\"plugin:scaffolder\"},\"eventId\":\"task\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.task Could not find main. {data={\\\"what\\\":\\\"main\\\"}}\",\"meta\":{\"actionType\":\"execution\",\"templateRef\":\"template:default/register-in-catalog\",\"createdBy\":\"user:default/alice.johnson\",\"taskParameters\":{\"owner\":\"group:default/example-platform-engineering\",\"securityLevel\":\"high\",\"createBoilerplateInGuestRepo\":false,\"division\":\"engineering\",\"org\":\"platform\",\"name\":\"ansible-example-cloud-enterprise\",\"mainBranch\":\"main\",\"githubOrg\":\"example-org\"},\"taskId\":\"9e41eec5-56a4-4efa-92d0-6e07bbe7af45\"},\"plugin\":\"scaffolder\",\"service\":\"backstage\",\"severityLevel\":\"medium\",\"status\":\"failed\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:198.51.100.57\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"template-parameter-schema\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.template-parameter-schema\",\"meta\":{\"templateRef\":\"template:default/starter-kit\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"initiated\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"hostname\":\"efdzqgeta.areggve.internal\",\"actorId\":\"user:default/alice.johnson\",\"ip\":\"::ffff:198.51.100.57\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"template-parameter-schema\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"scaffolder.template-parameter-schema\",\"meta\":{\"templateRef\":\"Template:default/starter-kit\"},\"plugin\":\"scaffolder\",\"request\":{\"method\":\"GET\",\"url\":\"/api/scaffolder/v2/templates/default/template/starter-kit/parameter-schema\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"actorId\":\"user:default/alice.johnson\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:203.0.113.206\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch No entity named 'holodeck' found, with kind 'system' in namespace 'default'\",\"meta\":{\"entityRef\":\"system:default/holodeck\",\"queryType\":\"by-name\"},\"name\":\"NotFoundError\",\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-name/system/default/holodeck\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"span_id\":\"33920108847d15f2\",\"stack\":\"NotFoundError: No entity named 'holodeck' found, with kind 'system' in namespace 'default'\\n    at Object.writeSingleEntityResponse (/app/node_modules/@backstage/plugin-catalog-backend/dist/service/response/write.cjs.js:16:13)\",\"status\":\"failed\",\"trace_flags\":\"01\",\"trace_id\":\"18e0568b967b1cb95574046adafdbf8d\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"actorId\":\"proxy-service\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:192.0.2.114\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"actionType\":\"ancestry\",\"ancestry\":[{\"entityRef\":\"component:default/billing-service\",\"parentEntityRefs\":[\"location:default/github-repository-cloud\"]},{\"entityRef\":\"location:default/github-repository-cloud\",\"parentEntityRefs\":[]}]},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-name/component/default/billing-service/ancestry\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\",\"trace_id\":\"f9e7a9e4d5a3f0a9c2f4c8f1c0e9b2e8\",\"span_id\":\"0104662146839446\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"actorId\":\"proxy-service\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:192.0.2.26\",\"userAgent\":\"api-service\"},\"eventId\":\"entity-fetch\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-fetch\",\"meta\":{\"entityRefs\":[\"group:default/ingest-fp\"],\"rootEntityRef\":\"component:default/billing-service\",\"totalItems\":404,\"pageInfo\":{\"nextCursor\":\"eyJvcmRlckZpZWxkcyI6W119\"},\"query\":{\"fields\":[\"metadata.labels\"],\"filter\":[\"kind=Component\"]},\"queryType\":\"by-refs\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"GET\",\"url\":\"/api/catalog/entities/by-refs\"},\"service\":\"backstage\",\"severityLevel\":\"low\",\"status\":\"succeeded\",\"trace_id\":\"a9e8a6f3b5d0c7a1a5e0e2d1c3c1c3b3\",\"span_id\":\"4456184633253411\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actor\":{\"actorId\":\"user:default/alice.johnson\",\"hostname\":\"efdzqgeta.areggve.internal\",\"ip\":\"::ffff:198.51.100.211\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36\"},\"eventId\":\"entity-deletion\",\"isAuditEvent\":true,\"level\":\"info\",\"message\":\"catalog.entity-deletion\",\"meta\":{\"entityRef\":\"component:default/legacy-billing-service\",\"queryType\":\"by-uid\"},\"plugin\":\"catalog\",\"request\":{\"method\":\"DELETE\",\"url\":\"/api/catalog/entities/by-uid/97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e\"},\"service\":\"backstage\",\"severityLevel\":\"high\",\"span_id\":\"f0d8028759120402\",\"status\":\"succeeded\",\"trace_flags\":\"01\",\"trace_id\":\"3c4e30144efcffec2d7e6c9a6a1a0e4e\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-backstage-logs-default",
+    "event_count": 15,
+    "numeric_keyword_fields": [],
+    "package": "backstage",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

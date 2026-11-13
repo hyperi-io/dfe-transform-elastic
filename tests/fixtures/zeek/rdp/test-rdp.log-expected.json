@@ -1,0 +1,84 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-09-10T16:18:59.668Z",
+      "destination": {
+        "address": "192.168.97.8",
+        "ip": "192.168.97.8",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C2PcYV7D3ntaHm056",
+        "kind": "event",
+        "original": "{\"ts\":2451745139.668952,\"uid\":\"C2PcYV7D3ntaHm056\",\"id.orig_h\":\"192.168.32.69\",\"id.orig_p\":33872,\"id.resp_h\":\"192.168.97.8\",\"id.resp_p\":3389,\"result\":\"encrypted\",\"security_protocol\":\"HYBRID\",\"cert_count\":0,\"ssl\":true}",
+        "type": [
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:vZik/+Ru/U3chp4wlRG2mBH2qcc=",
+        "protocol": "rdp",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.32.69",
+          "192.168.97.8"
+        ]
+      },
+      "source": {
+        "address": "192.168.32.69",
+        "ip": "192.168.32.69",
+        "port": 33872
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "established": true
+      },
+      "zeek": {
+        "rdp": {
+          "cert": {
+            "count": 0
+          },
+          "result": "encrypted",
+          "security_protocol": "HYBRID",
+          "ssl": true
+        },
+        "session_id": "C2PcYV7D3ntaHm056"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2451745139.668952,\"uid\":\"C2PcYV7D3ntaHm056\",\"id.orig_h\":\"192.168.32.69\",\"id.orig_p\":33872,\"id.resp_h\":\"192.168.97.8\",\"id.resp_p\":3389,\"result\":\"encrypted\",\"security_protocol\":\"HYBRID\",\"cert_count\":0,\"ssl\":true}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "rdp",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-rdp-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

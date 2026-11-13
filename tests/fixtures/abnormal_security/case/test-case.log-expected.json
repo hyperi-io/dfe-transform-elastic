@@ -1,0 +1,266 @@
+{
+  "expected": [
+    {
+      "abnormal_security": {
+        "case": {
+          "affected_employee": "rvny@example.com",
+          "analysis": "SIGN_IN",
+          "customer_visible_time": "2052-01-05T12:33:25.000Z",
+          "first_observed": "2052-01-05T12:33:25.000Z",
+          "id": "11151468",
+          "remediation_status": "Not remediated",
+          "severity": "Account Takeover",
+          "severity_level": "LOW",
+          "status": "Acknowledged (Attack resolved)"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sign_in",
+        "id": "11151468",
+        "kind": "event",
+        "original": "{\"caseId\":11151468,\"affectedEmployee\":\"rvny@example.com\",\"analysis\":\"SIGN_IN\",\"case_status\":\"Acknowledged (Attack resolved)\",\"customerVisibleTime\":\"2052-01-05T12:33:25+00:00\",\"firstObserved\":\"2052-01-05T12:33:25+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"LOW\",\"threatIds\":[]}",
+        "severity": 1,
+        "start": "2052-01-05T12:33:25.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "rvny@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "rvny@example.com"
+      }
+    },
+    {
+      "abnormal_security": {
+        "case": {
+          "affected_employee": "fpf@example.com",
+          "analysis": "MAIL_FILTER",
+          "customer_visible_time": "2052-01-25T22:21:11.789Z",
+          "first_observed": "2052-01-25T22:21:11.789Z",
+          "id": "11153536",
+          "remediation_status": "Not remediated",
+          "severity": "Account Takeover",
+          "severity_level": "HIGH",
+          "status": "Acknowledged (Attack resolved)"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "mail_filter",
+        "id": "11153536",
+        "kind": "event",
+        "original": "{\"caseId\":11153536,\"affectedEmployee\":\"fpf@example.com\",\"analysis\":\"MAIL_FILTER\",\"case_status\":\"Acknowledged (Attack resolved)\",\"customerVisibleTime\":\"2052-01-25T22:21:11.789000+00:00\",\"firstObserved\":\"2052-01-25T22:21:11.789000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+        "severity": 3,
+        "start": "2052-01-25T22:21:11.789Z",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "fpf@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "fpf@example.com"
+      }
+    },
+    {
+      "abnormal_security": {
+        "case": {
+          "affected_employee": "rvny@example.com",
+          "analysis": "RISK_EVENT",
+          "customer_visible_time": "2052-04-10T16:54:43.533Z",
+          "first_observed": "2052-04-10T16:54:43.533Z",
+          "id": "11165798",
+          "remediation_status": "Not remediated",
+          "severity": "Account Takeover",
+          "severity_level": "HIGH",
+          "status": "Acknowledged (Not an attack)"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "risk_event",
+        "id": "11165798",
+        "kind": "event",
+        "original": "{\"caseId\":11165798,\"affectedEmployee\":\"rvny@example.com\",\"analysis\":\"RISK_EVENT\",\"case_status\":\"Acknowledged (Not an attack)\",\"customerVisibleTime\":\"2052-04-10T16:54:43.533000+00:00\",\"firstObserved\":\"2052-04-10T16:54:43.533000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+        "severity": 3,
+        "start": "2052-04-10T16:54:43.533Z",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "rvny@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "rvny@example.com"
+      }
+    },
+    {
+      "abnormal_security": {
+        "case": {
+          "affected_employee": "rvny@example.com",
+          "analysis": "CROWDSTRIKE_INCIDENT",
+          "customer_visible_time": "2052-05-29T21:49:51.673Z",
+          "first_observed": "2052-05-29T21:49:51.673Z",
+          "id": "11175289",
+          "remediation_status": "Not remediated",
+          "severity": "Account Takeover",
+          "severity_level": "HIGH",
+          "status": "Acknowledged (Not an attack)"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "crowdstrike_incident",
+        "id": "11175289",
+        "kind": "event",
+        "original": "{\"caseId\":11175289,\"affectedEmployee\":\"rvny@example.com\",\"analysis\":\"CROWDSTRIKE_INCIDENT\",\"case_status\":\"Acknowledged (Not an attack)\",\"customerVisibleTime\":\"2052-05-29T21:49:51.673000+00:00\",\"firstObserved\":\"2052-05-29T21:49:51.673000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+        "severity": 3,
+        "start": "2052-05-29T21:49:51.673Z",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "rvny@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "rvny@example.com"
+      }
+    },
+    {
+      "abnormal_security": {
+        "case": {
+          "affected_employee": "fpf@example.com",
+          "analysis": "MAIL_FILTER",
+          "customer_visible_time": "2052-06-16T13:25:41.899Z",
+          "first_observed": "2052-06-16T13:25:41.899Z",
+          "id": "11178942",
+          "remediation_status": "Not remediated",
+          "severity": "Account Takeover",
+          "severity_level": "HIGH",
+          "status": "Acknowledged (Not an attack)"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "mail_filter",
+        "id": "11178942",
+        "kind": "event",
+        "original": "{\"caseId\":11178942,\"affectedEmployee\":\"fpf@example.com\",\"analysis\":\"MAIL_FILTER\",\"case_status\":\"Acknowledged (Not an attack)\",\"customerVisibleTime\":\"2052-06-16T13:25:41.899000+00:00\",\"firstObserved\":\"2052-06-16T13:25:41.899000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+        "severity": 3,
+        "start": "2052-06-16T13:25:41.899Z",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "fpf@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "fpf@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"caseId\":11151468,\"affectedEmployee\":\"rvny@example.com\",\"analysis\":\"SIGN_IN\",\"case_status\":\"Acknowledged (Attack resolved)\",\"customerVisibleTime\":\"2052-01-05T12:33:25+00:00\",\"firstObserved\":\"2052-01-05T12:33:25+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"LOW\",\"threatIds\":[]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"caseId\":11153536,\"affectedEmployee\":\"fpf@example.com\",\"analysis\":\"MAIL_FILTER\",\"case_status\":\"Acknowledged (Attack resolved)\",\"customerVisibleTime\":\"2052-01-25T22:21:11.789000+00:00\",\"firstObserved\":\"2052-01-25T22:21:11.789000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"caseId\":11165798,\"affectedEmployee\":\"rvny@example.com\",\"analysis\":\"RISK_EVENT\",\"case_status\":\"Acknowledged (Not an attack)\",\"customerVisibleTime\":\"2052-04-10T16:54:43.533000+00:00\",\"firstObserved\":\"2052-04-10T16:54:43.533000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"caseId\":11175289,\"affectedEmployee\":\"rvny@example.com\",\"analysis\":\"CROWDSTRIKE_INCIDENT\",\"case_status\":\"Acknowledged (Not an attack)\",\"customerVisibleTime\":\"2052-05-29T21:49:51.673000+00:00\",\"firstObserved\":\"2052-05-29T21:49:51.673000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"caseId\":11178942,\"affectedEmployee\":\"fpf@example.com\",\"analysis\":\"MAIL_FILTER\",\"case_status\":\"Acknowledged (Not an attack)\",\"customerVisibleTime\":\"2052-06-16T13:25:41.899000+00:00\",\"firstObserved\":\"2052-06-16T13:25:41.899000+00:00\",\"remediation_status\":\"Not remediated\",\"severity\":\"Account Takeover\",\"severity_level\":\"HIGH\",\"threatIds\":[]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "case",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-abnormal_security-case-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "abnormal_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

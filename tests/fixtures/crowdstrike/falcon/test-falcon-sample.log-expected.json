@@ -1,0 +1,644 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-07-20T12:41:46.000Z",
+      "crowdstrike": {
+        "event": {
+          "CustomerId": "12345a1bc2d34fghi56jk7890lmno12p",
+          "DeviceId": "411ca939ba6a2ac9a9f9f05e26d2e1f2",
+          "Flags": {
+            "Audit": false,
+            "Log": false,
+            "Monitor": true
+          },
+          "MatchCount": 1,
+          "MatchCountSinceLastReport": 1,
+          "NetworkProfile": "2",
+          "PolicyID": "72d2a0801f3d8d64b6d11756610d5117",
+          "PolicyName": "PROD-FW-Workstations-General",
+          "Protocol": "6",
+          "RuleAction": "2",
+          "Timestamp": "2048-07-20T12:41:44Z"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "FirewallMatchEvent",
+          "offset": 70689,
+          "version": "1.0"
+        }
+      },
+      "destination": {
+        "ip": "10.172.177.155",
+        "port": 445
+      },
+      "device": {
+        "id": "411ca939ba6a2ac9a9f9f05e26d2e1f2"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "firewall_match_event"
+        ],
+        "category": [
+          "network"
+        ],
+        "code": "FirewallRuleIP4Matched",
+        "created": "2048-07-20T12:41:46.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 70689,\n        \"eventType\": \"FirewallMatchEvent\",\n        \"eventCreationTime\": 2478861706000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"DeviceId\": \"411ca939ba6a2ac9a9f9f05e26d2e1f2\",\n        \"CustomerId\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"Ipv\": \"ipv4\",\n        \"CommandLine\": \"\",\n        \"ConnectionDirection\": \"1\",\n        \"EventType\": \"FirewallRuleIP4Matched\",\n        \"Flags\": {\n            \"Audit\": false,\n            \"Log\": false,\n            \"Monitor\": true\n        },\n        \"HostName\": \"WDHMFFLPAA45\",\n        \"ICMPCode\": \"\",\n        \"ICMPType\": \"\",\n        \"ImageFileName\": \"\",\n        \"LocalAddress\": \"10.172.177.155\",\n        \"LocalPort\": \"445\",\n        \"MatchCount\": 1,\n        \"MatchCountSinceLastReport\": 1,\n        \"NetworkProfile\": \"2\",\n        \"PID\": \"206158879910\",\n        \"PolicyName\": \"PROD-FW-Workstations-General\",\n        \"PolicyID\": \"72d2a0801f3d8d64b6d11756610d5117\",\n        \"Protocol\": \"6\",\n        \"RemoteAddress\": \"10.109.178.37\",\n        \"RemotePort\": \"54952\",\n        \"RuleAction\": \"2\",\n        \"RuleDescription\": \"\",\n        \"RuleFamilyID\": \"ebc15d08c7ff7825ea969b3e70b102fc\",\n        \"RuleGroupName\": \"SMB Rules\",\n        \"RuleName\": \"Inbound SMB Block \\u0026 Log Private\",\n        \"RuleId\": \"4877172638743447345\",\n        \"Status\": \"\",\n        \"Timestamp\": \"2048-07-20T12:41:44Z\",\n        \"TreeID\": \"\"\n    }\n}",
+        "type": [
+          "start",
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "name": "WDHMFFLPAA45"
+      },
+      "message": "Firewall Rule: 'Inbound SMB Block & Log Private' triggered - Action: 'Blocked'",
+      "network": {
+        "direction": "ingress",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "process": {
+        "entity_id": "206158879910",
+        "pid": 206158879910
+      },
+      "related": {
+        "hosts": [
+          "WDHMFFLPAA45"
+        ],
+        "ip": [
+          "10.109.178.37",
+          "10.172.177.155"
+        ]
+      },
+      "rule": {
+        "category": "ebc15d08c7ff7825ea969b3e70b102fc",
+        "id": "4877172638743447345",
+        "name": "Inbound SMB Block & Log Private",
+        "ruleset": "SMB Rules"
+      },
+      "source": {
+        "ip": "10.109.178.37",
+        "port": 54952
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2048-07-17T17:02:08.414Z",
+      "crowdstrike": {
+        "event": {
+          "FineScore": 0.1,
+          "State": "open"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "IncidentSummaryEvent",
+          "offset": 57181,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "incident"
+        ],
+        "category": [
+          "malware"
+        ],
+        "created": "2048-07-17T17:02:08.414Z",
+        "end": "2048-07-17T17:01:56.000Z",
+        "kind": "alert",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57181,\n        \"eventType\": \"IncidentSummaryEvent\",\n        \"eventCreationTime\": 2478618128414,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"IncidentStartTime\": 2478618116,\n        \"IncidentEndTime\": 2478618116,\n        \"FalconHostLink\": \"https://falcon.crowdstrike.com/crowdscore/incidents/details/inc:9926675177db6b83c7e704cd5103407c:85f422b94b1379d293ecec441d814c46\",\n        \"State\": \"open\",\n        \"FineScore\": 0.1,\n        \"LateralMovement\": 0\n    }\n}",
+        "reference": "https://falcon.crowdstrike.com/crowdscore/incidents/details/inc:9926675177db6b83c7e704cd5103407c:85f422b94b1379d293ecec441d814c46",
+        "start": "2048-07-17T17:01:56.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Incident score 0.1",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2048-07-20T12:26:10.000Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "trace_id",
+              "ValueString": "e2e39001-156e-4e3e-a0fa-e211b9203a0b"
+            },
+            {
+              "Key": "actor_user",
+              "ValueString": "awnhx.sfis@djxlbxr.com"
+            },
+            {
+              "Key": "actor_user_uuid",
+              "ValueString": "016ae335-bfc9-12c0-18f8-06a3cc03c8d8"
+            },
+            {
+              "Key": "actor_cid",
+              "ValueString": "272615f2ae3d11bac71ee3156eebe20c"
+            },
+            {
+              "Key": "target_user",
+              "ValueString": "awnhx.sfis@djxlbxr.com"
+            }
+          ],
+          "OperationName": "saml2Assert",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 70509,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "saml2Assert"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2048-07-20T12:26:10.093Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 70509,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2478860770093,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"awnhx.sfis@djxlbxr.com\",\n        \"UserIp\": \"203.0.113.53\",\n        \"OperationName\": \"saml2Assert\",\n        \"ServiceName\": \"Crowdstrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2478860770,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"trace_id\",\n                \"ValueString\": \"e2e39001-156e-4e3e-a0fa-e211b9203a0b\"\n            },\n            {\n                \"Key\": \"actor_user\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            },\n            {\n                \"Key\": \"actor_user_uuid\",\n                \"ValueString\": \"016ae335-bfc9-12c0-18f8-06a3cc03c8d8\"\n            },\n            {\n                \"Key\": \"actor_cid\",\n                \"ValueString\": \"272615f2ae3d11bac71ee3156eebe20c\"\n            },\n            {\n                \"Key\": \"target_user\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            }\n        ]\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "Crowdstrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.53"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    },
+    {
+      "@timestamp": "2048-07-20T12:41:25.000Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "quarantined_file_id",
+              "ValueString": "dc7fae30394c544a09ccba4a1ca605d2_973592b110643f949a33251c1c66b5c08f4410a999b8cc0697f3b430178fad83"
+            },
+            {
+              "Key": "action_taken",
+              "ValueString": "quarantined"
+            }
+          ],
+          "ServiceName": "quarantined_files"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "UserActivityAuditEvent",
+          "offset": 70683,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "user_activity_audit_event",
+        "category": [
+          "iam"
+        ],
+        "created": "2048-07-20T12:41:25.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 70683,\n        \"eventType\": \"UserActivityAuditEvent\",\n        \"eventCreationTime\": 2478861685000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"Crowdstrike\",\n        \"UserIp\": \"\",\n        \"OperationName\": \"quarantined_file_update\",\n        \"ServiceName\": \"quarantined_files\",\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"quarantined_file_id\",\n                \"ValueString\": \"dc7fae30394c544a09ccba4a1ca605d2_973592b110643f949a33251c1c66b5c08f4410a999b8cc0697f3b430178fad83\"\n            },\n            {\n                \"Key\": \"action_taken\",\n                \"ValueString\": \"quarantined\"\n            }\n        ],\n        \"UTCTimestamp\": 2478861685\n    }\n}",
+        "type": [
+          "change"
+        ]
+      },
+      "message": "quarantined_file_update",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "user": [
+          "Crowdstrike"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "Crowdstrike"
+      }
+    },
+    {
+      "@timestamp": "2048-07-17T17:14:53.000Z",
+      "crowdstrike": {
+        "event": {
+          "SessionId": "811133fd-2caa-4055-b3b1-8c7eaf76ed9a"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "RemoteResponseSessionStartEvent",
+          "offset": 57217,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "remote_response_session_start_event"
+        ],
+        "category": [
+          "network",
+          "session"
+        ],
+        "created": "2048-07-17T17:14:53.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57217,\n        \"eventType\": \"RemoteResponseSessionStartEvent\",\n        \"eventCreationTime\": 2478618893000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"811133fd-2caa-4055-b3b1-8c7eaf76ed9a\",\n        \"HostnameField\": \"WDHMFFLPAA45\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"StartTimestamp\": 2478618893\n    }\n}",
+        "start": "2048-07-17T17:14:53.000Z",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "WDHMFFLPAA45"
+      },
+      "message": "Remote response session started.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "WDHMFFLPAA45"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    },
+    {
+      "@timestamp": "2048-07-17T17:28:19.000Z",
+      "crowdstrike": {
+        "event": {
+          "Commands": [
+            "cd \\Program Files (x86)\\Symantec",
+            "ls .",
+            "cd \\Program Files (x86)",
+            "ls .",
+            "reg query HKEY_LOCAL_MACHINE\\SYSTEM\\CrowdStrike\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\{44c7644f-7194-40d1-a404-218134b34619}\\Default",
+            "reg set HKEY_LOCAL_MACHINE\\SYSTEM\\CrowdStrike\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\{44c7644f-7194-40d1-a404-218134b34619}\\Default GroupingTags -ValueType=```REG_SZ``` -Value=```Protect```",
+            "reg query HKEY_LOCAL_MACHINE\\SYSTEM\\CrowdStrike\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\{44c7644f-7194-40d1-a404-218134b34619}\\Default",
+            "restart",
+            "restart -Confirm"
+          ],
+          "SessionId": "811133fd-2caa-4055-b3b1-8c7eaf76ed9a"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "RemoteResponseSessionEndEvent",
+          "offset": 57269,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "remote_response_session_end_event"
+        ],
+        "category": [
+          "network",
+          "session"
+        ],
+        "created": "2048-07-17T17:28:19.000Z",
+        "end": "2048-07-17T17:28:19.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57269,\n        \"eventType\": \"RemoteResponseSessionEndEvent\",\n        \"eventCreationTime\": 2478619699000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"811133fd-2caa-4055-b3b1-8c7eaf76ed9a\",\n        \"HostnameField\": \"WDHMFFLPAA45\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"EndTimestamp\": 2478619699,\n        \"Commands\": [\n            \"cd \\\\Program Files (x86)\\\\Symantec\",\n            \"ls .\",\n            \"cd \\\\Program Files (x86)\",\n            \"ls .\",\n            \"reg query HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CrowdStrike\\\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\\\{44c7644f-7194-40d1-a404-218134b34619}\\\\Default\",\n            \"reg set HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CrowdStrike\\\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\\\{44c7644f-7194-40d1-a404-218134b34619}\\\\Default GroupingTags -ValueType=```REG_SZ``` -Value=```Protect```\",\n            \"reg query HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CrowdStrike\\\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\\\{44c7644f-7194-40d1-a404-218134b34619}\\\\Default\",\n            \"restart\",\n            \"restart -Confirm\"\n        ]\n    }\n}",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "WDHMFFLPAA45"
+      },
+      "message": "Remote response session ended.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "WDHMFFLPAA45"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    },
+    {
+      "@timestamp": "2048-07-17T16:11:31.000Z",
+      "crowdstrike": {
+        "event": {
+          "ExecutablesWritten": [
+            {
+              "FileName": "NEURO_200_J1939Configuration.mexw64",
+              "FilePath": "\\Device\\HarddiskVolume2\\ProgramData\\file\\path\\is\\right\\here\\folder",
+              "Timestamp": 2478615090
+            },
+            {
+              "FileName": "NEURO_200_J1939Configuration.mexw64",
+              "FilePath": "\\Device\\HarddiskVolume2\\ProgramData\\file\\path\\is\\right\\here\\folder",
+              "Timestamp": 2478615090
+            },
+            {
+              "FileName": "NEURO_200_J1939CanPackMessage.mexw64",
+              "FilePath": "\\Device\\HarddiskVolume2\\ProgramData\\file\\path\\is\\right\\here\\folder",
+              "Timestamp": 2478615090
+            },
+            {
+              "FileName": "NEURO_200_J1939CanPackMessage.mexw64",
+              "FilePath": "\\Device\\HarddiskVolume2\\ProgramData\\file\\path\\is\\right\\here\\folder",
+              "Timestamp": 2478615090
+            }
+          ],
+          "GrandparentCommandLine": "C:\\Windows\\system32\\userinit.exe",
+          "GrandparentImageFileName": "\\Device\\HarddiskVolume2\\Windows\\System32\\userinit.exe",
+          "IOCType": "hash_sha256",
+          "IOCValue": "6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb",
+          "MACAddress": "20-ef-e0-c4-f2-2f",
+          "Objective": "Falcon Detection Method",
+          "ParentImageFileName": "\\Device\\HarddiskVolume2\\Windows\\explorer.exe",
+          "PatternDispositionFlags": {
+            "BootupSafeguardEnabled": false,
+            "CriticalProcessDisabled": false,
+            "Detect": false,
+            "FsOperationBlocked": false,
+            "InddetMask": false,
+            "Indicator": false,
+            "KillParent": false,
+            "KillProcess": false,
+            "KillSubProcess": false,
+            "OperationBlocked": false,
+            "PolicyDisabled": true,
+            "ProcessBlocked": true,
+            "QuarantineFile": false,
+            "QuarantineMachine": false,
+            "RegistryOperationBlocked": false,
+            "Rooting": false,
+            "SensorOnly": false
+          },
+          "PatternDispositionValue": 2304,
+          "SensorId": "1cdea3622b9d7777d4ae07cbbce5d6e3",
+          "Severity": 2,
+          "SeverityName": "Low"
+        },
+        "metadata": {
+          "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+          "eventType": "DetectionSummaryEvent",
+          "offset": 57047,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Detection, process would have been blocked if related prevention policy setting was enabled.",
+        "category": [
+          "malware"
+        ],
+        "created": "2048-07-17T16:11:31.000Z",
+        "kind": "alert",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57047,\n        \"eventType\": \"DetectionSummaryEvent\",\n        \"eventCreationTime\": 2478615091000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"ProcessStartTime\": 2478615090,\n        \"ProcessEndTime\": 2478615090,\n        \"ProcessId\": 663790158277,\n        \"ParentProcessId\": 627311656469,\n        \"ComputerName\": \"WDHMFFLPAA45\",\n        \"UserName\": \"Crmht.qfjv\",\n        \"DetectName\": \"NGAV\",\n        \"DetectDescription\": \"This file meets the machine learning-based on-sensor AV protection's low confidence threshold for malicious files.\",\n        \"Severity\": 2,\n        \"SeverityName\": \"Low\",\n        \"FileName\": \"filename.exe\",\n        \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\",\n        \"CommandLine\": \"\\\"C:\\\\ProgramData\\\\file\\\\path\\\\filename.exe\\\" \",\n        \"SHA256String\": \"6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb\",\n        \"MD5String\": \"3ad4464cfec81bfa5023b6022da8d2df\",\n        \"SHA1String\": \"0000000000000000000000000000000000000000\",\n        \"MachineDomain\": \"NA\",\n        \"ExecutablesWritten\": [\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939Configuration.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            },\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939Configuration.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            },\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939CanPackMessage.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            },\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939CanPackMessage.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            }\n        ],\n        \"FalconHostLink\": \"https://falcon.crowdstrike.com/activity/detections/detail/1cdea3622b9d7777d4ae07cbbce5d6e3/124559902719?_cid=12345a1bc2d34fghi56jk7890lmno12p\",\n        \"SensorId\": \"1cdea3622b9d7777d4ae07cbbce5d6e3\",\n        \"IOCType\": \"hash_sha256\",\n        \"IOCValue\": \"6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb\",\n        \"DetectId\": \"ldt:1cdea3622b9d7777d4ae07cbbce5d6e3:124559902719\",\n        \"LocalIP\": \"10.129.48.28\",\n        \"MACAddress\": \"20-ef-e0-c4-f2-2f\",\n        \"Tactic\": \"Machine Learning\",\n        \"Technique\": \"Sensor-based ML\",\n        \"Objective\": \"Falcon Detection Method\",\n        \"PatternDispositionDescription\": \"Detection, process would have been blocked if related prevention policy setting was enabled.\",\n        \"PatternDispositionValue\": 2304,\n        \"PatternDispositionFlags\": {\n            \"Indicator\": false,\n            \"Detect\": false,\n            \"InddetMask\": false,\n            \"SensorOnly\": false,\n            \"Rooting\": false,\n            \"KillProcess\": false,\n            \"KillSubProcess\": false,\n            \"QuarantineMachine\": false,\n            \"QuarantineFile\": false,\n            \"PolicyDisabled\": true,\n            \"KillParent\": false,\n            \"OperationBlocked\": false,\n            \"ProcessBlocked\": true,\n            \"RegistryOperationBlocked\": false,\n            \"CriticalProcessDisabled\": false,\n            \"BootupSafeguardEnabled\": false,\n            \"FsOperationBlocked\": false\n        },\n        \"ParentImageFileName\": \"\\\\Device\\\\HarddiskVolume2\\\\Windows\\\\explorer.exe\",\n        \"ParentCommandLine\": \"C:\\\\Windows\\\\Explorer.EXE\",\n        \"GrandparentImageFileName\": \"\\\\Device\\\\HarddiskVolume2\\\\Windows\\\\System32\\\\userinit.exe\",\n        \"GrandparentCommandLine\": \"C:\\\\Windows\\\\system32\\\\userinit.exe\"\n    }\n}",
+        "reference": "https://falcon.crowdstrike.com/activity/detections/detail/1cdea3622b9d7777d4ae07cbbce5d6e3/124559902719?_cid=12345a1bc2d34fghi56jk7890lmno12p",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "md5": "3ad4464cfec81bfa5023b6022da8d2df",
+          "sha1": "0000000000000000000000000000000000000000",
+          "sha256": "6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb"
+        },
+        "name": "filename.exe",
+        "path": "\\Device\\HarddiskVolume2\\ProgramData\\file\\path"
+      },
+      "host": {
+        "name": "WDHMFFLPAA45"
+      },
+      "message": "This file meets the machine learning-based on-sensor AV protection's low confidence threshold for malicious files.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "process": {
+        "args": [
+          "\"C:\\ProgramData\\file\\path\\filename.exe\""
+        ],
+        "command_line": "\"C:\\ProgramData\\file\\path\\filename.exe\"",
+        "end": "2048-07-17T16:11:30.000Z",
+        "entity_id": "663790158277",
+        "executable": "\"C:\\ProgramData\\file\\path\\filename.exe\"",
+        "name": "filename.exe",
+        "parent": {
+          "args": [
+            "C:\\Windows\\Explorer.EXE"
+          ],
+          "command_line": "C:\\Windows\\Explorer.EXE",
+          "entity_id": "627311656469",
+          "executable": "C:\\Windows\\Explorer.EXE",
+          "pid": 627311656469
+        },
+        "pid": 663790158277,
+        "start": "2048-07-17T16:11:30.000Z"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000",
+          "6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb",
+          "3ad4464cfec81bfa5023b6022da8d2df"
+        ],
+        "hosts": [
+          "WDHMFFLPAA45"
+        ],
+        "ip": [
+          "10.129.48.28"
+        ],
+        "user": [
+          "Crmht.qfjv"
+        ]
+      },
+      "rule": {
+        "description": "This file meets the machine learning-based on-sensor AV protection's low confidence threshold for malicious files.",
+        "id": "ldt:1cdea3622b9d7777d4ae07cbbce5d6e3:124559902719",
+        "name": "NGAV"
+      },
+      "source": {
+        "ip": "10.129.48.28"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "framework": "CrowdStrike Falcon Detections Framework",
+        "tactic": {
+          "name": [
+            "Machine Learning"
+          ]
+        },
+        "technique": {
+          "name": [
+            "Sensor-based ML"
+          ]
+        }
+      },
+      "user": {
+        "name": "Crmht.qfjv"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 70689,\n        \"eventType\": \"FirewallMatchEvent\",\n        \"eventCreationTime\": 2478861706000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"DeviceId\": \"411ca939ba6a2ac9a9f9f05e26d2e1f2\",\n        \"CustomerId\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"Ipv\": \"ipv4\",\n        \"CommandLine\": \"\",\n        \"ConnectionDirection\": \"1\",\n        \"EventType\": \"FirewallRuleIP4Matched\",\n        \"Flags\": {\n            \"Audit\": false,\n            \"Log\": false,\n            \"Monitor\": true\n        },\n        \"HostName\": \"WDHMFFLPAA45\",\n        \"ICMPCode\": \"\",\n        \"ICMPType\": \"\",\n        \"ImageFileName\": \"\",\n        \"LocalAddress\": \"10.172.177.155\",\n        \"LocalPort\": \"445\",\n        \"MatchCount\": 1,\n        \"MatchCountSinceLastReport\": 1,\n        \"NetworkProfile\": \"2\",\n        \"PID\": \"206158879910\",\n        \"PolicyName\": \"PROD-FW-Workstations-General\",\n        \"PolicyID\": \"72d2a0801f3d8d64b6d11756610d5117\",\n        \"Protocol\": \"6\",\n        \"RemoteAddress\": \"10.109.178.37\",\n        \"RemotePort\": \"54952\",\n        \"RuleAction\": \"2\",\n        \"RuleDescription\": \"\",\n        \"RuleFamilyID\": \"ebc15d08c7ff7825ea969b3e70b102fc\",\n        \"RuleGroupName\": \"SMB Rules\",\n        \"RuleName\": \"Inbound SMB Block \\u0026 Log Private\",\n        \"RuleId\": \"4877172638743447345\",\n        \"Status\": \"\",\n        \"Timestamp\": \"2048-07-20T12:41:44Z\",\n        \"TreeID\": \"\"\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57181,\n        \"eventType\": \"IncidentSummaryEvent\",\n        \"eventCreationTime\": 2478618128414,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"IncidentStartTime\": 2478618116,\n        \"IncidentEndTime\": 2478618116,\n        \"FalconHostLink\": \"https://falcon.crowdstrike.com/crowdscore/incidents/details/inc:9926675177db6b83c7e704cd5103407c:85f422b94b1379d293ecec441d814c46\",\n        \"State\": \"open\",\n        \"FineScore\": 0.1,\n        \"LateralMovement\": 0\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 70509,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2478860770093,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"awnhx.sfis@djxlbxr.com\",\n        \"UserIp\": \"203.0.113.53\",\n        \"OperationName\": \"saml2Assert\",\n        \"ServiceName\": \"Crowdstrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2478860770,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"trace_id\",\n                \"ValueString\": \"e2e39001-156e-4e3e-a0fa-e211b9203a0b\"\n            },\n            {\n                \"Key\": \"actor_user\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            },\n            {\n                \"Key\": \"actor_user_uuid\",\n                \"ValueString\": \"016ae335-bfc9-12c0-18f8-06a3cc03c8d8\"\n            },\n            {\n                \"Key\": \"actor_cid\",\n                \"ValueString\": \"272615f2ae3d11bac71ee3156eebe20c\"\n            },\n            {\n                \"Key\": \"target_user\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            }\n        ]\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 70683,\n        \"eventType\": \"UserActivityAuditEvent\",\n        \"eventCreationTime\": 2478861685000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"Crowdstrike\",\n        \"UserIp\": \"\",\n        \"OperationName\": \"quarantined_file_update\",\n        \"ServiceName\": \"quarantined_files\",\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"quarantined_file_id\",\n                \"ValueString\": \"dc7fae30394c544a09ccba4a1ca605d2_973592b110643f949a33251c1c66b5c08f4410a999b8cc0697f3b430178fad83\"\n            },\n            {\n                \"Key\": \"action_taken\",\n                \"ValueString\": \"quarantined\"\n            }\n        ],\n        \"UTCTimestamp\": 2478861685\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57217,\n        \"eventType\": \"RemoteResponseSessionStartEvent\",\n        \"eventCreationTime\": 2478618893000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"811133fd-2caa-4055-b3b1-8c7eaf76ed9a\",\n        \"HostnameField\": \"WDHMFFLPAA45\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"StartTimestamp\": 2478618893\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57269,\n        \"eventType\": \"RemoteResponseSessionEndEvent\",\n        \"eventCreationTime\": 2478619699000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"811133fd-2caa-4055-b3b1-8c7eaf76ed9a\",\n        \"HostnameField\": \"WDHMFFLPAA45\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"EndTimestamp\": 2478619699,\n        \"Commands\": [\n            \"cd \\\\Program Files (x86)\\\\Symantec\",\n            \"ls .\",\n            \"cd \\\\Program Files (x86)\",\n            \"ls .\",\n            \"reg query HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CrowdStrike\\\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\\\{44c7644f-7194-40d1-a404-218134b34619}\\\\Default\",\n            \"reg set HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CrowdStrike\\\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\\\{44c7644f-7194-40d1-a404-218134b34619}\\\\Default GroupingTags -ValueType=```REG_SZ``` -Value=```Protect```\",\n            \"reg query HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CrowdStrike\\\\{0e88c8f5-8367-45ef-9feb-a6c1d774d96d}\\\\{44c7644f-7194-40d1-a404-218134b34619}\\\\Default\",\n            \"restart\",\n            \"restart -Confirm\"\n        ]\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"12345a1bc2d34fghi56jk7890lmno12p\",\n        \"offset\": 57047,\n        \"eventType\": \"DetectionSummaryEvent\",\n        \"eventCreationTime\": 2478615091000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"ProcessStartTime\": 2478615090,\n        \"ProcessEndTime\": 2478615090,\n        \"ProcessId\": 663790158277,\n        \"ParentProcessId\": 627311656469,\n        \"ComputerName\": \"WDHMFFLPAA45\",\n        \"UserName\": \"Crmht.qfjv\",\n        \"DetectName\": \"NGAV\",\n        \"DetectDescription\": \"This file meets the machine learning-based on-sensor AV protection's low confidence threshold for malicious files.\",\n        \"Severity\": 2,\n        \"SeverityName\": \"Low\",\n        \"FileName\": \"filename.exe\",\n        \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\",\n        \"CommandLine\": \"\\\"C:\\\\ProgramData\\\\file\\\\path\\\\filename.exe\\\" \",\n        \"SHA256String\": \"6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb\",\n        \"MD5String\": \"3ad4464cfec81bfa5023b6022da8d2df\",\n        \"SHA1String\": \"0000000000000000000000000000000000000000\",\n        \"MachineDomain\": \"NA\",\n        \"ExecutablesWritten\": [\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939Configuration.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            },\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939Configuration.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            },\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939CanPackMessage.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            },\n            {\n                \"Timestamp\": 2478615090,\n                \"FileName\": \"NEURO_200_J1939CanPackMessage.mexw64\",\n                \"FilePath\": \"\\\\Device\\\\HarddiskVolume2\\\\ProgramData\\\\file\\\\path\\\\is\\\\right\\\\here\\\\folder\"\n            }\n        ],\n        \"FalconHostLink\": \"https://falcon.crowdstrike.com/activity/detections/detail/1cdea3622b9d7777d4ae07cbbce5d6e3/124559902719?_cid=12345a1bc2d34fghi56jk7890lmno12p\",\n        \"SensorId\": \"1cdea3622b9d7777d4ae07cbbce5d6e3\",\n        \"IOCType\": \"hash_sha256\",\n        \"IOCValue\": \"6b132d825e0e09ddd3ee24948995252a00f9e46c9193f50afc71de0a58c65aeb\",\n        \"DetectId\": \"ldt:1cdea3622b9d7777d4ae07cbbce5d6e3:124559902719\",\n        \"LocalIP\": \"10.129.48.28\",\n        \"MACAddress\": \"20-ef-e0-c4-f2-2f\",\n        \"Tactic\": \"Machine Learning\",\n        \"Technique\": \"Sensor-based ML\",\n        \"Objective\": \"Falcon Detection Method\",\n        \"PatternDispositionDescription\": \"Detection, process would have been blocked if related prevention policy setting was enabled.\",\n        \"PatternDispositionValue\": 2304,\n        \"PatternDispositionFlags\": {\n            \"Indicator\": false,\n            \"Detect\": false,\n            \"InddetMask\": false,\n            \"SensorOnly\": false,\n            \"Rooting\": false,\n            \"KillProcess\": false,\n            \"KillSubProcess\": false,\n            \"QuarantineMachine\": false,\n            \"QuarantineFile\": false,\n            \"PolicyDisabled\": true,\n            \"KillParent\": false,\n            \"OperationBlocked\": false,\n            \"ProcessBlocked\": true,\n            \"RegistryOperationBlocked\": false,\n            \"CriticalProcessDisabled\": false,\n            \"BootupSafeguardEnabled\": false,\n            \"FsOperationBlocked\": false\n        },\n        \"ParentImageFileName\": \"\\\\Device\\\\HarddiskVolume2\\\\Windows\\\\explorer.exe\",\n        \"ParentCommandLine\": \"C:\\\\Windows\\\\Explorer.EXE\",\n        \"GrandparentImageFileName\": \"\\\\Device\\\\HarddiskVolume2\\\\Windows\\\\System32\\\\userinit.exe\",\n        \"GrandparentCommandLine\": \"C:\\\\Windows\\\\system32\\\\userinit.exe\"\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,37 @@
+{
+    "events": [
+        {
+            "@timestamp": "2053-04-01T07:18:46.216Z",
+            "host": {
+              "name": "Ilficj-UebCtlx-Ktl.local"
+            },
+            "o365": {
+              "metrics": {
+                "app_registrations": {
+                  "app_id": "8bb-4cbf-4dc9-b05c-1efb",
+                  "password_credentials": [
+                    {
+                      "display_name": "vggaarei",
+                      "key_id": "ca4-0918-441-8f40-674b",
+                      "end_date_time": "2053-09-22T09:50:16.955Z"
+                    }
+                  ],
+                  "key_credentials": [],
+                  "object_id": "a32-fa88-4e5b-94cc-356bd",
+                  "display_name": "test-app-ms365"
+                }
+              }
+            },
+            "agent": {
+              "id": "6f3e0bfc-b70c-44bf-a3bb-9379d0acd1d9",
+              "name": "Ilficj-UebCtlx-Ktl.local",
+              "type": "filebeat",
+              "version": "9.0.0",
+              "ephemeral_id": "9c3b02b3-2b3d-4847-99a4-925fc11937ce"
+            },
+            "ecs": {
+              "version": "8.0.0"
+            }
+          }
+    ]
+}

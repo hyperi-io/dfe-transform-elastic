@@ -1,0 +1,144 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"Administrative\"}",
+      "routing": {
+        "category": "Administrative"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"Security\"}",
+      "routing": {
+        "category": "Security"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"ServiceHealth\"}",
+      "routing": {
+        "category": "ServiceHealth"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"Alert\"}",
+      "routing": {
+        "category": "Alert"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"Recommendation\"}",
+      "routing": {
+        "category": "Recommendation"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"Policy\"}",
+      "routing": {
+        "category": "Policy"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"Autoscale\"}",
+      "routing": {
+        "category": "Autoscale"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "kind": "event"
+      },
+      "message": "{\"category\":\"ResourceHealth\"}",
+      "routing": {
+        "category": "ResourceHealth"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"category\":\"Administrative\"}"
+    },
+    {
+      "message": "{\"category\":\"Security\"}"
+    },
+    {
+      "message": "{\"category\":\"ServiceHealth\"}"
+    },
+    {
+      "message": "{\"category\":\"Alert\"}"
+    },
+    {
+      "message": "{\"category\":\"Recommendation\"}"
+    },
+    {
+      "message": "{\"category\":\"Policy\"}"
+    },
+    {
+      "message": "{\"category\":\"Autoscale\"}"
+    },
+    {
+      "message": "{\"category\":\"ResourceHealth\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-events-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

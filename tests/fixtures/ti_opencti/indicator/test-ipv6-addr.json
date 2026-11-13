@@ -1,0 +1,116 @@
+{
+    "events": [
+        {
+            "id": "50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+            "standard_id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 15,
+            "lang": "en",
+            "created": "2045-11-07T09:45:15.000Z",
+            "modified": "2051-01-17T22:00:34.722Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+            "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+            "description": "",
+            "valid_from": "2045-11-07T09:45:15.000Z",
+            "valid_until": "2045-12-07T09:45:15.000Z",
+            "x_opencti_score": 30,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "IPv6-Addr",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "CIRCL"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:CLEAR"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "osint"
+                },
+                {
+                    "value": "blog-post"
+                },
+                {
+                    "value": "testing"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "e1cebe6e-cc0f-4a3b-813c-3ce8be0a5b05",
+                            "standard_id": "ipv6-addr--3c786221-3bbd-5ff6-8785-e21e2df6aa1c",
+                            "entity_type": "IPv6-Addr",
+                            "observable_value": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+                            "value": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9"
+                        }
+                    }
+                ],
+                "pageInfo": {
+                    "globalCount": 1
+                }
+            }
+        },
+        {
+            "id": "50c8c02f-c214-47f8-bab8-b26aaa762fb8",
+            "standard_id": "indicator--f7d0b69d-d246-543d-a733-5146bbfb5e2e",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 15,
+            "lang": "en",
+            "created": "2045-11-07T09:45:15.000Z",
+            "modified": "2051-01-17T22:00:34.722Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[ipv6-addr:value = '2001:db8:9baf:db79:6ef1:14d4:686d:44c9']",
+            "name": "2001:db8:9baf:db79:6ef1:14d4:686d:44c9",
+            "description": "",
+            "valid_from": "2045-11-07T09:45:15.000Z",
+            "valid_until": "2045-12-07T09:45:15.000Z",
+            "x_opencti_score": 30,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "IPv6-Addr",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "CIRCL"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:CLEAR"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "osint"
+                },
+                {
+                    "value": "blog-post"
+                },
+                {
+                    "value": "testing"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [],
+                "pageInfo": {
+                    "globalCount": 0
+                }
+            }
+        }
+    ]
+}

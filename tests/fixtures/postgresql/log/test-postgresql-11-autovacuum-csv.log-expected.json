@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-04T00:37:32.862Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.088961436Z",
+        "kind": "event",
+        "original": "2049-01-04 00:37:32.862 UTC,,,87,,5ff2634c.57,1,,2049-01-04 00:37:32 UTC,4/43,0,LOG,00000,\"automatic vacuum of table \"\"postgres.public.t\"\": index scans: 1\npages: 0 removed, 89 remain, 0 skipped due to pins, 0 skipped frozen\ntuples: 10000 removed, 10000 remain, 0 are dead but not yet removable, oldest xmin: 578\nbuffer usage: 316 hits, 2 misses, 4 dirtied\navg read rate: 0.569 MB/s, avg write rate: 1.138 MB/s\nsystem usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.02 s\",,,,,,,,,\"\"",
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "LOG"
+      },
+      "message": "automatic vacuum of table \"postgres.public.t\": index scans: 1\npages: 0 removed, 89 remain, 0 skipped due to pins, 0 skipped frozen\ntuples: 10000 removed, 10000 remain, 0 are dead but not yet removable, oldest xmin: 578\nbuffer usage: 316 hits, 2 misses, 4 dirtied\navg read rate: 0.569 MB/s, avg write rate: 1.138 MB/s\nsystem usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.02 s",
+      "postgresql": {
+        "log": {
+          "session_id": "5ff2634c.57",
+          "session_start_time": "2049-01-04T00:37:32.000Z",
+          "sql_state_code": "00000",
+          "timestamp": "2049-01-04 00:37:32.862 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "4/43"
+        }
+      },
+      "process": {
+        "pid": 87
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-01-04 00:37:32.862 UTC,,,87,,5ff2634c.57,1,,2049-01-04 00:37:32 UTC,4/43,0,LOG,00000,\"automatic vacuum of table \"\"postgres.public.t\"\": index scans: 1\npages: 0 removed, 89 remain, 0 skipped due to pins, 0 skipped frozen\ntuples: 10000 removed, 10000 remain, 0 are dead but not yet removable, oldest xmin: 578\nbuffer usage: 316 hits, 2 misses, 4 dirtied\navg read rate: 0.569 MB/s, avg write rate: 1.138 MB/s\nsystem usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.02 s\",,,,,,,,,\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

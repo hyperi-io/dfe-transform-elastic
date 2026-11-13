@@ -1,0 +1,129 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-11-07T10:37:04.226Z",
+      "agent": {
+        "ephemeral_id": "bfbcb7c9-7051-45b4-acbd-af7ec28f26d1",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logging-service-shutdown",
+        "category": [
+          "process"
+        ],
+        "code": "1100",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1100.xml"
+        },
+        "level": "information"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "channel": "security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": "1100",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 1144,
+          "thread": {
+            "id": 4532
+          }
+        },
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": "14257",
+        "time_created": "2047-11-07T10:37:04.226Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:07:13.883Z",
+      "agent": {
+        "ephemeral_id": "bfbcb7c9-7051-45b4-acbd-af7ec28f26d1",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 1100,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1100.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": 1100,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 1144,
+          "thread": {
+            "id": 4532
+          }
+        },
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": 14257,
+        "time_created": "2047-11-07T10:37:04.226Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

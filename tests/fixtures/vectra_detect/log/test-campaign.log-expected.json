@@ -1,0 +1,231 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-14T01:52:06.000Z",
+      "destination": {
+        "domain": "rhvmxbmes.jbtpv-yfck.org",
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ADD",
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "6",
+        "kind": "event",
+        "original": "vectra_json_campaigns -: {\"src_name\": \"IP-203.0.113.248\", \"src_ip\": \"203.0.113.248\", \"src_hid\": 1, \"dest_name\": \"rhvmxbmes.jbtpv-yfck.org\", \"dest_ip\": \"203.0.113.248\", \"dest_id\": \"external\", \"timestamp\": 2559951735.0, \"campaign_name\": \"minutemen.vault-tech.org-3\", \"campaign_id\": 6, \"campaign_link\": \"https://i14-8-86.ma.tvec/campaigns/6\", \"action\": \"ADD\", \"reason\": \"Hidden HTTPS Tunnel\", \"det_id\": 62, \"version\": \"7.1\", \"headend_addr\": \"203.0.113.248\", \"dvchost\": \"i14-8-86.ma.tvec\", \"vectra_timestamp\": \"2559952326\"}",
+        "reason": "Hidden HTTPS Tunnel",
+        "url": "https://i14-8-86.ma.tvec/campaigns/6"
+      },
+      "host": {
+        "id": "1"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "i14-8-86.ma.tvec",
+        "ip": [
+          "203.0.113.248"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.1"
+      },
+      "related": {
+        "hosts": [
+          "i14-8-86.ma.tvec"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ]
+      },
+      "source": {
+        "address": "IP-203.0.113.248",
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "i14-8-86.ma.tvec",
+        "original": "https://i14-8-86.ma.tvec/campaigns/6",
+        "path": "/campaigns/6",
+        "scheme": "https"
+      },
+      "vectra_detect": {
+        "log": {
+          "action": "ADD",
+          "campaign": {
+            "id": "6",
+            "link": "https://i14-8-86.ma.tvec/campaigns/6",
+            "name": "minutemen.vault-tech.org-3"
+          },
+          "dest": {
+            "id": "external",
+            "ip": "203.0.113.248",
+            "name": "rhvmxbmes.jbtpv-yfck.org"
+          },
+          "det_id": "62",
+          "dvchost": "i14-8-86.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_campaigns",
+          "headend_addr": "203.0.113.248",
+          "reason": "Hidden HTTPS Tunnel",
+          "src": {
+            "hid": "1",
+            "ip": "203.0.113.248",
+            "name": "IP-203.0.113.248"
+          },
+          "timestamp": "2051-02-14T01:42:15.000Z",
+          "vectra_timestamp": "2051-02-14T01:52:06.000Z",
+          "version": "7.1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-02-14T09:39:05.000Z",
+      "destination": {
+        "domain": "cfebfooi.net",
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "START",
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "9",
+        "kind": "event",
+        "original": "vectra_json_campaigns -: {\"campaign_name\": \"cfebfooi.net\", \"campaign_id\": 9, \"action\": \"START\", \"src_name\": \"BThomas-Win7\", \"src_ip\": \"192.0.2.54\", \"src_hid\": 417, \"dest_name\": \"cfebfooi.net\", \"dest_ip\": \"203.0.113.248\", \"dest_id\": \"external\", \"det_id\": 108, \"reason\": \"External Remote Access\", \"campaign_link\": \"https://p43-5-20.ma.tvec/campaigns/9\", \"timestamp\": \"2559980345.810779\", \"version\": \"7.4\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"vectra_timestamp\": \"2559980345\"}",
+        "reason": "External Remote Access",
+        "url": "https://p43-5-20.ma.tvec/campaigns/9"
+      },
+      "host": {
+        "id": "417"
+      },
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "observer": {
+        "hostname": "p43-5-20.ma.tvec",
+        "ip": [
+          "192.168.49.7"
+        ],
+        "product": "Detect",
+        "type": "sensor",
+        "vendor": "Vectra",
+        "version": "7.4"
+      },
+      "related": {
+        "hosts": [
+          "p43-5-20.ma.tvec"
+        ],
+        "ip": [
+          "192.168.49.7",
+          "203.0.113.248",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "address": "BThomas-Win7",
+        "ip": "192.0.2.54"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "p43-5-20.ma.tvec",
+        "original": "https://p43-5-20.ma.tvec/campaigns/9",
+        "path": "/campaigns/9",
+        "scheme": "https"
+      },
+      "vectra_detect": {
+        "log": {
+          "action": "START",
+          "campaign": {
+            "id": "9",
+            "link": "https://p43-5-20.ma.tvec/campaigns/9",
+            "name": "cfebfooi.net"
+          },
+          "dest": {
+            "id": "external",
+            "ip": "203.0.113.248",
+            "name": "cfebfooi.net"
+          },
+          "det_id": "108",
+          "dvchost": "p43-5-20.ma.tvec",
+          "event_created": "2048-04-28T11:07:58.223Z",
+          "event_type": "vectra_json_campaigns",
+          "headend_addr": "192.168.49.7",
+          "reason": "External Remote Access",
+          "src": {
+            "hid": "417",
+            "ip": "192.0.2.54",
+            "name": "BThomas-Win7"
+          },
+          "timestamp": "2051-02-14T09:39:05.810Z",
+          "vectra_timestamp": "2051-02-14T09:39:05.000Z",
+          "version": "7.4"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_campaigns -: {\"src_name\": \"IP-203.0.113.248\", \"src_ip\": \"203.0.113.248\", \"src_hid\": 1, \"dest_name\": \"rhvmxbmes.jbtpv-yfck.org\", \"dest_ip\": \"203.0.113.248\", \"dest_id\": \"external\", \"timestamp\": 2559951735.0, \"campaign_name\": \"minutemen.vault-tech.org-3\", \"campaign_id\": 6, \"campaign_link\": \"https://i14-8-86.ma.tvec/campaigns/6\", \"action\": \"ADD\", \"reason\": \"Hidden HTTPS Tunnel\", \"det_id\": 62, \"version\": \"7.1\", \"headend_addr\": \"203.0.113.248\", \"dvchost\": \"i14-8-86.ma.tvec\", \"vectra_timestamp\": \"2559952326\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "log.syslog.facility.code": 1,
+      "log.syslog.facility.name": "user-level",
+      "log.syslog.hostname": "PUOWTDIB",
+      "log.syslog.priority": 13,
+      "log.syslog.severity.code": 5,
+      "log.syslog.severity.name": "Notice",
+      "message": "vectra_json_campaigns -: {\"campaign_name\": \"cfebfooi.net\", \"campaign_id\": 9, \"action\": \"START\", \"src_name\": \"BThomas-Win7\", \"src_ip\": \"192.0.2.54\", \"src_hid\": 417, \"dest_name\": \"cfebfooi.net\", \"dest_ip\": \"203.0.113.248\", \"dest_id\": \"external\", \"det_id\": 108, \"reason\": \"External Remote Access\", \"campaign_link\": \"https://p43-5-20.ma.tvec/campaigns/9\", \"timestamp\": \"2559980345.810779\", \"version\": \"7.4\", \"headend_addr\": \"192.168.49.7\", \"dvchost\": \"p43-5-20.ma.tvec\", \"vectra_timestamp\": \"2559980345\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-vectra_detect-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [
+      "vectra_detect.log.host.groups.id",
+      "vectra_detect.log.host.groups.triage_filters.id"
+    ],
+    "package": "vectra_detect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,84 @@
+{
+    "events": [
+        {
+            "@metadata": {
+                "beat": "auditbeat",
+                "type": "_doc",
+                "version": "8.7.0"
+            },
+            "@timestamp": "2050-12-21T08:08:23.123Z",
+            "agent": {
+                "ephemeral_id": "02520a70-0087-4b81-bbcf-a418df99951a",
+                "id": "55f0e1cd-b31f-439f-81e7-20cfd1bba18b",
+                "name": "ezdhdr-bldfh-dvenz",
+                "type": "auditbeat",
+                "version": "8.7.0"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "event": {
+                "action": "existing_package",
+                "category": [
+                    "package"
+                ],
+                "dataset": "package",
+                "id": "5684c17d-5516-49c5-ac07-2faa4a617c3d",
+                "kind": "state",
+                "module": "system",
+                "type": [
+                    "info"
+                ]
+            },
+            "host": {
+                "architecture": "x86_64",
+                "containerized": false,
+                "hostname": "ezdhdr-bldfh-dvenz",
+                "id": "84f54809357b3fce49d7e1652d2a3e77",
+                "ip": [
+                    "172.22.216.159"
+                ],
+                "mac": [
+                    "88-44-BB-75-35-97"
+                ],
+                "name": "ezdhdr-bldfh-dvenz",
+                "os": {
+                    "codename": "focal",
+                    "family": "debian",
+                    "kernel": "5.15.49-linuxkit",
+                    "name": "Ubuntu",
+                    "platform": "ubuntu",
+                    "type": "linux",
+                    "version": "20.04.5 LTS (Focal Fossa)"
+                }
+            },
+            "message": "Package azure-cli (2.42.0) is already installed",
+            "package": {
+                "description": "Microsoft Azure CLI 2.0",
+                "installed": "2050-12-20T13:29:34.428Z",
+                "name": "azure-cli",
+                "reference": "https://docs.microsoft.com/cli/azure/overview",
+                "type": "brew",
+                "version": "2.42.0"
+            },
+            "service": {
+                "type": "system"
+            },
+            "system": {
+                "audit": {
+                    "package": {
+                        "entity_id": "kEElM9vlcg1VuN9E",
+                        "installtime": "2050-12-20T13:29:34.428Z",
+                        "name": "azure-cli",
+                        "summary": "Microsoft Azure CLI 2.0",
+                        "url": "https://docs.microsoft.com/cli/azure/overview",
+                        "version": "2.42.0"
+                    }
+                }
+            },
+            "tags": [
+                "audit-system-package"
+            ]
+        }
+    ]
+}

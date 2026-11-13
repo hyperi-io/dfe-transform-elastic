@@ -1,0 +1,1089 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.001,
+        "id": "6a0427cee974c9894675b8ea21b552e0",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491023199,\"bytes_sent\":360,\"connection\":10837231457,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1214,\"request\":\"HEAD /app HTTP/1.1\",\"request_length\":149,\"request_method\":\"HEAD\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":200,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"6a0427cee974c9894675b8ea21b552e0\",\"tcpinfo_rtt\":8214,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":200,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "info",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 149
+          },
+          "method": "HEAD",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 360
+          },
+          "status_code": 200
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1214
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837231457,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "HEAD /app HTTP/1.1",
+          "request_time": 0.002,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 8214,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.002,
+          "upstream_response_time": 0.002,
+          "upstream_status": 200,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network",
+          "database"
+        ],
+        "duration": 0.001,
+        "id": "05dc951978d9c566142010ba83c8cf4c",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491023680,\"bytes_sent\":434,\"connection\":10837231643,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1215,\"request\":\"POST /app HTTP/1.1\",\"request_length\":259,\"request_method\":\"POST\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"05dc951978d9c566142010ba83c8cf4c\",\"tcpinfo_rtt\":8588,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 259
+          },
+          "method": "POST",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1215
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837231643,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "POST /app HTTP/1.1",
+          "request_time": 0.002,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 8588,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.002,
+          "upstream_response_time": 0.002,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network",
+          "database"
+        ],
+        "duration": 0.0,
+        "id": "60d8b9bed38ae5a955f0b15b0849bc70",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491023963,\"bytes_sent\":4893,\"connection\":10837231861,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1216,\"request\":\"GET /app HTTP/1.1\",\"request_length\":148,\"request_method\":\"GET\",\"request_time\":0.001,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":200,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"60d8b9bed38ae5a955f0b15b0849bc70\",\"tcpinfo_rtt\":7465,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.000,\"upstream_header_time\":0.001,\"upstream_response_time\":0.001,\"upstream_status\":200,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "info",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 148
+          },
+          "method": "GET",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 4893
+          },
+          "status_code": 200
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1216
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837231861,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "GET /app HTTP/1.1",
+          "request_time": 0.001,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 7465,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.001,
+          "upstream_response_time": 0.001,
+          "upstream_status": 200,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.001,
+        "id": "7043e188b5b08c878fcbfb24761c1e76",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024194,\"bytes_sent\":434,\"connection\":10837232049,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1217,\"request\":\"PATCH /app HTTP/1.1\",\"request_length\":287,\"request_method\":\"PATCH\",\"request_time\":0.003,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"7043e188b5b08c878fcbfb24761c1e76\",\"tcpinfo_rtt\":5957,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.003,\"upstream_response_time\":0.003,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 287
+          },
+          "method": "PATCH",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1217
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837232049,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "PATCH /app HTTP/1.1",
+          "request_time": 0.003,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 5957,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.003,
+          "upstream_response_time": 0.003,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.002,
+        "id": "92cfecfb0f8afe0ce76b1b9384b3322a",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024365,\"bytes_sent\":360,\"connection\":10837232187,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1218,\"request\":\"HEAD /app HTTP/1.1\",\"request_length\":149,\"request_method\":\"HEAD\",\"request_time\":0.003,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":200,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"92cfecfb0f8afe0ce76b1b9384b3322a\",\"tcpinfo_rtt\":7478,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.002,\"upstream_header_time\":0.003,\"upstream_response_time\":0.003,\"upstream_status\":200,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "info",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 149
+          },
+          "method": "HEAD",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 360
+          },
+          "status_code": 200
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1218
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837232187,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "HEAD /app HTTP/1.1",
+          "request_time": 0.003,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 7478,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.003,
+          "upstream_response_time": 0.003,
+          "upstream_status": 200,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.001,
+        "id": "0da33f09a01b678c258abeefecbc7b82",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024585,\"bytes_sent\":434,\"connection\":10837232385,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1219,\"request\":\"DELETE /app HTTP/1.1\",\"request_length\":170,\"request_method\":\"DELETE\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"0da33f09a01b678c258abeefecbc7b82\",\"tcpinfo_rtt\":7466,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 170
+          },
+          "method": "DELETE",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1219
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837232385,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "DELETE /app HTTP/1.1",
+          "request_time": 0.002,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 7466,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.002,
+          "upstream_response_time": 0.002,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.001,
+        "id": "27a5fa249329b60b24b4a4ae41a0e637",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024847,\"bytes_sent\":434,\"connection\":10837232521,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1220,\"request\":\"PUT /app HTTP/1.1\",\"request_length\":270,\"request_method\":\"PUT\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"27a5fa249329b60b24b4a4ae41a0e637\",\"tcpinfo_rtt\":6731,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 270
+          },
+          "method": "PUT",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1220
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837232521,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "PUT /app HTTP/1.1",
+          "request_time": 0.002,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 6731,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.002,
+          "upstream_response_time": 0.002,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.001,
+        "id": "74c8daf8a1ca09c676eafb7d61b03002",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491025038,\"bytes_sent\":434,\"connection\":10837232723,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1221,\"request\":\"DELETE /app HTTP/1.1\",\"request_length\":170,\"request_method\":\"DELETE\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"74c8daf8a1ca09c676eafb7d61b03002\",\"tcpinfo_rtt\":8215,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 170
+          },
+          "method": "DELETE",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1221
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837232723,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "DELETE /app HTTP/1.1",
+          "request_time": 0.002,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 8215,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.002,
+          "upstream_response_time": 0.002,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network",
+          "database"
+        ],
+        "duration": 0.001,
+        "id": "8ac487a6d28f1d559ea3810c0fad3004",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491025277,\"bytes_sent\":434,\"connection\":10837232904,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1222,\"request\":\"POST /app HTTP/1.1\",\"request_length\":259,\"request_method\":\"POST\",\"request_time\":0.001,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"8ac487a6d28f1d559ea3810c0fad3004\",\"tcpinfo_rtt\":6727,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.001,\"upstream_response_time\":0.001,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 259
+          },
+          "method": "POST",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1222
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837232904,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "POST /app HTTP/1.1",
+          "request_time": 0.001,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 6727,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.001,
+          "upstream_response_time": 0.001,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-15T07:04:50.000Z",
+      "destination": {
+        "address": "172.26.111.249:866",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "duration": 0.0,
+        "id": "72052f2162073906c0cd1dc7a956be68",
+        "original": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491025485,\"bytes_sent\":434,\"connection\":10837233096,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1223,\"request\":\"PUT /app HTTP/1.1\",\"request_length\":270,\"request_method\":\"PUT\",\"request_time\":0.001,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"72052f2162073906c0cd1dc7a956be68\",\"tcpinfo_rtt\":6357,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.000,\"upstream_header_time\":0.001,\"upstream_response_time\":0.001,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+        "type": [
+          "access",
+          "error",
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 270
+          },
+          "method": "PUT",
+          "referrer": "-"
+        },
+        "response": {
+          "body": {
+            "bytes": 434
+          },
+          "status_code": 405
+        },
+        "version": "HTTP/1.1"
+      },
+      "network": {
+        "forwarded_ip": "192.0.2.54",
+        "protocol": "http"
+      },
+      "related": {
+        "hosts": [
+          "mvznbuwyam.com"
+        ],
+        "ip": [
+          "192.0.2.54",
+          "198.51.100.211"
+        ]
+      },
+      "server": {
+        "domain": "mvznbuwyam.com"
+      },
+      "source": {
+        "ip": "192.0.2.54",
+        "port": 1223
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tencent_cloud": {
+        "clb": {
+          "__SOURCE__": "203.0.113.220",
+          "connection": 10837233096,
+          "connection_requests": 1,
+          "http_traceparent": "-",
+          "lb_id": "lb-fdsg2t63",
+          "proxy_host": 1378118,
+          "request": "PUT /app HTTP/1.1",
+          "request_time": 0.001,
+          "ssl_cipher": "-",
+          "ssl_handshake_time": "-",
+          "ssl_protocol": "-",
+          "ssl_session_reused": "-",
+          "stgw_engine_connect_time": "-",
+          "stgw_engine_response_time": "-",
+          "tcpinfo_rtt": 6357,
+          "time_local": "15/Apr/2053:15:04:50 +0800",
+          "upstream_header_time": 0.001,
+          "upstream_response_time": 0.001,
+          "upstream_status": 405,
+          "via_stgw_engine": "-",
+          "vip_vpcid": -1,
+          "vsvc_id": 945951
+        }
+      },
+      "url": {
+        "domain": "mvznbuwyam.com",
+        "path": "/app"
+      },
+      "user_agent": {
+        "original": "python-requests/2.31.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491023199,\"bytes_sent\":360,\"connection\":10837231457,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1214,\"request\":\"HEAD /app HTTP/1.1\",\"request_length\":149,\"request_method\":\"HEAD\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":200,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"6a0427cee974c9894675b8ea21b552e0\",\"tcpinfo_rtt\":8214,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":200,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491023680,\"bytes_sent\":434,\"connection\":10837231643,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1215,\"request\":\"POST /app HTTP/1.1\",\"request_length\":259,\"request_method\":\"POST\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"05dc951978d9c566142010ba83c8cf4c\",\"tcpinfo_rtt\":8588,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491023963,\"bytes_sent\":4893,\"connection\":10837231861,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1216,\"request\":\"GET /app HTTP/1.1\",\"request_length\":148,\"request_method\":\"GET\",\"request_time\":0.001,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":200,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"60d8b9bed38ae5a955f0b15b0849bc70\",\"tcpinfo_rtt\":7465,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.000,\"upstream_header_time\":0.001,\"upstream_response_time\":0.001,\"upstream_status\":200,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024194,\"bytes_sent\":434,\"connection\":10837232049,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1217,\"request\":\"PATCH /app HTTP/1.1\",\"request_length\":287,\"request_method\":\"PATCH\",\"request_time\":0.003,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"7043e188b5b08c878fcbfb24761c1e76\",\"tcpinfo_rtt\":5957,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.003,\"upstream_response_time\":0.003,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024365,\"bytes_sent\":360,\"connection\":10837232187,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1218,\"request\":\"HEAD /app HTTP/1.1\",\"request_length\":149,\"request_method\":\"HEAD\",\"request_time\":0.003,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":200,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"92cfecfb0f8afe0ce76b1b9384b3322a\",\"tcpinfo_rtt\":7478,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.002,\"upstream_header_time\":0.003,\"upstream_response_time\":0.003,\"upstream_status\":200,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024585,\"bytes_sent\":434,\"connection\":10837232385,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1219,\"request\":\"DELETE /app HTTP/1.1\",\"request_length\":170,\"request_method\":\"DELETE\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"0da33f09a01b678c258abeefecbc7b82\",\"tcpinfo_rtt\":7466,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491024847,\"bytes_sent\":434,\"connection\":10837232521,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1220,\"request\":\"PUT /app HTTP/1.1\",\"request_length\":270,\"request_method\":\"PUT\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"27a5fa249329b60b24b4a4ae41a0e637\",\"tcpinfo_rtt\":6731,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491025038,\"bytes_sent\":434,\"connection\":10837232723,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1221,\"request\":\"DELETE /app HTTP/1.1\",\"request_length\":170,\"request_method\":\"DELETE\",\"request_time\":0.002,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"74c8daf8a1ca09c676eafb7d61b03002\",\"tcpinfo_rtt\":8215,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.002,\"upstream_response_time\":0.002,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491025277,\"bytes_sent\":434,\"connection\":10837232904,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1222,\"request\":\"POST /app HTTP/1.1\",\"request_length\":259,\"request_method\":\"POST\",\"request_time\":0.001,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"8ac487a6d28f1d559ea3810c0fad3004\",\"tcpinfo_rtt\":6727,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.001,\"upstream_header_time\":0.001,\"upstream_response_time\":0.001,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"\":\"\",\"__FILENAME__\":\"access.log\",\"__HOSTNAME__\":\"\",\"__SOURCE__\":\"203.0.113.220\",\"__TIMESTAMP__\":2628313491025485,\"bytes_sent\":434,\"connection\":10837233096,\"connection_requests\":1,\"http_host\":\"mvznbuwyam.com\",\"http_referer\":\"-\",\"http_traceparent\":\"-\",\"http_user_agent\":\"python-requests/2.31.0\",\"http_x_forwarded_for\":\"192.0.2.54\",\"lb_id\":\"lb-fdsg2t63\",\"protocol_type\":\"http\",\"proxy_host\":1378118,\"remote_addr\":\"192.0.2.54\",\"remote_port\":1223,\"request\":\"PUT /app HTTP/1.1\",\"request_length\":270,\"request_method\":\"PUT\",\"request_time\":0.001,\"server_addr\":\"198.51.100.211\",\"server_name\":\"mvznbuwyam.com\",\"server_port\":80,\"server_protocol\":\"HTTP/1.1\",\"ssl_cipher\":\"-\",\"ssl_handshake_time\":\"-\",\"ssl_protocol\":\"-\",\"ssl_session_reused\":\"-\",\"status\":405,\"stgw_engine_connect_time\":\"-\",\"stgw_engine_response_time\":\"-\",\"stgw_request_id\":\"72052f2162073906c0cd1dc7a956be68\",\"tcpinfo_rtt\":6357,\"time_local\":\"15/Apr/2053:15:04:50 +0800\",\"upstream_addr\":\"172.26.111.249:866\",\"upstream_connect_time\":0.000,\"upstream_header_time\":0.001,\"upstream_response_time\":0.001,\"upstream_status\":405,\"uri\":\"/app\",\"via_stgw_engine\":\"-\",\"vip_vpcid\":-1,\"vsvc_id\":945951}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "clb",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tencent_cloud-clb-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "tencent_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

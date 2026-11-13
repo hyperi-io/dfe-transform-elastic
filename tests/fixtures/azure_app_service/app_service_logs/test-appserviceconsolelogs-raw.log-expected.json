@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-16T08:28:44.834Z",
+      "azure": {
+        "app_service": {
+          "category": "AppServiceConsoleLogs",
+          "container_id": "64cc5a6f1ab6d42ee110b35c52acb6c3dc3a94c0ed37f725f301df0c8c809b9a",
+          "event_ip_address": "10.238.149.56",
+          "event_primary_stamp_name": "waws-prod-blu-219",
+          "event_stamp_name": "waws-prod-blu-219",
+          "event_stamp_type": "Stamp",
+          "host": "lw1sdlwk0008EK",
+          "level": "Informational",
+          "operation_name": "Microsoft.Web/sites/log",
+          "result_description": " Request for index page received\n\n"
+        },
+        "resource": {
+          "group": "LUCIAN.DEACONESCU_RG_6914",
+          "id": "/SUBSCRIPTIONS/0D220CB3-A45E-4718-ACFD-FC67CE301ECC/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55",
+          "name": "MANGO-TREE-6603C29348590834C03317E4DE761F55",
+          "provider": "MICROSOFT.WEB/SITES"
+        },
+        "subscription_id": "0D220CB3-A45E-4718-ACFD-FC67CE301ECC"
+      },
+      "cloud": {
+        "account": {
+          "id": "0D220CB3-A45E-4718-ACFD-FC67CE301ECC"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{ \"time\": \"2051-02-16T08:28:44.834410441Z\", \"resourceId\": \"/SUBSCRIPTIONS/0D220CB3-A45E-4718-ACFD-FC67CE301ECC/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"containerId\": \"64cc5a6f1ab6d42ee110b35c52acb6c3dc3a94c0ed37f725f301df0c8c809b9a\", \"operationName\": \"Microsoft.Web/sites/log\", \"category\": \"AppServiceConsoleLogs\", \"resultDescription\": \" Request for index page received\\n\\n\", \"level\": \"Informational\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.238.149.56\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-16T08:28:44.834Z",
+      "azure": {
+        "app_service": {
+          "category": "AppServiceConsoleLogs",
+          "container_id": "94ba5c6c9bc0c11dc163b77f18add7e7ec9f65d7dc54d475f858ea0c1d982f9d",
+          "event_ip_address": "10.238.149.56",
+          "event_primary_stamp_name": "waws-prod-blu-219",
+          "event_stamp_name": "waws-prod-blu-219",
+          "event_stamp_type": "Stamp",
+          "host": "lw1sdlwk0008EK",
+          "level": "Informational",
+          "operation_name": "Microsoft.Web/sites/log",
+          "result_description": " 169.254.129.1 - - [16/Feb/2051:08:28:44 +0000] \"GET / HTTP/1.1\" 200 1469 \"https://sandbox-92-3.reactblade.portal.azure.net/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36\"\n\n"
+        },
+        "resource": {
+          "group": "LUCIAN.DEACONESCU_RG_6914",
+          "id": "/SUBSCRIPTIONS/0D220CB3-A45E-4718-ACFD-FC67CE301ECC/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55",
+          "name": "MANGO-TREE-6603C29348590834C03317E4DE761F55",
+          "provider": "MICROSOFT.WEB/SITES"
+        },
+        "subscription_id": "0D220CB3-A45E-4718-ACFD-FC67CE301ECC"
+      },
+      "cloud": {
+        "account": {
+          "id": "0D220CB3-A45E-4718-ACFD-FC67CE301ECC"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{ \"time\": \"2051-02-16T08:28:44.834439441Z\", \"resourceId\": \"/SUBSCRIPTIONS/0D220CB3-A45E-4718-ACFD-FC67CE301ECC/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"containerId\": \"94ba5c6c9bc0c11dc163b77f18add7e7ec9f65d7dc54d475f858ea0c1d982f9d\", \"operationName\": \"Microsoft.Web/sites/log\", \"category\": \"AppServiceConsoleLogs\", \"resultDescription\": \" 169.254.129.1 - - [16/Feb/2051:08:28:44 +0000] \\\"GET / HTTP/1.1\\\" 200 1469 \\\"https://sandbox-92-3.reactblade.portal.azure.net/\\\" \\\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36\\\"\\n\\n\", \"level\": \"Informational\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.238.149.56\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"time\": \"2051-02-16T08:28:44.834410441Z\", \"resourceId\": \"/SUBSCRIPTIONS/0D220CB3-A45E-4718-ACFD-FC67CE301ECC/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"containerId\": \"64cc5a6f1ab6d42ee110b35c52acb6c3dc3a94c0ed37f725f301df0c8c809b9a\", \"operationName\": \"Microsoft.Web/sites/log\", \"category\": \"AppServiceConsoleLogs\", \"resultDescription\": \" Request for index page received\\n\\n\", \"level\": \"Informational\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.238.149.56\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{ \"time\": \"2051-02-16T08:28:44.834439441Z\", \"resourceId\": \"/SUBSCRIPTIONS/0D220CB3-A45E-4718-ACFD-FC67CE301ECC/RESOURCEGROUPS/LUCIAN.DEACONESCU_RG_6914/PROVIDERS/MICROSOFT.WEB/SITES/MANGO-TREE-6603C29348590834C03317E4DE761F55\", \"containerId\": \"94ba5c6c9bc0c11dc163b77f18add7e7ec9f65d7dc54d475f858ea0c1d982f9d\", \"operationName\": \"Microsoft.Web/sites/log\", \"category\": \"AppServiceConsoleLogs\", \"resultDescription\": \" 169.254.129.1 - - [16/Feb/2051:08:28:44 +0000] \\\"GET / HTTP/1.1\\\" 200 1469 \\\"https://sandbox-92-3.reactblade.portal.azure.net/\\\" \\\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36\\\"\\n\\n\", \"level\": \"Informational\", \"EventStampType\": \"Stamp\", \"EventPrimaryStampName\": \"waws-prod-blu-219\", \"EventStampName\": \"waws-prod-blu-219\", \"Host\": \"lw1sdlwk0008EK\", \"EventIpAddress\": \"10.238.149.56\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "app_service_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_app_service-app_service_logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure_app_service",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

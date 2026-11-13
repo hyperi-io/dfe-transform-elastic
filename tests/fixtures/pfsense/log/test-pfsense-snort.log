@@ -1,0 +1,2 @@
+<190>Jul 23 18:12:00 snort[87537]: [136:1:1] (spp_reputation) packets blacklisted [Classification: Potentially Bad Traffic] [Priority: 2] {TCP} 198.51.100.166:16856 -> 203.0.113.177:2222
+<190>Jul 23 18:12:00 snort[87537]: [119:4:1] (http_inspect) BARE BYTE UNICODE ENCODING [Classification: Not Suspicious Traffic] [Priority: 3] {TCP} 203.0.113.212:63651 -> 203.0.113.177:8080

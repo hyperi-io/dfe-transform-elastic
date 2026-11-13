@@ -1,0 +1,343 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-09-30T21:12:16.000Z",
+      "agent": {
+        "ephemeral_id": "3c249281-0962-475f-b45c-3deadf642264",
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "name": "ezdhdr-bldfh-dvenz",
+        "type": "metricbeat",
+        "version": "8.15.2"
+      },
+      "data_stream": {
+        "dataset": "cisco_meraki_metrics.device_health",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "snapshot": true,
+        "version": "8.15.2"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "cisco_meraki_metrics.device_health",
+        "duration": 8161138518,
+        "ingested": "2052-09-30T21:14:58Z",
+        "module": "meraki"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": false,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "d0c4cd01e9d89f09082436769a7d9dee",
+        "ip": "172.17.3.169",
+        "mac": "10-46-BE-0D-79-06",
+        "name": "ezdhdr-bldfh-dvenz",
+        "os": {
+          "codename": "focal",
+          "family": "debian",
+          "kernel": "6.8.0-45-generic",
+          "name": "Ubuntu",
+          "platform": "ubuntu",
+          "type": "linux",
+          "version": "20.04.6 LTS (Focal Fossa)"
+        }
+      },
+      "meraki": {
+        "device": {
+          "channel_utilization": {
+            "wifi0": {
+              "utilization_80211": 0.0846,
+              "utilization_non_80211": 0.0065,
+              "utilization_total": 0.0911
+            },
+            "wifi1": {
+              "utilization_80211": 0.0381,
+              "utilization_non_80211": 0.0003,
+              "utilization_total": 0.0384
+            }
+          },
+          "network_id": "L_113272913626746984",
+          "serial": "Q2BN-48JH-ZZRL"
+        },
+        "organization_id": "136261",
+        "uplink": {
+          "interface": "wan1",
+          "ip": "0.0.0.0",
+          "latency": {
+            "ms": 43
+          },
+          "loss": {
+            "pct": 0.017
+          },
+          "rsrp": 152.91,
+          "rsrq": 64.0
+        }
+      },
+      "metricset": {
+        "name": "device_health",
+        "period": 60000
+      },
+      "service": {
+        "type": "meraki"
+      }
+    },
+    {
+      "@timestamp": "2052-09-30T21:12:16.000Z",
+      "agent": {
+        "ephemeral_id": "3c249281-0962-475f-b45c-3deadf642264",
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "name": "ezdhdr-bldfh-dvenz",
+        "type": "metricbeat",
+        "version": "8.15.2"
+      },
+      "data_stream": {
+        "dataset": "cisco_meraki_metrics.device_health",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "snapshot": true,
+        "version": "8.15.2"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "cisco_meraki_metrics.device_health",
+        "duration": 8161138518,
+        "ingested": "2052-09-30T21:14:58Z",
+        "module": "meraki"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": false,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "d0c4cd01e9d89f09082436769a7d9dee",
+        "ip": "172.17.3.169",
+        "mac": "10-46-BE-0D-79-06",
+        "name": "ezdhdr-bldfh-dvenz",
+        "os": {
+          "codename": "focal",
+          "family": "debian",
+          "kernel": "6.8.0-45-generic",
+          "name": "Ubuntu",
+          "platform": "ubuntu",
+          "type": "linux",
+          "version": "20.04.6 LTS (Focal Fossa)"
+        }
+      },
+      "meraki": {
+        "device": {
+          "channel_utilization": {
+            "wifi0": {
+              "utilization_80211": 0.0846,
+              "utilization_non_80211": 0.0065,
+              "utilization_total": 0.0911
+            },
+            "wifi1": {
+              "utilization_80211": 0.0381,
+              "utilization_non_80211": 0.0003,
+              "utilization_total": 0.0384
+            }
+          },
+          "network_id": "L_113272913626746984",
+          "serial": "Q2BN-48JH-ZZRL"
+        },
+        "organization_id": "136261",
+        "uplink": {}
+      },
+      "metricset": {
+        "name": "device_health",
+        "period": 60000
+      },
+      "service": {
+        "type": "meraki"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-09-30T21:12:16.000Z",
+      "agent": {
+        "ephemeral_id": "3c249281-0962-475f-b45c-3deadf642264",
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "name": "ezdhdr-bldfh-dvenz",
+        "type": "metricbeat",
+        "version": "8.15.2"
+      },
+      "data_stream": {
+        "dataset": "cisco_meraki_metrics.device_health",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "snapshot": true,
+        "version": "8.15.2"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "cisco_meraki_metrics.device_health",
+        "duration": 8161138518,
+        "ingested": "2052-09-30T21:14:58Z",
+        "module": "meraki"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": false,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "d0c4cd01e9d89f09082436769a7d9dee",
+        "ip": "172.17.3.169",
+        "mac": "10-46-BE-0D-79-06",
+        "name": "ezdhdr-bldfh-dvenz",
+        "os": {
+          "codename": "focal",
+          "family": "debian",
+          "kernel": "6.8.0-45-generic",
+          "name": "Ubuntu",
+          "platform": "ubuntu",
+          "type": "linux",
+          "version": "20.04.6 LTS (Focal Fossa)"
+        }
+      },
+      "meraki": {
+        "device": {
+          "channel_utilization": {
+            "2_4": {
+              "utilization_80211": 8.46,
+              "utilization_non_80211": 0.65,
+              "utilization_total": 9.11
+            },
+            "5": {
+              "utilization_80211": 3.81,
+              "utilization_non_80211": 0.03,
+              "utilization_total": 3.84
+            }
+          },
+          "network_id": "L_113272913626746984",
+          "serial": "Q2BN-48JH-ZZRL"
+        },
+        "organization_id": "136261",
+        "uplink": {
+          "interface": "wan1",
+          "ip": "0.0.0.0",
+          "latency": {
+            "ms": 43
+          },
+          "loss": {
+            "pct": 1.7
+          },
+          "rsrp": "152.91",
+          "rsrq": "64"
+        }
+      },
+      "metricset": {
+        "name": "device_health",
+        "period": 60000
+      },
+      "service": {
+        "type": "meraki"
+      }
+    },
+    {
+      "@timestamp": "2052-09-30T21:12:16.000Z",
+      "agent": {
+        "ephemeral_id": "3c249281-0962-475f-b45c-3deadf642264",
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "name": "ezdhdr-bldfh-dvenz",
+        "type": "metricbeat",
+        "version": "8.15.2"
+      },
+      "data_stream": {
+        "dataset": "cisco_meraki_metrics.device_health",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "elastic_agent": {
+        "id": "f965fb7b-5a86-495f-b3f7-4d05ee353080",
+        "snapshot": true,
+        "version": "8.15.2"
+      },
+      "event": {
+        "agent_id_status": "verified",
+        "dataset": "cisco_meraki_metrics.device_health",
+        "duration": 8161138518,
+        "ingested": "2052-09-30T21:14:58Z",
+        "module": "meraki"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "containerized": false,
+        "hostname": "ezdhdr-bldfh-dvenz",
+        "id": "d0c4cd01e9d89f09082436769a7d9dee",
+        "ip": "172.17.3.169",
+        "mac": "10-46-BE-0D-79-06",
+        "name": "ezdhdr-bldfh-dvenz",
+        "os": {
+          "codename": "focal",
+          "family": "debian",
+          "kernel": "6.8.0-45-generic",
+          "name": "Ubuntu",
+          "platform": "ubuntu",
+          "type": "linux",
+          "version": "20.04.6 LTS (Focal Fossa)"
+        }
+      },
+      "meraki": {
+        "device": {
+          "channel_utilization": {
+            "2_4": {
+              "utilization_80211": 8.46,
+              "utilization_non_80211": 0.65,
+              "utilization_total": 9.11
+            },
+            "5": {
+              "utilization_80211": 3.81,
+              "utilization_non_80211": 0.03,
+              "utilization_total": 3.84
+            }
+          },
+          "network_id": "L_113272913626746984",
+          "serial": "Q2BN-48JH-ZZRL"
+        },
+        "organization_id": "136261",
+        "uplink": {
+          "rsrp": "-",
+          "rsrq": "-"
+        }
+      },
+      "metricset": {
+        "name": "device_health",
+        "period": 60000
+      },
+      "service": {
+        "type": "meraki"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "device_health",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_meraki_metrics-device_health-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cisco_meraki_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

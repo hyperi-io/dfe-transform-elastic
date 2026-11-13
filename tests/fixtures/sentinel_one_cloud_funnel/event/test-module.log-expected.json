@@ -1,0 +1,276 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-10-25T12:17:47.290Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "01GG7H7P5GNC0537Q6XM2W1ATB_29",
+        "kind": "event",
+        "original": "{\"timestamp\":\"15:17:47.290\",\"src.process.parent.isStorylineRoot\":false,\"event.category\":\"module\",\"src.process.parent.image.sha1\":\"f5700a2e74ba840722ba10481f6228b78144e1a1\",\"site.id\":\"123456789123456789\",\"src.process.parent.displayName\":\"WchykqekZcpzck\",\"src.process.image.binaryIsExecutable\":true,\"src.process.parent.subsystem\":\"SYS_WIN32\",\"src.process.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"src.process.indicatorRansomwareCount\":0,\"src.process.crossProcessDupRemoteProcessHandleCount\":0,\"src.process.tgtFileCreationCount\":0,\"src.process.indicatorInjectionCount\":0,\"src.process.moduleCount\":57,\"src.process.parent.name\":\"SentinelRanger.exe\",\"i.version\":\"preprocess-lib-1.0\",\"sca:atlantisIngestTime\":1666700276197,\"src.process.image.md5\":\"6b830ee564ce96fdd0bc65862a85567c\",\"src.process.indicatorReconnaissanceCount\":0,\"src.process.storyline.id\":\"FB7CE73C89DB2642\",\"src.process.childProcCount\":0,\"mgmt.url\":\"ayfe-939.ifkswpfhtkd.org\",\"src.process.crossProcessOpenProcessCount\":1,\"src.process.subsystem\":\"SYS_WIN32\",\"meta.event.name\":\"MODULELOAD\",\"src.process.parent.integrityLevel\":\"SYSTEM\",\"src.process.indicatorExploitationCount\":0,\"src.process.parent.storyline.id\":\"FB7CE73C89DB2642\",\"src.process.integrityLevel\":\"SYSTEM\",\"i.scheme\":\"edr\",\"module.sha1\":\"bf762b61c16374771122ec5bed70de53ac871353\",\"site.name\":\"ASDF\",\"src.process.netConnInCount\":0,\"event.time\":2550313067290,\"account.id\":\"123456789123456789\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"asdf1\",\"src.process.image.sha1\":\"60e9924b2a9b5328102525dc92154a7cc56ee783\",\"src.process.isStorylineRoot\":false,\"src.process.parent.image.path\":\"C:\\\\ProgramFiles\\\\SentinelOne\\\\SentinelAgent22.1.4.10010\\\\Ranger\\\\SentinelRanger.exe\",\"src.process.pid\":6520,\"tgt.file.isSigned\":\"signed\",\"src.process.cmdline\":\"\\\\??\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe0xffffffff-ForceV1\",\"src.process.publisher\":\"MICROSOFTWINDOWS\",\"sca:ingestTime\":1666700278,\"dataSource.category\":\"security\",\"src.process.crossProcessThreadCreateCount\":0,\"src.process.parent.isNative64Bit\":false,\"src.process.parent.isRedirectCmdProcessor\":false,\"module.path\":\"C:\\\\Windows\\\\System32\\\\CoreMessaging.dll\",\"src.process.crossProcessCount\":1,\"src.process.signedStatus\":\"signed\",\"event.id\":\"01GG7H7P5GNC0537Q6XM2W1ATB_29\",\"src.process.parent.cmdline\":\"\\\"C:\\\\ProgramFiles\\\\SentinelOne\\\\SentinelAgent22.1.4.10010\\\\ranger\\\\SentinelRanger.exe\\\"\\\"{\\\\\\\"agentVersion\\\\\\\":\\\\\\\"22.1.4.10010\\\\\\\",\\\\\\\"authToken\\\\\\\":\\\\\\\"jhdskdhkdgdgdahdksaHDKJsdhkNjUifQ.+dVxpFE/Hqs5RGjPczU8DC9i1tw\\\\\\\",\\\\\\\"dataFolder\\\\\\\":\\\\\\\"C:\\\\\\\\\\\\\\\\ProgramData\\\\\\\\\\\\\\\\Sentinel\\\\\\\\\\\\\\\\ranger\\\\\\\",\\\\\\\"logsFolder\\\\\\\":\\\\\\\"C:\\\\\\\\\\\\\\\\ProgramData\\\\\\\\\\\\\\\\Sentinel\\\\\\\\\\\\\\\\logs\\\\\\\",\\\\\\\"maxIdleTime\\\\\\\":300,\\\\\\\"sendUnsuccessful\\\\\\\":false,\\\\\\\"url\\\\\\\":\\\\\\\"wss://asdf-123.sentinelone.org\\\\\\\",\\\\\\\"uuid\\\\\\\":\\\\\\\"asdf1234\\\\\\\"}\\\"\",\"src.process.image.path\":\"C:\\\\Windows\\\\System32\\\\conhost.exe\",\"src.process.tgtFileModificationCount\":0,\"src.process.indicatorEvasionCount\":0,\"src.process.netConnOutCount\":0,\"src.process.crossProcessDupThreadHandleCount\":0,\"endpoint.os\":\"windows\",\"src.process.tgtFileDeletionCount\":0,\"src.process.startTime\":2550313067224,\"mgmt.id\":\"1337\",\"os.name\":\"Windows10Pro\",\"src.process.displayName\":\"DtytymfZyndymYvsq\",\"src.process.parent.sessionId\":0,\"src.process.isNative64Bit\":false,\"src.process.uid\":\"08693A26E6783D52\",\"src.process.parent.image.md5\":\"34d5a5ae8e9cdf9e4c32b6589a351350\",\"src.process.indicatorBootConfigurationUpdateCount\":0,\"src.process.indicatorInfostealerCount\":0,\"process.unique.key\":\"08693A26E6783D52\",\"src.process.parent.uid\":\"07693A26E6783D52\",\"agent.version\":\"22.1.4.10010\",\"src.process.parent.image.sha256\":\"1a934fdb157debd0b000b826076354a9384ac45c1621d1b56c9fc9c2ea9ab144\",\"src.process.sessionId\":0,\"src.process.netConnCount\":0,\"mgmt.osRevision\":\"19044\",\"group.id\":\"asdf\",\"src.process.parent.publisher\":\"SENTINELLABS,INC.\",\"src.process.isRedirectCmdProcessor\":false,\"src.process.verifiedStatus\":\"verified\",\"src.process.parent.startTime\":2550313067216,\"src.process.dnsCount\":0,\"endpoint.type\":\"desktop\",\"trace.id\":\"01GG7H7P5GNC0537Q6XM2W1ATB\",\"src.process.name\":\"conhost.exe\",\"agent.uuid\":\"asdf356783457dfds4456d65\",\"src.process.image.sha256\":\"7f5c0d633e3e122f861403763ce669aa2f93af78d58dbfdbfef5157799e4bc8f\",\"src.process.indicatorGeneralCount\":3,\"src.process.crossProcessOutOfStorylineCount\":0,\"src.process.registryChangeCount\":0,\"packet.id\":\"A2AAC3FCF37046D6D0BB2F6329B0DFD6\",\"src.process.indicatorPersistenceCount\":0,\"src.process.parent.signedStatus\":\"signed\",\"src.process.parent.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"event.type\":\"ModuleLoad\",\"src.process.indicatorPostExploitationCount\":0,\"src.process.parent.pid\":2220}"
+      },
+      "group": {
+        "id": "asdf"
+      },
+      "host": {
+        "hostname": "asdf1",
+        "id": "asdf356783457dfds4456d65",
+        "os": {
+          "name": "Windows10Pro",
+          "platform": "windows",
+          "type": "windows"
+        },
+        "type": "desktop"
+      },
+      "process": {
+        "args": [
+          "\\??\\C:\\WINDOWS\\system32\\conhost.exe0xffffffff-ForceV1"
+        ],
+        "args_count": 1,
+        "code_signature": {
+          "exists": true,
+          "subject_name": "MICROSOFTWINDOWS",
+          "trusted": true
+        },
+        "command_line": "\\??\\C:\\WINDOWS\\system32\\conhost.exe0xffffffff-ForceV1",
+        "entity_id": "08693A26E6783D52",
+        "executable": "C:\\Windows\\System32\\conhost.exe",
+        "hash": {
+          "md5": "6b830ee564ce96fdd0bc65862a85567c",
+          "sha1": "60e9924b2a9b5328102525dc92154a7cc56ee783",
+          "sha256": "7f5c0d633e3e122f861403763ce669aa2f93af78d58dbfdbfef5157799e4bc8f"
+        },
+        "name": "conhost.exe",
+        "parent": {
+          "args": [
+            "C:\\ProgramFiles\\SentinelOne\\SentinelAgent22.1.4.10010\\ranger\\SentinelRanger.exe{\"agentVersion\":\"22.1.4.10010\",\"authToken\":\"jhdskdhkdgdgdahdksaHDKJsdhkNjUifQ.+dVxpFE/Hqs5RGjPczU8DC9i1tw\",\"dataFolder\":\"C:\\\\\\\\ProgramData\\\\\\\\Sentinel\\\\\\\\ranger\",\"logsFolder\":\"C:\\\\\\\\ProgramData\\\\\\\\Sentinel\\\\\\\\logs\",\"maxIdleTime\":300,\"sendUnsuccessful\":false,\"url\":\"wss://asdf-123.sentinelone.org\",\"uuid\":\"asdf1234\"}"
+          ],
+          "args_count": 1,
+          "command_line": "C:\\ProgramFiles\\SentinelOne\\SentinelAgent22.1.4.10010\\ranger\\SentinelRanger.exe\"\"{\\\"agentVersion\\\":\\\"22.1.4.10010\\\",\\\"authToken\\\":\\\"jhdskdhkdgdgdahdksaHDKJsdhkNjUifQ.+dVxpFE/Hqs5RGjPczU8DC9i1tw\\\",\\\"dataFolder\\\":\\\"C:\\\\\\\\ProgramData\\\\\\\\Sentinel\\\\\\\\ranger\\\",\\\"logsFolder\\\":\\\"C:\\\\\\\\ProgramData\\\\\\\\Sentinel\\\\\\\\logs\\\",\\\"maxIdleTime\\\":300,\\\"sendUnsuccessful\\\":false,\\\"url\\\":\\\"wss://asdf-123.sentinelone.org\\\",\\\"uuid\\\":\\\"asdf1234\\\"}",
+          "entity_id": "07693A26E6783D52",
+          "executable": "C:\\ProgramFiles\\SentinelOne\\SentinelAgent22.1.4.10010\\Ranger\\SentinelRanger.exe",
+          "hash": {
+            "sha1": "f5700a2e74ba840722ba10481f6228b78144e1a1",
+            "sha256": "1a934fdb157debd0b000b826076354a9384ac45c1621d1b56c9fc9c2ea9ab144"
+          },
+          "name": "SentinelRanger.exe",
+          "pid": 2220,
+          "start": "2050-10-25T12:17:47.216Z",
+          "title": "WchykqekZcpzck",
+          "user": {
+            "name": "JYESNPJIUYN\\SYSTEM"
+          }
+        },
+        "pid": 6520,
+        "start": "2050-10-25T12:17:47.224Z",
+        "title": "DtytymfZyndymYvsq",
+        "user": {
+          "name": "JYESNPJIUYN\\SYSTEM"
+        }
+      },
+      "related": {
+        "hash": [
+          "6b830ee564ce96fdd0bc65862a85567c",
+          "60e9924b2a9b5328102525dc92154a7cc56ee783",
+          "7f5c0d633e3e122f861403763ce669aa2f93af78d58dbfdbfef5157799e4bc8f",
+          "f5700a2e74ba840722ba10481f6228b78144e1a1",
+          "1a934fdb157debd0b000b826076354a9384ac45c1621d1b56c9fc9c2ea9ab144",
+          "34d5a5ae8e9cdf9e4c32b6589a351350",
+          "bf762b61c16374771122ec5bed70de53ac871353"
+        ],
+        "hosts": [
+          "asdf1",
+          "windows",
+          "desktop"
+        ],
+        "user": [
+          "JYESNPJIUYN\\SYSTEM"
+        ]
+      },
+      "sentinel_one_cloud_funnel": {
+        "event": {
+          "account_id": "123456789123456789",
+          "agent": {
+            "uuid": "asdf356783457dfds4456d65",
+            "version": "22.1.4.10010"
+          },
+          "category": "module",
+          "data_source": {
+            "category": "security",
+            "name": "SentinelOne"
+          },
+          "endpoint": {
+            "name": "asdf1",
+            "os": "windows",
+            "type": "desktop"
+          },
+          "group": {
+            "id": "asdf"
+          },
+          "i": {
+            "scheme": "edr",
+            "version": "preprocess-lib-1.0"
+          },
+          "id": "01GG7H7P5GNC0537Q6XM2W1ATB_29",
+          "meta_event_name": "MODULELOAD",
+          "mgmt": {
+            "id": "1337",
+            "os_revision": "19044",
+            "url": "ayfe-939.ifkswpfhtkd.org"
+          },
+          "module": {
+            "path": "C:\\Windows\\System32\\CoreMessaging.dll",
+            "sha1": "bf762b61c16374771122ec5bed70de53ac871353"
+          },
+          "os_name": "Windows10Pro",
+          "packet_id": "A2AAC3FCF37046D6D0BB2F6329B0DFD6",
+          "process_unique_key": "08693A26E6783D52",
+          "sca": {
+            "atlantis_ingest_time": "2022-10-25T12:17:56.197Z",
+            "ingest_time": "1970-01-20T06:58:20.278Z"
+          },
+          "site": {
+            "id": "123456789123456789",
+            "name": "ASDF"
+          },
+          "src": {
+            "process": {
+              "child_proc_count": 0,
+              "cmd_line": "\\??\\C:\\WINDOWS\\system32\\conhost.exe0xffffffff-ForceV1",
+              "cross_process": {
+                "count": 1,
+                "dup": {
+                  "remote_process_handle_count": 0,
+                  "thread_handle_count": 0
+                },
+                "open_process_count": 1,
+                "out_of_storyline_count": 0,
+                "thread_create_count": 0
+              },
+              "display_name": "DtytymfZyndymYvsq",
+              "dns_count": 0,
+              "image": {
+                "binary_is_executable": true,
+                "md5": "6b830ee564ce96fdd0bc65862a85567c",
+                "path": "C:\\Windows\\System32\\conhost.exe",
+                "sha1": "60e9924b2a9b5328102525dc92154a7cc56ee783",
+                "sha256": "7f5c0d633e3e122f861403763ce669aa2f93af78d58dbfdbfef5157799e4bc8f"
+              },
+              "indicator": {
+                "boot_configuration_update_count": 0,
+                "evasion_count": 0,
+                "exploitation_count": 0,
+                "general_count": 3,
+                "info_stealer_count": 0,
+                "injection_count": 0,
+                "persistence_count": 0,
+                "post_exploitation_count": 0,
+                "ransomware_count": 0,
+                "reconnaissance_count": 0
+              },
+              "integrity_level": "SYSTEM",
+              "is_native_64_bit": false,
+              "is_redirect_cmd_processor": false,
+              "is_storyline_root": false,
+              "module_count": 57,
+              "name": "conhost.exe",
+              "net_conn": {
+                "count": 0,
+                "in_count": 0,
+                "out_count": 0
+              },
+              "parent": {
+                "cmd_line": "C:\\ProgramFiles\\SentinelOne\\SentinelAgent22.1.4.10010\\ranger\\SentinelRanger.exe\"\"{\\\"agentVersion\\\":\\\"22.1.4.10010\\\",\\\"authToken\\\":\\\"jhdskdhkdgdgdahdksaHDKJsdhkNjUifQ.+dVxpFE/Hqs5RGjPczU8DC9i1tw\\\",\\\"dataFolder\\\":\\\"C:\\\\\\\\ProgramData\\\\\\\\Sentinel\\\\\\\\ranger\\\",\\\"logsFolder\\\":\\\"C:\\\\\\\\ProgramData\\\\\\\\Sentinel\\\\\\\\logs\\\",\\\"maxIdleTime\\\":300,\\\"sendUnsuccessful\\\":false,\\\"url\\\":\\\"wss://asdf-123.sentinelone.org\\\",\\\"uuid\\\":\\\"asdf1234\\\"}",
+                "display_name": "WchykqekZcpzck",
+                "image": {
+                  "md5": "34d5a5ae8e9cdf9e4c32b6589a351350",
+                  "path": "C:\\ProgramFiles\\SentinelOne\\SentinelAgent22.1.4.10010\\Ranger\\SentinelRanger.exe",
+                  "sha1": "f5700a2e74ba840722ba10481f6228b78144e1a1",
+                  "sha256": "1a934fdb157debd0b000b826076354a9384ac45c1621d1b56c9fc9c2ea9ab144"
+                },
+                "integrity_level": "SYSTEM",
+                "is_native_64_bit": false,
+                "is_redirect_cmd_processor": false,
+                "is_storyline_root": false,
+                "name": "SentinelRanger.exe",
+                "pid": 2220,
+                "publisher": "SENTINELLABS,INC.",
+                "session_id": "0",
+                "signed_status": "signed",
+                "start_time": "2050-10-25T12:17:47.216Z",
+                "storyline_id": "FB7CE73C89DB2642",
+                "subsystem": "SYS_WIN32",
+                "uid": "07693A26E6783D52",
+                "user": {
+                  "name": "JYESNPJIUYN\\SYSTEM"
+                }
+              },
+              "pid": 6520,
+              "publisher": "MICROSOFTWINDOWS",
+              "registry_change_count": 0,
+              "session_id": "0",
+              "signed_status": "signed",
+              "start_time": "2050-10-25T12:17:47.224Z",
+              "storyline_id": "FB7CE73C89DB2642",
+              "subsystem": "SYS_WIN32",
+              "tgt_file": {
+                "creation_count": 0,
+                "deletion_count": 0,
+                "modification_count": 0
+              },
+              "uid": "08693A26E6783D52",
+              "user": {
+                "name": "JYESNPJIUYN\\SYSTEM"
+              },
+              "verified_status": "verified"
+            }
+          },
+          "tgt": {
+            "file": {
+              "is_signed": "signed"
+            }
+          },
+          "time": "2050-10-25T12:17:47.290Z",
+          "timestamp": "2026-01-01T15:17:47.290Z",
+          "trace_id": "01GG7H7P5GNC0537Q6XM2W1ATB",
+          "type": "ModuleLoad"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "JYESNPJIUYN",
+        "name": "SYSTEM"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "reroute": [
+          "dns"
+        ]
+      },
+      "message": "{\"timestamp\":\"15:17:47.290\",\"src.process.parent.isStorylineRoot\":false,\"event.category\":\"module\",\"src.process.parent.image.sha1\":\"f5700a2e74ba840722ba10481f6228b78144e1a1\",\"site.id\":\"123456789123456789\",\"src.process.parent.displayName\":\"WchykqekZcpzck\",\"src.process.image.binaryIsExecutable\":true,\"src.process.parent.subsystem\":\"SYS_WIN32\",\"src.process.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"src.process.indicatorRansomwareCount\":0,\"src.process.crossProcessDupRemoteProcessHandleCount\":0,\"src.process.tgtFileCreationCount\":0,\"src.process.indicatorInjectionCount\":0,\"src.process.moduleCount\":57,\"src.process.parent.name\":\"SentinelRanger.exe\",\"i.version\":\"preprocess-lib-1.0\",\"sca:atlantisIngestTime\":1666700276197,\"src.process.image.md5\":\"6b830ee564ce96fdd0bc65862a85567c\",\"src.process.indicatorReconnaissanceCount\":0,\"src.process.storyline.id\":\"FB7CE73C89DB2642\",\"src.process.childProcCount\":0,\"mgmt.url\":\"ayfe-939.ifkswpfhtkd.org\",\"src.process.crossProcessOpenProcessCount\":1,\"src.process.subsystem\":\"SYS_WIN32\",\"meta.event.name\":\"MODULELOAD\",\"src.process.parent.integrityLevel\":\"SYSTEM\",\"src.process.indicatorExploitationCount\":0,\"src.process.parent.storyline.id\":\"FB7CE73C89DB2642\",\"src.process.integrityLevel\":\"SYSTEM\",\"i.scheme\":\"edr\",\"module.sha1\":\"bf762b61c16374771122ec5bed70de53ac871353\",\"site.name\":\"ASDF\",\"src.process.netConnInCount\":0,\"event.time\":2550313067290,\"account.id\":\"123456789123456789\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"asdf1\",\"src.process.image.sha1\":\"60e9924b2a9b5328102525dc92154a7cc56ee783\",\"src.process.isStorylineRoot\":false,\"src.process.parent.image.path\":\"C:\\\\ProgramFiles\\\\SentinelOne\\\\SentinelAgent22.1.4.10010\\\\Ranger\\\\SentinelRanger.exe\",\"src.process.pid\":6520,\"tgt.file.isSigned\":\"signed\",\"src.process.cmdline\":\"\\\\??\\\\C:\\\\WINDOWS\\\\system32\\\\conhost.exe0xffffffff-ForceV1\",\"src.process.publisher\":\"MICROSOFTWINDOWS\",\"sca:ingestTime\":1666700278,\"dataSource.category\":\"security\",\"src.process.crossProcessThreadCreateCount\":0,\"src.process.parent.isNative64Bit\":false,\"src.process.parent.isRedirectCmdProcessor\":false,\"module.path\":\"C:\\\\Windows\\\\System32\\\\CoreMessaging.dll\",\"src.process.crossProcessCount\":1,\"src.process.signedStatus\":\"signed\",\"event.id\":\"01GG7H7P5GNC0537Q6XM2W1ATB_29\",\"src.process.parent.cmdline\":\"\\\"C:\\\\\\\\ProgramFiles\\\\\\\\SentinelOne\\\\\\\\SentinelAgent22.1.4.10010\\\\\\\\ranger\\\\\\\\SentinelRanger.exe\\\"\\\"{\\\\\\\"agentVersion\\\\\\\":\\\\\\\"22.1.4.10010\\\\\\\",\\\\\\\"authToken\\\\\\\":\\\\\\\"jhdskdhkdgdgdahdksaHDKJsdhkNjUifQ.+dVxpFE/Hqs5RGjPczU8DC9i1tw\\\\\\\",\\\\\\\"dataFolder\\\\\\\":\\\\\\\"C:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ProgramData\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Sentinel\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ranger\\\\\\\",\\\\\\\"logsFolder\\\\\\\":\\\\\\\"C:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ProgramData\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Sentinel\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\logs\\\\\\\",\\\\\\\"maxIdleTime\\\\\\\":300,\\\\\\\"sendUnsuccessful\\\\\\\":false,\\\\\\\"url\\\\\\\":\\\\\\\"wss://asdf-123.sentinelone.org\\\\\\\",\\\\\\\"uuid\\\\\\\":\\\\\\\"asdf1234\\\\\\\"}\\\"\",\"src.process.image.path\":\"C:\\\\Windows\\\\System32\\\\conhost.exe\",\"src.process.tgtFileModificationCount\":0,\"src.process.indicatorEvasionCount\":0,\"src.process.netConnOutCount\":0,\"src.process.crossProcessDupThreadHandleCount\":0,\"endpoint.os\":\"windows\",\"src.process.tgtFileDeletionCount\":0,\"src.process.startTime\":2550313067224,\"mgmt.id\":\"1337\",\"os.name\":\"Windows10Pro\",\"src.process.displayName\":\"DtytymfZyndymYvsq\",\"src.process.parent.sessionId\":0,\"src.process.isNative64Bit\":false,\"src.process.uid\":\"08693A26E6783D52\",\"src.process.parent.image.md5\":\"34d5a5ae8e9cdf9e4c32b6589a351350\",\"src.process.indicatorBootConfigurationUpdateCount\":0,\"src.process.indicatorInfostealerCount\":0,\"process.unique.key\":\"08693A26E6783D52\",\"src.process.parent.uid\":\"07693A26E6783D52\",\"agent.version\":\"22.1.4.10010\",\"src.process.parent.image.sha256\":\"1a934fdb157debd0b000b826076354a9384ac45c1621d1b56c9fc9c2ea9ab144\",\"src.process.sessionId\":0,\"src.process.netConnCount\":0,\"mgmt.osRevision\":\"19044\",\"group.id\":\"asdf\",\"src.process.parent.publisher\":\"SENTINELLABS,INC.\",\"src.process.isRedirectCmdProcessor\":false,\"src.process.verifiedStatus\":\"verified\",\"src.process.parent.startTime\":2550313067216,\"src.process.dnsCount\":0,\"endpoint.type\":\"desktop\",\"trace.id\":\"01GG7H7P5GNC0537Q6XM2W1ATB\",\"src.process.name\":\"conhost.exe\",\"agent.uuid\":\"asdf356783457dfds4456d65\",\"src.process.image.sha256\":\"7f5c0d633e3e122f861403763ce669aa2f93af78d58dbfdbfef5157799e4bc8f\",\"src.process.indicatorGeneralCount\":3,\"src.process.crossProcessOutOfStorylineCount\":0,\"src.process.registryChangeCount\":0,\"packet.id\":\"A2AAC3FCF37046D6D0BB2F6329B0DFD6\",\"src.process.indicatorPersistenceCount\":0,\"src.process.parent.signedStatus\":\"signed\",\"src.process.parent.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"event.type\":\"ModuleLoad\",\"src.process.indicatorPostExploitationCount\":0,\"src.process.parent.pid\":2220}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "sentinel_one_cloud_funnel.event.timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sentinel_one_cloud_funnel-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "sentinel_one_cloud_funnel",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

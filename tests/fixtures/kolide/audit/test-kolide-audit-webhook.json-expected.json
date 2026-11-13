@@ -1,0 +1,209 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-14T19:16:05.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "check_enabled",
+        "category": [
+          "configuration"
+        ],
+        "id": "01JA67B1DYJCKJ1J73T0F5EWGR",
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "kolide": {
+        "audit": {
+          "actor_automated": false,
+          "actor_type": "User"
+        }
+      },
+      "message": "Enabled check 'iTerm2 - Require Secure Keyboard Entry to Be Enabled'",
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "Alice Johnson",
+          "eprde.rgwqnrr@example.com"
+        ]
+      },
+      "rule": {
+        "name": "iTerm2 - Require Secure Keyboard Entry to Be Enabled"
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "eprde.rgwqnrr@example.com",
+        "name": "Alice Johnson"
+      }
+    },
+    {
+      "@timestamp": "2052-10-14T19:16:05.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "audit_log",
+        "category": [
+          "configuration"
+        ],
+        "id": "01JA67B1DYJCKJ1J73T0F5UNCT",
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "kolide": {
+        "audit": {
+          "actor_automated": false,
+          "actor_type": "User"
+        }
+      },
+      "message": "Performed an unrecognized administrative action",
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "Alice Johnson",
+          "eprde.rgwqnrr@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "eprde.rgwqnrr@example.com",
+        "name": "Alice Johnson"
+      }
+    },
+    {
+      "@timestamp": "2052-10-14T19:16:05.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "device_data_export_requested",
+        "category": [
+          "configuration"
+        ],
+        "id": "01KW9TX2D4KSM03D7HNCY0Z550",
+        "kind": "event",
+        "type": [
+          "access"
+        ]
+      },
+      "host": {
+        "hostname": "Example-Host-1",
+        "name": "Example-Host-1"
+      },
+      "kolide": {
+        "audit": {
+          "actor_automated": false,
+          "actor_type": "Person",
+          "target": {
+            "device_id": "12345"
+          }
+        }
+      },
+      "message": "Requested data export for device 'Example-Host-1' (id 12345)",
+      "related": {
+        "hosts": [
+          "Example-Host-1"
+        ],
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "Alice Johnson",
+          "eprde.rgwqnrr@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "eprde.rgwqnrr@example.com",
+        "name": "Alice Johnson"
+      }
+    }
+  ],
+  "input": [
+    {
+      "data": {
+        "actor_email": "eprde.rgwqnrr@example.com",
+        "actor_name": "Alice Johnson",
+        "actor_type": "User",
+        "description": "Enabled check 'iTerm2 - Require Secure Keyboard Entry to Be Enabled'",
+        "ip_address": "203.0.113.138"
+      },
+      "event": "audit_log.recorded",
+      "id": "01JA67B1DYJCKJ1J73T0F5EWGR",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2052-10-14T19:16:05Z"
+    },
+    {
+      "data": {
+        "actor_email": "eprde.rgwqnrr@example.com",
+        "actor_name": "Alice Johnson",
+        "actor_type": "User",
+        "description": "Performed an unrecognized administrative action",
+        "ip_address": "203.0.113.138"
+      },
+      "event": "audit_log.recorded",
+      "id": "01JA67B1DYJCKJ1J73T0F5UNCT",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2052-10-14T19:16:05Z"
+    },
+    {
+      "data": {
+        "actor_email": "eprde.rgwqnrr@example.com",
+        "actor_name": "Alice Johnson",
+        "actor_type": "Person",
+        "description": "Requested data export for device 'Example-Host-1' (id 12345)",
+        "ip_address": "203.0.113.138"
+      },
+      "event": "audit_log.recorded",
+      "id": "01KW9TX2D4KSM03D7HNCY0Z550",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2052-10-14T19:16:05Z"
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kolide-audit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "kolide",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

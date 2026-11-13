@@ -1,0 +1,248 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-09-25T22:45:08.057Z",
+      "audit_event": "set_two_factor_on",
+      "category": "admin",
+      "client_version": "CLI.5.3.1",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "enterprise_id": 1669,
+      "event": {
+        "action": "set_two_factor_on",
+        "category": [
+          "authentication",
+          "web"
+        ],
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "organization": {
+        "id": "1669"
+      },
+      "related": {
+        "ip": [
+          "192.168.125.99"
+        ],
+        "user": [
+          "qwfl7@djxlbxr.com"
+        ]
+      },
+      "remote_address": "192.168.125.99",
+      "source": {
+        "ip": "192.168.125.99"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "qwfl7@djxlbxr.com",
+        "name": "qwfl7@djxlbxr.com"
+      },
+      "user_agent": {
+        "original": "Keeper/CLI.5.3.1"
+      },
+      "username": "qwfl7@djxlbxr.com"
+    },
+    {
+      "@timestamp": "2053-09-26T01:13:47.042Z",
+      "audit_event": "set_two_factor_off",
+      "category": "admin",
+      "client_version": "EMConsole.17.1.2",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "enterprise_id": 1987,
+      "event": {
+        "action": "set_two_factor_off",
+        "category": [
+          "authentication",
+          "web"
+        ],
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "organization": {
+        "id": "1987"
+      },
+      "related": {
+        "ip": [
+          "10.174.228.41"
+        ],
+        "user": [
+          "szbs2@djxlbxr.com"
+        ]
+      },
+      "remote_address": "10.174.228.41",
+      "source": {
+        "ip": "10.174.228.41"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "szbs2@djxlbxr.com",
+        "name": "szbs2@djxlbxr.com"
+      },
+      "user_agent": {
+        "original": "Keeper/EMConsole.17.1.2"
+      },
+      "username": "szbs2@djxlbxr.com"
+    },
+    {
+      "@timestamp": "2053-09-26T15:13:31.915Z",
+      "audit_event": "change_master_password",
+      "category": "security",
+      "client_version": "CLI.5.3.1",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "enterprise_id": 1666,
+      "event": {
+        "action": "change_master_password",
+        "category": [
+          "authentication",
+          "web"
+        ],
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "organization": {
+        "id": "1666"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.10"
+        ],
+        "user": [
+          "zqay7@djxlbxr.com"
+        ]
+      },
+      "remote_address": "203.0.113.10",
+      "source": {
+        "ip": "203.0.113.10"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "zqay7@djxlbxr.com",
+        "name": "zqay7@djxlbxr.com"
+      },
+      "user_agent": {
+        "original": "Keeper/CLI.5.3.1"
+      },
+      "username": "zqay7@djxlbxr.com"
+    },
+    {
+      "@timestamp": "2053-09-26T06:46:05.810Z",
+      "audit_event": "set_two_factor_off",
+      "category": "security",
+      "client_version": "EMConsole.18.0.0",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "enterprise_id": 1088,
+      "event": {
+        "action": "set_two_factor_off",
+        "category": [
+          "authentication",
+          "web"
+        ],
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "access",
+          "info"
+        ]
+      },
+      "organization": {
+        "id": "1088"
+      },
+      "related": {
+        "ip": [
+          "172.28.245.15"
+        ],
+        "user": [
+          "szbs2@djxlbxr.com"
+        ]
+      },
+      "remote_address": "172.28.245.15",
+      "source": {
+        "ip": "172.28.245.15"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "szbs2@djxlbxr.com",
+        "name": "szbs2@djxlbxr.com"
+      },
+      "user_agent": {
+        "original": "Keeper/EMConsole.18.0.0"
+      },
+      "username": "szbs2@djxlbxr.com"
+    }
+  ],
+  "input": [
+    {
+      "audit_event": "set_two_factor_on",
+      "category": "admin",
+      "client_version": "CLI.5.3.1",
+      "enterprise_id": 1669,
+      "remote_address": "192.168.125.99",
+      "timestamp": "2053-09-25T22:45:08.057Z",
+      "username": "qwfl7@djxlbxr.com"
+    },
+    {
+      "audit_event": "set_two_factor_off",
+      "category": "admin",
+      "client_version": "EMConsole.17.1.2",
+      "enterprise_id": 1987,
+      "remote_address": "10.174.228.41",
+      "timestamp": "2053-09-26T01:13:47.042Z",
+      "username": "szbs2@djxlbxr.com"
+    },
+    {
+      "audit_event": "change_master_password",
+      "category": "security",
+      "client_version": "CLI.5.3.1",
+      "enterprise_id": 1666,
+      "remote_address": "203.0.113.10",
+      "timestamp": "2053-09-26T15:13:31.915Z",
+      "username": "zqay7@djxlbxr.com"
+    },
+    {
+      "audit_event": "set_two_factor_off",
+      "category": "security",
+      "client_version": "EMConsole.18.0.0",
+      "enterprise_id": 1088,
+      "remote_address": "172.28.245.15",
+      "timestamp": "2053-09-26T06:46:05.810Z",
+      "username": "szbs2@djxlbxr.com"
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-keeper_security_siem_integration-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "keeper_security_siem_integration",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

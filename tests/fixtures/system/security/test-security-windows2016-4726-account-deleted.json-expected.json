@@ -1,0 +1,318 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-09-06T13:35:25.515Z",
+      "agent": {
+        "ephemeral_id": "2395fb82-8ba5-409b-bd4d-bf4bbd0a1a88",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted-user-account",
+        "category": [
+          "iam"
+        ],
+        "code": "4726",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "deletion"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4726_Account_Deleted.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator",
+          "btfpvsaxh13"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "SOV-86VA2XP94FG",
+        "id": "S-1-5-21-101361758-2486510592-3018839910-500",
+        "name": "Administrator",
+        "target": {
+          "domain": "SOV-86VA2XP94FG",
+          "id": "S-1-5-21-101361758-2486510592-3018839910-1001",
+          "name": "btfpvsaxh13"
+        }
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1001",
+          "TargetUserName": "btfpvsaxh13"
+        },
+        "event_id": "4726",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x264b2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 1980
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "2851",
+        "time_created": "2047-09-06T13:35:25.515Z"
+      }
+    },
+    {
+      "@timestamp": "2047-09-06T13:35:29.690Z",
+      "agent": {
+        "ephemeral_id": "2395fb82-8ba5-409b-bd4d-bf4bbd0a1a88",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted-user-account",
+        "category": [
+          "iam"
+        ],
+        "code": "4726",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "deletion"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4726_Account_Deleted.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator",
+          "dverugdhn"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "SOV-86VA2XP94FG",
+        "id": "S-1-5-21-101361758-2486510592-3018839910-500",
+        "name": "Administrator",
+        "target": {
+          "domain": "SOV-86VA2XP94FG",
+          "id": "S-1-5-21-101361758-2486510592-3018839910-1000",
+          "name": "dverugdhn"
+        }
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1000",
+          "TargetUserName": "dverugdhn"
+        },
+        "event_id": "4726",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x264b2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 820
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "2857",
+        "time_created": "2047-09-06T13:35:29.690Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:04:53.251Z",
+      "agent": {
+        "ephemeral_id": "2395fb82-8ba5-409b-bd4d-bf4bbd0a1a88",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4726,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4726_Account_Deleted.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "PrivilegeList": "-",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1001",
+          "TargetUserName": "btfpvsaxh13"
+        },
+        "event_id": 4726,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 1980
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 2851,
+        "time_created": "2047-09-06T13:35:25.515Z"
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:04:53.252Z",
+      "agent": {
+        "ephemeral_id": "2395fb82-8ba5-409b-bd4d-bf4bbd0a1a88",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4726,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4726_Account_Deleted.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG",
+        "event_data": {
+          "PrivilegeList": "-",
+          "SubjectDomainName": "SOV-86VA2XP94FG",
+          "SubjectLogonId": "0x264b2",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "TargetDomainName": "SOV-86VA2XP94FG",
+          "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1000",
+          "TargetUserName": "dverugdhn"
+        },
+        "event_id": 4726,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 780,
+          "thread": {
+            "id": 820
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 2857,
+        "time_created": "2047-09-06T13:35:29.690Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,41 @@
+{
+    "events": [
+        {
+            "json": {
+                "event": {
+                    "computer": {
+                        "alternate_mac_address": "ce:bb:a4:55:30:bc",
+                        "building": "MHPMPN",
+                        "department": "K9DZ67",
+                        "device_name": "OMLC0",
+                        "email_address": "vcqtno@dobjr.com",
+                        "ip_address": "198.51.100.144",
+                        "jss_id": "6046732182",
+                        "mac_address": "ce:bb:a4:55:30:bc",
+                        "model": "4K911Y",
+                        "os_build": "90.0399",
+                        "os_version": "87.2388",
+                        "phone": "2315307",
+                        "position": "4XZ88J",
+                        "real_name": "HQ85F",
+                        "reported_ip_address": "198.51.100.144",
+                        "room": "U5SVJY",
+                        "serial_number": "2273355",
+                        "udid": "9595866401",
+                        "user_directory_id": "3283845187",
+                        "username": "Pnvw Eyd",
+                        "management_id": "3187810017"
+                    },
+                    "trigger": "JWY2E0",
+                    "username": "Pnvw Eyd"
+                },
+                "webhook": {
+                    "event_timestamp": 2609056672001,
+                    "id": "1079322644",
+                    "name": "H9CZZ",
+                    "webhook_event": "ComputerCheckIn"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,139 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-01-09T16:46:16.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "name": "arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail"
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "0123456789012",
+          "request_id": "BUDRSGD-329a-0aaa-75f3-BMCHRZB",
+          "request_parameters": "{name=arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "invoked_by": "signin.amazonaws.com",
+            "session_context": {
+              "creation_date": "2048-01-09T16:36:17.000Z",
+              "mfa_authenticated": "true"
+            },
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-west-2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "StopLogging",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-8cc3-42db-9a0d-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_ID\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"sessionIssuer\":{},\"webIdFederationData\":{},\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-09T16:36:17Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-09T16:46:16Z\",\"eventSource\":\"cloudtrail.amazonaws.com\",\"eventName\":\"StopLogging\",\"awsRegion\":\"us-west-2\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"name\":\"arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail\"},\"responseElements\":null,\"requestID\":\"BUDRSGD-329a-0aaa-75f3-BMCHRZB\",\"eventID\":\"EXAMPLE-8cc3-42db-9a0d-EXAMPLE\",\"readOnly\":false,\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "success",
+        "provider": "cloudtrail.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY",
+          "Ekkcf",
+          "arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail",
+          "arn:aws:iam::0123456789012:user/Ekkcf"
+        ],
+        "user": [
+          "EXAMPLE_ID",
+          "Ekkcf"
+        ]
+      },
+      "service": {
+        "target": {
+          "entity": {
+            "id": [
+              "arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail"
+            ]
+          }
+        }
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail"
+          ]
+        }
+      },
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "EXAMPLE_ID",
+        "name": "Ekkcf"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "signin.amazonaws.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_ID\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"sessionIssuer\":{},\"webIdFederationData\":{},\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-09T16:36:17Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-09T16:46:16Z\",\"eventSource\":\"cloudtrail.amazonaws.com\",\"eventName\":\"StopLogging\",\"awsRegion\":\"us-west-2\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"name\":\"arn:aws:cloudtrail:us-west-2:0123456789012:trail/TEST-trail\"},\"responseElements\":null,\"requestID\":\"BUDRSGD-329a-0aaa-75f3-BMCHRZB\",\"eventID\":\"EXAMPLE-8cc3-42db-9a0d-EXAMPLE\",\"readOnly\":false,\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

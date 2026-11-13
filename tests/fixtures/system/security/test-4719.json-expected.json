@@ -1,0 +1,170 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-11-07T15:22:57.655Z",
+      "agent": {
+        "ephemeral_id": "f2d2cf4a-b1d8-489f-9b6e-a7747207d30a",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "changed-audit-config",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4719",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4719.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "SOV-86VA2XP94FG$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "WLBEAT",
+        "id": "S-1-5-18",
+        "name": "SOV-86VA2XP94FG$"
+      },
+      "winlog": {
+        "activity_id": "{4cbf4f1b-2629-0694-186b-ac1d1449d742}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_data": {
+          "AuditPolicyChanges": "%%8449, %%8451",
+          "AuditPolicyChangesDescription": [
+            "Success Added",
+            "Failure Added"
+          ],
+          "Category": "Logon/Logoff",
+          "CategoryId": "%%8273",
+          "SubCategory": "Network Policy Server",
+          "SubcategoryGuid": "{0cce9243-69ae-11d9-bed3-505054503030}",
+          "SubcategoryId": "%%12552",
+          "SubjectDomainName": "WLBEAT",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "SOV-86VA2XP94FG$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": "4719",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 772,
+          "thread": {
+            "id": 2944
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "17154",
+        "time_created": "2047-11-07T15:22:57.655Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:05:53.569Z",
+      "agent": {
+        "ephemeral_id": "f2d2cf4a-b1d8-489f-9b6e-a7747207d30a",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4719,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4719.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{4cbf4f1b-2629-0694-186b-ac1d1449d742}",
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_data": {
+          "AuditPolicyChanges": "%%8449, %%8451",
+          "CategoryId": "%%8273",
+          "SubcategoryGuid": "{0cce9243-69ae-11d9-bed3-505054503030}",
+          "SubcategoryId": "%%12552",
+          "SubjectDomainName": "WLBEAT",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "SOV-86VA2XP94FG$",
+          "SubjectUserSid": "S-1-5-18"
+        },
+        "event_id": 4719,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 772,
+          "thread": {
+            "id": 2944
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 17154,
+        "time_created": "2047-11-07T15:22:57.655Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

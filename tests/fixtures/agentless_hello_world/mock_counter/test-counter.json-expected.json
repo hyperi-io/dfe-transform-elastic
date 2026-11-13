@@ -1,0 +1,35 @@
+{
+  "expected": [
+    {
+      "counter": {
+        "value": 1
+      },
+      "ecs": {
+        "version": "9.1.0"
+      },
+      "event": {
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "counter": {
+        "value": 1
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "mock_counter",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-agentless_hello_world-mock_counter-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "agentless_hello_world",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

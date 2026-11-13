@@ -1,0 +1,95 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "session": {
+          "active": {
+            "allowed": {
+              "max": -1
+            },
+            "max": 1,
+            "total": 1
+          },
+          "alive_time": {
+            "avg": 1,
+            "max": 0
+          },
+          "application_name": "/sample",
+          "create": {
+            "rate": 1,
+            "total": 3
+          },
+          "duplicate_ids": {
+            "count": 1
+          },
+          "expire": {
+            "rate": 1,
+            "total": 1
+          },
+          "persist_authentication": true,
+          "process_expires_frequency": {
+            "count": 6
+          },
+          "processing_time": 2,
+          "rejected": {
+            "count": 1
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "context": "/sample",
+          "host": "localhost",
+          "instance": "localhost:9409",
+          "job": "prometheus"
+        },
+        "metrics": {
+          "Catalina_Manager_activeSessions": 1,
+          "Catalina_Manager_duplicates": 1,
+          "Catalina_Manager_expiredSessions": 1,
+          "Catalina_Manager_maxActive": 1,
+          "Catalina_Manager_maxActiveSessions": -1,
+          "Catalina_Manager_persistAuthentication": 1,
+          "Catalina_Manager_processExpiresFrequency": 6,
+          "Catalina_Manager_processingTime": 2,
+          "Catalina_Manager_rejectedSessions": 1,
+          "Catalina_Manager_sessionAverageAliveTime": 1,
+          "Catalina_Manager_sessionCounter": 3,
+          "Catalina_Manager_sessionCreateRate": 1,
+          "Catalina_Manager_sessionExpireRate": 1,
+          "Catalina_Manager_sessionMaxAliveTime": 0,
+          "Catalina_Manager_warnOnSessionAttributeFilterFailure": 1
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "session",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-session-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

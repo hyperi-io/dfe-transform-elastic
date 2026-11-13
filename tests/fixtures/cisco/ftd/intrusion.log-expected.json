@@ -1,0 +1,770 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-16T09:54:00.000Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "intrusion-policy",
+            "default"
+          ],
+          "security": {
+            "classification": "Attempted User Privilege Gain",
+            "gid": "1",
+            "intrusion_policy": "intrusion-policy",
+            "message": "SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt",
+            "priority": "1",
+            "revision": "12",
+            "sid": "17279"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "application_protocol": "HTTP",
+            "client": "Firefox",
+            "dst_ip": "10.61.69.234",
+            "dst_port": 80,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "nap_policy": "Balanced Security and Connectivity",
+            "protocol": "tcp",
+            "src_ip": "10.129.17.24",
+            "src_port": 55644,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "10.61.69.234",
+        "ip": "10.61.69.234",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "intrusion-detected",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "430001",
+        "dataset": "cisco.ftd",
+        "kind": "alert",
+        "module": "cisco",
+        "original": "2047-08-16T09:54:00Z fwsfruuck  %FTD-0-430001: SrcIP: 10.129.17.24, DstIP: 10.61.69.234, SrcPort: 55644, DstPort: 80, Protocol: tcp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, Priority: 1, GID: 1, SID: 17279, Revision: 12, Message: SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt, Classification: Attempted User Privilege Gain, User: No Authentication Required, Client: Firefox, ApplicationProtocol: HTTP, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "fwsfruuck"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "unknown",
+        "offset": 0
+      },
+      "message": "SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt",
+      "network": {
+        "application": "firefox",
+        "community_id": "1:XJ7GWUYqMb4KXMFdCcGkEwsCiF4=",
+        "iana_number": "6",
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "fwsfruuck",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "fwsfruuck"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "10.61.69.234"
+        ]
+      },
+      "rule": {
+        "id": "17279",
+        "ruleset": "default",
+        "version": "12"
+      },
+      "service": {
+        "id": "1",
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "ip": "10.129.17.24",
+        "port": 55644
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-16T09:57:02.000Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "outside",
+          "rule_name": [
+            "intrusion-policy",
+            "default"
+          ],
+          "security": {
+            "classification": "Attempted User Privilege Gain",
+            "gid": "1",
+            "intrusion_policy": "intrusion-policy",
+            "message": "SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt",
+            "priority": "1",
+            "revision": "12",
+            "sid": "17279"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "application_protocol": "HTTP",
+            "client": "Firefox",
+            "dst_ip": "10.61.69.234",
+            "dst_port": 80,
+            "egress_interface": "outside",
+            "egress_zone": "output-zone",
+            "ingress_interface": "inside",
+            "ingress_zone": "input-zone",
+            "nap_policy": "Balanced Security and Connectivity",
+            "protocol": "tcp",
+            "src_ip": "10.129.17.24",
+            "src_port": 55868,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "inside"
+        }
+      },
+      "destination": {
+        "address": "10.61.69.234",
+        "ip": "10.61.69.234",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "intrusion-detected",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "430001",
+        "dataset": "cisco.ftd",
+        "kind": "alert",
+        "module": "cisco",
+        "original": "2047-08-16T09:57:02Z fwsfruuck  %FTD-0-430001: SrcIP: 10.129.17.24, DstIP: 10.61.69.234, SrcPort: 55868, DstPort: 80, Protocol: tcp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, Priority: 1, GID: 1, SID: 17279, Revision: 12, Message: SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt, Classification: Attempted User Privilege Gain, User: No Authentication Required, Client: Firefox, ApplicationProtocol: HTTP, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "fwsfruuck"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "unknown",
+        "offset": 587
+      },
+      "message": "SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt",
+      "network": {
+        "application": "firefox",
+        "community_id": "1:gwj2YebLsowPE0YsCmV3jNa7wI8=",
+        "iana_number": "6",
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "hostname": "fwsfruuck",
+        "ingress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "fwsfruuck"
+        ],
+        "ip": [
+          "10.129.17.24",
+          "10.61.69.234"
+        ]
+      },
+      "rule": {
+        "id": "17279",
+        "ruleset": "default",
+        "version": "12"
+      },
+      "service": {
+        "id": "1",
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "ip": "10.129.17.24",
+        "port": 55868
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-16T10:04:44.000Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "inside",
+          "rule_name": [
+            "intrusion-policy",
+            "default"
+          ],
+          "security": {
+            "classification": "Misc Activity",
+            "gid": "1",
+            "intrusion_policy": "intrusion-policy",
+            "message": "APP-DETECT failed FTP login attempt",
+            "priority": "3",
+            "revision": "6",
+            "sid": "13360"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "dst_ip": "10.129.17.24",
+            "dst_port": 39114,
+            "egress_interface": "inside",
+            "egress_zone": "input-zone",
+            "ingress_interface": "outside",
+            "ingress_zone": "output-zone",
+            "nap_policy": "Balanced Security and Connectivity",
+            "protocol": "tcp",
+            "src_ip": "10.61.69.234",
+            "src_port": 21,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "outside"
+        }
+      },
+      "destination": {
+        "address": "10.129.17.24",
+        "ip": "10.129.17.24",
+        "port": 39114
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "intrusion-detected",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "430001",
+        "dataset": "cisco.ftd",
+        "kind": "alert",
+        "module": "cisco",
+        "original": "2047-08-16T10:04:44Z fwsfruuck  %FTD-0-430001: SrcIP: 10.61.69.234, DstIP: 10.129.17.24, SrcPort: 21, DstPort: 39114, Protocol: tcp, IngressInterface: outside, EgressInterface: inside, IngressZone: output-zone, EgressZone: input-zone, Priority: 3, GID: 1, SID: 13360, Revision: 6, Message: APP-DETECT failed FTP login attempt, Classification: Misc Activity, User: No Authentication Required, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "fwsfruuck"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "unknown",
+        "offset": 1174
+      },
+      "message": "APP-DETECT failed FTP login attempt",
+      "network": {
+        "community_id": "1:8tpAnQ/Sec2oXPcrGUiGrOSxBH8=",
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "hostname": "fwsfruuck",
+        "ingress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "fwsfruuck"
+        ],
+        "ip": [
+          "10.61.69.234",
+          "10.129.17.24"
+        ]
+      },
+      "rule": {
+        "id": "13360",
+        "ruleset": "default",
+        "version": "6"
+      },
+      "service": {
+        "id": "1",
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.61.69.234",
+        "ip": "10.61.69.234",
+        "port": 21
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-08-16T10:09:47.000Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "ftd": {
+          "destination_interface": "inside",
+          "rule_name": [
+            "intrusion-policy",
+            "default"
+          ],
+          "security": {
+            "classification": "Misc Activity",
+            "gid": "1",
+            "intrusion_policy": "intrusion-policy",
+            "message": "APP-DETECT failed FTP login attempt",
+            "priority": "3",
+            "revision": "6",
+            "sid": "13360"
+          },
+          "security_event": {
+            "ac_policy": "default",
+            "dst_ip": "10.129.17.24",
+            "dst_port": 40740,
+            "egress_interface": "inside",
+            "egress_zone": "input-zone",
+            "ingress_interface": "outside",
+            "ingress_zone": "output-zone",
+            "nap_policy": "Balanced Security and Connectivity",
+            "protocol": "6",
+            "src_ip": "10.61.69.234",
+            "src_port": 21,
+            "user": "No Authentication Required"
+          },
+          "source_interface": "outside"
+        }
+      },
+      "destination": {
+        "address": "10.129.17.24",
+        "ip": "10.129.17.24",
+        "port": 40740
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "intrusion-detected",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "430001",
+        "dataset": "cisco.ftd",
+        "kind": "alert",
+        "module": "cisco",
+        "original": "2047-08-16T10:09:47Z fwsfruuck  %FTD-0-430001: SrcIP: 10.61.69.234, DstIP: 10.129.17.24, SrcPort: 21, DstPort: 40740, Protocol: 6, IngressInterface: outside, EgressInterface: inside, IngressZone: output-zone, EgressZone: input-zone, Priority: 3, GID: 1, SID: 13360, Revision: 6, Message: APP-DETECT failed FTP login attempt, Classification: Misc Activity, User: No Authentication Required, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+        "severity": 0,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "host": {
+        "hostname": "fwsfruuck"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "unknown",
+        "offset": 1662
+      },
+      "message": "APP-DETECT failed FTP login attempt",
+      "network": {
+        "community_id": "1:Dko8rJzKm/KxKEjZ1+NLccm3/Ew=",
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "inside"
+          },
+          "zone": "input-zone"
+        },
+        "hostname": "fwsfruuck",
+        "ingress": {
+          "interface": {
+            "name": "outside"
+          },
+          "zone": "output-zone"
+        },
+        "product": "ftd",
+        "type": "idps",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "fwsfruuck"
+        ],
+        "ip": [
+          "10.61.69.234",
+          "10.129.17.24"
+        ]
+      },
+      "rule": {
+        "id": "13360",
+        "ruleset": "default",
+        "version": "6"
+      },
+      "service": {
+        "id": "1",
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.61.69.234",
+        "ip": "10.61.69.234",
+        "port": 21
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:56:07.475Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "2047-08-16T09:54:00Z fwsfruuck  %FTD-0-430001: SrcIP: 10.129.17.24, DstIP: 10.61.69.234, SrcPort: 55644, DstPort: 80, Protocol: tcp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, Priority: 1, GID: 1, SID: 17279, Revision: 12, Message: SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt, Classification: Attempted User Privilege Gain, User: No Authentication Required, Client: Firefox, ApplicationProtocol: HTTP, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:56:07.475Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 587
+      },
+      "message": "2047-08-16T09:57:02Z fwsfruuck  %FTD-0-430001: SrcIP: 10.129.17.24, DstIP: 10.61.69.234, SrcPort: 55868, DstPort: 80, Protocol: tcp, IngressInterface: inside, EgressInterface: outside, IngressZone: input-zone, EgressZone: output-zone, Priority: 1, GID: 1, SID: 17279, Revision: 12, Message: SERVER-WEBAPP Ipswitch WhatsUp Small Business directory traversal attempt, Classification: Attempted User Privilege Gain, User: No Authentication Required, Client: Firefox, ApplicationProtocol: HTTP, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:56:07.475Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1174
+      },
+      "message": "2047-08-16T10:04:44Z fwsfruuck  %FTD-0-430001: SrcIP: 10.61.69.234, DstIP: 10.129.17.24, SrcPort: 21, DstPort: 39114, Protocol: tcp, IngressInterface: outside, EgressInterface: inside, IngressZone: output-zone, EgressZone: input-zone, Priority: 3, GID: 1, SID: 13360, Revision: 6, Message: APP-DETECT failed FTP login attempt, Classification: Misc Activity, User: No Authentication Required, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-ftd-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-07-03T06:56:07.475Z",
+      "agent": {
+        "ephemeral_id": "efe80e21-f284-4ac1-b7a2-3f7deeffebd2",
+        "id": "66f33e9b-7b5d-4f41-be8e-12b0cbaab3a4",
+        "name": "2cc9e14024c2",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.ftd",
+        "module": "cisco",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "ftd"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1662
+      },
+      "message": "2047-08-16T10:09:47Z fwsfruuck  %FTD-0-430001: SrcIP: 10.61.69.234, DstIP: 10.129.17.24, SrcPort: 21, DstPort: 40740, Protocol: 6, IngressInterface: outside, EgressInterface: inside, IngressZone: output-zone, EgressZone: input-zone, Priority: 3, GID: 1, SID: 13360, Revision: 6, Message: APP-DETECT failed FTP login attempt, Classification: Misc Activity, User: No Authentication Required, IntrusionPolicy: intrusion-policy, ACPolicy: default, NAPPolicy: Balanced Security and Connectivity",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_ftd-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "cisco_ftd",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

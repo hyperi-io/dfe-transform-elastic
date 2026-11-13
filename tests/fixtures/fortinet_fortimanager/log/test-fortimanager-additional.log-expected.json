@@ -1,0 +1,450 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-07-29T07:27:54.000Z",
+      "destination": {
+        "address": "xgsasnyjyr28o9r9ew9.karma.college",
+        "bytes": 12539,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "close",
+        "kind": "event",
+        "original": "<189>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850873918993547 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=192.0.2.87 srcname=\"192.0.2.87\" srcport=62575 srcintf=\"ssl.root\" srcintfrole=\"undefined\" dstip=192.0.2.87 dstname=\"xgsasnyjyr28o9r9ew9.karma.college\" dstport=443 dstintf=\"port2\" dstintfrole=\"wan\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=612793788 proto=6 action=\"close\" policyid=111111 policytype=\"policy\" poluuid=\"aaaaaaaa\" user=\"jh32841264\" group=\"U-1870-Employees\" authserver=\"H-I-FOC-radius\" centralnatid=5 service=\"HTTPS\" trandisp=\"snat\" transip=192.0.2.87 transport=62575 appid=34231 app=\"Microsoft.Portal\" appcat=\"Collaboration\" apprisk=\"elevated\" applist=\"app_aaaaa\" duration=13 sentbyte=8105 rcvdbyte=12539 sentpkt=25 rcvdpkt=30 vwlid=0 utmaction=\"allow\" countapp=2",
+        "timezone": "+0200",
+        "type": [
+          "info"
+        ]
+      },
+      "fortimanager": {
+        "log": {
+          "action": "close",
+          "app": "Microsoft.Portal",
+          "appcat": "Collaboration",
+          "apprisk": "elevated",
+          "date": "2052-07-29T07:27:54.000Z",
+          "dev": {
+            "id": "pgshs",
+            "name": "pgshs"
+          },
+          "dstcountry": "United States",
+          "dstip": "192.0.2.87",
+          "dstname": "xgsasnyjyr28o9r9ew9.karma.college",
+          "id": "0000000013",
+          "level": "notice",
+          "priority_number": 189,
+          "rcvdbyte": 12539,
+          "sentbyte": 8105,
+          "service": "HTTPS",
+          "srcip": "192.0.2.87",
+          "srcname": "192.0.2.87",
+          "srcport": 62575,
+          "subtype": "forward",
+          "type": "traffic",
+          "user": {
+            "name": "jh32841264"
+          },
+          "vdom": "root"
+        }
+      },
+      "host": {
+        "hostname": "pgshs"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "related": {
+        "hosts": [
+          "pgshs"
+        ],
+        "user": [
+          "jh32841264"
+        ]
+      },
+      "rule": {
+        "category": "Collaboration"
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "bytes": 8105,
+        "ip": "192.0.2.87",
+        "port": 62575
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "jh32841264"
+      }
+    },
+    {
+      "@timestamp": "2052-07-29T07:27:54.000Z",
+      "destination": {
+        "address": "xgsasnyjyr28o9r9ew9.karma.college",
+        "bytes": 33392,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "server-rst",
+        "kind": "event",
+        "original": "<189>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850874076487911 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=192.0.2.87 srcname=\"AWCMGVSTUUUTYZI\" srcport=60309 srcintf=\"vl6\" srcintfrole=\"lan\" dstip=192.0.2.87 dstname=\"xgsasnyjyr28o9r9ew9.karma.college\" dstport=443 dstintf=\"port1\" dstintfrole=\"wan\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=3946126266 proto=6 action=\"server-rst\" policyid=15 policytype=\"policy\" poluuid=\"aaaaaaaa\" policyname=\"Default internet access\" centralnatid=6 service=\"HTTPS\" trandisp=\"snat\" transip=192.0.2.87 transport=60309 appid=16190 app=\"Microsoft.SharePoint\" appcat=\"Collaboration\" apprisk=\"elevated\" applist=\"app_aaaaa\" duration=73 sentbyte=3234 rcvdbyte=33392 sentpkt=18 rcvdpkt=32 vwlid=0 utmaction=\"allow\" countapp=1 srchwvendor=\"Dell\" osname=\"Windows\" srcswversion=\"10\" unauthuser=\"AnzenbSt\" unauthusersource=\"kerberos\" mastersrcmac=\"91:32:f9:75:92:91\" srcmac=\"54:13:66:ec:89:72\" srcserver=0",
+        "timezone": "+0200",
+        "type": [
+          "info"
+        ]
+      },
+      "fortimanager": {
+        "log": {
+          "action": "server-rst",
+          "app": "Microsoft.SharePoint",
+          "appcat": "Collaboration",
+          "apprisk": "elevated",
+          "date": "2052-07-29T07:27:54.000Z",
+          "dev": {
+            "id": "pgshs",
+            "name": "pgshs"
+          },
+          "dstcountry": "United States",
+          "dstip": "192.0.2.87",
+          "dstname": "xgsasnyjyr28o9r9ew9.karma.college",
+          "id": "0000000013",
+          "level": "notice",
+          "osname": "Windows",
+          "priority_number": 189,
+          "rcvdbyte": 33392,
+          "sentbyte": 3234,
+          "service": "HTTPS",
+          "srcip": "192.0.2.87",
+          "srcname": "AWCMGVSTUUUTYZI",
+          "srcport": 60309,
+          "subtype": "forward",
+          "type": "traffic",
+          "unauthuser": "AnzenbSt",
+          "vdom": "root"
+        }
+      },
+      "host": {
+        "hostname": "pgshs"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "os": {
+        "name": "Windows"
+      },
+      "related": {
+        "hosts": [
+          "pgshs"
+        ],
+        "user": [
+          "AnzenbSt"
+        ]
+      },
+      "rule": {
+        "category": "Collaboration"
+      },
+      "source": {
+        "address": "AWCMGVSTUUUTYZI",
+        "bytes": 3234,
+        "ip": "192.0.2.87",
+        "port": 60309
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "name": "AnzenbSt"
+      }
+    },
+    {
+      "@timestamp": "2052-07-29T07:27:54.000Z",
+      "destination": {
+        "geo": {
+          "country_name": "Austria"
+        },
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "kind": "event",
+        "original": "<190>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850874067757494 tz=\"+0200\" logid=\"1059028704\" type=\"utm\" subtype=\"app-ctrl\" eventtype=\"signature\" level=\"information\" appid=1111 srcip=192.0.2.87 srccountry=\"Reserved\" dstip=192.0.2.87 dstcountry=\"Austria\" srcport=51826 dstport=443 srcintf=\"vl6\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"wan\" proto=6 service=\"SSL\" direction=\"outgoing\" policyid=15 poluuid=\"aaaaaaaa\" policytype=\"policy\" sessionid=578192116 applist=\"app_aaaaa\" action=\"pass\" appcat=\"Collaboration\" app=\"Microsoft.Portal\" hostname=\"y9nk.nkbjd.investments\" incidentserialno=43434 url=\"/\" msg=\"Collaboration: Microsoft.Portal\" apprisk=\"elevated\" scertcname=\"biyg5nym.juliet.blackfriday\" scertissuer=\"Microsoft Azure ECC TLS Issuing CA 03\"",
+        "timezone": "+0200",
+        "type": [
+          "info"
+        ]
+      },
+      "fortimanager": {
+        "log": {
+          "action": "pass",
+          "app": "Microsoft.Portal",
+          "appcat": "Collaboration",
+          "apprisk": "elevated",
+          "date": "2052-07-29T07:27:54.000Z",
+          "dev": {
+            "id": "pgshs",
+            "name": "pgshs"
+          },
+          "direction": "outgoing",
+          "dstcountry": "Austria",
+          "dstip": "192.0.2.87",
+          "id": "1059028704",
+          "level": "information",
+          "msg": "Collaboration: Microsoft.Portal",
+          "priority_number": 190,
+          "service": "SSL",
+          "srcip": "192.0.2.87",
+          "srcport": 51826,
+          "subtype": "app-ctrl",
+          "type": "utm",
+          "url": "/",
+          "vdom": "root"
+        }
+      },
+      "host": {
+        "hostname": "pgshs"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "Collaboration: Microsoft.Portal",
+      "network": {
+        "direction": "outbound"
+      },
+      "related": {
+        "hosts": [
+          "pgshs"
+        ]
+      },
+      "rule": {
+        "category": "Collaboration"
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 51826
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-29T07:27:54.000Z",
+      "destination": {
+        "address": "192.0.2.87",
+        "bytes": 0,
+        "geo": {
+          "country_name": "Austria"
+        },
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "deny",
+        "kind": "event",
+        "original": "<189>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850873977425432 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=192.0.2.87 srcname=\"192.0.2.87\" srcport=45689 srcintf=\"port1\" srcintfrole=\"wan\" dstip=203.0.113.248 dstname=\"192.0.2.87\" dstport=9844 dstintf=\"vl203\" dstintfrole=\"undefined\" srccountry=\"Russian Federation\" dstcountry=\"Austria\" sessionid=7472860023 proto=6 action=\"deny\" policyid=156 policytype=\"policy\" poluuid=\"aaaaaaa\" policyname=\"Block countries\" service=\"tcp/6554\" trandisp=\"noop\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\" crscore=30 craction=43434 crlevel=\"high\"",
+        "timezone": "+0200",
+        "type": [
+          "info"
+        ]
+      },
+      "fortimanager": {
+        "log": {
+          "action": "deny",
+          "appcat": "unscanned",
+          "crlevel": "high",
+          "crscore": 30,
+          "date": "2052-07-29T07:27:54.000Z",
+          "dev": {
+            "id": "pgshs",
+            "name": "pgshs"
+          },
+          "dstcountry": "Austria",
+          "dstip": "203.0.113.248",
+          "dstname": "192.0.2.87",
+          "id": "0000000013",
+          "level": "notice",
+          "priority_number": 189,
+          "rcvdbyte": 0,
+          "sentbyte": 0,
+          "service": "tcp/6554",
+          "srcip": "192.0.2.87",
+          "srcname": "192.0.2.87",
+          "srcport": 45689,
+          "subtype": "forward",
+          "type": "traffic",
+          "vdom": "root"
+        }
+      },
+      "host": {
+        "hostname": "pgshs"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "related": {
+        "hosts": [
+          "pgshs"
+        ]
+      },
+      "risk": {
+        "static_level": "high",
+        "static_score_norm": 30
+      },
+      "rule": {
+        "category": "unscanned"
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "bytes": 0,
+        "ip": "192.0.2.87",
+        "port": 45689
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-07-29T07:27:54.000Z",
+      "destination": {
+        "geo": {
+          "country_name": "France"
+        },
+        "ip": "192.0.2.87"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "kind": "event",
+        "original": "<190>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850874077898858 tz=\"+0200\" logid=\"1059028704\" type=\"utm\" subtype=\"app-ctrl\" eventtype=\"signature\" level=\"information\" appid=1111 srcip=192.0.2.87 srccountry=\"Reserved\" dstip=192.0.2.87 dstcountry=\"France\" srcport=61284 dstport=443 srcintf=\"vl4\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"wan\" proto=6 service=\"SSL\" direction=\"outgoing\" policyid=15 poluuid=\"aaaaaaaa\" policytype=\"policy\" sessionid=6599703 applist=\"app_aaaaa\" action=\"pass\" appcat=\"General.Interest\" app=\"Windows.Push.Notification\" hostname=\"ijo94oyp8lz.mkwctu.bz\" incidentserialno=343434 url=\"/\" msg=\"General.Interest: Windows.Push.Notification\" apprisk=\"elevated\" scertcname=\"*.yz9ky79xdl9bwunf9juzqmj.never.mm\" scertissuer=\"Microsoft Azure RSA TLS Issuing CA 08\"",
+        "timezone": "+0200",
+        "type": [
+          "info"
+        ]
+      },
+      "fortimanager": {
+        "log": {
+          "action": "pass",
+          "app": "Windows.Push.Notification",
+          "appcat": "General.Interest",
+          "apprisk": "elevated",
+          "date": "2052-07-29T07:27:54.000Z",
+          "dev": {
+            "id": "pgshs",
+            "name": "pgshs"
+          },
+          "direction": "outgoing",
+          "dstcountry": "France",
+          "dstip": "192.0.2.87",
+          "id": "1059028704",
+          "level": "information",
+          "msg": "General.Interest: Windows.Push.Notification",
+          "priority_number": 190,
+          "service": "SSL",
+          "srcip": "192.0.2.87",
+          "srcport": 61284,
+          "subtype": "app-ctrl",
+          "type": "utm",
+          "url": "/",
+          "vdom": "root"
+        }
+      },
+      "host": {
+        "hostname": "pgshs"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "General.Interest: Windows.Push.Notification",
+      "network": {
+        "direction": "outbound"
+      },
+      "related": {
+        "hosts": [
+          "pgshs"
+        ]
+      },
+      "rule": {
+        "category": "General.Interest"
+      },
+      "source": {
+        "ip": "192.0.2.87",
+        "port": 61284
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<189>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850873918993547 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=192.0.2.87 srcname=\"192.0.2.87\" srcport=62575 srcintf=\"ssl.root\" srcintfrole=\"undefined\" dstip=192.0.2.87 dstname=\"xgsasnyjyr28o9r9ew9.karma.college\" dstport=443 dstintf=\"port2\" dstintfrole=\"wan\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=612793788 proto=6 action=\"close\" policyid=111111 policytype=\"policy\" poluuid=\"aaaaaaaa\" user=\"jh32841264\" group=\"U-1870-Employees\" authserver=\"H-I-FOC-radius\" centralnatid=5 service=\"HTTPS\" trandisp=\"snat\" transip=192.0.2.87 transport=62575 appid=34231 app=\"Microsoft.Portal\" appcat=\"Collaboration\" apprisk=\"elevated\" applist=\"app_aaaaa\" duration=13 sentbyte=8105 rcvdbyte=12539 sentpkt=25 rcvdpkt=30 vwlid=0 utmaction=\"allow\" countapp=2",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<189>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850874076487911 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=192.0.2.87 srcname=\"AWCMGVSTUUUTYZI\" srcport=60309 srcintf=\"vl6\" srcintfrole=\"lan\" dstip=192.0.2.87 dstname=\"xgsasnyjyr28o9r9ew9.karma.college\" dstport=443 dstintf=\"port1\" dstintfrole=\"wan\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=3946126266 proto=6 action=\"server-rst\" policyid=15 policytype=\"policy\" poluuid=\"aaaaaaaa\" policyname=\"Default internet access\" centralnatid=6 service=\"HTTPS\" trandisp=\"snat\" transip=192.0.2.87 transport=60309 appid=16190 app=\"Microsoft.SharePoint\" appcat=\"Collaboration\" apprisk=\"elevated\" applist=\"app_aaaaa\" duration=73 sentbyte=3234 rcvdbyte=33392 sentpkt=18 rcvdpkt=32 vwlid=0 utmaction=\"allow\" countapp=1 srchwvendor=\"Dell\" osname=\"Windows\" srcswversion=\"10\" unauthuser=\"AnzenbSt\" unauthusersource=\"kerberos\" mastersrcmac=\"91:32:f9:75:92:91\" srcmac=\"54:13:66:ec:89:72\" srcserver=0",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850874067757494 tz=\"+0200\" logid=\"1059028704\" type=\"utm\" subtype=\"app-ctrl\" eventtype=\"signature\" level=\"information\" appid=1111 srcip=192.0.2.87 srccountry=\"Reserved\" dstip=192.0.2.87 dstcountry=\"Austria\" srcport=51826 dstport=443 srcintf=\"vl6\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"wan\" proto=6 service=\"SSL\" direction=\"outgoing\" policyid=15 poluuid=\"aaaaaaaa\" policytype=\"policy\" sessionid=578192116 applist=\"app_aaaaa\" action=\"pass\" appcat=\"Collaboration\" app=\"Microsoft.Portal\" hostname=\"y9nk.nkbjd.investments\" incidentserialno=43434 url=\"/\" msg=\"Collaboration: Microsoft.Portal\" apprisk=\"elevated\" scertcname=\"biyg5nym.juliet.blackfriday\" scertissuer=\"Microsoft Azure ECC TLS Issuing CA 03\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<189>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850873977425432 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=192.0.2.87 srcname=\"192.0.2.87\" srcport=45689 srcintf=\"port1\" srcintfrole=\"wan\" dstip=203.0.113.248 dstname=\"192.0.2.87\" dstport=9844 dstintf=\"vl203\" dstintfrole=\"undefined\" srccountry=\"Russian Federation\" dstcountry=\"Austria\" sessionid=7472860023 proto=6 action=\"deny\" policyid=156 policytype=\"policy\" poluuid=\"aaaaaaa\" policyname=\"Block countries\" service=\"tcp/6554\" trandisp=\"noop\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\" crscore=30 craction=43434 crlevel=\"high\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "<190>logver=702081639 timestamp=2605858074 devname=\"pgshs\" devid=\"pgshs\" vd=\"root\" date=2052-07-29 time=09:27:54 eventtime=2605850874077898858 tz=\"+0200\" logid=\"1059028704\" type=\"utm\" subtype=\"app-ctrl\" eventtype=\"signature\" level=\"information\" appid=1111 srcip=192.0.2.87 srccountry=\"Reserved\" dstip=192.0.2.87 dstcountry=\"France\" srcport=61284 dstport=443 srcintf=\"vl4\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"wan\" proto=6 service=\"SSL\" direction=\"outgoing\" policyid=15 poluuid=\"aaaaaaaa\" policytype=\"policy\" sessionid=6599703 applist=\"app_aaaaa\" action=\"pass\" appcat=\"General.Interest\" app=\"Windows.Push.Notification\" hostname=\"ijo94oyp8lz.mkwctu.bz\" incidentserialno=343434 url=\"/\" msg=\"General.Interest: Windows.Push.Notification\" apprisk=\"elevated\" scertcname=\"*.yz9ky79xdl9bwunf9juzqmj.never.mm\" scertissuer=\"Microsoft Azure RSA TLS Issuing CA 08\"",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "fortimanager.log.itime": "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-fortinet_fortimanager-log-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "fortinet_fortimanager",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

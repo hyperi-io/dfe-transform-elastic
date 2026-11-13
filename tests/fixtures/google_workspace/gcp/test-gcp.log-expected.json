@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-01T06:24:42.442Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "IMPORT_SSH_PUBLIC_KEY",
+        "category": [
+          "iam"
+        ],
+        "id": "-6709442587437772138",
+        "kind": "event",
+        "original": "{\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"etag\":\"\\\"CTyc505ppdmJR2motHVsU17kzItOkPo5vYViqlSF0rU/_JGuGElaExAZGVCsPXBMf-HkFqo\\\"\",\"events\":{\"type\":\"CLOUD_OSLOGIN\",\"name\":\"IMPORT_SSH_PUBLIC_KEY\",\"parameters\":[{\"name\":\"USER_EMAIL\",\"value\":\"cnk@dau.com\"}]},\"id\":{\"applicationName\":\"token\",\"customerId\":\"C02umwv6u\",\"time\":\"2051-01-01T06:24:42.442Z\",\"uniqueQualifier\":\"-6709442587437772138\"},\"ipAddress\":\"203.0.113.248\",\"kind\":\"admin#reports#activity\"}",
+        "provider": "token",
+        "type": [
+          "creation"
+        ]
+      },
+      "google_workspace": {
+        "actor": {
+          "email": "cnk@dau.com",
+          "profile": {
+            "id": "1"
+          },
+          "type": "USER"
+        },
+        "etag": "\"CTyc505ppdmJR2motHVsU17kzItOkPo5vYViqlSF0rU/_JGuGElaExAZGVCsPXBMf-HkFqo\"",
+        "event": {
+          "name": "IMPORT_SSH_PUBLIC_KEY",
+          "type": "CLOUD_OSLOGIN"
+        },
+        "gcp": {
+          "user_email": "cnk@dau.com"
+        },
+        "id": {
+          "application_name": "token",
+          "customer": {
+            "id": "C02umwv6u"
+          },
+          "time": "2051-01-01T06:24:42.442Z",
+          "unique_qualifier": "-6709442587437772138"
+        },
+        "ip_address": "203.0.113.248",
+        "kind": "admin#reports#activity"
+      },
+      "organization": {
+        "id": "C02umwv6u"
+      },
+      "related": {
+        "hosts": [
+          "dau.com"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "1",
+          "cnk",
+          "cnk@dau.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248",
+        "user": {
+          "domain": "dau.com",
+          "email": "cnk@dau.com",
+          "id": "1",
+          "name": "cnk"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "dau.com",
+        "email": "cnk@dau.com",
+        "id": "1",
+        "name": "cnk"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"actor\":{\"callerType\":\"USER\",\"email\":\"cnk@dau.com\",\"profileId\":1},\"etag\":\"\\\"CTyc505ppdmJR2motHVsU17kzItOkPo5vYViqlSF0rU/_JGuGElaExAZGVCsPXBMf-HkFqo\\\"\",\"events\":{\"type\":\"CLOUD_OSLOGIN\",\"name\":\"IMPORT_SSH_PUBLIC_KEY\",\"parameters\":[{\"name\":\"USER_EMAIL\",\"value\":\"cnk@dau.com\"}]},\"id\":{\"applicationName\":\"token\",\"customerId\":\"C02umwv6u\",\"time\":\"2051-01-01T06:24:42.442Z\",\"uniqueQualifier\":\"-6709442587437772138\"},\"ipAddress\":\"203.0.113.248\",\"kind\":\"admin#reports#activity\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "gcp",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-gcp-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

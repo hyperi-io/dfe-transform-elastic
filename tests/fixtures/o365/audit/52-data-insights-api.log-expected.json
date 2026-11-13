@@ -1,0 +1,1567 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-10T15:13:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 377
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T21:38:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 754
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-10T15:13:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1131
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T10:53:26",
+          "DataType": "DataInsightsSubscription",
+          "Id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1508
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T21:38:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1885
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T10:53:26",
+          "DataType": "DataInsightsSubscription",
+          "Id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2262
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-10T15:13:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2639
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T10:53:26",
+          "DataType": "DataInsightsSubscription",
+          "Id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3016
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T21:38:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "mytenant.onmicrosoft.com"
+        ],
+        "user": [
+          "Service Account"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-10T15:13:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 377
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T21:38:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 754
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-10T15:13:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1131
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T10:53:26",
+          "DataType": "DataInsightsSubscription",
+          "Id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1508
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T21:38:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1885
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T10:53:26",
+          "DataType": "DataInsightsSubscription",
+          "Id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2262
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-10T15:13:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "06e2afce-5c51-4b12-b648-85e4df7fddd1",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2639
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T10:53:26",
+          "DataType": "DataInsightsSubscription",
+          "Id": "6b811d20-75d3-4c78-72be-13b5fbd9d9e5",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "83c064bf-389c-4154-bada-a221de04ec0a",
+        "id": "59aefb70-5a41-47de-a7c0-b52f9da1175c",
+        "name": "1611b85e75e3",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "SearchDataInsightsSubscription",
+        "category": "web",
+        "code": "DataInsightsRestApiAudit",
+        "dataset": "o365.audit",
+        "id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3016
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-12T21:38:38",
+          "DataType": "DataInsightsSubscription",
+          "Id": "3bb74910-ac6e-48bc-3f1d-16f7d331dfee",
+          "Operation": "SearchDataInsightsSubscription",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "RecordType": 52,
+          "UserId": "Service Account",
+          "UserKey": "Service Account",
+          "UserType": 5,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "Service Account"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 9,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,67 @@
+{
+    "events": [
+        {
+            "message": "{\"content\":{\"after\":{\"name\":\"elastic-integration\"},\"before\":{\"name\":\"admin.user\"}},\"created\":\"2052-04-15T19:47:21.565Z\",\"event\":\"org.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"f6c708b3-f71f-4aa7-88f9-b42e9d3e9a24\"}"
+        },
+        {
+            "message": "{\"content\":{\"email\":\"unler.wlch@djxlbxr.com\",\"role\":\"2ebc64c1-3a63-4b8e-93b8-59ee22650823\"},\"created\":\"2052-04-15T19:49:01.920Z\",\"event\":\"org.user.invite\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"f6c708b3-f71f-4aa7-88f9-b42e9d3e9a24\"}"
+        },
+        {
+            "message": "{\"content\":{\"openInvitePublicId\":\"5fe92361-5d66-412c-87c9-7b191ded2e07\",\"url\":\"https://app.snyk.io/invite/link/accept?invite=5fe92361-5d66-412c-87c9-7b191ded2e07\\u0026utm_source=link_invite\\u0026utm_medium=referral\\u0026utm_campaign=product-link-invite\\u0026from=link_invite\"},\"created\":\"2052-04-16T09:46:29.448Z\",\"event\":\"org.user.invite_link.create\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"f6c708b3-f71f-4aa7-88f9-b42e9d3e9a24\"}"
+        },
+        {
+            "message": "{\"content\":{\"role\":\"ADMIN\",\"rolePublicId\":\"2ebc64c1-3a63-4b8e-93b8-59ee22650823\",\"userPublicId\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"},\"created\":\"2052-04-16T21:54:33.257Z\",\"event\":\"org.user.add\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"email\":\"tgifg.gkdv-cjtdw@djxlbxr.com\",\"invitingUserId\":1881478,\"rolePublicId\":\"2ebc64c1-3a63-4b8e-93b8-59ee22650823\"},\"created\":\"2052-04-16T21:54:33.257Z\",\"event\":\"org.user.invite_link.accept\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"origin\":\"cli\"},\"created\":\"2052-04-17T01:08:08.228Z\",\"event\":\"org.project.test\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"after\":{\"autoDepUpgradeEnabled\":true,\"autoRemediationPrs\":{\"backlogPrStrategy\":\"vuln\",\"container\":{\"enabled\":true},\"freshPrsEnabled\":true,\"usePatchRemediation\":true},\"pullRequestTestEnabled\":true,\"reachableVulns\":{}},\"before\":{\"autoDepUpgradeEnabled\":true,\"autoRemediationPrs\":{\"backlogPrStrategy\":\"vuln\",\"container\":{},\"freshPrsEnabled\":true,\"usePatchRemediation\":true},\"pullRequestTestEnabled\":true,\"reachableVulns\":{}},\"flow\":\"on-boarding\",\"sourceType\":\"github\"},\"created\":\"2052-04-17T01:24:49.748Z\",\"event\":\"org.integration.settings.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"after\":{\"sastSettings\":{\"sastEnabled\":true}},\"before\":{\"sastSettings\":{}},\"interface\":\"ui\"},\"created\":\"2052-04-17T01:24:49.837Z\",\"event\":\"org.sast_settings.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"targetId\":\"904e2257-82e8-4374-a66b-34c7bfdc9821\"},\"created\":\"2052-04-17T01:26:10.024Z\",\"event\":\"org.target.create\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"action\":\"Cloned repo: https://github.com/cibhtwe/mito.git commit hash: 1b1271220a8f15b70b4b6db3d02f4fac11df1d4e\",\"requestId\":\"bd2ead21-7fbb-45c5-b59c-32c0088f31e2\"},\"created\":\"2052-04-17T01:26:13.000Z\",\"event\":\"org.project.files.create\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\"}"
+        },
+        {
+            "message": "{\"content\":{\"AboveSizeLimit\":{},\"action\":\"Modify files - exclude\",\"excluded\":{},\"notSupported\":{\"\":1,\".cel\":1,\".json\":1,\".md\":1,\".mod\":1,\".sum\":1,\".txt\":70,\".yml\":1},\"requestId\":\"bd2ead21-7fbb-45c5-b59c-32c0088f31e2\"},\"created\":\"2052-04-17T01:26:13.000Z\",\"event\":\"org.project.files.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\"}"
+        },
+        {
+            "message": "{\"content\":{\"action\":\"Retrieve files\",\"requestId\":\"bd2ead21-7fbb-45c5-b59c-32c0088f31e2\"},\"created\":\"2052-04-17T01:26:13.000Z\",\"event\":\"org.project.files.access\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\"}"
+        },
+        {
+            "message": "{\"content\":{\"action\":\"Returned from analysis\"},\"created\":\"2052-04-17T01:26:19.025Z\",\"event\":\"org.project.issue.create\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\"}"
+        },
+        {
+            "message": "{\"content\":{\"issues\":7},\"created\":\"2052-04-17T01:26:19.192Z\",\"event\":\"org.project.issue.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"project_id\":\"d2b71a36-329b-4269-b692-b1103285129a\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"snapshotId\":\"5e1c6740-3d5a-4f51-91c9-8e834bc6a680\"},\"created\":\"2052-04-17T01:26:19.268Z\",\"event\":\"org.project.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"project_id\":\"d2b71a36-329b-4269-b692-b1103285129a\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"AboveSizeLimit\":{\".js\":1},\"action\":\"Modify files - exclude\",\"excluded\":{\"\":1,\".yml\":1},\"notSupported\":{\"\":163,\".0\":10,\".00\":1,\".04\":1,\".1\":1,\".1-faulty\":1,\".14\":2,\".17\":1,\".18-Debian\":1,\".2\":1,\".20\":1,\".23-CentOS6\":1,\".asciidoc\":1214,\".bash\":1,\".bat\":14,\".cert\":1,\".cfg\":1,\".cnf\":1,\".conf\":17,\".crt\":12,\".csr\":4,\".csv\":5,\".current\":2,\".dat\":88,\".debug\":1,\".disabled\":141,\".dll\":1,\".dockerignore\":2,\".editorconfig\":2,\".env\":1,\".evtx\":115,\".exe\":1,\".expected\":54,\".fbs\":1,\".gitattributes\":1,\".gitignore\":30,\".go-version\":1,\".gob\":1,\".groovy\":8,\".gz\":4,\".hcl\":2,\".ini\":2,\".j2\":14,\".jewel\":1,\".jks\":2,\".journal\":1,\".jpg\":10,\".json\":3500,\".key\":16,\".log\":590,\".md\":116,\".mk\":2,\".mmdb\":3,\".mod\":1,\".nautilus\":1,\".ndjson\":4,\".orig\":1,\".pcap\":118,\".pem\":8,\".pic\":6,\".placeholder\":3,\".plain\":51,\".png\":208,\".properties\":2,\".ps1\":1,\".pylintrc\":1,\".rl\":15,\".sh\":62,\".spec\":1,\".sql\":1,\".srl\":2,\".sum\":2,\".svg\":8,\".template\":2,\".tf\":21,\".thrift\":3,\".tmpl\":117,\".toml\":1,\".tpl\":1,\".txt\":32,\".xsl\":1,\".yaml\":34,\".yml\":1844,\".zip\":3},\"requestId\":\"bd2ead21-7fbb-45c5-b59c-32c0088f31e2\"},\"created\":\"2052-04-17T01:26:21.000Z\",\"event\":\"org.project.files.edit\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\"}"
+        },
+        {
+            "message": "{\"content\":{\"origin\":\"github\",\"target\":{\"branch\":\"dev\",\"id\":477916110,\"name\":\"mito\",\"owner\":\"elastic\"},\"targetFile\":\"go.mod\",\"type\":\"gomodules\"},\"created\":\"2052-04-17T01:26:29.493Z\",\"event\":\"org.project.monitor\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"project_id\":\"cc960419-b823-4dcc-84a4-449b0595b260\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"sourceOrgId\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\"},\"created\":\"2052-04-17T01:26:49.288Z\",\"event\":\"org.project.add\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"project_id\":\"7a76800e-330b-46a5-ac21-a40f1605919e\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"issues\":7},\"created\":\"2052-04-17T01:35:51.787Z\",\"event\":\"org.project.issue.access\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"project_id\":\"d2b71a36-329b-4269-b692-b1103285129a\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{},\"created\":\"2052-04-17T01:35:52.948Z\",\"event\":\"org.project.file.access\",\"org_id\":\"97113b88-754d-4b3d-9cb3-07a737f5c175\",\"project_id\":\"d2b71a36-329b-4269-b692-b1103285129a\",\"user_id\":\"08b563d9-28a2-43a0-bf48-7398e5710c7e\"}"
+        },
+        {
+            "message": "{\"content\":{\"role\":{\"created\":\"2050-12-01T09:54:03.266Z\",\"description\":\"Admin\",\"groupPermissions\":[\"group.read\",\"group.edit\",\"group.membership.edit\",\"group.iac.settings.read\",\"group.iac.settings.edit\",\"group.report.read\",\"group.org.add\",\"group.org.remove\",\"group.org.list\",\"group.membership.read\",\"group.user.add\",\"group.user.read\",\"group.user.edit\",\"group.user.remove\",\"group.user.delete\",\"group.user.role.edit\",\"group.user.provision\",\"group.service_account.create\",\"group.service_account.read\",\"group.service_account.edit\",\"group.service_account.delete\",\"group.audit.read\",\"group.settings.read\",\"group.settings.edit\",\"group.notification_settings.read\",\"group.notification_settings.edit\",\"group.policy.read\",\"group.policy.create\",\"group.policy.edit\",\"group.policy.delete\",\"group.tag.read\",\"group.flags.read\",\"group.flags.edit\",\"group.settings.request_access.read\",\"group.settings.request_access.edit\",\"group.sso.read\",\"group.sso.edit\",\"group.roles.read\",\"group.roles.create\",\"group.roles.edit\",\"group.roles.remove\",\"group.issues.read\",\"group.app.read\",\"group.app.install\",\"group.app.edit\",\"group.apprisk.read\",\"group.apprisk.edit\"],\"id\":1,\"modified\":\"2052-06-25T17:13:51.845Z\",\"name\":\"Group Admin\",\"orgPermissions\":[\"org.read\",\"org.edit\",\"org.delete\",\"org.report.read\",\"org.project.create\",\"org.project.read\",\"org.project.edit\",\"org.project.delete\",\"org.project.status\",\"org.project.test\",\"org.project.move\",\"org.project.snapshot.read\",\"org.project.integration.edit\",\"org.project.jira.issue.read\",\"org.project.jira.issue.create\",\"org.project.ignore.create\",\"org.project.ignore.read\",\"org.project.ignore.edit\",\"org.project.ignore.delete\",\"org.project.pr.create\",\"org.project.pr.skip\",\"org.project.attributes.edit\",\"org.project.tag.edit\",\"org.collection.read\",\"org.collection.create\",\"org.collection.delete\",\"org.collection.edit\",\"org.service_account.create\",\"org.service_account.read\",\"org.service_account.edit\",\"org.service_account.delete\",\"org.user.add\",\"org.user.invite\",\"org.user.manage\",\"org.user.read\",\"org.user.delete\",\"org.user.leave\",\"org.user.provision\",\"org.integration.read\",\"org.integration.edit\",\"org.package.test\",\"org.billing.read\",\"org.billing.edit\",\"org.entitlements.read\",\"org.audit_log.read\",\"org.flags.read\",\"org.flags.edit\",\"org.outbound_webhook.read\",\"org.outbound_webhook.create\",\"org.outbound_webhook.delete\",\"org.app.read\",\"org.app.install\",\"org.app.create\",\"org.app.delete\",\"org.app.edit\",\"org.cloud_environments.read\",\"org.cloud_environments.create\",\"org.cloud_environments.delete\",\"org.cloud_environments.edit\",\"org.cloud_scans.read\",\"org.cloud_scans.create\",\"org.cloud_resources.read\",\"org.cloud_artifacts.read\",\"org.cloud_artifacts.create\",\"org.cloud_custom_rules.read\",\"org.cloud_custom_rules.create\",\"org.cloud_custom_rules.edit\",\"org.cloud_custom_rules.delete\",\"org.container_image.read\",\"org.container_image.create\",\"org.container_image.edit\",\"org.kubernetes.resources.publish\"],\"publicId\":\"b1352603-554c-4d45-bb70-c6263112255c\",\"role\":\"ADMIN\",\"userPermissions\":[\"user.read\",\"user.edit\",\"user.activate\",\"user.deactivate\"]},\"serviceAccountPublicId\":\"f40ed9d0-37cd-4250-83a3-cde880dfd792\"},\"created\":\"2052-06-25T22:52:14.211Z\",\"event\":\"group.service_account.create\",\"group_id\":\"2b4345cc-7e16-4691-9bc3-a1d5b99af25f\",\"user_id\":\"6fb1f49d-de69-4e15-8ff8-499a4f612302\"}"
+        }
+    ]
+}

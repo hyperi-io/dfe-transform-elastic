@@ -1,0 +1,143 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-09-11T09:29:18.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.08",
+          "flattened": {
+            "request_parameters": {
+              "configurationRecorderName": "default"
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "1010101010101",
+          "request_id": "5c002f8e-b9cb-47b8-8080-8e1c3fada16f",
+          "request_parameters": "{configurationRecorderName=default}",
+          "user_identity": {
+            "access_key_id": "ACCESS_KEY_EXAMPLE",
+            "arn": "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "1010101010101"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "default"
+          ]
+        }
+      },
+      "event": {
+        "action": "StopConfigurationRecorder",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "7398f1fd-cbbe-4e15-b1f6-91737713e275",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"7398f1fd-cbbe-4e15-b1f6-91737713e275\",\"eventName\":\"StopConfigurationRecorder\",\"eventSource\":\"config.amazonaws.com\",\"eventTime\":\"2052-09-11T09:29:18Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.08\",\"readOnly\":false,\"recipientAccountId\":\"1010101010101\",\"requestID\":\"5c002f8e-b9cb-47b8-8080-8e1c3fada16f\",\"requestParameters\":{\"configurationRecorderName\":\"default\"},\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"config.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.14.5 Python/3.11.6 Darwin/23.6.0 exec-env/grimoire_2ad13116-770a-4b81-8d14-a9422d0e9aed exe/x86_64 prompt/off command/configservice.stop-configuration-recorder\",\"userIdentity\":{\"accessKeyId\":\"ACCESS_KEY_EXAMPLE\",\"accountId\":\"1010101010101\",\"arn\":\"arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co\",\"principalId\":\"AIDA2IBR2EZTJMPOR52WV\",\"type\":\"IAMUser\",\"userName\":\"vdrydpuyfntdvy@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "config.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "ACCESS_KEY_EXAMPLE",
+          "default",
+          "vdrydpuyfntdvy@apejtlc.co",
+          "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co"
+        ],
+        "user": [
+          "AIDA2IBR2EZTJMPOR52WV",
+          "vdrydpuyfntdvy@apejtlc.co"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "default"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "config.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "vdrydpuyfntdvy@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co"
+          ]
+        },
+        "id": "AIDA2IBR2EZTJMPOR52WV",
+        "name": "vdrydpuyfntdvy@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.14.5 Python/3.11.6 Darwin/23.6.0 exec-env/grimoire_2ad13116-770a-4b81-8d14-a9422d0e9aed exe/x86_64 prompt/off command/configservice.stop-configuration-recorder",
+        "version": "2.14.5"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"7398f1fd-cbbe-4e15-b1f6-91737713e275\",\"eventName\":\"StopConfigurationRecorder\",\"eventSource\":\"config.amazonaws.com\",\"eventTime\":\"2052-09-11T09:29:18Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.08\",\"readOnly\":false,\"recipientAccountId\":\"1010101010101\",\"requestID\":\"5c002f8e-b9cb-47b8-8080-8e1c3fada16f\",\"requestParameters\":{\"configurationRecorderName\":\"default\"},\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"config.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.14.5 Python/3.11.6 Darwin/23.6.0 exec-env/grimoire_2ad13116-770a-4b81-8d14-a9422d0e9aed exe/x86_64 prompt/off command/configservice.stop-configuration-recorder\",\"userIdentity\":{\"accessKeyId\":\"ACCESS_KEY_EXAMPLE\",\"accountId\":\"1010101010101\",\"arn\":\"arn:aws:iam::1010101010101:user/vdrydpuyfntdvy@apejtlc.co\",\"principalId\":\"AIDA2IBR2EZTJMPOR52WV\",\"type\":\"IAMUser\",\"userName\":\"vdrydpuyfntdvy@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

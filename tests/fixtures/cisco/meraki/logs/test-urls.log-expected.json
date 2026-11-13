@@ -1,0 +1,300 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2022-03-17T01:11:43.348Z",
+      "cisco_meraki": {
+        "event_subtype": "http_access_error",
+        "event_type": "urls",
+        "urls": {
+          "mac": "36-2A-4A-FD-04-42"
+        }
+      },
+      "destination": {
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "http-access-error",
+        "category": [
+          "network",
+          "web"
+        ],
+        "original": "<134>1 1647479503.348215340 MX84 urls src=10.25.251.34:60336 dst=198.51.100.144:80 mac=36:2A:4A:FD:04:42 request: UNKNOWN https://bitbucket.org/...",
+        "type": [
+          "info",
+          "error"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "UNKNOWN"
+        }
+      },
+      "message": "src=10.25.251.34:60336 dst=198.51.100.144:80 mac=36:2A:4A:FD:04:42 request: UNKNOWN https://bitbucket.org/...",
+      "observer": {
+        "hostname": "MX84"
+      },
+      "source": {
+        "ip": "10.25.251.34",
+        "port": 60336
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "bitbucket.org",
+        "original": "https://bitbucket.org/...",
+        "path": "/...",
+        "registered_domain": "bitbucket.org",
+        "scheme": "https",
+        "top_level_domain": "org"
+      }
+    },
+    {
+      "@timestamp": "2022-03-17T01:11:43.676Z",
+      "cisco_meraki": {
+        "event_subtype": "http_access",
+        "event_type": "urls",
+        "urls": {
+          "mac": "67-9C-DD-23-2B-56"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "http-access",
+        "category": [
+          "network",
+          "web"
+        ],
+        "original": "<134>1 1647479503.676404537 MX84 urls src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+        "type": [
+          "info",
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "message": "src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+      "observer": {
+        "hostname": "MX84"
+      },
+      "source": {
+        "ip": "10.66.136.167",
+        "port": 56424
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "lh3.googleusercontent.com",
+        "original": "https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+        "path": "/p/AFVnnY=w2048-h1024",
+        "registered_domain": "googleusercontent.com",
+        "scheme": "https",
+        "subdomain": "lh3",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2022-03-17T01:11:43.676Z",
+      "cisco_meraki": {
+        "event_subtype": "http_access",
+        "event_type": "urls",
+        "urls": {
+          "mac": "67-9C-DD-23-2B-56"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "http-access",
+        "category": [
+          "network",
+          "web"
+        ],
+        "original": "<134>1 1647479503.676404537 MX84 urls src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0' request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+        "type": [
+          "info",
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "message": "src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0' request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+      "observer": {
+        "hostname": "MX84"
+      },
+      "source": {
+        "ip": "10.66.136.167",
+        "port": 56424
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "lh3.googleusercontent.com",
+        "original": "https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+        "path": "/p/AFVnnY=w2048-h1024",
+        "registered_domain": "googleusercontent.com",
+        "scheme": "https",
+        "subdomain": "lh3",
+        "top_level_domain": "com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "108.0"
+      }
+    },
+    {
+      "@timestamp": "2024-03-07T18:39:54.196Z",
+      "cisco_meraki": {
+        "event_subtype": "http_access",
+        "event_type": "urls",
+        "urls": {
+          "mac": "67-9C-DD-23-2B-56"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.248",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "http-access",
+        "category": [
+          "network",
+          "web"
+        ],
+        "original": "<134>1 1709836794.196198735 BOS_WAP2_Service urls src=10.25.251.34:60336 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Microsoft NCSI' request: GET http://www.msftconnecttest.com/connecttest.txt",
+        "type": [
+          "info",
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "message": "src=10.25.251.34:60336 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Microsoft NCSI' request: GET http://www.msftconnecttest.com/connecttest.txt",
+      "observer": {
+        "hostname": "BOS_WAP2_Service"
+      },
+      "source": {
+        "ip": "10.25.251.34",
+        "port": 60336
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "www.msftconnecttest.com",
+        "extension": "txt",
+        "original": "http://www.msftconnecttest.com/connecttest.txt",
+        "path": "/connecttest.txt",
+        "registered_domain": "msftconnecttest.com",
+        "scheme": "http",
+        "subdomain": "www",
+        "top_level_domain": "com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "'Microsoft NCSI'"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "<134>1 1647479503.348215340 MX84 urls src=10.25.251.34:60336 dst=198.51.100.144:80 mac=36:2A:4A:FD:04:42 request: UNKNOWN https://bitbucket.org/...",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>1 1647479503.676404537 MX84 urls src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>1 1647479503.676404537 MX84 urls src=10.66.136.167:56424 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0' request: GET https://lh3.googleusercontent.com/p/AFVnnY=w2048-h1024",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<134>1 1709836794.196198735 BOS_WAP2_Service urls src=10.25.251.34:60336 dst=203.0.113.248:443 mac=67:9C:DD:23:2B:56 agent='Microsoft NCSI' request: GET http://www.msftconnecttest.com/connecttest.txt",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_meraki-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "cisco_meraki",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

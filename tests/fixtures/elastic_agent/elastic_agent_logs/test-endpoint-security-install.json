@@ -1,0 +1,88 @@
+{
+  "events": [
+    {
+      "agent": {
+        "name": "mdym-wyzm-11512",
+        "id": "c2153047-ca8d-4668-898c-43716f524b04",
+        "type": "filebeat",
+        "ephemeral_id": "da804904-befe-4bb5-a668-d66270af5d85",
+        "version": "9.2.0"
+      },
+      "log": {
+        "file": {
+          "path": "C:\\Program Files\\Elastic\\Agent\\data\\elastic-agent-9.2.0-e7bf31\\logs\\elastic-agent-20251027-1.ndjson"
+        }
+      },
+      "elastic_agent": {
+        "id": "c2153047-ca8d-4668-898c-43716f524b04",
+        "version": "9.2.0",
+        "snapshot": false
+      },
+      "message": "2053-10-27 16:09:04: debug: Util.cpp:520 Setting up minifilter registry keys successful.",
+      "log.logger": "component.runtime.endpoint-default.service_runtime",
+      "cloud": {
+        "image": {
+          "id": "ami-021158f59b67638f2"
+        },
+        "availability_zone": "us-east-2b",
+        "instance": {
+          "id": "i-1111111111111111a"
+        },
+        "provider": "aws",
+        "service": {
+          "name": "EC2"
+        },
+        "machine": {
+          "type": "t2.micro"
+        },
+        "region": "us-east-2",
+        "account": {
+          "id": "111111111111"
+        }
+      },
+      "log.origin": {
+        "file.line": 68,
+        "function": "github.com/cibhtwe/elastic-agent/pkg/component/runtime.executeCommand.func2",
+        "file.name": "runtime/service_command.go"
+      },
+      "@timestamp": "2053-10-27T16:09:04.525Z",
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "data_stream": {
+        "namespace": "default",
+        "type": "logs",
+        "dataset": "elastic_agent"
+      },
+      "host": {
+        "hostname": "mdym-wyzm-11512",
+        "os": {
+          "build": "20348.4294",
+          "kernel": "10.0.20348.4294 (WinBuild.160101.0800)",
+          "name": "Windows Server 2022 Datacenter",
+          "family": "windows",
+          "type": "windows",
+          "version": "10.0",
+          "platform": "windows"
+        },
+        "ip": [
+          "fe80::9d46:c45c:a144:b134",
+          "172.23.175.20"
+        ],
+        "name": "mdym-wyzm-11512",
+        "id": "af4216b9-dd2b-46e1-b7de-d594813378dc",
+        "mac": [
+          "95-D8-D4-DC-48-B9"
+        ],
+        "architecture": "x86_64"
+      },
+      "context": "command output",
+      "log.level": "error",
+      "event": {
+        "agent_id_status": "verified",
+        "ingested": "2053-10-27T16:09:08Z",
+        "dataset": "elastic_agent"
+      }
+    }
+  ]
+}

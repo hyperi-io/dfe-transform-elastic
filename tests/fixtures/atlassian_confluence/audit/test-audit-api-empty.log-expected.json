@@ -1,0 +1,25 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"entities\":[],\"pagingInfo\":{\"lastPage\":true,\"size\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-atlassian_confluence-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "atlassian_confluence",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

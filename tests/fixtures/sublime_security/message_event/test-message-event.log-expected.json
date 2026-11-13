@@ -1,0 +1,206 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-07-12T05:15:19.061Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "fnvfc@example.com"
+          ]
+        },
+        "subject": "Available?",
+        "to": {
+          "address": [
+            "fpf@example.com",
+            "rvny@example.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "id": "ae166972-2725-4f86-859a-a517e7fa4592",
+        "kind": "event",
+        "original": "{\"id\":\"ae166972-2725-4f86-859a-a517e7fa4592\",\"canonical_id\":\"ca789cb25c444e0f48675a7e328b84330efbe8e7a6f7ed44571d306bf025dcb6\",\"created_at\":\"2052-07-12T05:15:19.061701Z\",\"external_id\":\"966c3ed7-ba0d-4a06-a9d9-64f602404e11\",\"message_source_id\":\"090972b9-e550-4a07-bc35-ef645425cd7a\",\"mailbox\":{\"id\":\"052af843-a3c1-4060-86ae-073413338e1e\",\"external_id\":null,\"email\":\"fnvfc@example.com\"},\"subject\":\"Available?\",\"sender\":{\"email\":\"fnvfc@example.com\",\"display_name\":\"Ekkcf\"},\"landed_in_spam\":false,\"read_at\":null,\"replied_at\":null,\"forwarded_at\":null,\"forward_recipients\":[],\"recipients\":[{\"email\":\"fpf@example.com\"},{\"email\":\"rvny@example.com\"}]}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Sublime Security",
+        "vendor": "Sublime Security"
+      },
+      "related": {
+        "user": [
+          "fpf@example.com",
+          "rvny@example.com",
+          "Ekkcf",
+          "fnvfc@example.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "name": "Ekkcf"
+        }
+      },
+      "sublime_security": {
+        "message_event": {
+          "canonical_id": "ca789cb25c444e0f48675a7e328b84330efbe8e7a6f7ed44571d306bf025dcb6",
+          "created_at": "2052-07-12T05:15:19.061Z",
+          "external_id": "966c3ed7-ba0d-4a06-a9d9-64f602404e11",
+          "id": "ae166972-2725-4f86-859a-a517e7fa4592",
+          "landed_in_spam": false,
+          "mailbox": {
+            "email": "fnvfc@example.com",
+            "id": "052af843-a3c1-4060-86ae-073413338e1e"
+          },
+          "message_source_id": "090972b9-e550-4a07-bc35-ef645425cd7a",
+          "recipients": [
+            {
+              "email": "fpf@example.com"
+            },
+            {
+              "email": "rvny@example.com"
+            }
+          ],
+          "sender": {
+            "display_name": "Ekkcf",
+            "email": "fnvfc@example.com"
+          },
+          "subject": "Available?"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-04T01:06:50.738Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "id": "429f7f02-1294-4b4d-87f3-0770029aaf60",
+        "kind": "event",
+        "original": "{\"created_at\":\"2051-05-04T01:06:50.73801Z\",\"data\":{\"flagged_rules\":[{\"id\":\"650ed426-337b-4a71-ae40-93342030198d\",\"name\":\"Test rule1\",\"severity\":\"high\",\"tags\":[\"Testing\"]},{\"id\":\"3717db04-0805-4eda-bb9b-e9472dc019a1\",\"name\":\"Test rule2\",\"severity\":\"high\",\"tags\":[\"Testing\"]},{\"id\":\"7e12b8ef-f9f1-426b-a7b0-48405487a177\",\"name\":\"Test rule3\",\"severity\":\"low\",\"tags\":[\"Testing\"]},{\"id\":\"438b8d6f-a5c9-4a46-82d4-6626b4ec826c\",\"name\":\"Test rule4\",\"severity\":\"medium\",\"tags\":[\"Testing\"]}],\"message\":{\"canonical_id\":\"4cbd1fab8216b77271b8b67339f971e06c4579cbd0bfc9c4722cb68131596fb0\",\"external_id\":\"187e44c2288f2e8d\",\"id\":\"429f7f02-1294-4b4d-87f3-0770029aaf60\",\"mailbox\":{\"external_id\":\"100712120249161713725\",\"id\":\"0688e1f5-ea6b-4f76-bc2a-c8a5dd9b1b92\"},\"message_source_id\":\"f99da572-0842-4162-b6f2-b510c3250a97\"},\"triggered_actions\":[{\"id\":\"7e12b8ef-f9f1-426b-a7b0-48405487a177\",\"name\":\"test\",\"type\":\"alert\"},{\"id\":\"7e14d6ed-a1e1-441a-a8b6-97225065e141\",\"name\":\"test 1\",\"type\":\"rule\"}]},\"type\":\"message.flagged\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Sublime Security",
+        "vendor": "Sublime Security"
+      },
+      "rule": {
+        "id": [
+          "650ed426-337b-4a71-ae40-93342030198d",
+          "3717db04-0805-4eda-bb9b-e9472dc019a1",
+          "7e12b8ef-f9f1-426b-a7b0-48405487a177",
+          "438b8d6f-a5c9-4a46-82d4-6626b4ec826c"
+        ],
+        "name": [
+          "Test rule1",
+          "Test rule2",
+          "Test rule3",
+          "Test rule4"
+        ]
+      },
+      "sublime_security": {
+        "message_event": {
+          "canonical_id": "4cbd1fab8216b77271b8b67339f971e06c4579cbd0bfc9c4722cb68131596fb0",
+          "created_at": "2051-05-04T01:06:50.738Z",
+          "data": {
+            "flagged_rules": [
+              {
+                "id": "650ed426-337b-4a71-ae40-93342030198d",
+                "name": "Test rule1",
+                "severity": "high",
+                "tags": [
+                  "Testing"
+                ]
+              },
+              {
+                "id": "3717db04-0805-4eda-bb9b-e9472dc019a1",
+                "name": "Test rule2",
+                "severity": "high",
+                "tags": [
+                  "Testing"
+                ]
+              },
+              {
+                "id": "7e12b8ef-f9f1-426b-a7b0-48405487a177",
+                "name": "Test rule3",
+                "severity": "low",
+                "tags": [
+                  "Testing"
+                ]
+              },
+              {
+                "id": "438b8d6f-a5c9-4a46-82d4-6626b4ec826c",
+                "name": "Test rule4",
+                "severity": "medium",
+                "tags": [
+                  "Testing"
+                ]
+              }
+            ],
+            "triggered_actions": [
+              {
+                "id": "7e12b8ef-f9f1-426b-a7b0-48405487a177",
+                "name": "test",
+                "type": "alert"
+              },
+              {
+                "id": "7e14d6ed-a1e1-441a-a8b6-97225065e141",
+                "name": "test 1",
+                "type": "rule"
+              }
+            ]
+          },
+          "external_id": "187e44c2288f2e8d",
+          "id": "429f7f02-1294-4b4d-87f3-0770029aaf60",
+          "mailbox": {
+            "external_id": "100712120249161713725",
+            "id": "0688e1f5-ea6b-4f76-bc2a-c8a5dd9b1b92"
+          },
+          "message_source_id": "f99da572-0842-4162-b6f2-b510c3250a97",
+          "type": "message.flagged"
+        }
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"ae166972-2725-4f86-859a-a517e7fa4592\",\"canonical_id\":\"ca789cb25c444e0f48675a7e328b84330efbe8e7a6f7ed44571d306bf025dcb6\",\"created_at\":\"2052-07-12T05:15:19.061701Z\",\"external_id\":\"966c3ed7-ba0d-4a06-a9d9-64f602404e11\",\"message_source_id\":\"090972b9-e550-4a07-bc35-ef645425cd7a\",\"mailbox\":{\"id\":\"052af843-a3c1-4060-86ae-073413338e1e\",\"external_id\":null,\"email\":\"fnvfc@example.com\"},\"subject\":\"Available?\",\"sender\":{\"email\":\"fnvfc@example.com\",\"display_name\":\"Ekkcf\"},\"landed_in_spam\":false,\"read_at\":null,\"replied_at\":null,\"forwarded_at\":null,\"forward_recipients\":[],\"recipients\":[{\"email\":\"fpf@example.com\"},{\"email\":\"rvny@example.com\"}]}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"created_at\":\"2051-05-04T01:06:50.73801Z\",\"data\":{\"flagged_rules\":[{\"id\":\"650ed426-337b-4a71-ae40-93342030198d\",\"name\":\"Test rule1\",\"severity\":\"high\",\"tags\":[\"Testing\"]},{\"id\":\"3717db04-0805-4eda-bb9b-e9472dc019a1\",\"name\":\"Test rule2\",\"severity\":\"high\",\"tags\":[\"Testing\"]},{\"id\":\"7e12b8ef-f9f1-426b-a7b0-48405487a177\",\"name\":\"Test rule3\",\"severity\":\"low\",\"tags\":[\"Testing\"]},{\"id\":\"438b8d6f-a5c9-4a46-82d4-6626b4ec826c\",\"name\":\"Test rule4\",\"severity\":\"medium\",\"tags\":[\"Testing\"]}],\"message\":{\"canonical_id\":\"4cbd1fab8216b77271b8b67339f971e06c4579cbd0bfc9c4722cb68131596fb0\",\"external_id\":\"187e44c2288f2e8d\",\"id\":\"429f7f02-1294-4b4d-87f3-0770029aaf60\",\"mailbox\":{\"external_id\":\"100712120249161713725\",\"id\":\"0688e1f5-ea6b-4f76-bc2a-c8a5dd9b1b92\"},\"message_source_id\":\"f99da572-0842-4162-b6f2-b510c3250a97\"},\"triggered_actions\":[{\"id\":\"7e12b8ef-f9f1-426b-a7b0-48405487a177\",\"name\":\"test\",\"type\":\"alert\"},{\"id\":\"7e14d6ed-a1e1-441a-a8b6-97225065e141\",\"name\":\"test 1\",\"type\":\"rule\"}]},\"type\":\"message.flagged\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "message_event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sublime_security-message_event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "sublime_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

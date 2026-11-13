@@ -1,0 +1,232 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-17T04:29:38.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-17T04:29:38.000Z",
+        "id": "74605075-7517-1111-1872-435506708175",
+        "kind": "event",
+        "original": "{\"ModifiedTime\":\"2049-11-17T04:29:38.000Z\",\"CreationTime\":\"2049-11-17T04:29:38.000Z\",\"ModifiedBy\":12345678901234567,\"RequestID\":\"74605075-7517-1111-1872-435506708175\",\"SessionID\":\"9scq60qybh0n8ysc8w4x5uaj5\",\"AuditOldValue\":\"\",\"AuditNewValue\":\"{\\\"id\\\":\\\"72058340288495701\\\",\\\"name\\\":\\\"Some-Name\\\",\\\"domainOrIpAddress\\\":\\\"198.51.100.211\\\",\\\"description\\\":\\\"This is a description field\\\",\\\"enabled\\\":\\\"true\\\"}\",\"AuditOperationType\":\"Create\",\"ObjectType\":\"Server\",\"ObjectName\":\"Some-Name\",\"ObjectID\":12345678901234567,\"CustomerID\":98765432109876543,\"User\":\"qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com\",\"ClientAuditUpdate\":0}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "organization": {
+        "id": "98765432109876543"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "12345678901234567",
+          "qkaeanin",
+          "qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com"
+        ]
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "puimshmziulqxmrkq.oyb-eqzrgvbj.com",
+        "email": "qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com",
+        "id": "12345678901234567",
+        "name": "qkaeanin"
+      },
+      "zscaler_zpa": {
+        "audit": {
+          "client_audit_update": 0,
+          "object": {
+            "id": "12345678901234567",
+            "name": "Some-Name",
+            "type": "Server"
+          },
+          "operation_type": "Create",
+          "session": {
+            "id": "9scq60qybh0n8ysc8w4x5uaj5"
+          },
+          "value": {
+            "new": {
+              "description": "This is a description field",
+              "domainOrIpAddress": "198.51.100.211",
+              "enabled": "true",
+              "id": "72058340288495701",
+              "name": "Some-Name"
+            }
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-11-17T04:29:38.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-17T04:29:38.000Z",
+        "id": "74605075-7517-1111-1872-435506708175",
+        "kind": "event",
+        "original": "{\"ModifiedTime\":\"\",\"CreationTime\":\"2049-11-17T04:29:38.000Z\",\"ModifiedBy\":12345678901234567,\"RequestID\":\"74605075-7517-1111-1872-435506708175\",\"SessionID\":\"9scq60qybh0n8ysc8w4x5uaj5\",\"AuditOldValue\":\"\",\"AuditNewValue\":\"{\\\"id\\\":\\\"72058340288495701\\\",\\\"name\\\":\\\"Some-Name\\\",\\\"domainOrIpAddress\\\":\\\"example.com\\\",\\\"description\\\":\\\"This is a description field\\\",\\\"enabled\\\":\\\"true\\\"}\",\"AuditOperationType\":\"Create\",\"ObjectType\":\"Server\",\"ObjectName\":\"Some-Name\",\"ObjectID\":12345678901234567,\"CustomerID\":98765432109876543,\"User\":\"qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com\",\"ClientAuditUpdate\":0}",
+        "outcome": "success",
+        "type": [
+          "creation"
+        ]
+      },
+      "organization": {
+        "id": "98765432109876543"
+      },
+      "related": {
+        "user": [
+          "12345678901234567",
+          "qkaeanin",
+          "qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com"
+        ]
+      },
+      "server": {
+        "address": "example.com"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "puimshmziulqxmrkq.oyb-eqzrgvbj.com",
+        "email": "qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com",
+        "id": "12345678901234567",
+        "name": "qkaeanin"
+      },
+      "zscaler_zpa": {
+        "audit": {
+          "client_audit_update": 0,
+          "object": {
+            "id": "12345678901234567",
+            "name": "Some-Name",
+            "type": "Server"
+          },
+          "operation_type": "Create",
+          "session": {
+            "id": "9scq60qybh0n8ysc8w4x5uaj5"
+          },
+          "value": {
+            "new": {
+              "description": "This is a description field",
+              "domainOrIpAddress": "example.com",
+              "enabled": "true",
+              "id": "72058340288495701",
+              "name": "Some-Name"
+            }
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-04-30T16:23:40.000Z",
+      "client": {
+        "ip": [
+          "203.0.113.138",
+          "198.51.100.211"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication",
+          "session"
+        ],
+        "created": "2053-04-30T16:23:40.000Z",
+        "id": "15c1bcfb-021c-4759-b381-24bc0d5b99f5",
+        "kind": "event",
+        "original": "{\"ModifiedTime\":\"\",\"CreationTime\":\"2053-04-30T16:23:40.000Z\",\"ModifiedBy\":288263728720249833,\"RequestID\":\"15c1bcfb-021c-4759-b381-24bc0d5b99f5\",\"SessionID\":\"4xeham8fmn9xdva2994kwa1rw\",\"AuditOldValue\":\"\",\"AuditNewValue\":\"{\\\"loginAttempt\\\":\\\"2053-04-30 16:23:40 UTC\\\",\\\"remoteIP\\\":\\\"203.0.113.138, 198.51.100.211\\\"}\",\"AuditOperationType\":\"Sign In\",\"ObjectType\":\"Authentication\",\"ObjectName\":\"suiz\",\"ObjectID\":\"xxxxx\",\"CustomerID\":\"xxxxx\",\"User\":\"suiz\",\"ClientAuditUpdate\":1}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "organization": {
+        "id": "xxxxx"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138",
+          "198.51.100.211"
+        ],
+        "user": [
+          "288263728720249833",
+          "suiz"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "288263728720249833",
+        "name": "suiz"
+      },
+      "zscaler_zpa": {
+        "audit": {
+          "client_audit_update": 1,
+          "object": {
+            "id": "xxxxx",
+            "name": "suiz",
+            "type": "Authentication"
+          },
+          "operation_type": "Sign In",
+          "session": {
+            "id": "4xeham8fmn9xdva2994kwa1rw"
+          },
+          "value": {
+            "new": {
+              "loginAttempt": "2053-04-30 16:23:40 UTC",
+              "remoteIP": "203.0.113.138, 198.51.100.211"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"ModifiedTime\":\"2049-11-17T04:29:38.000Z\",\"CreationTime\":\"2049-11-17T04:29:38.000Z\",\"ModifiedBy\":12345678901234567,\"RequestID\":\"74605075-7517-1111-1872-435506708175\",\"SessionID\":\"9scq60qybh0n8ysc8w4x5uaj5\",\"AuditOldValue\":\"\",\"AuditNewValue\":\"{\\\"id\\\":\\\"72058340288495701\\\",\\\"name\\\":\\\"Some-Name\\\",\\\"domainOrIpAddress\\\":\\\"198.51.100.211\\\",\\\"description\\\":\\\"This is a description field\\\",\\\"enabled\\\":\\\"true\\\"}\",\"AuditOperationType\":\"Create\",\"ObjectType\":\"Server\",\"ObjectName\":\"Some-Name\",\"ObjectID\":12345678901234567,\"CustomerID\":98765432109876543,\"User\":\"qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com\",\"ClientAuditUpdate\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ModifiedTime\":\"\",\"CreationTime\":\"2049-11-17T04:29:38.000Z\",\"ModifiedBy\":12345678901234567,\"RequestID\":\"74605075-7517-1111-1872-435506708175\",\"SessionID\":\"9scq60qybh0n8ysc8w4x5uaj5\",\"AuditOldValue\":\"\",\"AuditNewValue\":\"{\\\"id\\\":\\\"72058340288495701\\\",\\\"name\\\":\\\"Some-Name\\\",\\\"domainOrIpAddress\\\":\\\"example.com\\\",\\\"description\\\":\\\"This is a description field\\\",\\\"enabled\\\":\\\"true\\\"}\",\"AuditOperationType\":\"Create\",\"ObjectType\":\"Server\",\"ObjectName\":\"Some-Name\",\"ObjectID\":12345678901234567,\"CustomerID\":98765432109876543,\"User\":\"qkaeanin@puimshmziulqxmrkq.oyb-eqzrgvbj.com\",\"ClientAuditUpdate\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ModifiedTime\":\"\",\"CreationTime\":\"2053-04-30T16:23:40.000Z\",\"ModifiedBy\":288263728720249833,\"RequestID\":\"15c1bcfb-021c-4759-b381-24bc0d5b99f5\",\"SessionID\":\"4xeham8fmn9xdva2994kwa1rw\",\"AuditOldValue\":\"\",\"AuditNewValue\":\"{\\\"loginAttempt\\\":\\\"2053-04-30 16:23:40 UTC\\\",\\\"remoteIP\\\":\\\"203.0.113.138, 198.51.100.211\\\"}\",\"AuditOperationType\":\"Sign In\",\"ObjectType\":\"Authentication\",\"ObjectName\":\"suiz\",\"ObjectID\":\"xxxxx\",\"CustomerID\":\"xxxxx\",\"User\":\"suiz\",\"ClientAuditUpdate\":1}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zscaler_zpa-audit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "zscaler_zpa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

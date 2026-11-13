@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:07.571Z",
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "7b385ccb-d0c3-4d64-9baf-bde4a0ba2ff4",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "winlog": {
+                "channel": "Security",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "SOV-86VA2XP94FG",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "time_created": "2047-10-08T10:20:44.472Z",
+                "event_data": {
+                    "TargetUserName": "Fesgmrjntbzzmv",
+                    "SubjectDomainName": "WORKGROUP",
+                    "SubjectLogonId": "0x3e7",
+                    "CallerProcessId": "0x494",
+                    "CallerProcessName": "C:\\Windows\\System32\\svchost.exe",
+                    "TargetDomainName": "Builtin",
+                    "TargetSid": "S-1-5-32-544",
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "SOV-86VA2XP94FG$"
+                },
+                "event_id": 4799,
+                "record_id": 3002,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 820
+                    }
+                },
+                "opcode": "Info",
+                "activity_id": "{b3af2f2a-0df7-0735-209f-eea7c25ab594}"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4799,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4799.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

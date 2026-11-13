@@ -1,0 +1,426 @@
+{
+  "expected": [
+    {
+      "cloud": {
+        "account": {
+          "id": "aa88885-8888-4444-8fd2-00000000efc3",
+          "name": "Azvkc Ccdyzig"
+        },
+        "provider": "azure",
+        "region": "westeurope"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "4c838c5cb4d099f205cbb8a46b3432ac|395a4f08-5f02-404a-9f86-bef53d7cd72d",
+        "kind": [
+          "state"
+        ],
+        "original": "{\"accountId\":\"aa88885-8888-4444-8fd2-00000000efc3\",\"accountName\":\"Azvkc Ccdyzig\",\"alertStatus\":{\"critical\":0,\"high\":0,\"informational\":0,\"low\":0,\"medium\":1},\"appNames\":[\"CSPM\"],\"assetType\":\"Azure Log Analytics Workspace\",\"cloudType\":\"azure\",\"id\":\"/subscriptions/aa88885-8888-4444-8fd2-00000000efc3/resourceGroups/grpc/providers/Microsoft.OperationalInsights/workspaces/sampleworkpace\",\"name\":\"sampleworkpace\",\"overallPassed\":false,\"regionId\":\"westeurope\",\"regionName\":\"Azure West Europe\",\"resourceConfigJsonAvailable\":true,\"resourceDetailsAvailable\":true,\"rrn\":\"rrn:azure:other:westeurope:aa88885-8888-4444-8fd2-00000000efc3:a6d5cafee470d082cd65bbb997a1d48e521f102e:%2Fsubscriptions%2Faa88885-8888-4444-8fd2-00000000efc3%2FresourceGroups%2Fgrpc%2Fproviders%2FMicrosoft.OperationalInsights%2Fworkspaces%2Fsampleworkpace\",\"scannedPolicy\":{\"id\":\"395a4f08-5f02-404a-9f86-bef53d7cd72d\",\"labels\":[],\"name\":\"Azure Log Analytics workspace configured with overly permissive network access\",\"passed\":false,\"severity\":\"medium\"},\"unifiedAssetId\":\"4c838c5cb4d099f205cbb8a46b3432ac\"}",
+        "outcome": "failure",
+        "severity": 47,
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Prisma Cloud",
+        "vendor": "Palo Alto Networks"
+      },
+      "prisma_cloud": {
+        "misconfiguration": {
+          "account_id": "aa88885-8888-4444-8fd2-00000000efc3",
+          "account_name": "Azvkc Ccdyzig",
+          "alert_status": {
+            "critical": 0,
+            "high": 0,
+            "informational": 0,
+            "low": 0,
+            "medium": 1
+          },
+          "app_names": [
+            "CSPM"
+          ],
+          "asset_type": "Azure Log Analytics Workspace",
+          "cloud_type": "azure",
+          "id": "/subscriptions/aa88885-8888-4444-8fd2-00000000efc3/resourceGroups/grpc/providers/Microsoft.OperationalInsights/workspaces/sampleworkpace",
+          "name": "sampleworkpace",
+          "overall_passed": false,
+          "region_id": "westeurope",
+          "region_name": "Azure West Europe",
+          "resource_config_json_available": true,
+          "resource_details_available": true,
+          "rrn": "rrn:azure:other:westeurope:aa88885-8888-4444-8fd2-00000000efc3:a6d5cafee470d082cd65bbb997a1d48e521f102e:%2Fsubscriptions%2Faa88885-8888-4444-8fd2-00000000efc3%2FresourceGroups%2Fgrpc%2Fproviders%2FMicrosoft.OperationalInsights%2Fworkspaces%2Fsampleworkpace",
+          "scanned_policy": {
+            "id": "395a4f08-5f02-404a-9f86-bef53d7cd72d",
+            "name": "Azure Log Analytics workspace configured with overly permissive network access",
+            "passed": false,
+            "severity": "medium"
+          },
+          "unified_asset_id": "4c838c5cb4d099f205cbb8a46b3432ac"
+        }
+      },
+      "resource": {
+        "id": "4c838c5cb4d099f205cbb8a46b3432ac",
+        "name": "sampleworkpace",
+        "type": "Azure Log Analytics Workspace"
+      },
+      "result": {
+        "evaluation": "failed"
+      },
+      "rule": {
+        "id": "395a4f08-5f02-404a-9f86-bef53d7cd72d",
+        "name": "Azure Log Analytics workspace configured with overly permissive network access",
+        "uuid": "395a4f08-5f02-404a-9f86-bef53d7cd72d"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "cloud": {
+        "account": {
+          "id": "11111111111",
+          "name": "BUO Dzrxd Bcewstz"
+        },
+        "instance": {
+          "id": "i-0e000e0000eb41c1",
+          "name": "IS-39814 (Connectors EC-11111)"
+        },
+        "provider": "aws",
+        "region": "us-east-2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "3f5ffe94bde0d9c2cbcc028a05f1aea7|16a09d18-a57f-4eb5-ad1f-057901ee1dee",
+        "kind": [
+          "state"
+        ],
+        "original": "{\"id\":\"i-0e000e0000eb41c1\",\"name\":\"IS-39814 (Connectors EC-11111)\",\"accountId\":\"11111111111\",\"accountName\":\"BUO Dzrxd Bcewstz\",\"regionId\":\"us-east-2\",\"regionName\":\"AWS Virginia\",\"cloudType\":\"aws\",\"rrn\":\"rrn:aws:instance:us-east-2:11111111111:9b07bf53ca1684f8d4d51d296717e4c868921271:i-0e000e0000eb41c1\",\"overallPassed\":true,\"scannedPolicy\":{\"id\":\"16a09d18-a57f-4eb5-ad1f-057901ee1dee\",\"name\":\"AWS EC2 instance not configured with Instance Metadata Service v2 (IMDSv2)\",\"severity\":\"high\",\"labels\":[\"Attack Path Rule\"],\"passed\":true},\"alertStatus\":{\"high\":0,\"medium\":0,\"low\":0,\"critical\":0,\"informational\":0},\"vulnerabilityStatus\":{\"critical\":0,\"high\":0,\"medium\":0,\"low\":0},\"appNames\":[\"CSPM\"],\"unifiedAssetId\":\"3f5ffe94bde0d9c2cbcc028a05f1aea7\",\"resourceDetailsAvailable\":true,\"resourceConfigJsonAvailable\":true,\"assetType\":\"EC2 Instance\"}",
+        "outcome": "success",
+        "severity": 73,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "3f5ffe94bde0d9c2cbcc028a05f1aea7",
+        "name": "IS-39814 (Connectors EC-11111)"
+      },
+      "observer": {
+        "product": "Prisma Cloud",
+        "vendor": "Palo Alto Networks"
+      },
+      "prisma_cloud": {
+        "misconfiguration": {
+          "account_id": "11111111111",
+          "account_name": "BUO Dzrxd Bcewstz",
+          "alert_status": {
+            "critical": 0,
+            "high": 0,
+            "informational": 0,
+            "low": 0,
+            "medium": 0
+          },
+          "app_names": [
+            "CSPM"
+          ],
+          "asset_type": "EC2 Instance",
+          "cloud_type": "aws",
+          "id": "i-0e000e0000eb41c1",
+          "name": "IS-39814 (Connectors EC-11111)",
+          "overall_passed": true,
+          "region_id": "us-east-2",
+          "region_name": "AWS Virginia",
+          "resource_config_json_available": true,
+          "resource_details_available": true,
+          "rrn": "rrn:aws:instance:us-east-2:11111111111:9b07bf53ca1684f8d4d51d296717e4c868921271:i-0e000e0000eb41c1",
+          "scanned_policy": {
+            "id": "16a09d18-a57f-4eb5-ad1f-057901ee1dee",
+            "labels": [
+              "Attack Path Rule"
+            ],
+            "name": "AWS EC2 instance not configured with Instance Metadata Service v2 (IMDSv2)",
+            "passed": true,
+            "severity": "high"
+          },
+          "unified_asset_id": "3f5ffe94bde0d9c2cbcc028a05f1aea7"
+        }
+      },
+      "related": {
+        "hosts": [
+          "IS-39814 (Connectors EC-11111)",
+          "3f5ffe94bde0d9c2cbcc028a05f1aea7"
+        ]
+      },
+      "resource": {
+        "id": "3f5ffe94bde0d9c2cbcc028a05f1aea7",
+        "name": "IS-39814 (Connectors EC-11111)",
+        "type": "EC2 Instance"
+      },
+      "result": {
+        "evaluation": "passed"
+      },
+      "rule": {
+        "id": "16a09d18-a57f-4eb5-ad1f-057901ee1dee",
+        "name": "AWS EC2 instance not configured with Instance Metadata Service v2 (IMDSv2)",
+        "tags": [
+          "Attack Path Rule"
+        ],
+        "uuid": "16a09d18-a57f-4eb5-ad1f-057901ee1dee"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "cloud": {
+        "account": {
+          "id": "aa8c0197-1625-4723-8db4-04677651afe1",
+          "name": "Azvkc Ccdyzig"
+        },
+        "instance": {
+          "id": "0d000c00-000b-42ab-99b0-8db0000000-/subscriptions/aa8c0197-1625-4723-8db4-04677651afe1/resourceGroups/user-dev/providers/Microsoft.Compute/virtualMachines/user-win2-dev",
+          "name": "user-win2-dev"
+        },
+        "provider": "azure",
+        "region": "eastus"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "8fd11aeb4383e2fee64f29df5dd1d36f|7b09cc1d-3bff-41ed-8540-48553f8a4f61",
+        "kind": [
+          "state"
+        ],
+        "original": "{\"id\":\"0d000c00-000b-42ab-99b0-8db0000000-/subscriptions/aa8c0197-1625-4723-8db4-04677651afe1/resourceGroups/user-dev/providers/Microsoft.Compute/virtualMachines/user-win2-dev\",\"name\":\"user-win2-dev\",\"accountId\":\"aa8c0197-1625-4723-8db4-04677651afe1\",\"accountName\":\"Azvkc Ccdyzig\",\"regionId\":\"eastus\",\"regionName\":\"Azure East US\",\"cloudType\":\"azure\",\"rrn\":\"rrn:azure:instance:eastus:aa8c0197-1625-4723-8db4-04677651afe1:8e84b98200505b2c90fdf6011109a2f009ac7951:0d000c00-000b-42ab-99b0-8db0000000-%2Fsubscriptions%2Faa8f6595-0000-4444-8fd2-00000004efc3%2FresourceGroups%2Fuser-dev%2Fproviders%2FMicrosoft.Compute%2FvirtualMachines%2Fuser-win2-dev\",\"overallPassed\":true,\"scannedPolicy\":{\"id\":\"7b09cc1d-3bff-41ed-8540-48553f8a4f61\",\"name\":\"Azure Virtual Machine (Linux) does not authenticate using SSH keys\",\"severity\":\"low\",\"labels\":[\"Attack Path Rule\"],\"passed\":true},\"alertStatus\":{\"high\":0,\"medium\":0,\"low\":0,\"critical\":0,\"informational\":0},\"appNames\":[\"CSPM\"],\"unifiedAssetId\":\"8fd11aeb4383e2fee64f29df5dd1d36f\",\"resourceDetailsAvailable\":true,\"resourceConfigJsonAvailable\":true,\"assetType\":\"Azure Virtual Machine\"}",
+        "outcome": "success",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "8fd11aeb4383e2fee64f29df5dd1d36f",
+        "name": "user-win2-dev"
+      },
+      "observer": {
+        "product": "Prisma Cloud",
+        "vendor": "Palo Alto Networks"
+      },
+      "prisma_cloud": {
+        "misconfiguration": {
+          "account_id": "aa8c0197-1625-4723-8db4-04677651afe1",
+          "account_name": "Azvkc Ccdyzig",
+          "alert_status": {
+            "critical": 0,
+            "high": 0,
+            "informational": 0,
+            "low": 0,
+            "medium": 0
+          },
+          "app_names": [
+            "CSPM"
+          ],
+          "asset_type": "Azure Virtual Machine",
+          "cloud_type": "azure",
+          "id": "0d000c00-000b-42ab-99b0-8db0000000-/subscriptions/aa8c0197-1625-4723-8db4-04677651afe1/resourceGroups/user-dev/providers/Microsoft.Compute/virtualMachines/user-win2-dev",
+          "name": "user-win2-dev",
+          "overall_passed": true,
+          "region_id": "eastus",
+          "region_name": "Azure East US",
+          "resource_config_json_available": true,
+          "resource_details_available": true,
+          "rrn": "rrn:azure:instance:eastus:aa8c0197-1625-4723-8db4-04677651afe1:8e84b98200505b2c90fdf6011109a2f009ac7951:0d000c00-000b-42ab-99b0-8db0000000-%2Fsubscriptions%2Faa8f6595-0000-4444-8fd2-00000004efc3%2FresourceGroups%2Fuser-dev%2Fproviders%2FMicrosoft.Compute%2FvirtualMachines%2Fuser-win2-dev",
+          "scanned_policy": {
+            "id": "7b09cc1d-3bff-41ed-8540-48553f8a4f61",
+            "labels": [
+              "Attack Path Rule"
+            ],
+            "name": "Azure Virtual Machine (Linux) does not authenticate using SSH keys",
+            "passed": true,
+            "severity": "low"
+          },
+          "unified_asset_id": "8fd11aeb4383e2fee64f29df5dd1d36f"
+        }
+      },
+      "related": {
+        "hosts": [
+          "user-win2-dev",
+          "8fd11aeb4383e2fee64f29df5dd1d36f"
+        ]
+      },
+      "resource": {
+        "id": "8fd11aeb4383e2fee64f29df5dd1d36f",
+        "name": "user-win2-dev",
+        "type": "Azure Virtual Machine"
+      },
+      "result": {
+        "evaluation": "passed"
+      },
+      "rule": {
+        "id": "7b09cc1d-3bff-41ed-8540-48553f8a4f61",
+        "name": "Azure Virtual Machine (Linux) does not authenticate using SSH keys",
+        "tags": [
+          "Attack Path Rule"
+        ],
+        "uuid": "7b09cc1d-3bff-41ed-8540-48553f8a4f61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "cloud": {
+        "account": {
+          "id": "111111111111",
+          "name": "nqbr-ffqn-cuew"
+        },
+        "provider": "aws"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "33444d37cbf7569cfc538db4bc760d1a|8f63ab3d-06be-8906-0249-176664d95986",
+        "kind": [
+          "state"
+        ],
+        "original": "{\"id\":\"user-demo\",\"name\":\"user-demo\",\"accountId\":\"111111111111\",\"accountName\":\"nqbr-ffqn-cuew\",\"regionId\":\"\",\"regionName\":\"AWS Global\",\"cloudType\":\"aws\",\"rrn\":\"rrn:aws:iamCredentialReport::111111111111:cbbd4d70de8b7ae181b1f872eafc9d0c9367e004:user-demo\",\"overallPassed\":true,\"scannedPolicy\":{\"id\":\"8f63ab3d-06be-8906-0249-176664d95986\",\"name\":\"AWS IAM user has both Console access and Access Keys\",\"severity\":\"informational\",\"labels\":[\"CIS\"],\"passed\":true},\"alertStatus\":{\"high\":0,\"medium\":0,\"low\":0,\"critical\":0,\"informational\":0},\"appNames\":[\"CSPM\"],\"unifiedAssetId\":\"33444d37cbf7569cfc538db4bc760d1a\",\"resourceDetailsAvailable\":true,\"resourceConfigJsonAvailable\":true,\"assetType\":\"AWS IAM Credential Report\"}",
+        "outcome": "success",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Prisma Cloud",
+        "vendor": "Palo Alto Networks"
+      },
+      "prisma_cloud": {
+        "misconfiguration": {
+          "account_id": "111111111111",
+          "account_name": "nqbr-ffqn-cuew",
+          "alert_status": {
+            "critical": 0,
+            "high": 0,
+            "informational": 0,
+            "low": 0,
+            "medium": 0
+          },
+          "app_names": [
+            "CSPM"
+          ],
+          "asset_type": "AWS IAM Credential Report",
+          "cloud_type": "aws",
+          "id": "user-demo",
+          "name": "user-demo",
+          "overall_passed": true,
+          "region_name": "AWS Global",
+          "resource_config_json_available": true,
+          "resource_details_available": true,
+          "rrn": "rrn:aws:iamCredentialReport::111111111111:cbbd4d70de8b7ae181b1f872eafc9d0c9367e004:user-demo",
+          "scanned_policy": {
+            "id": "8f63ab3d-06be-8906-0249-176664d95986",
+            "labels": [
+              "CIS"
+            ],
+            "name": "AWS IAM user has both Console access and Access Keys",
+            "passed": true,
+            "severity": "informational"
+          },
+          "unified_asset_id": "33444d37cbf7569cfc538db4bc760d1a"
+        }
+      },
+      "related": {
+        "user": [
+          "user-demo",
+          "33444d37cbf7569cfc538db4bc760d1a"
+        ]
+      },
+      "resource": {
+        "id": "33444d37cbf7569cfc538db4bc760d1a",
+        "name": "user-demo",
+        "type": "AWS IAM Credential Report"
+      },
+      "result": {
+        "evaluation": "passed"
+      },
+      "rule": {
+        "id": "8f63ab3d-06be-8906-0249-176664d95986",
+        "name": "AWS IAM user has both Console access and Access Keys",
+        "tags": [
+          "CIS"
+        ],
+        "uuid": "8f63ab3d-06be-8906-0249-176664d95986"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "33444d37cbf7569cfc538db4bc760d1a",
+        "name": "user-demo"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"accountId\":\"aa88885-8888-4444-8fd2-00000000efc3\",\"accountName\":\"Azvkc Ccdyzig\",\"alertStatus\":{\"critical\":0,\"high\":0,\"informational\":0,\"low\":0,\"medium\":1},\"appNames\":[\"CSPM\"],\"assetType\":\"Azure Log Analytics Workspace\",\"cloudType\":\"azure\",\"id\":\"/subscriptions/aa88885-8888-4444-8fd2-00000000efc3/resourceGroups/grpc/providers/Microsoft.OperationalInsights/workspaces/sampleworkpace\",\"name\":\"sampleworkpace\",\"overallPassed\":false,\"regionId\":\"westeurope\",\"regionName\":\"Azure West Europe\",\"resourceConfigJsonAvailable\":true,\"resourceDetailsAvailable\":true,\"rrn\":\"rrn:azure:other:westeurope:aa88885-8888-4444-8fd2-00000000efc3:a6d5cafee470d082cd65bbb997a1d48e521f102e:%2Fsubscriptions%2Faa88885-8888-4444-8fd2-00000000efc3%2FresourceGroups%2Fgrpc%2Fproviders%2FMicrosoft.OperationalInsights%2Fworkspaces%2Fsampleworkpace\",\"scannedPolicy\":{\"id\":\"395a4f08-5f02-404a-9f86-bef53d7cd72d\",\"labels\":[],\"name\":\"Azure Log Analytics workspace configured with overly permissive network access\",\"passed\":false,\"severity\":\"medium\"},\"unifiedAssetId\":\"4c838c5cb4d099f205cbb8a46b3432ac\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"i-0e000e0000eb41c1\",\"name\":\"IS-39814 (Connectors EC-11111)\",\"accountId\":\"11111111111\",\"accountName\":\"BUO Dzrxd Bcewstz\",\"regionId\":\"us-east-2\",\"regionName\":\"AWS Virginia\",\"cloudType\":\"aws\",\"rrn\":\"rrn:aws:instance:us-east-2:11111111111:9b07bf53ca1684f8d4d51d296717e4c868921271:i-0e000e0000eb41c1\",\"overallPassed\":true,\"scannedPolicy\":{\"id\":\"16a09d18-a57f-4eb5-ad1f-057901ee1dee\",\"name\":\"AWS EC2 instance not configured with Instance Metadata Service v2 (IMDSv2)\",\"severity\":\"high\",\"labels\":[\"Attack Path Rule\"],\"passed\":true},\"alertStatus\":{\"high\":0,\"medium\":0,\"low\":0,\"critical\":0,\"informational\":0},\"vulnerabilityStatus\":{\"critical\":0,\"high\":0,\"medium\":0,\"low\":0},\"appNames\":[\"CSPM\"],\"unifiedAssetId\":\"3f5ffe94bde0d9c2cbcc028a05f1aea7\",\"resourceDetailsAvailable\":true,\"resourceConfigJsonAvailable\":true,\"assetType\":\"EC2 Instance\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"0d000c00-000b-42ab-99b0-8db0000000-/subscriptions/aa8c0197-1625-4723-8db4-04677651afe1/resourceGroups/user-dev/providers/Microsoft.Compute/virtualMachines/user-win2-dev\",\"name\":\"user-win2-dev\",\"accountId\":\"aa8c0197-1625-4723-8db4-04677651afe1\",\"accountName\":\"Azvkc Ccdyzig\",\"regionId\":\"eastus\",\"regionName\":\"Azure East US\",\"cloudType\":\"azure\",\"rrn\":\"rrn:azure:instance:eastus:aa8c0197-1625-4723-8db4-04677651afe1:8e84b98200505b2c90fdf6011109a2f009ac7951:0d000c00-000b-42ab-99b0-8db0000000-%2Fsubscriptions%2Faa8f6595-0000-4444-8fd2-00000004efc3%2FresourceGroups%2Fuser-dev%2Fproviders%2FMicrosoft.Compute%2FvirtualMachines%2Fuser-win2-dev\",\"overallPassed\":true,\"scannedPolicy\":{\"id\":\"7b09cc1d-3bff-41ed-8540-48553f8a4f61\",\"name\":\"Azure Virtual Machine (Linux) does not authenticate using SSH keys\",\"severity\":\"low\",\"labels\":[\"Attack Path Rule\"],\"passed\":true},\"alertStatus\":{\"high\":0,\"medium\":0,\"low\":0,\"critical\":0,\"informational\":0},\"appNames\":[\"CSPM\"],\"unifiedAssetId\":\"8fd11aeb4383e2fee64f29df5dd1d36f\",\"resourceDetailsAvailable\":true,\"resourceConfigJsonAvailable\":true,\"assetType\":\"Azure Virtual Machine\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"id\":\"user-demo\",\"name\":\"user-demo\",\"accountId\":\"111111111111\",\"accountName\":\"nqbr-ffqn-cuew\",\"regionId\":\"\",\"regionName\":\"AWS Global\",\"cloudType\":\"aws\",\"rrn\":\"rrn:aws:iamCredentialReport::111111111111:cbbd4d70de8b7ae181b1f872eafc9d0c9367e004:user-demo\",\"overallPassed\":true,\"scannedPolicy\":{\"id\":\"8f63ab3d-06be-8906-0249-176664d95986\",\"name\":\"AWS IAM user has both Console access and Access Keys\",\"severity\":\"informational\",\"labels\":[\"CIS\"],\"passed\":true},\"alertStatus\":{\"high\":0,\"medium\":0,\"low\":0,\"critical\":0,\"informational\":0},\"appNames\":[\"CSPM\"],\"unifiedAssetId\":\"33444d37cbf7569cfc538db4bc760d1a\",\"resourceDetailsAvailable\":true,\"resourceConfigJsonAvailable\":true,\"assetType\":\"AWS IAM Credential Report\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "misconfiguration",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-prisma_cloud-misconfiguration-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "prisma_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

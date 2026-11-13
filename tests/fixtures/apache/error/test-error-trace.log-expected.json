@@ -1,0 +1,63 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-10-20T19:20:59.121Z",
+      "apache": {
+        "error": {
+          "module": "rewrite"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.483816672Z",
+        "kind": "event",
+        "original": "[Wed Oct 20 19:20:59.121211 2049] [rewrite:trace3] [pid 121591:tid 140413273032448] mod_rewrite.c(470): [client 10.146.213.1:38350] 10.146.213.1 - - [adx.apejtlc.co/sid#55a374e851c8][rid#7fb438083ac0/initial] applying pattern '^/import/?(.*)$' to uri '/'",
+        "type": [
+          "info"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "log": {
+        "level": "trace3"
+      },
+      "message": "mod_rewrite.c(470): [client 10.146.213.1:38350] 10.146.213.1 - - [adx.apejtlc.co/sid#55a374e851c8][rid#7fb438083ac0/initial] applying pattern '^/import/?(.*)$' to uri '/'",
+      "process": {
+        "pid": 121591,
+        "thread": {
+          "id": 140413273032448
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Wed Oct 20 19:20:59.121211 2049] [rewrite:trace3] [pid 121591:tid 140413273032448] mod_rewrite.c(470): [client 10.146.213.1:38350] 10.146.213.1 - - [adx.apejtlc.co/sid#55a374e851c8][rid#7fb438083ac0/initial] applying pattern '^/import/?(.*)$' to uri '/'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "error",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache-error-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

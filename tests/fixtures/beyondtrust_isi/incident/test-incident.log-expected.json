@@ -1,0 +1,256 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-04-20T07:14:08.000Z",
+      "beyondtrust_isi": {
+        "incident": {
+          "entity_name": [
+            "TEST AecpqiuSpc@lituybrk.com",
+            "TEST DbekwurSsy@hlyxzrndpu.com"
+          ],
+          "entity_type": [
+            "TEST Account"
+          ],
+          "incident_type": "Detection",
+          "location": [
+            "okta_instance/https://test-fake.okta.com",
+            "okta_instance/https://another-test-fake.okta.com"
+          ],
+          "severity": "Medium",
+          "source": [
+            "https://test-fake.okta.com",
+            "https://another-test-fake.okta.com"
+          ]
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "TEST_66eb9c17-1168-444b-882c-d0742213e3f5",
+        "kind": "event",
+        "original": "{\"entityType\":\"TEST Account\",\"source\":\"https://test-fake.okta.com,https://another-test-fake.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8/detections/details/TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b/instance/TEST_66eb9c17-1168-444b-882c-d0742213e3f5\",\"severity\":\"Medium\",\"definitionSummary\":\"TEST Account Associated With Personal Email Address\",\"timestamp\":\"04/20/2054 07:14:08\",\"incidentType\":\"Detection\",\"incidentId\":\"TEST_66eb9c17-1168-444b-882c-d0742213e3f5\",\"definitionId\":\"TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b\",\"entityName\":\"TEST AecpqiuSpc@lituybrk.com,TEST DbekwurSsy@hlyxzrndpu.com\",\"location\":\"okta_instance/https://test-fake.okta.com,okta_instance/https://another-test-fake.okta.com\",\"tenantId\":\"TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8\"}",
+        "severity": 47,
+        "type": [
+          "info"
+        ],
+        "url": "https://app.beyondtrust.io/insights/TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8/detections/details/TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b/instance/TEST_66eb9c17-1168-444b-882c-d0742213e3f5"
+      },
+      "message": "TEST Account Associated With Personal Email Address",
+      "rule": {
+        "description": "TEST Account Associated With Personal Email Address",
+        "id": "TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b",
+        "reference": "https://app.beyondtrust.io/insights/TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8/detections/details/TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b/instance/TEST_66eb9c17-1168-444b-882c-d0742213e3f5"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2054-04-20T08:22:15.000Z",
+      "beyondtrust_isi": {
+        "incident": {
+          "entity_name": [
+            "SERVICE DecmoojAsuze@lituybrk.com",
+            "SERVICE BecxzqkAeye@hlyxzrndpu.com"
+          ],
+          "entity_type": [
+            "SERVICE Account"
+          ],
+          "incident_type": "Detection",
+          "location": [
+            "okta_instance/https://alpha-test.okta.com",
+            "okta_instance/https://beta-test.okta.com"
+          ],
+          "severity": "Low",
+          "source": [
+            "https://alpha-test.okta.com",
+            "https://beta-test.okta.com"
+          ]
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890",
+        "kind": "event",
+        "original": "{\"entityType\":\"SERVICE Account\",\"source\":\"https://alpha-test.okta.com,https://beta-test.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8/detections/details/PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034/instance/PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890\",\"severity\":\"Low\",\"definitionSummary\":\"SERVICE Account Associated With Suspicious Login Activity\",\"timestamp\":\"04/20/2054 08:22:15\",\"incidentType\":\"Detection\",\"incidentId\":\"PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890\",\"definitionId\":\"PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034\",\"entityName\":\"SERVICE DecmoojAsuze@lituybrk.com,SERVICE BecxzqkAeye@hlyxzrndpu.com\",\"location\":\"okta_instance/https://alpha-test.okta.com,okta_instance/https://beta-test.okta.com\",\"tenantId\":\"PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8\"}",
+        "severity": 21,
+        "type": [
+          "info"
+        ],
+        "url": "https://app.beyondtrust.io/insights/PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8/detections/details/PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034/instance/PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890"
+      },
+      "message": "SERVICE Account Associated With Suspicious Login Activity",
+      "rule": {
+        "description": "SERVICE Account Associated With Suspicious Login Activity",
+        "id": "PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034",
+        "reference": "https://app.beyondtrust.io/insights/PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8/detections/details/PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034/instance/PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2054-04-20T09:35:42.000Z",
+      "beyondtrust_isi": {
+        "incident": {
+          "entity_name": [
+            "ADMIN CbdizytVfyre@lituybrk.com",
+            "ADMIN AcazjnmBczme@hlyxzrndpu.com"
+          ],
+          "entity_type": [
+            "ADMIN Account"
+          ],
+          "incident_type": "Detection",
+          "location": [
+            "okta_instance/https://corp-test.okta.com",
+            "okta_instance/https://dev-test.okta.com"
+          ],
+          "severity": "High",
+          "source": [
+            "https://corp-test.okta.com",
+            "https://dev-test.okta.com"
+          ]
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901",
+        "kind": "event",
+        "original": "{\"entityType\":\"ADMIN Account\",\"source\":\"https://corp-test.okta.com,https://dev-test.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9/detections/details/CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901/instance/CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901\",\"severity\":3,\"definitionSummary\":\"ADMIN Account Accessed From Unrecognized Device\",\"timestamp\":\"04/20/2054 09:35:42\",\"incidentType\":\"Detection\",\"incidentId\":\"CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901\",\"definitionId\":\"CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901\",\"entityName\":\"ADMIN CbdizytVfyre@lituybrk.com,ADMIN AcazjnmBczme@hlyxzrndpu.com\",\"location\":\"okta_instance/https://corp-test.okta.com,okta_instance/https://dev-test.okta.com\",\"tenantId\":\"CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9\"}",
+        "severity": 73,
+        "type": [
+          "info"
+        ],
+        "url": "https://app.beyondtrust.io/insights/CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9/detections/details/CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901/instance/CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901"
+      },
+      "message": "ADMIN Account Accessed From Unrecognized Device",
+      "rule": {
+        "description": "ADMIN Account Accessed From Unrecognized Device",
+        "id": "CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901",
+        "reference": "https://app.beyondtrust.io/insights/CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9/detections/details/CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901/instance/CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2054-04-20T11:05:19.000Z",
+      "beyondtrust_isi": {
+        "incident": {
+          "entity_name": [
+            "GUEST FdaipvtFsvjkpr@lituybrk.com",
+            "GUEST FccjqunUdnc@hlyxzrndpu.com"
+          ],
+          "entity_type": [
+            "GUEST Account"
+          ],
+          "incident_type": "Detection",
+          "location": [
+            "okta_instance/https://staging-test.okta.com",
+            "okta_instance/https://uat-test.okta.com"
+          ],
+          "severity": "High",
+          "source": [
+            "https://staging-test.okta.com",
+            "https://uat-test.okta.com"
+          ]
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "id": "STG_66f7g8h9-i0j1-234a-de34-hi56jk789012",
+        "kind": "event",
+        "original": "{\"entityType\":\"GUEST Account\",\"source\":\"https://staging-test.okta.com,https://uat-test.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0/detections/details/STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012/instance/STG_66f7g8h9-i0j1-234a-de34-hi56jk789012\",\"severity\":\"High\",\"definitionSummary\":\"GUEST Account Privilege Escalation Attempt Detected\",\"timestamp\":\"04/20/2054 11:05:19\",\"incidentType\":\"Detection\",\"incidentId\":\"STG_66f7g8h9-i0j1-234a-de34-hi56jk789012\",\"definitionId\":\"STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012\",\"entityName\":\"GUEST FdaipvtFsvjkpr@lituybrk.com,GUEST FccjqunUdnc@hlyxzrndpu.com\",\"location\":\"okta_instance/https://staging-test.okta.com,okta_instance/https://uat-test.okta.com\",\"tenantId\":\"STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0\"}",
+        "severity": 73,
+        "type": [
+          "info"
+        ],
+        "url": "https://app.beyondtrust.io/insights/STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0/detections/details/STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012/instance/STG_66f7g8h9-i0j1-234a-de34-hi56jk789012"
+      },
+      "message": "GUEST Account Privilege Escalation Attempt Detected",
+      "rule": {
+        "description": "GUEST Account Privilege Escalation Attempt Detected",
+        "id": "STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012",
+        "reference": "https://app.beyondtrust.io/insights/STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0/detections/details/STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012/instance/STG_66f7g8h9-i0j1-234a-de34-hi56jk789012"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"entityType\":\"TEST Account\",\"source\":\"https://test-fake.okta.com,https://another-test-fake.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8/detections/details/TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b/instance/TEST_66eb9c17-1168-444b-882c-d0742213e3f5\",\"severity\":\"Medium\",\"definitionSummary\":\"TEST Account Associated With Personal Email Address\",\"timestamp\":\"04/20/2054 07:14:08\",\"incidentType\":\"Detection\",\"incidentId\":\"TEST_66eb9c17-1168-444b-882c-d0742213e3f5\",\"definitionId\":\"TEST_56e1e72a-635d-4566-9b81-a2f2990d0e2b\",\"entityName\":\"TEST AecpqiuSpc@lituybrk.com,TEST DbekwurSsy@hlyxzrndpu.com\",\"location\":\"okta_instance/https://test-fake.okta.com,okta_instance/https://another-test-fake.okta.com\",\"tenantId\":\"TEST_b36e35f2-f00f-49ed-aa37-4e6cc1cf05d8\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"SERVICE Account\",\"source\":\"https://alpha-test.okta.com,https://beta-test.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8/detections/details/PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034/instance/PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890\",\"severity\":\"Low\",\"definitionSummary\":\"SERVICE Account Associated With Suspicious Login Activity\",\"timestamp\":\"04/20/2054 08:22:15\",\"incidentType\":\"Detection\",\"incidentId\":\"PROD_22b3c4d5-e6f7-890a-bc12-de34fg567890\",\"definitionId\":\"PROD_53e7b0a1-e5c8-7229-aa75-cc75af497034\",\"entityName\":\"SERVICE DecmoojAsuze@lituybrk.com,SERVICE BecxzqkAeye@hlyxzrndpu.com\",\"location\":\"okta_instance/https://alpha-test.okta.com,okta_instance/https://beta-test.okta.com\",\"tenantId\":\"PROD_a12b34c5-d678-90ef-gh12-3i4jkl567mn8\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"ADMIN Account\",\"source\":\"https://corp-test.okta.com,https://dev-test.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9/detections/details/CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901/instance/CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901\",\"severity\":3,\"definitionSummary\":\"ADMIN Account Accessed From Unrecognized Device\",\"timestamp\":\"04/20/2054 09:35:42\",\"incidentType\":\"Detection\",\"incidentId\":\"CORP_44d5e6f7-g8h9-012a-cd23-fg45hi678901\",\"definitionId\":\"CORP_33c4d5e6-f7g8-9012-bc23-ef45gh678901\",\"entityName\":\"ADMIN CbdizytVfyre@lituybrk.com,ADMIN AcazjnmBczme@hlyxzrndpu.com\",\"location\":\"okta_instance/https://corp-test.okta.com,okta_instance/https://dev-test.okta.com\",\"tenantId\":\"CORP_b23c45d6-e789-01fg-hi23-4j5klm678no9\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"entityType\":\"GUEST Account\",\"source\":\"https://staging-test.okta.com,https://uat-test.okta.com\",\"link\":\"https://app.beyondtrust.io/insights/STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0/detections/details/STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012/instance/STG_66f7g8h9-i0j1-234a-de34-hi56jk789012\",\"severity\":\"High\",\"definitionSummary\":\"GUEST Account Privilege Escalation Attempt Detected\",\"timestamp\":\"04/20/2054 11:05:19\",\"incidentType\":\"Detection\",\"incidentId\":\"STG_66f7g8h9-i0j1-234a-de34-hi56jk789012\",\"definitionId\":\"STG_55e6f7g8-h9i0-1234-cd34-gh56ij789012\",\"entityName\":\"GUEST FdaipvtFsvjkpr@lituybrk.com,GUEST FccjqunUdnc@hlyxzrndpu.com\",\"location\":\"okta_instance/https://staging-test.okta.com,okta_instance/https://uat-test.okta.com\",\"tenantId\":\"STG_c34d56e7-f890-12gh-ij34-5k6lmn789op0\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "incident",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-beyondtrust_isi-incident-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "beyondtrust_isi",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

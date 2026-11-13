@@ -1,0 +1,169 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-07-28T08:17:00.470Z",
+      "agent": {
+        "ephemeral_id": "42182957-62c4-49e4-bc8f-d974b56a29e3",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "trusted-domain-information-changed",
+        "category": [
+          "configuration"
+        ],
+        "code": "4716",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4716_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST",
+        "id": "S-1-5-21-2024912787-2692429404-2351956786-500",
+        "name": "Administrator"
+      },
+      "winlog": {
+        "activity_id": "{cf562571-08d7-0833-a019-00cfd604b915}",
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "DomainSid": "S-1-0-0",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x6a868",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-2024912787-2692429404-2351956786-500",
+          "TdoAttributes": "1",
+          "TdoDirection": "3",
+          "TdoType": "3"
+        },
+        "event_id": "4716",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x6a868"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 776,
+          "thread": {
+            "id": 3776
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "14929",
+        "time_created": "2048-07-28T08:17:00.470Z",
+        "trustAttribute": "TRUST_ATTRIBUTE_NON_TRANSITIVE",
+        "trustDirection": "TRUST_DIRECTION_BIDIRECTIONAL",
+        "trustType": "TRUST_TYPE_MIT"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:08:54.080Z",
+      "agent": {
+        "ephemeral_id": "42182957-62c4-49e4-bc8f-d974b56a29e3",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4716,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4716_WindowsSrv2016.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{cf562571-08d7-0833-a019-00cfd604b915}",
+        "channel": "Security",
+        "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+        "event_data": {
+          "DomainName": "-",
+          "DomainSid": "S-1-0-0",
+          "SidFilteringEnabled": "-",
+          "SubjectDomainName": "TEST",
+          "SubjectLogonId": "0x6a868",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-2024912787-2692429404-2351956786-500",
+          "TdoAttributes": "1",
+          "TdoDirection": "3",
+          "TdoType": "3"
+        },
+        "event_id": 4716,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 776,
+          "thread": {
+            "id": 3776
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 14929,
+        "time_created": "2048-07-28T08:17:00.470Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

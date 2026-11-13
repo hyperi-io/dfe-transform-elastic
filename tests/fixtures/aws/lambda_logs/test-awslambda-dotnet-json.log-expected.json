@@ -1,0 +1,110 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "aws": {
+        "lambda": {
+          "message": {
+            "message": "{@users} have joined the group",
+            "timestamp": "2051-09-07T01:30:06.977Z"
+          },
+          "request_id": "6f510472-5c29-44b7-ac30-9e23d8f05cb8",
+          "trace_id": "3-0651fe62-98e71d2a2858d4f409605434",
+          "users": [
+            {
+              "FirstName": "Esczcpaht",
+              "LastName": "Gvwdoak"
+            },
+            {
+              "FirstName": "Kmjo",
+              "LastName": "Siwnep"
+            }
+          ]
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\n    \"timestamp\": \"2051-09-07T01:30:06.977Z\",\n    \"level\": \"Information\",\n    \"requestId\": \"6f510472-5c29-44b7-ac30-9e23d8f05cb8\",\n    \"traceId\": \"3-0651fe62-98e71d2a2858d4f409605434\",\n    \"message\": \"{@users} have joined the group\",\n    \"users\": \n    [\n        {\n            \"FirstName\": \"Esczcpaht\",\n            \"LastName\": \"Gvwdoak\"\n        },\n        {\n            \"FirstName\": \"Kmjo\",\n            \"LastName\": \"Siwnep\"\n        }        \n    ] \n}"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "{@users} have joined the group",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "aws": {
+        "lambda": {
+          "message": {
+            "message": "{users} have joined the group",
+            "timestamp": "2051-09-07T01:30:06.977Z"
+          },
+          "request_id": "6f510472-5c29-44b7-ac30-9e23d8f05cb8",
+          "trace_id": "3-0651fe62-98e71d2a2858d4f409605434",
+          "users": [
+            "Gvwdoak, Esczcpaht",
+            "Siwnep, Kmjo"
+          ]
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\n    \"timestamp\": \"2051-09-07T01:30:06.977Z\",\n    \"level\": \"Information\",\n    \"requestId\": \"6f510472-5c29-44b7-ac30-9e23d8f05cb8\",\n    \"traceId\": \"3-0651fe62-98e71d2a2858d4f409605434\",\n    \"message\": \"{users} have joined the group\",\n    \"users\": \n    [\n        \"Gvwdoak, Esczcpaht\",\n        \"Siwnep, Kmjo\"       \n    ] \n}"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "{users} have joined the group",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\n    \"timestamp\": \"2051-09-07T01:30:06.977Z\",\n    \"level\": \"Information\",\n    \"requestId\": \"6f510472-5c29-44b7-ac30-9e23d8f05cb8\",\n    \"traceId\": \"3-0651fe62-98e71d2a2858d4f409605434\",\n    \"message\": \"{@users} have joined the group\",\n    \"users\": \n    [\n        {\n            \"FirstName\": \"Esczcpaht\",\n            \"LastName\": \"Gvwdoak\"\n        },\n        {\n            \"FirstName\": \"Kmjo\",\n            \"LastName\": \"Siwnep\"\n        }        \n    ] \n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\n    \"timestamp\": \"2051-09-07T01:30:06.977Z\",\n    \"level\": \"Information\",\n    \"requestId\": \"6f510472-5c29-44b7-ac30-9e23d8f05cb8\",\n    \"traceId\": \"3-0651fe62-98e71d2a2858d4f409605434\",\n    \"message\": \"{users} have joined the group\",\n    \"users\": \n    [\n        \"Gvwdoak, Esczcpaht\",\n        \"Siwnep, Kmjo\"       \n    ] \n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "lambda_logs",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-lambda_logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,2434 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "sender": {
+          "address": [
+            "apq@testsiem2.onmicrosoft.com"
+          ]
+        },
+        "to": {
+          "address": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "original": "Here's the phony data",
+        "outcome": "failure",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Office365 Alert: DlpRuleMatch detected in email sent by DlpAgent with subject ''",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExchangeMetaData": {
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "DlpAgent"
+        ]
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "sender": {
+          "address": [
+            "apq@testsiem2.onmicrosoft.com"
+          ]
+        },
+        "to": {
+          "address": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "event": {
+        "action": "DlpRuleUndo",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "original": "Here's the phony data",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2230
+      },
+      "message": "Office365 Alert: DlpRuleUndo detected in email sent by DlpAgent with subject ''",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExchangeMetaData": {
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleUndo",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "DlpAgent"
+        ]
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "sender": {
+          "address": [
+            "apq@testsiem2.onmicrosoft.com"
+          ]
+        },
+        "to": {
+          "address": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "original": "Here's the phony data",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4459
+      },
+      "message": "Office365 Alert: DlpRuleMatch detected in email sent by DlpAgent with subject ''",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExceptionInfo": {
+            "Reason": "{ \"Justification\": \"I really need to share those files\" }"
+          },
+          "ExchangeMetaData": {
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "DlpAgent"
+        ]
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "sender": {
+          "address": [
+            "apq@testsiem2.onmicrosoft.com"
+          ]
+        },
+        "to": {
+          "address": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "original": "Here's the phony data",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 6769
+      },
+      "message": "Office365 Alert: DlpRuleMatch detected in email sent by DlpAgent with subject ''",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExceptionInfo": {
+            "FalsePositive": true
+          },
+          "ExchangeMetaData": {
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "DlpAgent"
+        ]
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "sender": {
+          "address": [
+            "apq@testsiem2.onmicrosoft.com"
+          ]
+        },
+        "to": {
+          "address": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+        "kind": "alert",
+        "module": "o365",
+        "original": "Here's the phony data",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 2,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 9041
+      },
+      "message": "Office365 Alert: DlpRuleMatch detected in email sent by DlpAgent with subject ''",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExchangeMetaData": {
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13310,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected test",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "DlpAgent"
+        ]
+      },
+      "rule": {
+        "id": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+        "name": "Low volume of content detected test"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 2,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "0e019b2e-d807-4359-37d1-30a4a792a3ce",
+        "mtime": "2048-02-24T12:13:14.000Z",
+        "name": "Company-Internal-Financial.docx",
+        "owner": "fnvfc@testsiem2.onmicrosoft.com"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "testsiem2.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 10504
+      },
+      "message": "Office365 Alert: DlpRuleMatch detected in email sent by fnvfc@testsiem2.onmicrosoft.com with subject ''",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "Id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected test",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Company-Internal-Financial.docx",
+            "FileOwner": "fnvfc@testsiem2.onmicrosoft.com",
+            "FilePathUrl": "https://example.net/testsiem2.onmicrosoft.com/sharepoint",
+            "From": "fnvfc@testsiem2.onmicrosoft.com",
+            "LastModifiedTime": "2048-02-24T12:13:14Z",
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce",
+            "itemCreationTime": "2048-02-20T11:23:45"
+          },
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "testsiem2.onmicrosoft.com"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "rule": {
+        "id": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+        "name": "Low volume of content detected test"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://example.net/testsiem2.onmicrosoft.com/sharepoint"
+      },
+      "user": {
+        "domain": "testsiem2.onmicrosoft.com",
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "fnvfc@testsiem2.onmicrosoft.com",
+        "name": "fnvfc"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "failure",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": "access"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Here's the phony data",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExchangeMetaData": {
+            "BCC": [],
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DlpRuleUndo",
+        "category": "file",
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": "access"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2230
+      },
+      "message": "Here's the phony data",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExchangeMetaData": {
+            "BCC": [],
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleUndo",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": "access"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4459
+      },
+      "message": "Here's the phony data",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExceptionInfo": {
+            "Reason": "{ \"Justification\": \"I really need to share those files\" }"
+          },
+          "ExchangeMetaData": {
+            "BCC": [],
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 4,
+        "type": "access"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 6769
+      },
+      "message": "Here's the phony data",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExceptionInfo": {
+            "FalsePositive": true
+          },
+          "ExchangeMetaData": {
+            "BCC": [],
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13405,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "d9b9d5d5-e92b-480b-8390-ba56d6fed054",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "65c9f58c-b320-4385-9307-904bb70b702a",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected test",
+                  "Severity": "High"
+                },
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "99e0a15c-8292-4154-9671-182df57e670e",
+                  "RuleMode": "Enable",
+                  "RuleName": "Mid volume of content detected test",
+                  "Severity": "Medium"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "rule": {
+        "id": [
+          "65c9f58c-b320-4385-9307-904bb70b702a",
+          "99e0a15c-8292-4154-9671-182df57e670e"
+        ],
+        "name": [
+          "High volume of content detected test",
+          "Mid volume of content detected test"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "destination": {
+        "user": {
+          "email": [
+            "apq@example.org",
+            "apq@example.net"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 2,
+        "type": "access"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 9041
+      },
+      "message": "Here's the phony data",
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "ExchangeMetaData": {
+            "BCC": [],
+            "CC": [
+              "apq@example.net"
+            ],
+            "FileSize": 13310,
+            "From": "apq@testsiem2.onmicrosoft.com",
+            "MessageID": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+            "RecipientCount": 2,
+            "Sent": "2048-02-24T20:11:14",
+            "Subject": "Here's the phony data",
+            "To": [
+              "apq@example.org"
+            ],
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce"
+          },
+          "Id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected test",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "rule": {
+        "id": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+        "name": "Low volume of content detected test"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "user": {
+          "email": "apq@testsiem2.onmicrosoft.com"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "DlpAgent"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "1650537c-4688-4bd4-af83-cde54b3b66f8",
+        "id": "7f948d36-977e-4685-9649-fd3aefb2fb69",
+        "name": "0c9c2f1edbdb",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DlpRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPExchange",
+        "dataset": "o365.audit",
+        "id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Exchange",
+        "severity": 2,
+        "type": "access"
+      },
+      "file": {
+        "inode": "0e019b2e-d807-4359-37d1-30a4a792a3ce",
+        "mtime": "2048-02-24T12:13:14.000Z",
+        "name": "Company-Internal-Financial.docx",
+        "owner": "fnvfc@testsiem2.onmicrosoft.com"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "testsiem2.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 10504
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-24T20:11:15",
+          "Id": "c26528d0-2e42-4bbf-9ab8-df01ef8fd77b",
+          "IncidentId": "c8fe986a-ec22-6605-1485-45e3d558da47",
+          "ObjectId": "<CW7WY57QC2601DDB0394B0F3EFF24FC9FF8EC8@AM0PR05MB4803.eurprd05.prod.outlook.com>",
+          "Operation": "DlpRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "44000c55-36d9-4556-bf91-85031c5c9f90",
+              "PolicyName": "test",
+              "Rules": [
+                {
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "OtherConditions": [
+                      {
+                        "Name": "AccessScope",
+                        "Value": "IncludeExternalUsers"
+                      }
+                    ],
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "677a457f-4b0b-4ca3-a538-b015f4b53d07",
+                        "UniqueCount": 1
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "Location": "Message Body",
+                        "SensitiveType": "d7af97f7-a103-444b-bcfe-3aa630444bbe",
+                        "UniqueCount": 1
+                      }
+                    ]
+                  },
+                  "RuleId": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected test",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 13,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Company-Internal-Financial.docx",
+            "FileOwner": "fnvfc@testsiem2.onmicrosoft.com",
+            "FilePathUrl": "https://example.net/testsiem2.onmicrosoft.com/sharepoint",
+            "From": "fnvfc@testsiem2.onmicrosoft.com",
+            "LastModifiedTime": "2048-02-24T12:13:14Z",
+            "UniqueID": "0e019b2e-d807-4359-37d1-30a4a792a3ce",
+            "itemCreationTime": "2048-02-20T11:23:45"
+          },
+          "UserId": "DlpAgent",
+          "UserKey": "1153801116545789462",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "fnvfc",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "rule": {
+        "id": "2463b55f-c00e-43ac-8b75-cca3fd66a3fc",
+        "name": "Low volume of content detected test"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://example.net/testsiem2.onmicrosoft.com/sharepoint"
+      },
+      "user": {
+        "domain": "testsiem2.onmicrosoft.com",
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "fnvfc@testsiem2.onmicrosoft.com",
+        "name": "fnvfc"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

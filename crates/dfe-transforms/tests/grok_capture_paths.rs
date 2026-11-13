@@ -81,17 +81,13 @@ fn cisco_meraki_urls_writes_dotted_paths() {
 /// A message carrying `signature=` alone matches nothing, so no capture leaks
 /// and the negative assertion holds -- a transform that did nothing looks
 /// identical to one that did it right. The line and the expected values are
-/// the first `ids-alerts` document in the Elastic data's
-/// `cisco/meraki/logs/test-security-events.log-expected.json`.
+/// the first `ids-alerts` document in
+/// `tests/fixtures/cisco/meraki/logs/test-security-events.log-expected.json`.
 #[test]
-#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn cisco_meraki_idsalerts_writes_dotted_paths() {
-    let path = dfe_runtime::testutil::elastic_fixtures()
+    let path = dfe_runtime::testutil::fixtures()
         .join("cisco/meraki/logs/test-security-events.log-expected.json");
-    let text =
-        std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
-    let expected: Vec<serde_json::Value> = serde_json::from_str(&text)
-        .unwrap_or_else(|e| panic!("{}: not a JSON array: {e}", path.display()));
+    let expected = dfe_runtime::testutil::expected_documents(&path);
     let want = expected
         .iter()
         .find(|doc| doc["cisco_meraki"]["event_type"] == "ids-alerts")

@@ -1,0 +1,796 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2025-08-19T08:35:58.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "SKIPDATA",
+          "tgw_attachment_id": "tgw-attach-0789ijkl",
+          "tgw_dst_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_dst_vpc_id": "vpc-0ghi9012",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_src_vpc_id": "vpc-0jkl5678",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:35:58.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0jkl5678 vpc-0ghi9012 - - eni-0cc3dd4ee5f66aa7b eni-0cc3dd4ee5f66aa7b - - - 192.0.2.134 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 39464 22 6 49 8947 1755592533 1755592558 SKIPDATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:35:33.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 8947,
+        "community_id": "1:1L4KqobiwBbgXSgybUrcaFfRLYY=",
+        "direction": "ingress",
+        "iana_number": "6",
+        "packets": 49,
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.134",
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.134",
+        "bytes": 8947,
+        "ip": "192.0.2.134",
+        "packets": 49,
+        "port": 39464
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:36:38.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "NODATA",
+          "tgw_attachment_id": "tgw-attach-0456efgh",
+          "tgw_dst_eni": "eni-0aa1bb2cc3dd4ee5f",
+          "tgw_dst_vpc_id": "vpc-0ghi9012",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0ee5f66aa7bcc89d0",
+          "tgw_src_vpc_id": "vpc-0abc1234",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "203.0.113.212",
+        "ip": "203.0.113.212",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:36:38.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0456efgh - - vpc-0abc1234 vpc-0ghi9012 - - eni-0ee5f66aa7bcc89d0 eni-0aa1bb2cc3dd4ee5f - - - 192.0.2.54 203.0.113.212 56846 80 17 45 9771 1755592543 1755592598 NODATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:35:43.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 9771,
+        "community_id": "1:3W0qH5br2nOr774TF8xiPTbwA5Y=",
+        "direction": "ingress",
+        "iana_number": "17",
+        "packets": 45,
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.54",
+          "203.0.113.212"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.54",
+        "bytes": 9771,
+        "ip": "192.0.2.54",
+        "packets": 45,
+        "port": 56846
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:36:20.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "OK",
+          "tgw_attachment_id": "tgw-attach-0123abcd",
+          "tgw_dst_eni": "eni-0dd4ee5f66aa7bcc8",
+          "tgw_dst_vpc_id": "vpc-0def5678",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0ee5f66aa7bcc89d0",
+          "tgw_src_vpc_id": "vpc-0abc1234",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "203.0.113.177",
+        "ip": "203.0.113.177",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:36:20.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0123abcd - - vpc-0abc1234 vpc-0def5678 - - eni-0ee5f66aa7bcc89d0 eni-0dd4ee5f66aa7bcc8 - - - 198.51.100.124 203.0.113.177 36721 8080 17 13 6842 1755592553 1755592580 OK - - - - - - - ingress - -",
+        "start": "2025-08-19T08:35:53.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 6842,
+        "community_id": "1:WKcD6mqrazzCsBWMAIGDBAiunIE=",
+        "direction": "ingress",
+        "iana_number": "17",
+        "packets": 13,
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.124",
+          "203.0.113.177"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "bytes": 6842,
+        "ip": "198.51.100.124",
+        "packets": 13,
+        "port": 36721
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:36:53.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "SKIPDATA",
+          "tgw_attachment_id": "tgw-attach-0789ijkl",
+          "tgw_dst_eni": "eni-0bb2cc3dd4ee5f66",
+          "tgw_dst_vpc_id": "vpc-0def5678",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0aa1bb2cc3dd4ee5f",
+          "tgw_src_vpc_id": "vpc-0ghi9012",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "192.0.2.134",
+        "ip": "192.0.2.134",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:36:53.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0ghi9012 vpc-0def5678 - - eni-0aa1bb2cc3dd4ee5f eni-0bb2cc3dd4ee5f66 - - - 203.0.113.138 192.0.2.134 3147 3389 17 48 5970 1755592563 1755592613 SKIPDATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:36:03.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 5970,
+        "community_id": "1:PK207Bj9tjHc3ib46o8qDGnpJRc=",
+        "direction": "ingress",
+        "iana_number": "17",
+        "packets": 48,
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138",
+          "192.0.2.134"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.138",
+        "bytes": 5970,
+        "ip": "203.0.113.138",
+        "packets": 48,
+        "port": 3147
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:36:57.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "SKIPDATA",
+          "tgw_attachment_id": "tgw-attach-0123abcd",
+          "tgw_dst_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_dst_vpc_id": "vpc-0jkl5678",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0bb2cc3dd4ee5f66",
+          "tgw_src_vpc_id": "vpc-0jkl5678",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:36:57.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0123abcd - - vpc-0jkl5678 vpc-0jkl5678 - - eni-0bb2cc3dd4ee5f66 eni-0cc3dd4ee5f66aa7b - - - 198.51.100.211 203.0.113.248 59410 80 17 3 6949 1755592573 1755592617 SKIPDATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:36:13.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 6949,
+        "community_id": "1:wQOpeX+yJDuYSbMgEEZFjHvXeDs=",
+        "direction": "ingress",
+        "iana_number": "17",
+        "packets": 3,
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "203.0.113.248"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.211",
+        "bytes": 6949,
+        "ip": "198.51.100.211",
+        "packets": 3,
+        "port": 59410
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:37:15.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "SKIPDATA",
+          "tgw_attachment_id": "tgw-attach-0mno1234",
+          "tgw_dst_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_dst_vpc_id": "vpc-0ghi9012",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_src_vpc_id": "vpc-0abc1234",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:37:15.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0mno1234 - - vpc-0abc1234 vpc-0ghi9012 - - eni-0cc3dd4ee5f66aa7b eni-0cc3dd4ee5f66aa7b - - - 192.0.2.218 198.51.100.211 51593 80 6 42 3734 1755592583 1755592635 SKIPDATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:36:23.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 3734,
+        "community_id": "1:GpRhZHrrNqyExI9ouyUCfLJDkfg=",
+        "direction": "ingress",
+        "iana_number": "6",
+        "packets": 42,
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.218",
+          "198.51.100.211"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.218",
+        "bytes": 3734,
+        "ip": "192.0.2.218",
+        "packets": 42,
+        "port": 51593
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:37:32.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "OK",
+          "tgw_attachment_id": "tgw-attach-0789ijkl",
+          "tgw_dst_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_dst_vpc_id": "vpc-0jkl5678",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0ee5f66aa7bcc89d0",
+          "tgw_src_vpc_id": "vpc-0def5678",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "192.0.2.218",
+        "ip": "192.0.2.218",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:37:32.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0def5678 vpc-0jkl5678 - - eni-0ee5f66aa7bcc89d0 eni-0cc3dd4ee5f66aa7b - - - 203.0.113.248 192.0.2.218 42450 443 6 3 5749 1755592593 1755592652 OK - - - - - - - ingress - -",
+        "start": "2025-08-19T08:36:33.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 5749,
+        "community_id": "1:jSi7sjBDuBDtgi5EvmtbdVacrz4=",
+        "direction": "ingress",
+        "iana_number": "6",
+        "packets": 3,
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248",
+          "192.0.2.218"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.248",
+        "bytes": 5749,
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 42450
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:37:15.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "SKIPDATA",
+          "tgw_attachment_id": "tgw-attach-0789ijkl",
+          "tgw_dst_eni": "eni-0cc3dd4ee5f66aa7b",
+          "tgw_dst_vpc_id": "vpc-0def5678",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0aa1bb2cc3dd4ee5f",
+          "tgw_src_vpc_id": "vpc-0abc1234",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "203.0.113.138",
+        "ip": "203.0.113.138",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:37:15.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0abc1234 vpc-0def5678 - - eni-0aa1bb2cc3dd4ee5f eni-0cc3dd4ee5f66aa7b - - - 203.0.113.177 203.0.113.138 40879 3389 17 43 3803 1755592603 1755592635 SKIPDATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:36:43.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 3803,
+        "community_id": "1:Ac3MRB23jda2vPZcto5WtwY5Da0=",
+        "direction": "ingress",
+        "iana_number": "17",
+        "packets": 43,
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177",
+          "203.0.113.138"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.177",
+        "bytes": 3803,
+        "ip": "203.0.113.177",
+        "packets": 43,
+        "port": 40879
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:37:14.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "OK",
+          "tgw_attachment_id": "tgw-attach-0mno1234",
+          "tgw_dst_eni": "eni-0bb2cc3dd4ee5f66",
+          "tgw_dst_vpc_id": "vpc-0jkl5678",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0dd4ee5f66aa7bcc8",
+          "tgw_src_vpc_id": "vpc-0ghi9012",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:37:14.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0mno1234 - - vpc-0ghi9012 vpc-0jkl5678 - - eni-0dd4ee5f66aa7bcc8 eni-0bb2cc3dd4ee5f66 - - - 203.0.113.212 198.51.100.124 47415 443 6 42 4534 1755592613 1755592634 OK - - - - - - - ingress - -",
+        "start": "2025-08-19T08:36:53.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 4534,
+        "community_id": "1:hToUd5+KzEkoXfEGzXWyoS0nE1I=",
+        "direction": "ingress",
+        "iana_number": "6",
+        "packets": 42,
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212",
+          "198.51.100.124"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.212",
+        "bytes": 4534,
+        "ip": "203.0.113.212",
+        "packets": 42,
+        "port": 47415
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2025-08-19T08:38:01.000Z",
+      "aws": {
+        "vpcflow": {
+          "account_id": "748335378900",
+          "log_status": "SKIPDATA",
+          "tgw_attachment_id": "tgw-attach-0456efgh",
+          "tgw_dst_eni": "eni-0dd4ee5f66aa7bcc8",
+          "tgw_dst_vpc_id": "vpc-0abc1234",
+          "tgw_id": "tgw-0a12bc34de56f7890",
+          "tgw_src_eni": "eni-0dd4ee5f66aa7bcc8",
+          "tgw_src_vpc_id": "vpc-0ghi9012",
+          "version": "3"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "748335378900"
+        },
+        "provider": "aws",
+        "region": "-"
+      },
+      "destination": {
+        "address": "192.0.2.54",
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "end": "2025-08-19T08:38:01.000Z",
+        "kind": "event",
+        "original": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0456efgh - - vpc-0ghi9012 vpc-0abc1234 - - eni-0dd4ee5f66aa7bcc8 eni-0dd4ee5f66aa7bcc8 - - - 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 192.0.2.54 20385 3389 17 9 7659 1755592623 1755592681 SKIPDATA - - - - - - - ingress - -",
+        "start": "2025-08-19T08:37:03.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "network": {
+        "bytes": 7659,
+        "community_id": "1:9Jj46WBADU368LNTntMXWrZa5i4=",
+        "direction": "ingress",
+        "iana_number": "17",
+        "packets": 9,
+        "transport": "udp",
+        "type": "ipv6"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "address": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "bytes": 7659,
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "packets": 9,
+        "port": 20385
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0jkl5678 vpc-0ghi9012 - - eni-0cc3dd4ee5f66aa7b eni-0cc3dd4ee5f66aa7b - - - 192.0.2.134 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 39464 22 6 49 8947 1755592533 1755592558 SKIPDATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0456efgh - - vpc-0abc1234 vpc-0ghi9012 - - eni-0ee5f66aa7bcc89d0 eni-0aa1bb2cc3dd4ee5f - - - 192.0.2.54 203.0.113.212 56846 80 17 45 9771 1755592543 1755592598 NODATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0123abcd - - vpc-0abc1234 vpc-0def5678 - - eni-0ee5f66aa7bcc89d0 eni-0dd4ee5f66aa7bcc8 - - - 198.51.100.124 203.0.113.177 36721 8080 17 13 6842 1755592553 1755592580 OK - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0ghi9012 vpc-0def5678 - - eni-0aa1bb2cc3dd4ee5f eni-0bb2cc3dd4ee5f66 - - - 203.0.113.138 192.0.2.134 3147 3389 17 48 5970 1755592563 1755592613 SKIPDATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0123abcd - - vpc-0jkl5678 vpc-0jkl5678 - - eni-0bb2cc3dd4ee5f66 eni-0cc3dd4ee5f66aa7b - - - 198.51.100.211 203.0.113.248 59410 80 17 3 6949 1755592573 1755592617 SKIPDATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0mno1234 - - vpc-0abc1234 vpc-0ghi9012 - - eni-0cc3dd4ee5f66aa7b eni-0cc3dd4ee5f66aa7b - - - 192.0.2.218 198.51.100.211 51593 80 6 42 3734 1755592583 1755592635 SKIPDATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0def5678 vpc-0jkl5678 - - eni-0ee5f66aa7bcc89d0 eni-0cc3dd4ee5f66aa7b - - - 203.0.113.248 192.0.2.218 42450 443 6 3 5749 1755592593 1755592652 OK - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0789ijkl - - vpc-0abc1234 vpc-0def5678 - - eni-0aa1bb2cc3dd4ee5f eni-0cc3dd4ee5f66aa7b - - - 203.0.113.177 203.0.113.138 40879 3389 17 43 3803 1755592603 1755592635 SKIPDATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0mno1234 - - vpc-0ghi9012 vpc-0jkl5678 - - eni-0dd4ee5f66aa7bcc8 eni-0bb2cc3dd4ee5f66 - - - 203.0.113.212 198.51.100.124 47415 443 6 42 4534 1755592613 1755592634 OK - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "3 - 748335378900 tgw-0a12bc34de56f7890 tgw-attach-0456efgh - - vpc-0ghi9012 vpc-0abc1234 - - eni-0dd4ee5f66aa7bcc8 eni-0dd4ee5f66aa7bcc8 - - - 2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 192.0.2.54 20385 3389 17 9 7659 1755592623 1755592681 SKIPDATA - - - - - - - ingress - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "vpcflow",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-vpcflow-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-14T09:00:48.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.10",
+          "flattened": {
+            "request_parameters": {
+              "networkAclId": "acl-0af9cb843511d66d4"
+            },
+            "response_elements": {
+              "_return": true,
+              "requestId": "fe0df630-756e-4c63-a948-7a318187947b"
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "000000000",
+          "request_id": "fe0df630-756e-4c63-a948-7a318187947b",
+          "request_parameters": "{networkAclId=acl-0af9cb843511d66d4}",
+          "response_elements": "{_return=true, requestId=fe0df630-756e-4c63-a948-7a318187947b}",
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DeleteNetworkAcl",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "cc42a362-3648-4c52-baf6-53993ba6c4b0",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"cc42a362-3648-4c52-baf6-53993ba6c4b0\",\"eventName\":\"DeleteNetworkAcl\",\"eventSource\":\"ec2.amazonaws.com\",\"eventTime\":\"2052-10-14T09:00:48Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"fe0df630-756e-4c63-a948-7a318187947b\",\"requestParameters\":{\"networkAclId\":\"acl-0af9cb843511d66d4\"},\"responseElements\":{\"_return\":true,\"requestId\":\"fe0df630-756e-4c63-a948-7a318187947b\"},\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"ec2.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_7cf2f308-4ba3-44fc-a264-f0375729b6c0 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#ec2.delete-network-acl\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "ec2.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "ACCESSKEYID",
+          "sbgq@apejtlc.co",
+          "acl-0af9cb843511d66d4",
+          "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "sbgq@apejtlc.co"
+        ]
+      },
+      "service": {
+        "target": {
+          "entity": {
+            "id": [
+              "acl-0af9cb843511d66d4"
+            ]
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "acl-0af9cb843511d66d4"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "ec2.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "sbgq@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "sbgq@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_7cf2f308-4ba3-44fc-a264-f0375729b6c0 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#ec2.delete-network-acl",
+        "version": "2.17.60"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"cc42a362-3648-4c52-baf6-53993ba6c4b0\",\"eventName\":\"DeleteNetworkAcl\",\"eventSource\":\"ec2.amazonaws.com\",\"eventTime\":\"2052-10-14T09:00:48Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"fe0df630-756e-4c63-a948-7a318187947b\",\"requestParameters\":{\"networkAclId\":\"acl-0af9cb843511d66d4\"},\"responseElements\":{\"_return\":true,\"requestId\":\"fe0df630-756e-4c63-a948-7a318187947b\"},\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"ec2.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_7cf2f308-4ba3-44fc-a264-f0375729b6c0 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#ec2.delete-network-acl\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "state",
+        "original": "{\"sharedfoldername\":\"ThisSFName\",\"deleted\":false,\"score\":0,\"users\":{\"username\":\"nga.qici1@ofglidmx.com\",\"superadmin\":true,\"readonly\":false,\"give\":true,\"can_administer\":true,\"sites\":[\"fec.com\",\"fee.com\"]}}",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "detailed_shared_folder": {
+          "deleted": false,
+          "name": "ThisSFName",
+          "score": 0.0,
+          "user": {
+            "can_administer": true,
+            "give": true,
+            "name": "nga.qici1@ofglidmx.com",
+            "read_only": false,
+            "site": [
+              "fec.com",
+              "fee.com"
+            ],
+            "super_admin": true
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "nga.qici1@ofglidmx.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "nga.qici1@ofglidmx.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"sharedfoldername\":\"ThisSFName\",\"deleted\":false,\"score\":0,\"users\":{\"username\":\"nga.qici1@ofglidmx.com\",\"superadmin\":true,\"readonly\":false,\"give\":true,\"can_administer\":true,\"sites\":[\"fec.com\",\"fee.com\"]}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "detailed_shared_folder",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-lastpass-detailed_shared_folder-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "lastpass",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,978 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 969,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 48000000,
+        "original": "2052-03-22 16:16:01 48 10.118.221.183 302 TCP_NC_MISS 1242 969 GET https skmdu.lftda.com 443 /idsync/ex/push ?partner_id=2499&partner_device_id=aeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553&partner_url=https%3A%2F%0Cd.lvcxito.com%2Fapi%2Frtbserver%2Fpbscookie%3Fuid%3Daeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553%26vid%3D280fa751e99651c4193ef92f6dab0f92%26dspid%3DCEN aeinstein - skmdu.lftda.com - https://vid.vidoomy.com/ \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\" OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://vid.vidoomy.com/"
+        },
+        "response": {
+          "status_code": 302
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "969",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "skmdu.lftda.com",
+          "method": "GET",
+          "referer": "https://vid.vidoomy.com/",
+          "uri_path": "/idsync/ex/push",
+          "uri_port": 443,
+          "uri_query": "?partner_id=2499&partner_device_id=aeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553&partner_url=https%3A%2F%0Cd.lvcxito.com%2Fapi%2Frtbserver%2Fpbscookie%3Fuid%3Daeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553%26vid%3D280fa751e99651c4193ef92f6dab0f92%26dspid%3DCEN",
+          "uri_scheme": "https",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_NC_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "skmdu.lftda.com"
+        },
+        "server_to_client": {
+          "bytes": "1242",
+          "filter_result": "OBSERVED",
+          "status": "302"
+        },
+        "time_taken": 48
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 1242,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "skmdu.lftda.com",
+        "path": "/idsync/ex/push",
+        "port": 443,
+        "query": "?partner_id=2499&partner_device_id=aeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553&partner_url=https%3A%2F%0Cd.lvcxito.com%2Fapi%2Frtbserver%2Fpbscookie%3Fuid%3Daeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553%26vid%3D280fa751e99651c4193ef92f6dab0f92%26dspid%3DCEN",
+        "registered_domain": "lftda.com",
+        "scheme": "https",
+        "subdomain": "skmdu",
+        "top_level_domain": "com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "122.0.0.0"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 1360,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 1418000000,
+        "original": "2052-03-22 16:16:01 1418 10.118.221.183 302 TCP_NC_MISS 1158 1360 GET https p.sblnva.com 443 /cm ?pub=224&in=1&getuid=https%3A//image2.pubmatic.com/AdServer/Pug%3Fvcode%3Dbz0yJnR5cGU9MSZjb2RlPTI3MzkmdGw9MTI5NjAw%26piggybackCookie%3D%24UID%26gdpr%3D0%26gdpr_consent%3D aeinstein - p.sblnva.com - https://ads.pubmatic.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://ads.pubmatic.com/"
+        },
+        "response": {
+          "status_code": 302
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "1360",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "p.sblnva.com",
+          "method": "GET",
+          "referer": "https://ads.pubmatic.com/",
+          "uri_path": "/cm",
+          "uri_port": 443,
+          "uri_query": "?pub=224&in=1&getuid=https%3A//image2.pubmatic.com/AdServer/Pug%3Fvcode%3Dbz0yJnR5cGU9MSZjb2RlPTI3MzkmdGw9MTI5NjAw%26piggybackCookie%3D%24UID%26gdpr%3D0%26gdpr_consent%3D",
+          "uri_scheme": "https",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_NC_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "p.sblnva.com"
+        },
+        "server_to_client": {
+          "bytes": "1158",
+          "filter_result": "OBSERVED",
+          "status": "302"
+        },
+        "time_taken": 1418
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 1158,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "p.sblnva.com",
+        "path": "/cm",
+        "port": 443,
+        "query": "?pub=224&in=1&getuid=https%3A//image2.pubmatic.com/AdServer/Pug%3Fvcode%3Dbz0yJnR5cGU9MSZjb2RlPTI3MzkmdGw9MTI5NjAw%26piggybackCookie%3D%24UID%26gdpr%3D0%26gdpr_consent%3D",
+        "registered_domain": "sblnva.com",
+        "scheme": "https",
+        "subdomain": "p",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 356,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 382000000,
+        "original": "2052-03-22 16:16:01 382 10.118.221.183 200 TCP_ACCELERATED 39 356 CONNECT tcp ihnft.qzcybqmrgyvcfr.com 443 / - aeinstein - - - - - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "CONNECT"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "356",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "ihnft.qzcybqmrgyvcfr.com",
+          "method": "CONNECT",
+          "uri_path": "/",
+          "uri_port": 443,
+          "uri_scheme": "tcp",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_ACCELERATED",
+          "ip": "198.51.100.211"
+        },
+        "server_to_client": {
+          "bytes": "39",
+          "filter_result": "OBSERVED",
+          "status": "200"
+        },
+        "time_taken": 382
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 39,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ihnft.qzcybqmrgyvcfr.com",
+        "path": "/",
+        "port": 443,
+        "registered_domain": "qzcybqmrgyvcfr.com",
+        "scheme": "tcp",
+        "subdomain": "ihnft",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 5784,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 1407000000,
+        "original": "2052-03-22 16:16:01 1407 10.118.221.183 0 TUNNELED 4897 5784 unknown ssl pzb-cvnrf.zkboiecubxuag.com 443 / - aeinstein - pzb-cvnrf.zkboiecubxuag.com - - - OBSERVED \"Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "unknown"
+        },
+        "response": {
+          "status_code": 0
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "5784",
+          "categories": "Web Ads/Analytics",
+          "host": "pzb-cvnrf.zkboiecubxuag.com",
+          "method": "unknown",
+          "uri_path": "/",
+          "uri_port": 443,
+          "uri_scheme": "ssl",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TUNNELED",
+          "ip": "198.51.100.211",
+          "supplier_name": "pzb-cvnrf.zkboiecubxuag.com"
+        },
+        "server_to_client": {
+          "bytes": "4897",
+          "filter_result": "OBSERVED",
+          "status": "0"
+        },
+        "time_taken": 1407
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 4897,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "pzb-cvnrf.zkboiecubxuag.com",
+        "path": "/",
+        "port": 443,
+        "registered_domain": "zkboiecubxuag.com",
+        "scheme": "ssl",
+        "subdomain": "pzb-cvnrf",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 334,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 250000000,
+        "original": "2052-03-22 16:16:01 250 10.118.221.183 200 TCP_ACCELERATED 39 334 CONNECT tcp a.lvcxito.com 443 / - aeinstein - - - - - OBSERVED \"Technology/Internet\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "CONNECT"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "334",
+          "categories": "Technology/Internet",
+          "host": "a.lvcxito.com",
+          "method": "CONNECT",
+          "uri_path": "/",
+          "uri_port": 443,
+          "uri_scheme": "tcp",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_ACCELERATED",
+          "ip": "198.51.100.211"
+        },
+        "server_to_client": {
+          "bytes": "39",
+          "filter_result": "OBSERVED",
+          "status": "200"
+        },
+        "time_taken": 250
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 39,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "a.lvcxito.com",
+        "path": "/",
+        "port": 443,
+        "registered_domain": "lvcxito.com",
+        "scheme": "tcp",
+        "subdomain": "a",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 348,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 203000000,
+        "original": "2052-03-22 16:16:01 203 10.118.221.183 200 TCP_ACCELERATED 39 348 CONNECT tcp skmdu.jkatopaxie.com 443 / - aeinstein - - - - - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "CONNECT"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "348",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "skmdu.jkatopaxie.com",
+          "method": "CONNECT",
+          "uri_path": "/",
+          "uri_port": 443,
+          "uri_scheme": "tcp",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_ACCELERATED",
+          "ip": "198.51.100.211"
+        },
+        "server_to_client": {
+          "bytes": "39",
+          "filter_result": "OBSERVED",
+          "status": "200"
+        },
+        "time_taken": 203
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 39,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "skmdu.jkatopaxie.com",
+        "path": "/",
+        "port": 443,
+        "registered_domain": "jkatopaxie.com",
+        "scheme": "tcp",
+        "subdomain": "skmdu",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 809,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 535000000,
+        "original": "2052-03-22 16:16:01 535 10.118.221.183 302 TCP_NC_MISS 298 809 GET https x.bhcvivhfj.net 443 /sync ?ssp=outbrain&user_id=4j-4C6xkdi0fxtAr1zi3vjj5CQOVs0JfyrDcmeLF9_8pS5pxS1tF-2qSfks1f0jg&us_privacy=1---&gdpr=0&gdpr_pd=1&gdpr_consent=&initiator=ob aeinstein - x.bhcvivhfj.net - https://widgets.outbrain.com/ - OBSERVED \"Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://widgets.outbrain.com/"
+        },
+        "response": {
+          "status_code": 302
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "809",
+          "categories": "Web Ads/Analytics",
+          "host": "x.bhcvivhfj.net",
+          "method": "GET",
+          "referer": "https://widgets.outbrain.com/",
+          "uri_path": "/sync",
+          "uri_port": 443,
+          "uri_query": "?ssp=outbrain&user_id=4j-4C6xkdi0fxtAr1zi3vjj5CQOVs0JfyrDcmeLF9_8pS5pxS1tF-2qSfks1f0jg&us_privacy=1---&gdpr=0&gdpr_pd=1&gdpr_consent=&initiator=ob",
+          "uri_scheme": "https",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_NC_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "x.bhcvivhfj.net"
+        },
+        "server_to_client": {
+          "bytes": "298",
+          "filter_result": "OBSERVED",
+          "status": "302"
+        },
+        "time_taken": 535
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 298,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "x.bhcvivhfj.net",
+        "path": "/sync",
+        "port": 443,
+        "query": "?ssp=outbrain&user_id=4j-4C6xkdi0fxtAr1zi3vjj5CQOVs0JfyrDcmeLF9_8pS5pxS1tF-2qSfks1f0jg&us_privacy=1---&gdpr=0&gdpr_pd=1&gdpr_consent=&initiator=ob",
+        "registered_domain": "bhcvivhfj.net",
+        "scheme": "https",
+        "subdomain": "x",
+        "top_level_domain": "net"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 893,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 33000000,
+        "original": "2052-03-22 16:16:01 33 10.118.221.183 200 TCP_NC_MISS 947 893 GET https ihnft.qzcybqmrgyvcfr.com 443 /khaos.json ?khaos=LERH3RQR-10-H6DO aeinstein - ihnft.qzcybqmrgyvcfr.com application/json;%20charset=UTF-8 https://eus.rubiconproject.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://eus.rubiconproject.com/"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "893",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "ihnft.qzcybqmrgyvcfr.com",
+          "method": "GET",
+          "referer": "https://eus.rubiconproject.com/",
+          "uri_path": "/khaos.json",
+          "uri_port": 443,
+          "uri_query": "?khaos=LERH3RQR-10-H6DO",
+          "uri_scheme": "https",
+          "username": "aeinstein"
+        },
+        "remote_to_server": {
+          "content_type": "application/json;%20charset=UTF-8"
+        },
+        "server": {
+          "action": "TCP_NC_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "ihnft.qzcybqmrgyvcfr.com"
+        },
+        "server_to_client": {
+          "bytes": "947",
+          "filter_result": "OBSERVED",
+          "status": "200"
+        },
+        "time_taken": 33
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 947,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ihnft.qzcybqmrgyvcfr.com",
+        "path": "/khaos.json",
+        "port": 443,
+        "query": "?khaos=LERH3RQR-10-H6DO",
+        "registered_domain": "qzcybqmrgyvcfr.com",
+        "scheme": "https",
+        "subdomain": "ihnft",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 546,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 531000000,
+        "original": "2052-03-22 16:16:01 531 10.118.221.183 200 TCP_MISS 4569 546 GET https ktxdj.xoepzaqomz.com 443 /rules-p-D1yc5zQgjmqr5.js - aeinstein - ktxdj.xoepzaqomz.com application/javascript https://www.cnn.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211 203.0.113.195 \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\" sha256WithRSAEncryption"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://www.cnn.com/"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "546",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "ktxdj.xoepzaqomz.com",
+          "method": "GET",
+          "referer": "https://www.cnn.com/",
+          "uri_path": "/rules-p-D1yc5zQgjmqr5.js",
+          "uri_port": 443,
+          "uri_scheme": "https",
+          "username": "aeinstein"
+        },
+        "remote_to_server": {
+          "content_type": "application/javascript"
+        },
+        "server": {
+          "action": "TCP_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "ktxdj.xoepzaqomz.com"
+        },
+        "server_to_client": {
+          "bytes": "4569",
+          "filter_result": "OBSERVED",
+          "status": "200"
+        },
+        "time_taken": 531
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 4569,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ktxdj.xoepzaqomz.com",
+        "path": "/rules-p-D1yc5zQgjmqr5.js",
+        "port": 443,
+        "registered_domain": "xoepzaqomz.com",
+        "scheme": "https",
+        "subdomain": "ktxdj",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 702,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 642000000,
+        "original": "2052-03-22 16:16:01 642 10.118.221.183 200 TCP_NC_MISS 855 702 GET https cbj-an.bjbmko-cfmgjpbm.com 443 /s/dcm ?pid=d23b9dab-73b0-4ae5-be55-5b50ec25a7b7&id= aeinstein - cbj-an.bjbmko-cfmgjpbm.com image/gif https://eus.rubiconproject.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://eus.rubiconproject.com/"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "702",
+          "categories": "FastwebRes_CallCntr;Web Ads/Analytics",
+          "host": "cbj-an.bjbmko-cfmgjpbm.com",
+          "method": "GET",
+          "referer": "https://eus.rubiconproject.com/",
+          "uri_path": "/s/dcm",
+          "uri_port": 443,
+          "uri_query": "?pid=d23b9dab-73b0-4ae5-be55-5b50ec25a7b7&id=",
+          "uri_scheme": "https",
+          "username": "aeinstein"
+        },
+        "remote_to_server": {
+          "content_type": "image/gif"
+        },
+        "server": {
+          "action": "TCP_NC_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "cbj-an.bjbmko-cfmgjpbm.com"
+        },
+        "server_to_client": {
+          "bytes": "855",
+          "filter_result": "OBSERVED",
+          "status": "200"
+        },
+        "time_taken": 642
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 855,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "cbj-an.bjbmko-cfmgjpbm.com",
+        "path": "/s/dcm",
+        "port": 443,
+        "query": "?pid=d23b9dab-73b0-4ae5-be55-5b50ec25a7b7&id=",
+        "registered_domain": "bjbmko-cfmgjpbm.com",
+        "scheme": "https",
+        "subdomain": "cbj-an",
+        "top_level_domain": "com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-22T16:16:01Z",
+      "client": {
+        "address": "10.118.221.183",
+        "bytes": 775,
+        "ip": "10.118.221.183",
+        "user": {
+          "name": "aeinstein"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "duration": 445000000,
+        "original": "2052-03-22 16:16:01 445 10.118.221.183 302 TCP_NC_MISS 541 775 GET https x.bhcvivhfj.net 443 /sync ?dsp_id=16&user_id=CAESEOldn0A9PuG74Cjm6Evoa4s&google_cver=1&ssp=onetag&bsw_param=a1b3e192-e9b1-441c-8451-cdcbd50731cf aeinstein - x.bhcvivhfj.net - https://onetag-sys.com/ \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\" OBSERVED \"Web Ads/Analytics\" - 198.51.100.211"
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "https://onetag-sys.com/"
+        },
+        "response": {
+          "status_code": 302
+        }
+      },
+      "observer": {
+        "product": "ProxySG",
+        "vendor": "Broadcom"
+      },
+      "proxysg": {
+        "client": {
+          "ip": "10.118.221.183"
+        },
+        "client_to_server": {
+          "bytes": "775",
+          "categories": "Web Ads/Analytics",
+          "host": "x.bhcvivhfj.net",
+          "method": "GET",
+          "referer": "https://onetag-sys.com/",
+          "uri_path": "/sync",
+          "uri_port": 443,
+          "uri_query": "?dsp_id=16&user_id=CAESEOldn0A9PuG74Cjm6Evoa4s&google_cver=1&ssp=onetag&bsw_param=a1b3e192-e9b1-441c-8451-cdcbd50731cf",
+          "uri_scheme": "https",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "username": "aeinstein"
+        },
+        "server": {
+          "action": "TCP_NC_MISS",
+          "ip": "198.51.100.211",
+          "supplier_name": "x.bhcvivhfj.net"
+        },
+        "server_to_client": {
+          "bytes": "541",
+          "filter_result": "OBSERVED",
+          "status": "302"
+        },
+        "time_taken": 445
+      },
+      "server": {
+        "address": "198.51.100.211",
+        "bytes": 541,
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "x.bhcvivhfj.net",
+        "path": "/sync",
+        "port": 443,
+        "query": "?dsp_id=16&user_id=CAESEOldn0A9PuG74Cjm6Evoa4s&google_cver=1&ssp=onetag&bsw_param=a1b3e192-e9b1-441c-8451-cdcbd50731cf",
+        "registered_domain": "bhcvivhfj.net",
+        "scheme": "https",
+        "subdomain": "x",
+        "top_level_domain": "net"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "122.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 48 10.118.221.183 302 TCP_NC_MISS 1242 969 GET https skmdu.lftda.com 443 /idsync/ex/push ?partner_id=2499&partner_device_id=aeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553&partner_url=https%3A%2F%0Cd.lvcxito.com%2Fapi%2Frtbserver%2Fpbscookie%3Fuid%3Daeb66687-eabe-442e-b11e-79494b740d0d-640ba437-5553%26vid%3D280fa751e99651c4193ef92f6dab0f92%26dspid%3DCEN aeinstein - skmdu.lftda.com - https://vid.vidoomy.com/ \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\" OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 1418 10.118.221.183 302 TCP_NC_MISS 1158 1360 GET https p.sblnva.com 443 /cm ?pub=224&in=1&getuid=https%3A//image2.pubmatic.com/AdServer/Pug%3Fvcode%3Dbz0yJnR5cGU9MSZjb2RlPTI3MzkmdGw9MTI5NjAw%26piggybackCookie%3D%24UID%26gdpr%3D0%26gdpr_consent%3D aeinstein - p.sblnva.com - https://ads.pubmatic.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 382 10.118.221.183 200 TCP_ACCELERATED 39 356 CONNECT tcp ihnft.qzcybqmrgyvcfr.com 443 / - aeinstein - - - - - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 1407 10.118.221.183 0 TUNNELED 4897 5784 unknown ssl pzb-cvnrf.zkboiecubxuag.com 443 / - aeinstein - pzb-cvnrf.zkboiecubxuag.com - - - OBSERVED \"Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 250 10.118.221.183 200 TCP_ACCELERATED 39 334 CONNECT tcp a.lvcxito.com 443 / - aeinstein - - - - - OBSERVED \"Technology/Internet\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 203 10.118.221.183 200 TCP_ACCELERATED 39 348 CONNECT tcp skmdu.jkatopaxie.com 443 / - aeinstein - - - - - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 535 10.118.221.183 302 TCP_NC_MISS 298 809 GET https x.bhcvivhfj.net 443 /sync ?ssp=outbrain&user_id=4j-4C6xkdi0fxtAr1zi3vjj5CQOVs0JfyrDcmeLF9_8pS5pxS1tF-2qSfks1f0jg&us_privacy=1---&gdpr=0&gdpr_pd=1&gdpr_consent=&initiator=ob aeinstein - x.bhcvivhfj.net - https://widgets.outbrain.com/ - OBSERVED \"Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 33 10.118.221.183 200 TCP_NC_MISS 947 893 GET https ihnft.qzcybqmrgyvcfr.com 443 /khaos.json ?khaos=LERH3RQR-10-H6DO aeinstein - ihnft.qzcybqmrgyvcfr.com application/json;%20charset=UTF-8 https://eus.rubiconproject.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 531 10.118.221.183 200 TCP_MISS 4569 546 GET https ktxdj.xoepzaqomz.com 443 /rules-p-D1yc5zQgjmqr5.js - aeinstein - ktxdj.xoepzaqomz.com application/javascript https://www.cnn.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211 203.0.113.195 \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\" sha256WithRSAEncryption"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 642 10.118.221.183 200 TCP_NC_MISS 855 702 GET https cbj-an.bjbmko-cfmgjpbm.com 443 /s/dcm ?pid=d23b9dab-73b0-4ae5-be55-5b50ec25a7b7&id= aeinstein - cbj-an.bjbmko-cfmgjpbm.com image/gif https://eus.rubiconproject.com/ - OBSERVED \"FastwebRes_CallCntr;Web Ads/Analytics\" - 198.51.100.211"
+    },
+    {
+      "_temp_": {
+        "_conf": "main"
+      },
+      "message": "2052-03-22 16:16:01 445 10.118.221.183 302 TCP_NC_MISS 541 775 GET https x.bhcvivhfj.net 443 /sync ?dsp_id=16&user_id=CAESEOldn0A9PuG74Cjm6Evoa4s&google_cver=1&ssp=onetag&bsw_param=a1b3e192-e9b1-441c-8451-cdcbd50731cf aeinstein - x.bhcvivhfj.net - https://onetag-sys.com/ \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\" OBSERVED \"Web Ads/Analytics\" - 198.51.100.211"
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-proxysg-log-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "proxysg",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,1355 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-03-27T13:02:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"38e3e378-6204-40c7-bf59-7665110399cc\"], \"confidence\": \"High\", \"description\": \"CIRCL OSINT Feed: Risk of 50.00.\", \"first_seen\": \"2054-03-27T13:02:00Z\", \"ip\": \"192.0.2.10\", \"marking\": {\"tlp\": \"CLEAR\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-10T02:05:15Z\", \"name\": \"192.0.2.10\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"], \"as\": {\"number\": 45102, \"organization\": {\"name\": \"ALIBABA-CN-NET Alibaba US Technology Co., Ltd.\"}}}, \"feed\": [{\"description\": \"License: n/a\", \"name\": \"CIRCL OSINT Feed\", \"reference\": \"https://www.circl.lu/doc/misp/feed-osint/\"}], \"technique\": {\"id\": [\"T1588\"], \"name\": [\"Obtain Capabilities\"], \"reference\": [\"https://attack.mitre.org/techniques/T1588\"], \"subtechnique\": {\"id\": [\"T1588.001\"], \"name\": [\"Malware\"], \"reference\": [\"https://attack.mitre.org/techniques/T1588/001\"]}}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 50}, \"tags\": [\"Malware\", \"type:OSINT\"], \"ticura\": {\"indicator\": {\"uuid\": \"38e3e378-6204-40c7-bf59-7665110399cc\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"filter_cats\": [{\"category\": \"alibaba cloud\"}], \"is_inbound\": false, \"confidence\": 47, \"risk\": 50, \"risk_category\": \"medium\", \"confidence_category\": \"medium\", \"ages_out\": \"2054-04-11T02:03:24Z\", \"countries\": [\"CN\"], \"additional_info\": {\"valid_from\": \"2054-03-27T13:02:00Z\", \"countries\": [\"Hong Kong\"]}, \"fingerprint\": \"c0084859c92c5a6aa9e7e7798487c6900a4441d397ae3f94bfe25a0eb90058e3\"}}}",
+        "provider": "Ticura",
+        "risk_score": 50,
+        "severity": 50,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.10"
+        ]
+      },
+      "tags": [
+        "Malware",
+        "type:OSINT",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "description": "License: n/a",
+            "name": "CIRCL OSINT Feed",
+            "reference": "https://www.circl.lu/doc/misp/feed-osint/"
+          }
+        ],
+        "indicator": {
+          "as": {
+            "number": 45102,
+            "organization": {
+              "name": "ALIBABA-CN-NET Alibaba US Technology Co., Ltd."
+            }
+          },
+          "confidence": "High",
+          "description": "CIRCL OSINT Feed: Risk of 50.00.",
+          "first_seen": "2054-03-27T13:02:00Z",
+          "id": [
+            "38e3e378-6204-40c7-bf59-7665110399cc"
+          ],
+          "ip": "192.0.2.10",
+          "marking": {
+            "tlp": "CLEAR",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-10T02:05:15Z",
+          "name": "192.0.2.10",
+          "provider": "Ticura",
+          "type": [
+            "ipv4-addr"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1588"
+          ],
+          "name": [
+            "Obtain Capabilities"
+          ],
+          "reference": [
+            "https://attack.mitre.org/techniques/T1588"
+          ],
+          "subtechnique": {
+            "id": [
+              "T1588.001"
+            ],
+            "name": [
+              "Malware"
+            ],
+            "reference": [
+              "https://attack.mitre.org/techniques/T1588/001"
+            ]
+          }
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "additional_info": {
+            "countries": [
+              "Hong Kong"
+            ],
+            "valid_from": "2054-03-27T13:02:00Z"
+          },
+          "ages_out": "2054-04-11T02:03:24Z",
+          "confidence": 47,
+          "confidence_category": "medium",
+          "countries": [
+            "CN"
+          ],
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752477406Z",
+          "filter_cats": [
+            {
+              "category": "alibaba cloud"
+            }
+          ],
+          "fingerprint": "c0084859c92c5a6aa9e7e7798487c6900a4441d397ae3f94bfe25a0eb90058e3",
+          "is_inbound": false,
+          "main_type": "IPV4",
+          "merged": {
+            "countries": [
+              "CN",
+              "Hong Kong"
+            ]
+          },
+          "risk": 50,
+          "risk_category": "medium",
+          "sub_type": "IPV4",
+          "uuid": "38e3e378-6204-40c7-bf59-7665110399cc"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-01T08:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"c8c3b7c8-0442-4278-8905-770086111917\"], \"confidence\": \"Medium\", \"description\": \"Known malicious IPv6 address linked to C2 infrastructure.\", \"first_seen\": \"2054-04-01T08:00:00Z\", \"ip\": \"2001:db8:85a3::8a2e:370:7334\", \"marking\": {\"tlp\": \"GREEN\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-09T12:00:00Z\", \"name\": \"2001:db8:85a3::8a2e:370:7334\", \"provider\": \"Ticura\", \"type\": [\"ipv6-addr\"]}, \"feed\": [{\"name\": \"Ticura Internal\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 65}, \"tags\": [\"C2\", \"type:OSINT\"], \"ticura\": {\"indicator\": {\"uuid\": \"c8c3b7c8-0442-4278-8905-770086111917\", \"main_type\": \"IPV6\", \"sub_type\": \"IPV6\", \"is_inbound\": true, \"confidence\": 60, \"risk\": 65, \"risk_category\": \"high\", \"confidence_category\": \"medium\", \"ages_out\": \"2054-05-01T08:00:00Z\", \"countries\": [\"DE\"], \"additional_info\": {\"valid_from\": \"2054-04-01T08:00:00Z\", \"industries\": [\"Finance\"]}, \"fingerprint\": \"4ff1aa5f9f59c094140d9e79f272b6f36495ec29f72d32b4e4229b24d6f8cb6d\"}}}",
+        "provider": "Ticura",
+        "risk_score": 65,
+        "severity": 65,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:85a3::8a2e:370:7334"
+        ]
+      },
+      "tags": [
+        "C2",
+        "type:OSINT",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "Ticura Internal",
+            "reference": "https://www.ticura.io"
+          }
+        ],
+        "indicator": {
+          "confidence": "Medium",
+          "description": "Known malicious IPv6 address linked to C2 infrastructure.",
+          "first_seen": "2054-04-01T08:00:00Z",
+          "id": [
+            "c8c3b7c8-0442-4278-8905-770086111917"
+          ],
+          "ip": "2001:db8:85a3::8a2e:370:7334",
+          "marking": {
+            "tlp": "GREEN",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-09T12:00:00Z",
+          "name": "2001:db8:85a3::8a2e:370:7334",
+          "provider": "Ticura",
+          "type": [
+            "ipv6-addr"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "additional_info": {
+            "industries": [
+              "Finance"
+            ],
+            "valid_from": "2054-04-01T08:00:00Z"
+          },
+          "ages_out": "2054-05-01T08:00:00Z",
+          "confidence": 60,
+          "confidence_category": "medium",
+          "countries": [
+            "DE"
+          ],
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752493597Z",
+          "fingerprint": "4ff1aa5f9f59c094140d9e79f272b6f36495ec29f72d32b4e4229b24d6f8cb6d",
+          "is_inbound": true,
+          "main_type": "IPV6",
+          "merged": {
+            "countries": [
+              "DE"
+            ],
+            "industries": [
+              "Finance"
+            ]
+          },
+          "risk": 65,
+          "risk_category": "high",
+          "sub_type": "IPV6",
+          "uuid": "c8c3b7c8-0442-4278-8905-770086111917"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-03-15T10:30:00.000Z",
+      "dns": {
+        "answers": [
+          {
+            "class": "IN",
+            "data": "192.0.2.1",
+            "name": "udvjdgjsz-aifmgzc.com",
+            "type": "A"
+          }
+        ],
+        "op_code": "QUERY",
+        "question": {
+          "class": "IN",
+          "name": "udvjdgjsz-aifmgzc.com",
+          "registered_domain": "udvjdgjsz-aifmgzc.com",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "192.0.2.1"
+        ],
+        "response_code": "NOERROR",
+        "type": [
+          "query",
+          "answer"
+        ]
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"a0b4a1d6-4286-4310-8859-068800369597\"], \"confidence\": \"High\", \"description\": \"Domain used in phishing campaigns targeting financial institutions.\", \"first_seen\": \"2054-03-15T10:30:00Z\", \"url\": {\"domain\": \"udvjdgjsz-aifmgzc.com\"}, \"marking\": {\"tlp\": \"CLEAR\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-08T09:00:00Z\", \"name\": \"udvjdgjsz-aifmgzc.com\", \"provider\": \"Ticura\", \"type\": [\"domain-name\"]}, \"feed\": [{\"name\": \"PhishTank\", \"reference\": \"https://www.phishtank.com/\"}]}, \"dns\": {\"answers\": [{\"class\": \"IN\", \"data\": \"192.0.2.1\", \"name\": \"udvjdgjsz-aifmgzc.com\", \"type\": \"A\"}], \"question\": {\"class\": \"IN\", \"name\": \"udvjdgjsz-aifmgzc.com\", \"registered_domain\": \"udvjdgjsz-aifmgzc.com\", \"top_level_domain\": \"com\"}, \"op_code\": \"QUERY\", \"resolved_ip\": [\"192.0.2.1\"], \"response_code\": \"NOERROR\", \"type\": [\"query\", \"answer\"]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 80}, \"tags\": [\"Phishing\", \"type:OSINT\"], \"ticura\": {\"indicator\": {\"uuid\": \"a0b4a1d6-4286-4310-8859-068800369597\", \"main_type\": \"DOMAIN\", \"sub_type\": \"DOMAIN\", \"is_inbound\": false, \"confidence\": 75, \"risk\": 80, \"risk_category\": \"high\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-15T10:30:00Z\", \"additional_info\": {\"valid_from\": \"2054-03-15T10:30:00Z\", \"countries\": [\"US\"]}, \"fingerprint\": \"91bf2d330fc05b044acf71c94fbff7145b5251401cb05876662f052c43a4175c\"}}}",
+        "provider": "Ticura",
+        "risk_score": 80,
+        "severity": 80,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "hosts": [
+          "udvjdgjsz-aifmgzc.com"
+        ]
+      },
+      "tags": [
+        "Phishing",
+        "type:OSINT",
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "PhishTank",
+            "reference": "https://www.phishtank.com/"
+          }
+        ],
+        "indicator": {
+          "confidence": "High",
+          "description": "Domain used in phishing campaigns targeting financial institutions.",
+          "first_seen": "2054-03-15T10:30:00Z",
+          "id": [
+            "a0b4a1d6-4286-4310-8859-068800369597"
+          ],
+          "marking": {
+            "tlp": "CLEAR",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-08T09:00:00Z",
+          "name": "udvjdgjsz-aifmgzc.com",
+          "provider": "Ticura",
+          "type": [
+            "domain-name"
+          ],
+          "url": {
+            "domain": "udvjdgjsz-aifmgzc.com"
+          }
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "additional_info": {
+            "countries": [
+              "US"
+            ],
+            "valid_from": "2054-03-15T10:30:00Z"
+          },
+          "ages_out": "2054-05-15T10:30:00Z",
+          "confidence": 75,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752495187Z",
+          "fingerprint": "91bf2d330fc05b044acf71c94fbff7145b5251401cb05876662f052c43a4175c",
+          "is_inbound": false,
+          "main_type": "DOMAIN",
+          "merged": {
+            "countries": [
+              "US"
+            ]
+          },
+          "risk": 80,
+          "risk_category": "high",
+          "sub_type": "DOMAIN",
+          "uuid": "a0b4a1d6-4286-4310-8859-068800369597"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-05T14:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"e6d5b7d0-7608-4911-8708-681450763540\"], \"confidence\": \"High\", \"description\": \"URL used to deliver credential-harvesting page.\", \"first_seen\": \"2054-04-05T14:00:00Z\", \"url\": {\"full\": \"https://phishing.example.com/steal-credentials\", \"domain\": \"phishing.example.com\"}, \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-10T14:00:00Z\", \"name\": \"https://phishing.example.com/steal-credentials\", \"provider\": \"Ticura\", \"type\": [\"url\"]}, \"feed\": [{\"name\": \"URLhaus\", \"reference\": \"https://urlhaus.abuse.ch/\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 90}, \"tags\": [\"Phishing\", \"Credential Harvesting\"], \"ticura\": {\"indicator\": {\"uuid\": \"e6d5b7d0-7608-4911-8708-681450763540\", \"main_type\": \"URL\", \"sub_type\": \"URL\", \"is_inbound\": false, \"confidence\": 85, \"risk\": 90, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-05T14:00:00Z\", \"actors\": [\"APT28\"], \"additional_info\": {\"valid_from\": \"2054-04-05T14:00:00Z\", \"actors\": [\"Cozy Bear\"]}, \"fingerprint\": \"cb3aef3f9f9036545136abae021d9035d1f222f934110f515eae597509def71a\"}}}",
+        "provider": "Ticura",
+        "risk_score": 90,
+        "severity": 90,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "hosts": [
+          "phishing.example.com"
+        ]
+      },
+      "tags": [
+        "Phishing",
+        "Credential Harvesting",
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "URLhaus",
+            "reference": "https://urlhaus.abuse.ch/"
+          }
+        ],
+        "indicator": {
+          "confidence": "High",
+          "description": "URL used to deliver credential-harvesting page.",
+          "first_seen": "2054-04-05T14:00:00Z",
+          "id": [
+            "e6d5b7d0-7608-4911-8708-681450763540"
+          ],
+          "marking": {
+            "tlp": "AMBER",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-10T14:00:00Z",
+          "name": "https://phishing.example.com/steal-credentials",
+          "provider": "Ticura",
+          "type": [
+            "url"
+          ],
+          "url": {
+            "domain": "phishing.example.com",
+            "full": "https://phishing.example.com/steal-credentials"
+          }
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "actors": [
+            "APT28"
+          ],
+          "additional_info": {
+            "actors": [
+              "Cozy Bear"
+            ],
+            "valid_from": "2054-04-05T14:00:00Z"
+          },
+          "ages_out": "2054-05-05T14:00:00Z",
+          "confidence": 85,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752496807Z",
+          "fingerprint": "cb3aef3f9f9036545136abae021d9035d1f222f934110f515eae597509def71a",
+          "is_inbound": false,
+          "main_type": "URL",
+          "merged": {
+            "actors": [
+              "APT28",
+              "Cozy Bear"
+            ]
+          },
+          "risk": 90,
+          "risk_category": "critical",
+          "sub_type": "URL",
+          "uuid": "e6d5b7d0-7608-4911-8708-681450763540"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-02-10T06:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"c0f9d5c6-2662-4933-8343-213310798075\"], \"confidence\": \"High\", \"description\": \"SHA-256 hash of a known ransomware sample.\", \"first_seen\": \"2054-02-10T06:00:00Z\", \"file\": {\"hash\": {\"sha256\": \"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}, \"name\": \"ransomware_payload.exe\", \"size\": 204800}, \"marking\": {\"tlp\": \"RED\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-07T06:00:00Z\", \"name\": \"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"MalwareBazaar\", \"reference\": \"https://bazaar.abuse.ch/\"}], \"technique\": {\"id\": [\"T1486\"], \"name\": [\"Data Encrypted for Impact\"], \"reference\": [\"https://attack.mitre.org/techniques/T1486\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 95}, \"tags\": [\"Ransomware\", \"Malware\"], \"ticura\": {\"indicator\": {\"uuid\": \"c0f9d5c6-2662-4933-8343-213310798075\", \"main_type\": \"HASH\", \"sub_type\": \"HASHSHA256\", \"is_inbound\": false, \"confidence\": 90, \"risk\": 95, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-10T06:00:00Z\", \"additional_info\": {\"valid_from\": \"2054-02-10T06:00:00Z\"}, \"fingerprint\": \"c29a572275f233597f050d12a4da880c220c32228fff9568eb7fec469d3c2a6a\"}}}",
+        "provider": "Ticura",
+        "risk_score": 95,
+        "severity": 95,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "hash": [
+          "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+        ]
+      },
+      "tags": [
+        "Ransomware",
+        "Malware",
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "MalwareBazaar",
+            "reference": "https://bazaar.abuse.ch/"
+          }
+        ],
+        "indicator": {
+          "confidence": "High",
+          "description": "SHA-256 hash of a known ransomware sample.",
+          "file": {
+            "hash": {
+              "sha256": "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780"
+            },
+            "name": "ransomware_payload.exe",
+            "size": 204800
+          },
+          "first_seen": "2054-02-10T06:00:00Z",
+          "id": [
+            "c0f9d5c6-2662-4933-8343-213310798075"
+          ],
+          "marking": {
+            "tlp": "RED",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-07T06:00:00Z",
+          "name": "8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780",
+          "provider": "Ticura",
+          "type": [
+            "file"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1486"
+          ],
+          "name": [
+            "Data Encrypted for Impact"
+          ],
+          "reference": [
+            "https://attack.mitre.org/techniques/T1486"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "additional_info": {
+            "valid_from": "2054-02-10T06:00:00Z"
+          },
+          "ages_out": "2054-05-10T06:00:00Z",
+          "confidence": 90,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752498237Z",
+          "fingerprint": "c29a572275f233597f050d12a4da880c220c32228fff9568eb7fec469d3c2a6a",
+          "is_inbound": false,
+          "main_type": "HASH",
+          "risk": 95,
+          "risk_category": "critical",
+          "sub_type": "HASHSHA256",
+          "uuid": "c0f9d5c6-2662-4933-8343-213310798075"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-03-01T09:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"e0e0e4c1-8583-4323-8976-290502274651\"], \"confidence\": \"Medium\", \"description\": \"MD5 hash of a known trojan dropper.\", \"first_seen\": \"2054-03-01T09:00:00Z\", \"file\": {\"hash\": {\"md5\": \"2c59640eae6e3e79e8674d856866a840\"}, \"name\": \"dropper.dll\"}, \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-06T09:00:00Z\", \"name\": \"2c59640eae6e3e79e8674d856866a840\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"MalwareBazaar\", \"reference\": \"https://bazaar.abuse.ch/\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 70}, \"tags\": [\"Trojan\", \"Malware\"], \"ticura\": {\"indicator\": {\"uuid\": \"e0e0e4c1-8583-4323-8976-290502274651\", \"main_type\": \"HASH\", \"sub_type\": \"HASHMD5\", \"is_inbound\": false, \"confidence\": 65, \"risk\": 70, \"risk_category\": \"high\", \"confidence_category\": \"medium\", \"ages_out\": \"2054-04-01T09:00:00Z\", \"additional_info\": {\"valid_from\": \"2054-03-01T09:00:00Z\"}, \"fingerprint\": \"8832682b329c40f299e2f5ebf03d9d892fcd05211651f270f5f5df75e85911c0\"}}}",
+        "provider": "Ticura",
+        "risk_score": 70,
+        "severity": 70,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "hash": [
+          "2c59640eae6e3e79e8674d856866a840"
+        ]
+      },
+      "tags": [
+        "Trojan",
+        "Malware",
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "MalwareBazaar",
+            "reference": "https://bazaar.abuse.ch/"
+          }
+        ],
+        "indicator": {
+          "confidence": "Medium",
+          "description": "MD5 hash of a known trojan dropper.",
+          "file": {
+            "hash": {
+              "md5": "2c59640eae6e3e79e8674d856866a840"
+            },
+            "name": "dropper.dll"
+          },
+          "first_seen": "2054-03-01T09:00:00Z",
+          "id": [
+            "e0e0e4c1-8583-4323-8976-290502274651"
+          ],
+          "marking": {
+            "tlp": "AMBER",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-06T09:00:00Z",
+          "name": "2c59640eae6e3e79e8674d856866a840",
+          "provider": "Ticura",
+          "type": [
+            "file"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "additional_info": {
+            "valid_from": "2054-03-01T09:00:00Z"
+          },
+          "ages_out": "2054-04-01T09:00:00Z",
+          "confidence": 65,
+          "confidence_category": "medium",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752499097Z",
+          "fingerprint": "8832682b329c40f299e2f5ebf03d9d892fcd05211651f270f5f5df75e85911c0",
+          "is_inbound": false,
+          "main_type": "HASH",
+          "risk": 70,
+          "risk_category": "high",
+          "sub_type": "HASHMD5",
+          "uuid": "e0e0e4c1-8583-4323-8976-290502274651"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-15T10:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"b1a0b8e4-9688-4332-8802-749428917643\"], \"confidence\": \"High\", \"description\": \"Indicator with MITRE enrichment supplied in Ticura namespace only.\", \"first_seen\": \"2054-04-15T10:00:00Z\", \"ip\": \"192.0.2.20\", \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-15T10:00:00Z\", \"name\": \"192.0.2.20\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 75}, \"tags\": [\"APT\", \"type:Curated\"], \"ticura\": {\"indicator\": {\"uuid\": \"b1a0b8e4-9688-4332-8802-749428917643\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"is_inbound\": true, \"confidence\": 80, \"risk\": 75, \"risk_category\": \"high\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-15T10:00:00Z\", \"technique\": {\"id\": [\"T1190\"], \"name\": [\"Exploit Public-Facing Application\"], \"reference\": [\"https://attack.mitre.org/techniques/T1190\"], \"subtechnique\": {\"id\": [\"T1190.001\"], \"name\": [\"Hypothetical Subtechnique\"], \"reference\": [\"https://attack.mitre.org/techniques/T1190/001\"]}}, \"software\": {\"id\": [\"S0001\"], \"name\": [\"ExampleMalware\"], \"type\": [\"Malware\"], \"platforms\": [\"Windows\", \"Linux\"], \"alias\": [\"EM\"], \"reference\": [\"https://attack.mitre.org/software/S0001\"]}, \"group\": {\"id\": [\"G0001\"], \"name\": [\"ExampleGroup\"], \"reference\": [\"https://attack.mitre.org/groups/G0001\"]}, \"fingerprint\": \"b79e73e0e106d1b62faef40c3e2f33eec5beba2c9e8051af9eae8a293571e971\"}}}",
+        "provider": "Ticura",
+        "risk_score": 75,
+        "severity": 75,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.20"
+        ]
+      },
+      "tags": [
+        "APT",
+        "type:Curated",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "Ticura Curated",
+            "reference": "https://www.ticura.io"
+          }
+        ],
+        "group": {
+          "id": [
+            "G0001"
+          ],
+          "name": [
+            "ExampleGroup"
+          ],
+          "reference": [
+            "https://attack.mitre.org/groups/G0001"
+          ]
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Indicator with MITRE enrichment supplied in Ticura namespace only.",
+          "first_seen": "2054-04-15T10:00:00Z",
+          "id": [
+            "b1a0b8e4-9688-4332-8802-749428917643"
+          ],
+          "ip": "192.0.2.20",
+          "marking": {
+            "tlp": "AMBER",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-04-15T10:00:00Z",
+          "name": "192.0.2.20",
+          "provider": "Ticura",
+          "type": [
+            "ipv4-addr"
+          ]
+        },
+        "software": {
+          "alias": [
+            "EM"
+          ],
+          "id": [
+            "S0001"
+          ],
+          "name": [
+            "ExampleMalware"
+          ],
+          "platforms": [
+            "Windows",
+            "Linux"
+          ],
+          "reference": [
+            "https://attack.mitre.org/software/S0001"
+          ],
+          "type": [
+            "Malware"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1190"
+          ],
+          "name": [
+            "Exploit Public-Facing Application"
+          ],
+          "reference": [
+            "https://attack.mitre.org/techniques/T1190"
+          ],
+          "subtechnique": {
+            "id": [
+              "T1190.001"
+            ],
+            "name": [
+              "Hypothetical Subtechnique"
+            ],
+            "reference": [
+              "https://attack.mitre.org/techniques/T1190/001"
+            ]
+          }
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "ages_out": "2054-05-15T10:00:00Z",
+          "confidence": 80,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752499927Z",
+          "fingerprint": "b79e73e0e106d1b62faef40c3e2f33eec5beba2c9e8051af9eae8a293571e971",
+          "group": {
+            "id": [
+              "G0001"
+            ],
+            "name": [
+              "ExampleGroup"
+            ],
+            "reference": [
+              "https://attack.mitre.org/groups/G0001"
+            ]
+          },
+          "is_inbound": true,
+          "main_type": "IPV4",
+          "risk": 75,
+          "risk_category": "high",
+          "software": {
+            "alias": [
+              "EM"
+            ],
+            "id": [
+              "S0001"
+            ],
+            "name": [
+              "ExampleMalware"
+            ],
+            "platforms": [
+              "Windows",
+              "Linux"
+            ],
+            "reference": [
+              "https://attack.mitre.org/software/S0001"
+            ],
+            "type": [
+              "Malware"
+            ]
+          },
+          "sub_type": "IPV4",
+          "technique": {
+            "id": [
+              "T1190"
+            ],
+            "name": [
+              "Exploit Public-Facing Application"
+            ],
+            "reference": [
+              "https://attack.mitre.org/techniques/T1190"
+            ],
+            "subtechnique": {
+              "id": [
+                "T1190.001"
+              ],
+              "name": [
+                "Hypothetical Subtechnique"
+              ],
+              "reference": [
+                "https://attack.mitre.org/techniques/T1190/001"
+              ]
+            }
+          },
+          "uuid": "b1a0b8e4-9688-4332-8802-749428917643"
+        }
+      }
+    },
+    {
+      "@timestamp": "2053-01-01T00:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"c5b6e8a7-1475-4053-8379-937745180110\"], \"confidence\": \"Low\", \"description\": \"Already-expired indicator \\u2014 source expiry passed.\", \"first_seen\": \"2053-01-01T00:00:00Z\", \"ip\": \"192.0.2.30\", \"modified_at\": \"2054-01-15T00:00:00Z\", \"name\": \"192.0.2.30\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 30}, \"ticura\": {\"indicator\": {\"uuid\": \"c5b6e8a7-1475-4053-8379-937745180110\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"is_inbound\": false, \"confidence\": 30, \"risk\": 30, \"risk_category\": \"low\", \"confidence_category\": \"low\", \"ages_out\": \"2054-02-01T00:00:00Z\", \"fingerprint\": \"b676fc36cf13bb0aaf51b7f0f7f03f1f51ce10594e7213e972d1e75835b0e125\"}}}",
+        "provider": "Ticura",
+        "risk_score": 30,
+        "severity": 30,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.30"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "Ticura Curated",
+            "reference": "https://www.ticura.io"
+          }
+        ],
+        "indicator": {
+          "confidence": "Low",
+          "description": "Already-expired indicator — source expiry passed.",
+          "first_seen": "2053-01-01T00:00:00Z",
+          "id": [
+            "c5b6e8a7-1475-4053-8379-937745180110"
+          ],
+          "ip": "192.0.2.30",
+          "modified_at": "2054-01-15T00:00:00Z",
+          "name": "192.0.2.30",
+          "provider": "Ticura",
+          "type": [
+            "ipv4-addr"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "ages_out": "2054-02-01T00:00:00Z",
+          "confidence": 30,
+          "confidence_category": "low",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752501767Z",
+          "fingerprint": "b676fc36cf13bb0aaf51b7f0f7f03f1f51ce10594e7213e972d1e75835b0e125",
+          "is_inbound": false,
+          "main_type": "IPV4",
+          "risk": 30,
+          "risk_category": "low",
+          "sub_type": "IPV4",
+          "uuid": "c5b6e8a7-1475-4053-8379-937745180110"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-01T00:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"a1d2f5a5-5125-4426-8336-183327767054\"], \"confidence\": \"Medium\", \"description\": \"SHA-1 hash indicator \\u2014 uses sub_type fallback.\", \"first_seen\": \"2054-04-01T00:00:00Z\", \"modified_at\": \"2054-04-10T00:00:00Z\", \"name\": \"ea97a1dd9a7b1f3b2997affd78726203dac70601\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 60}, \"ticura\": {\"indicator\": {\"uuid\": \"a1d2f5a5-5125-4426-8336-183327767054\", \"main_type\": \"HASH\", \"sub_type\": \"HASHSHA1\", \"is_inbound\": false, \"confidence\": 65, \"risk\": 60, \"risk_category\": \"medium\", \"confidence_category\": \"medium\", \"ages_out\": \"2055-01-01T00:00:00Z\", \"fingerprint\": \"ac5644b4e25d23008600e2031951858f5691bbd49778afb4e1a1497d508364f0\"}}}",
+        "provider": "Ticura",
+        "risk_score": 60,
+        "severity": 60,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "hash": [
+          "ea97a1dd9a7b1f3b2997affd78726203dac70601"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "Ticura Curated",
+            "reference": "https://www.ticura.io"
+          }
+        ],
+        "indicator": {
+          "confidence": "Medium",
+          "description": "SHA-1 hash indicator — uses sub_type fallback.",
+          "file": {
+            "hash": {
+              "sha1": "ea97a1dd9a7b1f3b2997affd78726203dac70601"
+            }
+          },
+          "first_seen": "2054-04-01T00:00:00Z",
+          "id": [
+            "a1d2f5a5-5125-4426-8336-183327767054"
+          ],
+          "modified_at": "2054-04-10T00:00:00Z",
+          "name": "ea97a1dd9a7b1f3b2997affd78726203dac70601",
+          "provider": "Ticura",
+          "type": [
+            "file"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "ages_out": "2055-01-01T00:00:00Z",
+          "confidence": 65,
+          "confidence_category": "medium",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752502627Z",
+          "fingerprint": "ac5644b4e25d23008600e2031951858f5691bbd49778afb4e1a1497d508364f0",
+          "is_inbound": false,
+          "main_type": "HASH",
+          "risk": 60,
+          "risk_category": "medium",
+          "sub_type": "HASHSHA1",
+          "uuid": "a1d2f5a5-5125-4426-8336-183327767054"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-15T00:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"f4b3a7c3-9184-4179-8946-688764217845\"], \"confidence\": \"High\", \"description\": \"IP+port C2 indicator (IPV4PORT subtype).\", \"first_seen\": \"2054-04-15T00:00:00Z\", \"ip\": \"192.0.2.40\", \"port\": 8443, \"modified_at\": \"2054-04-20T00:00:00Z\", \"name\": \"192.0.2.40:8443\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\", \"port\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 95}, \"ticura\": {\"indicator\": {\"uuid\": \"f4b3a7c3-9184-4179-8946-688764217845\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4PORT\", \"is_inbound\": false, \"confidence\": 90, \"risk\": 95, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2055-01-01T00:00:00Z\", \"fingerprint\": \"635b949c7184b6838c510a09a2d78205d0ace64be101c556150aa83f22d1c0f6\"}}}",
+        "provider": "Ticura",
+        "risk_score": 95,
+        "severity": 95,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.40"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "Ticura Curated",
+            "reference": "https://www.ticura.io"
+          }
+        ],
+        "indicator": {
+          "confidence": "High",
+          "description": "IP+port C2 indicator (IPV4PORT subtype).",
+          "first_seen": "2054-04-15T00:00:00Z",
+          "id": [
+            "f4b3a7c3-9184-4179-8946-688764217845"
+          ],
+          "ip": "192.0.2.40",
+          "modified_at": "2054-04-20T00:00:00Z",
+          "name": "192.0.2.40:8443",
+          "port": 8443,
+          "provider": "Ticura",
+          "type": [
+            "ipv4-addr",
+            "port"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "ages_out": "2055-01-01T00:00:00Z",
+          "confidence": 90,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752503657Z",
+          "fingerprint": "635b949c7184b6838c510a09a2d78205d0ace64be101c556150aa83f22d1c0f6",
+          "is_inbound": false,
+          "main_type": "IPV4",
+          "risk": 95,
+          "risk_category": "critical",
+          "sub_type": "IPV4PORT",
+          "uuid": "f4b3a7c3-9184-4179-8946-688764217845"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-04-01T00:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": [\"d0d2c0d0-300e-443a-828d-33243804733a\"], \"confidence\": \"High\", \"description\": \"Provenance divergence test.\", \"first_seen\": \"2054-04-01T00:00:00Z\", \"ip\": \"192.0.2.50\", \"modified_at\": \"2054-04-25T00:00:00Z\", \"name\": \"192.0.2.50\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}], \"technique\": {\"id\": [\"T1059\"], \"name\": [\"Command and Scripting Interpreter\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 70}, \"ticura\": {\"indicator\": {\"uuid\": \"d0d2c0d0-300e-443a-828d-33243804733a\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"is_inbound\": false, \"confidence\": 75, \"risk\": 70, \"risk_category\": \"high\", \"confidence_category\": \"high\", \"ages_out\": \"2055-01-01T00:00:00Z\", \"technique\": {\"id\": [\"T1588\"], \"name\": [\"Obtain Capabilities\"]}, \"fingerprint\": \"ee0e50ce6cfa0740d2ca2415a429ba55baecf67b07c8dbfb730541a5d92fa9eb\"}}}",
+        "provider": "Ticura",
+        "risk_score": 70,
+        "severity": 70,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.50"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "name": "Ticura Curated",
+            "reference": "https://www.ticura.io"
+          }
+        ],
+        "indicator": {
+          "confidence": "High",
+          "description": "Provenance divergence test.",
+          "first_seen": "2054-04-01T00:00:00Z",
+          "id": [
+            "d0d2c0d0-300e-443a-828d-33243804733a"
+          ],
+          "ip": "192.0.2.50",
+          "modified_at": "2054-04-25T00:00:00Z",
+          "name": "192.0.2.50",
+          "provider": "Ticura",
+          "type": [
+            "ipv4-addr"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1059"
+          ],
+          "name": [
+            "Command and Scripting Interpreter"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "ages_out": "2055-01-01T00:00:00Z",
+          "confidence": 75,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752504497Z",
+          "fingerprint": "ee0e50ce6cfa0740d2ca2415a429ba55baecf67b07c8dbfb730541a5d92fa9eb",
+          "is_inbound": false,
+          "main_type": "IPV4",
+          "risk": 70,
+          "risk_category": "high",
+          "sub_type": "IPV4",
+          "technique": {
+            "id": [
+              "T1588"
+            ],
+            "name": [
+              "Obtain Capabilities"
+            ]
+          },
+          "uuid": "d0d2c0d0-300e-443a-828d-33243804733a"
+        }
+      }
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "@timestamp": "2054-05-28T10:00:00.000Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "indicator-update",
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"threat\": {\"indicator\": {\"id\": \"fcff6077-7059-0246-0978-721483020428\", \"confidence\": \"High\", \"description\": \"Test indicator with MITRE software/group enrichment.\", \"first_seen\": \"2054-04-01T10:00:00Z\", \"last_seen\": \"2054-05-28T10:00:00Z\", \"file\": {\"hash\": {\"sha256\": \"4a62d926825a8e367e1fbfb7f52fe614c4fa0b5c1e3d123ff34b8b87d4b61a45\", \"sha1\": \"c6084f023932946fdd8e18988393f83d6ce4a22f\"}, \"name\": \"agent-tesla-sample.exe\", \"size\": 102400}, \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-05-28T12:00:00Z\", \"name\": \"agent-tesla-sample.exe\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"MalwareBazaar-Recent Additions\", \"reference\": \"https://bazaar.abuse.ch\", \"description\": \"License: n/a\"}], \"technique\": {\"id\": [\"T1059\"], \"name\": [\"Command and Scripting Interpreter\"], \"reference\": [\"https://attack.mitre.org/techniques/T1059\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": \"threat\", \"type\": \"indicator\", \"risk_score\": 90}, \"ticura\": {\"indicator\": {\"uuid\": \"fcff6077-7059-0246-0978-721483020428\", \"main_type\": \"HASH\", \"sub_type\": \"HASHSHA256\", \"is_inbound\": false, \"confidence\": 85, \"risk\": 90, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2054-12-31T00:00:00Z\", \"technique\": {\"id\": [\"T1059\"], \"name\": [\"Command and Scripting Interpreter\"], \"reference\": [\"https://attack.mitre.org/techniques/T1059\"]}, \"software\": {\"id\": \"S0331\", \"name\": \"Agent Tesla\", \"alias\": [\"AgentTesla\"], \"type\": \"Malware\", \"platforms\": [\"Windows\"], \"reference\": \"https://attack.mitre.org/software/S0331\"}, \"group\": {\"id\": \"G0096\", \"name\": \"APT41\", \"reference\": \"https://attack.mitre.org/groups/G0096\"}, \"additional_info\": {\"valid_from\": \"2054-04-01T10:00:00Z\", \"malware\": {\"name\": \"Agent Tesla\"}, \"threat_types\": [\"Malware\"]}, \"fingerprint\": \"929ea8dc712e866d6607ed3cf4746382b0cba9e158968abff6dd0394bb14a14e\"}}, \"tags\": [\"Malware\"]}",
+        "provider": "Ticura",
+        "risk_score": 90,
+        "severity": 90,
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Ticura",
+        "vendor": "Ticura"
+      },
+      "related": {
+        "hash": [
+          "4a62d926825a8e367e1fbfb7f52fe614c4fa0b5c1e3d123ff34b8b87d4b61a45",
+          "c6084f023932946fdd8e18988393f83d6ce4a22f"
+        ]
+      },
+      "tags": [
+        "Malware",
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": [
+          {
+            "description": "License: n/a",
+            "name": "MalwareBazaar-Recent Additions",
+            "reference": "https://bazaar.abuse.ch"
+          }
+        ],
+        "group": {
+          "id": "G0096",
+          "name": "APT41",
+          "reference": "https://attack.mitre.org/groups/G0096"
+        },
+        "indicator": {
+          "confidence": "High",
+          "description": "Test indicator with MITRE software/group enrichment.",
+          "file": {
+            "hash": {
+              "sha1": "c6084f023932946fdd8e18988393f83d6ce4a22f",
+              "sha256": "4a62d926825a8e367e1fbfb7f52fe614c4fa0b5c1e3d123ff34b8b87d4b61a45"
+            },
+            "name": "agent-tesla-sample.exe",
+            "size": 102400
+          },
+          "first_seen": "2054-04-01T10:00:00Z",
+          "id": [
+            "fcff6077-7059-0246-0978-721483020428"
+          ],
+          "last_seen": "2054-05-28T10:00:00Z",
+          "marking": {
+            "tlp": "AMBER",
+            "tlp_version": "2.0"
+          },
+          "modified_at": "2054-05-28T12:00:00Z",
+          "name": "agent-tesla-sample.exe",
+          "provider": "Ticura",
+          "type": [
+            "file"
+          ]
+        },
+        "software": {
+          "alias": [
+            "AgentTesla"
+          ],
+          "id": "S0331",
+          "name": "Agent Tesla",
+          "platforms": [
+            "Windows"
+          ],
+          "reference": "https://attack.mitre.org/software/S0331",
+          "type": "Malware"
+        },
+        "technique": {
+          "id": [
+            "T1059"
+          ],
+          "name": [
+            "Command and Scripting Interpreter"
+          ],
+          "reference": [
+            "https://attack.mitre.org/techniques/T1059"
+          ]
+        }
+      },
+      "ticura": {
+        "indicator": {
+          "additional_info": {
+            "malware": {
+              "name": "Agent Tesla"
+            },
+            "threat_types": [
+              "Malware"
+            ],
+            "valid_from": "2054-04-01T10:00:00Z"
+          },
+          "ages_out": "2054-12-31T00:00:00Z",
+          "confidence": 85,
+          "confidence_category": "high",
+          "feed_ingest_timestamp": "2026-11-13T23:03:13.752506947Z",
+          "fingerprint": "929ea8dc712e866d6607ed3cf4746382b0cba9e158968abff6dd0394bb14a14e",
+          "group": {
+            "id": "G0096",
+            "name": "APT41",
+            "reference": "https://attack.mitre.org/groups/G0096"
+          },
+          "is_inbound": false,
+          "main_type": "HASH",
+          "risk": 90,
+          "risk_category": "critical",
+          "software": {
+            "alias": [
+              "AgentTesla"
+            ],
+            "id": "S0331",
+            "name": "Agent Tesla",
+            "platforms": [
+              "Windows"
+            ],
+            "reference": "https://attack.mitre.org/software/S0331",
+            "type": "Malware"
+          },
+          "sub_type": "HASHSHA256",
+          "technique": {
+            "id": [
+              "T1059"
+            ],
+            "name": [
+              "Command and Scripting Interpreter"
+            ],
+            "reference": [
+              "https://attack.mitre.org/techniques/T1059"
+            ]
+          },
+          "uuid": "fcff6077-7059-0246-0978-721483020428"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"38e3e378-6204-40c7-bf59-7665110399cc\"], \"confidence\": \"High\", \"description\": \"CIRCL OSINT Feed: Risk of 50.00.\", \"first_seen\": \"2054-03-27T13:02:00Z\", \"ip\": \"192.0.2.10\", \"marking\": {\"tlp\": \"CLEAR\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-10T02:05:15Z\", \"name\": \"192.0.2.10\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"], \"as\": {\"number\": 45102, \"organization\": {\"name\": \"ALIBABA-CN-NET Alibaba US Technology Co., Ltd.\"}}}, \"feed\": [{\"description\": \"License: n/a\", \"name\": \"CIRCL OSINT Feed\", \"reference\": \"https://www.circl.lu/doc/misp/feed-osint/\"}], \"technique\": {\"id\": [\"T1588\"], \"name\": [\"Obtain Capabilities\"], \"reference\": [\"https://attack.mitre.org/techniques/T1588\"], \"subtechnique\": {\"id\": [\"T1588.001\"], \"name\": [\"Malware\"], \"reference\": [\"https://attack.mitre.org/techniques/T1588/001\"]}}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 50}, \"tags\": [\"Malware\", \"type:OSINT\"], \"ticura\": {\"indicator\": {\"uuid\": \"38e3e378-6204-40c7-bf59-7665110399cc\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"filter_cats\": [{\"category\": \"alibaba cloud\"}], \"is_inbound\": false, \"confidence\": 47, \"risk\": 50, \"risk_category\": \"medium\", \"confidence_category\": \"medium\", \"ages_out\": \"2054-04-11T02:03:24Z\", \"countries\": [\"CN\"], \"additional_info\": {\"valid_from\": \"2054-03-27T13:02:00Z\", \"countries\": [\"Hong Kong\"]}, \"fingerprint\": \"c0084859c92c5a6aa9e7e7798487c6900a4441d397ae3f94bfe25a0eb90058e3\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"c8c3b7c8-0442-4278-8905-770086111917\"], \"confidence\": \"Medium\", \"description\": \"Known malicious IPv6 address linked to C2 infrastructure.\", \"first_seen\": \"2054-04-01T08:00:00Z\", \"ip\": \"2001:db8:85a3::8a2e:370:7334\", \"marking\": {\"tlp\": \"GREEN\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-09T12:00:00Z\", \"name\": \"2001:db8:85a3::8a2e:370:7334\", \"provider\": \"Ticura\", \"type\": [\"ipv6-addr\"]}, \"feed\": [{\"name\": \"Ticura Internal\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 65}, \"tags\": [\"C2\", \"type:OSINT\"], \"ticura\": {\"indicator\": {\"uuid\": \"c8c3b7c8-0442-4278-8905-770086111917\", \"main_type\": \"IPV6\", \"sub_type\": \"IPV6\", \"is_inbound\": true, \"confidence\": 60, \"risk\": 65, \"risk_category\": \"high\", \"confidence_category\": \"medium\", \"ages_out\": \"2054-05-01T08:00:00Z\", \"countries\": [\"DE\"], \"additional_info\": {\"valid_from\": \"2054-04-01T08:00:00Z\", \"industries\": [\"Finance\"]}, \"fingerprint\": \"4ff1aa5f9f59c094140d9e79f272b6f36495ec29f72d32b4e4229b24d6f8cb6d\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"a0b4a1d6-4286-4310-8859-068800369597\"], \"confidence\": \"High\", \"description\": \"Domain used in phishing campaigns targeting financial institutions.\", \"first_seen\": \"2054-03-15T10:30:00Z\", \"url\": {\"domain\": \"udvjdgjsz-aifmgzc.com\"}, \"marking\": {\"tlp\": \"CLEAR\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-08T09:00:00Z\", \"name\": \"udvjdgjsz-aifmgzc.com\", \"provider\": \"Ticura\", \"type\": [\"domain-name\"]}, \"feed\": [{\"name\": \"PhishTank\", \"reference\": \"https://www.phishtank.com/\"}]}, \"dns\": {\"answers\": [{\"class\": \"IN\", \"data\": \"192.0.2.1\", \"name\": \"udvjdgjsz-aifmgzc.com\", \"type\": \"A\"}], \"question\": {\"class\": \"IN\", \"name\": \"udvjdgjsz-aifmgzc.com\", \"registered_domain\": \"udvjdgjsz-aifmgzc.com\", \"top_level_domain\": \"com\"}, \"op_code\": \"QUERY\", \"resolved_ip\": [\"192.0.2.1\"], \"response_code\": \"NOERROR\", \"type\": [\"query\", \"answer\"]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 80}, \"tags\": [\"Phishing\", \"type:OSINT\"], \"ticura\": {\"indicator\": {\"uuid\": \"a0b4a1d6-4286-4310-8859-068800369597\", \"main_type\": \"DOMAIN\", \"sub_type\": \"DOMAIN\", \"is_inbound\": false, \"confidence\": 75, \"risk\": 80, \"risk_category\": \"high\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-15T10:30:00Z\", \"additional_info\": {\"valid_from\": \"2054-03-15T10:30:00Z\", \"countries\": [\"US\"]}, \"fingerprint\": \"91bf2d330fc05b044acf71c94fbff7145b5251401cb05876662f052c43a4175c\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"e6d5b7d0-7608-4911-8708-681450763540\"], \"confidence\": \"High\", \"description\": \"URL used to deliver credential-harvesting page.\", \"first_seen\": \"2054-04-05T14:00:00Z\", \"url\": {\"full\": \"https://phishing.example.com/steal-credentials\", \"domain\": \"phishing.example.com\"}, \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-10T14:00:00Z\", \"name\": \"https://phishing.example.com/steal-credentials\", \"provider\": \"Ticura\", \"type\": [\"url\"]}, \"feed\": [{\"name\": \"URLhaus\", \"reference\": \"https://urlhaus.abuse.ch/\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 90}, \"tags\": [\"Phishing\", \"Credential Harvesting\"], \"ticura\": {\"indicator\": {\"uuid\": \"e6d5b7d0-7608-4911-8708-681450763540\", \"main_type\": \"URL\", \"sub_type\": \"URL\", \"is_inbound\": false, \"confidence\": 85, \"risk\": 90, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-05T14:00:00Z\", \"actors\": [\"APT28\"], \"additional_info\": {\"valid_from\": \"2054-04-05T14:00:00Z\", \"actors\": [\"Cozy Bear\"]}, \"fingerprint\": \"cb3aef3f9f9036545136abae021d9035d1f222f934110f515eae597509def71a\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"c0f9d5c6-2662-4933-8343-213310798075\"], \"confidence\": \"High\", \"description\": \"SHA-256 hash of a known ransomware sample.\", \"first_seen\": \"2054-02-10T06:00:00Z\", \"file\": {\"hash\": {\"sha256\": \"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\"}, \"name\": \"ransomware_payload.exe\", \"size\": 204800}, \"marking\": {\"tlp\": \"RED\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-07T06:00:00Z\", \"name\": \"8eb69adc3ab2a50f47d38b9eb1d9f55f7c653f5f1dc3717f14153841620a3780\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"MalwareBazaar\", \"reference\": \"https://bazaar.abuse.ch/\"}], \"technique\": {\"id\": [\"T1486\"], \"name\": [\"Data Encrypted for Impact\"], \"reference\": [\"https://attack.mitre.org/techniques/T1486\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 95}, \"tags\": [\"Ransomware\", \"Malware\"], \"ticura\": {\"indicator\": {\"uuid\": \"c0f9d5c6-2662-4933-8343-213310798075\", \"main_type\": \"HASH\", \"sub_type\": \"HASHSHA256\", \"is_inbound\": false, \"confidence\": 90, \"risk\": 95, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-10T06:00:00Z\", \"additional_info\": {\"valid_from\": \"2054-02-10T06:00:00Z\"}, \"fingerprint\": \"c29a572275f233597f050d12a4da880c220c32228fff9568eb7fec469d3c2a6a\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"e0e0e4c1-8583-4323-8976-290502274651\"], \"confidence\": \"Medium\", \"description\": \"MD5 hash of a known trojan dropper.\", \"first_seen\": \"2054-03-01T09:00:00Z\", \"file\": {\"hash\": {\"md5\": \"2c59640eae6e3e79e8674d856866a840\"}, \"name\": \"dropper.dll\"}, \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-06T09:00:00Z\", \"name\": \"2c59640eae6e3e79e8674d856866a840\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"MalwareBazaar\", \"reference\": \"https://bazaar.abuse.ch/\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 70}, \"tags\": [\"Trojan\", \"Malware\"], \"ticura\": {\"indicator\": {\"uuid\": \"e0e0e4c1-8583-4323-8976-290502274651\", \"main_type\": \"HASH\", \"sub_type\": \"HASHMD5\", \"is_inbound\": false, \"confidence\": 65, \"risk\": 70, \"risk_category\": \"high\", \"confidence_category\": \"medium\", \"ages_out\": \"2054-04-01T09:00:00Z\", \"additional_info\": {\"valid_from\": \"2054-03-01T09:00:00Z\"}, \"fingerprint\": \"8832682b329c40f299e2f5ebf03d9d892fcd05211651f270f5f5df75e85911c0\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"b1a0b8e4-9688-4332-8802-749428917643\"], \"confidence\": \"High\", \"description\": \"Indicator with MITRE enrichment supplied in Ticura namespace only.\", \"first_seen\": \"2054-04-15T10:00:00Z\", \"ip\": \"192.0.2.20\", \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-04-15T10:00:00Z\", \"name\": \"192.0.2.20\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 75}, \"tags\": [\"APT\", \"type:Curated\"], \"ticura\": {\"indicator\": {\"uuid\": \"b1a0b8e4-9688-4332-8802-749428917643\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"is_inbound\": true, \"confidence\": 80, \"risk\": 75, \"risk_category\": \"high\", \"confidence_category\": \"high\", \"ages_out\": \"2054-05-15T10:00:00Z\", \"technique\": {\"id\": [\"T1190\"], \"name\": [\"Exploit Public-Facing Application\"], \"reference\": [\"https://attack.mitre.org/techniques/T1190\"], \"subtechnique\": {\"id\": [\"T1190.001\"], \"name\": [\"Hypothetical Subtechnique\"], \"reference\": [\"https://attack.mitre.org/techniques/T1190/001\"]}}, \"software\": {\"id\": [\"S0001\"], \"name\": [\"ExampleMalware\"], \"type\": [\"Malware\"], \"platforms\": [\"Windows\", \"Linux\"], \"alias\": [\"EM\"], \"reference\": [\"https://attack.mitre.org/software/S0001\"]}, \"group\": {\"id\": [\"G0001\"], \"name\": [\"ExampleGroup\"], \"reference\": [\"https://attack.mitre.org/groups/G0001\"]}, \"fingerprint\": \"b79e73e0e106d1b62faef40c3e2f33eec5beba2c9e8051af9eae8a293571e971\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"c5b6e8a7-1475-4053-8379-937745180110\"], \"confidence\": \"Low\", \"description\": \"Already-expired indicator \\u2014 source expiry passed.\", \"first_seen\": \"2053-01-01T00:00:00Z\", \"ip\": \"192.0.2.30\", \"modified_at\": \"2054-01-15T00:00:00Z\", \"name\": \"192.0.2.30\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 30}, \"ticura\": {\"indicator\": {\"uuid\": \"c5b6e8a7-1475-4053-8379-937745180110\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"is_inbound\": false, \"confidence\": 30, \"risk\": 30, \"risk_category\": \"low\", \"confidence_category\": \"low\", \"ages_out\": \"2054-02-01T00:00:00Z\", \"fingerprint\": \"b676fc36cf13bb0aaf51b7f0f7f03f1f51ce10594e7213e972d1e75835b0e125\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"a1d2f5a5-5125-4426-8336-183327767054\"], \"confidence\": \"Medium\", \"description\": \"SHA-1 hash indicator \\u2014 uses sub_type fallback.\", \"first_seen\": \"2054-04-01T00:00:00Z\", \"modified_at\": \"2054-04-10T00:00:00Z\", \"name\": \"ea97a1dd9a7b1f3b2997affd78726203dac70601\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 60}, \"ticura\": {\"indicator\": {\"uuid\": \"a1d2f5a5-5125-4426-8336-183327767054\", \"main_type\": \"HASH\", \"sub_type\": \"HASHSHA1\", \"is_inbound\": false, \"confidence\": 65, \"risk\": 60, \"risk_category\": \"medium\", \"confidence_category\": \"medium\", \"ages_out\": \"2055-01-01T00:00:00Z\", \"fingerprint\": \"ac5644b4e25d23008600e2031951858f5691bbd49778afb4e1a1497d508364f0\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"f4b3a7c3-9184-4179-8946-688764217845\"], \"confidence\": \"High\", \"description\": \"IP+port C2 indicator (IPV4PORT subtype).\", \"first_seen\": \"2054-04-15T00:00:00Z\", \"ip\": \"192.0.2.40\", \"port\": 8443, \"modified_at\": \"2054-04-20T00:00:00Z\", \"name\": \"192.0.2.40:8443\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\", \"port\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}]}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 95}, \"ticura\": {\"indicator\": {\"uuid\": \"f4b3a7c3-9184-4179-8946-688764217845\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4PORT\", \"is_inbound\": false, \"confidence\": 90, \"risk\": 95, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2055-01-01T00:00:00Z\", \"fingerprint\": \"635b949c7184b6838c510a09a2d78205d0ace64be101c556150aa83f22d1c0f6\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"d0d2c0d0-300e-443a-828d-33243804733a\"], \"confidence\": \"High\", \"description\": \"Provenance divergence test.\", \"first_seen\": \"2054-04-01T00:00:00Z\", \"ip\": \"192.0.2.50\", \"modified_at\": \"2054-04-25T00:00:00Z\", \"name\": \"192.0.2.50\", \"provider\": \"Ticura\", \"type\": [\"ipv4-addr\"]}, \"feed\": [{\"name\": \"Ticura Curated\", \"reference\": \"https://www.ticura.io\"}], \"technique\": {\"id\": [\"T1059\"], \"name\": [\"Command and Scripting Interpreter\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"], \"risk_score\": 70}, \"ticura\": {\"indicator\": {\"uuid\": \"d0d2c0d0-300e-443a-828d-33243804733a\", \"main_type\": \"IPV4\", \"sub_type\": \"IPV4\", \"is_inbound\": false, \"confidence\": 75, \"risk\": 70, \"risk_category\": \"high\", \"confidence_category\": \"high\", \"ages_out\": \"2055-01-01T00:00:00Z\", \"technique\": {\"id\": [\"T1588\"], \"name\": [\"Obtain Capabilities\"]}, \"fingerprint\": \"ee0e50ce6cfa0740d2ca2415a429ba55baecf67b07c8dbfb730541a5d92fa9eb\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": [\"d2b2b2f2-354e-427d-851b-06553733015a\"], \"name\": \"no-uuid-indicator\", \"provider\": \"Ticura\", \"type\": [\"domain-name\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": [\"threat\"], \"type\": [\"indicator\"]}, \"ticura\": {\"indicator\": {\"main_type\": \"DOMAIN\", \"sub_type\": \"DOMAIN\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"threat\": {\"indicator\": {\"id\": \"fcff6077-7059-0246-0978-721483020428\", \"confidence\": \"High\", \"description\": \"Test indicator with MITRE software/group enrichment.\", \"first_seen\": \"2054-04-01T10:00:00Z\", \"last_seen\": \"2054-05-28T10:00:00Z\", \"file\": {\"hash\": {\"sha256\": \"4a62d926825a8e367e1fbfb7f52fe614c4fa0b5c1e3d123ff34b8b87d4b61a45\", \"sha1\": \"c6084f023932946fdd8e18988393f83d6ce4a22f\"}, \"name\": \"agent-tesla-sample.exe\", \"size\": 102400}, \"marking\": {\"tlp\": \"AMBER\", \"tlp_version\": \"2.0\"}, \"modified_at\": \"2054-05-28T12:00:00Z\", \"name\": \"agent-tesla-sample.exe\", \"provider\": \"Ticura\", \"type\": [\"file\"]}, \"feed\": [{\"name\": \"MalwareBazaar-Recent Additions\", \"reference\": \"https://bazaar.abuse.ch\", \"description\": \"License: n/a\"}], \"technique\": {\"id\": [\"T1059\"], \"name\": [\"Command and Scripting Interpreter\"], \"reference\": [\"https://attack.mitre.org/techniques/T1059\"]}}, \"event\": {\"kind\": \"enrichment\", \"category\": \"threat\", \"type\": \"indicator\", \"risk_score\": 90}, \"ticura\": {\"indicator\": {\"uuid\": \"fcff6077-7059-0246-0978-721483020428\", \"main_type\": \"HASH\", \"sub_type\": \"HASHSHA256\", \"is_inbound\": false, \"confidence\": 85, \"risk\": 90, \"risk_category\": \"critical\", \"confidence_category\": \"high\", \"ages_out\": \"2054-12-31T00:00:00Z\", \"technique\": {\"id\": [\"T1059\"], \"name\": [\"Command and Scripting Interpreter\"], \"reference\": [\"https://attack.mitre.org/techniques/T1059\"]}, \"software\": {\"id\": \"S0331\", \"name\": \"Agent Tesla\", \"alias\": [\"AgentTesla\"], \"type\": \"Malware\", \"platforms\": [\"Windows\"], \"reference\": \"https://attack.mitre.org/software/S0331\"}, \"group\": {\"id\": \"G0096\", \"name\": \"APT41\", \"reference\": \"https://attack.mitre.org/groups/G0096\"}, \"additional_info\": {\"valid_from\": \"2054-04-01T10:00:00Z\", \"malware\": {\"name\": \"Agent Tesla\"}, \"threat_types\": [\"Malware\"]}, \"fingerprint\": \"929ea8dc712e866d6607ed3cf4746382b0cba9e158968abff6dd0394bb14a14e\"}}, \"tags\": [\"Malware\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {
+      "event.ingested": "^.*$",
+      "threat.indicator.as": "^.*$",
+      "threat.indicator.geo": "^.*$",
+      "ticura.indicator.feed_ingest_timestamp": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_ticura-indicator-default",
+    "event_count": 13,
+    "numeric_keyword_fields": [],
+    "package": "ti_ticura",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

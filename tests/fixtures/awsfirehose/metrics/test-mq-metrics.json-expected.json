@@ -1,0 +1,344 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-28T09:13:00.000Z",
+      "agent": {
+        "type": "firehose"
+      },
+      "aws": {
+        "amazonmq": {
+          "metrics": {
+            "ConsumerCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "MessageCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "MessageReadyCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "MessageUnacknowledgedCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            }
+          }
+        },
+        "cloudwatch": {
+          "namespace": "AWS/AmazonMQ"
+        },
+        "dimensions": {
+          "Broker": "ObsIntegrations-RabbitMQ",
+          "Queue": "rabbit-mq-message-queue",
+          "VirtualHost": "/"
+        },
+        "exporter": {
+          "arn": "arn:aws:cloudwatch:ap-south-1:627286350134:metric-stream/AWSBedrockMetricStream"
+        },
+        "firehose": {
+          "arn": "arn:aws:firehose:ap-south-1:627286350134:deliverystream/AWS-Bedrok-Firehose-Stream-AgiKThomas",
+          "request_id": "fb37513c-e661-4996-b3ee-10ca73f2d125"
+        },
+        "metrics_names_fingerprint": "Oo6DWr7SrPalaNAWIjgrXXLyKIg="
+      },
+      "cloud": {
+        "account": {
+          "id": "111111111111111111"
+        },
+        "provider": "aws",
+        "region": "ap-south-1"
+      },
+      "data_stream": {
+        "dataset": "aws.cloudwatch",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "aws_mq.rabbitmq_metrics"
+      },
+      "start_timestamp": "2053-03-28T09:12:00.000Z"
+    },
+    {
+      "@timestamp": "2053-03-28T09:13:00.000Z",
+      "agent": {
+        "type": "firehose"
+      },
+      "aws": {
+        "amazonmq": {
+          "metrics": {
+            "ConsumerCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "DequeueCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "DispatchCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "EnqueueCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "EnqueueTime": {
+              "avg": 0,
+              "count": 2,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "ExpiredCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "InFlightCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "MemoryUsage": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "ProducerCount": {
+              "avg": 0,
+              "count": 1,
+              "max": 0,
+              "min": 0,
+              "sum": 0
+            },
+            "QueueSize": {
+              "avg": 9,
+              "count": 1,
+              "max": 9,
+              "min": 9,
+              "sum": 9
+            }
+          }
+        },
+        "cloudwatch": {
+          "namespace": "AWS/AmazonMQ"
+        },
+        "dimensions": {
+          "Broker": "ObsIntegrations-ActiveMQ-1",
+          "Queue": "testQueue"
+        },
+        "exporter": {
+          "arn": "arn:aws:cloudwatch:ap-south-1:627286350134:metric-stream/AWSBedrockMetricStream"
+        },
+        "firehose": {
+          "arn": "arn:aws:firehose:ap-south-1:627286350134:deliverystream/AWS-Bedrok-Firehose-Stream-AgiKThomas",
+          "request_id": "fb37513c-e661-4996-b3ee-10ca73f2d125"
+        },
+        "metrics_names_fingerprint": "2rvRGJG912vF5iOdng4PjKe2+nc="
+      },
+      "cloud": {
+        "account": {
+          "id": "111111111111111111"
+        },
+        "provider": "aws",
+        "region": "ap-south-1"
+      },
+      "data_stream": {
+        "dataset": "aws.cloudwatch",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "aws_mq.activemq_metrics"
+      },
+      "start_timestamp": "2053-03-28T09:12:00.000Z"
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-03-28T09:13:00.000Z",
+      "agent.type": "firehose",
+      "aws.amazonmq.metrics.ConsumerCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.MessageCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.MessageReadyCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.MessageUnacknowledgedCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.cloudwatch.namespace": "AWS/AmazonMQ",
+      "aws.dimensions": {
+        "Broker": "ObsIntegrations-RabbitMQ",
+        "Queue": "rabbit-mq-message-queue",
+        "VirtualHost": "/"
+      },
+      "aws.exporter.arn": "arn:aws:cloudwatch:ap-south-1:627286350134:metric-stream/AWSBedrockMetricStream",
+      "aws.firehose.arn": "arn:aws:firehose:ap-south-1:627286350134:deliverystream/AWS-Bedrok-Firehose-Stream-AgiKThomas",
+      "aws.firehose.request_id": "fb37513c-e661-4996-b3ee-10ca73f2d125",
+      "cloud.account.id": "111111111111111111",
+      "cloud.provider": "aws",
+      "cloud.region": "ap-south-1",
+      "data_stream.dataset": "aws.cloudwatch",
+      "data_stream.namespace": "default",
+      "data_stream.type": "metrics",
+      "start_timestamp": "2053-03-28T09:12:00.000Z"
+    },
+    {
+      "@timestamp": "2053-03-28T09:13:00.000Z",
+      "agent.type": "firehose",
+      "aws.amazonmq.metrics.ConsumerCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.DequeueCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.DispatchCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.EnqueueCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.EnqueueTime": {
+        "avg": 0,
+        "count": 2,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.ExpiredCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.InFlightCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.MemoryUsage": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.ProducerCount": {
+        "avg": 0,
+        "count": 1,
+        "max": 0,
+        "min": 0,
+        "sum": 0
+      },
+      "aws.amazonmq.metrics.QueueSize": {
+        "avg": 9,
+        "count": 1,
+        "max": 9,
+        "min": 9,
+        "sum": 9
+      },
+      "aws.cloudwatch.namespace": "AWS/AmazonMQ",
+      "aws.dimensions": {
+        "Broker": "ObsIntegrations-ActiveMQ-1",
+        "Queue": "testQueue"
+      },
+      "aws.exporter.arn": "arn:aws:cloudwatch:ap-south-1:627286350134:metric-stream/AWSBedrockMetricStream",
+      "aws.firehose.arn": "arn:aws:firehose:ap-south-1:627286350134:deliverystream/AWS-Bedrok-Firehose-Stream-AgiKThomas",
+      "aws.firehose.request_id": "fb37513c-e661-4996-b3ee-10ca73f2d125",
+      "cloud.account.id": "111111111111111111",
+      "cloud.provider": "aws",
+      "cloud.region": "ap-south-1",
+      "data_stream.dataset": "aws.cloudwatch",
+      "data_stream.namespace": "default",
+      "data_stream.type": "metrics",
+      "start_timestamp": "2053-03-28T09:12:00.000Z"
+    }
+  ],
+  "meta": {
+    "data_stream": "metrics",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-awsfirehose-metrics-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "awsfirehose",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

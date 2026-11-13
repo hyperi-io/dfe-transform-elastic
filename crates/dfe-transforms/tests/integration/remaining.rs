@@ -141,15 +141,14 @@ floor!(
     0
 );
 
-/// panw scores zero against a fixture from an older pipeline generation, so
-/// this asserts the fields that generation agrees on -- the router picked the
-/// sub-pipeline, and the CSV landed in the right columns.
+/// The router picked the sub-pipeline and the CSV landed in the right columns.
+/// The values are the engine's own for the first line, from
+/// `tests/fixtures/panw/panos/traffic.log-expected.json`.
 #[test]
-#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn panw_routes_and_parses_its_csv() {
     use dfe_runtime::transform::Transform;
 
-    let dir = dfe_runtime::testutil::elastic_fixtures().join("panw/panos");
+    let dir = dfe_runtime::testutil::fixtures().join("panw/panos");
     let mut events = super::common::load_fixture_events(&dir, "traffic");
     let event = events.first_mut().expect("the fixture has events");
 
@@ -158,8 +157,8 @@ fn panw_routes_and_parses_its_csv() {
         .expect("panw transforms without error");
 
     assert_eq!(event.get_str("panw.panos.type"), Some("TRAFFIC"));
-    assert_eq!(event.get_str("source.ip"), Some("192.168.15.207"));
-    assert_eq!(event.get_str("destination.ip"), Some("184.51.253.152"));
+    assert_eq!(event.get_str("source.ip"), Some("192.168.181.68"));
+    assert_eq!(event.get_str("destination.ip"), Some("198.51.100.126"));
     assert_eq!(event.get_str("rule.name"), Some("new_outbound_from_trust"));
     assert_eq!(event.get_i64("event.duration"), Some(586_000_000_000));
 

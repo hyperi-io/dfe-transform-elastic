@@ -1,0 +1,176 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-26T00:02:47.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:02:47.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "expenses_csv_adapter"
+          ],
+          "amount": 360.0,
+          "application_and_account_name": "csv - expenses/expenses_csv-demo",
+          "asset_type": "expenses",
+          "department": "R&D",
+          "event": {
+            "adapter_categories": [
+              "SaaS Management"
+            ],
+            "client_used": "67fd09f23c68ed1b541bb4bb",
+            "initial_plugin_unique_name": "expenses_csv_adapter_0",
+            "plugin_name": "expenses_csv_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "expenses_csv_adapter_0",
+            "quick_id": "expenses_csv_adapter_0!a24384edf8e865475c10",
+            "type": "entitydata"
+          },
+          "fetch_time": "2026-05-26T00:02:46.000Z",
+          "first_fetch_time": "2025-12-14T16:50:44.000Z",
+          "from_last_fetch": true,
+          "id": "a24384edf8e865475c10",
+          "id_raw": "46fc6495-dc03-4319-9d50-4c457deaa74a",
+          "internal_axon_id": "06bd7f67718a1e911d946631d061c3b7",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09f23c68ed1b541bb4bb",
+          "last_fetch_connection_label": "expenses_csv-demo",
+          "not_fetched_count": 0,
+          "pretty_id": "AX-2427031329160723459",
+          "related_user": {
+            "email": "uvzr.pvidx@abui.local"
+          },
+          "related_vendor_name": "Salesforce",
+          "sm_entity_type": "expense",
+          "source_application": "CSV - Expenses",
+          "tenant_number": [
+            2
+          ],
+          "transform_unique_id": "yrAOZlbYepFGilUTVdJmEkroWiI=",
+          "type": "Expenses",
+          "vendor_category": "Productivity"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"asset_type\":\"expenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"adapter_categories\":[\"SaaS Management\"],\"client_used\":\"67fd09f23c68ed1b541bb4bb\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"amount\":360.0,\"application_and_account_name\":\"csv - expenses/expenses_csv-demo\",\"department\":\"R&D\",\"fetch_time\":\"Tue, 26 May 2026 00:02:46 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:50:44 GMT\",\"from_last_fetch\":true,\"id\":\"a24384edf8e865475c10\",\"id_raw\":\"46fc6495-dc03-4319-9d50-4c457deaa74a\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09f23c68ed1b541bb4bb\",\"last_fetch_connection_label\":\"expenses_csv-demo\",\"not_fetched_count\":0,\"pretty_id\":\"AX-2427031329160723459\",\"related_user\":{\"email\":\"uvzr.pvidx@abui.local\",\"full_name\":{},\"remote_id\":\"11d036c3-0f4d-4dc2-a919-ea11d54cdcec\",\"username\":\"uvzr.pvidx@abui.local\"},\"related_vendor_name\":\"Salesforce\",\"sm_entity_type\":\"expense\",\"source_application\":\"CSV - Expenses\",\"tenant_number\":[\"2\"],\"transaction_time\":\"Mon, 28 Jul 2025 14:31:35 GMT\",\"type\":\"Expenses\",\"user_email\":\"uvzr.pvidx@abui.local\",\"vendor_category\":\"Productivity\"},\"initial_plugin_unique_name\":\"expenses_csv_adapter_0\",\"plugin_name\":\"expenses_csv_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"expenses_csv_adapter_0\",\"quick_id\":\"expenses_csv_adapter_0!a24384edf8e865475c10\",\"type\":\"entitydata\"},\"internal_axon_id\":\"06bd7f67718a1e911d946631d061c3b7\",\"adapters\":[\"expenses_csv_adapter\"],\"adapter_list_length\":1}",
+        "start": "2025-07-28T14:31:35.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "uvzr.pvidx@abui.local",
+          "11d036c3-0f4d-4dc2-a919-ea11d54cdcec"
+        ]
+      },
+      "user": {
+        "domain": "abui.local",
+        "email": "uvzr.pvidx@abui.local",
+        "id": "11d036c3-0f4d-4dc2-a919-ea11d54cdcec",
+        "name": "uvzr.pvidx@abui.local"
+      }
+    },
+    {
+      "@timestamp": "2026-05-26T00:02:47.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:02:47.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "expenses_csv_adapter"
+          ],
+          "amount": 258.0,
+          "application_and_account_name": "csv - expenses/expenses_csv-demo",
+          "asset_type": "expenses",
+          "department": "R&D",
+          "event": {
+            "adapter_categories": [
+              "SaaS Management"
+            ],
+            "client_used": "67fd09f23c68ed1b541bb4bb",
+            "initial_plugin_unique_name": "expenses_csv_adapter_0",
+            "plugin_name": "expenses_csv_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "expenses_csv_adapter_0",
+            "quick_id": "expenses_csv_adapter_0!f179adebeeef28c49a71",
+            "type": "entitydata"
+          },
+          "fetch_time": "2026-05-26T00:02:46.000Z",
+          "first_fetch_time": "2025-12-14T16:50:44.000Z",
+          "from_last_fetch": true,
+          "id": "f179adebeeef28c49a71",
+          "id_raw": "40e36843-1070-428b-b5f8-017bd64b8a19",
+          "internal_axon_id": "92f5f3d92c0692ecf41d9daf3b5c30a9",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09f23c68ed1b541bb4bb",
+          "last_fetch_connection_label": "expenses_csv-demo",
+          "not_fetched_count": 0,
+          "pretty_id": "AX-8208008946427384510",
+          "related_user": {
+            "email": "otytuq.cpdabky@abui.local"
+          },
+          "related_vendor_name": "Linkedin",
+          "sm_entity_type": "expense",
+          "source_application": "CSV - Expenses",
+          "tenant_number": [
+            2
+          ],
+          "transform_unique_id": "LMpU5YG+NJZHmneLcLxcoAT4kOg=",
+          "type": "Expenses",
+          "vendor_category": "Social"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"asset_type\":\"expenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"adapter_categories\":[\"SaaS Management\"],\"client_used\":\"67fd09f23c68ed1b541bb4bb\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"amount\":258.0,\"application_and_account_name\":\"csv - expenses/expenses_csv-demo\",\"department\":\"R&D\",\"fetch_time\":\"Tue, 26 May 2026 00:02:46 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:50:44 GMT\",\"from_last_fetch\":true,\"id\":\"f179adebeeef28c49a71\",\"id_raw\":\"40e36843-1070-428b-b5f8-017bd64b8a19\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09f23c68ed1b541bb4bb\",\"last_fetch_connection_label\":\"expenses_csv-demo\",\"not_fetched_count\":0,\"pretty_id\":\"AX-8208008946427384510\",\"related_user\":{\"email\":\"otytuq.cpdabky@abui.local\",\"full_name\":{},\"remote_id\":\"04c12b2b-6931-4b57-9524-0f7b2f057ae3\",\"username\":\"otytuq.cpdabky@abui.local\"},\"related_vendor_name\":\"Linkedin\",\"sm_entity_type\":\"expense\",\"source_application\":\"CSV - Expenses\",\"tenant_number\":[\"2\"],\"transaction_time\":\"Fri, 24 Oct 2025 14:31:35 GMT\",\"type\":\"Expenses\",\"user_email\":\"otytuq.cpdabky@abui.local\",\"vendor_category\":\"Social\"},\"initial_plugin_unique_name\":\"expenses_csv_adapter_0\",\"plugin_name\":\"expenses_csv_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"expenses_csv_adapter_0\",\"quick_id\":\"expenses_csv_adapter_0!f179adebeeef28c49a71\",\"type\":\"entitydata\"},\"internal_axon_id\":\"92f5f3d92c0692ecf41d9daf3b5c30a9\",\"adapters\":[\"expenses_csv_adapter\"],\"adapter_list_length\":1}",
+        "start": "2025-10-24T14:31:35.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "otytuq.cpdabky@abui.local",
+          "04c12b2b-6931-4b57-9524-0f7b2f057ae3"
+        ]
+      },
+      "user": {
+        "domain": "abui.local",
+        "email": "otytuq.cpdabky@abui.local",
+        "id": "04c12b2b-6931-4b57-9524-0f7b2f057ae3",
+        "name": "otytuq.cpdabky@abui.local"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"expenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"adapter_categories\":[\"SaaS Management\"],\"client_used\":\"67fd09f23c68ed1b541bb4bb\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"amount\":360.0,\"application_and_account_name\":\"csv - expenses/expenses_csv-demo\",\"department\":\"R&D\",\"fetch_time\":\"Tue, 26 May 2026 00:02:46 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:50:44 GMT\",\"from_last_fetch\":true,\"id\":\"a24384edf8e865475c10\",\"id_raw\":\"46fc6495-dc03-4319-9d50-4c457deaa74a\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09f23c68ed1b541bb4bb\",\"last_fetch_connection_label\":\"expenses_csv-demo\",\"not_fetched_count\":0,\"pretty_id\":\"AX-2427031329160723459\",\"related_user\":{\"email\":\"uvzr.pvidx@abui.local\",\"full_name\":{},\"remote_id\":\"11d036c3-0f4d-4dc2-a919-ea11d54cdcec\",\"username\":\"uvzr.pvidx@abui.local\"},\"related_vendor_name\":\"Salesforce\",\"sm_entity_type\":\"expense\",\"source_application\":\"CSV - Expenses\",\"tenant_number\":[\"2\"],\"transaction_time\":\"Mon, 28 Jul 2025 14:31:35 GMT\",\"type\":\"Expenses\",\"user_email\":\"uvzr.pvidx@abui.local\",\"vendor_category\":\"Productivity\"},\"initial_plugin_unique_name\":\"expenses_csv_adapter_0\",\"plugin_name\":\"expenses_csv_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"expenses_csv_adapter_0\",\"quick_id\":\"expenses_csv_adapter_0!a24384edf8e865475c10\",\"type\":\"entitydata\"},\"internal_axon_id\":\"06bd7f67718a1e911d946631d061c3b7\",\"adapters\":[\"expenses_csv_adapter\"],\"adapter_list_length\":1}"
+    },
+    {
+      "message": "{\"asset_type\":\"expenses\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"adapter_categories\":[\"SaaS Management\"],\"client_used\":\"67fd09f23c68ed1b541bb4bb\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:02:47 GMT\",\"amount\":258.0,\"application_and_account_name\":\"csv - expenses/expenses_csv-demo\",\"department\":\"R&D\",\"fetch_time\":\"Tue, 26 May 2026 00:02:46 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:50:44 GMT\",\"from_last_fetch\":true,\"id\":\"f179adebeeef28c49a71\",\"id_raw\":\"40e36843-1070-428b-b5f8-017bd64b8a19\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09f23c68ed1b541bb4bb\",\"last_fetch_connection_label\":\"expenses_csv-demo\",\"not_fetched_count\":0,\"pretty_id\":\"AX-8208008946427384510\",\"related_user\":{\"email\":\"otytuq.cpdabky@abui.local\",\"full_name\":{},\"remote_id\":\"04c12b2b-6931-4b57-9524-0f7b2f057ae3\",\"username\":\"otytuq.cpdabky@abui.local\"},\"related_vendor_name\":\"Linkedin\",\"sm_entity_type\":\"expense\",\"source_application\":\"CSV - Expenses\",\"tenant_number\":[\"2\"],\"transaction_time\":\"Fri, 24 Oct 2025 14:31:35 GMT\",\"type\":\"Expenses\",\"user_email\":\"otytuq.cpdabky@abui.local\",\"vendor_category\":\"Social\"},\"initial_plugin_unique_name\":\"expenses_csv_adapter_0\",\"plugin_name\":\"expenses_csv_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"expenses_csv_adapter_0\",\"quick_id\":\"expenses_csv_adapter_0!f179adebeeef28c49a71\",\"type\":\"entitydata\"},\"internal_axon_id\":\"92f5f3d92c0692ecf41d9daf3b5c30a9\",\"adapters\":[\"expenses_csv_adapter\"],\"adapter_list_length\":1}"
+    }
+  ],
+  "meta": {
+    "data_stream": "application",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-application-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,2239 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-08-22T23:48:27.924Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "51803",
+        "question": {
+          "name": "google.com",
+          "registered_domain": "google.com",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:27.924120+0000\",\"flow_id\":885455453886936,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":46686,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":51803,\"rrname\":\"google.com\",\"rrtype\":\"A\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:uJVdeN91/FORQWCtq1Nzqeez+xg=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 46686
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 51803,
+            "rrname": "google.com",
+            "rrtype": "A",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "885455453886936",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:27.924Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "39523",
+        "question": {
+          "name": "google.com",
+          "registered_domain": "google.com",
+          "top_level_domain": "com",
+          "type": "AAAA"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:27.924282+0000\",\"flow_id\":1418448010418810,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":36993,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":39523,\"rrname\":\"google.com\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:crG9vIk0ljpCiOXxu5+AZOrUEss=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 36993
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 39523,
+            "rrname": "google.com",
+            "rrtype": "AAAA",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "1418448010418810",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:27.950Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 36993
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "google.com",
+            "ttl": 272,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "39523",
+        "question": {
+          "name": "google.com",
+          "registered_domain": "google.com",
+          "top_level_domain": "com",
+          "type": "AAAA"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:27.950946+0000\",\"flow_id\":1418448010418810,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":36993,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":39523,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"google.com\",\"rrtype\":\"AAAA\",\"answers\":[{\"rrname\":\"google.com\",\"rrtype\":\"AAAA\",\"ttl\":272,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}],\"grouped\":{\"AAAA\":[\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"]}}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:crG9vIk0ljpCiOXxu5+AZOrUEss=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 39523,
+            "rcode": "NOERROR",
+            "rrname": "google.com",
+            "rrtype": "AAAA",
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "1418448010418810",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:27.957Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 46686
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "192.0.2.87",
+            "name": "google.com",
+            "ttl": 299,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "51803",
+        "question": {
+          "name": "google.com",
+          "registered_domain": "google.com",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "resolved_ip": [
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:27.957906+0000\",\"flow_id\":885455453886936,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":46686,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":51803,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"google.com\",\"rrtype\":\"A\",\"answers\":[{\"rrname\":\"google.com\",\"rrtype\":\"A\",\"ttl\":299,\"rdata\":\"192.0.2.87\"}],\"grouped\":{\"A\":[\"192.0.2.87\"]}}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:uJVdeN91/FORQWCtq1Nzqeez+xg=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 51803,
+            "rcode": "NOERROR",
+            "rrname": "google.com",
+            "rrtype": "A",
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "885455453886936",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:48.839Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "60273",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:48.839495+0000\",\"flow_id\":40074894954311,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":50720,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":60273,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:Lg1viAUTpMcM87JTOltP32suWWk=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 50720
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 60273,
+            "rrname": "www.apejtlc.co",
+            "rrtype": "A",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "40074894954311",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:48.839Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "4210",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "AAAA"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:48.839714+0000\",\"flow_id\":2130691028471842,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":41979,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":4210,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:Lkyu4ob3mkNj9XpJUgbIiGXuIkY=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 41979
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 4210,
+            "rrname": "www.apejtlc.co",
+            "rrtype": "AAAA",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "2130691028471842",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:48.901Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 50720
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "name": "www.apejtlc.co",
+            "ttl": 270,
+            "type": "CNAME"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "60273",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "resolved_ip": [
+          "192.0.2.87",
+          "192.0.2.87",
+          "192.0.2.87",
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:48.901548+0000\",\"flow_id\":40074894954311,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":50720,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":60273,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":270,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"}],\"grouped\":{\"A\":[\"192.0.2.87\",\"192.0.2.87\",\"192.0.2.87\",\"192.0.2.87\"],\"CNAME\":[\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"]}}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:Lg1viAUTpMcM87JTOltP32suWWk=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 60273,
+            "rcode": "NOERROR",
+            "rrname": "www.apejtlc.co",
+            "rrtype": "A",
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "40074894954311",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-22T23:48:48.902Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 41979
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "name": "www.apejtlc.co",
+            "ttl": 299,
+            "type": "CNAME"
+          },
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          },
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          },
+          {
+            "data": "2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          },
+          {
+            "data": "2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "4210",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "AAAA"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c",
+          "2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-22T23:48:48.902685+0000\",\"flow_id\":2130691028471842,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":41979,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":4210,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":299,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d\"}],\"grouped\":{\"AAAA\":[\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c\",\"2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d\"],\"CNAME\":[\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"]}}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:Lkyu4ob3mkNj9XpJUgbIiGXuIkY=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c",
+          "2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 4210,
+            "rcode": "NOERROR",
+            "rrname": "www.apejtlc.co",
+            "rrtype": "AAAA",
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "2130691028471842",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.812Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "28329",
+        "question": {
+          "name": "www.nakus.com",
+          "registered_domain": "nakus.com",
+          "subdomain": "www",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.812655+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":44773,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":28329,\"rrname\":\"www.nakus.com\",\"rrtype\":\"A\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YaiZlBPhm8Mo8inv3y/wU/ptz9c=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 44773
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 28329,
+            "rrname": "www.nakus.com",
+            "rrtype": "A",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "814378410010223",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.812Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "7050",
+        "question": {
+          "name": "www.nakus.com",
+          "registered_domain": "nakus.com",
+          "subdomain": "www",
+          "top_level_domain": "com",
+          "type": "AAAA"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.812828+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":55246,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":7050,\"rrname\":\"www.nakus.com\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:QhoiO8Ibk84PuYvRHWI4YNX+Vw0=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 55246
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 7050,
+            "rrname": "www.nakus.com",
+            "rrtype": "AAAA",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "1887239765714716",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.846Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 44773
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "name": "www.nakus.com",
+            "ttl": 1315,
+            "type": "CNAME"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "28329",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "www",
+          "top_level_domain": "com"
+        },
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.nakus.com\",\"rrtype\":\"CNAME\",\"ttl\":1315,\"rdata\":\"azvx9-ai-uzdb.vq3.b.nakus.com\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YaiZlBPhm8Mo8inv3y/wU/ptz9c=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 28329,
+            "rcode": "NOERROR",
+            "rdata": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrname": "www.nakus.com",
+            "rrtype": "CNAME",
+            "ttl": 1315,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "814378410010223",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.846Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 44773
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "192.0.2.87",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 15,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "28329",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YaiZlBPhm8Mo8inv3y/wU/ptz9c=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 28329,
+            "rcode": "NOERROR",
+            "rdata": "192.0.2.87",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "A",
+            "ttl": 15,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "814378410010223",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.846Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 44773
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "192.0.2.87",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 15,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "28329",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YaiZlBPhm8Mo8inv3y/wU/ptz9c=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 28329,
+            "rcode": "NOERROR",
+            "rdata": "192.0.2.87",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "A",
+            "ttl": 15,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "814378410010223",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.846Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 44773
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "192.0.2.87",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 15,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "28329",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YaiZlBPhm8Mo8inv3y/wU/ptz9c=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 28329,
+            "rcode": "NOERROR",
+            "rdata": "192.0.2.87",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "A",
+            "ttl": 15,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "814378410010223",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.846Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 44773
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "192.0.2.87",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 15,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "28329",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:YaiZlBPhm8Mo8inv3y/wU/ptz9c=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 28329,
+            "rcode": "NOERROR",
+            "rdata": "192.0.2.87",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "A",
+            "ttl": 15,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "814378410010223",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.847Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 55246
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "name": "www.nakus.com",
+            "ttl": 1268,
+            "type": "CNAME"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "7050",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "www",
+          "top_level_domain": "com"
+        },
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.nakus.com\",\"rrtype\":\"CNAME\",\"ttl\":1268,\"rdata\":\"azvx9-ai-uzdb.vq3.b.nakus.com\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:QhoiO8Ibk84PuYvRHWI4YNX+Vw0=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 7050,
+            "rcode": "NOERROR",
+            "rdata": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrname": "www.nakus.com",
+            "rrtype": "CNAME",
+            "ttl": 1268,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "1887239765714716",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.847Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 55246
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 53,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "7050",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:QhoiO8Ibk84PuYvRHWI4YNX+Vw0=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 7050,
+            "rcode": "NOERROR",
+            "rdata": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "AAAA",
+            "ttl": 53,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "1887239765714716",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.847Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 55246
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 53,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "7050",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:QhoiO8Ibk84PuYvRHWI4YNX+Vw0=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 7050,
+            "rcode": "NOERROR",
+            "rdata": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "AAAA",
+            "ttl": 53,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "1887239765714716",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.847Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 55246
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 53,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "7050",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:QhoiO8Ibk84PuYvRHWI4YNX+Vw0=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 7050,
+            "rcode": "NOERROR",
+            "rdata": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "AAAA",
+            "ttl": 53,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "1887239765714716",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T01:22:31.847Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 55246
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "ttl": 53,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "7050",
+        "question": {
+          "registered_domain": "nakus.com",
+          "subdomain": "azvx9-ai-uzdb.vq3.b",
+          "top_level_domain": "com"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:QhoiO8Ibk84PuYvRHWI4YNX+Vw0=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 7050,
+            "rcode": "NOERROR",
+            "rdata": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "rrname": "azvx9-ai-uzdb.vq3.b.nakus.com",
+            "rrtype": "AAAA",
+            "ttl": 53,
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "1887239765714716",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T02:03:36.578Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "9104",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T02:03:36.578089+0000\",\"flow_id\":2181951993205289,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":48288,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":9104,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:PE7fsJ6LHGMQu0A4kA7GLtapKQU=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 48288
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 9104,
+            "rrname": "www.apejtlc.co",
+            "rrtype": "A",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "2181951993205289",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T02:03:36.578Z",
+      "destination": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "dns": {
+        "id": "12859",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "AAAA"
+        },
+        "type": "query"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T02:03:36.578262+0000\",\"flow_id\":928596784370390,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":59203,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":12859,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:04Q8iNbxaLOo0mKwcVQKGUWX/gc=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "10.228.63.49"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 59203
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 12859,
+            "rrname": "www.apejtlc.co",
+            "rrtype": "AAAA",
+            "tx_id": 0,
+            "type": "query"
+          },
+          "event_type": "dns",
+          "flow_id": "928596784370390",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T02:03:36.619Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 48288
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "name": "www.apejtlc.co",
+            "ttl": 150,
+            "type": "CNAME"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          },
+          {
+            "data": "192.0.2.87",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "A"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "9104",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "A"
+        },
+        "resolved_ip": [
+          "192.0.2.87",
+          "192.0.2.87",
+          "192.0.2.87",
+          "192.0.2.87"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T02:03:36.619381+0000\",\"flow_id\":2181951993205289,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":48288,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":9104,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":150,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"}]}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:PE7fsJ6LHGMQu0A4kA7GLtapKQU=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 9104,
+            "rcode": "NOERROR",
+            "rrname": "www.apejtlc.co",
+            "rrtype": "A",
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "2181951993205289",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-08-23T02:03:36.626Z",
+      "destination": {
+        "address": "10.218.244.99",
+        "ip": "10.218.244.99",
+        "port": 59203
+      },
+      "dns": {
+        "answers": [
+          {
+            "data": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "name": "www.apejtlc.co",
+            "ttl": 269,
+            "type": "CNAME"
+          },
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          },
+          {
+            "data": "2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          },
+          {
+            "data": "2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          },
+          {
+            "data": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+            "name": "bybsttber.s0.ptfmff.mllcem.fayivv.net",
+            "ttl": 29,
+            "type": "AAAA"
+          }
+        ],
+        "header_flags": [
+          "RD",
+          "RA"
+        ],
+        "id": "12859",
+        "question": {
+          "name": "www.apejtlc.co",
+          "registered_domain": "apejtlc.co",
+          "subdomain": "www",
+          "top_level_domain": "co",
+          "type": "AAAA"
+        },
+        "resolved_ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c",
+          "2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d",
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ],
+        "response_code": "NOERROR",
+        "type": "answer"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"timestamp\":\"2047-08-23T02:03:36.626559+0000\",\"flow_id\":928596784370390,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":59203,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":12859,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":269,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}]}}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:04Q8iNbxaLOo0mKwcVQKGUWX/gc=",
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+          "2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c",
+          "2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d",
+          "10.228.63.49",
+          "10.218.244.99"
+        ]
+      },
+      "source": {
+        "address": "10.228.63.49",
+        "ip": "10.228.63.49",
+        "port": 53
+      },
+      "suricata": {
+        "eve": {
+          "dns": {
+            "id": 12859,
+            "rcode": "NOERROR",
+            "rrname": "www.apejtlc.co",
+            "rrtype": "AAAA",
+            "type": "answer"
+          },
+          "event_type": "dns",
+          "flow_id": "928596784370390",
+          "in_iface": "enp0s3"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:27.924120+0000\",\"flow_id\":885455453886936,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":46686,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":51803,\"rrname\":\"google.com\",\"rrtype\":\"A\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:27.924282+0000\",\"flow_id\":1418448010418810,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":36993,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":39523,\"rrname\":\"google.com\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:27.950946+0000\",\"flow_id\":1418448010418810,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":36993,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":39523,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"google.com\",\"rrtype\":\"AAAA\",\"answers\":[{\"rrname\":\"google.com\",\"rrtype\":\"AAAA\",\"ttl\":272,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}],\"grouped\":{\"AAAA\":[\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"]}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:27.957906+0000\",\"flow_id\":885455453886936,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":46686,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":51803,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"google.com\",\"rrtype\":\"A\",\"answers\":[{\"rrname\":\"google.com\",\"rrtype\":\"A\",\"ttl\":299,\"rdata\":\"192.0.2.87\"}],\"grouped\":{\"A\":[\"192.0.2.87\"]}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:48.839495+0000\",\"flow_id\":40074894954311,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":50720,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":60273,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:48.839714+0000\",\"flow_id\":2130691028471842,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":41979,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":4210,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:48.901548+0000\",\"flow_id\":40074894954311,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":50720,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":60273,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":270,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"}],\"grouped\":{\"A\":[\"192.0.2.87\",\"192.0.2.87\",\"192.0.2.87\",\"192.0.2.87\"],\"CNAME\":[\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"]}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-22T23:48:48.902685+0000\",\"flow_id\":2130691028471842,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":41979,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":4210,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":299,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d\"}],\"grouped\":{\"AAAA\":[\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\",\"2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c\",\"2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d\"],\"CNAME\":[\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"]}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.812655+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":44773,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":28329,\"rrname\":\"www.nakus.com\",\"rrtype\":\"A\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.812828+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":55246,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":7050,\"rrname\":\"www.nakus.com\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.nakus.com\",\"rrtype\":\"CNAME\",\"ttl\":1315,\"rdata\":\"azvx9-ai-uzdb.vq3.b.nakus.com\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.846575+0000\",\"flow_id\":814378410010223,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":44773,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":28329,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"A\",\"ttl\":15,\"rdata\":\"192.0.2.87\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.nakus.com\",\"rrtype\":\"CNAME\",\"ttl\":1268,\"rdata\":\"azvx9-ai-uzdb.vq3.b.nakus.com\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T01:22:31.847379+0000\",\"flow_id\":1887239765714716,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":55246,\"proto\":\"UDP\",\"dns\":{\"type\":\"answer\",\"id\":7050,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"azvx9-ai-uzdb.vq3.b.nakus.com\",\"rrtype\":\"AAAA\",\"ttl\":53,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T02:03:36.578089+0000\",\"flow_id\":2181951993205289,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":48288,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":9104,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T02:03:36.578262+0000\",\"flow_id\":928596784370390,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.218.244.99\",\"src_port\":59203,\"dest_ip\":\"10.228.63.49\",\"dest_port\":53,\"proto\":\"UDP\",\"dns\":{\"type\":\"query\",\"id\":12859,\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"tx_id\":0}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T02:03:36.619381+0000\",\"flow_id\":2181951993205289,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":48288,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":9104,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"A\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":150,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"A\",\"ttl\":29,\"rdata\":\"192.0.2.87\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2047-08-23T02:03:36.626559+0000\",\"flow_id\":928596784370390,\"in_iface\":\"enp0s3\",\"event_type\":\"dns\",\"src_ip\":\"10.228.63.49\",\"src_port\":53,\"dest_ip\":\"10.218.244.99\",\"dest_port\":59203,\"proto\":\"UDP\",\"dns\":{\"version\":2,\"type\":\"answer\",\"id\":12859,\"flags\":\"8180\",\"qr\":true,\"rd\":true,\"ra\":true,\"rcode\":\"NOERROR\",\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"AAAA\",\"answers\":[{\"rrname\":\"www.apejtlc.co\",\"rrtype\":\"CNAME\",\"ttl\":269,\"rdata\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:1c02:3394:8ad2:0dd6:d0ee:b93c\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:0db8:e5d5:0a75:2ed8:08a6:fe23:7c2d\"},{\"rrname\":\"bybsttber.s0.ptfmff.mllcem.fayivv.net\",\"rrtype\":\"AAAA\",\"ttl\":29,\"rdata\":\"2001:db8:5bff:23b8:b0b2:237:3d1:721c\"}]}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "eve",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-suricata-eve-default",
+    "event_count": 24,
+    "numeric_keyword_fields": [],
+    "package": "suricata",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,256 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "hadoop": {
+        "cluster": {
+          "application_main": {
+            "launch_delay_avg_time": 60,
+            "launch_delay_num_ops": 17,
+            "register_delay_avg_time": 22101,
+            "register_delay_num_ops": 13
+          },
+          "node_managers": {
+            "num_active": 1,
+            "num_decommissioned": 0,
+            "num_lost": 0,
+            "num_rebooted": 0,
+            "num_unhealthy": 0
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "hadoop": {
+        "cluster": {
+          "applications": {
+            "completed": 13,
+            "failed": 2,
+            "killed": 0,
+            "pending": 0,
+            "running": 0,
+            "submitted": 15
+          },
+          "containers": {
+            "allocated": 0,
+            "pending": 0,
+            "reserved": 0
+          },
+          "memory": {
+            "allocated": 0,
+            "available": 8192,
+            "reserved": 0,
+            "total": 8192
+          },
+          "nodes": {
+            "active": 1,
+            "decommissioned": 0,
+            "decommissioning": 0,
+            "lost": 0,
+            "rebooted": 0,
+            "shutdown": 0,
+            "total": 1,
+            "unhealthy": 0
+          },
+          "virtual_cores": {
+            "allocated": 0,
+            "available": 8,
+            "reserved": 0,
+            "total": 8
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "http": {
+        "cluster": {
+          "beans": [
+            {
+              "AMContainerAllocationDelayAvgTime": 909,
+              "AMContainerAllocationDelayNumOps": 17,
+              "AMLaunchDelayAvgTime": 60,
+              "AMLaunchDelayNumOps": 17,
+              "AMRegisterDelayAvgTime": 22101,
+              "AMRegisterDelayNumOps": 13,
+              "CapabilityMB": 8192,
+              "CapabilityVirtualCores": 8,
+              "NumActiveNMs": 1,
+              "NumDecommissionedNMs": 0,
+              "NumDecommissioningNMs": 0,
+              "NumLostNMs": 0,
+              "NumRebootedNMs": 0,
+              "NumShutdownNMs": 0,
+              "NumUnhealthyNMs": 0,
+              "RmEventProcCPUAvg": 113,
+              "RmEventProcCPUMax": 808,
+              "UtilizedMB": 6723,
+              "UtilizedVirtualCores": 1,
+              "modelerType": "ClusterMetrics",
+              "name": "Hadoop:service=ResourceManager,name=ClusterMetrics",
+              "tag.ClusterMetrics": "ResourceManager",
+              "tag.Context": "yarn",
+              "tag.Hostname": "localhost.localdomain"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "http": {
+        "cluster": {
+          "clusterMetrics": {
+            "activeNodes": 1,
+            "allocatedMB": 0,
+            "allocatedVirtualCores": 0,
+            "appsCompleted": 13,
+            "appsFailed": 2,
+            "appsKilled": 0,
+            "appsPending": 0,
+            "appsRunning": 0,
+            "appsSubmitted": 15,
+            "availableMB": 8192,
+            "availableVirtualCores": 8,
+            "containersAllocated": 0,
+            "containersPending": 0,
+            "containersReserved": 0,
+            "crossPartitionMetricsAvailable": true,
+            "decommissionedNodes": 0,
+            "decommissioningNodes": 0,
+            "lostNodes": 0,
+            "pendingMB": 0,
+            "pendingVirtualCores": 0,
+            "rebootedNodes": 0,
+            "reservedMB": 0,
+            "reservedVirtualCores": 0,
+            "rmSchedulerBusyPercent": 0,
+            "shutdownNodes": 0,
+            "totalAllocatedContainersAcrossPartition": 0,
+            "totalClusterResourcesAcrossPartition": {
+              "memory": 8192,
+              "resourceInformations": {
+                "resourceInformation": [
+                  {
+                    "attributes": {},
+                    "maximumAllocation": 9223372036854776000,
+                    "minimumAllocation": 0,
+                    "name": "memory-mb",
+                    "resourceType": "COUNTABLE",
+                    "units": "Mi",
+                    "value": 8192
+                  },
+                  {
+                    "attributes": {},
+                    "maximumAllocation": 9223372036854776000,
+                    "minimumAllocation": 0,
+                    "name": "vcores",
+                    "resourceType": "COUNTABLE",
+                    "units": "",
+                    "value": 8
+                  }
+                ]
+              },
+              "vCores": 8
+            },
+            "totalMB": 8192,
+            "totalNodes": 1,
+            "totalReservedResourcesAcrossPartition": {
+              "memory": 0,
+              "resourceInformations": {
+                "resourceInformation": [
+                  {
+                    "attributes": {},
+                    "maximumAllocation": 9223372036854776000,
+                    "minimumAllocation": 0,
+                    "name": "memory-mb",
+                    "resourceType": "COUNTABLE",
+                    "units": "Mi",
+                    "value": 0
+                  },
+                  {
+                    "attributes": {},
+                    "maximumAllocation": 9223372036854776000,
+                    "minimumAllocation": 0,
+                    "name": "vcores",
+                    "resourceType": "COUNTABLE",
+                    "units": "",
+                    "value": 0
+                  }
+                ]
+              },
+              "vCores": 0
+            },
+            "totalUsedResourcesAcrossPartition": {
+              "memory": 0,
+              "resourceInformations": {
+                "resourceInformation": [
+                  {
+                    "attributes": {},
+                    "maximumAllocation": 9223372036854776000,
+                    "minimumAllocation": 0,
+                    "name": "memory-mb",
+                    "resourceType": "COUNTABLE",
+                    "units": "Mi",
+                    "value": 0
+                  },
+                  {
+                    "attributes": {},
+                    "maximumAllocation": 9223372036854776000,
+                    "minimumAllocation": 0,
+                    "name": "vcores",
+                    "resourceType": "COUNTABLE",
+                    "units": "",
+                    "value": 0
+                  }
+                ]
+              },
+              "vCores": 0
+            },
+            "totalVirtualCores": 8,
+            "unhealthyNodes": 0,
+            "utilizedMBPercent": 86,
+            "utilizedVirtualCoresPercent": 12
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "cluster",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-hadoop-cluster-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "hadoop",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

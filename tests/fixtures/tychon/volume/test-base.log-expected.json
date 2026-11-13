@@ -1,0 +1,130 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "state",
+        "module": "tychon",
+        "original": "{\"host.biossn\":\"851E0A70-4517-9604-3D22-128BF0452AC8\",\"host.cloud.hosted\":\"false\",\"host.domain\":\"\",\"host.hardware.bios.name\":\"Phoenix Technologies LTD\",\"host.hardware.bios.version\":\"6.00\",\"host.hardware.cpu.caption\":\"Intel64 Family 6 Model 45 Stepping 7\",\"host.hardware.manufacturer\":\"VMware, Inc.\",\"host.hardware.owner\":\"admin\",\"host.hardware.serial_number\":\"VMware-56 4d 7c 73 14 57 15 94-3b 54 35 2b a8 93 6a f3\",\"host.hostname\":\"FJWBXTCANES8\",\"host.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\",\"host.ip\":\"10.164.185.43\",\"host.ipv4\":\"10.164.185.43\",\"host.ipv6\":\"\",\"host.mac\":\"55:8A:60:88:9E:F2\",\"host.oem.manufacturer\":\"\",\"host.oem.model\":\"\",\"host.os.build\":\"19045\",\"host.os.description\":\"\",\"host.os.family\":\"Windows\",\"host.os.name\":\"Microsoft Windows 10 Pro\",\"host.os.organization\":\"\",\"host.os.version\":\"2009\",\"host.type\":\"Workstation\",\"host.uptime\":\"66498.5633393\",\"host.workgroup\":\"WORKGROUP\",\"id\":\"01eb1866168ab92d95213708829ca9ab4d0c1055\",\"script.current_duration\":\"6290.37\",\"script.current_time\":\"2051-11-15T20:06:22Z\",\"script.name\":\"Get-TychonVolumeInfo.ps1\",\"script.start\":\"2051-11-15T20:06:16Z\",\"script.type\":\"powershell\",\"script.version\":\"198.51.100.254\",\"tychon.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\",\"volume.automount\":\"true\",\"volume.block_size\":\"4096\",\"volume.dirty_bit_set\":\"false\",\"volume.dos_device_path\":\"\\\\Device\\\\HarddiskVolume1\",\"volume.drive.letter\":\"\",\"volume.drive.type\":\"3\",\"volume.file_system\":\"NTFS\",\"volume.freespace\":\"18489344\",\"volume.id\":\"\\\\\\\\?\\\\Volume{6b96d22e-5858-0348-0881-172347050478}\\\\\",\"volume.name\":\"\\\\\\\\?\\\\Volume{6b96d22e-5858-0348-0881-172347050478}\\\\\",\"volume.page_file_present\":\"false\",\"volume.percent_full\":\"64.73\",\"volume.power_management_supported\":\"false\",\"volume.purpose\":\"\",\"volume.serial_number\":\"1591285579\",\"volume.size\":\"52424704\",\"volume.system_volume\":\"true\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "FJWBXTCANES8",
+        "id": "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP",
+        "ip": [
+          "10.164.185.43"
+        ],
+        "mac": [
+          "55-8A-60-88-9E-F2"
+        ],
+        "os": {
+          "family": "Windows",
+          "name": "Microsoft Windows 10 Pro",
+          "type": "windows",
+          "version": "2009"
+        },
+        "type": "Workstation",
+        "uptime": 66498
+      },
+      "related": {
+        "hosts": [
+          "FJWBXTCANES8",
+          "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP"
+        ],
+        "ip": [
+          "10.164.185.43"
+        ]
+      },
+      "tychon": {
+        "host": {
+          "biossn": "851E0A70-4517-9604-3D22-128BF0452AC8",
+          "hardware": {
+            "bios": {
+              "name": "Phoenix Technologies LTD",
+              "version": "6.00"
+            },
+            "cpu": {
+              "caption": "Intel64 Family 6 Model 45 Stepping 7"
+            },
+            "manufacturer": "VMware, Inc.",
+            "owner": "admin",
+            "serial_number": "VMware-56 4d 7c 73 14 57 15 94-3b 54 35 2b a8 93 6a f3"
+          },
+          "hostname": "FJWBXTCANES8",
+          "id": "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP",
+          "ip": [
+            "10.164.185.43"
+          ],
+          "ipv4": [
+            "10.164.185.43"
+          ],
+          "mac": [
+            "55-8A-60-88-9E-F2"
+          ],
+          "os": {
+            "build": "19045",
+            "family": "Windows",
+            "name": "Microsoft Windows 10 Pro",
+            "version": "2009"
+          },
+          "type": "Workstation",
+          "uptime": 66498,
+          "workgroup": "WORKGROUP"
+        },
+        "id": "01eb1866168ab92d95213708829ca9ab4d0c1055",
+        "script": {
+          "current_duration": 6290,
+          "current_time": "2051-11-15T20:06:22Z",
+          "name": "Get-TychonVolumeInfo.ps1",
+          "start": "2051-11-15T20:06:16Z",
+          "type": "powershell",
+          "version": "198.51.100.254"
+        },
+        "tychon": {
+          "id": "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP"
+        },
+        "volume": {
+          "automount": true,
+          "block_size": 4096,
+          "dirty_bit_set": "false",
+          "dos_device_path": "\\Device\\HarddiskVolume1",
+          "drive": {
+            "type": "3"
+          },
+          "file_system": "NTFS",
+          "freespace": 18489344,
+          "id": "\\\\?\\Volume{6b96d22e-5858-0348-0881-172347050478}\\",
+          "name": "\\\\?\\Volume{6b96d22e-5858-0348-0881-172347050478}\\",
+          "page_file_present": "false",
+          "percent_full": 64.73,
+          "power_management_supported": "false",
+          "serial_number": "1591285579",
+          "size": 52424704,
+          "system_volume": "true"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"host.biossn\":\"851E0A70-4517-9604-3D22-128BF0452AC8\",\"host.cloud.hosted\":\"false\",\"host.domain\":\"\",\"host.hardware.bios.name\":\"Phoenix Technologies LTD\",\"host.hardware.bios.version\":\"6.00\",\"host.hardware.cpu.caption\":\"Intel64 Family 6 Model 45 Stepping 7\",\"host.hardware.manufacturer\":\"VMware, Inc.\",\"host.hardware.owner\":\"admin\",\"host.hardware.serial_number\":\"VMware-56 4d 7c 73 14 57 15 94-3b 54 35 2b a8 93 6a f3\",\"host.hostname\":\"FJWBXTCANES8\",\"host.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\",\"host.ip\":\"10.164.185.43\",\"host.ipv4\":\"10.164.185.43\",\"host.ipv6\":\"\",\"host.mac\":\"55:8A:60:88:9E:F2\",\"host.oem.manufacturer\":\"\",\"host.oem.model\":\"\",\"host.os.build\":\"19045\",\"host.os.description\":\"\",\"host.os.family\":\"Windows\",\"host.os.name\":\"Microsoft Windows 10 Pro\",\"host.os.organization\":\"\",\"host.os.version\":\"2009\",\"host.type\":\"Workstation\",\"host.uptime\":\"66498.5633393\",\"host.workgroup\":\"WORKGROUP\",\"id\":\"01eb1866168ab92d95213708829ca9ab4d0c1055\",\"script.current_duration\":\"6290.37\",\"script.current_time\":\"2051-11-15T20:06:22Z\",\"script.name\":\"Get-TychonVolumeInfo.ps1\",\"script.start\":\"2051-11-15T20:06:16Z\",\"script.type\":\"powershell\",\"script.version\":\"198.51.100.254\",\"tychon.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\",\"volume.automount\":\"true\",\"volume.block_size\":\"4096\",\"volume.dirty_bit_set\":\"false\",\"volume.dos_device_path\":\"\\\\Device\\\\HarddiskVolume1\",\"volume.drive.letter\":\"\",\"volume.drive.type\":\"3\",\"volume.file_system\":\"NTFS\",\"volume.freespace\":\"18489344\",\"volume.id\":\"\\\\\\\\?\\\\Volume{6b96d22e-5858-0348-0881-172347050478}\\\\\",\"volume.name\":\"\\\\\\\\?\\\\Volume{6b96d22e-5858-0348-0881-172347050478}\\\\\",\"volume.page_file_present\":\"false\",\"volume.percent_full\":\"64.73\",\"volume.power_management_supported\":\"false\",\"volume.purpose\":\"\",\"volume.serial_number\":\"1591285579\",\"volume.size\":\"52424704\",\"volume.system_volume\":\"true\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "volume",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tychon-volume-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tychon",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

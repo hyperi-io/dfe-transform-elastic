@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "json": {
+        "target_industry": [],
+        "source": "Analyst",
+        "threatscore": 0,
+        "threat_type": "brute",
+        "trusted_circle_ids": null,
+        "description": null,
+        "workgroups": [],
+        "sort": [
+          528280278
+        ],
+        "resource_uri": "/api/v2/intelligence/235549248/",
+        "modified_ts": "2049-07-28T16:10:01.607Z",
+        "update_id": 528280278,
+        "source_reported_confidence": -1,
+        "type": "ip",
+        "uuid": "b5dc3df5-f1fc-48c5-8284-c3519c4e10a7",
+        "feed_id": 0,
+        "retina_confidence": -1,
+        "created_ts": "2049-04-29T16:02:23.563Z",
+        "id": 235549248,
+        "value": "203.0.113.138",
+        "itype": "ssh_ip",
+        "org": "",
+        "ip": "203.0.113.138",
+        "confidence": -1,
+        "expiration_ts": "2049-07-28T16:02:23.498Z",
+        "owner_organization_id": 70,
+        "meta": {
+          "severity": "low",
+          "detail2": "bifocals_deactivated_on_2049-07-28_16:10:00.097108"
+        },
+        "is_anonymous": false,
+        "is_public": true,
+        "asn": "",
+        "status": "inactive",
+        "tags": null,
+        "can_add_public_tags": true,
+        "subtype": null,
+        "tlp": null,
+        "created_by": null,
+        "rdns": null,
+        "is_editable": false,
+        "locations": [],
+        "source_locations": []
+      }
+    }
+  ]
+}

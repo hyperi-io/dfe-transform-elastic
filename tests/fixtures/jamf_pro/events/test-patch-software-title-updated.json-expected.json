@@ -1,0 +1,73 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "PatchSoftwareTitleUpdated",
+        "category": [
+          "configuration",
+          "package"
+        ],
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "jss_id": 128,
+            "last_update": "2052-09-04T09:57:52.001Z",
+            "latest_version": "W97C0H",
+            "name": "ENLOV",
+            "report_urls": "BMH3D0"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 521,
+            "name": "JCXGC",
+            "webhook_event": "PatchSoftwareTitleUpdated"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "jss_id": 128,
+          "last_update": 2609056672001,
+          "latest_version": "W97C0H",
+          "name": "ENLOV",
+          "report_urls": "BMH3D0"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 521,
+          "name": "JCXGC",
+          "webhook_event": "PatchSoftwareTitleUpdated"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

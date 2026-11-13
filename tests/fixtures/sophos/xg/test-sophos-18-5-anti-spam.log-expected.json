@@ -1,0 +1,2813 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-01-31T18:28:25.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.168.168.200",
+        "port": 25,
+        "user": {
+          "email": "odntcp5@tsgak.com"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "pdxobh4@tsgak.com"
+          ]
+        },
+        "subject": "RPD Spam Test: Spam",
+        "to": {
+          "address": [
+            "odntcp5@tsgak.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13001",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2045-01-31 time=18:28:25 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041107413001 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"Gaurav235\" from_email_address=\"pdxobh4@tsgak.com\" to_email_address=\"odntcp5@tsgak.com\" email_subject=\"RPD Spam Test: Spam\" mailid=\"c000000b-1485867502\" mailsize=400 spamaction=\"DROP\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22258 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:6ZjqEaV39Jau7QNdVKY+6vRyHaI=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "tsgak.com"
+        ],
+        "ip": [
+          "10.138.93.175",
+          "10.168.168.200"
+        ],
+        "user": [
+          "pdxobh4",
+          "pdxobh4@tsgak.com"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "Gaurav235",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "dst_country_code": "R1",
+          "email_subject": "RPD Spam Test: Spam",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041107413001",
+          "log_subtype": "Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "c000000b-1485867502",
+          "mailsize": "400",
+          "priority": "Warning",
+          "quarantine_reason": "Spam",
+          "spamaction": "DROP",
+          "src_country_code": "R1",
+          "timezone": "IST",
+          "user_name": "gevlbv"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "tsgak.com",
+        "ip": "10.138.93.175",
+        "port": 22258,
+        "user": {
+          "domain": "tsgak.com",
+          "email": "pdxobh4@tsgak.com",
+          "name": "pdxobh4"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T10:41:29.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.55.110.215",
+        "port": 25,
+        "user": {
+          "email": "galgjmt@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "[SPAM] RPD Spam test: Bulk",
+        "to": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Probable Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13002",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=10:41:29 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041108413002 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"[SPAM] RPD Spam test: Bulk\" mailid=\"c0000006-1528261885\" mailsize=438 spamaction=\"WARN\" reason=\"Mail detected as PROBABLE SPAM.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=56341 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+        "outcome": "success",
+        "reason": "Mail detected as PROBABLE SPAM.",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:RSc3N3t985Gth5SpiabDuobyMIk=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.55.110.215"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "postman",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "[SPAM] RPD Spam test: Bulk",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041108413002",
+          "log_subtype": "Probable Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000006-1528261885",
+          "mailsize": "438",
+          "priority": "Warning",
+          "quarantine_reason": "Spam",
+          "spamaction": "WARN",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 56341,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-01-31T18:36:22.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.168.168.200",
+        "port": 25,
+        "user": {
+          "email": "pdxobh4@tsgak.com"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "odntcp5@tsgak.com"
+          ]
+        },
+        "subject": "EMAIL",
+        "to": {
+          "address": [
+            "pdxobh4@tsgak.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Clean",
+        "category": [
+          "network"
+        ],
+        "code": "13003",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2045-01-31 time=18:36:22 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041105613003 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Clean\" status=\"\" priority=Information fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"None\" from_email_address=\"odntcp5@tsgak.com\" to_email_address=\"pdxobh4@tsgak.com\" email_subject=\"EMAIL\" mailid=\"<1fd72ea9-4aec-88d9-bc38-55ba44463a5f@iview.com>\" mailsize=398 spamaction=\"Accept\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22477 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:ctboRWXlT2q2HgJgoE5nTPH7CNc=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "tsgak.com"
+        ],
+        "ip": [
+          "10.138.93.175",
+          "10.168.168.200"
+        ],
+        "user": [
+          "odntcp5",
+          "odntcp5@tsgak.com"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "dst_country_code": "R1",
+          "email_subject": "EMAIL",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041105613003",
+          "log_subtype": "Clean",
+          "log_type": "Anti-Spam",
+          "mailid": "<1fd72ea9-4aec-88d9-bc38-55ba44463a5f@iview.com>",
+          "mailsize": "398",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "src_country_code": "R1",
+          "timezone": "IST",
+          "user_name": "gevlbv"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "tsgak.com",
+        "ip": "10.138.93.175",
+        "port": 22477,
+        "user": {
+          "domain": "tsgak.com",
+          "email": "odntcp5@tsgak.com",
+          "name": "odntcp5"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T11:08:08.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.47.110.50",
+        "port": 25,
+        "user": {
+          "email": "galgjmt@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "Test RBL email",
+        "to": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Probable Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13004",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=11:08:08 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041108413004 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"Test RBL email\" mailid=\"c0000008-1528263488\" mailsize=433 spamaction=\"DROP\" reason=\"Sender IP address is blacklisted.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=57854 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"RBL\"",
+        "outcome": "success",
+        "reason": "Sender IP address is blacklisted.",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:0AMaG0ueagxnNHKJd7riU0qaEEM=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.47.110.50"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "postman",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "Test RBL email",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041108413004",
+          "log_subtype": "Probable Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000008-1528263488",
+          "mailsize": "433",
+          "priority": "Warning",
+          "quarantine_reason": "RBL",
+          "spamaction": "DROP",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 57854,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-01-31T18:34:41.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.168.168.200",
+        "port": 25,
+        "user": {
+          "email": "odntcp5@tsgak.com"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "pdxobh4@tsgak.com"
+          ]
+        },
+        "subject": "RPD Spam Test: Spam",
+        "to": {
+          "address": [
+            "odntcp5@tsgak.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Outbound Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13005",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2045-01-31 time=18:34:41 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041113413005 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Outbound Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"Gaurav123\" from_email_address=\"pdxobh4@tsgak.com\" to_email_address=\"odntcp5@tsgak.com\" email_subject=\"RPD Spam Test: Spam\" mailid=\"<c03c5fd8-88f0-4717-2789-1d88c9bee855@iview.com>\" mailsize=405 spamaction=\"Accept\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22420 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:7HemJR6b5MIT0ourF8g5ri3ZVV0=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "tsgak.com"
+        ],
+        "ip": [
+          "10.138.93.175",
+          "10.168.168.200"
+        ],
+        "user": [
+          "pdxobh4",
+          "pdxobh4@tsgak.com"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "Gaurav123",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "dst_country_code": "R1",
+          "email_subject": "RPD Spam Test: Spam",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041113413005",
+          "log_subtype": "Outbound Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "<c03c5fd8-88f0-4717-2789-1d88c9bee855@iview.com>",
+          "mailsize": "405",
+          "priority": "Warning",
+          "quarantine_reason": "Spam",
+          "spamaction": "Accept",
+          "src_country_code": "R1",
+          "timezone": "IST",
+          "user_name": "gevlbv"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "tsgak.com",
+        "ip": "10.138.93.175",
+        "port": 22420,
+        "user": {
+          "domain": "tsgak.com",
+          "email": "pdxobh4@tsgak.com",
+          "name": "pdxobh4"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T11:10:11.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.179.104.141",
+        "port": 25,
+        "user": {
+          "email": "qagnuws6@Kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "RPD Spam test: Bulk",
+        "to": {
+          "address": [
+            "qagnuws6@Kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Outbound Probable Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13006",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=11:10:11 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041114413006 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Outbound Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"rule 8\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"RPD Spam test: Bulk\" mailid=\"<c63b1eb2-1c17-73ac-fcc3- 60c1056cf0c6@kjzhpdv.local>\" mailsize=439 spamaction=\"Drop\" reason=\"Mail detected as OUTBOUND PROBABLE SPAM.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.179.104.141 dst_country_code=R1 protocol=\"TCP\" src_port=58043 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+        "outcome": "success",
+        "reason": "Mail detected as OUTBOUND PROBABLE SPAM.",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:j1/rpl9SwJLb0OfLuV2WesYMrMg=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.179.104.141"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "rule 8",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "RPD Spam test: Bulk",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041114413006",
+          "log_subtype": "Outbound Probable Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "<c63b1eb2-1c17-73ac-fcc3- 60c1056cf0c6@kjzhpdv.local>",
+          "mailsize": "439",
+          "priority": "Warning",
+          "quarantine_reason": "Spam",
+          "spamaction": "Drop",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 58043,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T12:50:07.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.47.110.50",
+        "port": 25,
+        "user": {
+          "email": "qagnuws6@Kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "Fwd: TESt",
+        "to": {
+          "address": [
+            "qagnuws6@Kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "DLP",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13009",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=12:50:07 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041121613009 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"DLP\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"Fwd: TESt\" mailid=\"c0000002-1528269606\" mailsize=5041 spamaction=\"DROP\" reason=\"Email containing confidential data detected. Relevant Data Protection Policy applied.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=60134 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"DLP\"",
+        "outcome": "success",
+        "reason": "Email containing confidential data detected. Relevant Data Protection Policy applied.",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:TEXoSe3ifLow2T5BfWCZ98ezIFs=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.47.110.50"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "postman",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "Fwd: TESt",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041121613009",
+          "log_subtype": "DLP",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000002-1528269606",
+          "mailsize": "5041",
+          "priority": "Information",
+          "quarantine_reason": "DLP",
+          "spamaction": "DROP",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 60134,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T12:51:34.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.55.110.215",
+        "port": 25,
+        "user": {
+          "email": "qagnuws6@Kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "[secure:pankhil]",
+        "to": {
+          "address": [
+            "qagnuws6@Kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "SPX",
+        "category": [
+          "network"
+        ],
+        "code": "13010",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2046-06-06 time=12:51:34 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041122613010 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"SPX\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"[secure:pankhil]\" mailid=\"c0000003-1528269693\" mailsize=442 spamaction=\"Accept\" reason=\"SPX Template of type Specified by Sender successfully applied on Email.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=60298 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "SPX Template of type Specified by Sender successfully applied on Email.",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:2KT/O24ggbzuQNANr6bj1dNOhNc=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.55.110.215"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "[secure:pankhil]",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041122613010",
+          "log_subtype": "SPX",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000003-1528269693",
+          "mailsize": "442",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 60298,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T12:52:49.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.55.110.215",
+        "port": 25,
+        "user": {
+          "email": "qagnuws6@Kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "Test failed",
+        "to": {
+          "address": [
+            "qagnuws6@Kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "SPX",
+        "category": [
+          "network"
+        ],
+        "code": "13011",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2046-06-06 time=12:52:49 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041122613011 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"SPX\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"Test failed\" mailid=\"c0000004-1528269769\" mailsize=431 spamaction=\"REJECT\" reason=\"Email could not be SPX- encrypted because password was not found in the Email subject.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=60305 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Email could not be SPX- encrypted because password was not found in the Email subject.",
+        "severity": 6,
+        "timezone": "Asia/Kolkata"
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:Csr7fb4zWJR7+I0yYBchmm1idRk=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.55.110.215"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "Test failed",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041122613011",
+          "log_subtype": "SPX",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000004-1528269769",
+          "mailsize": "431",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "REJECT",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 60305,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T12:53:39.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.47.110.50",
+        "port": 25
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Dos",
+        "category": [
+          "intrusion_detection",
+          "network"
+        ],
+        "code": "13012",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=12:53:39 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041123413012 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Dos\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"\" to_email_address=\"\" email_subject=\"\" mailid=\"\" mailsize=0 spamaction=\"TMPREJECT\" reason=\"SMTP DoS\" src_domainname=\"\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=60392 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "SMTP DoS",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:NkWCA30scKgYcKjownchBKMREjw=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.47.110.50"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041123413012",
+          "log_subtype": "Dos",
+          "log_type": "Anti-Spam",
+          "mailsize": "0",
+          "priority": "Warning",
+          "quarantine_reason": "Other",
+          "spamaction": "TMPREJECT",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "10.40.184.78",
+        "port": 60392
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-01-31T15:46:45.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.168.168.200",
+        "port": 25,
+        "user": {
+          "email": "pdxobh4@tsgak.com"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "odntcp5@tsgak.com"
+          ]
+        },
+        "subject": "GP235",
+        "to": {
+          "address": [
+            "pdxobh4@tsgak.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Allowed",
+        "category": [
+          "network"
+        ],
+        "code": "13013",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2045-01-31 time=15:46:45 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041101613013 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Allowed\" status=\"\" priority=Information fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"Gaurav235\" from_email_address=\"odntcp5@tsgak.com\" to_email_address=\"pdxobh4@tsgak.com\" email_subject=\"GP235\" mailid=\"c000000a-1485857789\" mailsize=391 spamaction=\"SANDSTORM ALLOW\" reason=\"Mail is marked Clean by Sophos Sandstorm.\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=11255 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Mail is marked Clean by Sophos Sandstorm.",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:A708SE5gSe6lsJvAEKea0oitdcU=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "tsgak.com"
+        ],
+        "ip": [
+          "10.138.93.175",
+          "10.168.168.200"
+        ],
+        "user": [
+          "odntcp5",
+          "odntcp5@tsgak.com"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "Gaurav235",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "dst_country_code": "R1",
+          "email_subject": "GP235",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041101613013",
+          "log_subtype": "Allowed",
+          "log_type": "Anti-Spam",
+          "mailid": "c000000a-1485857789",
+          "mailsize": "391",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "SANDSTORM ALLOW",
+          "src_country_code": "R1",
+          "timezone": "IST",
+          "user_name": "gevlbv"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "tsgak.com",
+        "ip": "10.138.93.175",
+        "port": 11255,
+        "user": {
+          "domain": "tsgak.com",
+          "email": "odntcp5@tsgak.com",
+          "name": "odntcp5"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T12:56:53.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.47.110.50",
+        "port": 25,
+        "user": {
+          "email": "galgjmt@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "qagnuws6@kjzhpdv.local"
+          ]
+        },
+        "subject": "Fwd: test sand",
+        "to": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Denied",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "13014",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=12:56:53 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041102413014 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Denied\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"qagnuws6@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"Fwd: test sand\" mailid=\"c0000008-1528270010\" mailsize=419835 spamaction=\"DROP\" reason=\"Email is marked Malicious by Sophos Sandstorm.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=60608 dst_port=25 sent_bytes=0 recv_bytes=0",
+        "outcome": "success",
+        "reason": "Email is marked Malicious by Sophos Sandstorm.",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:r+RBbPm8r52TpFyuZvYTFY81O2Y=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.47.110.50"
+        ],
+        "user": [
+          "qagnuws6",
+          "qagnuws6@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "postman",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "Fwd: test sand",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041102413014",
+          "log_subtype": "Denied",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000008-1528270010",
+          "mailsize": "419835",
+          "priority": "Warning",
+          "spamaction": "DROP",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 60608,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "qagnuws6@kjzhpdv.local",
+          "name": "qagnuws6"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-01-31T18:31:11.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.168.168.200",
+        "port": 110,
+        "user": {
+          "email": "gaurav2@iview. com"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "pdxobh4@tsgak.com"
+          ]
+        },
+        "subject": "RPD Spam Test: Spam",
+        "to": {
+          "address": [
+            "gaurav2@iview. com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "14001",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2045-01-31 time=18:31:11 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041207414001 log_type=\"Anti-Spam\" log_component=\"POP3\" log_subtype=\"Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"GauravPatel\" from_email_address=\"pdxobh4@tsgak.com\" to_email_address=\"gaurav2@iview. com\" email_subject=\"RPD Spam Test: Spam\" mailid=\"<5e8da0f7-4a23-633e-28a2-1684eb28ee60@iview.com>\" mailsize=574 spamaction=\"Accept\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"tsgak.com\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22333 dst_port=110 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:XukEqwVKqg62/tjyAnRxKdwdfJM=",
+        "protocol": "pop3",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "tsgak.com"
+        ],
+        "ip": [
+          "10.138.93.175",
+          "10.168.168.200"
+        ],
+        "user": [
+          "pdxobh4",
+          "pdxobh4@tsgak.com"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "GauravPatel",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "dst_country_code": "R1",
+          "dst_domainname": "tsgak.com",
+          "email_subject": "RPD Spam Test: Spam",
+          "fw_rule_id": "0",
+          "log_component": "POP3",
+          "log_id": "041207414001",
+          "log_subtype": "Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "<5e8da0f7-4a23-633e-28a2-1684eb28ee60@iview.com>",
+          "mailsize": "574",
+          "priority": "Warning",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "src_country_code": "R1",
+          "timezone": "IST",
+          "user_name": "gevlbv"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "tsgak.com",
+        "ip": "10.138.93.175",
+        "port": 22333,
+        "user": {
+          "domain": "tsgak.com",
+          "email": "pdxobh4@tsgak.com",
+          "name": "pdxobh4"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T12:59:01.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.179.104.141",
+        "port": 995,
+        "user": {
+          "email": "galgjmt@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "RPD Spam test: Bulk",
+        "to": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Probable Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "14002",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=12:59:01 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046108414002 log_type=\"Anti-Spam\" log_component=\"POPS\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"pop8\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"RPD Spam test: Bulk\" mailid=\"<64b5fac9-87e0-11e5-c8e6-2f2cb5b7092a@postman.local>\" mailsize=0 spamaction=\"Change Subject\" reason=\"Mail detected as PROBABLE SPAM\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=60742 dst_port=995 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Mail detected as PROBABLE SPAM",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:FG0FOnZtK53cdNQBcgF3cCvB+xI=",
+        "protocol": "pop3s",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.179.104.141"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "pop8",
+          "device": "SFW",
+          "device_name": "GG343",
+          "email_subject": "RPD Spam test: Bulk",
+          "fw_rule_id": "0",
+          "log_component": "POPS",
+          "log_id": "046108414002",
+          "log_subtype": "Probable Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "<64b5fac9-87e0-11e5-c8e6-2f2cb5b7092a@postman.local>",
+          "mailsize": "0",
+          "priority": "Warning",
+          "quarantine_reason": "Other",
+          "spamaction": "Change Subject",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 60742,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T13:00:34.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.179.104.141",
+        "port": 995,
+        "user": {
+          "email": "galgjmt@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "Test clean",
+        "to": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Clean",
+        "category": [
+          "network"
+        ],
+        "code": "14003",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2046-06-06 time=13:00:34 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046105614003 log_type=\"Anti-Spam\" log_component=\"POPS\" log_subtype=\"Clean\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"Test clean\" mailid=\"<e4da8074-735b-7db1-1828-ec74bd6756bc@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail is Clean\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=60757 dst_port=995 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Mail is Clean",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:Ikgx0CRQL3BwxyXvrF91ea++FjM=",
+        "protocol": "pop3s",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.179.104.141"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "email_subject": "Test clean",
+          "fw_rule_id": "0",
+          "log_component": "POPS",
+          "log_id": "046105614003",
+          "log_subtype": "Clean",
+          "log_type": "Anti-Spam",
+          "mailid": "<e4da8074-735b-7db1-1828-ec74bd6756bc@postman.local>",
+          "mailsize": "0",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 60757,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T13:01:42.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.179.104.141",
+        "port": 993,
+        "user": {
+          "email": "sblsb@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "RPD Spam test: Spam",
+        "to": {
+          "address": [
+            "sblsb@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "15001",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=13:01:42 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046207415001 log_type=\"Anti-Spam\" log_component=\"IMAPS\" log_subtype=\"Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"sblsb@kjzhpdv.local\" email_subject=\"RPD Spam test: Spam\" mailid=\"<4fd52b71-2f53-67cd-df21-27ddb21e22f5@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail detected as SPAM\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=58595 dst_port=993 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Mail detected as SPAM",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:i7qCdJEndlbbt+ew1YIQY1oTSAo=",
+        "protocol": "imaps",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.179.104.141"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "email_subject": "RPD Spam test: Spam",
+          "fw_rule_id": "0",
+          "log_component": "IMAPS",
+          "log_id": "046207415001",
+          "log_subtype": "Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "<4fd52b71-2f53-67cd-df21-27ddb21e22f5@postman.local>",
+          "mailsize": "0",
+          "priority": "Warning",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 58595,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T13:02:54.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.179.104.141",
+        "port": 993,
+        "user": {
+          "email": "sblsb@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "RPD Spam test: Bulk",
+        "to": {
+          "address": [
+            "sblsb@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Probable Spam",
+        "category": [
+          "malware",
+          "network"
+        ],
+        "code": "15002",
+        "kind": "alert",
+        "original": "device=\"SFW\" date=2046-06-06 time=13:02:54 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046208415002 log_type=\"Anti-Spam\" log_component=\"IMAPS\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"sblsb@kjzhpdv.local\" email_subject=\"RPD Spam test: Bulk\" mailid=\"<4d31d587-d9d3-30aa-c70d-2033fca972bf@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail detected as PROBABLE SPAM\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=58595 dst_port=993 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Mail detected as PROBABLE SPAM",
+        "severity": 4,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:i7qCdJEndlbbt+ew1YIQY1oTSAo=",
+        "protocol": "imaps",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.179.104.141"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "email_subject": "RPD Spam test: Bulk",
+          "fw_rule_id": "0",
+          "log_component": "IMAPS",
+          "log_id": "046208415002",
+          "log_subtype": "Probable Spam",
+          "log_type": "Anti-Spam",
+          "mailid": "<4d31d587-d9d3-30aa-c70d-2033fca972bf@postman.local>",
+          "mailsize": "0",
+          "priority": "Warning",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 58595,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-06T13:03:58.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.179.104.141",
+        "port": 993,
+        "user": {
+          "email": "sblsb@kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "Clean email",
+        "to": {
+          "address": [
+            "sblsb@kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Clean",
+        "category": [
+          "network"
+        ],
+        "code": "15003",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2046-06-06 time=13:03:58 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046205615003 log_type=\"Anti-Spam\" log_component=\"IMAPS\" log_subtype=\"Clean\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"sblsb@kjzhpdv.local\" email_subject=\"Clean email\" mailid=\"<2e247136-1eda-5c73-71c8-a79acb028e5b@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail is Clean\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=58595 dst_port=993 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Mail is Clean",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:i7qCdJEndlbbt+ew1YIQY1oTSAo=",
+        "protocol": "imaps",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.179.104.141"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "email_subject": "Clean email",
+          "fw_rule_id": "0",
+          "log_component": "IMAPS",
+          "log_id": "046205615003",
+          "log_subtype": "Clean",
+          "log_type": "Anti-Spam",
+          "mailid": "<2e247136-1eda-5c73-71c8-a79acb028e5b@postman.local>",
+          "mailsize": "0",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "Accept",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 58595,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-06-05T19:11:26.000+05:30",
+      "destination": {
+        "bytes": 0,
+        "ip": "10.55.110.215",
+        "port": 25,
+        "user": {
+          "email": "galgjmt@Kjzhpdv.local"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "galgjmt@kjzhpdv.local"
+          ]
+        },
+        "subject": "dd",
+        "to": {
+          "address": [
+            "galgjmt@Kjzhpdv.local"
+          ]
+        }
+      },
+      "event": {
+        "action": "Allowed",
+        "category": [
+          "network"
+        ],
+        "code": "18035",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2046-06-05 time=19:11:26 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041101618035 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Allowed\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@Kjzhpdv.local\" email_subject=\"dd\" mailid=\"c0000005-1528206082\" mailsize=421 spamaction=\"DELIVERED\" reason=\"Email has been delivered to recipient(s).\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=61636 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+        "outcome": "success",
+        "reason": "Email has been delivered to recipient(s).",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "allowed",
+          "connection"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:N2RItSuqcZKEH0zzYi74MhrYG1k=",
+        "protocol": "smtp",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "XG",
+        "serial_number": "S4000806149EE49",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local",
+          "kjzhpdv.local"
+        ],
+        "ip": [
+          "10.40.184.78",
+          "10.55.110.215"
+        ],
+        "user": [
+          "galgjmt",
+          "galgjmt@kjzhpdv.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "av_policy_name": "None",
+          "device": "SFW",
+          "device_name": "GG343",
+          "dst_country_code": "R1",
+          "email_subject": "dd",
+          "fw_rule_id": "0",
+          "log_component": "SMTP",
+          "log_id": "041101618035",
+          "log_subtype": "Allowed",
+          "log_type": "Anti-Spam",
+          "mailid": "c0000005-1528206082",
+          "mailsize": "421",
+          "priority": "Information",
+          "quarantine_reason": "Other",
+          "spamaction": "DELIVERED",
+          "src_country_code": "R1",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "bytes": 0,
+        "domain": "kjzhpdv.local",
+        "ip": "10.40.184.78",
+        "port": 61636,
+        "user": {
+          "domain": "kjzhpdv.local",
+          "email": "galgjmt@kjzhpdv.local",
+          "name": "galgjmt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=18:28:25 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041107413001 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"Gaurav235\" from_email_address=\"pdxobh4@tsgak.com\" to_email_address=\"odntcp5@tsgak.com\" email_subject=\"RPD Spam Test: Spam\" mailid=\"c000000b-1485867502\" mailsize=400 spamaction=\"DROP\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22258 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=10:41:29 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041108413002 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"[SPAM] RPD Spam test: Bulk\" mailid=\"c0000006-1528261885\" mailsize=438 spamaction=\"WARN\" reason=\"Mail detected as PROBABLE SPAM.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=56341 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=18:36:22 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041105613003 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Clean\" status=\"\" priority=Information fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"None\" from_email_address=\"odntcp5@tsgak.com\" to_email_address=\"pdxobh4@tsgak.com\" email_subject=\"EMAIL\" mailid=\"<1fd72ea9-4aec-88d9-bc38-55ba44463a5f@iview.com>\" mailsize=398 spamaction=\"Accept\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22477 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=11:08:08 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041108413004 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"Test RBL email\" mailid=\"c0000008-1528263488\" mailsize=433 spamaction=\"DROP\" reason=\"Sender IP address is blacklisted.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=57854 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"RBL\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=18:34:41 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041113413005 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Outbound Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"Gaurav123\" from_email_address=\"pdxobh4@tsgak.com\" to_email_address=\"odntcp5@tsgak.com\" email_subject=\"RPD Spam Test: Spam\" mailid=\"<c03c5fd8-88f0-4717-2789-1d88c9bee855@iview.com>\" mailsize=405 spamaction=\"Accept\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22420 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=11:10:11 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041114413006 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Outbound Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"rule 8\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"RPD Spam test: Bulk\" mailid=\"<c63b1eb2-1c17-73ac-fcc3- 60c1056cf0c6@kjzhpdv.local>\" mailsize=439 spamaction=\"Drop\" reason=\"Mail detected as OUTBOUND PROBABLE SPAM.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.179.104.141 dst_country_code=R1 protocol=\"TCP\" src_port=58043 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Spam\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=12:50:07 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041121613009 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"DLP\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"Fwd: TESt\" mailid=\"c0000002-1528269606\" mailsize=5041 spamaction=\"DROP\" reason=\"Email containing confidential data detected. Relevant Data Protection Policy applied.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=60134 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"DLP\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=12:51:34 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041122613010 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"SPX\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"[secure:pankhil]\" mailid=\"c0000003-1528269693\" mailsize=442 spamaction=\"Accept\" reason=\"SPX Template of type Specified by Sender successfully applied on Email.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=60298 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=12:52:49 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041122613011 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"SPX\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"qagnuws6@Kjzhpdv.local\" email_subject=\"Test failed\" mailid=\"c0000004-1528269769\" mailsize=431 spamaction=\"REJECT\" reason=\"Email could not be SPX- encrypted because password was not found in the Email subject.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=60305 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=12:53:39 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041123413012 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Dos\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"\" to_email_address=\"\" email_subject=\"\" mailid=\"\" mailsize=0 spamaction=\"TMPREJECT\" reason=\"SMTP DoS\" src_domainname=\"\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=60392 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=15:46:45 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041101613013 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Allowed\" status=\"\" priority=Information fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"Gaurav235\" from_email_address=\"odntcp5@tsgak.com\" to_email_address=\"pdxobh4@tsgak.com\" email_subject=\"GP235\" mailid=\"c000000a-1485857789\" mailsize=391 spamaction=\"SANDSTORM ALLOW\" reason=\"Mail is marked Clean by Sophos Sandstorm.\" src_domainname=\"tsgak.com\" dst_domainname=\"\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=11255 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=12:56:53 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041102413014 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Denied\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"postman\" from_email_address=\"qagnuws6@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"Fwd: test sand\" mailid=\"c0000008-1528270010\" mailsize=419835 spamaction=\"DROP\" reason=\"Email is marked Malicious by Sophos Sandstorm.\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.47.110.50 dst_country_code=R1 protocol=\"TCP\" src_port=60608 dst_port=25 sent_bytes=0 recv_bytes=0",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=18:31:11 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=041207414001 log_type=\"Anti-Spam\" log_component=\"POP3\" log_subtype=\"Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"gevlbv\" av_policy_name=\"GauravPatel\" from_email_address=\"pdxobh4@tsgak.com\" to_email_address=\"gaurav2@iview. com\" email_subject=\"RPD Spam Test: Spam\" mailid=\"<5e8da0f7-4a23-633e-28a2-1684eb28ee60@iview.com>\" mailsize=574 spamaction=\"Accept\" reason=\"\" src_domainname=\"tsgak.com\" dst_domainname=\"tsgak.com\" src_ip=10.138.93.175 src_country_code=R1 dst_ip=10.168.168.200 dst_country_code=R1 protocol=\"TCP\" src_port=22333 dst_port=110 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=12:59:01 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046108414002 log_type=\"Anti-Spam\" log_component=\"POPS\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"pop8\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"RPD Spam test: Bulk\" mailid=\"<64b5fac9-87e0-11e5-c8e6-2f2cb5b7092a@postman.local>\" mailsize=0 spamaction=\"Change Subject\" reason=\"Mail detected as PROBABLE SPAM\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=60742 dst_port=995 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=13:00:34 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046105614003 log_type=\"Anti-Spam\" log_component=\"POPS\" log_subtype=\"Clean\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@kjzhpdv.local\" email_subject=\"Test clean\" mailid=\"<e4da8074-735b-7db1-1828-ec74bd6756bc@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail is Clean\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=60757 dst_port=995 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=13:01:42 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046207415001 log_type=\"Anti-Spam\" log_component=\"IMAPS\" log_subtype=\"Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"sblsb@kjzhpdv.local\" email_subject=\"RPD Spam test: Spam\" mailid=\"<4fd52b71-2f53-67cd-df21-27ddb21e22f5@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail detected as SPAM\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=58595 dst_port=993 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=13:02:54 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046208415002 log_type=\"Anti-Spam\" log_component=\"IMAPS\" log_subtype=\"Probable Spam\" status=\"\" priority=Warning fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"sblsb@kjzhpdv.local\" email_subject=\"RPD Spam test: Bulk\" mailid=\"<4d31d587-d9d3-30aa-c70d-2033fca972bf@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail detected as PROBABLE SPAM\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=58595 dst_port=993 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-06 time=13:03:58 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=046205615003 log_type=\"Anti-Spam\" log_component=\"IMAPS\" log_subtype=\"Clean\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"sblsb@kjzhpdv.local\" email_subject=\"Clean email\" mailid=\"<2e247136-1eda-5c73-71c8-a79acb028e5b@postman.local>\" mailsize=0 spamaction=\"Accept\" reason=\"Mail is Clean\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code= dst_ip=10.179.104.141 dst_country_code= protocol=\"TCP\" src_port=58595 dst_port=993 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2046-06-05 time=19:11:26 timezone=\"IST\" device_name=\"GG343\" device_id=S4000806149EE49 log_id=041101618035 log_type=\"Anti-Spam\" log_component=\"SMTP\" log_subtype=\"Allowed\" status=\"\" priority=Information fw_rule_id=0 user_name=\"\" av_policy_name=\"None\" from_email_address=\"galgjmt@kjzhpdv.local\" to_email_address=\"galgjmt@Kjzhpdv.local\" email_subject=\"dd\" mailid=\"c0000005-1528206082\" mailsize=421 spamaction=\"DELIVERED\" reason=\"Email has been delivered to recipient(s).\" src_domainname=\"kjzhpdv.local\" dst_domainname=\"\" src_ip=10.40.184.78 src_country_code=R1 dst_ip=10.55.110.215 dst_country_code=R1 protocol=\"TCP\" src_port=61636 dst_port=25 sent_bytes=0 recv_bytes=0 quarantine_reason=\"Other\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "xg",
+    "dynamic_fields": {
+      "network.community_id": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-xg-default",
+    "event_count": 19,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

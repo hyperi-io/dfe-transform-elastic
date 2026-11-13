@@ -1,0 +1,344 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-01-31T18:13:38.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "code": "17701",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2045-01-31 time=18:13:38 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=062910617701 log_type=\"Event\" log_component=\"Firewall Authentication\" log_subtype=\"Authentication\" status=\"Successful\" priority=Information user_name=\"gevlbv\" usergroupname=\"Open Group\" auth_client=\"Web Client\" auth_mechanism=\"Local\" reason=\"\" src_ip=10.138.93.175 message=\"User gevlbv of group Open Group logged in successfully to Firewall through Local authentication mechanism from 10.138.93.175\" name=\"gevlbv\" src_mac=",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "message": "User gevlbv of group Open Group logged in successfully to Firewall through Local authentication mechanism from 10.138.93.175",
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.138.93.175"
+        ],
+        "user": [
+          "gevlbv"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "auth_client": "Web Client",
+          "auth_mechanism": "Local",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "log_component": "Firewall Authentication",
+          "log_id": "062910617701",
+          "log_subtype": "Authentication",
+          "log_type": "Event",
+          "priority": "Information",
+          "status": "Successful",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "ip": "10.138.93.175",
+        "user": {
+          "group": {
+            "name": "Open Group"
+          },
+          "name": "gevlbv"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "gevlbv"
+      }
+    },
+    {
+      "@timestamp": "2045-03-15T14:33:37.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "code": "17707",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2045-03-15 time=14:33:37 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=063010617707 log_type=\"Event\" log_component=\"VPN Authentication\" log_subtype=\"Authentication\" status=\"Successful\" priority=Information user_name=\"gevlbv\" usergroupname=\"\" auth_client=\"N/A\" auth_mechanism=\"Local\" reason=\"\" src_ip=10.88.12.224 message=\"User gevlbv logged in successfully to L2TP through Local authentication mechanism\" name=\"\" src_mac=",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "message": "User gevlbv logged in successfully to L2TP through Local authentication mechanism",
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.88.12.224"
+        ],
+        "user": [
+          "gevlbv"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "auth_mechanism": "Local",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "log_component": "VPN Authentication",
+          "log_id": "063010617707",
+          "log_subtype": "Authentication",
+          "log_type": "Event",
+          "priority": "Information",
+          "status": "Successful",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "ip": "10.88.12.224",
+        "user": {
+          "name": "gevlbv"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "gevlbv"
+      }
+    },
+    {
+      "@timestamp": "2045-03-15T17:23:00.000+05:30",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "code": "17710",
+        "kind": "event",
+        "original": "device=\"SFW\" date=2045-03-15 time=17:23:00 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=063110617710 log_type=\"Event\" log_component=\"SSL VPN Authentication\" log_subtype=\"Authentication\" status=\"Successful\" priority=Information user_name=\"gevlbv\" usergroupname=\"\" auth_client=\"N/A\" auth_mechanism=\"Local\" reason=\"\" src_ip=10.88.12.224 message=\"User gevlbv authenticated successfully to login to SSLVPN through Local authentication mechanism\" name=\"\" src_mac=",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "Asia/Kolkata",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "informational"
+      },
+      "message": "User gevlbv authenticated successfully to login to SSLVPN through Local authentication mechanism",
+      "observer": {
+        "product": "XG",
+        "serial_number": "C44313350024-P29PUA",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ],
+        "ip": [
+          "10.88.12.224"
+        ],
+        "user": [
+          "gevlbv"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "auth_mechanism": "Local",
+          "device": "SFW",
+          "device_name": "FT189gKJ-WN",
+          "log_component": "SSL VPN Authentication",
+          "log_id": "063110617710",
+          "log_subtype": "Authentication",
+          "log_type": "Event",
+          "priority": "Information",
+          "status": "Successful",
+          "timezone": "IST"
+        }
+      },
+      "source": {
+        "ip": "10.88.12.224",
+        "user": {
+          "name": "gevlbv"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "gevlbv"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-01-31 time=18:13:38 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=062910617701 log_type=\"Event\" log_component=\"Firewall Authentication\" log_subtype=\"Authentication\" status=\"Successful\" priority=Information user_name=\"gevlbv\" usergroupname=\"Open Group\" auth_client=\"Web Client\" auth_mechanism=\"Local\" reason=\"\" src_ip=10.138.93.175 message=\"User gevlbv of group Open Group logged in successfully to Firewall through Local authentication mechanism from 10.138.93.175\" name=\"gevlbv\" src_mac=",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-03-15 time=14:33:37 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=063010617707 log_type=\"Event\" log_component=\"VPN Authentication\" log_subtype=\"Authentication\" status=\"Successful\" priority=Information user_name=\"gevlbv\" usergroupname=\"\" auth_client=\"N/A\" auth_mechanism=\"Local\" reason=\"\" src_ip=10.88.12.224 message=\"User gevlbv logged in successfully to L2TP through Local authentication mechanism\" name=\"\" src_mac=",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "device=\"SFW\" date=2045-03-15 time=17:23:00 timezone=\"IST\" device_name=\"FT189gKJ-WN\" device_id=C44313350024-P29PUA log_id=063110617710 log_type=\"Event\" log_component=\"SSL VPN Authentication\" log_subtype=\"Authentication\" status=\"Successful\" priority=Information user_name=\"gevlbv\" usergroupname=\"\" auth_client=\"N/A\" auth_mechanism=\"Local\" reason=\"\" src_ip=10.88.12.224 message=\"User gevlbv authenticated successfully to login to SSLVPN through Local authentication mechanism\" name=\"\" src_mac=",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "xg",
+    "dynamic_fields": {
+      "network.community_id": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-xg-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

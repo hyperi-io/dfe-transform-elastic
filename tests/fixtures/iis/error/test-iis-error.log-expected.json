@@ -1,0 +1,583 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/0.9 t3 12.2.1 400 - URL -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "t3"
+        },
+        "response": {
+          "status_code": 400
+        },
+        "version": "0.9"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "URL"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "12.2.1",
+        "path": "12.2.1"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET ./././././../../../../../../../../ 400 - URL -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 400
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "URL"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "./././././../../../../../../../../",
+        "path": "./././././../../../../../../../../"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /..\\pixfir~1\\how_to_login.html 403 - Forbidden -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 403
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "Forbidden"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/..\\pixfir~1\\how_to_login.html"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET ..\\..\\..\\..\\..\\..\\winnt\\win.ini 400 - URL -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 400
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "URL"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "..\\..\\..\\..\\..\\..\\winnt\\win.ini"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /�.�./�.�./�.�./�.�./�.�./windows/win.ini 404 - NotFound -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "NotFound"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ini",
+        "original": "/�.�./�.�./�.�./�.�./�.�./windows/win.ini",
+        "path": "/�.�./�.�./�.�./�.�./�.�./windows/win.ini"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /nessus\\..\\..\\..\\..\\..\\..\\winnt\\win.ini 403 - Forbidden -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 403
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "Forbidden"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/nessus\\..\\..\\..\\..\\..\\..\\winnt\\win.ini"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 OPTIONS * 404 - NotFound -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "OPTIONS"
+        },
+        "response": {
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "NotFound"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "*",
+        "path": "*"
+      }
+    },
+    {
+      "@timestamp": "2046-05-05T05:05:55.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /fee&fie=foe 400 - URL -",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 400
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "reason_phrase": "URL"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/fee&fie=foe",
+        "path": "/fee&fie=foe"
+      }
+    },
+    {
+      "@timestamp": "2054-05-25T05:21:53.000Z",
+      "destination": {
+        "address": "192.168.203.105",
+        "ip": "192.168.203.105",
+        "port": 8181
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "2054-05-25 05:21:53 203.0.113.53 51517 192.168.203.105 8181 HTTP/1.1 M-POST /CIMListener/\\..\\..\\..\\..\\..\\mydll 403 - Forbidden TCP",
+        "outcome": "failure",
+        "type": [
+          "connection"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "M-POST"
+        },
+        "response": {
+          "status_code": 403
+        },
+        "version": "1.1"
+      },
+      "iis": {
+        "error": {
+          "queue_name": "TCP",
+          "reason_phrase": "Forbidden"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53",
+          "192.168.203.105"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53",
+        "port": 51517
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/CIMListener/\\..\\..\\..\\..\\..\\mydll"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/0.9 t3 12.2.1 400 - URL -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET ./././././../../../../../../../../ 400 - URL -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /..\\pixfir~1\\how_to_login.html 403 - Forbidden -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET ..\\..\\..\\..\\..\\..\\winnt\\win.ini 400 - URL -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /�.�./�.�./�.�./�.�./�.�./windows/win.ini 404 - NotFound -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /nessus\\..\\..\\..\\..\\..\\..\\winnt\\win.ini 403 - Forbidden -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 OPTIONS * 404 - NotFound -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2046-05-05 05:05:55 203.0.113.53 12345 192.168.203.105 443 HTTP/1.1 GET /fee&fie=foe 400 - URL -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2054-05-25 05:21:53 203.0.113.53 51517 192.168.203.105 8181 HTTP/1.1 M-POST /CIMListener/\\..\\..\\..\\..\\..\\mydll 403 - Forbidden TCP",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "error",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-iis-error-default",
+    "event_count": 9,
+    "numeric_keyword_fields": [],
+    "package": "iis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

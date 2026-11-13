@@ -1,0 +1,133 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-activitylogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-05-25T22:04:07.220Z",
+      "agent": {
+        "ephemeral_id": "8c62ba53-138e-4cf0-b5d6-64d16c1b6e9d",
+        "id": "f969ba0d-3f01-431e-aac0-a0b6cb6172e2",
+        "name": "1e6923535a4c",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "activitylogs": {
+          "category": "ResourceHealth",
+          "event_category": "ResourceHealth",
+          "operation_name": "Microsoft.Resourcehealth/healthevent/Updated/action",
+          "properties": {
+            "eventProperties": {
+              "cause": "PlatformInitiated"
+            }
+          },
+          "result_type": "Updated"
+        },
+        "correlation_id": "4a295ab4-986e-4f36-bb0c-f20a95300afc",
+        "resource": {
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.domainRegistration",
+          "provider": "Microsoft.domainRegistration"
+        },
+        "subscription_id": "00000000-0000-0000-0000-000000000000"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Microsoft.Resourcehealth/healthevent/Updated/action",
+        "dataset": "azure.activitylogs",
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"category\":\"ResourceHealth\",\"correlationId\":\"4a295ab4-986e-4f36-bb0c-f20a95300afc\",\"level\":\"Information\",\"operationName\":\"Microsoft.Resourcehealth/healthevent/Updated/action\",\"properties\":{\"eventCategory\":\"ResourceHealth\",\"eventProperties\":{\"cause\":\"PlatformInitiated\"}},\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.domainRegistration\",\"resultType\":\"Updated\",\"time\":\"2049-05-25T22:04:07.22Z\"}"
+      },
+      "fileset": {
+        "name": "activitylogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "Information",
+        "offset": 0
+      },
+      "related": {
+        "entity": [
+          "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.domainRegistration"
+        ]
+      },
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-activitylogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-24T02:12:58.118Z",
+      "agent": {
+        "ephemeral_id": "8c62ba53-138e-4cf0-b5d6-64d16c1b6e9d",
+        "id": "f969ba0d-3f01-431e-aac0-a0b6cb6172e2",
+        "name": "1e6923535a4c",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.activitylogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "activitylogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"category\":\"ResourceHealth\",\"correlationId\":\"4a295ab4-986e-4f36-bb0c-f20a95300afc\",\"level\":\"Information\",\"operationName\":\"Microsoft.Resourcehealth/healthevent/Updated/action\",\"properties\":{\"eventCategory\":\"ResourceHealth\",\"eventProperties\":{\"cause\":\"PlatformInitiated\"}},\"resourceId\":\"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.domainRegistration\",\"resultType\":\"Updated\",\"time\":\"2049-05-25T22:04:07.22Z\"}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "activitylogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-activitylogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

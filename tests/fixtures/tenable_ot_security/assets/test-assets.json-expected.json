@@ -1,0 +1,146 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "dataset": "tenable_ot_security.assets",
+        "id": "e8be5b4d-a941-48c4-a389-6341cd257c0d",
+        "kind": "event",
+        "module": "tenable_ot_security",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.218"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "192.0.2.218"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "tenable_ot_security": {
+        "assets": {
+          "category": "NetworkAssetsCategory",
+          "criticality": "MediumCriticality",
+          "direct_ips": [
+            "192.0.2.218"
+          ],
+          "first_seen": "2052-06-25T17:38:44.422095Z",
+          "hidden": false,
+          "id": "e8be5b4d-a941-48c4-a389-6341cd257c0d",
+          "ips": [
+            "192.0.2.218"
+          ],
+          "last_hit": "2053-02-25T01:14:13.485511Z",
+          "last_seen": "2053-02-25T04:54:57.955813Z",
+          "last_update": "2052-06-25T17:38:47.67543Z",
+          "macs": [
+            "a3:98:b5:a9:b5:43"
+          ],
+          "name": "OT Device #966",
+          "purdue_level": "Level2",
+          "risk": {
+            "total_risk": 35.40130597317059
+          },
+          "run_status": "Unknown",
+          "run_status_time": "0001-01-01T00:00:00Z",
+          "segments": [
+            {
+              "archived": false,
+              "id": "452a4420-0fd8-4f40-ada5-b44735afbf20",
+              "key": "AG1-633",
+              "name": "OtDevice / 172.26.23.X",
+              "system": true,
+              "type": "Filter"
+            }
+          ],
+          "super_type": "OtDevice",
+          "type": "OtDevice"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": {
+        "category": "NetworkAssetsCategory",
+        "criticality": "MediumCriticality",
+        "directIps": {
+          "nodes": [
+            "192.0.2.218"
+          ]
+        },
+        "directMacs": {
+          "nodes": []
+        },
+        "firstSeen": "2052-06-25T17:38:44.422095Z",
+        "hidden": false,
+        "id": "e8be5b4d-a941-48c4-a389-6341cd257c0d",
+        "ips": {
+          "nodes": [
+            "192.0.2.218"
+          ]
+        },
+        "lastHit": "2053-02-25T01:14:13.485511Z",
+        "lastSeen": "2053-02-25T04:54:57.955813Z",
+        "lastSnapshot": null,
+        "lastUpdate": "2052-06-25T17:38:47.67543Z",
+        "macs": {
+          "nodes": [
+            "a3:98:b5:a9:b5:43"
+          ]
+        },
+        "name": "OT Device #966",
+        "purdueLevel": "Level2",
+        "risk": {
+          "totalRisk": "35.40130597317059"
+        },
+        "runStatus": "Unknown",
+        "runStatusTime": "0001-01-01T00:00:00Z",
+        "segments": {
+          "nodes": [
+            {
+              "archived": false,
+              "id": "452a4420-0fd8-4f40-ada5-b44735afbf20",
+              "key": "AG1-633",
+              "lastModifiedBy": null,
+              "lastModifiedDate": null,
+              "name": "OtDevice / 172.26.23.X",
+              "policies": {
+                "nodes": []
+              },
+              "queries": {
+                "nodes": []
+              },
+              "system": true,
+              "type": "Filter"
+            }
+          ]
+        },
+        "superType": "OtDevice",
+        "type": "OtDevice"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "assets",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tenable_ot_security-assets-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tenable_ot_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

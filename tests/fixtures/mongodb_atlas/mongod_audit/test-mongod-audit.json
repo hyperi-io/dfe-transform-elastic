@@ -1,0 +1,24 @@
+{
+    "events": [
+        {
+            "@timestamp": "2052-02-08T06:20:49.729Z",
+            "message": "No data for given time period or host is unreachable"
+        },
+        {
+            "@timestamp": "2052-02-08T06:25:56.621Z",
+            "message": "{ \"atype\" : \"clientMetadata\", \"ts\" : { \"$date\" : \"2053-01-27T06:01:43.665+00:00\" }, \"uuid\" : { \"$binary\" : \"nyibZv2iT/6f00Zq4bupWg==\", \"$type\" : \"04\" }, \"local\" : { \"ip\" : \"192.168.64.85\", \"port\" : 27017 }, \"remote\" : { \"ip\" : \"192.168.64.85\", \"port\" : 57172 }, \"users\" : [], \"roles\" : [], \"param\" : { \"localEndpoint\" : { \"ip\" : \"192.168.64.85\", \"port\" : 27017 }, \"clientMetadata\" : { \"application\" : { \"name\" : \"MongoDB Automation Agent v13.27.1.9281 (git: d702e0b164aed8b4675b2c15940483d8893195e9)\" }, \"driver\" : { \"name\" : \"mongo-go-driver\", \"version\" : \"v1.12.0-cloud\" }, \"os\" : { \"type\" : \"linux\", \"architecture\" : \"arm64\" }, \"platform\" : \"go1.22.10\" } }, \"result\" : 0 }"
+        },
+        {
+            "@timestamp": "2052-02-08T06:20:56.621Z",
+            "message": "{ \"atype\": \"logout\", \"ts\": { \"$date\": \"2052-01-29T06:57:15.366+00:00\" }, \"uuid\": { \"$binary\": \"bY/PMV8IR36q+hmAJZYyfw==\", \"$type\": \"04\" }, \"local\": { \"ip\": \"127.0.0.1\", \"port\": 27017 }, \"remote\": { \"ip\": \"127.0.0.1\", \"port\": 43714 }, \"users\":[ { \"user\":\"jrs-zuzuylnuop-bmaxw\", \"db\":\"admin\" } ], \"roles\": [ { \"role\": \"backup\", \"db\": \"admin\" }, { \"role\": \"clusterAdmin\", \"db\": \"admin\" }, { \"role\": \"dbAdminAnyDatabase\", \"db\": \"admin\" }, { \"role\": \"readWriteAnyDatabase\", \"db\": \"admin\" }, { \"role\": \"restore\", \"db\": \"admin\" }, { \"role\": \"userAdminAnyDatabase\", \"db\": \"admin\" } ], \"result\": 0 }"
+        },
+        {
+            "@timestamp": "2052-02-08T07:20:00.123Z",
+            "message": "{\"atype\":\"authenticate\",\"ts\":{\"$date\":\"2051-04-01T12:00:00.000Z\"},\"uuid\":{\"$binary\":\"some-unique-identifier\",\"$type\":\"04\"},\"local\":{\"ip\":\"127.0.0.1\",\"port\":27017},\"remote\":{\"ip\":\"192.168.125.99\",\"port\":54320},\"users\":[{\"user\":\"eqcqjPzck\",\"db\":\"admin\"}],\"roles\":[{\"role\":\"dbAdmin\",\"db\":\"admin\"}],\"result\":0}"
+        },
+        {
+            "@timestamp": "2052-02-08T07:30:56.234Z",
+            "message": "{\"atype\":\"authCheck\",\"ts\":{\"$date\":\"2051-04-01T12:05:00.000Z\"},\"uuid\":{\"$binary\":\"another-unique-identifier\",\"$type\":\"04\"},\"local\":{\"ip\":\"127.0.0.1\",\"port\":27017},\"remote\":{\"ip\":\"192.168.85.202\",\"port\":54321},\"users\":[{\"user\":\"hpcwPbjp\",\"db\":\"test\"}],\"roles\":[{\"role\":\"read\",\"db\":\"test\"}],\"result\":13}"
+        }
+    ]
+}

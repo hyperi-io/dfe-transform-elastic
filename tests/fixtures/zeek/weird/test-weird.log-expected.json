@@ -1,0 +1,110 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-12-03T22:59:59.993Z",
+      "destination": {
+        "address": "192.168.97.98",
+        "ip": "192.168.97.98",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C1ralPp062bkwWt4e",
+        "kind": "event",
+        "original": "{\"ts\":2427490799.99354,\"uid\":\"C1ralPp062bkwWt4e\",\"id.orig_h\":\"192.168.124.110\",\"id.orig_p\":64521,\"id.resp_h\":\"192.168.97.98\",\"id.resp_p\":53,\"name\":\"dns_unmatched_reply\",\"notice\":false,\"peer\":\"worker-6\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.168.124.110",
+          "192.168.97.98"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "port": 64521
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "session_id": "C1ralPp062bkwWt4e",
+        "weird": {
+          "name": "dns_unmatched_reply",
+          "notice": false,
+          "peer": "worker-6"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-01-28T16:00:59.342Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":2463840059.342809,\"name\":\"non_ip_packet_in_ethernet\",\"notice\":false,\"peer\":\"ens3f1-4\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "weird": {
+          "name": "non_ip_packet_in_ethernet",
+          "notice": false,
+          "peer": "ens3f1-4"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2427490799.99354,\"uid\":\"C1ralPp062bkwWt4e\",\"id.orig_h\":\"192.168.124.110\",\"id.orig_p\":64521,\"id.resp_h\":\"192.168.97.98\",\"id.resp_p\":53,\"name\":\"dns_unmatched_reply\",\"notice\":false,\"peer\":\"worker-6\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2463840059.342809,\"name\":\"non_ip_packet_in_ethernet\",\"notice\":false,\"peer\":\"ens3f1-4\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "weird",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-weird-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"response\":{\"authlogs\":[]},\"stat\":\"OK\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"response\":{\"authlogs\":[]},\"stat\":\"OK\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_duo-auth-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cisco_duo",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

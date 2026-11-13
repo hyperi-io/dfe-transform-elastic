@@ -18,9 +18,8 @@
 //!    having done nothing is indistinguishable from a working one without
 //!    this.
 //!
-//! An `elastic` case reads Elastic-licensed data kept outside this repository
-//! and runs only where `DFE_ELASTIC_FIXTURES` names it; a `public` case reads
-//! the licence-clean samples committed here.
+//! An `ours` case reads a data stream's fixture under `tests/fixtures/`, and a
+//! `public` case reads a sample under `tests/fixtures/unencumbered/`.
 
 use std::path::{Path, PathBuf};
 
@@ -148,14 +147,13 @@ fn check(
 }
 
 /// `(where, source, transform, fixture, max_errors, min_enriched)`, where
-/// `where` is `elastic` for the Elastic data's `tests/fixtures/` or `public`
-/// for the samples under `tests/fixtures/unencumbered/`.
+/// `where` is `ours` for `tests/fixtures/` or `public` for the samples under
+/// `tests/fixtures/unencumbered/`.
 macro_rules! source_case {
-    (elastic, $name:ident, $transform:expr, $fixture:literal, $max_errors:expr, $min_enriched:expr) => {
+    (ours, $name:ident, $transform:expr, $fixture:literal, $max_errors:expr, $min_enriched:expr) => {
         #[test]
-        #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
         fn $name() {
-            let path = dfe_runtime::testutil::elastic_fixtures().join($fixture);
+            let path = dfe_runtime::testutil::fixtures().join($fixture);
             check(stringify!($name), &$transform, &path, $max_errors, $min_enriched);
         }
     };
@@ -171,7 +169,7 @@ macro_rules! source_case {
 // Each floor is every event in the fixture, because every event enriches: a
 // lower one would pass a transform collapsed to a single working event.
 source_case!(
-    elastic,
+    ours,
     raw_fortinet_default,
     dfe_transforms::filebeat::fortinet::default::Default,
     "fortinet/fortigate/test-fortinet.log",
@@ -180,7 +178,7 @@ source_case!(
 );
 
 source_case!(
-    elastic,
+    ours,
     raw_cisco_meraki_default,
     dfe_transforms::filebeat::cisco_meraki::default::Default,
     "cisco/meraki/logs/test-events.log",
@@ -189,7 +187,7 @@ source_case!(
 );
 
 source_case!(
-    elastic,
+    ours,
     raw_cisco_nexus_default,
     dfe_transforms::filebeat::cisco_nexus::default::Default,
     "cisco/nexus/test-nexus.log",
@@ -199,7 +197,7 @@ source_case!(
 
 // panw has no `default`; its pipeline splits by log type.
 source_case!(
-    elastic,
+    ours,
     raw_panw_traffic,
     dfe_transforms::filebeat::panw::traffic::Traffic,
     "panw/panos/traffic.log",
@@ -219,7 +217,7 @@ source_case!(
 );
 
 source_case!(
-    elastic,
+    ours,
     raw_cisco_ios_default,
     dfe_transforms::filebeat::cisco_ios::default::Default,
     "cisco/ios/test-cisco-ios.log",
@@ -227,8 +225,7 @@ source_case!(
     27
 );
 
-// The same raw-intake floors over the licence-clean samples, so every source
-// above keeps one on a clone that has no Elastic data.
+// The same raw-intake floors over the unencumbered samples.
 source_case!(
     public,
     raw_fortinet_sample,

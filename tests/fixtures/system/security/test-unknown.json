@@ -1,0 +1,28 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:07:13.883Z",
+            "winlog": {
+                "keywords": [
+                    "Unknown Event ID"
+                ],
+                "time_created": "2047-11-07T10:37:04.226Z",
+                "outcome": "success",
+                "level": "information",
+                "channel": "Security",
+                "event_id": 65536,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "opcode": "Info",
+                "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+                "provider_name": "Microsoft-Windows-Eventlog",
+                "record_id": 65536
+            },
+            "event": {
+                "code": 65536,
+                "provider": "Microsoft-Windows-Eventlog",
+                "outcome": "success",
+                "kind": "event"
+            }
+        }
+    ]
+}

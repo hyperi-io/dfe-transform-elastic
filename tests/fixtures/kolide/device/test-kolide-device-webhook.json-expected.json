@@ -1,0 +1,251 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-10-28T20:05:33.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "devices.created",
+        "category": [
+          "host"
+        ],
+        "id": "01HDVY8MA3CQ48HJ356FP8M2P6",
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "uoin-aphia",
+        "id": "1",
+        "name": "uoin-aphia"
+      },
+      "kolide": {
+        "device": {
+          "device_status": "good",
+          "device_url": "https://api.example.org/devices/1",
+          "status": "good"
+        }
+      },
+      "related": {
+        "hosts": [
+          "uoin-aphia"
+        ],
+        "user": [
+          "user@example.com",
+          "Test User"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "1",
+        "name": "Test User"
+      }
+    },
+    {
+      "@timestamp": "2051-10-28T20:12:14.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "devices.registered",
+        "category": [
+          "host"
+        ],
+        "id": "01HDVYMVM58H3RMBA3CR16M4PP",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "uoin-aphia",
+        "id": "1",
+        "name": "uoin-aphia"
+      },
+      "kolide": {
+        "device": {
+          "device_status": "good",
+          "device_url": "https://api.example.org/devices/1",
+          "status": "good"
+        }
+      },
+      "related": {
+        "hosts": [
+          "uoin-aphia"
+        ],
+        "user": [
+          "user@example.com",
+          "Test User"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "1",
+        "name": "Test User"
+      }
+    },
+    {
+      "@timestamp": "2051-10-28T21:07:58.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "devices.destroyed",
+        "category": [
+          "host"
+        ],
+        "id": "01HDW1TX10N3BS6WJYFP2D421D",
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "vpgw-dkhya-6",
+        "id": "1",
+        "name": "vpgw-dkhya-6"
+      },
+      "kolide": {
+        "device": {
+          "device_status": "good",
+          "status": "good"
+        }
+      },
+      "related": {
+        "hosts": [
+          "vpgw-dkhya-6"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-09-10T21:30:59.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "device_trust.status_changed",
+        "category": [
+          "host"
+        ],
+        "id": "01J7EXHMF0FCA14EW04JASYCRP",
+        "kind": "event",
+        "type": [
+          "change"
+        ]
+      },
+      "host": {
+        "hostname": "wyht-bidom",
+        "id": "9",
+        "name": "wyht-bidom"
+      },
+      "kolide": {
+        "device": {
+          "device_status": "blocked",
+          "device_url": "https://api.example.org/devices/9",
+          "status": "blocked"
+        }
+      },
+      "related": {
+        "hosts": [
+          "wyht-bidom"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "data": {
+        "device_id": 1,
+        "device_name": "uoin-aphia",
+        "device_status": "good",
+        "device_url": "https://api.example.org/devices/1",
+        "registered_owner": {
+          "email": "user@example.com",
+          "id": 1,
+          "name": "Test User",
+          "owner_url": "https://api.example.org/people/1"
+        }
+      },
+      "event": "devices.created",
+      "id": "01HDVY8MA3CQ48HJ356FP8M2P6",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2051-10-28T20:05:33Z"
+    },
+    {
+      "data": {
+        "device_id": 1,
+        "device_name": "uoin-aphia",
+        "device_status": "good",
+        "device_url": "https://api.example.org/devices/1",
+        "registered_owner": {
+          "email": "user@example.com",
+          "id": 1,
+          "name": "Test User",
+          "owner_url": "https://api.example.org/people/1"
+        }
+      },
+      "event": "devices.registered",
+      "id": "01HDVYMVM58H3RMBA3CR16M4PP",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2051-10-28T20:12:14Z"
+    },
+    {
+      "data": {
+        "device_id": 1,
+        "device_name": "vpgw-dkhya-6",
+        "device_status": "good"
+      },
+      "event": "devices.destroyed",
+      "id": "01HDW1TX10N3BS6WJYFP2D421D",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2051-10-28T21:07:58Z"
+    },
+    {
+      "data": {
+        "device_id": 9,
+        "device_name": "wyht-bidom",
+        "device_status": "blocked",
+        "device_url": "https://api.example.org/devices/9"
+      },
+      "event": "device_trust.status_changed",
+      "id": "01J7EXHMF0FCA14EW04JASYCRP",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2052-09-10T21:30:59Z"
+    }
+  ],
+  "meta": {
+    "data_stream": "device",
+    "dynamic_fields": {
+      "@timestamp": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kolide-device-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "kolide",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

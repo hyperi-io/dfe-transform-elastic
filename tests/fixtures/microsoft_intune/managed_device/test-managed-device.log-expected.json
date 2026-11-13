@@ -1,0 +1,428 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-10-27T00:10:43.554Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": "6c4166b6-cc41-4e5d-a59c-693a00924ef2",
+        "model": {
+          "name": "20U1A006IG"
+        },
+        "serial_number": "PF2C55YE"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "devices",
+        "category": [
+          "host"
+        ],
+        "created": "2051-10-20T06:55:27.623Z",
+        "kind": "event",
+        "original": "{\"time\":\"2051-10-27T00:10:43.5547000Z\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"category\":\"Devices\",\"operationName\":\"Devices\",\"resultType\":\"None\",\"properties\":{\"DeviceId\":\"6c4166b6-cc41-4e5d-a59c-693a00924ef2\",\"DeviceName\":\"CYS860RFOI\",\"UPN\":\"acb.154@example.com\",\"LastContact\":\"2051-10-26 12:23:58.7994868\",\"OSVersion\":\"10.0.22621.2428\",\"OS\":\"Windows\",\"CompliantState\":\"Compliant\",\"Ownership\":\"Corporate\",\"ManagedBy\":\"Intune\",\"Model\":\"20U1A006IG\",\"SerialNumber\":\"PF2C55YE\",\"Manufacturer\":\"LENOVO\",\"CreatedDate\":\"2051-10-20 06:55:27.6237465\",\"DeviceState\":\"Managed\",\"UserEmail\":\"acb.154@example.com\",\"UserName\":\"BDU Kiag OM-59093\",\"IMEI\":\"\",\"PhoneNumber\":\"\",\"DeviceRegistrationState\":\"Registered\",\"ReferenceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"ManagedDeviceName\":\"cdp.38411_Windows_10/20/2051_6:55 AM\",\"GraphDeviceIsManaged\":true,\"CategoryName\":\"\",\"EncryptionStatusString\":\"True\",\"SubscriberCarrierNetwork\":\"\",\"JoinType\":\"Azure AD joined\",\"SupervisedStatusString\":\"False\",\"WifiMacAddress\":\"A87EEABC6AC9\",\"StorageTotal\":243406,\"StorageFree\":205247,\"AndroidPatchLevel\":\"\",\"MEID\":\"\",\"InGracePeriodUntil\":\"9999-12-31 23:59:59.9999999\",\"JailBroken\":\"Unknown\",\"SkuFamily\":\"Enterprise\",\"EasID\":\"237005319BA89013F535385A60792516\",\"PrimaryUser\":\"818a4e85-1288-459a-bb8c-12a3f6c2d31a\",\"BatchId\":\"de6c9f73-167a-4989-bcf8-52b17d2354e4\",\"IntuneAccountId\":\"81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5\",\"AADTenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "mac": [
+          "A8-7E-EA-BC-6A-C9"
+        ],
+        "name": "CYS860RFOI",
+        "os": {
+          "name": "Windows",
+          "version": "10.0.22621.2428"
+        }
+      },
+      "microsoft_intune": {
+        "managed_device": {
+          "category": "Devices",
+          "operation_name": "Devices",
+          "properties": {
+            "aad_tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "batch_id": "de6c9f73-167a-4989-bcf8-52b17d2354e4",
+            "compliant_state": "Compliant",
+            "created_date": "2051-10-20T06:55:27.623Z",
+            "device_id": "6c4166b6-cc41-4e5d-a59c-693a00924ef2",
+            "device_name": "CYS860RFOI",
+            "device_registration_state": "Registered",
+            "device_state": "Managed",
+            "eas_id": "237005319BA89013F535385A60792516",
+            "encryption_status_string": "True",
+            "graph_device_is_managed": true,
+            "in_grace_period_until": "9999-12-31T23:59:59.999Z",
+            "intune_account_id": "81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5",
+            "jail_broken": "Unknown",
+            "join_type": "Azure AD joined",
+            "last_contact": "2051-10-26T12:23:58.799Z",
+            "managed_by": "Intune",
+            "managed_device_name": "cdp.38411_Windows_10/20/2051_6:55 AM",
+            "manufacturer": "LENOVO",
+            "model": "20U1A006IG",
+            "os": "Windows",
+            "os_version": "10.0.22621.2428",
+            "ownership": "Corporate",
+            "primary_user": "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+            "reference_id": "b51cc058-a3f4-47f8-8fcd-7c86b56e3c97",
+            "serial_number": "PF2C55YE",
+            "sku_family": "Enterprise",
+            "storage_free": 205247,
+            "storage_total": 243406,
+            "supervised_status_string": "False",
+            "upn": "acb.154@example.com",
+            "user_email": "acb.154@example.com",
+            "user_name": "BDU Kiag OM-59093",
+            "wifi_mac_address": "A87EEABC6AC9"
+          },
+          "result_type": "None",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "time": "2051-10-27T00:10:43.554Z"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CYS860RFOI",
+          "A87EEABC6AC9"
+        ],
+        "user": [
+          "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+          "acb.154@example.com",
+          "BDU Kiag OM-59093"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "acb.154@example.com",
+        "id": "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+        "name": "BDU Kiag OM-59093"
+      }
+    },
+    {
+      "@timestamp": "2054-02-19T00:20:52.479Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": "715d84fd-4a81-414d-95f0-88d909333602",
+        "model": {
+          "name": "VMware7,1"
+        },
+        "serial_number": "VMware-42030e5acab78dd5-5bfaa83a47fb01d9"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "devices",
+        "category": [
+          "host"
+        ],
+        "created": "2053-12-21T16:52:31.737Z",
+        "kind": "event",
+        "original": "{\"time\":\"2054-02-19T00:20:52.4792000Z\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"category\":\"Devices\",\"operationName\":\"Devices\",\"resultType\":\"None\",\"properties\":{\"DeviceId\":\"715d84fd-4a81-414d-95f0-88d909333602\",\"DeviceName\":\"D-SEA-37\",\"UPN\":\"edd.hammo@example.com\",\"LastContact\":\"2054-02-18 19:10:29.6961667\",\"OSVersion\":\"10.0.19045.6456\",\"OS\":\"Windows\",\"CompliantState\":\"Compliant\",\"Ownership\":\"Corporate\",\"ManagedBy\":\"Intune\",\"Model\":\"VMware7,1\",\"SerialNumber\":\"VMware-42030e5acab78dd5-5bfaa83a47fb01d9\",\"Manufacturer\":\"VMware, Inc.\",\"CreatedDate\":\"2053-12-21 16:52:31.7372518\",\"DeviceState\":\"Managed\",\"UserEmail\":\"edd.hammo@example.com\",\"UserName\":\"Feacvfez Ykcn\",\"IMEI\":\"\",\"PhoneNumber\":\"\",\"DeviceRegistrationState\":\"Registered\",\"ReferenceId\":\"3c65db3a-534b-4f52-9056-7f42e633e264\",\"ManagedDeviceName\":\"abc.defender_Windows_12/21/2053_4:52 PM\",\"GraphDeviceIsManaged\":true,\"CategoryName\":\"\",\"EncryptionStatusString\":\"False\",\"SubscriberCarrierNetwork\":\"\",\"JoinType\":\"Azure AD joined\",\"SupervisedStatusString\":\"False\",\"WifiMacAddress\":\"\",\"StorageTotal\":50550,\"StorageFree\":22760,\"AndroidPatchLevel\":\"\",\"MEID\":\"\",\"InGracePeriodUntil\":\"9999-12-31 23:59:59.9999999\",\"JailBroken\":\"Unknown\",\"SkuFamily\":\"Pro\",\"EasID\":\"6F88D3D9A1A6A9735E59B52C598B4721\",\"PrimaryUser\":\"818a4e85-1288-459a-bb8c-12a3f6c2d31a\",\"BatchId\":\"1f1c809d-2dcf-4bf2-8c18-100587d83aea\",\"IntuneAccountId\":\"81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5\",\"AADTenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "D-SEA-37",
+        "os": {
+          "name": "Windows",
+          "version": "10.0.19045.6456"
+        }
+      },
+      "microsoft_intune": {
+        "managed_device": {
+          "category": "Devices",
+          "operation_name": "Devices",
+          "properties": {
+            "aad_tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "batch_id": "1f1c809d-2dcf-4bf2-8c18-100587d83aea",
+            "compliant_state": "Compliant",
+            "created_date": "2053-12-21T16:52:31.737Z",
+            "device_id": "715d84fd-4a81-414d-95f0-88d909333602",
+            "device_name": "D-SEA-37",
+            "device_registration_state": "Registered",
+            "device_state": "Managed",
+            "eas_id": "6F88D3D9A1A6A9735E59B52C598B4721",
+            "encryption_status_string": "False",
+            "graph_device_is_managed": true,
+            "in_grace_period_until": "9999-12-31T23:59:59.999Z",
+            "intune_account_id": "81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5",
+            "jail_broken": "Unknown",
+            "join_type": "Azure AD joined",
+            "last_contact": "2054-02-18T19:10:29.696Z",
+            "managed_by": "Intune",
+            "managed_device_name": "abc.defender_Windows_12/21/2053_4:52 PM",
+            "manufacturer": "VMware, Inc.",
+            "model": "VMware7,1",
+            "os": "Windows",
+            "os_version": "10.0.19045.6456",
+            "ownership": "Corporate",
+            "primary_user": "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+            "reference_id": "3c65db3a-534b-4f52-9056-7f42e633e264",
+            "serial_number": "VMware-42030e5acab78dd5-5bfaa83a47fb01d9",
+            "sku_family": "Pro",
+            "storage_free": 22760,
+            "storage_total": 50550,
+            "supervised_status_string": "False",
+            "upn": "edd.hammo@example.com",
+            "user_email": "edd.hammo@example.com",
+            "user_name": "Feacvfez Ykcn"
+          },
+          "result_type": "None",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "time": "2054-02-19T00:20:52.479Z"
+        }
+      },
+      "related": {
+        "hosts": [
+          "D-SEA-37"
+        ],
+        "user": [
+          "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+          "edd.hammo@example.com",
+          "Feacvfez Ykcn"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "edd.hammo@example.com",
+        "id": "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+        "name": "Feacvfez Ykcn"
+      }
+    },
+    {
+      "@timestamp": "2054-02-19T00:20:52.479Z",
+      "cloud": {
+        "account": {
+          "id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64"
+        }
+      },
+      "device": {
+        "id": "3d7681d1-fdde-4628-817e-3e0c2a672b9a",
+        "model": {
+          "name": "20VE"
+        },
+        "serial_number": "MP0004KN"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "devices",
+        "category": [
+          "host"
+        ],
+        "created": "2054-01-23T09:13:49.000Z",
+        "kind": "event",
+        "original": "{\"time\":\"2054-02-19T00:20:52.4792000Z\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"category\":\"Devices\",\"operationName\":\"Devices\",\"resultType\":\"None\",\"properties\":{\"DeviceId\":\"3d7681d1-fdde-4628-817e-3e0c2a672b9a\",\"DeviceName\":\"EEPMKOL-51HEN89\",\"UPN\":\"mih.hcjlm@example.com\",\"LastContact\":\"2054-02-17 06:19:27.0000000\",\"OSVersion\":\"10.0.22631.6199\",\"OS\":\"Windows\",\"CompliantState\":\"Compliant\",\"Ownership\":\"Corporate\",\"ManagedBy\":\"Intune\",\"Model\":\"20VE\",\"SerialNumber\":\"MP0004KN\",\"Manufacturer\":\"LENOVO\",\"CreatedDate\":\"2054-01-23 09:13:49.0000000\",\"DeviceState\":\"Managed\",\"UserEmail\":\"mih.hcjlm@example.com\",\"UserName\":\"Feacvfez Ykcn\",\"IMEI\":\"\",\"PhoneNumber\":\"\",\"DeviceRegistrationState\":\"Registered\",\"ReferenceId\":\"4ee9b30a-1d6c-4b06-ac1b-57fd0cf2cb01\",\"ManagedDeviceName\":\"xyz.defender_Windows_1/23/2026_9:13 AM\",\"GraphDeviceIsManaged\":true,\"CategoryName\":\"\",\"EncryptionStatusString\":\"True\",\"SubscriberCarrierNetwork\":\"\",\"JoinType\":\"Azure AD joined\",\"SupervisedStatusString\":\"False\",\"WifiMacAddress\":\"DC2148611476\",\"StorageTotal\":243163,\"StorageFree\":197790,\"AndroidPatchLevel\":\"\",\"MEID\":\"\",\"InGracePeriodUntil\":\"9999-12-31 23:59:59.0000000\",\"JailBroken\":\"Unknown\",\"SkuFamily\":\"Enterprise\",\"EasID\":\"3754C21F06BAE50149F164294879C485\",\"PrimaryUser\":\"818a4e85-1288-459a-bb8c-12a3f6c2d31a\",\"BatchId\":\"1f1c809d-2dcf-4bf2-8c18-100587d83aea\",\"IntuneAccountId\":\"81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5\",\"AADTenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "mac": [
+          "DC-21-48-61-14-76"
+        ],
+        "name": "EEPMKOL-51HEN89",
+        "os": {
+          "name": "Windows",
+          "version": "10.0.22631.6199"
+        }
+      },
+      "microsoft_intune": {
+        "managed_device": {
+          "category": "Devices",
+          "operation_name": "Devices",
+          "properties": {
+            "aad_tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+            "batch_id": "1f1c809d-2dcf-4bf2-8c18-100587d83aea",
+            "compliant_state": "Compliant",
+            "created_date": "2054-01-23T09:13:49.000Z",
+            "device_id": "3d7681d1-fdde-4628-817e-3e0c2a672b9a",
+            "device_name": "EEPMKOL-51HEN89",
+            "device_registration_state": "Registered",
+            "device_state": "Managed",
+            "eas_id": "3754C21F06BAE50149F164294879C485",
+            "encryption_status_string": "True",
+            "graph_device_is_managed": true,
+            "in_grace_period_until": "9999-12-31T23:59:59.000Z",
+            "intune_account_id": "81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5",
+            "jail_broken": "Unknown",
+            "join_type": "Azure AD joined",
+            "last_contact": "2054-02-17T06:19:27.000Z",
+            "managed_by": "Intune",
+            "managed_device_name": "xyz.defender_Windows_1/23/2026_9:13 AM",
+            "manufacturer": "LENOVO",
+            "model": "20VE",
+            "os": "Windows",
+            "os_version": "10.0.22631.6199",
+            "ownership": "Corporate",
+            "primary_user": "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+            "reference_id": "4ee9b30a-1d6c-4b06-ac1b-57fd0cf2cb01",
+            "serial_number": "MP0004KN",
+            "sku_family": "Enterprise",
+            "storage_free": 197790,
+            "storage_total": 243163,
+            "supervised_status_string": "False",
+            "upn": "mih.hcjlm@example.com",
+            "user_email": "mih.hcjlm@example.com",
+            "user_name": "Feacvfez Ykcn",
+            "wifi_mac_address": "DC2148611476"
+          },
+          "result_type": "None",
+          "tenant_id": "2bde388d-8a81-40d3-a25e-0dbc2cacdc64",
+          "time": "2054-02-19T00:20:52.479Z"
+        }
+      },
+      "related": {
+        "hosts": [
+          "EEPMKOL-51HEN89",
+          "DC2148611476"
+        ],
+        "user": [
+          "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+          "mih.hcjlm@example.com",
+          "Feacvfez Ykcn"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "mih.hcjlm@example.com",
+        "id": "818a4e85-1288-459a-bb8c-12a3f6c2d31a",
+        "name": "Feacvfez Ykcn"
+      }
+    },
+    {
+      "@timestamp": "2054-06-27T01:36:30.579Z",
+      "cloud": {
+        "account": {
+          "id": "97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e"
+        }
+      },
+      "device": {
+        "id": "73c2f7b2-2e6d-4c86-8f8a-8c4d9d3b0d8c",
+        "serial_number": "SN000000000001"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "devicecompliance",
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "original": "{\"category\":\"DeviceComplianceOrg\",\"operationName\":\"DeviceCompliance\",\"properties\":{\"AADTenantId\":\"97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e\",\"AccountId\":\"45a8c9e2-0e6b-4b83-8a5f-0f6b8d0a4a3f\",\"BatchId\":\"84a1d9b3-9e8d-4f65-8d9e-1e4f6b0d2f1a\",\"ComplianceState\":\"1\",\"ComplianceState_loc\":\"Compliant\",\"DeviceHealthThreatLevel\":null,\"DeviceHealthThreatLevel_loc\":\"Unknown\",\"DeviceId\":\"73c2f7b2-2e6d-4c86-8f8a-8c4d9d3b0d8c\",\"DeviceName\":\"CALGDC-055\",\"DeviceType\":1,\"IMEI\":\"\",\"InGracePeriodUntil\":\"9999-12-31T23:59:59.9999999\",\"IntuneAccountId\":\"45a8c9e2-0e6b-4b83-8a5f-0f6b8d0a4a3f\",\"LastContact\":\"2054-06-26T16:57:05.0858748\",\"ManagementAgents\":514,\"ManagementAgents_loc\":\"Not Available\",\"OS\":\"Windows\",\"OSDescription\":\"Windows\",\"OSVersion\":\"10.0.26200.8655\",\"OS_loc\":\"Windows\",\"OwnerType\":1,\"OwnerType_loc\":\"Company\",\"RetireAfterDatetime\":null,\"SerialNumber\":\"SN000000000001\",\"UPN\":\"user@example.com\",\"UserEmail\":\"user@example.com\",\"UserId\":\"60c4b2c3-6c4a-4e57-8b2a-3c3b9e2d4e1c\",\"UserName\":\"Dwzfa Qnllhgr\"},\"resultType\":\"None\",\"tenantId\":\"97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e\",\"time\":\"2054-06-27T01:36:30.5799000Z\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "CALGDC-055",
+        "os": {
+          "name": "Windows",
+          "version": "10.0.26200.8655"
+        }
+      },
+      "microsoft_intune": {
+        "managed_device": {
+          "category": "DeviceComplianceOrg",
+          "operation_name": "DeviceCompliance",
+          "properties": {
+            "aad_tenant_id": "97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e",
+            "batch_id": "84a1d9b3-9e8d-4f65-8d9e-1e4f6b0d2f1a",
+            "device_id": "73c2f7b2-2e6d-4c86-8f8a-8c4d9d3b0d8c",
+            "device_name": "CALGDC-055",
+            "in_grace_period_until": "9999-12-31T23:59:59.999Z",
+            "intune_account_id": "45a8c9e2-0e6b-4b83-8a5f-0f6b8d0a4a3f",
+            "last_contact": "2054-06-26T16:57:05.085Z",
+            "os": "Windows",
+            "os_version": "10.0.26200.8655",
+            "serial_number": "SN000000000001",
+            "upn": "user@example.com",
+            "user_email": "user@example.com",
+            "user_name": "Dwzfa Qnllhgr"
+          },
+          "result_type": "None",
+          "tenant_id": "97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e",
+          "time": "2054-06-27T01:36:30.579Z"
+        }
+      },
+      "related": {
+        "hosts": [
+          "CALGDC-055"
+        ],
+        "user": [
+          "user@example.com",
+          "Dwzfa Qnllhgr"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "name": "Dwzfa Qnllhgr"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2051-10-27T00:10:43.5547000Z\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"category\":\"Devices\",\"operationName\":\"Devices\",\"resultType\":\"None\",\"properties\":{\"DeviceId\":\"6c4166b6-cc41-4e5d-a59c-693a00924ef2\",\"DeviceName\":\"CYS860RFOI\",\"UPN\":\"acb.154@example.com\",\"LastContact\":\"2051-10-26 12:23:58.7994868\",\"OSVersion\":\"10.0.22621.2428\",\"OS\":\"Windows\",\"CompliantState\":\"Compliant\",\"Ownership\":\"Corporate\",\"ManagedBy\":\"Intune\",\"Model\":\"20U1A006IG\",\"SerialNumber\":\"PF2C55YE\",\"Manufacturer\":\"LENOVO\",\"CreatedDate\":\"2051-10-20 06:55:27.6237465\",\"DeviceState\":\"Managed\",\"UserEmail\":\"acb.154@example.com\",\"UserName\":\"BDU Kiag OM-59093\",\"IMEI\":\"\",\"PhoneNumber\":\"\",\"DeviceRegistrationState\":\"Registered\",\"ReferenceId\":\"b51cc058-a3f4-47f8-8fcd-7c86b56e3c97\",\"ManagedDeviceName\":\"cdp.38411_Windows_10/20/2051_6:55 AM\",\"GraphDeviceIsManaged\":true,\"CategoryName\":\"\",\"EncryptionStatusString\":\"True\",\"SubscriberCarrierNetwork\":\"\",\"JoinType\":\"Azure AD joined\",\"SupervisedStatusString\":\"False\",\"WifiMacAddress\":\"A87EEABC6AC9\",\"StorageTotal\":243406,\"StorageFree\":205247,\"AndroidPatchLevel\":\"\",\"MEID\":\"\",\"InGracePeriodUntil\":\"9999-12-31 23:59:59.9999999\",\"JailBroken\":\"Unknown\",\"SkuFamily\":\"Enterprise\",\"EasID\":\"237005319BA89013F535385A60792516\",\"PrimaryUser\":\"818a4e85-1288-459a-bb8c-12a3f6c2d31a\",\"BatchId\":\"de6c9f73-167a-4989-bcf8-52b17d2354e4\",\"IntuneAccountId\":\"81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5\",\"AADTenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2054-02-19T00:20:52.4792000Z\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"category\":\"Devices\",\"operationName\":\"Devices\",\"resultType\":\"None\",\"properties\":{\"DeviceId\":\"715d84fd-4a81-414d-95f0-88d909333602\",\"DeviceName\":\"D-SEA-37\",\"UPN\":\"edd.hammo@example.com\",\"LastContact\":\"2054-02-18 19:10:29.6961667\",\"OSVersion\":\"10.0.19045.6456\",\"OS\":\"Windows\",\"CompliantState\":\"Compliant\",\"Ownership\":\"Corporate\",\"ManagedBy\":\"Intune\",\"Model\":\"VMware7,1\",\"SerialNumber\":\"VMware-42030e5acab78dd5-5bfaa83a47fb01d9\",\"Manufacturer\":\"VMware, Inc.\",\"CreatedDate\":\"2053-12-21 16:52:31.7372518\",\"DeviceState\":\"Managed\",\"UserEmail\":\"edd.hammo@example.com\",\"UserName\":\"Feacvfez Ykcn\",\"IMEI\":\"\",\"PhoneNumber\":\"\",\"DeviceRegistrationState\":\"Registered\",\"ReferenceId\":\"3c65db3a-534b-4f52-9056-7f42e633e264\",\"ManagedDeviceName\":\"abc.defender_Windows_12/21/2053_4:52 PM\",\"GraphDeviceIsManaged\":true,\"CategoryName\":\"\",\"EncryptionStatusString\":\"False\",\"SubscriberCarrierNetwork\":\"\",\"JoinType\":\"Azure AD joined\",\"SupervisedStatusString\":\"False\",\"WifiMacAddress\":\"\",\"StorageTotal\":50550,\"StorageFree\":22760,\"AndroidPatchLevel\":\"\",\"MEID\":\"\",\"InGracePeriodUntil\":\"9999-12-31 23:59:59.9999999\",\"JailBroken\":\"Unknown\",\"SkuFamily\":\"Pro\",\"EasID\":\"6F88D3D9A1A6A9735E59B52C598B4721\",\"PrimaryUser\":\"818a4e85-1288-459a-bb8c-12a3f6c2d31a\",\"BatchId\":\"1f1c809d-2dcf-4bf2-8c18-100587d83aea\",\"IntuneAccountId\":\"81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5\",\"AADTenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2054-02-19T00:20:52.4792000Z\",\"tenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\",\"category\":\"Devices\",\"operationName\":\"Devices\",\"resultType\":\"None\",\"properties\":{\"DeviceId\":\"3d7681d1-fdde-4628-817e-3e0c2a672b9a\",\"DeviceName\":\"EEPMKOL-51HEN89\",\"UPN\":\"mih.hcjlm@example.com\",\"LastContact\":\"2054-02-17 06:19:27.0000000\",\"OSVersion\":\"10.0.22631.6199\",\"OS\":\"Windows\",\"CompliantState\":\"Compliant\",\"Ownership\":\"Corporate\",\"ManagedBy\":\"Intune\",\"Model\":\"20VE\",\"SerialNumber\":\"MP0004KN\",\"Manufacturer\":\"LENOVO\",\"CreatedDate\":\"2054-01-23 09:13:49.0000000\",\"DeviceState\":\"Managed\",\"UserEmail\":\"mih.hcjlm@example.com\",\"UserName\":\"Feacvfez Ykcn\",\"IMEI\":\"\",\"PhoneNumber\":\"\",\"DeviceRegistrationState\":\"Registered\",\"ReferenceId\":\"4ee9b30a-1d6c-4b06-ac1b-57fd0cf2cb01\",\"ManagedDeviceName\":\"xyz.defender_Windows_1/23/2026_9:13 AM\",\"GraphDeviceIsManaged\":true,\"CategoryName\":\"\",\"EncryptionStatusString\":\"True\",\"SubscriberCarrierNetwork\":\"\",\"JoinType\":\"Azure AD joined\",\"SupervisedStatusString\":\"False\",\"WifiMacAddress\":\"DC2148611476\",\"StorageTotal\":243163,\"StorageFree\":197790,\"AndroidPatchLevel\":\"\",\"MEID\":\"\",\"InGracePeriodUntil\":\"9999-12-31 23:59:59.0000000\",\"JailBroken\":\"Unknown\",\"SkuFamily\":\"Enterprise\",\"EasID\":\"3754C21F06BAE50149F164294879C485\",\"PrimaryUser\":\"818a4e85-1288-459a-bb8c-12a3f6c2d31a\",\"BatchId\":\"1f1c809d-2dcf-4bf2-8c18-100587d83aea\",\"IntuneAccountId\":\"81c5ec76-e2c6-45f3-8c59-935aa8fdf9d5\",\"AADTenantId\":\"2bde388d-8a81-40d3-a25e-0dbc2cacdc64\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"category\":\"DeviceComplianceOrg\",\"operationName\":\"DeviceCompliance\",\"properties\":{\"AADTenantId\":\"97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e\",\"AccountId\":\"45a8c9e2-0e6b-4b83-8a5f-0f6b8d0a4a3f\",\"BatchId\":\"84a1d9b3-9e8d-4f65-8d9e-1e4f6b0d2f1a\",\"ComplianceState\":\"1\",\"ComplianceState_loc\":\"Compliant\",\"DeviceHealthThreatLevel\":null,\"DeviceHealthThreatLevel_loc\":\"Unknown\",\"DeviceId\":\"73c2f7b2-2e6d-4c86-8f8a-8c4d9d3b0d8c\",\"DeviceName\":\"CALGDC-055\",\"DeviceType\":1,\"IMEI\":\"\",\"InGracePeriodUntil\":\"9999-12-31T23:59:59.9999999\",\"IntuneAccountId\":\"45a8c9e2-0e6b-4b83-8a5f-0f6b8d0a4a3f\",\"LastContact\":\"2054-06-26T16:57:05.0858748\",\"ManagementAgents\":514,\"ManagementAgents_loc\":\"Not Available\",\"OS\":\"Windows\",\"OSDescription\":\"Windows\",\"OSVersion\":\"10.0.26200.8655\",\"OS_loc\":\"Windows\",\"OwnerType\":1,\"OwnerType_loc\":\"Company\",\"RetireAfterDatetime\":null,\"SerialNumber\":\"SN000000000001\",\"UPN\":\"user@example.com\",\"UserEmail\":\"user@example.com\",\"UserId\":\"60c4b2c3-6c4a-4e57-8b2a-3c3b9e2d4e1c\",\"UserName\":\"Dwzfa Qnllhgr\"},\"resultType\":\"None\",\"tenantId\":\"97a1d3b7-3f5c-4b36-8c9a-3e1a0c2c9d5e\",\"time\":\"2054-06-27T01:36:30.5799000Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "managed_device",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-microsoft_intune-managed_device-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "microsoft_intune",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

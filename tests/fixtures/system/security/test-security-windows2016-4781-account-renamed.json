@@ -1,0 +1,126 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:29.043Z",
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4781_Account_Renamed.xml"
+                }
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "ephemeral_id": "c6cf67ab-2171-4878-afeb-5e007fc23533",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "SOV-86VA2XP94FG",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-09-06T13:38:17.556Z",
+                "channel": "Security",
+                "event_id": 4781,
+                "record_id": 2873,
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 808
+                    }
+                },
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "level": "information",
+                "event_data": {
+                    "NewTargetUserName": "audittest06",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "OldTargetUserName": "audittest0609",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "SubjectDomainName": "SOV-86VA2XP94FG",
+                    "SubjectLogonId": "0x264b2",
+                    "PrivilegeList": "-"
+                }
+            },
+            "event": {
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event",
+                "code": 4781
+            }
+        },
+        {
+            "@timestamp": "2049-04-15T19:08:29.044Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4781_Account_Renamed.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "c6cf67ab-2171-4878-afeb-5e007fc23533"
+            },
+            "winlog": {
+                "computer_name": "SOV-86VA2XP94FG",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "level": "information",
+                "activity_id": "{2702cb92-41c1-0827-0ab7-6380f218e986}",
+                "event_id": 4781,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2047-09-06T13:38:23.516Z",
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 808
+                    }
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 2875,
+                "outcome": "success",
+                "channel": "Security",
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectLogonId": "0x264b2",
+                    "PrivilegeList": "-",
+                    "OldTargetUserName": "audittest06",
+                    "NewTargetUserName": "audittest0609",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1006",
+                    "SubjectDomainName": "SOV-86VA2XP94FG"
+                }
+            },
+            "event": {
+                "code": 4781,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event"
+            }
+        }
+    ]
+}

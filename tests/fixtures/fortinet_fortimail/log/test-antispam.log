@@ -1,0 +1,1 @@
+<190>date=2051-01-30,time=16:09:16.825,device_id=FEVM02TM23000064,log_id=0300003065,type=spam,subtype=default,pri=information,session_id="k6ZU5akL027920-w4IV3fhI392350",client_name="",client_ip="192.168.92.219",dst_ip="10.104.14.126",from="zqay7@example.com",to="pvdx4@example.com",subject="Test1516",msg="mailfilterd: Starting"

@@ -1,0 +1,7 @@
+<182>Mar 3 11:20:37 blzby-hlc-sqqr CISE_Guest 0000083315 1 0 2050-03-03 11:20:37.938 +00:00 0000083382 86005 INFO Guest: Guest user has accepted the Use Policy, ConfigVersionId=1694, UserType=NON_GUEST, UserName=texs753, IpAddress=203.0.113.248, AuthenticationIdentityStore=Internal Users, PortalName=Self-Registered Guest Portal (default), IdentityGroup=Any, PsnHostName=nle.vxln.local, GuestUserName=texs753, ResponseTime=31,
+<182>Mar 3 12:01:09 blzby-hlc-sqqr CISE_Guest 0000083571 1 0 2050-03-03 12:01:09.743 +00:00 0000083638 86022 INFO Guest: Device Registration Web Authentication AUP Accepted, ConfigVersionId=1698, UserType=NON_GUEST, UserName=qaoj5250, IpAddress=203.0.113.248, AuthenticationIdentityStore=Internal Users, PortalName=My Devices Portal (default), IdentityGroup=Any, PsnHostName=nle.vxln.local, ResponseTime=15,
+<182>Mar 28 11:46:05 blzby-hlc-sqqr CISE_Guest 0000000230 2 1  AuthenticationIdentityStore=Internal Users, PortalName=My Devices Portal (default), IdentityGroup=Any, PsnHostName=blzby-hlc-sqqr.local, ResponseTime=41,
+<182>Mar 28 15:59:33 blzby-hlc-sqqr CISE_Guest 0000000384 2 1  PortalName=Hotspot Guest Portal (default),
+<182>Mar 28 16:00:31 blzby-hlc-sqqr CISE_Guest 0000000386 2 1  PortalName=Hotspot Guest Portal (default), FailureReason=86023 Device Registration Web Authentication AUP Declined,
+<182>Nov 17 16:00:00.529272 blzby-hlc-sqqr CISE_Guest 0000000384 2 1  PortalName=Hotspot Guest Portal (default),
+<182>Nov 17 16:00:00.138 blzby-hlc-sqqr CISE_Guest 0000000384 2 1  PortalName=Hotspot Guest Portal (default),

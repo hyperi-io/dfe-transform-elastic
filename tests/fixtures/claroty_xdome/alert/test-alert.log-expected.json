@@ -1,0 +1,2387 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-20T02:56:32.316Z",
+      "claroty_xdome": {
+        "alert": {
+          "category": "Device Changes",
+          "class": "Device Changes Alerts",
+          "description": "A SSID Change alert of type Location Change was created for 30 devices",
+          "detected_time": "2052-09-14T01:01:57.093Z",
+          "device": {
+            "ad": {
+              "description": "ad description",
+              "distinguished_name": "ad_distinguished_name"
+            },
+            "asset_id": "IFDFHWB",
+            "assignees_data": [
+              {
+                "display_name": "3rd Party SOC",
+                "id": "37",
+                "type": "group"
+              }
+            ],
+            "category": "OT",
+            "combined_os": "Windows XP",
+            "consequence_of_failure": "unknown",
+            "dhcp": {
+              "fingerprint": "fingerprint-1",
+              "hostnames": [
+                "dhname"
+              ],
+              "last_seen_hostname": "dlasthname"
+            },
+            "domains": [
+              "dmn1",
+              "dmn2"
+            ],
+            "equipment_class": "eclass",
+            "fda_class": "fda-class",
+            "http": {
+              "hostnames": [
+                "httphname"
+              ],
+              "last_seen_hostname": "host1name"
+            },
+            "hw_version": "1.0.5",
+            "ip": {
+              "list": [
+                "192.0.2.134"
+              ],
+              "value": "192.0.2.218"
+            },
+            "labels": [
+              "OT Assets without Assignees",
+              "OT Internet Klabin"
+            ],
+            "last_domain_user": {
+              "name": "ldnuser"
+            },
+            "local_name": "hostlocalname",
+            "mac": {
+              "list": [
+                "31:58:3f:f6:ba:3a"
+              ]
+            },
+            "mdm": {
+              "compliance_status": "stats",
+              "enrollment_status": "mdm-endroll-stats",
+              "ownership": "mdm-owner"
+            },
+            "mobility": "Stationary",
+            "model": {
+              "family": "sam",
+              "name": "CB4500"
+            },
+            "network_list": [
+              "Corporate"
+            ],
+            "os": {
+              "category": "Other",
+              "name": "Linux",
+              "revision": "M1AJQ",
+              "subcategory": "Windows XP",
+              "version": "10.4.5"
+            },
+            "other_hostnames": [
+              "ohname"
+            ],
+            "product": {
+              "code": "125"
+            },
+            "purdue_level": {
+              "source": "Auto-Assigned",
+              "value": "Level 0"
+            },
+            "retired": {
+              "value": false
+            },
+            "risk_score": {
+              "points": 57.090244,
+              "value": "Very Low"
+            },
+            "serial_number": "DJGAQS4CW5",
+            "site": {
+              "name": "sname1"
+            },
+            "slot_cards": {
+              "count": 9,
+              "racks": [
+                {
+                  "cards": [
+                    {
+                      "card_type": "CPU",
+                      "model": "1756-L7SP/B LOGIXSAFETY",
+                      "serial_number": "00172DC0",
+                      "slot_number": 0,
+                      "sw_version": "V24.012",
+                      "uid": "5d8a8337-9163-4970-b53c-e9abadd649f6",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "I/O",
+                      "model": "1756-OB16E/A DCOUT EFUSE",
+                      "serial_number": "000F75F0",
+                      "slot_number": 1,
+                      "sw_version": "V3.003",
+                      "uid": "c1999b69-1851-4753-b946-bea5042f0e2c",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "CPU",
+                      "model": "1756-L73S/B LOGIX5573 SAFETY",
+                      "serial_number": "00140557",
+                      "slot_number": 2,
+                      "sw_version": "V32.011",
+                      "uid": "9ba12e14-2d43-4a8e-b602-c312e4375e07",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "I/O",
+                      "model": "1756-IB32/B DCIN",
+                      "serial_number": "001D1DF9",
+                      "slot_number": 3,
+                      "sw_version": "V3.005",
+                      "uid": "888d11ff-7e38-4725-b851-72c13a037d59",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "Network Card",
+                      "ip": "203.0.113.212",
+                      "mac": "96:9a:9b:f2:85:88",
+                      "model": "MVI56E-MCM",
+                      "serial_number": "001B57F9",
+                      "slot_number": 4,
+                      "sw_version": "V3.007",
+                      "uid": "2c1a2ff5-982b-4d82-8b4c-cf646da5ee84",
+                      "vendor": "ProSoft"
+                    },
+                    {
+                      "card_type": "I/O",
+                      "model": "1756-IF16/A",
+                      "serial_number": "0016F448",
+                      "slot_number": 5,
+                      "sw_version": "V1.005",
+                      "uid": "f77ea049-513e-4d5d-8594-1598cc73d825",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "I/O",
+                      "model": "1746-IB16 16-Input (SINK) 24 VDC",
+                      "serial_number": "001D0134",
+                      "slot_number": 6,
+                      "uid": "91498db0-d2e0-47d2-853b-ae501373e0e4",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "Network Card",
+                      "ip": "192.0.2.134",
+                      "mac": "46:43:52:af:ba:97",
+                      "model": "1756-EN2T/D",
+                      "serial_number": "0019410D",
+                      "slot_number": 7,
+                      "sw_version": "V11.002",
+                      "uid": "33410c79-2748-4c24-9f77-c31276366f9c",
+                      "vendor": "Rockwell Automation"
+                    },
+                    {
+                      "card_type": "I/O",
+                      "model": "1746-IA16 16-Input 100/120 VAC",
+                      "serial_number": "001252EE",
+                      "slot_number": 8,
+                      "sw_version": "V3.005",
+                      "uid": "c8756470-1a03-4246-aaef-7fcf39e639f3",
+                      "vendor": "Rockwell Automation"
+                    }
+                  ],
+                  "number_of_slots": 9
+                }
+              ]
+            },
+            "snmp": {
+              "hostnames": [
+                "snmp-host"
+              ],
+              "last_seen_hostname": "snmp_hname"
+            },
+            "subcategory": "Process",
+            "switch": {
+              "ip_list": [
+                "203.0.113.138"
+              ]
+            },
+            "type": {
+              "family": "Autonomous Vehicle",
+              "value": "Autonomous Vehicle"
+            },
+            "uid": "25d661fd-08e3-4be2-a8c7-7f372fe6f147",
+            "vlan": {
+              "list": [
+                "124"
+              ],
+              "name_list": [
+                "Radiology Network"
+              ]
+            },
+            "windows": {
+              "hostnames": [
+                "wname"
+              ],
+              "last_seen_hostname": "whost"
+            }
+          },
+          "devices_count": 30,
+          "id": "1000088",
+          "iot_devices_count": 19,
+          "it_devices_count": 5,
+          "malicious_ip_tags_list": [
+            "ip-tag1",
+            "ip-tag2"
+          ],
+          "medical_devices_count": 0,
+          "ot_devices_count": 6,
+          "status": "Unresolved",
+          "type_name": "Location Change",
+          "unresolved_devices_count": 30,
+          "updated_time": "2053-03-20T02:56:32.316Z"
+        }
+      },
+      "device": {
+        "model": {
+          "identifier": "CB4500",
+          "name": "sam"
+        },
+        "serial_number": "DJGAQS4CW5"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "alert",
+        "original": "{\"ad_description\":\"ad description\",\"risk_score\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"5d8a8337-9163-4970-b53c-e9abadd649f6\",\"slot_number\":0,\"name\":null,\"card_type\":\"CPU\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V24.012\",\"serial_number\":\"00172DC0\"},{\"uid\":\"c1999b69-1851-4753-b946-bea5042f0e2c\",\"slot_number\":1,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1756-OB16E/A DCOUT EFUSE\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V3.003\",\"serial_number\":\"000F75F0\"},{\"uid\":\"9ba12e14-2d43-4a8e-b602-c312e4375e07\",\"slot_number\":2,\"name\":null,\"card_type\":\"CPU\",\"model\":\"1756-L73S/B LOGIX5573 SAFETY\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V32.011\",\"serial_number\":\"00140557\"},{\"uid\":\"888d11ff-7e38-4725-b851-72c13a037d59\",\"slot_number\":3,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1756-IB32/B DCIN\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V3.005\",\"serial_number\":\"001D1DF9\"},{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":null,\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"203.0.113.212\",\"mac\":\"96:9a:9b:f2:85:88\"},{\"uid\":\"f77ea049-513e-4d5d-8594-1598cc73d825\",\"slot_number\":5,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1756-IF16/A\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V1.005\",\"serial_number\":\"0016F448\"},{\"uid\":\"91498db0-d2e0-47d2-853b-ae501373e0e4\",\"slot_number\":6,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1746-IB16 16-Input (SINK) 24 VDC\",\"vendor\":\"Rockwell Automation\",\"sw_version\":null,\"serial_number\":\"001D0134\"},{\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"slot_number\":7,\"name\":null,\"card_type\":\"Network Card\",\"model\":\"1756-EN2T/D\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V11.002\",\"serial_number\":\"0019410D\",\"ip\":\"192.0.2.134\",\"mac\":\"46:43:52:af:ba:97\"},{\"uid\":\"c8756470-1a03-4246-aaef-7fcf39e639f3\",\"slot_number\":8,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1746-IA16 16-Input 100/120 VAC\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V3.005\",\"serial_number\":\"001252EE\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":57.090244,\"ad_distinguished_name\":\"ad_distinguished_name\",\"domains\":[\"dmn1\",\"dmn2\"],\"ae_titles\":[],\"alert_info\":{\"alert_class\":\"Device Changes Alerts\",\"alert_type_name\":\"Location Change\",\"category\":\"Device Changes\",\"description\":\"A SSID Change alert of type Location Change was created for 30 devices\",\"detected_time\":\"2052-09-14T01:01:57.093925Z\",\"devices_count\":30,\"id\":1000088,\"iot_devices_count\":19,\"it_devices_count\":5,\"malicious_ip_tags_list\":[\"ip-tag1\",\"ip-tag2\"],\"medical_devices_count\":0,\"mitre_technique_enterprise_ids\":[],\"mitre_technique_enterprise_names\":[],\"mitre_technique_ics_ids\":[],\"mitre_technique_ics_names\":[],\"ot_devices_count\":6,\"status\":\"Unresolved\",\"unresolved_devices_count\":30,\"updated_time\":\"2053-03-20T02:56:32.316179Z\"},\"asset_id\":\"IFDFHWB\",\"assignees\":[],\"device_name\":\"192.0.2.218\",\"assignees_data\":[{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"}],\"combined_os\":\"Windows XP\",\"consequence_of_failure\":\"unknown\",\"device_category\":\"OT\",\"device_subcategory\":\"Process\",\"device_type\":\"Autonomous Vehicle\",\"device_type_family\":\"Autonomous Vehicle\",\"dhcp_fingerprint\":\"fingerprint-1\",\"dhcp_hostnames\":[\"dhname\"],\"dhcp_last_seen_hostname\":\"dlasthname\",\"endpoint_security_names\":[],\"equipment_class\":\"eclass\",\"fda_class\":\"fda-class\",\"http_hostnames\":[\"httphname\"],\"http_last_seen_hostname\":\"host1name\",\"hw_version\":\"1.0.5\",\"ip_list\":[\"192.0.2.134\"],\"switch_ip_list\":[\"203.0.113.138\"],\"labels\":[\"OT Assets without Assignees\",\"OT Internet Klabin\"],\"last_domain_user\":\"ldnuser\",\"local_name\":\"hostlocalname\",\"mac_list\":[\"31:58:3f:f6:ba:3a\"],\"management_services\":[],\"mdm_compliance_status\":\"stats\",\"mdm_enrollment_status\":\"mdm-endroll-stats\",\"mdm_ownership\":\"mdm-owner\",\"mobility\":\"Stationary\",\"model\":\"CB4500\",\"model_family\":\"sam\",\"network_list\":[\"Corporate\"],\"os_category\":\"Other\",\"os_name\":\"Linux\",\"os_revision\":\"M1AJQ\",\"site_name\":\"sname1\",\"os_subcategory\":\"Windows XP\",\"os_version\":\"10.4.5\",\"other_hostnames\":[\"ohname\"],\"product_code\":\"125\",\"purdue_level\":\"Level 0\",\"purdue_level_source\":\"Auto-Assigned\",\"retired\":false,\"serial_number\":\"DJGAQS4CW5\",\"snmp_hostnames\":[\"snmp-host\"],\"snmp_last_seen_hostname\":\"snmp_hname\",\"uid\":\"25d661fd-08e3-4be2-a8c7-7f372fe6f147\",\"vlan_list\":[124],\"vlan_name_list\":[\"Radiology Network\"],\"windows_hostnames\":[\"wname\"],\"windows_last_seen_hostname\":\"whost\"}",
+        "risk_score": 57.090244,
+        "severity": 21
+      },
+      "host": {
+        "domain": [
+          "dmn1",
+          "dmn2"
+        ],
+        "hostname": "host1name",
+        "id": "25d661fd-08e3-4be2-a8c7-7f372fe6f147",
+        "ip": [
+          "192.0.2.218"
+        ],
+        "mac": [
+          "31-58-3F-F6-BA-3A"
+        ],
+        "os": {
+          "family": "Other",
+          "full": "Windows XP",
+          "name": "Linux",
+          "version": "10.4.5"
+        },
+        "type": "Autonomous Vehicle"
+      },
+      "message": "A SSID Change alert of type Location Change was created for 30 devices",
+      "observer": {
+        "ingress": {
+          "vlan": {
+            "id": [
+              "124"
+            ],
+            "name": [
+              "Radiology Network"
+            ]
+          }
+        },
+        "product": "xDome",
+        "vendor": "Claroty"
+      },
+      "related": {
+        "hosts": [
+          "Windows XP",
+          "dhname",
+          "dlasthname",
+          "dmn1",
+          "dmn2",
+          "httphname",
+          "host1name",
+          "hostlocalname",
+          "Linux",
+          "ohname",
+          "sname1",
+          "snmp-host",
+          "snmp_hname",
+          "25d661fd-08e3-4be2-a8c7-7f372fe6f147",
+          "wname",
+          "whost"
+        ],
+        "ip": [
+          "192.0.2.134",
+          "192.0.2.218",
+          "203.0.113.138"
+        ],
+        "user": [
+          "37",
+          "3rd Party SOC",
+          "ldnuser"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "claroty_xdome": {
+        "alert": {
+          "device": {
+            "activity_rate": 67.0,
+            "ap": {
+              "name_list": [
+                "ap_name_1"
+              ]
+            },
+            "applied_acl": {
+              "type_list": [
+                "applied_acl_type_1"
+              ]
+            },
+            "asset_id": "GVRTXYC",
+            "assignees": [
+              "3rd Party SOC (Group)",
+              "Aer Lcfmpay",
+              "Xsxb Fsbnpnf",
+              "Seawuxmh Zthoi (Group)"
+            ],
+            "assignees_data": [
+              {
+                "display_name": "Aer Lcfmpay",
+                "id": "ben.jackman",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "Xsxb Fsbnpnf",
+                "id": "jose.a",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "3rd Party SOC",
+                "id": "37",
+                "type": "group"
+              },
+              {
+                "display_name": "Seawuxmh Zthoi",
+                "id": "31",
+                "type": "group"
+              }
+            ],
+            "avg": {
+              "online_per_day": 16.1
+            },
+            "category": "OT",
+            "collection": {
+              "interfaces": {
+                "seen_reported_from": [
+                  "ens142@demo-collection-houston_line_1",
+                  "ens142@demo-collection-houston_line_2",
+                  "ens164@demo-collection-houston_line_1",
+                  "ens164@demo-collection-houston_line_2",
+                  "ens178@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_2"
+                ]
+              },
+              "servers": {
+                "seen_reported_from": [
+                  "demo-collection-houston_line_1",
+                  "demo-collection-houston_line_2"
+                ]
+              }
+            },
+            "combined_os": "Windows XP",
+            "connection": {
+              "type_list": [
+                "Ethernet",
+                "Ethernet"
+              ]
+            },
+            "consequence_of_failure": "non known",
+            "cppm": {
+              "authentication_status_list": [
+                "cppm_auth_stats_1"
+              ]
+            },
+            "data_sources_seen_reported_from": [
+              "Passive Collection"
+            ],
+            "dhcp": {
+              "fingerprint": "unknown",
+              "last_seen_hostname": "dhcp_last_seen_hostname"
+            },
+            "effective_likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "end_of": {
+              "life": {
+                "state": "Manufacturer Supported"
+              }
+            },
+            "financial_cost": "< $1,000",
+            "first_seen_list": [
+              "2052-10-17T22:32:29.192Z",
+              "2052-11-22T19:27:31.192Z"
+            ],
+            "http": {
+              "last_seen_hostname": "http_last_seen_hostname"
+            },
+            "impact_subscore": {
+              "points": 75.0,
+              "value": "Critical"
+            },
+            "insecure_protocols": {
+              "points": 0.0,
+              "value": "Very Low"
+            },
+            "internet_communication": "No",
+            "ip": {
+              "assignment_list": [
+                "Static",
+                "Static"
+              ],
+              "list": [
+                "203.0.113.177",
+                "203.0.113.212"
+              ],
+              "value": "192.0.2.134"
+            },
+            "is_online": true,
+            "is_resolved": false,
+            "ise": {
+              "authentication_method_list": [
+                "ise_auth_method_1",
+                "ise_auth_method_2"
+              ],
+              "identity_group_list": [
+                "ise_grp_1"
+              ],
+              "logical_profile_list": [
+                "ise_logical_profile_1"
+              ],
+              "security_group": {
+                "name_list": [
+                  "ise_security_grp_name_1"
+                ]
+              }
+            },
+            "known_vulnerabilities": {
+              "points": 96.85353,
+              "value": "Critical"
+            },
+            "labels": [
+              "criticality",
+              "Criticidad alta",
+              "Expose OT Asset",
+              "Exposed OT & Critical Vulnerabilities",
+              "Exposed OT Asset",
+              "Linea 1",
+              "OT Internet Klabin",
+              "Urgent"
+            ],
+            "last": {
+              "seen": {
+                "list": [
+                  "2053-02-09T21:44:30.192Z",
+                  "2053-03-25T02:08:43.951Z"
+                ],
+                "on_switch_list": [
+                  "2053-03-09T09:42:00.192Z"
+                ],
+                "reported": "2053-03-26T02:33:09.249Z"
+              }
+            },
+            "likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "local_name": "local_name",
+            "mac": {
+              "list": [
+                "46:43:52:af:ba:97",
+                "96:9a:9b:f2:85:88"
+              ],
+              "oui_list": [
+                "Rockwell Automation",
+                "Prosoft Technology, Inc"
+              ]
+            },
+            "machine_type": "Physical",
+            "manufacturer": "Rockwell Automation",
+            "mdm": {
+              "compliance_status": "mdm_comp_stats"
+            },
+            "mobility": "Stationary",
+            "model": {
+              "name": "1756-L7SP/B LOGIXSAFETY"
+            },
+            "network": {
+              "scope_list": [
+                "Default",
+                "Default"
+              ]
+            },
+            "network_list": [
+              "Industrial",
+              "Industrial"
+            ],
+            "note": "note",
+            "number_of_nics": 2,
+            "organization": {
+              "firewall_group_name": "No Zone"
+            },
+            "os": {
+              "category": "Other",
+              "name": "linux"
+            },
+            "phi": "phi",
+            "protocol": {
+              "location_list": [
+                "protocol_loc_1"
+              ]
+            },
+            "purdue_level": {
+              "source": "Auto-Assigned",
+              "value": "Level 1"
+            },
+            "recommended": {
+              "firewall_group_name": "Controllers"
+            },
+            "retired": {
+              "value": false
+            },
+            "risk_score": {
+              "points": 74.937035,
+              "value": "Critical"
+            },
+            "serial_number": "00172DC0",
+            "site": {
+              "group_name": "No Group",
+              "name": "Houston_Line_1"
+            },
+            "slot_cards": {
+              "count": 9,
+              "racks": [
+                {
+                  "cards": [
+                    {
+                      "card_type": "Network Card",
+                      "ip": "198.51.100.124",
+                      "mac": "96:9a:9b:f2:85:88",
+                      "model": "MVI56E-MCM",
+                      "serial_number": "001B57F9",
+                      "slot_number": 4,
+                      "sw_version": "V3.007",
+                      "uid": "2c1a2ff5-982b-4d82-8b4c-cf646da5ee84",
+                      "vendor": "ProSoft"
+                    }
+                  ],
+                  "number_of_slots": 9
+                }
+              ]
+            },
+            "software_or_firmware_version": "V24.012",
+            "subcategory": "Control",
+            "switch": {
+              "location_list": [
+                "dep 7vqDM"
+              ],
+              "mac_list": [
+                "65:24:57:b3:5e:79"
+              ],
+              "port_list": [
+                "Fa/1/30"
+              ]
+            },
+            "type": {
+              "family": "PLC",
+              "value": "PLC"
+            },
+            "uid": "33410c79-2748-4c24-9f77-c31276366f9c",
+            "utilization_rate": 0.0,
+            "visibility_score": {
+              "level": "Excellent",
+              "value": 99
+            },
+            "vlan": {
+              "description_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ],
+              "list": [
+                "122",
+                "123"
+              ],
+              "name_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ]
+            },
+            "wireless_encryption_type_list": [
+              "wireless_encryption_type_1"
+            ],
+            "wlc": {
+              "location_list": [
+                "wlc_location_1"
+              ]
+            }
+          }
+        }
+      },
+      "device": {
+        "manufacturer": "Rockwell Automation",
+        "model": {
+          "identifier": "1756-L7SP/B LOGIXSAFETY"
+        },
+        "serial_number": "00172DC0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "alert",
+        "original": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":null,\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":null,\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":null,\"is_resolved\":false,\"product_code\":null,\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[null],\"avg_in_use_per_day\":null,\"ip_list\":[\"203.0.113.177\",\"203.0.113.212\"],\"ae_titles\":[],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":null,\"applied_acl_list\":[null],\"cppm_service_list\":[null],\"windows_last_seen_hostname\":null,\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[null],\"device_category\":\"OT\",\"device_name\":\"192.0.2.134\",\"fda_class\":null,\"mdm_ownership\":null,\"device_type\":\"PLC\",\"os_subcategory\":null,\"endpoint_security_names\":[],\"other_hostnames\":[],\"windows_hostnames\":[],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[null],\"ssid_list\":[null],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":null,\"ise_endpoint_profile_list\":[null],\"ap_location_list\":[null],\"model_family\":null,\"last_domain_user_activity\":null,\"cmms_asset_tag\":null,\"edr_last_scan_time\":null,\"utilization_rate\":0,\"integration_types_reported_from\":[],\"battery_level\":null,\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":null,\"dhcp_hostnames\":[],\"device_subcategory\":\"Control\",\"os_version\":null,\"edr_is_up_to_date_text\":null,\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[],\"hw_version\":null,\"ad_description\":null,\"switch_ip_list\":[null],\"handles_pii\":null,\"snmp_hostnames\":[],\"os_eol_date\":null,\"switch_location_list\":[\"dep 7vqDM\",null],\"equipment_class\":null,\"last_domain_user\":null,\"ise_security_group_tag_list\":[null],\"avg_examinations_per_day\":null,\"end_of_sale_date\":null,\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[null],\"mdm_enrollment_status\":null,\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":null,\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"198.51.100.124\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[null],\"edge_hosts_seen_reported_from\":[],\"edge_locations_seen_reported_from\":[],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":null,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[],\"switch_group_name_list\":[null],\"insecure_protocols_points\":0,\"authentication_user_list\":[null],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+        "risk_score": 74.937035,
+        "severity": 99
+      },
+      "host": {
+        "hostname": "http_last_seen_hostname",
+        "id": "33410c79-2748-4c24-9f77-c31276366f9c",
+        "ip": [
+          "192.0.2.134"
+        ],
+        "mac": [
+          "46-43-52-AF-BA-97",
+          "96-9A-9B-F2-85-88"
+        ],
+        "os": {
+          "family": "Other",
+          "full": "Windows XP",
+          "name": "linux"
+        },
+        "type": "PLC"
+      },
+      "observer": {
+        "ingress": {
+          "vlan": {
+            "id": [
+              "122",
+              "123"
+            ],
+            "name": [
+              "VLAN 122",
+              "VLAN 123"
+            ]
+          }
+        },
+        "product": "xDome",
+        "vendor": "Claroty"
+      },
+      "related": {
+        "hosts": [
+          "Windows XP",
+          "dhcp_last_seen_hostname",
+          "http_last_seen_hostname",
+          "local_name",
+          "linux",
+          "Houston_Line_1",
+          "33410c79-2748-4c24-9f77-c31276366f9c"
+        ],
+        "ip": [
+          "203.0.113.177",
+          "203.0.113.212",
+          "192.0.2.134"
+        ],
+        "user": [
+          "3rd Party SOC (Group)",
+          "Aer Lcfmpay",
+          "Xsxb Fsbnpnf",
+          "Seawuxmh Zthoi (Group)",
+          "ben.jackman",
+          "jose.a",
+          "37",
+          "31",
+          "3rd Party SOC",
+          "Seawuxmh Zthoi"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "claroty_xdome": {
+        "alert": {
+          "device": {
+            "activity_rate": 67.0,
+            "ad": {
+              "description": "ad_description"
+            },
+            "ap": {
+              "name_list": [
+                "ap_name_1"
+              ]
+            },
+            "applied_acl": {
+              "type_list": [
+                "applied_acl_type_1"
+              ]
+            },
+            "asset_id": "GVRTXYC",
+            "assignees": [
+              "3rd Party SOC (Group)",
+              "Aer Lcfmpay",
+              "Xsxb Fsbnpnf",
+              "Seawuxmh Zthoi (Group)"
+            ],
+            "assignees_data": [
+              {
+                "display_name": "Aer Lcfmpay",
+                "id": "ben.jackman",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "Xsxb Fsbnpnf",
+                "id": "jose.a",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "3rd Party SOC",
+                "id": "37",
+                "type": "group"
+              },
+              {
+                "display_name": "Seawuxmh Zthoi",
+                "id": "31",
+                "type": "group"
+              }
+            ],
+            "authentication_user_list": [
+              "auth_user_list"
+            ],
+            "avg": {
+              "examinations_per_day": 67.0,
+              "online_per_day": 16.1
+            },
+            "bssid_list": [
+              "bssid_list"
+            ],
+            "category": "OT",
+            "cmms": {
+              "financial_cost": 123.87
+            },
+            "collection": {
+              "interfaces": {
+                "seen_reported_from": [
+                  "ens142@demo-collection-houston_line_1",
+                  "ens142@demo-collection-houston_line_2",
+                  "ens164@demo-collection-houston_line_1",
+                  "ens164@demo-collection-houston_line_2",
+                  "ens178@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_2"
+                ]
+              },
+              "servers": {
+                "seen_reported_from": [
+                  "demo-collection-houston_line_1",
+                  "demo-collection-houston_line_2"
+                ]
+              }
+            },
+            "combined_os": "Windows XP",
+            "connection": {
+              "type_list": [
+                "Ethernet",
+                "Ethernet"
+              ]
+            },
+            "consequence_of_failure": "non known",
+            "cppm": {
+              "authentication_status_list": [
+                "cppm_auth_stats_1"
+              ]
+            },
+            "data_sources_seen_reported_from": [
+              "Passive Collection"
+            ],
+            "dhcp": {
+              "fingerprint": "unknown",
+              "last_seen_hostname": "dhcp_last_seen_hostname"
+            },
+            "edr": {
+              "is_up_to_date_text": "edr_is_up_to_date_text"
+            },
+            "effective_likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "end_of": {
+              "life": {
+                "state": "Manufacturer Supported"
+              },
+              "sale_date": "2052-10-02T02:40:29.679Z"
+            },
+            "equipment_class": "equipment_class",
+            "financial_cost": "< $1,000",
+            "first_seen_list": [
+              "2052-10-17T22:32:29.192Z",
+              "2052-11-22T19:27:31.192Z"
+            ],
+            "handles_pii": "Yes",
+            "http": {
+              "last_seen_hostname": "http_last_seen_hostname"
+            },
+            "hw_version": "8.9",
+            "impact_subscore": {
+              "points": 75.0,
+              "value": "Critical"
+            },
+            "insecure_protocols": {
+              "points": 0.0,
+              "value": "Very Low"
+            },
+            "internet_communication": "No",
+            "ip": {
+              "assignment_list": [
+                "Static",
+                "Static"
+              ],
+              "list": [
+                "203.0.113.212",
+                "198.51.100.124"
+              ],
+              "value": "192.0.2.218"
+            },
+            "is_online": true,
+            "is_resolved": false,
+            "ise": {
+              "authentication_method_list": [
+                "ise_auth_method_1",
+                "ise_auth_method_2"
+              ],
+              "identity_group_list": [
+                "ise_grp_1"
+              ],
+              "logical_profile_list": [
+                "ise_logical_profile_1"
+              ],
+              "security_group": {
+                "description_list": [
+                  "ise_security_group_description_1"
+                ],
+                "name_list": [
+                  "ise_security_grp_name_1"
+                ],
+                "tag_list": [
+                  "ise_security_group_tag_list"
+                ]
+              }
+            },
+            "known_vulnerabilities": {
+              "points": 96.85353,
+              "value": "Critical"
+            },
+            "labels": [
+              "criticality",
+              "Criticidad alta",
+              "Expose OT Asset",
+              "Exposed OT & Critical Vulnerabilities",
+              "Exposed OT Asset",
+              "Linea 1",
+              "OT Internet Klabin",
+              "Urgent"
+            ],
+            "last": {
+              "seen": {
+                "list": [
+                  "2053-02-09T21:44:30.192Z",
+                  "2053-03-25T02:08:43.951Z"
+                ],
+                "on_switch_list": [
+                  "2053-03-09T09:42:00.192Z"
+                ],
+                "reported": "2053-03-26T02:33:09.249Z"
+              }
+            },
+            "last_domain_user": {
+              "name": "iw_patch"
+            },
+            "likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "local_name": "local_name",
+            "mac": {
+              "list": [
+                "46:43:52:af:ba:97",
+                "96:9a:9b:f2:85:88"
+              ],
+              "oui_list": [
+                "Rockwell Automation",
+                "Prosoft Technology, Inc"
+              ]
+            },
+            "machine_type": "Physical",
+            "manufacturer": "Rockwell Automation",
+            "mdm": {
+              "compliance_status": "mdm_comp_stats",
+              "enrollment_status": "mdm_enrollment_status"
+            },
+            "mobility": "Stationary",
+            "model": {
+              "name": "1756-L7SP/B LOGIXSAFETY"
+            },
+            "network": {
+              "scope_list": [
+                "Default",
+                "Default"
+              ]
+            },
+            "network_list": [
+              "Industrial",
+              "Industrial"
+            ],
+            "note": "note",
+            "number_of_nics": 2,
+            "organization": {
+              "firewall_group_name": "No Zone"
+            },
+            "os": {
+              "category": "Other",
+              "eol_date": "2052-10-02T02:40:29.679Z",
+              "name": "linux",
+              "version": "7.9"
+            },
+            "phi": "phi",
+            "protocol": {
+              "location_list": [
+                "protocol_loc_1"
+              ]
+            },
+            "purdue_level": {
+              "source": "Auto-Assigned",
+              "value": "Level 1"
+            },
+            "recommended": {
+              "firewall_group_name": "Controllers"
+            },
+            "retired": {
+              "value": false
+            },
+            "risk_score": {
+              "points": 74.937035,
+              "value": "Critical"
+            },
+            "serial_number": "00172DC0",
+            "site": {
+              "group_name": "No Group",
+              "name": "Houston_Line_1"
+            },
+            "slot_cards": {
+              "count": 9,
+              "racks": [
+                {
+                  "cards": [
+                    {
+                      "card_type": "Network Card",
+                      "ip": "192.0.2.54",
+                      "mac": "96:9a:9b:f2:85:88",
+                      "model": "MVI56E-MCM",
+                      "name": "card_name",
+                      "serial_number": "001B57F9",
+                      "slot_number": 4,
+                      "sw_version": "V3.007",
+                      "uid": "2c1a2ff5-982b-4d82-8b4c-cf646da5ee84",
+                      "vendor": "ProSoft"
+                    }
+                  ],
+                  "number_of_slots": 9
+                }
+              ]
+            },
+            "software_or_firmware_version": "V24.012",
+            "subcategory": "Control",
+            "switch": {
+              "group_name_list": [
+                "switch_group_name_1"
+              ],
+              "ip_list": [
+                "203.0.113.248"
+              ],
+              "location_list": [
+                "dep 7vqDM"
+              ],
+              "mac_list": [
+                "65:24:57:b3:5e:79"
+              ],
+              "port_list": [
+                "Fa/1/30"
+              ]
+            },
+            "type": {
+              "family": "PLC",
+              "value": "PLC"
+            },
+            "uid": "33410c79-2748-4c24-9f77-c31276366f9c",
+            "utilization_rate": 0.0,
+            "visibility_score": {
+              "level": "Excellent",
+              "value": 99
+            },
+            "vlan": {
+              "description_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ],
+              "list": [
+                "122",
+                "123"
+              ],
+              "name_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ]
+            },
+            "wireless_encryption_type_list": [
+              "wireless_encryption_type_1"
+            ],
+            "wlc": {
+              "location_list": [
+                "wlc_location_1"
+              ]
+            }
+          }
+        }
+      },
+      "device": {
+        "manufacturer": "Rockwell Automation",
+        "model": {
+          "identifier": "1756-L7SP/B LOGIXSAFETY"
+        },
+        "serial_number": "00172DC0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "alert",
+        "original": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":null,\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":null,\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":null,\"is_resolved\":false,\"product_code\":null,\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[null],\"avg_in_use_per_day\":null,\"ip_list\":[\"203.0.113.212\",\"198.51.100.124\"],\"ae_titles\":[],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":null,\"applied_acl_list\":[null],\"cppm_service_list\":[null],\"windows_last_seen_hostname\":null,\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[null],\"device_category\":\"OT\",\"device_name\":\"192.0.2.218\",\"fda_class\":null,\"mdm_ownership\":null,\"device_type\":\"PLC\",\"os_subcategory\":null,\"endpoint_security_names\":[],\"other_hostnames\":[],\"windows_hostnames\":[],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[null],\"ssid_list\":[null],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":null,\"ise_endpoint_profile_list\":[null],\"ap_location_list\":[null],\"model_family\":null,\"last_domain_user_activity\":null,\"cmms_asset_tag\":null,\"edr_last_scan_time\":null,\"utilization_rate\":0,\"integration_types_reported_from\":[],\"battery_level\":null,\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":null,\"dhcp_hostnames\":[],\"device_subcategory\":\"Control\",\"os_version\":\"7.9\",\"edr_is_up_to_date_text\":\"edr_is_up_to_date_text\",\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[],\"hw_version\":\"8.9\",\"ad_description\":\"ad_description\",\"switch_ip_list\":[\"203.0.113.248\"],\"handles_pii\":\"Yes\",\"snmp_hostnames\":[],\"os_eol_date\":\"2052-10-02T02:40:29.679460+00:00\",\"switch_location_list\":[\"dep 7vqDM\"],\"equipment_class\":\"equipment_class\",\"last_domain_user\":\"iw_patch\",\"ise_security_group_tag_list\":[\"ise_security_group_tag_list\"],\"avg_examinations_per_day\":67,\"end_of_sale_date\":\"2052-10-02T02:40:29.679460+00:00\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[\"bssid_list\"],\"mdm_enrollment_status\":\"mdm_enrollment_status\",\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":\"card_name\",\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"192.0.2.54\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[\"ise_security_group_description_1\"],\"edge_hosts_seen_reported_from\":[],\"edge_locations_seen_reported_from\":[],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":123.87,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[],\"switch_group_name_list\":[\"switch_group_name_1\"],\"insecure_protocols_points\":0,\"authentication_user_list\":[\"auth_user_list\"],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+        "risk_score": 74.937035,
+        "severity": 99
+      },
+      "host": {
+        "hostname": "http_last_seen_hostname",
+        "id": "33410c79-2748-4c24-9f77-c31276366f9c",
+        "ip": [
+          "192.0.2.218"
+        ],
+        "mac": [
+          "46-43-52-AF-BA-97",
+          "96-9A-9B-F2-85-88"
+        ],
+        "os": {
+          "family": "Other",
+          "full": "Windows XP",
+          "name": "linux",
+          "version": "7.9"
+        },
+        "type": "PLC"
+      },
+      "observer": {
+        "ingress": {
+          "vlan": {
+            "id": [
+              "122",
+              "123"
+            ],
+            "name": [
+              "VLAN 122",
+              "VLAN 123"
+            ]
+          }
+        },
+        "product": "xDome",
+        "vendor": "Claroty"
+      },
+      "related": {
+        "hosts": [
+          "Windows XP",
+          "dhcp_last_seen_hostname",
+          "http_last_seen_hostname",
+          "local_name",
+          "linux",
+          "Houston_Line_1",
+          "33410c79-2748-4c24-9f77-c31276366f9c"
+        ],
+        "ip": [
+          "203.0.113.212",
+          "198.51.100.124",
+          "192.0.2.218",
+          "203.0.113.248"
+        ],
+        "user": [
+          "3rd Party SOC (Group)",
+          "Aer Lcfmpay",
+          "Xsxb Fsbnpnf",
+          "Seawuxmh Zthoi (Group)",
+          "ben.jackman",
+          "jose.a",
+          "37",
+          "31",
+          "3rd Party SOC",
+          "Seawuxmh Zthoi",
+          "iw_patch"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "claroty_xdome": {
+        "alert": {
+          "device": {
+            "activity_rate": 67.0,
+            "ad": {
+              "description": "ad_description",
+              "distinguished_name": "ad_distinguished_name"
+            },
+            "ap": {
+              "location_list": [
+                "ap_location_list"
+              ],
+              "name_list": [
+                "ap_name_1"
+              ]
+            },
+            "applied_acl": {
+              "list": [
+                "applied_acl_list"
+              ],
+              "type_list": [
+                "applied_acl_type_1"
+              ]
+            },
+            "asset_id": "GVRTXYC",
+            "assignees": [
+              "3rd Party SOC (Group)",
+              "Aer Lcfmpay",
+              "Xsxb Fsbnpnf",
+              "Seawuxmh Zthoi (Group)"
+            ],
+            "assignees_data": [
+              {
+                "display_name": "Aer Lcfmpay",
+                "id": "ben.jackman",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "Xsxb Fsbnpnf",
+                "id": "jose.a",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "3rd Party SOC",
+                "id": "37",
+                "type": "group"
+              },
+              {
+                "display_name": "Seawuxmh Zthoi",
+                "id": "31",
+                "type": "group"
+              }
+            ],
+            "authentication_user_list": [
+              "auth_user_list"
+            ],
+            "avg": {
+              "examinations_per_day": 67.0,
+              "in_use_per_day": 85.3,
+              "online_per_day": 16.1
+            },
+            "battery_level": "battery_level",
+            "bssid_list": [
+              "bssid_list"
+            ],
+            "category": "OT",
+            "cmms": {
+              "asset": {
+                "tag": "cmms_asset_tag"
+              },
+              "financial_cost": 123.87
+            },
+            "collection": {
+              "interfaces": {
+                "seen_reported_from": [
+                  "ens142@demo-collection-houston_line_1",
+                  "ens142@demo-collection-houston_line_2",
+                  "ens164@demo-collection-houston_line_1",
+                  "ens164@demo-collection-houston_line_2",
+                  "ens178@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_2"
+                ]
+              },
+              "servers": {
+                "seen_reported_from": [
+                  "demo-collection-houston_line_1",
+                  "demo-collection-houston_line_2"
+                ]
+              }
+            },
+            "combined_os": "Windows XP",
+            "connection": {
+              "type_list": [
+                "Ethernet",
+                "Ethernet"
+              ]
+            },
+            "consequence_of_failure": "non known",
+            "cppm": {
+              "authentication_status_list": [
+                "cppm_auth_stats_1"
+              ],
+              "service_list": [
+                "cppm_service_list"
+              ]
+            },
+            "data_sources_seen_reported_from": [
+              "Passive Collection"
+            ],
+            "dhcp": {
+              "fingerprint": "unknown",
+              "last_seen_hostname": "dhcp_last_seen_hostname"
+            },
+            "edr": {
+              "is_up_to_date_text": "edr_is_up_to_date_text",
+              "last_scan_time": "2053-03-08T10:38:25.734Z"
+            },
+            "effective_likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "end_of": {
+              "life": {
+                "date": "2052-10-02T02:40:29.679Z",
+                "state": "Manufacturer Supported"
+              },
+              "sale_date": "2052-10-02T02:40:29.679Z"
+            },
+            "equipment_class": "equipment_class",
+            "fda_class": "fda_class",
+            "financial_cost": "< $1,000",
+            "first_seen_list": [
+              "2052-10-17T22:32:29.192Z",
+              "2052-11-22T19:27:31.192Z"
+            ],
+            "handles_pii": "Yes",
+            "http": {
+              "last_seen_hostname": "http_last_seen_hostname"
+            },
+            "hw_version": "8.9",
+            "impact_subscore": {
+              "points": 75.0,
+              "value": "Critical"
+            },
+            "insecure_protocols": {
+              "points": 0.0,
+              "value": "Very Low"
+            },
+            "internet_communication": "No",
+            "ip": {
+              "assignment_list": [
+                "Static",
+                "Static"
+              ],
+              "list": [
+                "203.0.113.248",
+                "203.0.113.177"
+              ]
+            },
+            "is_online": true,
+            "is_resolved": false,
+            "ise": {
+              "authentication_method_list": [
+                "ise_auth_method_1",
+                "ise_auth_method_2"
+              ],
+              "endpoint_profile_list": [
+                "ise_endpoint_profile_list"
+              ],
+              "identity_group_list": [
+                "ise_grp_1"
+              ],
+              "logical_profile_list": [
+                "ise_logical_profile_1"
+              ],
+              "security_group": {
+                "description_list": [
+                  "ise_security_group_description_1"
+                ],
+                "name_list": [
+                  "ise_security_grp_name_1"
+                ],
+                "tag_list": [
+                  "ise_security_group_tag_list"
+                ]
+              }
+            },
+            "known_vulnerabilities": {
+              "points": 96.85353,
+              "value": "Critical"
+            },
+            "labels": [
+              "criticality",
+              "Criticidad alta",
+              "Expose OT Asset",
+              "Exposed OT & Critical Vulnerabilities",
+              "Exposed OT Asset",
+              "Linea 1",
+              "OT Internet Klabin",
+              "Urgent"
+            ],
+            "last": {
+              "scan_time": "2053-03-08T10:38:25.734Z",
+              "seen": {
+                "list": [
+                  "2053-02-09T21:44:30.192Z",
+                  "2053-03-25T02:08:43.951Z"
+                ],
+                "on_switch_list": [
+                  "2053-03-09T09:42:00.192Z"
+                ],
+                "reported": "2053-03-26T02:33:09.249Z"
+              }
+            },
+            "last_domain_user": {
+              "activity": "2053-03-08T10:38:25.734Z",
+              "name": "iw_patch"
+            },
+            "likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "local_name": "local_name",
+            "mac": {
+              "list": [
+                "46:43:52:af:ba:97",
+                "96:9a:9b:f2:85:88"
+              ],
+              "oui_list": [
+                "Rockwell Automation",
+                "Prosoft Technology, Inc"
+              ]
+            },
+            "machine_type": "Physical",
+            "manufacturer": "Rockwell Automation",
+            "mdm": {
+              "compliance_status": "mdm_comp_stats",
+              "enrollment_status": "mdm_enrollment_status",
+              "ownership": "mdm_ownership"
+            },
+            "mobility": "Stationary",
+            "model": {
+              "family": "model_family",
+              "name": "1756-L7SP/B LOGIXSAFETY"
+            },
+            "name": "asbqd",
+            "network": {
+              "scope_list": [
+                "Default",
+                "Default"
+              ]
+            },
+            "network_list": [
+              "Industrial",
+              "Industrial"
+            ],
+            "note": "note",
+            "number_of_nics": 2,
+            "organization": {
+              "firewall_group_name": "No Zone"
+            },
+            "os": {
+              "category": "Other",
+              "eol_date": "2052-10-02T02:40:29.679Z",
+              "name": "linux",
+              "revision": "unknown",
+              "subcategory": "os_subcategory",
+              "version": "7.9"
+            },
+            "phi": "phi",
+            "product": {
+              "code": "product_code"
+            },
+            "protocol": {
+              "location_list": [
+                "protocol_loc_1"
+              ]
+            },
+            "purdue_level": {
+              "source": "Auto-Assigned",
+              "value": "Level 1"
+            },
+            "recommended": {
+              "firewall_group_name": "Controllers"
+            },
+            "retired": {
+              "since": "2052-10-02T02:40:29.679Z",
+              "value": false
+            },
+            "risk_score": {
+              "points": 74.937035,
+              "value": "Critical"
+            },
+            "serial_number": "00172DC0",
+            "site": {
+              "group_name": "No Group",
+              "name": "Houston_Line_1"
+            },
+            "slot_cards": {
+              "count": 9,
+              "racks": [
+                {
+                  "cards": [
+                    {
+                      "card_type": "Network Card",
+                      "ip": "198.51.100.124",
+                      "mac": "96:9a:9b:f2:85:88",
+                      "model": "MVI56E-MCM",
+                      "name": "card_name",
+                      "serial_number": "001B57F9",
+                      "slot_number": 4,
+                      "sw_version": "V3.007",
+                      "uid": "2c1a2ff5-982b-4d82-8b4c-cf646da5ee84",
+                      "vendor": "ProSoft"
+                    }
+                  ],
+                  "number_of_slots": 9
+                }
+              ]
+            },
+            "snmp": {
+              "last_seen_hostname": "snmp_last_seen_hostname"
+            },
+            "software_or_firmware_version": "V24.012",
+            "ssid_list": [
+              "ssid_list"
+            ],
+            "subcategory": "Control",
+            "switch": {
+              "group_name_list": [
+                "switch_group_name_1"
+              ],
+              "ip_list": [
+                "192.0.2.54"
+              ],
+              "location_list": [
+                "dep 7vqDM"
+              ],
+              "mac_list": [
+                "65:24:57:b3:5e:79"
+              ],
+              "port_description_list": [
+                "switch_port_description_list"
+              ],
+              "port_list": [
+                "Fa/1/30"
+              ]
+            },
+            "type": {
+              "family": "PLC",
+              "value": "PLC"
+            },
+            "uid": "33410c79-2748-4c24-9f77-c31276366f9c",
+            "utilization_rate": 0.0,
+            "visibility_score": {
+              "level": "Excellent",
+              "value": 99
+            },
+            "vlan": {
+              "description_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ],
+              "list": [
+                "122",
+                "123"
+              ],
+              "name_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ]
+            },
+            "windows": {
+              "last_seen_hostname": "windows_last_seen_hostname"
+            },
+            "wireless_encryption_type_list": [
+              "wireless_encryption_type_1"
+            ],
+            "wlc": {
+              "location_list": [
+                "wlc_location_1"
+              ],
+              "name_list": [
+                "wlc_name_list"
+              ]
+            }
+          }
+        }
+      },
+      "device": {
+        "manufacturer": "Rockwell Automation",
+        "model": {
+          "identifier": "1756-L7SP/B LOGIXSAFETY",
+          "name": "model_family"
+        },
+        "serial_number": "00172DC0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "alert",
+        "original": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":\"2052-10-02T02:40:29.679460+00:00\",\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":\"2052-10-02T02:40:29.679460+00:00\",\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":\"ad_distinguished_name\",\"is_resolved\":false,\"product_code\":\"product_code\",\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[\"switch_port_description_list\"],\"avg_in_use_per_day\":85.3,\"ip_list\":[\"203.0.113.248\",\"203.0.113.177\"],\"ae_titles\":[],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":\"snmp_last_seen_hostname\",\"applied_acl_list\":[\"applied_acl_list\"],\"cppm_service_list\":[\"cppm_service_list\"],\"windows_last_seen_hostname\":\"windows_last_seen_hostname\",\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[\"wifi_last_seen_list\"],\"device_category\":\"OT\",\"device_name\":\"asbqd\",\"fda_class\":\"fda_class\",\"mdm_ownership\":\"mdm_ownership\",\"device_type\":\"PLC\",\"os_subcategory\":\"os_subcategory\",\"endpoint_security_names\":[],\"other_hostnames\":[],\"windows_hostnames\":[],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[\"wlc_name_list\"],\"ssid_list\":[\"ssid_list\"],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"ise_endpoint_profile_list\":[\"ise_endpoint_profile_list\"],\"ap_location_list\":[\"ap_location_list\"],\"model_family\":\"model_family\",\"last_domain_user_activity\":\"2053-03-08T10:38:25.734197+00:00\",\"cmms_asset_tag\":\"cmms_asset_tag\",\"edr_last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"utilization_rate\":0,\"integration_types_reported_from\":[],\"battery_level\":\"battery_level\",\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":\"unknown\",\"dhcp_hostnames\":[],\"device_subcategory\":\"Control\",\"os_version\":\"7.9\",\"edr_is_up_to_date_text\":\"edr_is_up_to_date_text\",\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[],\"hw_version\":\"8.9\",\"ad_description\":\"ad_description\",\"switch_ip_list\":[\"192.0.2.54\"],\"handles_pii\":\"Yes\",\"snmp_hostnames\":[],\"os_eol_date\":\"2052-10-02T02:40:29.679460+00:00\",\"switch_location_list\":[\"dep 7vqDM\"],\"equipment_class\":\"equipment_class\",\"last_domain_user\":\"iw_patch\",\"ise_security_group_tag_list\":[\"ise_security_group_tag_list\"],\"avg_examinations_per_day\":67,\"end_of_sale_date\":\"2052-10-02T02:40:29.679460+00:00\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[\"bssid_list\"],\"mdm_enrollment_status\":\"mdm_enrollment_status\",\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":\"card_name\",\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"198.51.100.124\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[\"ise_security_group_description_1\"],\"edge_hosts_seen_reported_from\":[],\"edge_locations_seen_reported_from\":[],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":123.87,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[],\"switch_group_name_list\":[\"switch_group_name_1\"],\"insecure_protocols_points\":0,\"authentication_user_list\":[\"auth_user_list\"],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+        "risk_score": 74.937035,
+        "severity": 99
+      },
+      "host": {
+        "hostname": "http_last_seen_hostname",
+        "id": "33410c79-2748-4c24-9f77-c31276366f9c",
+        "mac": [
+          "46-43-52-AF-BA-97",
+          "96-9A-9B-F2-85-88"
+        ],
+        "name": "asbqd",
+        "os": {
+          "family": "Other",
+          "full": "Windows XP",
+          "name": "linux",
+          "version": "7.9"
+        },
+        "type": "PLC"
+      },
+      "observer": {
+        "ingress": {
+          "vlan": {
+            "id": [
+              "122",
+              "123"
+            ],
+            "name": [
+              "VLAN 122",
+              "VLAN 123"
+            ]
+          }
+        },
+        "product": "xDome",
+        "vendor": "Claroty"
+      },
+      "related": {
+        "hosts": [
+          "Windows XP",
+          "dhcp_last_seen_hostname",
+          "http_last_seen_hostname",
+          "asbqd",
+          "local_name",
+          "linux",
+          "Houston_Line_1",
+          "snmp_last_seen_hostname",
+          "33410c79-2748-4c24-9f77-c31276366f9c",
+          "windows_last_seen_hostname"
+        ],
+        "ip": [
+          "203.0.113.248",
+          "203.0.113.177",
+          "192.0.2.54"
+        ],
+        "user": [
+          "3rd Party SOC (Group)",
+          "Aer Lcfmpay",
+          "Xsxb Fsbnpnf",
+          "Seawuxmh Zthoi (Group)",
+          "ben.jackman",
+          "jose.a",
+          "37",
+          "31",
+          "3rd Party SOC",
+          "Seawuxmh Zthoi",
+          "iw_patch"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "claroty_xdome": {
+        "alert": {
+          "device": {
+            "active_queries_seen_reported_from": [
+              "active_queries_seen_reported_from"
+            ],
+            "activity_rate": 67.0,
+            "ad": {
+              "description": "ad_description",
+              "distinguished_name": "ad_distinguished_name"
+            },
+            "ae_titles": [
+              "ae_titles"
+            ],
+            "ap": {
+              "location_list": [
+                "ap_location_list"
+              ],
+              "name_list": [
+                "ap_name_1"
+              ]
+            },
+            "applied_acl": {
+              "list": [
+                "applied_acl_list"
+              ],
+              "type_list": [
+                "applied_acl_type_1"
+              ]
+            },
+            "asset_id": "GVRTXYC",
+            "assignees": [
+              "3rd Party SOC (Group)",
+              "Aer Lcfmpay",
+              "Xsxb Fsbnpnf",
+              "Seawuxmh Zthoi (Group)"
+            ],
+            "assignees_data": [
+              {
+                "display_name": "Aer Lcfmpay",
+                "id": "ben.jackman",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "Xsxb Fsbnpnf",
+                "id": "jose.a",
+                "is_active": true,
+                "type": "user"
+              },
+              {
+                "display_name": "3rd Party SOC",
+                "id": "37",
+                "type": "group"
+              },
+              {
+                "display_name": "Seawuxmh Zthoi",
+                "id": "31",
+                "type": "group"
+              }
+            ],
+            "authentication_user_list": [
+              "auth_user_list"
+            ],
+            "avg": {
+              "examinations_per_day": 67.0,
+              "in_use_per_day": 85.3,
+              "online_per_day": 16.1
+            },
+            "battery_level": "battery_level",
+            "bssid_list": [
+              "bssid_list"
+            ],
+            "category": "OT",
+            "cmms": {
+              "asset": {
+                "tag": "cmms_asset_tag"
+              },
+              "financial_cost": 123.87
+            },
+            "collection": {
+              "interfaces": {
+                "seen_reported_from": [
+                  "ens142@demo-collection-houston_line_1",
+                  "ens142@demo-collection-houston_line_2",
+                  "ens164@demo-collection-houston_line_1",
+                  "ens164@demo-collection-houston_line_2",
+                  "ens178@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_1",
+                  "ens192@demo-collection-houston_line_2"
+                ]
+              },
+              "servers": {
+                "seen_reported_from": [
+                  "demo-collection-houston_line_1",
+                  "demo-collection-houston_line_2"
+                ]
+              }
+            },
+            "combined_os": "Windows XP",
+            "connection": {
+              "paths": [
+                "connection_paths"
+              ],
+              "type_list": [
+                "Ethernet",
+                "Ethernet"
+              ]
+            },
+            "consequence_of_failure": "non known",
+            "cppm": {
+              "authentication_status_list": [
+                "cppm_auth_stats_1"
+              ],
+              "service_list": [
+                "cppm_service_list"
+              ]
+            },
+            "data_sources_seen_reported_from": [
+              "Passive Collection"
+            ],
+            "dhcp": {
+              "fingerprint": "unknown",
+              "hostnames": [
+                "dhcp_hostnames"
+              ],
+              "last_seen_hostname": "dhcp_last_seen_hostname"
+            },
+            "domains": [
+              "domains"
+            ],
+            "edge": {
+              "hosts_seen_reported_from": [
+                "edge_hosts_seen_reported_from"
+              ],
+              "locations_seen_reported_from": [
+                "edge_locations_seen_reported_from"
+              ]
+            },
+            "edr": {
+              "is_up_to_date_text": "edr_is_up_to_date_text",
+              "last_scan_time": "2053-03-08T10:38:25.734Z"
+            },
+            "effective_likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "end_of": {
+              "life": {
+                "date": "2052-10-02T02:40:29.679Z",
+                "state": "Manufacturer Supported"
+              },
+              "sale_date": "2052-10-02T02:40:29.679Z"
+            },
+            "endpoint_security_names": [
+              "endpoint_security_names"
+            ],
+            "equipment_class": "equipment_class",
+            "fda_class": "fda_class",
+            "financial_cost": "< $1,000",
+            "first_seen_list": [
+              "2052-10-17T22:32:29.192Z",
+              "2052-11-22T19:27:31.192Z"
+            ],
+            "handles_pii": "Yes",
+            "http": {
+              "hostnames": [
+                "http_hostnames"
+              ],
+              "last_seen_hostname": "http_last_seen_hostname"
+            },
+            "hw_version": "8.9",
+            "impact_subscore": {
+              "points": 75.0,
+              "value": "Critical"
+            },
+            "insecure_protocols": {
+              "points": 0.0,
+              "value": "Very Low"
+            },
+            "integration_types_reported_from": [
+              "integration_types_reported_from"
+            ],
+            "integrations_reported_from": [
+              "integrations_reported_from"
+            ],
+            "internet_communication": "No",
+            "ip": {
+              "assignment_list": [
+                "Static",
+                "Static"
+              ],
+              "list": [
+                "203.0.113.138",
+                "198.51.100.211"
+              ]
+            },
+            "is_online": true,
+            "is_resolved": false,
+            "ise": {
+              "authentication_method_list": [
+                "ise_auth_method_1",
+                "ise_auth_method_2"
+              ],
+              "endpoint_profile_list": [
+                "ise_endpoint_profile_list"
+              ],
+              "identity_group_list": [
+                "ise_grp_1"
+              ],
+              "logical_profile_list": [
+                "ise_logical_profile_1"
+              ],
+              "security_group": {
+                "description_list": [
+                  "ise_security_group_description_1"
+                ],
+                "name_list": [
+                  "ise_security_grp_name_1"
+                ],
+                "tag_list": [
+                  "ise_security_group_tag_list"
+                ]
+              }
+            },
+            "known_vulnerabilities": {
+              "points": 96.85353,
+              "value": "Critical"
+            },
+            "labels": [
+              "criticality",
+              "Criticidad alta",
+              "Expose OT Asset",
+              "Exposed OT & Critical Vulnerabilities",
+              "Exposed OT Asset",
+              "Linea 1",
+              "OT Internet Klabin",
+              "Urgent"
+            ],
+            "last": {
+              "scan_time": "2053-03-08T10:38:25.734Z",
+              "seen": {
+                "list": [
+                  "2053-02-09T21:44:30.192Z",
+                  "2053-03-25T02:08:43.951Z"
+                ],
+                "on_switch_list": [
+                  "2053-03-09T09:42:00.192Z"
+                ],
+                "reported": "2053-03-26T02:33:09.249Z"
+              }
+            },
+            "last_domain_user": {
+              "activity": "2053-03-08T10:38:25.734Z",
+              "name": "iw_patch"
+            },
+            "likelihood_subscore": {
+              "points": 74.89506,
+              "value": "Critical"
+            },
+            "local_name": "local_name",
+            "mac": {
+              "list": [
+                "46:43:52:af:ba:97",
+                "96:9a:9b:f2:85:88"
+              ],
+              "oui_list": [
+                "Rockwell Automation",
+                "Prosoft Technology, Inc"
+              ]
+            },
+            "machine_type": "Physical",
+            "managed_by": [
+              "managed_by"
+            ],
+            "manufacturer": "Rockwell Automation",
+            "mdm": {
+              "compliance_status": "mdm_comp_stats",
+              "enrollment_status": "mdm_enrollment_status",
+              "ownership": "mdm_ownership"
+            },
+            "mobility": "Stationary",
+            "model": {
+              "family": "model_family",
+              "name": "1756-L7SP/B LOGIXSAFETY"
+            },
+            "name": "unknown",
+            "network": {
+              "scope_list": [
+                "Default",
+                "Default"
+              ]
+            },
+            "network_list": [
+              "Industrial",
+              "Industrial"
+            ],
+            "note": "note",
+            "number_of_nics": 2,
+            "organization": {
+              "firewall_group_name": "No Zone"
+            },
+            "os": {
+              "category": "Other",
+              "eol_date": "2052-10-02T02:40:29.679Z",
+              "name": "linux",
+              "revision": "unknown",
+              "subcategory": "os_subcategory",
+              "version": "7.9"
+            },
+            "other_hostnames": [
+              "other_hostnames"
+            ],
+            "phi": "phi",
+            "product": {
+              "code": "product_code"
+            },
+            "protocol": {
+              "location_list": [
+                "protocol_loc_1"
+              ]
+            },
+            "purdue_level": {
+              "source": "Auto-Assigned",
+              "value": "Level 1"
+            },
+            "recommended": {
+              "firewall_group_name": "Controllers"
+            },
+            "retired": {
+              "since": "2052-10-02T02:40:29.679Z",
+              "value": false
+            },
+            "risk_score": {
+              "points": 74.937035,
+              "value": "Critical"
+            },
+            "serial_number": "00172DC0",
+            "site": {
+              "group_name": "No Group",
+              "name": "Houston_Line_1"
+            },
+            "slot_cards": {
+              "count": 9,
+              "racks": [
+                {
+                  "cards": [
+                    {
+                      "card_type": "Network Card",
+                      "ip": "203.0.113.212",
+                      "mac": "96:9a:9b:f2:85:88",
+                      "model": "MVI56E-MCM",
+                      "name": "card_name",
+                      "serial_number": "001B57F9",
+                      "slot_number": 4,
+                      "sw_version": "V3.007",
+                      "uid": "2c1a2ff5-982b-4d82-8b4c-cf646da5ee84",
+                      "vendor": "ProSoft"
+                    }
+                  ],
+                  "number_of_slots": 9
+                }
+              ]
+            },
+            "snmp": {
+              "hostnames": [
+                "snmp_hostnames"
+              ],
+              "last_seen_hostname": "snmp_last_seen_hostname"
+            },
+            "software_or_firmware_version": "V24.012",
+            "ssid_list": [
+              "ssid_list"
+            ],
+            "subcategory": "Control",
+            "suspicious": [
+              "suspicious"
+            ],
+            "switch": {
+              "group_name_list": [
+                "switch_group_name_1"
+              ],
+              "ip_list": [
+                "192.0.2.54"
+              ],
+              "location_list": [
+                "dep 7vqDM"
+              ],
+              "mac_list": [
+                "65:24:57:b3:5e:79"
+              ],
+              "port_description_list": [
+                "switch_port_description_list"
+              ],
+              "port_list": [
+                "Fa/1/30"
+              ]
+            },
+            "type": {
+              "family": "PLC",
+              "value": "PLC"
+            },
+            "uid": "33410c79-2748-4c24-9f77-c31276366f9c",
+            "utilization_rate": 0.0,
+            "visibility_score": {
+              "level": "Excellent",
+              "value": 99
+            },
+            "vlan": {
+              "description_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ],
+              "list": [
+                "122",
+                "123"
+              ],
+              "name_list": [
+                "VLAN 122",
+                "VLAN 123"
+              ]
+            },
+            "windows": {
+              "hostnames": [
+                "windows_hostnames"
+              ],
+              "last_seen_hostname": "windows_last_seen_hostname"
+            },
+            "wireless_encryption_type_list": [
+              "wireless_encryption_type_1"
+            ],
+            "wlc": {
+              "location_list": [
+                "wlc_location_1"
+              ],
+              "name_list": [
+                "wlc_name_list"
+              ]
+            }
+          }
+        }
+      },
+      "device": {
+        "manufacturer": "Rockwell Automation",
+        "model": {
+          "identifier": "1756-L7SP/B LOGIXSAFETY",
+          "name": "model_family"
+        },
+        "serial_number": "00172DC0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "kind": "alert",
+        "original": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[\"http_hostnames\"],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":\"2052-10-02T02:40:29.679460+00:00\",\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[\"integrations_reported_from\"],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[\"domains\"],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":\"2052-10-02T02:40:29.679460+00:00\",\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":\"ad_distinguished_name\",\"is_resolved\":false,\"product_code\":\"product_code\",\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[\"switch_port_description_list\"],\"avg_in_use_per_day\":85.3,\"ip_list\":[\"203.0.113.138\",\"198.51.100.211\"],\"ae_titles\":[\"ae_titles\"],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":\"snmp_last_seen_hostname\",\"applied_acl_list\":[\"applied_acl_list\"],\"cppm_service_list\":[\"cppm_service_list\"],\"windows_last_seen_hostname\":\"windows_last_seen_hostname\",\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[\"wifi_last_seen_list\"],\"device_category\":\"OT\",\"device_name\":\"unknown\",\"fda_class\":\"fda_class\",\"mdm_ownership\":\"mdm_ownership\",\"device_type\":\"PLC\",\"os_subcategory\":\"os_subcategory\",\"endpoint_security_names\":[\"endpoint_security_names\"],\"other_hostnames\":[\"other_hostnames\"],\"windows_hostnames\":[\"windows_hostnames\"],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[\"wlc_name_list\"],\"ssid_list\":[\"ssid_list\"],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"ise_endpoint_profile_list\":[\"ise_endpoint_profile_list\"],\"ap_location_list\":[\"ap_location_list\"],\"model_family\":\"model_family\",\"last_domain_user_activity\":\"2053-03-08T10:38:25.734197+00:00\",\"cmms_asset_tag\":\"cmms_asset_tag\",\"edr_last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"utilization_rate\":0,\"integration_types_reported_from\":[\"integration_types_reported_from\"],\"battery_level\":\"battery_level\",\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":\"unknown\",\"dhcp_hostnames\":[\"dhcp_hostnames\"],\"device_subcategory\":\"Control\",\"os_version\":\"7.9\",\"edr_is_up_to_date_text\":\"edr_is_up_to_date_text\",\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[\"connection_paths\"],\"hw_version\":\"8.9\",\"ad_description\":\"ad_description\",\"switch_ip_list\":[\"192.0.2.54\"],\"handles_pii\":\"Yes\",\"snmp_hostnames\":[\"snmp_hostnames\"],\"os_eol_date\":\"2052-10-02T02:40:29.679460+00:00\",\"switch_location_list\":[\"dep 7vqDM\"],\"equipment_class\":\"equipment_class\",\"last_domain_user\":\"iw_patch\",\"ise_security_group_tag_list\":[\"ise_security_group_tag_list\"],\"avg_examinations_per_day\":67,\"end_of_sale_date\":\"2052-10-02T02:40:29.679460+00:00\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[\"bssid_list\"],\"mdm_enrollment_status\":\"mdm_enrollment_status\",\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[\"suspicious\"],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":\"card_name\",\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"203.0.113.212\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[\"managed_by\"],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[\"ise_security_group_description_1\"],\"edge_hosts_seen_reported_from\":[\"edge_hosts_seen_reported_from\"],\"edge_locations_seen_reported_from\":[\"edge_locations_seen_reported_from\"],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":123.87,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[\"active_queries_seen_reported_from\"],\"switch_group_name_list\":[\"switch_group_name_1\"],\"insecure_protocols_points\":0,\"authentication_user_list\":[\"auth_user_list\"],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+        "risk_score": 74.937035,
+        "severity": 99
+      },
+      "host": {
+        "domain": [
+          "domains"
+        ],
+        "hostname": "http_last_seen_hostname",
+        "id": "33410c79-2748-4c24-9f77-c31276366f9c",
+        "mac": [
+          "46-43-52-AF-BA-97",
+          "96-9A-9B-F2-85-88"
+        ],
+        "name": "unknown",
+        "os": {
+          "family": "Other",
+          "full": "Windows XP",
+          "name": "linux",
+          "version": "7.9"
+        },
+        "type": "PLC"
+      },
+      "observer": {
+        "ingress": {
+          "vlan": {
+            "id": [
+              "122",
+              "123"
+            ],
+            "name": [
+              "VLAN 122",
+              "VLAN 123"
+            ]
+          }
+        },
+        "product": "xDome",
+        "vendor": "Claroty"
+      },
+      "related": {
+        "hosts": [
+          "Windows XP",
+          "dhcp_hostnames",
+          "dhcp_last_seen_hostname",
+          "domains",
+          "http_hostnames",
+          "http_last_seen_hostname",
+          "unknown",
+          "local_name",
+          "linux",
+          "other_hostnames",
+          "Houston_Line_1",
+          "snmp_hostnames",
+          "snmp_last_seen_hostname",
+          "33410c79-2748-4c24-9f77-c31276366f9c",
+          "windows_hostnames",
+          "windows_last_seen_hostname"
+        ],
+        "ip": [
+          "203.0.113.138",
+          "198.51.100.211",
+          "192.0.2.54"
+        ],
+        "user": [
+          "3rd Party SOC (Group)",
+          "Aer Lcfmpay",
+          "Xsxb Fsbnpnf",
+          "Seawuxmh Zthoi (Group)",
+          "ben.jackman",
+          "jose.a",
+          "37",
+          "31",
+          "3rd Party SOC",
+          "Seawuxmh Zthoi",
+          "iw_patch"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-12T16:00:00.000Z",
+      "claroty_xdome": {
+        "alert": {
+          "description": "Claroty",
+          "device": {
+            "combined_os": [
+              "Industrial"
+            ],
+            "dhcp": {
+              "hostnames": [
+                "claroty_dhcp"
+              ],
+              "last_seen_hostname": "OT Activity"
+            },
+            "domains": [
+              "claroty_domain"
+            ],
+            "http": {
+              "hostnames": [
+                "http://claroty"
+              ],
+              "last_seen_hostname": "http_last_seen_hostname"
+            },
+            "last_domain_user": {
+              "name": "admin"
+            },
+            "local_name": [
+              "CrowdStrike Falcon"
+            ],
+            "mac": {
+              "list": [
+                "00:00:00:00:00:00"
+              ]
+            },
+            "manufacturer": "CrowdStrike",
+            "model": {
+              "family": [
+                "Static"
+              ],
+              "name": "CrowdStrike Falcon"
+            },
+            "name": "device_name",
+            "os": {
+              "category": "Windows",
+              "name": "Windows",
+              "version": "10"
+            },
+            "other_hostnames": [
+              "Randomized Locally Administered Address"
+            ],
+            "risk_score": {
+              "points": 1.0,
+              "value": "Low"
+            },
+            "serial_number": "123456789",
+            "site": {
+              "name": "New York Data Center"
+            },
+            "snmp": {
+              "hostnames": [
+                "device-123.example.com"
+              ],
+              "last_seen_hostname": "device-123.example.com"
+            },
+            "switch": {
+              "ip_list": [
+                "192.0.2.134",
+                "192.0.2.54"
+              ]
+            },
+            "type": {
+              "value": "Workstation"
+            },
+            "uid": "az1321",
+            "windows": {
+              "hostnames": [
+                "localhost"
+              ],
+              "last_seen_hostname": "windows_last_seen_hostname"
+            }
+          },
+          "friendly_name": "OT Activity",
+          "name": "OT Activity",
+          "updated_time": "2051-05-12T16:00:00.000Z"
+        }
+      },
+      "device": {
+        "manufacturer": "CrowdStrike",
+        "model": {
+          "identifier": "CrowdStrike Falcon",
+          "name": [
+            "Static"
+          ]
+        },
+        "serial_number": "123456789"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ot-activity",
+        "kind": "alert",
+        "original": "{\"alert_info\":{\"description\":\"Claroty\",\"alert_name\":\"OT Activity\",\"updated_time\":\"2051-05-12T16:00:00.000Z\"},\"combined_os\":[\"Industrial\"],\"dhcp_hostnames\":[\"claroty_dhcp\"],\"dhcp_last_seen_hostname\":\"OT Activity\",\"domains\":[\"claroty_domain\"],\"http_hostnames\":[\"http://claroty\"],\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"device_name\":\"device_name\",\"last_domain_user\":\"admin\",\"local_name\":[\"CrowdStrike Falcon\"],\"mac_list\":[\"00:00:00:00:00:00\"],\"manufacturer\":\"CrowdStrike\",\"model_family\":[\"Static\"],\"model\":\"CrowdStrike Falcon\",\"os_category\":\"Windows\",\"os_name\":\"Windows\",\"os_version\":\"10\",\"other_hostnames\":[\"Randomized Locally Administered Address\"],\"risk_score_points\":1,\"risk_score\":\"Low\",\"serial_number\":\"123456789\",\"device_type\":\"Workstation\",\"uid\":\"az1321\",\"windows_last_seen_hostname\":\"windows_last_seen_hostname\",\"windows_hostnames\":[\"localhost\"],\"switch_ip_list\":[\"192.0.2.134\",\"192.0.2.54\"],\"snmp_last_seen_hostname\":\"device-123.example.com\",\"snmp_hostnames\":[\"device-123.example.com\"],\"site_name\":\"New York Data Center\"}",
+        "risk_score": 1.0,
+        "severity": 21
+      },
+      "host": {
+        "domain": [
+          "claroty_domain"
+        ],
+        "hostname": "http_last_seen_hostname",
+        "id": "az1321",
+        "mac": [
+          "00-00-00-00-00-00"
+        ],
+        "name": "device_name",
+        "os": {
+          "family": "Windows",
+          "full": [
+            "Industrial"
+          ],
+          "name": "Windows",
+          "version": "10"
+        },
+        "type": "Workstation"
+      },
+      "message": "Claroty",
+      "observer": {
+        "product": "xDome",
+        "vendor": "Claroty"
+      },
+      "related": {
+        "hosts": [
+          "{0=Industrial}",
+          "claroty_dhcp",
+          "OT Activity",
+          "claroty_domain",
+          "http://claroty",
+          "http_last_seen_hostname",
+          "device_name",
+          "{0=CrowdStrike Falcon}",
+          "Windows",
+          "Randomized Locally Administered Address",
+          "New York Data Center",
+          "device-123.example.com",
+          "az1321",
+          "localhost",
+          "windows_last_seen_hostname"
+        ],
+        "ip": [
+          "192.0.2.134",
+          "192.0.2.54"
+        ],
+        "user": [
+          "admin"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"ad_description\":\"ad description\",\"risk_score\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"5d8a8337-9163-4970-b53c-e9abadd649f6\",\"slot_number\":0,\"name\":null,\"card_type\":\"CPU\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V24.012\",\"serial_number\":\"00172DC0\"},{\"uid\":\"c1999b69-1851-4753-b946-bea5042f0e2c\",\"slot_number\":1,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1756-OB16E/A DCOUT EFUSE\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V3.003\",\"serial_number\":\"000F75F0\"},{\"uid\":\"9ba12e14-2d43-4a8e-b602-c312e4375e07\",\"slot_number\":2,\"name\":null,\"card_type\":\"CPU\",\"model\":\"1756-L73S/B LOGIX5573 SAFETY\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V32.011\",\"serial_number\":\"00140557\"},{\"uid\":\"888d11ff-7e38-4725-b851-72c13a037d59\",\"slot_number\":3,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1756-IB32/B DCIN\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V3.005\",\"serial_number\":\"001D1DF9\"},{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":null,\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"203.0.113.212\",\"mac\":\"96:9a:9b:f2:85:88\"},{\"uid\":\"f77ea049-513e-4d5d-8594-1598cc73d825\",\"slot_number\":5,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1756-IF16/A\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V1.005\",\"serial_number\":\"0016F448\"},{\"uid\":\"91498db0-d2e0-47d2-853b-ae501373e0e4\",\"slot_number\":6,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1746-IB16 16-Input (SINK) 24 VDC\",\"vendor\":\"Rockwell Automation\",\"sw_version\":null,\"serial_number\":\"001D0134\"},{\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"slot_number\":7,\"name\":null,\"card_type\":\"Network Card\",\"model\":\"1756-EN2T/D\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V11.002\",\"serial_number\":\"0019410D\",\"ip\":\"192.0.2.134\",\"mac\":\"46:43:52:af:ba:97\"},{\"uid\":\"c8756470-1a03-4246-aaef-7fcf39e639f3\",\"slot_number\":8,\"name\":null,\"card_type\":\"I/O\",\"model\":\"1746-IA16 16-Input 100/120 VAC\",\"vendor\":\"Rockwell Automation\",\"sw_version\":\"V3.005\",\"serial_number\":\"001252EE\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":57.090244,\"ad_distinguished_name\":\"ad_distinguished_name\",\"domains\":[\"dmn1\",\"dmn2\"],\"ae_titles\":[],\"alert_info\":{\"alert_class\":\"Device Changes Alerts\",\"alert_type_name\":\"Location Change\",\"category\":\"Device Changes\",\"description\":\"A SSID Change alert of type Location Change was created for 30 devices\",\"detected_time\":\"2052-09-14T01:01:57.093925Z\",\"devices_count\":30,\"id\":1000088,\"iot_devices_count\":19,\"it_devices_count\":5,\"malicious_ip_tags_list\":[\"ip-tag1\",\"ip-tag2\"],\"medical_devices_count\":0,\"mitre_technique_enterprise_ids\":[],\"mitre_technique_enterprise_names\":[],\"mitre_technique_ics_ids\":[],\"mitre_technique_ics_names\":[],\"ot_devices_count\":6,\"status\":\"Unresolved\",\"unresolved_devices_count\":30,\"updated_time\":\"2053-03-20T02:56:32.316179Z\"},\"asset_id\":\"IFDFHWB\",\"assignees\":[],\"device_name\":\"192.0.2.218\",\"assignees_data\":[{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"}],\"combined_os\":\"Windows XP\",\"consequence_of_failure\":\"unknown\",\"device_category\":\"OT\",\"device_subcategory\":\"Process\",\"device_type\":\"Autonomous Vehicle\",\"device_type_family\":\"Autonomous Vehicle\",\"dhcp_fingerprint\":\"fingerprint-1\",\"dhcp_hostnames\":[\"dhname\"],\"dhcp_last_seen_hostname\":\"dlasthname\",\"endpoint_security_names\":[],\"equipment_class\":\"eclass\",\"fda_class\":\"fda-class\",\"http_hostnames\":[\"httphname\"],\"http_last_seen_hostname\":\"host1name\",\"hw_version\":\"1.0.5\",\"ip_list\":[\"192.0.2.134\"],\"switch_ip_list\":[\"203.0.113.138\"],\"labels\":[\"OT Assets without Assignees\",\"OT Internet Klabin\"],\"last_domain_user\":\"ldnuser\",\"local_name\":\"hostlocalname\",\"mac_list\":[\"31:58:3f:f6:ba:3a\"],\"management_services\":[],\"mdm_compliance_status\":\"stats\",\"mdm_enrollment_status\":\"mdm-endroll-stats\",\"mdm_ownership\":\"mdm-owner\",\"mobility\":\"Stationary\",\"model\":\"CB4500\",\"model_family\":\"sam\",\"network_list\":[\"Corporate\"],\"os_category\":\"Other\",\"os_name\":\"Linux\",\"os_revision\":\"M1AJQ\",\"site_name\":\"sname1\",\"os_subcategory\":\"Windows XP\",\"os_version\":\"10.4.5\",\"other_hostnames\":[\"ohname\"],\"product_code\":\"125\",\"purdue_level\":\"Level 0\",\"purdue_level_source\":\"Auto-Assigned\",\"retired\":false,\"serial_number\":\"DJGAQS4CW5\",\"snmp_hostnames\":[\"snmp-host\"],\"snmp_last_seen_hostname\":\"snmp_hname\",\"uid\":\"25d661fd-08e3-4be2-a8c7-7f372fe6f147\",\"vlan_list\":[124],\"vlan_name_list\":[\"Radiology Network\"],\"windows_hostnames\":[\"wname\"],\"windows_last_seen_hostname\":\"whost\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":null,\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":null,\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":null,\"is_resolved\":false,\"product_code\":null,\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[null],\"avg_in_use_per_day\":null,\"ip_list\":[\"203.0.113.177\",\"203.0.113.212\"],\"ae_titles\":[],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":null,\"applied_acl_list\":[null],\"cppm_service_list\":[null],\"windows_last_seen_hostname\":null,\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[null],\"device_category\":\"OT\",\"device_name\":\"192.0.2.134\",\"fda_class\":null,\"mdm_ownership\":null,\"device_type\":\"PLC\",\"os_subcategory\":null,\"endpoint_security_names\":[],\"other_hostnames\":[],\"windows_hostnames\":[],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[null],\"ssid_list\":[null],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":null,\"ise_endpoint_profile_list\":[null],\"ap_location_list\":[null],\"model_family\":null,\"last_domain_user_activity\":null,\"cmms_asset_tag\":null,\"edr_last_scan_time\":null,\"utilization_rate\":0,\"integration_types_reported_from\":[],\"battery_level\":null,\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":null,\"dhcp_hostnames\":[],\"device_subcategory\":\"Control\",\"os_version\":null,\"edr_is_up_to_date_text\":null,\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[],\"hw_version\":null,\"ad_description\":null,\"switch_ip_list\":[null],\"handles_pii\":null,\"snmp_hostnames\":[],\"os_eol_date\":null,\"switch_location_list\":[\"dep 7vqDM\",null],\"equipment_class\":null,\"last_domain_user\":null,\"ise_security_group_tag_list\":[null],\"avg_examinations_per_day\":null,\"end_of_sale_date\":null,\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[null],\"mdm_enrollment_status\":null,\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":null,\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"198.51.100.124\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[null],\"edge_hosts_seen_reported_from\":[],\"edge_locations_seen_reported_from\":[],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":null,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[],\"switch_group_name_list\":[null],\"insecure_protocols_points\":0,\"authentication_user_list\":[null],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":null,\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":null,\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":null,\"is_resolved\":false,\"product_code\":null,\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[null],\"avg_in_use_per_day\":null,\"ip_list\":[\"203.0.113.212\",\"198.51.100.124\"],\"ae_titles\":[],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":null,\"applied_acl_list\":[null],\"cppm_service_list\":[null],\"windows_last_seen_hostname\":null,\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[null],\"device_category\":\"OT\",\"device_name\":\"192.0.2.218\",\"fda_class\":null,\"mdm_ownership\":null,\"device_type\":\"PLC\",\"os_subcategory\":null,\"endpoint_security_names\":[],\"other_hostnames\":[],\"windows_hostnames\":[],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[null],\"ssid_list\":[null],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":null,\"ise_endpoint_profile_list\":[null],\"ap_location_list\":[null],\"model_family\":null,\"last_domain_user_activity\":null,\"cmms_asset_tag\":null,\"edr_last_scan_time\":null,\"utilization_rate\":0,\"integration_types_reported_from\":[],\"battery_level\":null,\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":null,\"dhcp_hostnames\":[],\"device_subcategory\":\"Control\",\"os_version\":\"7.9\",\"edr_is_up_to_date_text\":\"edr_is_up_to_date_text\",\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[],\"hw_version\":\"8.9\",\"ad_description\":\"ad_description\",\"switch_ip_list\":[\"203.0.113.248\"],\"handles_pii\":\"Yes\",\"snmp_hostnames\":[],\"os_eol_date\":\"2052-10-02T02:40:29.679460+00:00\",\"switch_location_list\":[\"dep 7vqDM\"],\"equipment_class\":\"equipment_class\",\"last_domain_user\":\"iw_patch\",\"ise_security_group_tag_list\":[\"ise_security_group_tag_list\"],\"avg_examinations_per_day\":67,\"end_of_sale_date\":\"2052-10-02T02:40:29.679460+00:00\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[\"bssid_list\"],\"mdm_enrollment_status\":\"mdm_enrollment_status\",\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":\"card_name\",\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"192.0.2.54\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[\"ise_security_group_description_1\"],\"edge_hosts_seen_reported_from\":[],\"edge_locations_seen_reported_from\":[],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":123.87,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[],\"switch_group_name_list\":[\"switch_group_name_1\"],\"insecure_protocols_points\":0,\"authentication_user_list\":[\"auth_user_list\"],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":\"2052-10-02T02:40:29.679460+00:00\",\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":\"2052-10-02T02:40:29.679460+00:00\",\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":\"ad_distinguished_name\",\"is_resolved\":false,\"product_code\":\"product_code\",\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[\"switch_port_description_list\"],\"avg_in_use_per_day\":85.3,\"ip_list\":[\"203.0.113.248\",\"203.0.113.177\"],\"ae_titles\":[],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":\"snmp_last_seen_hostname\",\"applied_acl_list\":[\"applied_acl_list\"],\"cppm_service_list\":[\"cppm_service_list\"],\"windows_last_seen_hostname\":\"windows_last_seen_hostname\",\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[\"wifi_last_seen_list\"],\"device_category\":\"OT\",\"device_name\":\"asbqd\",\"fda_class\":\"fda_class\",\"mdm_ownership\":\"mdm_ownership\",\"device_type\":\"PLC\",\"os_subcategory\":\"os_subcategory\",\"endpoint_security_names\":[],\"other_hostnames\":[],\"windows_hostnames\":[],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[\"wlc_name_list\"],\"ssid_list\":[\"ssid_list\"],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"ise_endpoint_profile_list\":[\"ise_endpoint_profile_list\"],\"ap_location_list\":[\"ap_location_list\"],\"model_family\":\"model_family\",\"last_domain_user_activity\":\"2053-03-08T10:38:25.734197+00:00\",\"cmms_asset_tag\":\"cmms_asset_tag\",\"edr_last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"utilization_rate\":0,\"integration_types_reported_from\":[],\"battery_level\":\"battery_level\",\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":\"unknown\",\"dhcp_hostnames\":[],\"device_subcategory\":\"Control\",\"os_version\":\"7.9\",\"edr_is_up_to_date_text\":\"edr_is_up_to_date_text\",\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[],\"hw_version\":\"8.9\",\"ad_description\":\"ad_description\",\"switch_ip_list\":[\"192.0.2.54\"],\"handles_pii\":\"Yes\",\"snmp_hostnames\":[],\"os_eol_date\":\"2052-10-02T02:40:29.679460+00:00\",\"switch_location_list\":[\"dep 7vqDM\"],\"equipment_class\":\"equipment_class\",\"last_domain_user\":\"iw_patch\",\"ise_security_group_tag_list\":[\"ise_security_group_tag_list\"],\"avg_examinations_per_day\":67,\"end_of_sale_date\":\"2052-10-02T02:40:29.679460+00:00\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[\"bssid_list\"],\"mdm_enrollment_status\":\"mdm_enrollment_status\",\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":\"card_name\",\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"198.51.100.124\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[\"ise_security_group_description_1\"],\"edge_hosts_seen_reported_from\":[],\"edge_locations_seen_reported_from\":[],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":123.87,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[],\"switch_group_name_list\":[\"switch_group_name_1\"],\"insecure_protocols_points\":0,\"authentication_user_list\":[\"auth_user_list\"],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"last_seen_on_switch_list\":[\"2053-03-09T09:42:00.192842+00:00\"],\"network_list\":[\"Industrial\",\"Industrial\"],\"dhcp_fingerprint\":\"unknown\",\"local_name\":\"local_name\",\"purdue_level_source\":\"Auto-Assigned\",\"consequence_of_failure\":\"non known\",\"ise_identity_group_list\":[\"ise_grp_1\"],\"protocol_location_list\":[\"protocol_loc_1\"],\"cppm_authentication_status_list\":[\"cppm_auth_stats_1\"],\"ap_name_list\":[\"ap_name_1\"],\"machine_type\":\"Physical\",\"visibility_score_level\":\"Excellent\",\"http_hostnames\":[\"http_hostnames\"],\"uid\":\"33410c79-2748-4c24-9f77-c31276366f9c\",\"os_name\":\"linux\",\"ise_authentication_method_list\":[\"ise_auth_method_1\",\"ise_auth_method_2\"],\"avg_online_per_day\":16.1,\"financial_cost\":\"< $1,000\",\"applied_acl_type_list\":[\"applied_acl_type_1\"],\"ise_security_group_name_list\":[\"ise_security_grp_name_1\"],\"retired\":false,\"site_group_name\":\"No Group\",\"vlan_description_list\":[\"VLAN 122\",\"VLAN 123\"],\"activity_rate\":67,\"number_of_nics\":2,\"mdm_compliance_status\":\"mdm_comp_stats\",\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"switch_port_list\":[\"Fa/1/30\"],\"network_scope_list\":[\"Default\",\"Default\"],\"connection_type_list\":[\"Ethernet\",\"Ethernet\"],\"wireless_encryption_type_list\":[\"wireless_encryption_type_1\"],\"mobility\":\"Stationary\",\"end_of_life_date\":\"2052-10-02T02:40:29.679460+00:00\",\"ise_logical_profile_list\":[\"ise_logical_profile_1\"],\"visibility_score\":99,\"assignees\":[\"3rd Party SOC (Group)\",\"Aer Lcfmpay\",\"Xsxb Fsbnpnf\",\"Seawuxmh Zthoi (Group)\"],\"is_online\":true,\"dhcp_last_seen_hostname\":\"dhcp_last_seen_hostname\",\"serial_number\":\"00172DC0\",\"mac_oui_list\":[\"Rockwell Automation\",\"Prosoft Technology, Inc\"],\"integrations_reported_from\":[\"integrations_reported_from\"],\"labels\":[\"criticality\",\"Criticidad alta\",\"Expose OT Asset\",\"Exposed OT & Critical Vulnerabilities\",\"Exposed OT Asset\",\"Linea 1\",\"OT Internet Klabin\",\"Urgent\"],\"domains\":[\"domains\"],\"phi\":\"phi\",\"switch_mac_list\":[\"65:24:57:b3:5e:79\"],\"vlan_list\":[122,123],\"os_category\":\"Other\",\"note\":\"note\",\"asset_id\":\"GVRTXYC\",\"combined_os\":\"Windows XP\",\"retired_since\":\"2052-10-02T02:40:29.679460+00:00\",\"wlc_location_list\":[\"wlc_location_1\"],\"site_name\":\"Houston_Line_1\",\"ad_distinguished_name\":\"ad_distinguished_name\",\"is_resolved\":false,\"product_code\":\"product_code\",\"first_seen_list\":[\"2052-10-17T22:32:29.192767+00:00\",\"2052-11-22T19:27:31.192631+00:00\"],\"switch_port_description_list\":[\"switch_port_description_list\"],\"avg_in_use_per_day\":85.3,\"ip_list\":[\"203.0.113.138\",\"198.51.100.211\"],\"ae_titles\":[\"ae_titles\"],\"internet_communication\":\"No\",\"snmp_last_seen_hostname\":\"snmp_last_seen_hostname\",\"applied_acl_list\":[\"applied_acl_list\"],\"cppm_service_list\":[\"cppm_service_list\"],\"windows_last_seen_hostname\":\"windows_last_seen_hostname\",\"purdue_level\":\"Level 1\",\"wifi_last_seen_list\":[\"wifi_last_seen_list\"],\"device_category\":\"OT\",\"device_name\":\"unknown\",\"fda_class\":\"fda_class\",\"mdm_ownership\":\"mdm_ownership\",\"device_type\":\"PLC\",\"os_subcategory\":\"os_subcategory\",\"endpoint_security_names\":[\"endpoint_security_names\"],\"other_hostnames\":[\"other_hostnames\"],\"windows_hostnames\":[\"windows_hostnames\"],\"vlan_name_list\":[\"VLAN 122\",\"VLAN 123\"],\"end_of_life_state\":\"Manufacturer Supported\",\"wlc_name_list\":[\"wlc_name_list\"],\"ssid_list\":[\"ssid_list\"],\"ip_assignment_list\":[\"Static\",\"Static\"],\"last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"ise_endpoint_profile_list\":[\"ise_endpoint_profile_list\"],\"ap_location_list\":[\"ap_location_list\"],\"model_family\":\"model_family\",\"last_domain_user_activity\":\"2053-03-08T10:38:25.734197+00:00\",\"cmms_asset_tag\":\"cmms_asset_tag\",\"edr_last_scan_time\":\"2053-03-08T10:38:25.734197+00:00\",\"utilization_rate\":0,\"integration_types_reported_from\":[\"integration_types_reported_from\"],\"battery_level\":\"battery_level\",\"mac_list\":[\"46:43:52:af:ba:97\",\"96:9a:9b:f2:85:88\"],\"device_type_family\":\"PLC\",\"os_revision\":\"unknown\",\"dhcp_hostnames\":[\"dhcp_hostnames\"],\"device_subcategory\":\"Control\",\"os_version\":\"7.9\",\"edr_is_up_to_date_text\":\"edr_is_up_to_date_text\",\"assignees_data\":[{\"id\":\"ben.jackman\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Aer Lcfmpay\"},{\"id\":\"jose.a\",\"type\":\"user\",\"is_active\":true,\"display_name\":\"Xsxb Fsbnpnf\"},{\"id\":37,\"type\":\"group\",\"display_name\":\"3rd Party SOC\"},{\"id\":31,\"type\":\"group\",\"display_name\":\"Seawuxmh Zthoi\"}],\"last_seen_list\":[\"2053-02-09T21:44:30.192767+00:00\",\"2053-03-25T02:08:43.951381+00:00\"],\"connection_paths\":[\"connection_paths\"],\"hw_version\":\"8.9\",\"ad_description\":\"ad_description\",\"switch_ip_list\":[\"192.0.2.54\"],\"handles_pii\":\"Yes\",\"snmp_hostnames\":[\"snmp_hostnames\"],\"os_eol_date\":\"2052-10-02T02:40:29.679460+00:00\",\"switch_location_list\":[\"dep 7vqDM\"],\"equipment_class\":\"equipment_class\",\"last_domain_user\":\"iw_patch\",\"ise_security_group_tag_list\":[\"ise_security_group_tag_list\"],\"avg_examinations_per_day\":67,\"end_of_sale_date\":\"2052-10-02T02:40:29.679460+00:00\",\"model\":\"1756-L7SP/B LOGIXSAFETY\",\"bssid_list\":[\"bssid_list\"],\"mdm_enrollment_status\":\"mdm_enrollment_status\",\"collection_servers_seen_reported_from\":[\"demo-collection-houston_line_1\",\"demo-collection-houston_line_2\"],\"likelihood_subscore\":\"Critical\",\"data_sources_seen_reported_from\":[\"Passive Collection\"],\"suspicious\":[\"suspicious\"],\"recommended_firewall_group_name\":\"Controllers\",\"software_or_firmware_version\":\"V24.012\",\"impact_subscore\":\"Critical\",\"effective_likelihood_subscore\":\"Critical\",\"known_vulnerabilities_points\":96.85353,\"collection_interfaces_seen_reported_from\":[\"ens142@demo-collection-houston_line_1\",\"ens142@demo-collection-houston_line_2\",\"ens164@demo-collection-houston_line_1\",\"ens164@demo-collection-houston_line_2\",\"ens178@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_1\",\"ens192@demo-collection-houston_line_2\"],\"insecure_protocols\":\"Very Low\",\"slot_cards\":{\"racks\":[{\"cards\":[{\"uid\":\"2c1a2ff5-982b-4d82-8b4c-cf646da5ee84\",\"slot_number\":4,\"name\":\"card_name\",\"card_type\":\"Network Card\",\"model\":\"MVI56E-MCM\",\"vendor\":\"ProSoft\",\"sw_version\":\"V3.007\",\"serial_number\":\"001B57F9\",\"ip\":\"203.0.113.212\",\"mac\":\"96:9a:9b:f2:85:88\"}],\"number_of_slots\":9}],\"cards_count\":9},\"risk_score_points\":74.937035,\"organization_firewall_group_name\":\"No Zone\",\"impact_subscore_points\":75,\"effective_likelihood_subscore_points\":74.89506,\"managed_by\":[\"managed_by\"],\"last_seen_reported\":\"2053-03-26T02:33:09.249098+00:00\",\"ise_security_group_description_list\":[\"ise_security_group_description_1\"],\"edge_hosts_seen_reported_from\":[\"edge_hosts_seen_reported_from\"],\"edge_locations_seen_reported_from\":[\"edge_locations_seen_reported_from\"],\"known_vulnerabilities\":\"Critical\",\"cmms_financial_cost\":123.87,\"risk_score\":\"Critical\",\"active_queries_seen_reported_from\":[\"active_queries_seen_reported_from\"],\"switch_group_name_list\":[\"switch_group_name_1\"],\"insecure_protocols_points\":0,\"authentication_user_list\":[\"auth_user_list\"],\"likelihood_subscore_points\":74.89506,\"manufacturer\":\"Rockwell Automation\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alert_info\":{\"description\":\"Claroty\",\"alert_name\":\"OT Activity\",\"updated_time\":\"2051-05-12T16:00:00.000Z\"},\"combined_os\":[\"Industrial\"],\"dhcp_hostnames\":[\"claroty_dhcp\"],\"dhcp_last_seen_hostname\":\"OT Activity\",\"domains\":[\"claroty_domain\"],\"http_hostnames\":[\"http://claroty\"],\"http_last_seen_hostname\":\"http_last_seen_hostname\",\"device_name\":\"device_name\",\"last_domain_user\":\"admin\",\"local_name\":[\"CrowdStrike Falcon\"],\"mac_list\":[\"00:00:00:00:00:00\"],\"manufacturer\":\"CrowdStrike\",\"model_family\":[\"Static\"],\"model\":\"CrowdStrike Falcon\",\"os_category\":\"Windows\",\"os_name\":\"Windows\",\"os_version\":\"10\",\"other_hostnames\":[\"Randomized Locally Administered Address\"],\"risk_score_points\":1,\"risk_score\":\"Low\",\"serial_number\":\"123456789\",\"device_type\":\"Workstation\",\"uid\":\"az1321\",\"windows_last_seen_hostname\":\"windows_last_seen_hostname\",\"windows_hostnames\":[\"localhost\"],\"switch_ip_list\":[\"192.0.2.134\",\"192.0.2.54\"],\"snmp_last_seen_hostname\":\"device-123.example.com\",\"snmp_hostnames\":[\"device-123.example.com\"],\"site_name\":\"New York Data Center\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alert",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claroty_xdome-alert-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "claroty_xdome",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "MobileDeviceCommandCompleted",
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "type": [
+          "change",
+          "end"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        },
+        "ip": [
+          "198.51.100.144"
+        ],
+        "os": {
+          "version": "99.4028"
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+            "device_name": "IQ1AV",
+            "icci_id": "9308678557",
+            "imei": "L1A9JO",
+            "ip_address": "198.51.100.144",
+            "jss_id": 362,
+            "management_id": "9121518973",
+            "model": "3VCG2Y",
+            "model_display": "OLQRN8",
+            "os_build": "51.3988",
+            "os_version": "99.4028",
+            "product": "Z1GO9Q",
+            "room": "5G0R6E",
+            "serial_number": "6909579",
+            "udid": "2090780867",
+            "user_directory_id": "0818653350",
+            "username": "Pnvw Eyd",
+            "version": "0SSNEI",
+            "wifi_mac_address": "ce:bb:a4:55:30:bc"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 333,
+            "name": "FGYMW",
+            "webhook_event": "MobileDeviceCommandCompleted"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "Pnvw Eyd"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "name": "Pnvw Eyd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "bluetooth_mac_address": "ce:bb:a4:55:30:bc",
+          "device_name": "IQ1AV",
+          "icci_id": "9308678557",
+          "imei": "L1A9JO",
+          "ip_address": "198.51.100.144",
+          "jss_id": 362,
+          "management_id": "9121518973",
+          "model": "3VCG2Y",
+          "model_display": "OLQRN8",
+          "os_build": "51.3988",
+          "os_version": "99.4028",
+          "product": "Z1GO9Q",
+          "room": "5G0R6E",
+          "serial_number": "6909579",
+          "udid": "2090780867",
+          "user_directory_id": "0818653350",
+          "username": "Pnvw Eyd",
+          "version": "0SSNEI",
+          "wifi_mac_address": "ce:bb:a4:55:30:bc"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 333,
+          "name": "FGYMW",
+          "webhook_event": "MobileDeviceCommandCompleted"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

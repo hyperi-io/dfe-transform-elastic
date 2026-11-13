@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:09:44.157Z",
+            "event": {
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "kind": "event",
+                "code": 4756
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4756.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "agent": {
+                "ephemeral_id": "dc5c10bb-9250-4cd6-9818-81113ad944fc",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "record_id": 4684,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "level": "information",
+                "event_data": {
+                    "TargetDomainName": "WLBEAT",
+                    "SubjectDomainName": "WLBEAT",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1113",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectUserName": "Administrator",
+                    "SubjectLogonId": "0x4a727",
+                    "PrivilegeList": "-",
+                    "MemberName": "CN=Administrator,CN=Users,DC=wlbeat,DC=local",
+                    "MemberSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "TargetUserName": "Vemj_sxvug2m5"
+                },
+                "channel": "Security",
+                "event_id": 4756,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "time_created": "2047-10-22T11:34:58.413Z",
+                "outcome": "success",
+                "process": {
+                    "pid": 772,
+                    "thread": {
+                        "id": 1664
+                    }
+                },
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}"
+            }
+        }
+    ]
+}

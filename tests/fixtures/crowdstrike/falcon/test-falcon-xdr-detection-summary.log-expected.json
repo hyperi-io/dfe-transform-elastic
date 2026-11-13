@@ -1,0 +1,111 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-01-27T21:08:17.728Z",
+      "crowdstrike": {
+        "event": {
+          "DataDomains": [
+            "Identity",
+            "Network",
+            "Endpoint"
+          ],
+          "PatternId": "100011",
+          "Severity": 90,
+          "SourceProducts": "Falcon,Corelight",
+          "SourceVendors": "CrowdStrike,Corelight",
+          "XdrType": "xdr"
+        },
+        "metadata": {
+          "customerIDString": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "eventType": "XdrDetectionSummaryEvent",
+          "offset": 34280810,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "xdr-detection",
+        "category": [
+          "malware"
+        ],
+        "created": "2050-04-28T19:30:43.000Z",
+        "end": "2050-01-27T21:12:07.664Z",
+        "kind": "alert",
+        "original": "{\"metadata\":{\"customerIDString\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"eventCreationTime\":2534787043000,\"eventType\":\"XdrDetectionSummaryEvent\",\"offset\":34280810,\"version\":\"1.0\"},\"event\":{\"Author\":\"CrowdStrike\",\"DataDomains\":\"Identity,Network,Endpoint\",\"Description\":\"Encrypted Metasploit traffic and login activity indicative of a brute force attempt were observed from a common IP.\",\"DetectId\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:ind:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:xdr|adc1e2b49051e9082735d1fa66ca58da\",\"EndTimeEpoch\":2526930727664000000,\"IPv4Addresses\":\"198.51.100.211,192.0.2.218\",\"HostNames\":\"XDR-WIN10\",\"Name\":\"Metasploit and brute force login attempt\",\"PatternId\":100011,\"Severity\":90,\"SourceProducts\":\"Falcon,Corelight\",\"SourceVendors\":\"CrowdStrike,Corelight\",\"StartTimeEpoch\":2526930497728000000,\"TacticIds\":\"TA0001,TA0002\",\"Tactics\":\"Initial Access,Execution\",\"TechniqueIds\":\"T1566.001,T1203\",\"Techniques\":\"Spearphishing Attachment,Exploitation for Client Execution\",\"XdrType\":\"xdr\"}}",
+        "start": "2050-01-27T21:08:17.728Z",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Encrypted Metasploit traffic and login activity indicative of a brute force attempt were observed from a common IP.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "XDR-WIN10"
+        ]
+      },
+      "rule": {
+        "author": [
+          "CrowdStrike"
+        ],
+        "description": "Encrypted Metasploit traffic and login activity indicative of a brute force attempt were observed from a common IP.",
+        "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:ind:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:xdr|adc1e2b49051e9082735d1fa66ca58da",
+        "name": "Metasploit and brute force login attempt",
+        "uuid": "100011"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "framework": "MITRE ATT&CK",
+        "tactic": {
+          "id": [
+            "TA0001",
+            "TA0002"
+          ],
+          "name": [
+            "Initial Access",
+            "Execution"
+          ]
+        },
+        "technique": {
+          "id": [
+            "T1566.001",
+            "T1203"
+          ],
+          "name": [
+            "Spearphishing Attachment",
+            "Exploitation for Client Execution"
+          ]
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"eventCreationTime\":2534787043000,\"eventType\":\"XdrDetectionSummaryEvent\",\"offset\":34280810,\"version\":\"1.0\"},\"event\":{\"Author\":\"CrowdStrike\",\"DataDomains\":\"Identity,Network,Endpoint\",\"Description\":\"Encrypted Metasploit traffic and login activity indicative of a brute force attempt were observed from a common IP.\",\"DetectId\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:ind:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:xdr|adc1e2b49051e9082735d1fa66ca58da\",\"EndTimeEpoch\":2526930727664000000,\"IPv4Addresses\":\"198.51.100.211,192.0.2.218\",\"HostNames\":\"XDR-WIN10\",\"Name\":\"Metasploit and brute force login attempt\",\"PatternId\":100011,\"Severity\":90,\"SourceProducts\":\"Falcon,Corelight\",\"SourceVendors\":\"CrowdStrike,Corelight\",\"StartTimeEpoch\":2526930497728000000,\"TacticIds\":\"TA0001,TA0002\",\"Tactics\":\"Initial Access,Execution\",\"TechniqueIds\":\"T1566.001,T1203\",\"Techniques\":\"Spearphishing Attachment,Exploitation for Client Execution\",\"XdrType\":\"xdr\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

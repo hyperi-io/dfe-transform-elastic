@@ -1,0 +1,10 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  _conf:
+    interval: 24h
+    ioc_expiration_duration: ''
+dynamic_fields:
+  event.ingested: .*
+  abusech.url.deleted_at: .*

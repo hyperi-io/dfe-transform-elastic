@@ -1,0 +1,177 @@
+{
+  "expected": [
+    {
+      "aws": {
+        "apigateway": {
+          "caller": "-",
+          "http_method": "GET",
+          "ip_address": "192.0.2.134",
+          "protocol": "HTTP/1.1",
+          "request_id": "18337f6c-d26b-4adf-a9d5-c1c8232d87a2",
+          "request_time": "2051-06-10T15:36:28.000Z",
+          "resource_path": "/pets",
+          "response_length": 184,
+          "status": 200,
+          "user": "-"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"requestId\":\"18337f6c-d26b-4adf-a9d5-c1c8232d87a2\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"10/Jun/2051:15:36:28 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/pets\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"184\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "aws": {
+        "apigateway": {
+          "caller": "-",
+          "http_method": "GET",
+          "ip_address": "192.0.2.134",
+          "protocol": "HTTP/1.1",
+          "request_id": "cfd4a155-7195-4547-aa6a-e585b797691c",
+          "request_time": "2051-07-19T16:15:46.000Z",
+          "resource_path": "/pets/{petId}",
+          "response_length": 49,
+          "status": 200,
+          "user": "-"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"requestId\": \"cfd4a155-7195-4547-aa6a-e585b797691c\",\"ip\": \"192.0.2.134\",\"caller\": \"-\",\"user\": \"-\",\"requestTime\": \"19/Jul/2051:16:15:46 +0000\",\"httpMethod\": \"GET\",\"resourcePath\": \"/pets/{petId}\",\"status\": \"200\",\"protocol\": \"HTTP/1.1\",\"responseLength\": \"49\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "aws": {
+        "apigateway": {
+          "caller": "-",
+          "http_method": "GET",
+          "ip_address": "192.0.2.134",
+          "protocol": "HTTP/1.1",
+          "request_id": "b6e02ea2-cf46-4440-b0b9-6a7172318741",
+          "request_time": "2051-07-19T16:15:44.000Z",
+          "resource_path": "/pets/{petId}",
+          "response_length": 49,
+          "status": 200,
+          "user": "-"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"requestId\": \"b6e02ea2-cf46-4440-b0b9-6a7172318741\",\"ip\": \"192.0.2.134\",\"caller\": \"-\",\"user\": \"-\",\"requestTime\": \"19/Jul/2051:16:15:44 +0000\",\"httpMethod\": \"GET\",\"resourcePath\": \"/pets/{petId}\",\"status\": \"200\",\"protocol\": \"HTTP/1.1\",\"responseLength\": \"49\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "aws": {
+        "apigateway": {
+          "api_id": "asad15n3p0",
+          "caller": "-",
+          "domain_name": "asad15n3p0.execute-api.us-east-1.amazonaws.com",
+          "http_method": "GET",
+          "ip_address": "192.0.2.134",
+          "protocol": "HTTP/1.1",
+          "request_id": "b68c8214-e33e-4a80-a043-ffc28177e18a",
+          "request_time": "2051-07-26T12:07:03.000Z",
+          "resource_path": "/pets/{petId}",
+          "response_length": 48,
+          "stage": "prod",
+          "status": 200,
+          "user": "-"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"requestId\":\"b68c8214-e33e-4a80-a043-ffc28177e18a\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"26/Jul/2051:12:07:03 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/pets/{petId}\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"48\",\"stage\":\"prod\",\"apiId\":\"asad15n3p0\",\"domainName\":\"asad15n3p0.execute-api.us-east-1.amazonaws.com\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "aws": {
+        "apigateway": {
+          "api_id": "asad15n3p0",
+          "caller": "-",
+          "domain_name": "asad15n3p0.execute-api.us-east-1.amazonaws.com",
+          "http_method": "GET",
+          "ip_address": "192.0.2.134",
+          "protocol": "HTTP/1.1",
+          "request_id": "708ac177-dd7c-4acb-98a4-fdc1698c7968",
+          "request_time": "2051-07-26T12:06:57.000Z",
+          "resource_path": "/",
+          "response_length": 1310,
+          "stage": "prod",
+          "status": 200,
+          "user": "-"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"requestId\":\"708ac177-dd7c-4acb-98a4-fdc1698c7968\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"26/Jul/2051:12:06:57 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"1310\",\"stage\":\"prod\",\"apiId\":\"asad15n3p0\",\"domainName\":\"asad15n3p0.execute-api.us-east-1.amazonaws.com\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"requestId\":\"18337f6c-d26b-4adf-a9d5-c1c8232d87a2\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"10/Jun/2051:15:36:28 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/pets\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"184\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"requestId\": \"cfd4a155-7195-4547-aa6a-e585b797691c\",\"ip\": \"192.0.2.134\",\"caller\": \"-\",\"user\": \"-\",\"requestTime\": \"19/Jul/2051:16:15:46 +0000\",\"httpMethod\": \"GET\",\"resourcePath\": \"/pets/{petId}\",\"status\": \"200\",\"protocol\": \"HTTP/1.1\",\"responseLength\": \"49\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"requestId\": \"b6e02ea2-cf46-4440-b0b9-6a7172318741\",\"ip\": \"192.0.2.134\",\"caller\": \"-\",\"user\": \"-\",\"requestTime\": \"19/Jul/2051:16:15:44 +0000\",\"httpMethod\": \"GET\",\"resourcePath\": \"/pets/{petId}\",\"status\": \"200\",\"protocol\": \"HTTP/1.1\",\"responseLength\": \"49\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"requestId\":\"b68c8214-e33e-4a80-a043-ffc28177e18a\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"26/Jul/2051:12:07:03 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/pets/{petId}\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"48\",\"stage\":\"prod\",\"apiId\":\"asad15n3p0\",\"domainName\":\"asad15n3p0.execute-api.us-east-1.amazonaws.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"requestId\":\"708ac177-dd7c-4acb-98a4-fdc1698c7968\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"26/Jul/2051:12:06:57 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"1310\",\"stage\":\"prod\",\"apiId\":\"asad15n3p0\",\"domainName\":\"asad15n3p0.execute-api.us-east-1.amazonaws.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "apigateway_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-apigateway_logs-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

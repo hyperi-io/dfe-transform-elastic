@@ -1,0 +1,42 @@
+{
+    "timestamp": "2051-12-08T23:21:04.632Z",
+    "level": "INFO",
+    "requestId": "874e5431-1951-4178-af12-23491fb2277c",
+    "message": {
+        "errorType": "ReferenceError",
+        "errorMessage": "some reference error",
+        "stackTrace": [
+            "ReferenceError: some reference error",
+            "    at Runtime.handler (file:///var/task/index.mjs:3:12)",
+            "    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)"
+        ]
+    }
+}
+{
+    "timestamp":"2051-11-01T00:21:51.358Z",
+    "level":"ERROR",
+    "message":"This is a warning message",
+    "requestId":"69d22912-1bbe-4908-8c97-903f1fe34d5b"
+}
+{
+    "timestamp": "2051-12-08T23:21:04.664Z",
+    "level": "INFO",
+    "requestId": "874e5431-1951-4178-af12-23491fb2277c",
+    "message": {
+        "data": 12.3,
+        "flag": false
+    }
+}
+{
+    "timestamp": "2051-12-08T23:21:04.646Z",
+    "level": "INFO",
+    "requestId": "874e5431-1951-4178-af12-23491fb2277c",
+    "message": "errors logged -  ReferenceError: some reference error\n    at Runtime.handler (file:///var/task/index.mjs:3:12)\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29) SyntaxError: some syntax error\n    at Runtime.handler (file:///var/task/index.mjs:4:12)\n    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)",
+    "errorType": "ReferenceError",
+    "errorMessage": "some reference error",
+    "stackTrace": [
+        "ReferenceError: some reference error",
+        "    at Runtime.handler (file:///var/task/index.mjs:3:12)",
+        "    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)"
+    ]
+}

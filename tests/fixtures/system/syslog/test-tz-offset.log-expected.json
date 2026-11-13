@@ -1,0 +1,64 @@
+{
+  "expected": [
+    {
+      "event": {
+        "kind": "event",
+        "original": "1986-04-26T01:23:45.101+0400 uxaisvyuygk96 shutdown[2649]: shutting down for system halt",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    },
+    {
+      "event": {
+        "kind": "event",
+        "original": "1986-04-26T01:23:45.388424+04:00 uxaisvyuygk96 thermald: constraint_0_power_limit_uw exceeded.",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    },
+    {
+      "event": {
+        "kind": "event",
+        "original": "2047-06-14T10:40:20.912134 localhost sudo: pam_unix(sudo-i:session): session opened for user root by userauth3(uid=0)",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log"
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "kind": "event",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "1986-04-26T01:23:45.101+0400 uxaisvyuygk96 shutdown[2649]: shutting down for system halt"
+    },
+    {
+      "event": {
+        "kind": "event",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "1986-04-26T01:23:45.388424+04:00 uxaisvyuygk96 thermald: constraint_0_power_limit_uw exceeded."
+    },
+    {
+      "event": {
+        "kind": "event",
+        "timezone": "GMT-0200"
+      },
+      "input.type": "log",
+      "message": "2047-06-14T10:40:20.912134 localhost sudo: pam_unix(sudo-i:session): session opened for user root by userauth3(uid=0)"
+    }
+  ],
+  "meta": {
+    "data_stream": "syslog",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-syslog-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

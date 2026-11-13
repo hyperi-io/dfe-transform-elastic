@@ -1,0 +1,33 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 31 12:10:20 INFO  uvm[0]:  {\"timeStamp\":\"2051-05-31 12:10:20.992\",\"reason\":\"/zcvisitor/*\",\"requestId\":110464443025878,\"action\":\"BLOCK\",\"class\":\"class com.untangle.app.ad_blocker.AdBlockerEvent\"}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-arista_ngfw-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "arista_ngfw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

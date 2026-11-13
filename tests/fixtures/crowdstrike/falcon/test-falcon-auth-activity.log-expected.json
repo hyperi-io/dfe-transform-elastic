@@ -1,0 +1,198 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-06-15T14:29:38.000Z",
+      "crowdstrike": {
+        "event": {
+          "Attributes": {
+            "APIClientID": "APPCLIENTIDTEST",
+            "appId": "APPIDTEST",
+            "eventType": "All event type(s)",
+            "offset": "2",
+            "partition": "0"
+          },
+          "AuditKeyValues": [
+            {
+              "Key": "eventType",
+              "ValueString": "All event type(s)"
+            },
+            {
+              "Key": "APIClientID",
+              "ValueString": "APIID"
+            },
+            {
+              "Key": "partition",
+              "ValueString": "0"
+            },
+            {
+              "Key": "offset",
+              "ValueString": "2"
+            },
+            {
+              "Key": "appId",
+              "ValueString": "APPIDTEST"
+            }
+          ],
+          "OperationName": "streamStopped",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "123123abcd",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 6,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "streamStopped"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2051-06-15T16:06:52.400Z",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":6,\"eventType\":\"AuthActivityAuditEvent\",\"eventCreationTime\":2570458012400,\"version\":\"1.0\"},\"event\":{\"UserId\":\"API:USERID\",\"UserIp\":\"192.0.2.87\",\"OperationName\":\"streamStopped\",\"ServiceName\":\"Crowdstrike Streaming API\",\"Success\":true,\"UTCTimestamp\":2570452178,\"AuditKeyValues\":[{\"Key\":\"eventType\",\"ValueString\":\"All event type(s)\"},{\"Key\":\"APIClientID\",\"ValueString\":\"APIID\"},{\"Key\":\"partition\",\"ValueString\":\"0\"},{\"Key\":\"offset\",\"ValueString\":\"2\"},{\"Key\":\"appId\",\"ValueString\":\"APPIDTEST\"}],\"Attributes\":{\"APIClientID\":\"APPCLIENTIDTEST\",\"appId\":\"APPIDTEST\",\"eventType\":\"All event type(s)\",\"offset\":\"2\",\"partition\":\"0\"}}}",
+        "outcome": "success"
+      },
+      "message": "Crowdstrike Streaming API",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "API:USERID"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "API:USERID"
+      }
+    },
+    {
+      "@timestamp": "2051-06-15T17:19:16.000Z",
+      "crowdstrike": {
+        "event": {
+          "Attributes": {
+            "APIClientID": "APICLIENTID",
+            "appId": "APPIDTEST",
+            "eventType": "All event type(s)",
+            "offset": "8",
+            "partition": "0"
+          },
+          "AuditKeyValues": [
+            {
+              "Key": "APIClientID",
+              "ValueString": "APICLIENTID"
+            },
+            {
+              "Key": "partition",
+              "ValueString": "0"
+            },
+            {
+              "Key": "offset",
+              "ValueString": "8"
+            },
+            {
+              "Key": "appId",
+              "ValueString": "APPIDTEST"
+            },
+            {
+              "Key": "eventType",
+              "ValueString": "All event type(s)"
+            }
+          ],
+          "OperationName": "streamStarted",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "123123abcd",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 8,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "streamStarted"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2051-06-15T17:19:16.137Z",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":8,\"eventType\":\"AuthActivityAuditEvent\",\"eventCreationTime\":2570462356137,\"version\":\"1.0\"},\"event\":{\"UserId\":\"API:USERID\",\"UserIp\":\"192.0.2.87\",\"OperationName\":\"streamStarted\",\"ServiceName\":\"Crowdstrike Streaming API\",\"Success\":true,\"UTCTimestamp\":2570462356,\"AuditKeyValues\":[{\"Key\":\"APIClientID\",\"ValueString\":\"APICLIENTID\"},{\"Key\":\"partition\",\"ValueString\":\"0\"},{\"Key\":\"offset\",\"ValueString\":\"8\"},{\"Key\":\"appId\",\"ValueString\":\"APPIDTEST\"},{\"Key\":\"eventType\",\"ValueString\":\"All event type(s)\"}],\"Attributes\":{\"APIClientID\":\"APICLIENTID\",\"appId\":\"APPIDTEST\",\"eventType\":\"All event type(s)\",\"offset\":\"8\",\"partition\":\"0\"}}}",
+        "outcome": "success"
+      },
+      "message": "Crowdstrike Streaming API",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "API:USERID"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "API:USERID"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":6,\"eventType\":\"AuthActivityAuditEvent\",\"eventCreationTime\":2570458012400,\"version\":\"1.0\"},\"event\":{\"UserId\":\"API:USERID\",\"UserIp\":\"192.0.2.87\",\"OperationName\":\"streamStopped\",\"ServiceName\":\"Crowdstrike Streaming API\",\"Success\":true,\"UTCTimestamp\":2570452178,\"AuditKeyValues\":[{\"Key\":\"eventType\",\"ValueString\":\"All event type(s)\"},{\"Key\":\"APIClientID\",\"ValueString\":\"APIID\"},{\"Key\":\"partition\",\"ValueString\":\"0\"},{\"Key\":\"offset\",\"ValueString\":\"2\"},{\"Key\":\"appId\",\"ValueString\":\"APPIDTEST\"}],\"Attributes\":{\"APIClientID\":\"APPCLIENTIDTEST\",\"appId\":\"APPIDTEST\",\"eventType\":\"All event type(s)\",\"offset\":\"2\",\"partition\":\"0\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"123123abcd\",\"offset\":8,\"eventType\":\"AuthActivityAuditEvent\",\"eventCreationTime\":2570462356137,\"version\":\"1.0\"},\"event\":{\"UserId\":\"API:USERID\",\"UserIp\":\"192.0.2.87\",\"OperationName\":\"streamStarted\",\"ServiceName\":\"Crowdstrike Streaming API\",\"Success\":true,\"UTCTimestamp\":2570462356,\"AuditKeyValues\":[{\"Key\":\"APIClientID\",\"ValueString\":\"APICLIENTID\"},{\"Key\":\"partition\",\"ValueString\":\"0\"},{\"Key\":\"offset\",\"ValueString\":\"8\"},{\"Key\":\"appId\",\"ValueString\":\"APPIDTEST\"},{\"Key\":\"eventType\",\"ValueString\":\"All event type(s)\"}],\"Attributes\":{\"APIClientID\":\"APICLIENTID\",\"appId\":\"APPIDTEST\",\"eventType\":\"All event type(s)\",\"offset\":\"8\",\"partition\":\"0\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

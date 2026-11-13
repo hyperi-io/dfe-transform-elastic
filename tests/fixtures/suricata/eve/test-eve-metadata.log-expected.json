@@ -1,0 +1,188 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-27T00:28:11.488Z",
+      "destination": {
+        "address": "10.233.70.216",
+        "bytes": 876,
+        "domain": "gboguzxvex.org",
+        "ip": "10.233.70.216",
+        "mac": "53-1B-20-56-60-37",
+        "packets": 5,
+        "port": 47592
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2049-01-27T01:28:11.488362+0100\",\"flow_id\":1805461738637437,\"in_iface\":\"enp6s0\",\"event_type\":\"alert\",\"src_ip\":\"192.0.2.87\",\"src_port\":80,\"dest_ip\":\"10.233.70.216\",\"dest_port\":47592,\"proto\":\"TCP\",\"ether\":{\"src_mac\":\"29:68:9a:8c:e7:24\",\"dest_mac\":\"53:1b:20:56:60:37\"},\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2100498,\"rev\":7,\"signature\":\"GPL ATTACK_RESPONSE id check returned root\",\"category\":\"Potentially Bad Traffic\",\"severity\":2,\"metadata\":{\"protocols\":[\"tcp\",\"smtp\"],\"mitre_attack\":[\"t1190\"],\"cvss_v2_temporal\":[\"7.9\"],\"cve\":[\"2019-91325\"],\"cvss_v3_temporal\":[\"7.1\"],\"attack_target\":[\"smtp-server\",\"server\"],\"cvss_v2_base\":[\"8.1\"],\"rule_source\":[\"acme-rule-factory\"],\"priority\":[\"medium\"],\"filename\":[\"exploit.rules\"],\"updated_at\":[\"2047-06-11\"],\"capec_id\":[\"248\"],\"created_at\":[\"2047-06-01\"],\"hostile\":[\"src_ip\"],\"cvss_v3_base\":[\"7.3\"],\"cwe_id\":[\"20\"]}},\"http\":{\"hostname\":\"gboguzxvex.org\",\"url\":\"/uid/index.html\",\"http_user_agent\":\"curl/7.58.0\",\"http_content_type\":\"text/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":200,\"length\":39},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":6,\"pkts_toclient\":5,\"bytes_toserver\":496,\"bytes_toclient\":876,\"start\":\"2049-01-22T23:28:38.673917+0100\"}}",
+        "severity": 2,
+        "start": "2049-01-22T22:28:38.673Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "file": {
+        "name": [
+          "exploit.rules"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 39
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Potentially Bad Traffic",
+      "network": {
+        "bytes": 1372,
+        "community_id": "1:9IC0uiQcVfQRmg4T8essgk+1b0g=",
+        "packets": 11,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "hosts": [
+          "gboguzxvex.org"
+        ],
+        "ip": [
+          "192.0.2.87",
+          "10.233.70.216"
+        ]
+      },
+      "rule": {
+        "category": "Potentially Bad Traffic",
+        "id": "2100498",
+        "name": "GPL ATTACK_RESPONSE id check returned root"
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "bytes": 496,
+        "ip": "192.0.2.87",
+        "mac": "29-68-9A-8C-E7-24",
+        "packets": 6,
+        "port": 80
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "attack_target": [
+              "smtp-server",
+              "server"
+            ],
+            "capec_id": [
+              "248"
+            ],
+            "category": "Potentially Bad Traffic",
+            "created_at": "2047-06-01T00:00:00.000Z",
+            "cve": [
+              "2019-91325"
+            ],
+            "cvss_v2_base": [
+              "8.1"
+            ],
+            "cvss_v2_temporal": [
+              "7.9"
+            ],
+            "cvss_v3_base": [
+              "7.3"
+            ],
+            "cvss_v3_temporal": [
+              "7.1"
+            ],
+            "cwe_id": [
+              "20"
+            ],
+            "gid": 1,
+            "hostile": [
+              "src_ip"
+            ],
+            "priority": [
+              "medium"
+            ],
+            "protocols": [
+              "tcp",
+              "smtp"
+            ],
+            "rev": 7,
+            "rule_source": [
+              "acme-rule-factory"
+            ],
+            "signature": "GPL ATTACK_RESPONSE id check returned root",
+            "signature_id": 2100498,
+            "updated_at": "2047-06-11T00:00:00.000Z"
+          },
+          "ether": {},
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "1805461738637437",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp6s0"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "id": [
+            "t1190"
+          ]
+        }
+      },
+      "url": {
+        "domain": "gboguzxvex.org",
+        "original": "/uid/index.html",
+        "path": "/uid/index.html"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2049-01-27T01:28:11.488362+0100\",\"flow_id\":1805461738637437,\"in_iface\":\"enp6s0\",\"event_type\":\"alert\",\"src_ip\":\"192.0.2.87\",\"src_port\":80,\"dest_ip\":\"10.233.70.216\",\"dest_port\":47592,\"proto\":\"TCP\",\"ether\":{\"src_mac\":\"29:68:9a:8c:e7:24\",\"dest_mac\":\"53:1b:20:56:60:37\"},\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2100498,\"rev\":7,\"signature\":\"GPL ATTACK_RESPONSE id check returned root\",\"category\":\"Potentially Bad Traffic\",\"severity\":2,\"metadata\":{\"protocols\":[\"tcp\",\"smtp\"],\"mitre_attack\":[\"t1190\"],\"cvss_v2_temporal\":[\"7.9\"],\"cve\":[\"2019-91325\"],\"cvss_v3_temporal\":[\"7.1\"],\"attack_target\":[\"smtp-server\",\"server\"],\"cvss_v2_base\":[\"8.1\"],\"rule_source\":[\"acme-rule-factory\"],\"priority\":[\"medium\"],\"filename\":[\"exploit.rules\"],\"updated_at\":[\"2047-06-11\"],\"capec_id\":[\"248\"],\"created_at\":[\"2047-06-01\"],\"hostile\":[\"src_ip\"],\"cvss_v3_base\":[\"7.3\"],\"cwe_id\":[\"20\"]}},\"http\":{\"hostname\":\"gboguzxvex.org\",\"url\":\"/uid/index.html\",\"http_user_agent\":\"curl/7.58.0\",\"http_content_type\":\"text/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":200,\"length\":39},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":6,\"pkts_toclient\":5,\"bytes_toserver\":496,\"bytes_toclient\":876,\"start\":\"2049-01-22T23:28:38.673917+0100\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "eve",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-suricata-eve-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "suricata",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

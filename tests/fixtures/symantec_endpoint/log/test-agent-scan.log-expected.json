@@ -1,0 +1,162 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "started",
+        "duration": 600000000000.0,
+        "end": "2048-01-31T11:45:28.000Z",
+        "kind": "event",
+        "original": "Scan ID: 123456789,Begin: 2048-01-31 11:35:28,End: 2048-01-31 11:45:28,Started,Duration (seconds): 600,User1: exampleUser,User2: SYSTEM,Scan started on selected drives and folders and all extensions.,Scan Complete:  Risks: 0   Scanned: 916   Files/Folders/Drives Omitted: 0 Trusted Files Skipped: 0,Command: Not a command scan (),Threats: 0,Infected: 0,Total files: 916,Omitted: 0,Computer: _destinationHostname,IP Address: 203.0.113.61,Domain: exampleDomain,Group: Company\\US\\UserWS\\Main Office,Server: SEPServer",
+        "provider": "Agent Scan Log",
+        "start": "2048-01-31T11:35:28.000Z"
+      },
+      "host": {
+        "hostname": "_destinationHostname",
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "_destinationHostname"
+      },
+      "message": "Scan started on selected drives and folders and all extensions.",
+      "related": {
+        "ip": [
+          "203.0.113.61"
+        ]
+      },
+      "symantec_endpoint": {
+        "log": {
+          "action": "started",
+          "begin": "2048-01-31 11:35:28",
+          "command": "Not a command scan ()",
+          "computer_name": "_destinationHostname",
+          "domain_name": "exampleDomain",
+          "duration_seconds": "600",
+          "end": "2048-01-31 11:45:28",
+          "event_description": "Scan started on selected drives and folders and all extensions.",
+          "group": "Company\\US\\UserWS\\Main Office",
+          "infected": 0,
+          "ip_address": "203.0.113.61",
+          "omitted": 0,
+          "scan_complete": "Risks: 0   Scanned: 916   Files/Folders/Drives Omitted: 0 Trusted Files Skipped: 0",
+          "scan_id": "123456789",
+          "server": "SEPServer",
+          "threats": 0,
+          "total_files": 916,
+          "user1": "exampleUser",
+          "user2": "SYSTEM"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "exampleDomain",
+        "name": "exampleUser"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "completed",
+        "duration": 695000000000.0,
+        "end": "2043-11-30T11:58:44.000Z",
+        "kind": "event",
+        "original": "Scan ID: 1448882755,Begin: 2043-11-30 11:47:09,End: 2043-11-30 11:58:44,Completed,Duration (seconds): 695,User1: SYSTEM,User2: SYSTEM,'Scan started on selected drives and folders and all extensions.','Scan Complete: Risks: 0 Scanned: 1472 Files/Folders/Drives Omitted: 0 Trusted Files Skipped: 1465',Command: Not a command scan (),Threats: 0,Infected: 0,Total files: 1472,Omitted: 0,Computer: IBV-HQ-L12,IP Address: 192.0.2.87,Domain: Default,\"Group: My Company\\Workstations\\Information Technology\\\",Server: SEPServer",
+        "provider": "Agent Scan Log",
+        "start": "2043-11-30T11:47:09.000Z"
+      },
+      "host": {
+        "hostname": "IBV-HQ-L12",
+        "ip": [
+          "192.0.2.87"
+        ],
+        "name": "IBV-HQ-L12"
+      },
+      "message": "Scan started on selected drives and folders and all extensions.",
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "symantec_endpoint": {
+        "log": {
+          "action": "completed",
+          "begin": "2043-11-30 11:47:09",
+          "command": "Not a command scan ()",
+          "computer_name": "IBV-HQ-L12",
+          "domain_name": "Default",
+          "duration_seconds": "695",
+          "end": "2043-11-30 11:58:44",
+          "event_description": "Scan started on selected drives and folders and all extensions.",
+          "group": "My Company\\Workstations\\Information Technology\\",
+          "infected": 0,
+          "ip_address": "192.0.2.87",
+          "omitted": 0,
+          "scan_complete": "Risks: 0 Scanned: 1472 Files/Folders/Drives Omitted: 0 Trusted Files Skipped: 1465",
+          "scan_id": "1448882755",
+          "server": "SEPServer",
+          "threats": 0,
+          "total_files": 1472,
+          "user1": "SYSTEM",
+          "user2": "SYSTEM"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "Default",
+        "name": "SYSTEM"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Scan ID: 123456789,Begin: 2048-01-31 11:35:28,End: 2048-01-31 11:45:28,Started,Duration (seconds): 600,User1: exampleUser,User2: SYSTEM,Scan started on selected drives and folders and all extensions.,Scan Complete:  Risks: 0   Scanned: 916   Files/Folders/Drives Omitted: 0 Trusted Files Skipped: 0,Command: Not a command scan (),Threats: 0,Infected: 0,Total files: 916,Omitted: 0,Computer: _destinationHostname,IP Address: 203.0.113.61,Domain: exampleDomain,Group: Company\\US\\UserWS\\Main Office,Server: SEPServer",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Scan ID: 1448882755,Begin: 2043-11-30 11:47:09,End: 2043-11-30 11:58:44,Completed,Duration (seconds): 695,User1: SYSTEM,User2: SYSTEM,'Scan started on selected drives and folders and all extensions.','Scan Complete: Risks: 0 Scanned: 1472 Files/Folders/Drives Omitted: 0 Trusted Files Skipped: 1465',Command: Not a command scan (),Threats: 0,Infected: 0,Total files: 1472,Omitted: 0,Computer: IBV-HQ-L12,IP Address: 192.0.2.87,Domain: Default,\"Group: My Company\\Workstations\\Information Technology\\\",Server: SEPServer",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"src_ip\":\"198.51.100.211\",\"vip\":\"192.0.2.218\",\"http_method\":\"GET\",\"http_host\":\"192.0.2.218:80\",\"http_uri\":\"/\",\"http_url\":\"/\",\"http_version\":\"1.1\",\"http_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36\",\"http_content_type\":\"applicaton/json\",\"http_referrer\":\"http://example.com/\",\"req_start_time\":\"2049/10/04 03:36:00\",\"cookie\":\"security TS0174d6a0 PHPSESSID\",\"user\":\"Ydly\",\"virtual_server\":\"/Common/pool_for_DVWA 0\",\"bytes_in\":\"0\",\"res_start_time\":\"2049/10/04 03:36:00\",\"node\":\"192.0.2.218\",\"node_port\":\"80\",\"http_status\":\"200\",\"req_elapsed_time\":\"5\",\"bytes_out\":\"45\",\"telemetryEventCategory\":\"LTM\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "f5_bigip": {
+        "log": {
+          "bytes": {
+            "in": 0,
+            "out": 45
+          },
+          "cookie": "security TS0174d6a0 PHPSESSID",
+          "http": {
+            "content_type": "applicaton/json",
+            "host": "192.0.2.218:80",
+            "method": "GET",
+            "referrer": "http://example.com/",
+            "status": "200",
+            "uri": "/",
+            "url": "/",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+            "version": "1.1"
+          },
+          "node": "192.0.2.218",
+          "node_port": 80,
+          "req": {
+            "elapsed_time": 5,
+            "start_time": "2049-10-04T03:36:00.000Z"
+          },
+          "res": {
+            "start_time": "2049-10-04T03:36:00.000Z"
+          },
+          "src": {
+            "ip": "198.51.100.211"
+          },
+          "telemetry": {
+            "event": {
+              "category": "LTM"
+            }
+          },
+          "user": {
+            "name": "Ydly"
+          },
+          "vip": "192.0.2.218",
+          "virtual": {
+            "server": "/Common/pool_for_DVWA 0"
+          }
+        }
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "referrer": "http://example.com/"
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "bytes": 45,
+        "direction": "egress",
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "Local Traffic Manager",
+        "vendor": "F5"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211",
+          "192.0.2.218"
+        ],
+        "user": [
+          "Ydly"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/",
+        "path": "/"
+      },
+      "user": {
+        "name": "Ydly"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.10.5",
+          "name": "Mac OS X",
+          "version": "10.10.5"
+        },
+        "version": "51.0.2704.103"
+      }
+    },
+    {
+      "@timestamp": "2050-09-27T06:02:48.000Z",
+      "client": {
+        "ip": "198.51.100.124"
+      },
+      "destination": {
+        "ip": "203.0.113.177"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"event_source\":\"request_logging\",\"event_timestamp\":\"2050-09-27T06:02:48.000Z\",\"hostname\":\"hostname\",\"client_ip\":\"198.51.100.124\",\"server_ip\":\"203.0.113.177\",\"http_method\":\"GET\",\"http_uri\":\"/\",\"virtual_name\":\"/Common/app.app/app_vs\",\"tenant\":\"Common\",\"application\":\"app.app\",\"telemetryEventCategory\":\"LTM\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "f5_bigip": {
+        "log": {
+          "application": {
+            "name": "app.app"
+          },
+          "client": {
+            "ip": "198.51.100.124"
+          },
+          "event": {
+            "source": "request_logging",
+            "timestamp": "2050-09-27T06:02:48.000Z"
+          },
+          "hostname": "hostname",
+          "http": {
+            "method": "GET",
+            "uri": "/"
+          },
+          "server": {
+            "ip": "203.0.113.177"
+          },
+          "telemetry": {
+            "event": {
+              "category": "LTM"
+            }
+          },
+          "tenant": "Common",
+          "virtual": {
+            "name": "/Common/app.app/app_vs"
+          }
+        }
+      },
+      "host": {
+        "name": "hostname"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "network": {
+        "application": "app.app",
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "Local Traffic Manager",
+        "vendor": "F5"
+      },
+      "related": {
+        "hosts": [
+          "hostname"
+        ],
+        "ip": [
+          "198.51.100.124",
+          "203.0.113.177"
+        ]
+      },
+      "server": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2047-01-01T00:00:00.000Z",
+      "client": {
+        "ip": "192.168.166.229"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"event_source\":\"request_logging\",\"event_timestamp\":\"2047-01-01:01:01.000Z\",\"hostname\":\"hostname\",\"client_ip\":\"192.168.166.229\",\"server_ip\":\"\",\"http_method\":\"GET\",\"http_uri\":\"/\",\"virtual_name\":\"/Common/app.app/app_vs\",\"tenant\":\"Common\",\"application\":\"app.app\",\"telemetryEventCategory\":\"LTM\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "f5_bigip": {
+        "log": {
+          "application": {
+            "name": "app.app"
+          },
+          "client": {
+            "ip": "192.168.166.229"
+          },
+          "event": {
+            "source": "request_logging",
+            "timestamp": "2047-01-01T00:00:00.000Z"
+          },
+          "hostname": "hostname",
+          "http": {
+            "method": "GET",
+            "uri": "/"
+          },
+          "telemetry": {
+            "event": {
+              "category": "LTM"
+            }
+          },
+          "tenant": "Common",
+          "virtual": {
+            "name": "/Common/app.app/app_vs"
+          }
+        }
+      },
+      "host": {
+        "name": "hostname"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "network": {
+        "application": "app.app",
+        "protocol": "http"
+      },
+      "observer": {
+        "product": "Local Traffic Manager",
+        "vendor": "F5"
+      },
+      "related": {
+        "hosts": [
+          "hostname"
+        ],
+        "ip": [
+          "192.168.166.229"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"src_ip\":\"198.51.100.211\",\"vip\":\"192.0.2.218\",\"http_method\":\"GET\",\"http_host\":\"192.0.2.218:80\",\"http_uri\":\"/\",\"http_url\":\"/\",\"http_version\":\"1.1\",\"http_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36\",\"http_content_type\":\"applicaton/json\",\"http_referrer\":\"http://example.com/\",\"req_start_time\":\"2049/10/04 03:36:00\",\"cookie\":\"security TS0174d6a0 PHPSESSID\",\"user\":\"Ydly\",\"virtual_server\":\"/Common/pool_for_DVWA 0\",\"bytes_in\":\"0\",\"res_start_time\":\"2049/10/04 03:36:00\",\"node\":\"192.0.2.218\",\"node_port\":\"80\",\"http_status\":\"200\",\"req_elapsed_time\":\"5\",\"bytes_out\":\"45\",\"telemetryEventCategory\":\"LTM\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"event_source\":\"request_logging\",\"event_timestamp\":\"2050-09-27T06:02:48.000Z\",\"hostname\":\"hostname\",\"client_ip\":\"198.51.100.124\",\"server_ip\":\"203.0.113.177\",\"http_method\":\"GET\",\"http_uri\":\"/\",\"virtual_name\":\"/Common/app.app/app_vs\",\"tenant\":\"Common\",\"application\":\"app.app\",\"telemetryEventCategory\":\"LTM\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"event_source\":\"request_logging\",\"event_timestamp\":\"2047-01-01:01:01.000Z\",\"hostname\":\"hostname\",\"client_ip\":\"192.168.166.229\",\"server_ip\":\"\",\"http_method\":\"GET\",\"http_uri\":\"/\",\"virtual_name\":\"/Common/app.app/app_vs\",\"tenant\":\"Common\",\"application\":\"app.app\",\"telemetryEventCategory\":\"LTM\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-f5_bigip-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "f5_bigip",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

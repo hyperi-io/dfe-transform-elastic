@@ -1,0 +1,127 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-13T16:00:34.955Z",
+      "event": {
+        "created": "2050-09-13T16:00:34.955Z",
+        "ingested": "2026-11-13T23:04:02.870231818Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "WARN"
+      },
+      "logstash": {
+        "log": {
+          "log_event": {
+            "url": "https://elastic:xxxxxx@elasticsearch:9200/"
+          },
+          "module": "logstash.outputs.elasticsearch",
+          "thread": "[pipeline-with-memory-queue]-pipeline-manager"
+        }
+      },
+      "message": "Restored connection to ES instance"
+    },
+    {
+      "@timestamp": "2050-09-13T16:00:34.958Z",
+      "event": {
+        "created": "2050-09-13T16:00:34.958Z",
+        "ingested": "2026-11-13T23:04:02.870239128Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "logstash": {
+        "log": {
+          "log_event": {
+            "es_version": 8
+          },
+          "module": "logstash.outputs.elasticsearch",
+          "thread": "[pipeline-with-persisted-queue]-pipeline-manager"
+        }
+      },
+      "message": "Elasticsearch version determined (8.5.0-SNAPSHOT)"
+    },
+    {
+      "@timestamp": "2050-09-13T16:00:34.961Z",
+      "event": {
+        "created": "2050-09-13T16:00:34.961Z",
+        "ingested": "2026-11-13T23:04:02.870239938Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "WARN"
+      },
+      "logstash": {
+        "log": {
+          "log_event": {
+            "es_version": 8
+          },
+          "module": "logstash.outputs.elasticsearch",
+          "thread": "[pipeline-with-persisted-queue]-pipeline-manager"
+        }
+      },
+      "message": "Detected a 6.x and above cluster: the `type` event field won't be used to determine the document _type"
+    },
+    {
+      "@timestamp": "2050-09-13T16:00:34.963Z",
+      "event": {
+        "created": "2050-09-13T16:00:34.963Z",
+        "ingested": "2026-11-13T23:04:02.870240468Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "logstash": {
+        "log": {
+          "log_event": {
+            "es_version": 8
+          },
+          "module": "logstash.outputs.elasticsearch",
+          "thread": "[pipeline-with-memory-queue]-pipeline-manager"
+        }
+      },
+      "message": "Elasticsearch version determined (8.5.0-SNAPSHOT)"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"level\":\"WARN\",\"loggerName\":\"logstash.outputs.elasticsearch\",\"timeMillis\":2546697634955,\"thread\":\"[pipeline-with-memory-queue]-pipeline-manager\",\"logEvent\":{\"message\":\"Restored connection to ES instance\",\"url\":\"https://elastic:xxxxxx@elasticsearch:9200/\"}}"
+    },
+    {
+      "message": "{\"level\":\"INFO\",\"loggerName\":\"logstash.outputs.elasticsearch\",\"timeMillis\":2546697634958,\"thread\":\"[pipeline-with-persisted-queue]-pipeline-manager\",\"logEvent\":{\"message\":\"Elasticsearch version determined (8.5.0-SNAPSHOT)\",\"es_version\":8}}"
+    },
+    {
+      "message": "{\"level\":\"WARN\",\"loggerName\":\"logstash.outputs.elasticsearch\",\"timeMillis\":2546697634961,\"thread\":\"[pipeline-with-persisted-queue]-pipeline-manager\",\"logEvent\":{\"message\":\"Detected a 6.x and above cluster: the `type` event field won't be used to determine the document _type\",\"es_version\":8}}"
+    },
+    {
+      "message": "{\"level\":\"INFO\",\"loggerName\":\"logstash.outputs.elasticsearch\",\"timeMillis\":2546697634963,\"thread\":\"[pipeline-with-memory-queue]-pipeline-manager\",\"logEvent\":{\"message\":\"Elasticsearch version determined (8.5.0-SNAPSHOT)\",\"es_version\":8}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-logstash-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "logstash",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

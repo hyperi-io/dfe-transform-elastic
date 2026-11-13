@@ -1,0 +1,157 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-11-07T10:34:29.055Z",
+      "agent": {
+        "ephemeral_id": "031e9777-0034-47b1-b3a1-a84ced0373a4",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "audit-log-cleared",
+        "category": [
+          "iam"
+        ],
+        "code": "1102",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog",
+        "type": [
+          "admin",
+          "change"
+        ]
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1102.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "WLBEAT",
+        "id": "S-1-5-21-101361758-2486510592-3018839910-500",
+        "name": "Administrator"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": "1102",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x50e87"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 1144,
+          "thread": {
+            "id": 1824
+          }
+        },
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": "14224",
+        "time_created": "2047-11-07T10:34:29.055Z",
+        "user_data": {
+          "SubjectDomainName": "WLBEAT",
+          "SubjectLogonId": "0x50e87",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "xml_name": "LogFileCleared"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:07:33.932Z",
+      "agent": {
+        "ephemeral_id": "031e9777-0034-47b1-b3a1-a84ced0373a4",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 1102,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog"
+      },
+      "host": {
+        "name": "SOV-86VA2XP94FG.jwbfen.local"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/1102.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": 1102,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 1144,
+          "thread": {
+            "id": 1824
+          }
+        },
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": 14224,
+        "time_created": "2047-11-07T10:34:29.055Z",
+        "user_data": {
+          "SubjectDomainName": "WLBEAT",
+          "SubjectLogonId": "0x50e87",
+          "SubjectUserName": "Administrator",
+          "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+          "xml_name": "LogFileCleared"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

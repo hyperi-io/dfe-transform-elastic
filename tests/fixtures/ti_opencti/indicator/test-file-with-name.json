@@ -1,0 +1,116 @@
+{
+    "events": [
+        {
+            "id": "1ae44491-4441-45b1-b036-55bdf37a9e28",
+            "standard_id": "indicator--8508de8d-ab61-5d30-a2b5-a2d3747fbae7",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 15,
+            "lang": "en",
+            "created": "2044-06-19T22:22:09.000Z",
+            "modified": "2051-01-17T06:17:52.430Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[file:name = 'ExtensionManager.exe']",
+            "name": "ExtensionManager.exe",
+            "description": "",
+            "valid_from": "2044-06-19T22:22:09.000Z",
+            "valid_until": "2045-06-19T22:22:09.000Z",
+            "x_opencti_score": 40,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "StixFile",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "ExpvllmSRQZ.be"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:CLEAR"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "osint"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "839e1882-942f-449a-9bb1-caa5ff709477",
+                            "standard_id": "file--5bc662ba-8ade-5106-b673-9b5b622d1efa",
+                            "entity_type": "StixFile",
+                            "observable_value": "ExtensionManager.exe",
+                            "hashes": [],
+                            "size": null,
+                            "name": "ExtensionManager.exe",
+                            "name_enc": null,
+                            "magic_number_hex": null,
+                            "mime_type": null,
+                            "ctime": null,
+                            "mtime": null,
+                            "atime": null,
+                            "x_opencti_additional_names": [
+                                "ExtensionManager.exe"
+                            ],
+                            "obsContent": null
+                        }
+                    }
+                ],
+                "pageInfo": {
+                    "globalCount": 1
+                }
+            }
+        },
+        {
+            "id": "1ae44491-4441-45b1-b036-55bdf37a9e28",
+            "standard_id": "indicator--8508de8d-ab61-5d30-a2b5-a2d3747fbae7",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 15,
+            "lang": "en",
+            "created": "2044-06-19T22:22:09.000Z",
+            "modified": "2051-01-17T06:17:52.430Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[file:name = 'ExtensionManager.exe']",
+            "name": "ExtensionManager.exe",
+            "description": "",
+            "valid_from": "2044-06-19T22:22:09.000Z",
+            "valid_until": "2045-06-19T22:22:09.000Z",
+            "x_opencti_score": 40,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "StixFile",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "ExpvllmSRQZ.be"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:CLEAR"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "osint"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [],
+                "pageInfo": {
+                    "globalCount": 0
+                }
+            }
+        }
+    ]
+}

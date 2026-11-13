@@ -1,0 +1,81 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-02-20T18:00:00.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2054-02-20T18:00:00.000Z",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "forwarded",
+        "ti_socradar_feeds-feed"
+      ],
+      "threat": {
+        "feed": {
+          "name": "SOCRadar Threat Feeds",
+          "reference": "https://platform.socradar.com"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "description": "SOCRadar feed: SOCRadar-Recommended-Phishing-Global",
+          "first_seen": "2054-02-15T12:00:00.000Z",
+          "last_seen": "2054-02-20T18:00:00.000Z",
+          "modified_at": "2054-02-20T18:00:00.000Z",
+          "provider": "SOCRadar",
+          "type": "url",
+          "url": {
+            "full": "https://malicious-example.com/payload",
+            "original": "https://malicious-example.com/payload"
+          }
+        }
+      },
+      "ti_socradar_feeds": {
+        "feed": {
+          "collection_id": "29fd20301a9d4a76a9a3cb7c0e845285",
+          "collection_name": "SOCRadar-Recommended-Phishing-Global",
+          "first_seen_date": "2054-02-15T12:00:00.000Z",
+          "ioc_expiration_date": "2027-02-11T23:02:07.229Z",
+          "ioc_expiration_duration": "90d",
+          "ioc_expiration_reason": "Expiration set by configuration",
+          "latest_seen_date": "2054-02-20T18:00:00.000Z",
+          "maintainer_name": "SOCRadar",
+          "type": "url",
+          "value": "https://malicious-example.com/payload"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_expiration_duration": "90d"
+      },
+      "message": "{\"feed\":\"https://malicious-example.com/payload\",\"feed_type\":\"url\",\"first_seen_date\":\"2054-02-15T12:00:00Z\",\"latest_seen_date\":\"2054-02-20T18:00:00Z\",\"maintainer_name\":\"SOCRadar\",\"extra_info\":null,\"_collection_metadata\":{\"collection_id\":\"29fd20301a9d4a76a9a3cb7c0e845285\",\"collection_name\":\"SOCRadar-Recommended-Phishing-Global\"}}",
+      "tags": [
+        "forwarded",
+        "ti_socradar_feeds-feed"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "feed",
+    "dynamic_fields": {
+      "ti_socradar_feeds.feed.ioc_expiration_date": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_socradar_feeds-feed-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_socradar_feeds",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

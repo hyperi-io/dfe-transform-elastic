@@ -1,0 +1,227 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "AUDIT_ACTION_CREATED",
+        "category": [
+          "host"
+        ],
+        "kind": [
+          "state"
+        ],
+        "original": "{\"timestamp\":\"2050-11-02T12:41:21.184847290Z\",\"action\":\"AUDIT_ACTION_CREATED\",\"user\":{\"user_id\":8,\"persona_id\":0},\"config_item\":{\"id\":1,\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"description\":\"cx-configToolset\"},\"module\":{\"solution_id\":\"01-080-0332\",\"solution_context_id\":\"\"},\"manifest\":{\"windows_saved_action_id\":18,\"non_windows_saved_action_id\":19,\"manifest_revision\":1,\"service_uuid\":\"be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd\",\"item_count\":1,\"items\":[{\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"ids\":[1]}]}}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "8"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tanium": {
+        "endpoint_config": {
+          "action": "AUDIT_ACTION_CREATED",
+          "item": {
+            "data_category": "tools",
+            "domain": "endpoint-config",
+            "id": 1
+          },
+          "manifest": {
+            "item_count": 1,
+            "items": [
+              {
+                "data_category": "tools",
+                "domain": "endpoint-config",
+                "ids": [
+                  1
+                ]
+              }
+            ],
+            "non_windows_saved_action_id": 19,
+            "revision": 1,
+            "service_uuid": "be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd",
+            "windows_saved_action_id": 18
+          },
+          "module": {
+            "solution_id": "01-080-0332"
+          },
+          "timestamp": "2050-11-02T12:41:21.184Z",
+          "user": {
+            "id": "8",
+            "persona_id": 0
+          }
+        }
+      },
+      "user": {
+        "id": "8"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "AUDIT_ACTION_CREATED",
+        "category": [
+          "host"
+        ],
+        "kind": [
+          "state"
+        ],
+        "original": "{\"timestamp\":\"2050-08-02T12:41:21.184847290Z\",\"action\":\"AUDIT_ACTION_CREATED\",\"user\":{\"user_id\":8,\"persona_id\":0},\"config_item\":{\"id\":1,\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"description\":\"cx-configToolset\"},\"module\":{\"solution_id\":\"01-080-0332\",\"solution_context_id\":\"\"},\"manifest\":{\"windows_saved_action_id\":18,\"non_windows_saved_action_id\":19,\"manifest_revision\":1,\"service_uuid\":\"be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd\",\"item_count\":1,\"items\":[{\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"ids\":[1]}]}}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "8"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tanium": {
+        "endpoint_config": {
+          "action": "AUDIT_ACTION_CREATED",
+          "item": {
+            "data_category": "tools",
+            "domain": "endpoint-config",
+            "id": 1
+          },
+          "manifest": {
+            "item_count": 1,
+            "items": [
+              {
+                "data_category": "tools",
+                "domain": "endpoint-config",
+                "ids": [
+                  1
+                ]
+              }
+            ],
+            "non_windows_saved_action_id": 19,
+            "revision": 1,
+            "service_uuid": "be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd",
+            "windows_saved_action_id": 18
+          },
+          "module": {
+            "solution_id": "01-080-0332"
+          },
+          "timestamp": "2050-08-02T12:41:21.184Z",
+          "user": {
+            "id": "8",
+            "persona_id": 0
+          }
+        }
+      },
+      "user": {
+        "id": "8"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": [
+          "state"
+        ],
+        "original": "{\"timestamp\":\"2050-11-02T12:41:21.184847290Z\",\"user\":{\"user_id\":8,\"persona_id\":0},\"config_item\":{\"id\":1,\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"description\":\"cx-configToolset\"},\"module\":{\"solution_id\":\"01-080-0332\",\"solution_context_id\":\"\"},\"manifest\":{\"windows_saved_action_id\":18,\"non_windows_saved_action_id\":19,\"manifest_revision\":1,\"service_uuid\":\"be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd\",\"item_count\":1,\"items\":[{\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"ids\":[1]}]}}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "8"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tanium": {
+        "endpoint_config": {
+          "item": {
+            "data_category": "tools",
+            "domain": "endpoint-config",
+            "id": 1
+          },
+          "manifest": {
+            "item_count": 1,
+            "items": [
+              {
+                "data_category": "tools",
+                "domain": "endpoint-config",
+                "ids": [
+                  1
+                ]
+              }
+            ],
+            "non_windows_saved_action_id": 19,
+            "revision": 1,
+            "service_uuid": "be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd",
+            "windows_saved_action_id": 18
+          },
+          "module": {
+            "solution_id": "01-080-0332"
+          },
+          "timestamp": "2050-11-02T12:41:21.184Z",
+          "user": {
+            "id": "8",
+            "persona_id": 0
+          }
+        }
+      },
+      "user": {
+        "id": "8"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"timestamp\":\"2050-11-02T12:41:21.184847290Z\",\"action\":\"AUDIT_ACTION_CREATED\",\"user\":{\"user_id\":8,\"persona_id\":0},\"config_item\":{\"id\":1,\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"description\":\"cx-configToolset\"},\"module\":{\"solution_id\":\"01-080-0332\",\"solution_context_id\":\"\"},\"manifest\":{\"windows_saved_action_id\":18,\"non_windows_saved_action_id\":19,\"manifest_revision\":1,\"service_uuid\":\"be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd\",\"item_count\":1,\"items\":[{\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"ids\":[1]}]}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timestamp\":\"2050-08-02T12:41:21.184847290Z\",\"action\":\"AUDIT_ACTION_CREATED\",\"user\":{\"user_id\":8,\"persona_id\":0},\"config_item\":{\"id\":1,\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"description\":\"cx-configToolset\"},\"module\":{\"solution_id\":\"01-080-0332\",\"solution_context_id\":\"\"},\"manifest\":{\"windows_saved_action_id\":18,\"non_windows_saved_action_id\":19,\"manifest_revision\":1,\"service_uuid\":\"be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd\",\"item_count\":1,\"items\":[{\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"ids\":[1]}]}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timestamp\":\"2050-11-02T12:41:21.184847290Z\",\"user\":{\"user_id\":8,\"persona_id\":0},\"config_item\":{\"id\":1,\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"description\":\"cx-configToolset\"},\"module\":{\"solution_id\":\"01-080-0332\",\"solution_context_id\":\"\"},\"manifest\":{\"windows_saved_action_id\":18,\"non_windows_saved_action_id\":19,\"manifest_revision\":1,\"service_uuid\":\"be4c9a24-29b1-4d6e-bd14-73f2ff03a7dd\",\"item_count\":1,\"items\":[{\"domain\":\"endpoint-config\",\"data_category\":\"tools\",\"ids\":[1]}]}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "endpoint_config",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tanium-endpoint_config-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "tanium",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"count\": 1, \"results\": {\"indicator\":\"198.51.100.144\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"IPv4\",\"id\":1588938}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "otx": {},
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "ip": "198.51.100.144",
+          "type": "ipv4-addr"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"count\": 1, \"results\": {\"indicator\":\"94256f9060e639d23aa37976a02dbf64\",\"description\":\"MD5 of c4928bd0420b18e120dd9f2bb84f3c123eb414fdad6e3859e39d127ce0f3fc55\",\"title\":\"Win32:Hoblig-B\",\"content\":\"\",\"type\":\"FileHash-MD5\",\"id\":9751110}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "otx": {
+        "description": "MD5 of c4928bd0420b18e120dd9f2bb84f3c123eb414fdad6e3859e39d127ce0f3fc55",
+        "title": "Win32:Hoblig-B"
+      },
+      "related": {
+        "hash": [
+          "94256f9060e639d23aa37976a02dbf64"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "94256f9060e639d23aa37976a02dbf64"
+            }
+          },
+          "type": "file"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"count\": 1, \"results\": {\"indicator\":\"xn.fxuwqa.net\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"hostname\",\"id\":16782717}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "otx": {},
+      "threat": {
+        "indicator": {
+          "type": "domain-name",
+          "url": {
+            "domain": "xn.fxuwqa.net"
+          }
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"count\": 1, \"results\": {\"indicator\":\"198.51.100.144\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"IPv4\",\"id\":19901748}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "otx": {},
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "ip": "198.51.100.144",
+          "type": "ipv4-addr"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"count\": 1, \"results\": {\"indicator\":\"d8c63fa27eb4598b4209beda8bc5f76e6b614eca87615113f9b7a85c460b0d3e\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"FileHash-SHA256\",\"id\":31612067}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "otx": {},
+      "related": {
+        "hash": [
+          "d8c63fa27eb4598b4209beda8bc5f76e6b614eca87615113f9b7a85c460b0d3e"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha256": "d8c63fa27eb4598b4209beda8bc5f76e6b614eca87615113f9b7a85c460b0d3e"
+            }
+          },
+          "type": "file"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"count\": 1, \"results\": {\"indicator\":\"e0b04bd7acfee1335fbb431a08a49af1\",\"description\":\"MD5 of db7f01055b00359ae1815542e37bc29dd1cb39063de3d437227796e4d1314f89\",\"title\":null,\"content\":\"\",\"type\":\"FileHash-MD5\",\"id\":34413770}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "otx": {
+        "description": "MD5 of db7f01055b00359ae1815542e37bc29dd1cb39063de3d437227796e4d1314f89"
+      },
+      "related": {
+        "hash": [
+          "e0b04bd7acfee1335fbb431a08a49af1"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "e0b04bd7acfee1335fbb431a08a49af1"
+            }
+          },
+          "type": "file"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"count\": 1, \"results\": {\"indicator\":\"198.51.100.144\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"IPv4\",\"id\":1588938}}",
+      "tags": null
+    },
+    {
+      "message": "{\"count\": 1, \"results\": {\"indicator\":\"94256f9060e639d23aa37976a02dbf64\",\"description\":\"MD5 of c4928bd0420b18e120dd9f2bb84f3c123eb414fdad6e3859e39d127ce0f3fc55\",\"title\":\"Win32:Hoblig-B\",\"content\":\"\",\"type\":\"FileHash-MD5\",\"id\":9751110}}",
+      "tags": null
+    },
+    {
+      "message": "{\"count\": 1, \"results\": {\"indicator\":\"xn.fxuwqa.net\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"hostname\",\"id\":16782717}}",
+      "tags": null
+    },
+    {
+      "message": "{\"count\": 1, \"results\": {\"indicator\":\"198.51.100.144\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"IPv4\",\"id\":19901748}}",
+      "tags": null
+    },
+    {
+      "message": "{\"count\": 1, \"results\": {\"indicator\":\"d8c63fa27eb4598b4209beda8bc5f76e6b614eca87615113f9b7a85c460b0d3e\",\"description\":null,\"title\":null,\"content\":\"\",\"type\":\"FileHash-SHA256\",\"id\":31612067}}",
+      "tags": null
+    },
+    {
+      "message": "{\"count\": 1, \"results\": {\"indicator\":\"e0b04bd7acfee1335fbb431a08a49af1\",\"description\":\"MD5 of db7f01055b00359ae1815542e37bc29dd1cb39063de3d437227796e4d1314f89\",\"title\":null,\"content\":\"\",\"type\":\"FileHash-MD5\",\"id\":34413770}}",
+      "tags": null
+    }
+  ],
+  "meta": {
+    "data_stream": "threat",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_otx-threat-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "ti_otx",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

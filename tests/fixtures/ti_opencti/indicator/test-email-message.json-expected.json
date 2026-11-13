@@ -1,0 +1,152 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2044-08-16T14:29:16.000Z",
+        "id": "5d4b0068-5abb-4b91-85e7-b426a17b8b10",
+        "kind": "enrichment",
+        "type": [
+          "indicator"
+        ]
+      },
+      "opencti": {
+        "indicator": {
+          "creator_identity_class": "organization",
+          "detection": false,
+          "invalid_or_revoked_from": "2045-08-16T14:29:16.000Z",
+          "is_inferred": false,
+          "lang": "en",
+          "observables_count": 1,
+          "pattern": "[email-message:subject = 'Blank 2']",
+          "pattern_type": "stix",
+          "pattern_version": "2.1",
+          "revoked": true,
+          "score": 40,
+          "standard_id": "indicator--569a023c-1dc9-55b9-a246-aaa23acba6b7",
+          "valid_from": "2044-08-16T14:29:16.000Z",
+          "valid_until": "2045-08-16T14:29:16.000Z"
+        },
+        "observable": {
+          "email_message": {
+            "entity_type": "Email-Message",
+            "id": "3df0275b-c119-44b5-adbb-24f8bff68492",
+            "is_multipart": true,
+            "standard_id": "email-message--cac554f6-5978-5364-bb92-f9fdb88c4475",
+            "subject": "Blank 2",
+            "value": "Blank 2"
+          }
+        }
+      },
+      "tags": [
+        "forwarded",
+        "opencti-indicator",
+        "malware"
+      ],
+      "threat": {
+        "feed": {
+          "dashboard_id": "ti_opencti-83b2bef0-591c-11ee-ba5f-49a63bb985cd",
+          "description": "Indicator data from OpenCTI",
+          "name": "OpenCTI",
+          "reference": "https://docs.opencti.io/latest/usage/overview/"
+        },
+        "indicator": {
+          "confidence": "Low",
+          "marking": {
+            "tlp": "CLEAR"
+          },
+          "modified_at": "2051-01-17T09:12:37.556Z",
+          "name": "Blank 2",
+          "provider": "CIRCL",
+          "reference": "https://demo.opencti.io/dashboard/observations/indicators/5d4b0068-5abb-4b91-85e7-b426a17b8b10",
+          "type": "email-message"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "url": "https://demo.opencti.io"
+      },
+      "confidence": 15,
+      "created": "2044-08-16T14:29:16.000Z",
+      "createdBy": {
+        "identity_class": "organization",
+        "name": "CIRCL"
+      },
+      "description": "",
+      "externalReferences": {
+        "edges": []
+      },
+      "id": "5d4b0068-5abb-4b91-85e7-b426a17b8b10",
+      "is_inferred": false,
+      "killChainPhases": [],
+      "lang": "en",
+      "modified": "2051-01-17T09:12:37.556Z",
+      "name": "Blank 2",
+      "objectLabel": [
+        {
+          "value": "malware"
+        }
+      ],
+      "objectMarking": [
+        {
+          "definition": "TLP:CLEAR",
+          "definition_type": "TLP"
+        }
+      ],
+      "observables": {
+        "edges": [
+          {
+            "node": {
+              "attribute_date": null,
+              "body": null,
+              "content_type": null,
+              "entity_type": "Email-Message",
+              "id": "3df0275b-c119-44b5-adbb-24f8bff68492",
+              "is_multipart": true,
+              "message_id": null,
+              "observable_value": "Blank 2",
+              "received_lines": null,
+              "standard_id": "email-message--cac554f6-5978-5364-bb92-f9fdb88c4475",
+              "subject": "Blank 2"
+            }
+          }
+        ],
+        "pageInfo": {
+          "globalCount": 1
+        }
+      },
+      "pattern": "[email-message:subject = 'Blank 2']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "revoked": true,
+      "standard_id": "indicator--569a023c-1dc9-55b9-a246-aaa23acba6b7",
+      "tags": [
+        "forwarded",
+        "opencti-indicator"
+      ],
+      "valid_from": "2044-08-16T14:29:16.000Z",
+      "valid_until": "2045-08-16T14:29:16.000Z",
+      "x_opencti_detection": false,
+      "x_opencti_main_observable_type": "Email-Message",
+      "x_opencti_score": 40
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_opencti-indicator-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_opencti",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

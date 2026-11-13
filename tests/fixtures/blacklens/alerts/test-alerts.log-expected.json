@@ -1,0 +1,57 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-12-30T16:11:57.194Z",
+      "blacklens": {
+        "alert": {
+          "activities": [
+            {
+              "category": "threat",
+              "created_date": "2053-12-30T16:11:40.195989Z",
+              "description": "A Critical severity external vulnerability 'Blind SQL Injection via HTTP Header' has been detected on asset 'demo.example.com'",
+              "id": "15fecd09-04d3-4f37-9fc5-3062f8eda1e6",
+              "trace_id": "28dcb014-08cf-4f6c-8718-0f8d6850b078",
+              "type": "ExternalVulnerabilityCreated"
+            }
+          ],
+          "analysis": "completed",
+          "category": "vulnerability",
+          "id": "1cc65e2c-483f-4f14-8703-6d205109ff94",
+          "name": "External Vulnerability Detected",
+          "severity": "high",
+          "status": "new",
+          "updated_date": "2053-12-31T16:10:56.155Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "id": "1cc65e2c-483f-4f14-8703-6d205109ff94",
+        "kind": "alert",
+        "original": "{\"updated_date\":\"2053-12-31T16:10:56.155874Z\",\"created_date\":\"2053-12-30T16:11:57.194393Z\",\"id\":\"1cc65e2c-483f-4f14-8703-6d205109ff94\",\"name\":\"External Vulnerability Detected\",\"type\":\"ExternalVulnerabilityDiscovered\",\"severity\":\"high\",\"status\":\"new\",\"analysis\":\"completed\",\"category\":\"vulnerability\",\"activities\":[{\"updated_date\":null,\"created_date\":\"2053-12-30T16:11:40.195989Z\",\"id\":\"15fecd09-04d3-4f37-9fc5-3062f8eda1e6\",\"type\":\"ExternalVulnerabilityCreated\",\"description\":\"A Critical severity external vulnerability 'Blind SQL Injection via HTTP Header' has been detected on asset 'demo.example.com'\",\"category\":\"threat\",\"trace_id\":\"28dcb014-08cf-4f6c-8718-0f8d6850b078\",\"data\":{}}]}",
+        "type": [
+          "indicator"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"updated_date\":\"2053-12-31T16:10:56.155874Z\",\"created_date\":\"2053-12-30T16:11:57.194393Z\",\"id\":\"1cc65e2c-483f-4f14-8703-6d205109ff94\",\"name\":\"External Vulnerability Detected\",\"type\":\"ExternalVulnerabilityDiscovered\",\"severity\":\"high\",\"status\":\"new\",\"analysis\":\"completed\",\"category\":\"vulnerability\",\"activities\":[{\"updated_date\":null,\"created_date\":\"2053-12-30T16:11:40.195989Z\",\"id\":\"15fecd09-04d3-4f37-9fc5-3062f8eda1e6\",\"type\":\"ExternalVulnerabilityCreated\",\"description\":\"A Critical severity external vulnerability 'Blind SQL Injection via HTTP Header' has been detected on asset 'demo.example.com'\",\"category\":\"threat\",\"trace_id\":\"28dcb014-08cf-4f6c-8718-0f8d6850b078\",\"data\":{}}]}"
+    }
+  ],
+  "meta": {
+    "data_stream": "alerts",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-blacklens-alerts-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "blacklens",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

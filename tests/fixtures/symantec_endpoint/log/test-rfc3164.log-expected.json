@@ -1,0 +1,144 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-10-04T10:51:33.000Z",
+      "destination": {
+        "address": "192.0.2.139",
+        "geo": {
+          "name": "Default"
+        },
+        "ip": "192.0.2.139",
+        "mac": "CC-F9-E4-A9-12-26",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "blocked",
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 4,
+        "end": "2048-11-11T19:25:28.000Z",
+        "kind": "event",
+        "original": "<51>Oct 4 10:51:33 symantec.endpointprotection.english.test SymantecServer: host-rfc3164,Local Host IP: 192.0.2.139,Local Port: 80,Local Host MAC: CCF9E4A91226,Remote Host IP: 192.168.124.110,Remote Host Name: ,Remote Port: 33424,Remote Host MAC: 2C3AFDA79E71,TCP,Inbound,Begin: 2048-11-11 19:25:21,End Time: 2048-11-11 19:25:28,Occurrences: 4,Application: C:/WINDOWS/system32/NTOSKRNL.EXE,Rule: Block Unapproved Incoming Ports,Location: Default,User Name: sampleuser4,Domain Name: SMPL,Action: Blocked,SHA-256: 5379732000000000000000000000000000000000000000000000000000000000,MD-5: 53797320000000000000000000000000",
+        "provider": "Agent Traffic Log",
+        "start": "2048-11-11T19:25:21.000Z",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "host-rfc3164",
+        "ip": [
+          "192.0.2.139"
+        ],
+        "mac": [
+          "CC-F9-E4-A9-12-26"
+        ],
+        "name": "host-rfc3164"
+      },
+      "log": {
+        "syslog": {
+          "appname": "SymantecServer",
+          "hostname": "symantec.endpointprotection.english.test",
+          "priority": 51
+        }
+      },
+      "network": {
+        "community_id": "1:I126oo5jqCWLcaMYU/xL2fuhbjM=",
+        "direction": "ingress",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "process": {
+        "executable": "C:/WINDOWS/system32/NTOSKRNL.EXE",
+        "hash": {
+          "md5": "53797320000000000000000000000000",
+          "sha256": "5379732000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "related": {
+        "hash": [
+          "53797320000000000000000000000000",
+          "5379732000000000000000000000000000000000000000000000000000000000"
+        ],
+        "ip": [
+          "192.0.2.139",
+          "192.168.124.110"
+        ]
+      },
+      "rule": {
+        "name": "Block Unapproved Incoming Ports"
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "mac": "2C-3A-FD-A7-9E-71",
+        "port": 33424
+      },
+      "symantec_endpoint": {
+        "log": {
+          "action": "blocked",
+          "application": "C:/WINDOWS/system32/NTOSKRNL.EXE",
+          "begin": "2048-11-11 19:25:21",
+          "domain_name": "SMPL",
+          "end": "2048-11-11 19:25:28",
+          "local_host_ip": "192.0.2.139",
+          "local_host_mac": "CCF9E4A91226",
+          "local_port": "80",
+          "location": "Default",
+          "md-5": "53797320000000000000000000000000",
+          "network_protocol": "TCP",
+          "occurrences": "4",
+          "remote_host_ip": "192.168.124.110",
+          "remote_host_mac": "2C3AFDA79E71",
+          "remote_port": "33424",
+          "rule": "Block Unapproved Incoming Ports",
+          "sha-256": "5379732000000000000000000000000000000000000000000000000000000000",
+          "traffic_direction": "Inbound",
+          "user_name": "sampleuser4"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "SMPL",
+        "name": "sampleuser4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "<51>Oct 4 10:51:33 symantec.endpointprotection.english.test SymantecServer: host-rfc3164,Local Host IP: 192.0.2.139,Local Port: 80,Local Host MAC: CCF9E4A91226,Remote Host IP: 192.168.124.110,Remote Host Name: ,Remote Port: 33424,Remote Host MAC: 2C3AFDA79E71,TCP,Inbound,Begin: 2048-11-11 19:25:21,End Time: 2048-11-11 19:25:28,Occurrences: 4,Application: C:/WINDOWS/system32/NTOSKRNL.EXE,Rule: Block Unapproved Incoming Ports,Location: Default,User Name: sampleuser4,Domain Name: SMPL,Action: Blocked,SHA-256: 5379732000000000000000000000000000000000000000000000000000000000,MD-5: 53797320000000000000000000000000",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

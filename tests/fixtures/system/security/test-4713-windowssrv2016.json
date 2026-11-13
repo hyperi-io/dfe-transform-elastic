@@ -1,0 +1,61 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:43.545Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+            },
+            "winlog": {
+                "opcode": "Info",
+                "outcome": "success",
+                "process": {
+                    "pid": 776,
+                    "thread": {
+                        "id": 2012
+                    }
+                },
+                "channel": "Security",
+                "event_id": 4713,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "time_created": "2048-07-28T10:15:43.495Z",
+                "level": "information",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "record_id": 21265,
+                "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x3e7",
+                    "KerberosPolicyChange": "KerMinT: 0x53d1ac1000 (0x53ade8ca00);  KerMaxR: 0x649534e0000 (0x58028e44000);  KerProxy: 0xd693a400 (0xb2d05e00);  "
+                },
+                "activity_id": "{cf562571-08d7-0833-a019-00cfd604b915}"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4713,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4713_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            },
+            "agent": {
+                "version": "8.0.0",
+                "ephemeral_id": "68b76350-1d2b-462f-94c5-523a69a21509",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat"
+            }
+        }
+    ]
+}

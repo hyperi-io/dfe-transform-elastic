@@ -1,0 +1,66 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:33.160Z",
+            "agent": {
+                "ephemeral_id": "e427e571-6890-427f-94c8-3e1424b46775",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2048-04-01T08:45:44.171Z",
+                "event_data": {
+                    "TargetUserName": "ev_aav@XCYX.SAAS",
+                    "TargetDomainName": "TEST.SAAS",
+                    "ServiceSid": "S-1-5-21-1717121054-434620538-60925301-1110",
+                    "TicketEncryptionType": "0x12",
+                    "TransmittedServices": "-",
+                    "ServiceName": "DC_TEST2K12$",
+                    "TicketOptions": "0x40810000",
+                    "IpAddress": "::1",
+                    "IpPort": "0",
+                    "Status": "0x0",
+                    "LogonGuid": "{38c58651-d61a-93e7-fdf6-89bf508a6b11}"
+                },
+                "channel": "Security",
+                "event_id": 4769,
+                "record_id": 5040236,
+                "process": {
+                    "pid": 496,
+                    "thread": {
+                        "id": 2868
+                    }
+                },
+                "level": "information",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "outcome": "success"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4769,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4769.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            }
+        }
+    ]
+}

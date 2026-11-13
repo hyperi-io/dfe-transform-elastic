@@ -1,0 +1,74 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-09-20T15:42:59.000+05:00",
+      "destination": {
+        "ip": "192.0.2.97",
+        "port": 5000
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web",
+          "network"
+        ],
+        "kind": "event",
+        "original": "Sep 20 15:42:59 192.0.2.97 haproxy[24551]: Connect from 192.0.2.97:40780 to 192.0.2.97:5000 (main/HTTP)",
+        "timezone": "+0500",
+        "type": [
+          "connection"
+        ]
+      },
+      "haproxy": {
+        "frontend_name": "main",
+        "mode": "HTTP",
+        "source": "192.0.2.97"
+      },
+      "process": {
+        "name": "haproxy",
+        "pid": 24551
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97",
+          "192.0.2.97"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97",
+        "port": 40780
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "+0500"
+      },
+      "message": "Sep 20 15:42:59 192.0.2.97 haproxy[24551]: Connect from 192.0.2.97:40780 to 192.0.2.97:5000 (main/HTTP)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-haproxy-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "haproxy",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

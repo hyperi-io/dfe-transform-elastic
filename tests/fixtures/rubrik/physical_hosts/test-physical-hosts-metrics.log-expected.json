@@ -1,0 +1,44 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"id\":\"fbf55e48-8729-4c99-9b3c-cb11f041bf40\",\"name\":\"0.0.0.0\",\"connectionStatus\":{\"connectivity\":\"DISCONNECTED\"},\"cluster\":{\"id\":\"6285a3a0-c4ba-4806-ad5c-61db8ec0a09b\",\"name\":\"cluster-1\"},\"osType\":\"WINDOWS\",\"effectiveSlaDomain\":{\"id\":\"3508f08a-707d-4b55-8842-516ebabee320\",\"name\":\"sla-domain-1\"}}"
+      },
+      "rubrik": {
+        "cluster": {
+          "id": "6285a3a0-c4ba-4806-ad5c-61db8ec0a09b",
+          "name": "cluster-1"
+        },
+        "effective_sla_domain": {
+          "id": "3508f08a-707d-4b55-8842-516ebabee320",
+          "name": "sla-domain-1"
+        },
+        "physical_hosts": {
+          "connectivity_status": "DISCONNECTED",
+          "id": "fbf55e48-8729-4c99-9b3c-cb11f041bf40",
+          "name": "0.0.0.0",
+          "os_type": "WINDOWS"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"fbf55e48-8729-4c99-9b3c-cb11f041bf40\",\"name\":\"0.0.0.0\",\"connectionStatus\":{\"connectivity\":\"DISCONNECTED\"},\"cluster\":{\"id\":\"6285a3a0-c4ba-4806-ad5c-61db8ec0a09b\",\"name\":\"cluster-1\"},\"osType\":\"WINDOWS\",\"effectiveSlaDomain\":{\"id\":\"3508f08a-707d-4b55-8842-516ebabee320\",\"name\":\"sla-domain-1\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "physical_hosts",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-rubrik-physical_hosts-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "rubrik",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

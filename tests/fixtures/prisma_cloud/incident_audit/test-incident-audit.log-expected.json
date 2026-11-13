@@ -1,0 +1,233 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-09-19T07:15:31.899Z",
+      "cloud": {
+        "account": {
+          "id": [
+            "123abc",
+            "abdcsfData"
+          ]
+        },
+        "provider": [
+          "alibaba",
+          "oci"
+        ],
+        "region": "hkgwgx"
+      },
+      "container": {
+        "id": "hkgwgx",
+        "image": {
+          "name": [
+            "fxblds.io/library/nginx:latest",
+            "hkgwgx"
+          ]
+        },
+        "name": [
+          "nginx",
+          "hkgwgx"
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "651c46b145d15228585exxxx",
+        "kind": "event",
+        "original": "{\"_id\":\"651c46b145d15228585exxxx\",\"accountID\":\"123abc\",\"acknowledged\":false,\"app\":\"hkgwgx\",\"appID\":\"hkgwgx\",\"audits\":[{\"_id\":\"651c46b145d15228585exxxx\",\"accountID\":\"abdcsfData\",\"app\":\"hkgwgx\",\"appID\":\"hkgwgx\",\"attackTechniques\":[\"exploitationForPrivilegeEscalation\"],\"attackType\":\"cloudMetadataProbing\",\"cluster\":\"hkgwgx\",\"collections\":[\"hkgwgx\"],\"command\":\"hkgwgx\",\"container\":true,\"containerId\":\"5490e85a1a0c1c9f9c74591a9d3fcbf61beb84a952f14a17277be5fcf00xxxxx\",\"containerName\":\"nginx\",\"count\":0,\"country\":\"hkgwgx\",\"domain\":\"hkgwgx\",\"effect\":[\"block\",\"prevent\"],\"err\":\"hkgwgx\",\"filepath\":\"hkgwgx\",\"fqdn\":\"audits-fqdn-hostname\",\"function\":\"hkgwgx\",\"functionID\":\"hkgwgx\",\"hostname\":\"rqe-rj-chwzkcq-ow-vtrl7-6084kgup-m77m\",\"imageId\":\"sha256:61395b4c586da2b9b3b7ca903ea6a448e6783dfdd7f768ff2c1a0f3360aaxxxx\",\"imageName\":\"fxblds.io/library/nginx:latest\",\"interactive\":true,\"ip\":\"0.0.0.0\",\"label\":\"hkgwgx\",\"labels\":{},\"md5\":\"hkgwgx\",\"msg\":\"hkgwgx\",\"namespace\":\"hkgwgx\",\"os\":\"Debian GNU/Linux 12 (bookworm)\",\"pid\":0,\"port\":0,\"processPath\":\"hkgwgx\",\"profileId\":\"hkgwgx\",\"provider\":\"alibaba\",\"rawEvent\":\"hkgwgx\",\"region\":\"hkgwgx\",\"requestID\":\"hkgwgx\",\"resourceID\":\"hkgwgx\",\"ruleName\":\"hkgwgx\",\"runtime\":[\"python3.6\"],\"severity\":[\"low\",\"medium\",\"high\"],\"time\":\"2051-09-19T07:15:31.899Z\",\"type\":[\"processes\"],\"user\":\"hkgwgx\",\"version\":\"hkgwgx\",\"vmID\":\"hkgwgx\",\"wildFireReportURL\":\"hkgwgx\"}],\"category\":\"malware\",\"cluster\":\"hkgwgx\",\"collections\":[\"hkgwgx\"],\"containerID\":\"hkgwgx\",\"containerName\":\"hkgwgx\",\"customRuleName\":\"hkgwgx\",\"fqdn\":\"hkgwgx\",\"function\":\"hkgwgx\",\"functionID\":\"hkgwgx\",\"hostname\":\"hkgwgx\",\"imageID\":\"hkgwgx\",\"imageName\":\"hkgwgx\",\"labels\":{},\"namespace\":\"hkgwgx\",\"profileID\":\"hkgwgx\",\"provider\":\"oci\",\"region\":\"hkgwgx\",\"resourceID\":\"hkgwgx\",\"runtime\":\"hkgwgx\",\"serialNum\":0,\"shouldCollect\":true,\"time\":\"2051-09-19T07:15:31.899Z\",\"type\":\"host\",\"vmID\":\"hkgwgx\",\"windows\":true}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "domain": [
+          "audits-fqdn-hostname",
+          "hkgwgx"
+        ],
+        "hostname": "hkgwgx"
+      },
+      "os": {
+        "full": [
+          "Debian GNU/Linux 12 (bookworm)"
+        ]
+      },
+      "prisma_cloud": {
+        "incident_audit": {
+          "_id": "651c46b145d15228585exxxx",
+          "account_id": "123abc",
+          "acknowledged": false,
+          "app": {
+            "id": "hkgwgx",
+            "value": "hkgwgx"
+          },
+          "category": "malware",
+          "cluster": "hkgwgx",
+          "collections": [
+            "hkgwgx"
+          ],
+          "container": {
+            "id": "hkgwgx",
+            "name": "hkgwgx"
+          },
+          "custom_rule_name": "hkgwgx",
+          "data": [
+            {
+              "_id": "651c46b145d15228585exxxx",
+              "account_id": "abdcsfData",
+              "app": {
+                "id": "hkgwgx",
+                "value": "hkgwgx"
+              },
+              "attack": {
+                "techniques": [
+                  "exploitationForPrivilegeEscalation"
+                ],
+                "type": "cloudMetadataProbing"
+              },
+              "cluster": "hkgwgx",
+              "collections": [
+                "hkgwgx"
+              ],
+              "command": "hkgwgx",
+              "container": {
+                "id": "5490e85a1a0c1c9f9c74591a9d3fcbf61beb84a952f14a17277be5fcf00xxxxx",
+                "name": "nginx",
+                "value": true
+              },
+              "count": 0,
+              "country": "hkgwgx",
+              "domain": "hkgwgx",
+              "effect": [
+                "block",
+                "prevent"
+              ],
+              "err": "hkgwgx",
+              "filepath": "hkgwgx",
+              "fqdn": "audits-fqdn-hostname",
+              "function": {
+                "id": "hkgwgx",
+                "value": "hkgwgx"
+              },
+              "hostname": "rqe-rj-chwzkcq-ow-vtrl7-6084kgup-m77m",
+              "image": {
+                "id": "sha256:61395b4c586da2b9b3b7ca903ea6a448e6783dfdd7f768ff2c1a0f3360aaxxxx",
+                "name": "fxblds.io/library/nginx:latest"
+              },
+              "interactive": true,
+              "ip": "0.0.0.0",
+              "label": "hkgwgx",
+              "md5": "hkgwgx",
+              "msg": "hkgwgx",
+              "namespace": "hkgwgx",
+              "os": "Debian GNU/Linux 12 (bookworm)",
+              "pid": 0,
+              "port": 0,
+              "process_path": "hkgwgx",
+              "profile_id": "hkgwgx",
+              "provider": "alibaba",
+              "raw_event": "hkgwgx",
+              "region": "hkgwgx",
+              "request_id": "hkgwgx",
+              "resource_id": "hkgwgx",
+              "rule_name": "hkgwgx",
+              "runtime": [
+                "python3.6"
+              ],
+              "severity": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "time": "2051-09-19T07:15:31.899Z",
+              "type": [
+                "processes"
+              ],
+              "user": "hkgwgx",
+              "version": "hkgwgx",
+              "vm_id": "hkgwgx",
+              "wild_fire_report_url": "hkgwgx"
+            }
+          ],
+          "fqdn": "hkgwgx",
+          "function": {
+            "id": "hkgwgx",
+            "value": "hkgwgx"
+          },
+          "hostname": "hkgwgx",
+          "image": {
+            "id": "hkgwgx",
+            "name": "hkgwgx"
+          },
+          "namespace": "hkgwgx",
+          "profile_id": "hkgwgx",
+          "provider": "oci",
+          "region": "hkgwgx",
+          "resource_id": "hkgwgx",
+          "runtime": "hkgwgx",
+          "serial_num": 0,
+          "should_collect": true,
+          "time": "2051-09-19T07:15:31.899Z",
+          "type": "host",
+          "vm_id": "hkgwgx",
+          "windows": true
+        }
+      },
+      "related": {
+        "hosts": [
+          "audits-fqdn-hostname",
+          "rqe-rj-chwzkcq-ow-vtrl7-6084kgup-m77m",
+          "hkgwgx"
+        ],
+        "ip": [
+          "0.0.0.0"
+        ],
+        "user": [
+          "hkgwgx"
+        ]
+      },
+      "rule": {
+        "name": [
+          "hkgwgx"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "threat": {
+        "technique": {
+          "name": [
+            "exploitationForPrivilegeEscalation"
+          ],
+          "subtechnique": {
+            "name": [
+              "cloudMetadataProbing"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"_id\":\"651c46b145d15228585exxxx\",\"accountID\":\"123abc\",\"acknowledged\":false,\"app\":\"hkgwgx\",\"appID\":\"hkgwgx\",\"audits\":[{\"_id\":\"651c46b145d15228585exxxx\",\"accountID\":\"abdcsfData\",\"app\":\"hkgwgx\",\"appID\":\"hkgwgx\",\"attackTechniques\":[\"exploitationForPrivilegeEscalation\"],\"attackType\":\"cloudMetadataProbing\",\"cluster\":\"hkgwgx\",\"collections\":[\"hkgwgx\"],\"command\":\"hkgwgx\",\"container\":true,\"containerId\":\"5490e85a1a0c1c9f9c74591a9d3fcbf61beb84a952f14a17277be5fcf00xxxxx\",\"containerName\":\"nginx\",\"count\":0,\"country\":\"hkgwgx\",\"domain\":\"hkgwgx\",\"effect\":[\"block\",\"prevent\"],\"err\":\"hkgwgx\",\"filepath\":\"hkgwgx\",\"fqdn\":\"audits-fqdn-hostname\",\"function\":\"hkgwgx\",\"functionID\":\"hkgwgx\",\"hostname\":\"rqe-rj-chwzkcq-ow-vtrl7-6084kgup-m77m\",\"imageId\":\"sha256:61395b4c586da2b9b3b7ca903ea6a448e6783dfdd7f768ff2c1a0f3360aaxxxx\",\"imageName\":\"fxblds.io/library/nginx:latest\",\"interactive\":true,\"ip\":\"0.0.0.0\",\"label\":\"hkgwgx\",\"labels\":{},\"md5\":\"hkgwgx\",\"msg\":\"hkgwgx\",\"namespace\":\"hkgwgx\",\"os\":\"Debian GNU/Linux 12 (bookworm)\",\"pid\":0,\"port\":0,\"processPath\":\"hkgwgx\",\"profileId\":\"hkgwgx\",\"provider\":\"alibaba\",\"rawEvent\":\"hkgwgx\",\"region\":\"hkgwgx\",\"requestID\":\"hkgwgx\",\"resourceID\":\"hkgwgx\",\"ruleName\":\"hkgwgx\",\"runtime\":[\"python3.6\"],\"severity\":[\"low\",\"medium\",\"high\"],\"time\":\"2051-09-19T07:15:31.899Z\",\"type\":[\"processes\"],\"user\":\"hkgwgx\",\"version\":\"hkgwgx\",\"vmID\":\"hkgwgx\",\"wildFireReportURL\":\"hkgwgx\"}],\"category\":\"malware\",\"cluster\":\"hkgwgx\",\"collections\":[\"hkgwgx\"],\"containerID\":\"hkgwgx\",\"containerName\":\"hkgwgx\",\"customRuleName\":\"hkgwgx\",\"fqdn\":\"hkgwgx\",\"function\":\"hkgwgx\",\"functionID\":\"hkgwgx\",\"hostname\":\"hkgwgx\",\"imageID\":\"hkgwgx\",\"imageName\":\"hkgwgx\",\"labels\":{},\"namespace\":\"hkgwgx\",\"profileID\":\"hkgwgx\",\"provider\":\"oci\",\"region\":\"hkgwgx\",\"resourceID\":\"hkgwgx\",\"runtime\":\"hkgwgx\",\"serialNum\":0,\"shouldCollect\":true,\"time\":\"2051-09-19T07:15:31.899Z\",\"type\":\"host\",\"vmID\":\"hkgwgx\",\"windows\":true}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "incident_audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-prisma_cloud-incident_audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "prisma_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

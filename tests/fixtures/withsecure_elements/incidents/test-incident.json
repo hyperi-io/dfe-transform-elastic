@@ -1,0 +1,7 @@
+{
+  "events": [
+    {
+      "message": "{\"incidentId\":\"1b188e84-f1b3-41ca-9877-264ba900f1b5\",\"incidentPublicId\":\"INC-12345\",\"organizationId\":\"633819ee-3342-4c0d-a451-e8492b2be319\",\"name\":\"Malware Detection\",\"status\":\"new\",\"severity\":\"high\",\"riskLevel\":\"high\",\"riskScore\":85.5,\"resolution\":\"unconfirmed\",\"createdTimestamp\":\"2051-08-09T12:10:43.537Z\",\"updatedTimestamp\":\"2051-08-09T12:10:43.537Z\",\"initialReceivedTimestamp\":\"2051-08-09T12:10:43.537Z\",\"categories\":[\"MALWARE\"],\"sources\":[\"endpoint\"]}"
+    }
+  ]
+}

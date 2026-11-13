@@ -1,0 +1,194 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "scheduled-task-deleted",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "4699",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "deletion",
+          "admin"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "omqteieaxg",
+        "id": "7b02abea-e8ee-48ef-8b27-a9d8ab74863e",
+        "ip": [
+          "fe80::446e:78f1:40eb:7acc",
+          "192.168.166.98",
+          "fe80::f917:7719:d642:c19c",
+          "192.168.207.180"
+        ],
+        "mac": [
+          "10-1E-27-2C-5D-6A",
+          "97-6F-44-3A-3A-38"
+        ],
+        "name": "omqteieaxg",
+        "os": {
+          "build": "17763.7792",
+          "family": "windows",
+          "kernel": "10.0.17763.7786 (WinBuild.160101.0800)",
+          "name": "Windows Server 2019 Datacenter Evaluation",
+          "platform": "windows",
+          "type": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "OMQTEIEAXG$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NORTH",
+        "id": "S-1-5-18",
+        "name": "OMQTEIEAXG$"
+      },
+      "winlog": {
+        "activity_id": "{50ac050a-75ac-0591-fc18-bb55dd15db01}",
+        "channel": "Security",
+        "computer_name": "omqteieaxg.qhqop.pdjchovsvchpp.local",
+        "event_data": {
+          "ClientProcessId": "4588",
+          "ClientProcessStartKey": "6192449487634693",
+          "FQDN": "omqteieaxg.qhqop.pdjchovsvchpp.local",
+          "ParentProcessId": "632",
+          "RpcCallClientLocality": "0",
+          "SubjectDomainName": "NORTH",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "OMQTEIEAXG$",
+          "SubjectUserSid": "S-1-5-18",
+          "TaskName": "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan"
+        },
+        "event_id": "4699",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 640,
+          "thread": {
+            "id": 10604
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "266164",
+        "scheduled_task": {
+          "name": "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan"
+        },
+        "task": "Other Object Access Events",
+        "version": 1
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "4699",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "omqteieaxg",
+        "id": "7b02abea-e8ee-48ef-8b27-a9d8ab74863e",
+        "ip": [
+          "fe80::446e:78f1:40eb:7acc",
+          "192.168.166.98",
+          "fe80::f917:7719:d642:c19c",
+          "192.168.207.180"
+        ],
+        "mac": [
+          "10-1E-27-2C-5D-6A",
+          "97-6F-44-3A-3A-38"
+        ],
+        "name": "omqteieaxg",
+        "os": {
+          "build": "17763.7792",
+          "family": "windows",
+          "kernel": "10.0.17763.7786 (WinBuild.160101.0800)",
+          "name": "Windows Server 2019 Datacenter Evaluation",
+          "platform": "windows",
+          "type": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "user": {
+        "domain": "NORTH",
+        "id": "S-1-5-18",
+        "name": "OMQTEIEAXG$"
+      },
+      "winlog": {
+        "activity_id": "{50ac050a-75ac-0591-fc18-bb55dd15db01}",
+        "channel": "Security",
+        "computer_name": "omqteieaxg.qhqop.pdjchovsvchpp.local",
+        "event_data": {
+          "ClientProcessId": "4588",
+          "ClientProcessStartKey": "6192449487634693",
+          "FQDN": "omqteieaxg.qhqop.pdjchovsvchpp.local",
+          "ParentProcessId": "632",
+          "RpcCallClientLocality": "0",
+          "SubjectDomainName": "NORTH",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "OMQTEIEAXG$",
+          "SubjectUserSid": "S-1-5-18",
+          "TaskName": "\\Microsoft\\Windows\\Windows Defender\\Windows Defender Scheduled Scan"
+        },
+        "event_id": "4699",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x3e7"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 640,
+          "thread": {
+            "id": 10604
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "266164",
+        "task": "Other Object Access Events",
+        "version": 1
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

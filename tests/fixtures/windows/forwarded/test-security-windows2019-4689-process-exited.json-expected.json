@@ -1,0 +1,457 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-11-14T21:26:49.496Z",
+      "agent": {
+        "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "exited-process",
+        "category": [
+          "process"
+        ],
+        "code": "4689",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "vazmbnu",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\wevtutil.exe",
+        "name": "wevtutil.exe",
+        "pid": 5412
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "VAGRANT",
+        "id": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "vazmbnu",
+        "event_data": {
+          "Status": "0x0",
+          "SubjectDomainName": "VAGRANT",
+          "SubjectLogonId": "0x274a2",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000"
+        },
+        "event_id": "4689",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x274a2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 1168
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7538",
+        "time_created": "2047-11-14T21:26:49.496Z"
+      }
+    },
+    {
+      "@timestamp": "2047-11-14T21:27:46.960Z",
+      "agent": {
+        "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "exited-process",
+        "category": [
+          "process"
+        ],
+        "code": "4689",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "vazmbnu",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\taskhostw.exe",
+        "name": "taskhostw.exe",
+        "pid": 3988
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "VAGRANT",
+        "id": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "vazmbnu",
+        "event_data": {
+          "Status": "0x0",
+          "SubjectDomainName": "VAGRANT",
+          "SubjectLogonId": "0x274f1",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000"
+        },
+        "event_id": "4689",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x274f1"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 500
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7542",
+        "time_created": "2047-11-14T21:27:46.960Z"
+      }
+    },
+    {
+      "@timestamp": "2047-11-14T21:28:18.460Z",
+      "agent": {
+        "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "exited-process",
+        "category": [
+          "process"
+        ],
+        "code": "4689",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "vazmbnu",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\wevtutil.exe",
+        "name": "wevtutil.exe",
+        "pid": 2760
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "VAGRANT",
+        "id": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "vazmbnu",
+        "event_data": {
+          "Status": "0x0",
+          "SubjectDomainName": "VAGRANT",
+          "SubjectLogonId": "0x274a2",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000"
+        },
+        "event_id": "4689",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x274a2"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 5636
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7544",
+        "time_created": "2047-11-14T21:28:18.460Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:07:58.995Z",
+      "agent": {
+        "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4689,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "vazmbnu"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "vazmbnu",
+        "event_data": {
+          "ProcessId": "0x1524",
+          "ProcessName": "C:\\Windows\\System32\\wevtutil.exe",
+          "Status": "0x0",
+          "SubjectDomainName": "VAGRANT",
+          "SubjectLogonId": "0x274a2",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000"
+        },
+        "event_id": 4689,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 1168
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7538,
+        "time_created": "2047-11-14T21:26:49.496Z"
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:07:58.995Z",
+      "agent": {
+        "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4689,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "vazmbnu"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "vazmbnu",
+        "event_data": {
+          "ProcessId": "0xf94",
+          "ProcessName": "C:\\Windows\\System32\\taskhostw.exe",
+          "Status": "0x0",
+          "SubjectDomainName": "VAGRANT",
+          "SubjectLogonId": "0x274f1",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000"
+        },
+        "event_id": 4689,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 500
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7542,
+        "time_created": "2047-11-14T21:27:46.960Z"
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:07:58.995Z",
+      "agent": {
+        "ephemeral_id": "ea42b6a2-d2ce-42b2-8045-03e5150aa5f8",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4689,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "vazmbnu"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4689_Process_Exited.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "vazmbnu",
+        "event_data": {
+          "ProcessId": "0xac8",
+          "ProcessName": "C:\\Windows\\System32\\wevtutil.exe",
+          "Status": "0x0",
+          "SubjectDomainName": "VAGRANT",
+          "SubjectLogonId": "0x274a2",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000"
+        },
+        "event_id": 4689,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 5636
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7544,
+        "time_created": "2047-11-14T21:28:18.460Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

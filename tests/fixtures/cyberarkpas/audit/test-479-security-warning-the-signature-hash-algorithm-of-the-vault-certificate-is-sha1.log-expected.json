@@ -1,0 +1,139 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-03-04T19:10:01.000Z",
+      "cyberarkpas": {
+        "audit": {
+          "action": "Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.",
+          "desc": "Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.",
+          "iso_timestamp": "2049-03-04T19:10:01Z",
+          "issuer": "Builtin",
+          "message": "Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.",
+          "rfc5424": true,
+          "severity": "Error",
+          "station": "0.0.0.0",
+          "timestamp": "Mar 04 11:10:01"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "security warning - the signature hash algorithm of the vault certificate is sha1.",
+        "code": "479",
+        "kind": "event",
+        "original": "<7>1 2049-03-04T19:10:01Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 04 11:10:01\",\"IsoTimestamp\":\"2049-03-04T19:10:01Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"479\",\"Desc\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"Severity\":\"Error\",\"Issuer\":\"Builtin\",\"Action\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"\",\"File\":\"\",\"Station\":\"0.0.0.0\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"GatewayStation\":\"\"}}}",
+        "severity": 7,
+        "type": [
+          "error"
+        ]
+      },
+      "host": {
+        "name": "XASHY"
+      },
+      "log": {
+        "syslog": {
+          "priority": 7
+        }
+      },
+      "observer": {
+        "hostname": "XASHY",
+        "product": "Vault",
+        "vendor": "Cyber-Ark",
+        "version": "11.7.0000"
+      },
+      "related": {
+        "ip": [
+          "0.0.0.0"
+        ]
+      },
+      "source": {
+        "address": "0.0.0.0",
+        "ip": "0.0.0.0"
+      },
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-03-08T07:46:54.000Z",
+      "cyberarkpas": {
+        "audit": {
+          "action": "Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.",
+          "desc": "Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.",
+          "issuer": "Builtin",
+          "message": "Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.",
+          "rfc5424": false,
+          "severity": "Error",
+          "station": "0.0.0.0"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "security warning - the signature hash algorithm of the vault certificate is sha1.",
+        "code": "479",
+        "kind": "event",
+        "original": "Mar 08 07:46:54 XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"no\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"479\",\"Desc\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"Severity\":\"Error\",\"Issuer\":\"Builtin\",\"Action\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"\",\"File\":\"\",\"Station\":\"0.0.0.0\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"GatewayStation\":\"\"}}}",
+        "severity": 7,
+        "type": [
+          "error"
+        ]
+      },
+      "host": {
+        "name": "XASHY"
+      },
+      "observer": {
+        "hostname": "XASHY",
+        "product": "Vault",
+        "vendor": "Cyber-Ark",
+        "version": "11.7.0000"
+      },
+      "related": {
+        "ip": [
+          "0.0.0.0"
+        ]
+      },
+      "source": {
+        "address": "0.0.0.0",
+        "ip": "0.0.0.0"
+      },
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<7>1 2049-03-04T19:10:01Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 04 11:10:01\",\"IsoTimestamp\":\"2049-03-04T19:10:01Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"479\",\"Desc\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"Severity\":\"Error\",\"Issuer\":\"Builtin\",\"Action\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"\",\"File\":\"\",\"Station\":\"0.0.0.0\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"GatewayStation\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit"
+      ]
+    },
+    {
+      "message": "Mar 08 07:46:54 XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"no\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"479\",\"Desc\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"Severity\":\"Error\",\"Issuer\":\"Builtin\",\"Action\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"\",\"File\":\"\",\"Station\":\"0.0.0.0\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Security warning - The Signature Hash Algorithm of the Vault certificate is SHA1.\",\"GatewayStation\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cyberarkpas-audit-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cyberarkpas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

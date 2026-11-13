@@ -1,0 +1,198 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-06-30T02:43:31.836681529Z",
+      "claude_cowork": {
+        "events": {
+          "claude": {
+            "deployment_mode": "1p"
+          },
+          "cost_usd": 0.144958,
+          "cost_usd_micros": 144958,
+          "effort": "high",
+          "event": {
+            "name": "api_request",
+            "sequence": 6,
+            "timestamp": "2054-06-30T02:43:31.836Z"
+          },
+          "host": {
+            "arch": "arm64"
+          },
+          "os": {
+            "type": "darwin",
+            "version": "26.5.1"
+          },
+          "prompt": {
+            "id": "60763458-7366-3513-4028-632370982420"
+          },
+          "service": {
+            "name": "cowork",
+            "version": "1.15962.1"
+          },
+          "session": {
+            "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+          },
+          "speed": "normal",
+          "terminal": {
+            "type": "non-interactive"
+          },
+          "user": {
+            "account_id": "user_01ExampleAccountId",
+            "account_uuid": "93713061-9622-2531-3758-372154648850"
+          }
+        }
+      },
+      "data_stream": {
+        "dataset": "claude_cowork.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "api_request",
+        "category": [
+          "api"
+        ],
+        "duration": 7688000000,
+        "kind": "event",
+        "original": "{\"observed_timestamp\":\"2054-06-30T02:43:31.836690337Z\",\"@timestamp\":\"2054-06-30T02:43:31.836681529Z\",\"resource\":{\"attributes\":{\"service.name\":\"cowork\",\"service.version\":\"1.15962.1\",\"claude.deployment_mode\":\"1p\",\"host.arch\":\"arm64\",\"os.type\":\"darwin\",\"os.version\":\"26.5.1\"}},\"data_stream\":{\"namespace\":\"default\",\"type\":\"logs\",\"dataset\":\"claude_cowork.events.otel\"},\"scope\":{\"name\":\"com.anthropic.claude_code.events\",\"version\":\"2.1.187\"},\"event_name\":\"api_request\",\"attributes\":{\"claude.deployment_mode\":\"1p\",\"terminal.type\":\"non-interactive\",\"user.account_uuid\":\"93713061-9622-2531-3758-372154648850\",\"effort\":\"high\",\"cache_read_tokens\":20386,\"os.type\":\"darwin\",\"speed\":\"normal\",\"os.version\":\"26.5.1\",\"prompt.id\":\"60763458-7366-3513-4028-632370982420\",\"event.sequence\":6,\"cost_usd_micros\":144958,\"user.email\":\"user@example.com\",\"host.arch\":\"arm64\",\"model\":\"claude-opus-4-8\",\"output_tokens\":294,\"user.account_id\":\"user_01ExampleAccountId\",\"cost_usd\":0.144958,\"query_source\":\"sdk\",\"service.name\":\"cowork\",\"user.id\":\"c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4\",\"event.name\":\"api_request\",\"event.timestamp\":\"2054-06-30T02:43:31.836Z\",\"input_tokens\":3271,\"duration_ms\":7688,\"service.version\":\"1.15962.1\",\"cache_creation_tokens\":11106,\"organization.id\":\"60763458-7366-3513-4028-632370982420\",\"request_id\":\"lby_23EjfvmidRezjbvqRb\",\"session.id\":\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\"},\"body\":{\"text\":\"claude_code.api_request\"},\"event\":{},\"tags\":[\"preserve_original_event\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "outcome": "unknown",
+        "provider": "claude-cowork",
+        "type": [
+          "info"
+        ]
+      },
+      "gen_ai": {
+        "operation": {
+          "name": "sdk"
+        },
+        "provider": {
+          "name": "anthropic"
+        },
+        "request": {
+          "model": "claude-opus-4-8"
+        },
+        "response": {
+          "id": "lby_23EjfvmidRezjbvqRb",
+          "model": "claude-opus-4-8"
+        },
+        "usage": {
+          "cache_creation": {
+            "input_tokens": 11106
+          },
+          "cache_read": {
+            "input_tokens": 20386
+          },
+          "input_tokens": 3271,
+          "output_tokens": 294
+        }
+      },
+      "observed_timestamp": "2054-06-30T02:43:31.836690337Z",
+      "organization": {
+        "id": "60763458-7366-3513-4028-632370982420"
+      },
+      "related": {
+        "user": [
+          "user@example.com",
+          "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+        ]
+      },
+      "resource": {
+        "attributes": {
+          "claude.deployment_mode": "1p",
+          "host.arch": "arm64",
+          "os.type": "darwin",
+          "os.version": "26.5.1",
+          "service.name": "cowork",
+          "service.version": "1.15962.1"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.187"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-06-30T02:43:31.836681529Z",
+      "attributes": {
+        "cache_creation_tokens": 11106,
+        "cache_read_tokens": 20386,
+        "claude.deployment_mode": "1p",
+        "cost_usd": 0.144958,
+        "cost_usd_micros": 144958,
+        "duration_ms": 7688,
+        "effort": "high",
+        "event.name": "api_request",
+        "event.sequence": 6,
+        "event.timestamp": "2054-06-30T02:43:31.836Z",
+        "host.arch": "arm64",
+        "input_tokens": 3271,
+        "model": "claude-opus-4-8",
+        "organization.id": "60763458-7366-3513-4028-632370982420",
+        "os.type": "darwin",
+        "os.version": "26.5.1",
+        "output_tokens": 294,
+        "prompt.id": "60763458-7366-3513-4028-632370982420",
+        "query_source": "sdk",
+        "request_id": "lby_23EjfvmidRezjbvqRb",
+        "service.name": "cowork",
+        "service.version": "1.15962.1",
+        "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+        "speed": "normal",
+        "terminal.type": "non-interactive",
+        "user.account_id": "user_01ExampleAccountId",
+        "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+        "user.email": "user@example.com",
+        "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      },
+      "body": {
+        "text": "claude_code.api_request"
+      },
+      "data_stream": {
+        "dataset": "claude_cowork.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "event_name": "api_request",
+      "observed_timestamp": "2054-06-30T02:43:31.836690337Z",
+      "resource": {
+        "attributes": {
+          "claude.deployment_mode": "1p",
+          "host.arch": "arm64",
+          "os.type": "darwin",
+          "os.version": "26.5.1",
+          "service.name": "cowork",
+          "service.version": "1.15962.1"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.187"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claude_cowork-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "claude_cowork",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

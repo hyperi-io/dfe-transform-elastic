@@ -1,0 +1,1067 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-03-02T23:13:03.193Z",
+      "client": {
+        "bytes": 0,
+        "ip": "10.98.233.97",
+        "nat": {
+          "port": 13312
+        },
+        "packets": 0,
+        "port": 12345
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.97",
+        "nat": {
+          "ip": "203.0.113.53",
+          "port": 9757
+        },
+        "packets": 0,
+        "port": 123
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "security_threat",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "duration": 0,
+        "end": "2048-03-02T23:13:03.193Z",
+        "kind": "alert",
+        "original": "<165>1 2048-03-02T23:13:03.193Z idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2466803583\" message-type=\"SIG\" source-address=\"10.98.233.97\" source-port=\"12345\" destination-address=\"192.0.2.97\" destination-port=\"123\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"3\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"20175\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"HTTP:MISC:GENERIC-DIR-TRAVERSAL\" nat-source-address=\"0.0.0.0\" nat-source-port=\"13312\" nat-destination-address=\"203.0.113.53\" nat-destination-port=\"9757\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"UNTRUST\" source-interface-name=\"reth1.24\" destination-zone-name=\"DMZ\" destination-interface-name=\"reth2.21\" packet-log-id=\"0\" alert=\"no\" username=\"xjotzqp-qmej\" roles=\"N/A\" index=\"cnm\" type=\"idp\" message=\"-\"]",
+        "outcome": "success",
+        "severity": 165,
+        "start": "2048-03-02T23:13:03.193Z",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "DROP",
+          "alert": "no",
+          "application_name": "HTTP",
+          "attack_name": "HTTP:MISC:GENERIC-DIR-TRAVERSAL",
+          "epoch_time": "2466803583",
+          "export_id": "20175",
+          "index": "cnm",
+          "message_type": "SIG",
+          "packet_log_id": "0",
+          "policy_name": "Recommended",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "service_name": "SERVICE_IDP",
+          "tag": "IDP_ATTACK_LOG_EVENT",
+          "threat_severity": "HIGH",
+          "type": "idp"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth2.21"
+          },
+          "zone": "DMZ"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth1.24"
+          },
+          "zone": "UNTRUST"
+        },
+        "name": "idn8",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "10.98.233.97",
+          "192.0.2.97",
+          "0.0.0.0",
+          "203.0.113.53"
+        ],
+        "user": [
+          "xjotzqp-qmej"
+        ]
+      },
+      "rule": {
+        "id": "3",
+        "name": "IPS"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "192.0.2.97",
+        "nat": {
+          "port": 9757
+        },
+        "packets": 0,
+        "port": 123
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "10.98.233.97",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 13312
+        },
+        "packets": 0,
+        "port": 12345,
+        "user": {
+          "name": "xjotzqp-qmej"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-03-02T23:13:03.197Z",
+      "client": {
+        "bytes": 0,
+        "ip": "10.98.233.97",
+        "nat": {
+          "port": 13312
+        },
+        "packets": 0,
+        "port": 12345
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.97",
+        "nat": {
+          "ip": "203.0.113.53",
+          "port": 9757
+        },
+        "packets": 0,
+        "port": 123
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "security_threat",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "duration": 0,
+        "end": "2048-03-02T23:13:03.197Z",
+        "kind": "alert",
+        "original": "<165>1 2048-03-02T23:13:03.197Z idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2466803583\" message-type=\"SIG\" source-address=\"10.98.233.97\" source-port=\"12345\" destination-address=\"192.0.2.97\" destination-port=\"123\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"3\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"20175\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"CRITICAL\" attack-name=\"TCP:C2S:AMBIG:C2S-SYN-DATA\" nat-source-address=\"0.0.0.0\" nat-source-port=\"13312\" nat-destination-address=\"203.0.113.53\" nat-destination-port=\"9757\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"UNTRUST\" source-interface-name=\"reth1.24\" destination-zone-name=\"DMZ\" destination-interface-name=\"reth2.21\" packet-log-id=\"0\" alert=\"no\" username=\"xjotzqp-qmej\" roles=\"N/A\" index=\"cnm\" type=\"idp\" message=\"-\"]",
+        "outcome": "success",
+        "severity": 165,
+        "start": "2048-03-02T23:13:03.197Z",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "DROP",
+          "alert": "no",
+          "application_name": "HTTP",
+          "attack_name": "TCP:C2S:AMBIG:C2S-SYN-DATA",
+          "epoch_time": "2466803583",
+          "export_id": "20175",
+          "index": "cnm",
+          "message_type": "SIG",
+          "packet_log_id": "0",
+          "policy_name": "Recommended",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "service_name": "SERVICE_IDP",
+          "tag": "IDP_ATTACK_LOG_EVENT",
+          "threat_severity": "CRITICAL",
+          "type": "idp"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth2.21"
+          },
+          "zone": "DMZ"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth1.24"
+          },
+          "zone": "UNTRUST"
+        },
+        "name": "idn8",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "10.98.233.97",
+          "192.0.2.97",
+          "0.0.0.0",
+          "203.0.113.53"
+        ],
+        "user": [
+          "xjotzqp-qmej"
+        ]
+      },
+      "rule": {
+        "id": "3",
+        "name": "IPS"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "192.0.2.97",
+        "nat": {
+          "port": 9757
+        },
+        "packets": 0,
+        "port": 123
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "10.98.233.97",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 13312
+        },
+        "packets": 0,
+        "port": 12345,
+        "user": {
+          "name": "xjotzqp-qmej"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2035-02-15T09:17:15.719Z",
+      "client": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "port": 0
+        },
+        "packets": 0,
+        "port": 45610
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "ip": "172.26.88.81",
+          "port": 0
+        },
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "security_threat",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "duration": 0,
+        "end": "2035-02-15T09:17:15.719Z",
+        "kind": "alert",
+        "original": "<165>1 2035-02-15T09:17:15.719Z idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2391458154\" message-type=\"SIG\" source-address=\"198.51.100.57\" source-port=\"45610\" destination-address=\"198.51.100.57\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"9\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"15229\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"TROJAN:ZMEU-BOT-SCAN\" nat-source-address=\"0.0.0.0\" nat-source-port=\"0\" nat-destination-address=\"172.26.88.81\" nat-destination-port=\"0\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"sec-zone-name-internet\" source-interface-name=\"reth0.11\" destination-zone-name=\"dst-sec-zone1-outside\" destination-interface-name=\"reth1.1\" packet-log-id=\"0\" alert=\"no\" username=\"N/A\" roles=\"N/A\" message=\"-\"]",
+        "outcome": "success",
+        "severity": 165,
+        "start": "2035-02-15T09:17:15.719Z",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "DROP",
+          "alert": "no",
+          "application_name": "HTTP",
+          "attack_name": "TROJAN:ZMEU-BOT-SCAN",
+          "epoch_time": "2391458154",
+          "export_id": "15229",
+          "message_type": "SIG",
+          "packet_log_id": "0",
+          "policy_name": "Recommended",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "service_name": "SERVICE_IDP",
+          "tag": "IDP_ATTACK_LOG_EVENT",
+          "threat_severity": "HIGH"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth1.1"
+          },
+          "zone": "dst-sec-zone1-outside"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth0.11"
+          },
+          "zone": "sec-zone-name-internet"
+        },
+        "name": "idn8",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.57",
+          "0.0.0.0",
+          "172.26.88.81"
+        ]
+      },
+      "rule": {
+        "id": "9",
+        "name": "IPS"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "port": 0
+        },
+        "packets": 0,
+        "port": 80
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 0
+        },
+        "packets": 0,
+        "port": 45610
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2045-10-12T21:55:55.792Z",
+      "client": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "port": 0
+        },
+        "packets": 0,
+        "port": 45610
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "ip": "172.24.8.235",
+          "port": 0
+        },
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "security_threat",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "duration": 0,
+        "end": "2045-10-12T21:55:55.792Z",
+        "kind": "alert",
+        "original": "<165>1 2045-10-13T08:55:55.792+11:00 idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2391458154\" message-type=\"SIG\" source-address=\"198.51.100.57\" source-port=\"45610\" destination-address=\"198.51.100.57\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"9\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"15229\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"TROJAN:ZMEU-BOT-SCAN\" nat-source-address=\"0.0.0.0\" nat-source-port=\"0\" nat-destination-address=\"172.24.8.235\" nat-destination-port=\"0\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"sec-zone-name-internet\" source-interface-name=\"reth0.11\" destination-zone-name=\"dst-sec-zone1-outside\" destination-interface-name=\"reth1.1\" packet-log-id=\"0\" alert=\"no\" username=\"N/A\" roles=\"N/A\" message=\"-\"]",
+        "outcome": "success",
+        "severity": 165,
+        "start": "2045-10-12T21:55:55.792Z",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "DROP",
+          "alert": "no",
+          "application_name": "HTTP",
+          "attack_name": "TROJAN:ZMEU-BOT-SCAN",
+          "epoch_time": "2391458154",
+          "export_id": "15229",
+          "message_type": "SIG",
+          "packet_log_id": "0",
+          "policy_name": "Recommended",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "service_name": "SERVICE_IDP",
+          "tag": "IDP_ATTACK_LOG_EVENT",
+          "threat_severity": "HIGH"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth1.1"
+          },
+          "zone": "dst-sec-zone1-outside"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth0.11"
+          },
+          "zone": "sec-zone-name-internet"
+        },
+        "name": "idn8",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.57",
+          "0.0.0.0",
+          "172.24.8.235"
+        ]
+      },
+      "rule": {
+        "id": "9",
+        "name": "IPS"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "port": 0
+        },
+        "packets": 0,
+        "port": 80
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 0
+        },
+        "packets": 0,
+        "port": 45610
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2039-10-23T02:06:26.544Z",
+      "destination": {
+        "ip": "172.20.70.161",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "application_ddos",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<165>1 2039-10-23T02:06:26.544 JOP92991 RT_IDP - IDP_APPDDOS_APP_STATE_EVENT [junos@203.0.113.53 epoch-time=\"2202980786\" ddos-application-name=\"Webserver\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.0\" destination-address=\"172.20.70.161\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" rulebase-name=\"DDOS\" policy-name=\"A DoS-Webserver\" repeat-count=\"0\" message=\"Connection rate exceeded limit 60\" context-value=\"N/A\"]",
+        "outcome": "success",
+        "severity": 165,
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "ddos_application_name": "Webserver",
+          "epoch_time": "2202980786",
+          "policy_name": "A DoS-Webserver",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "service_name": "HTTP",
+          "tag": "IDP_APPDDOS_APP_STATE_EVENT"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "message": "Connection rate exceeded limit 60",
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth0.0"
+          },
+          "zone": "untrust"
+        },
+        "name": "JOP92991",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "172.20.70.161"
+        ]
+      },
+      "rule": {
+        "id": "1",
+        "name": "DDOS"
+      },
+      "server": {
+        "ip": "172.20.70.161",
+        "port": 80
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2039-10-23T16:28:31.696Z",
+      "client": {
+        "ip": "192.168.240.31",
+        "port": 50825
+      },
+      "destination": {
+        "ip": "172.20.70.161",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "application_ddos",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<165>1 2039-10-23T16:28:31.696 JOP92991 RT_IDP - IDP_APPDDOS_APP_ATTACK_EVENT [junos@203.0.113.53 epoch-time=\"2203032511\" ddos-application-name=\"Webserver\" source-zone-name=\"trust\" source-interface-name=\"reth1.O\" source-address=\"192.168.240.31\" source-port=\"50825\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.0\" destination-address=\"172.20.70.161\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" ruleebase-name=\"DDOS\" policy-name=\"AppDoS-Webserver\" repeat-count=\"0\" action=\"NONE\" threat-severity=\"INFO\" connection-hit-rate=\"30\" context-name=\"http-get-url\" context-hit-rate=\"123\" context-value-hit-rate=\"0\" time-scope=\"PEER\" time-count=\"3\" time-period=\"60\" context-value=\"N/A\"]",
+        "outcome": "success",
+        "severity": 165,
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "NONE",
+          "connection_hit_rate": "30",
+          "context_hit_rate": "123",
+          "context_name": "http-get-url",
+          "context_value_hit_rate": "0",
+          "ddos_application_name": "Webserver",
+          "epoch_time": "2203032511",
+          "policy_name": "AppDoS-Webserver",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "ruleebase_name": "DDOS",
+          "service_name": "HTTP",
+          "tag": "IDP_APPDDOS_APP_ATTACK_EVENT",
+          "threat_severity": "INFO",
+          "time_count": "3",
+          "time_period": "60",
+          "time_scope": "PEER"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth0.0"
+          },
+          "zone": "untrust"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth1.O"
+          },
+          "zone": "trust"
+        },
+        "name": "JOP92991",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "192.168.240.31",
+          "172.20.70.161"
+        ]
+      },
+      "rule": {
+        "id": "1"
+      },
+      "server": {
+        "ip": "172.20.70.161",
+        "port": 80
+      },
+      "source": {
+        "ip": "192.168.240.31",
+        "port": 50825
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2040-10-23T17:28:31.696Z",
+      "client": {
+        "ip": "192.168.240.31",
+        "port": 50825
+      },
+      "destination": {
+        "ip": "172.27.71.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "application_ddos",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<165>1 2040-10-23T17:28:31.696 JOP92991 RT_IDP - IDP_APPDDOS_APP_ATTACK_EVENT_LS [junos@203.0.113.53 epoch-time=\"2303032511\" ddos-application-name=\"Webserver\" source-zone-name=\"trust\" source-interface-name=\"reth3.0\" source-address=\"192.168.240.31\" source-port=\"50825\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.1\" destination-address=\"172.27.71.144\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" ruleebase-name=\"DDOS02\" policy-name=\"AppDoS-Webserver\" repeat-count=\"0\" action=\"NONE\" threat-severity=\"INFO\" connection-hit-rate=\"30\" context-name=\"http-get-url\" context-hit-rate=\"123\" context-value-hit-rate=\"0\" time-scope=\"PEER\" time-count=\"3\" time-period=\"60\" context-value=\"N/A\"]",
+        "outcome": "success",
+        "severity": 165,
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "NONE",
+          "connection_hit_rate": "30",
+          "context_hit_rate": "123",
+          "context_name": "http-get-url",
+          "context_value_hit_rate": "0",
+          "ddos_application_name": "Webserver",
+          "epoch_time": "2303032511",
+          "policy_name": "AppDoS-Webserver",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "ruleebase_name": "DDOS02",
+          "service_name": "HTTP",
+          "tag": "IDP_APPDDOS_APP_ATTACK_EVENT_LS",
+          "threat_severity": "INFO",
+          "time_count": "3",
+          "time_period": "60",
+          "time_scope": "PEER"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth0.1"
+          },
+          "zone": "untrust"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth3.0"
+          },
+          "zone": "trust"
+        },
+        "name": "JOP92991",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "192.168.240.31",
+          "172.27.71.144"
+        ]
+      },
+      "rule": {
+        "id": "1"
+      },
+      "server": {
+        "ip": "172.27.71.144",
+        "port": 80
+      },
+      "source": {
+        "ip": "192.168.240.31",
+        "port": 50825
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2045-10-12T21:55:55.792Z",
+      "client": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "port": 0
+        },
+        "packets": 0,
+        "port": 45610
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "ip": "172.24.8.235",
+          "port": 0
+        },
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "security_threat",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "duration": 0,
+        "end": "2045-10-12T21:55:55.792Z",
+        "kind": "alert",
+        "original": "<165> 2045-10-13T08:55:55.792+11:00 idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2391458154\" message-type=\"SIG\" source-address=\"198.51.100.57\" source-port=\"45610\" destination-address=\"198.51.100.57\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"9\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"15229\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"TROJAN:ZMEU-BOT-SCAN\" nat-source-address=\"0.0.0.0\" nat-source-port=\"0\" nat-destination-address=\"172.24.8.235\" nat-destination-port=\"0\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"sec-zone-name-internet\" source-interface-name=\"reth0.11\" destination-zone-name=\"dst-sec-zone1-outside\" destination-interface-name=\"reth1.1\" packet-log-id=\"0\" alert=\"no\" username=\"N/A\" roles=\"N/A\" message=\"-\"]",
+        "outcome": "success",
+        "severity": 165,
+        "start": "2045-10-12T21:55:55.792Z",
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "DROP",
+          "alert": "no",
+          "application_name": "HTTP",
+          "attack_name": "TROJAN:ZMEU-BOT-SCAN",
+          "epoch_time": "2391458154",
+          "export_id": "15229",
+          "message_type": "SIG",
+          "packet_log_id": "0",
+          "policy_name": "Recommended",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "service_name": "SERVICE_IDP",
+          "tag": "IDP_ATTACK_LOG_EVENT",
+          "threat_severity": "HIGH"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth1.1"
+          },
+          "zone": "dst-sec-zone1-outside"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth0.11"
+          },
+          "zone": "sec-zone-name-internet"
+        },
+        "name": "idn8",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.57",
+          "0.0.0.0",
+          "172.24.8.235"
+        ]
+      },
+      "rule": {
+        "id": "9",
+        "name": "IPS"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "port": 0
+        },
+        "packets": 0,
+        "port": 80
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "198.51.100.57",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 0
+        },
+        "packets": 0,
+        "port": 45610
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2040-10-23T17:28:31.696Z",
+      "client": {
+        "ip": "192.168.240.31",
+        "port": 50825
+      },
+      "destination": {
+        "ip": "172.27.71.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "application_ddos",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "kind": "alert",
+        "original": "<165> 2040-10-23T17:28:31.696 JOP92991 RT_IDP - IDP_APPDDOS_APP_ATTACK_EVENT_LS [junos@203.0.113.53 epoch-time=\"2303032511\" ddos-application-name=\"Webserver\" source-zone-name=\"trust\" source-interface-name=\"reth3.0\" source-address=\"192.168.240.31\" source-port=\"50825\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.1\" destination-address=\"172.27.71.144\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" ruleebase-name=\"DDOS02\" policy-name=\"AppDoS-Webserver\" repeat-count=\"0\" action=\"NONE\" threat-severity=\"INFO\" connection-hit-rate=\"30\" context-name=\"http-get-url\" context-hit-rate=\"123\" context-value-hit-rate=\"0\" time-scope=\"PEER\" time-count=\"3\" time-period=\"60\" context-value=\"N/A\"]",
+        "outcome": "success",
+        "severity": 165,
+        "type": [
+          "info",
+          "denied",
+          "connection"
+        ]
+      },
+      "juniper": {
+        "srx": {
+          "action": "NONE",
+          "connection_hit_rate": "30",
+          "context_hit_rate": "123",
+          "context_name": "http-get-url",
+          "context_value_hit_rate": "0",
+          "ddos_application_name": "Webserver",
+          "epoch_time": "2303032511",
+          "policy_name": "AppDoS-Webserver",
+          "process": "RT_IDP",
+          "repeat_count": "0",
+          "ruleebase_name": "DDOS02",
+          "service_name": "HTTP",
+          "tag": "IDP_APPDDOS_APP_ATTACK_EVENT_LS",
+          "threat_severity": "INFO",
+          "time_count": "3",
+          "time_period": "60",
+          "time_scope": "PEER"
+        }
+      },
+      "log": {
+        "level": "notification"
+      },
+      "network": {
+        "protocol": "TCP"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "reth0.1"
+          },
+          "zone": "untrust"
+        },
+        "ingress": {
+          "interface": {
+            "name": "reth3.0"
+          },
+          "zone": "trust"
+        },
+        "name": "JOP92991",
+        "product": "SRX",
+        "type": "firewall",
+        "vendor": "Juniper"
+      },
+      "process": {
+        "name": "RT_IDP"
+      },
+      "related": {
+        "ip": [
+          "192.168.240.31",
+          "172.27.71.144"
+        ]
+      },
+      "rule": {
+        "id": "1"
+      },
+      "server": {
+        "ip": "172.27.71.144",
+        "port": 80
+      },
+      "source": {
+        "ip": "192.168.240.31",
+        "port": 50825
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<165>1 2048-03-02T23:13:03.193Z idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2466803583\" message-type=\"SIG\" source-address=\"10.98.233.97\" source-port=\"12345\" destination-address=\"192.0.2.97\" destination-port=\"123\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"3\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"20175\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"HTTP:MISC:GENERIC-DIR-TRAVERSAL\" nat-source-address=\"0.0.0.0\" nat-source-port=\"13312\" nat-destination-address=\"203.0.113.53\" nat-destination-port=\"9757\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"UNTRUST\" source-interface-name=\"reth1.24\" destination-zone-name=\"DMZ\" destination-interface-name=\"reth2.21\" packet-log-id=\"0\" alert=\"no\" username=\"xjotzqp-qmej\" roles=\"N/A\" index=\"cnm\" type=\"idp\" message=\"-\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165>1 2048-03-02T23:13:03.197Z idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2466803583\" message-type=\"SIG\" source-address=\"10.98.233.97\" source-port=\"12345\" destination-address=\"192.0.2.97\" destination-port=\"123\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"3\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"20175\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"CRITICAL\" attack-name=\"TCP:C2S:AMBIG:C2S-SYN-DATA\" nat-source-address=\"0.0.0.0\" nat-source-port=\"13312\" nat-destination-address=\"203.0.113.53\" nat-destination-port=\"9757\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"UNTRUST\" source-interface-name=\"reth1.24\" destination-zone-name=\"DMZ\" destination-interface-name=\"reth2.21\" packet-log-id=\"0\" alert=\"no\" username=\"xjotzqp-qmej\" roles=\"N/A\" index=\"cnm\" type=\"idp\" message=\"-\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165>1 2035-02-15T09:17:15.719Z idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2391458154\" message-type=\"SIG\" source-address=\"198.51.100.57\" source-port=\"45610\" destination-address=\"198.51.100.57\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"9\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"15229\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"TROJAN:ZMEU-BOT-SCAN\" nat-source-address=\"0.0.0.0\" nat-source-port=\"0\" nat-destination-address=\"172.26.88.81\" nat-destination-port=\"0\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"sec-zone-name-internet\" source-interface-name=\"reth0.11\" destination-zone-name=\"dst-sec-zone1-outside\" destination-interface-name=\"reth1.1\" packet-log-id=\"0\" alert=\"no\" username=\"N/A\" roles=\"N/A\" message=\"-\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165>1 2045-10-13T08:55:55.792+11:00 idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2391458154\" message-type=\"SIG\" source-address=\"198.51.100.57\" source-port=\"45610\" destination-address=\"198.51.100.57\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"9\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"15229\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"TROJAN:ZMEU-BOT-SCAN\" nat-source-address=\"0.0.0.0\" nat-source-port=\"0\" nat-destination-address=\"172.24.8.235\" nat-destination-port=\"0\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"sec-zone-name-internet\" source-interface-name=\"reth0.11\" destination-zone-name=\"dst-sec-zone1-outside\" destination-interface-name=\"reth1.1\" packet-log-id=\"0\" alert=\"no\" username=\"N/A\" roles=\"N/A\" message=\"-\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165>1 2039-10-23T02:06:26.544 JOP92991 RT_IDP - IDP_APPDDOS_APP_STATE_EVENT [junos@203.0.113.53 epoch-time=\"2202980786\" ddos-application-name=\"Webserver\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.0\" destination-address=\"172.20.70.161\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" rulebase-name=\"DDOS\" policy-name=\"A DoS-Webserver\" repeat-count=\"0\" message=\"Connection rate exceeded limit 60\" context-value=\"N/A\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165>1 2039-10-23T16:28:31.696 JOP92991 RT_IDP - IDP_APPDDOS_APP_ATTACK_EVENT [junos@203.0.113.53 epoch-time=\"2203032511\" ddos-application-name=\"Webserver\" source-zone-name=\"trust\" source-interface-name=\"reth1.O\" source-address=\"192.168.240.31\" source-port=\"50825\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.0\" destination-address=\"172.20.70.161\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" ruleebase-name=\"DDOS\" policy-name=\"AppDoS-Webserver\" repeat-count=\"0\" action=\"NONE\" threat-severity=\"INFO\" connection-hit-rate=\"30\" context-name=\"http-get-url\" context-hit-rate=\"123\" context-value-hit-rate=\"0\" time-scope=\"PEER\" time-count=\"3\" time-period=\"60\" context-value=\"N/A\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165>1 2040-10-23T17:28:31.696 JOP92991 RT_IDP - IDP_APPDDOS_APP_ATTACK_EVENT_LS [junos@203.0.113.53 epoch-time=\"2303032511\" ddos-application-name=\"Webserver\" source-zone-name=\"trust\" source-interface-name=\"reth3.0\" source-address=\"192.168.240.31\" source-port=\"50825\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.1\" destination-address=\"172.27.71.144\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" ruleebase-name=\"DDOS02\" policy-name=\"AppDoS-Webserver\" repeat-count=\"0\" action=\"NONE\" threat-severity=\"INFO\" connection-hit-rate=\"30\" context-name=\"http-get-url\" context-hit-rate=\"123\" context-value-hit-rate=\"0\" time-scope=\"PEER\" time-count=\"3\" time-period=\"60\" context-value=\"N/A\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165> 2045-10-13T08:55:55.792+11:00 idn8 RT_IDP - IDP_ATTACK_LOG_EVENT [junos@203.0.113.53 epoch-time=\"2391458154\" message-type=\"SIG\" source-address=\"198.51.100.57\" source-port=\"45610\" destination-address=\"198.51.100.57\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"SERVICE_IDP\" application-name=\"HTTP\" rule-name=\"9\" rulebase-name=\"IPS\" policy-name=\"Recommended\" export-id=\"15229\" repeat-count=\"0\" action=\"DROP\" threat-severity=\"HIGH\" attack-name=\"TROJAN:ZMEU-BOT-SCAN\" nat-source-address=\"0.0.0.0\" nat-source-port=\"0\" nat-destination-address=\"172.24.8.235\" nat-destination-port=\"0\" elapsed-time=\"0\" inbound-bytes=\"0\" outbound-bytes=\"0\" inbound-packets=\"0\" outbound-packets=\"0\" source-zone-name=\"sec-zone-name-internet\" source-interface-name=\"reth0.11\" destination-zone-name=\"dst-sec-zone1-outside\" destination-interface-name=\"reth1.1\" packet-log-id=\"0\" alert=\"no\" username=\"N/A\" roles=\"N/A\" message=\"-\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<165> 2040-10-23T17:28:31.696 JOP92991 RT_IDP - IDP_APPDDOS_APP_ATTACK_EVENT_LS [junos@203.0.113.53 epoch-time=\"2303032511\" ddos-application-name=\"Webserver\" source-zone-name=\"trust\" source-interface-name=\"reth3.0\" source-address=\"192.168.240.31\" source-port=\"50825\" destination-zone-name=\"untrust\" destination-interface-name=\"reth0.1\" destination-address=\"172.27.71.144\" destination-port=\"80\" protocol-name=\"TCP\" service-name=\"HTTP\" rule-name=\"1\" ruleebase-name=\"DDOS02\" policy-name=\"AppDoS-Webserver\" repeat-count=\"0\" action=\"NONE\" threat-severity=\"INFO\" connection-hit-rate=\"30\" context-name=\"http-get-url\" context-hit-rate=\"123\" context-value-hit-rate=\"0\" time-scope=\"PEER\" time-count=\"3\" time-period=\"60\" context-value=\"N/A\"]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-juniper_srx-log-default",
+    "event_count": 9,
+    "numeric_keyword_fields": [],
+    "package": "juniper_srx",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

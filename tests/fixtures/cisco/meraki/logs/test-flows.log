@@ -1,0 +1,17 @@
+{ "message": "<134>1 1647478988.289402144 MX84_4 flows allow src=10.250.73.129 dst=10.248.199.244 mac=16:5C:9A:AA:41:F4 protocol=udp sport=54841 dport=15600" }
+{ "message": "<134>1 1647478988.476061795 MX84 flows src=198.51.100.135 dst=192.0.2.139 protocol=tcp sport=54445 dport=44210 pattern: 1 all" }
+{ "message": "<134>1 1647478988.596151424 MX84_7 flows allow src=10.248.199.244 dst=10.66.136.167 mac=29:8C:E6:ED:A7:DE protocol=tcp sport=49761 dport=15500" }
+{ "message": "<134>1 1664382879.496990921 AP_XXXX flows allow src=fe80::1021:83ca:b68:4cd8 dst=ff02::1:ffb6:a227 mac=80:CB:3A:CC:EE:BE protocol=icmp6 type=135" }
+{ "message": "<134>1 1664385452.707589827 AP_XXXX flows allow src=172.21.80.95 dst=224.0.0.2 mac=5A:EC:1A:8E:5E:AC protocol=2" }
+{ "message": "<134>1 1664385453.129104346 AP_XXXX flows allow src=172.25.62.50 dst=198.51.100.211 mac=CC:75:C1:0B:4C:AE protocol=icmp type=8" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=10.67.135.202 dst=10.246.22.87 mac=36:5E:CF:4B:D1:D5 protocol=udp sport=138 dport=138 pattern: allow (dst 10.110.146.136/8) && (src 10.153.120.162/16)" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=192.168.12.185 dst=198.51.100.135 mac=20:08:58:61:FB:44 protocol=tcp sport=61403 dport=9998 pattern: Group Policy Allow" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=10.159.134.76 dst=172.20.170.221 protocol=icmp type=8 pattern: allow all" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=172.16.253.184 dst=192.0.2.139 mac=75:29:06:5B:48:BE protocol=udp sport=45713 dport=53 pattern: allow udp" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=10.205.98.218 dst=172.21.80.95 mac=2F:7A:DB:A7:9A:C9 protocol=udp sport=64138 dport=3289 pattern: deny (src 10.34.15.126/16)" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=10.77.95.189 dst=10.57.108.19 mac=1F:4B:CB:C2:5C:6B protocol=tcp sport=54791 dport=80 pattern: deny all" }
+{ "message": "<134>1 1674604848.429996761 MX84 flows src=192.168.229.194 dst=10.129.33.140 mac=E5:9C:FC:4E:E7:4D protocol=udp sport=60288 dport=53 pattern: allow all" }
+{ "message": "<134>1 948136486.721741837 MX60 firewall src=10.205.98.218 dst=10.246.22.87 mac=36:5E:CF:4B:D1:D5 protocol=udp sport=9562 dport=53 pattern: allow all" }
+{ "message": "<134>1 948136486.721741837 MX60 vpn_firewall src=10.241.225.35 dst=10.246.22.87 mac=36:5E:CF:4B:D1:D5 protocol=udp sport=9562 dport=53 pattern: allow all" }
+{ "message": "<134>1 948136486.721741837 MX60 cellular_firewall src=10.205.98.218 dst=10.246.22.87 mac=36:5E:CF:4B:D1:D5 protocol=udp sport=9562 dport=53 pattern: allow all" }
+{ "message": "<134>1 948136486.721741837 MX60 bridge_anyconnect_client_vpn_firewall src=10.241.225.35 dst=10.246.22.87 mac=36:5E:CF:4B:D1:D5 protocol=udp sport=9562 dport=53 pattern: allow all" }

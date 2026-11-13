@@ -1,0 +1,3126 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-03-29T21:10:39.786Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 536
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1535",
+        "time_created": "2047-03-29T21:10:39.786Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:40.255Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1538",
+        "time_created": "2047-03-29T21:10:40.255Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:40.380Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\winlogon.exe",
+        "name": "winlogon.exe",
+        "pid": 448
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ],
+        "user": [
+          "vazmbnu",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "source": {
+        "domain": "LAOXEJP-8828-Z9",
+        "ip": "198.51.100.144",
+        "port": 0
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "User32 ",
+          "LogonType": "2",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x1008e",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Interactive"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1542",
+        "time_created": "2047-03-29T21:10:40.380Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:40.505Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1545",
+        "time_created": "2047-03-29T21:10:40.505Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:40.630Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "pid": 0
+      },
+      "related": {
+        "user": [
+          "ETIYXWIRM XWJNX"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-7",
+        "name": "ETIYXWIRM XWJNX"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LmPackageName": "NTLM V1",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "SubjectLogonId": "0x0",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x129f1",
+          "TargetUserName": "ETIYXWIRM XWJNX",
+          "TargetUserSid": "S-1-5-7"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x0",
+          "type": "Network"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1547",
+        "time_created": "2047-03-29T21:10:40.630Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:53.661Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "pid": 0
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "SubjectLogonId": "0x0",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x28d31",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x0",
+          "type": "Network"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1550",
+        "time_created": "2047-03-29T21:10:53.661Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:54.661Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "pid": 0
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "SubjectLogonId": "0x0",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x29f0f",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x0",
+          "type": "Network"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 548
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1553",
+        "time_created": "2047-03-29T21:10:54.661Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:10:55.458Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "pid": 0
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "SubjectLogonId": "0x0",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x2a362",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x0",
+          "type": "Network"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 548
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1556",
+        "time_created": "2047-03-29T21:10:55.458Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:13:17.302Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "pid": 0
+      },
+      "related": {
+        "user": [
+          "vazmbnu"
+        ]
+      },
+      "source": {
+        "domain": "198.51.100.144"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "SubjectLogonId": "0x0",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x324f8",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x0",
+          "type": "Network"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1561",
+        "time_created": "2047-03-29T21:13:17.302Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:13:17.521Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\winlogon.exe",
+        "name": "winlogon.exe",
+        "pid": 2812
+      },
+      "related": {
+        "user": [
+          "CYY-4",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "Window Manager",
+        "id": "S-1-5-90-2",
+        "name": "CYY-4"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "2",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "Window Manager",
+          "TargetLogonId": "0x33444",
+          "TargetUserName": "CYY-4",
+          "TargetUserSid": "S-1-5-90-2"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Interactive"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 548
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1563",
+        "time_created": "2047-03-29T21:13:17.521Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:13:17.614Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\winlogon.exe",
+        "name": "winlogon.exe",
+        "pid": 2812
+      },
+      "related": {
+        "ip": [
+          "10.169.91.248"
+        ],
+        "user": [
+          "vazmbnu",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "source": {
+        "domain": "LAOXEJP-8828-Z9",
+        "ip": "10.169.91.248",
+        "port": 0
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+        "name": "vazmbnu"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "User32 ",
+          "LogonType": "10",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x3444f",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "RemoteInteractive"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1567",
+        "time_created": "2047-03-29T21:13:17.614Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:13:18.786Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\winlogon.exe",
+        "name": "winlogon.exe",
+        "pid": 2188
+      },
+      "related": {
+        "user": [
+          "AYS-8",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "Window Manager",
+        "id": "S-1-5-90-3",
+        "name": "AYS-8"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "2",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "Window Manager",
+          "TargetLogonId": "0x357fd",
+          "TargetUserName": "AYS-8",
+          "TargetUserSid": "S-1-5-90-3"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Interactive"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1570",
+        "time_created": "2047-03-29T21:13:18.786Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:20:48.740Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 1132
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1574",
+        "time_created": "2047-03-29T21:20:48.740Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:20:48.740Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 1132
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1576",
+        "time_created": "2047-03-29T21:20:48.740Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:20:50.584Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 504
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1578",
+        "time_created": "2047-03-29T21:20:50.584Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:23:42.520Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 1132
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1581",
+        "time_created": "2047-03-29T21:23:42.520Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:26:24.176Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logged-in",
+        "category": [
+          "authentication"
+        ],
+        "code": "4624",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\services.exe",
+        "name": "services.exe",
+        "pid": 508
+      },
+      "related": {
+        "user": [
+          "SYSTEM",
+          "LAOXEJP-8828-Z9$"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "NT AUTHORITY",
+        "id": "S-1-5-18",
+        "name": "SYSTEM"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "KeyLength": "0",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18"
+        },
+        "event_id": "4624",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "logon": {
+          "id": "0x3e7",
+          "type": "Service"
+        },
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 344
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1583",
+        "time_created": "2047-03-29T21:26:24.176Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2047-03-29T21:45:35.177Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "logon-failed",
+        "category": [
+          "authentication"
+        ],
+        "code": "4625",
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "laoxejp-8828-z9",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "process": {
+        "executable": "C:\\Windows\\System32\\svchost.exe",
+        "name": "svchost.exe",
+        "pid": 836
+      },
+      "related": {
+        "ip": [
+          "::1"
+        ],
+        "user": [
+          "evgct"
+        ]
+      },
+      "source": {
+        "domain": "LAOXEJP-8828-Z9",
+        "ip": "::1",
+        "port": 0
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "LAOXEJP-8828-Z9",
+        "id": "S-1-0-0",
+        "name": "evgct"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "FailureReason": "%%2313",
+          "KeyLength": "0",
+          "LogonProcessName": "seclogo",
+          "LogonType": "2",
+          "Status": "0xc000006d",
+          "SubStatus": "0xc0000064",
+          "SubjectDomainName": "LAOXEJP-8828-Z9",
+          "SubjectLogonId": "0x1008e",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetUserName": "evgct",
+          "TargetUserSid": "S-1-0-0"
+        },
+        "event_id": "4625",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "level": "information",
+        "logon": {
+          "failure": {
+            "reason": "Unknown user name or bad password.",
+            "status": "This is either due to a bad username or authentication information",
+            "sub_status": "User logon with misspelled or bad user account"
+          },
+          "id": "0x1008e",
+          "type": "Interactive"
+        },
+        "opcode": "Info",
+        "outcome": "failure",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 2756
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "1585",
+        "time_created": "2047-03-29T21:45:35.177Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:10:09.188Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 536
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1535,
+        "time_created": "2047-03-29T21:10:39.786Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.188Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1538,
+        "time_created": "2047-03-29T21:10:40.255Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.188Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "198.51.100.144",
+          "IpPort": "0",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "User32 ",
+          "LogonType": "2",
+          "ProcessId": "0x1c0",
+          "ProcessName": "C:\\Windows\\System32\\winlogon.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x1008e",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TransmittedServices": "-",
+          "WorkstationName": "LAOXEJP-8828-Z9"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1542,
+        "time_created": "2047-03-29T21:10:40.380Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1545,
+        "time_created": "2047-03-29T21:10:40.505Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "NTLM V1",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "ProcessId": "0x0",
+          "ProcessName": "-",
+          "SubjectDomainName": "-",
+          "SubjectLogonId": "0x0",
+          "SubjectUserName": "-",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x129f1",
+          "TargetUserName": "ETIYXWIRM XWJNX",
+          "TargetUserSid": "S-1-5-7",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1547,
+        "time_created": "2047-03-29T21:10:40.630Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "ProcessId": "0x0",
+          "ProcessName": "-",
+          "SubjectDomainName": "-",
+          "SubjectLogonId": "0x0",
+          "SubjectUserName": "-",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x28d31",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1550,
+        "time_created": "2047-03-29T21:10:53.661Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "ProcessId": "0x0",
+          "ProcessName": "-",
+          "SubjectDomainName": "-",
+          "SubjectLogonId": "0x0",
+          "SubjectUserName": "-",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x29f0f",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 548
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1553,
+        "time_created": "2047-03-29T21:10:54.661Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "ProcessId": "0x0",
+          "ProcessName": "-",
+          "SubjectDomainName": "-",
+          "SubjectLogonId": "0x0",
+          "SubjectUserName": "-",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x2a362",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 548
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1556,
+        "time_created": "2047-03-29T21:10:55.458Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "NTLM",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "128",
+          "LmPackageName": "NTLM V2",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "NtLmSsp ",
+          "LogonType": "3",
+          "ProcessId": "0x0",
+          "ProcessName": "-",
+          "SubjectDomainName": "-",
+          "SubjectLogonId": "0x0",
+          "SubjectUserName": "-",
+          "SubjectUserSid": "S-1-0-0",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x324f8",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TransmittedServices": "-",
+          "WorkstationName": "198.51.100.144"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1561,
+        "time_created": "2047-03-29T21:13:17.302Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "2",
+          "ProcessId": "0xafc",
+          "ProcessName": "C:\\Windows\\System32\\winlogon.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "Window Manager",
+          "TargetLogonId": "0x33444",
+          "TargetUserName": "CYY-4",
+          "TargetUserSid": "S-1-5-90-2",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 548
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1563,
+        "time_created": "2047-03-29T21:13:17.521Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.189Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "10.169.91.248",
+          "IpPort": "0",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "User32 ",
+          "LogonType": "10",
+          "ProcessId": "0xafc",
+          "ProcessName": "C:\\Windows\\System32\\winlogon.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetLogonId": "0x3444f",
+          "TargetUserName": "vazmbnu",
+          "TargetUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TransmittedServices": "-",
+          "WorkstationName": "LAOXEJP-8828-Z9"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 808
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1567,
+        "time_created": "2047-03-29T21:13:17.614Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.190Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "2",
+          "ProcessId": "0x88c",
+          "ProcessName": "C:\\Windows\\System32\\winlogon.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "Window Manager",
+          "TargetLogonId": "0x357fd",
+          "TargetUserName": "AYS-8",
+          "TargetUserSid": "S-1-5-90-3",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 556
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1570,
+        "time_created": "2047-03-29T21:13:18.786Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.190Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 1132
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1574,
+        "time_created": "2047-03-29T21:20:48.740Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.190Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 1132
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1576,
+        "time_created": "2047-03-29T21:20:48.740Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.190Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 504
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1578,
+        "time_created": "2047-03-29T21:20:50.584Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.190Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 1132
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1581,
+        "time_created": "2047-03-29T21:23:42.520Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.191Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4624,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "ImpersonationLevel": "%%1833",
+          "IpAddress": "-",
+          "IpPort": "-",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonGuid": "{00000000-0000-0000-0000-000000000000}",
+          "LogonProcessName": "Advapi  ",
+          "LogonType": "5",
+          "ProcessId": "0x1fc",
+          "ProcessName": "C:\\Windows\\System32\\services.exe",
+          "SubjectDomainName": "WORKGROUP",
+          "SubjectLogonId": "0x3e7",
+          "SubjectUserName": "LAOXEJP-8828-Z9$",
+          "SubjectUserSid": "S-1-5-18",
+          "TargetDomainName": "NT AUTHORITY",
+          "TargetLogonId": "0x3e7",
+          "TargetUserName": "SYSTEM",
+          "TargetUserSid": "S-1-5-18",
+          "TransmittedServices": "-"
+        },
+        "event_id": 4624,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 344
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1583,
+        "time_created": "2047-03-29T21:26:24.176Z",
+        "version": 1
+      }
+    },
+    {
+      "@timestamp": "2049-04-15T19:10:09.191Z",
+      "agent": {
+        "ephemeral_id": "60465263-056f-4429-8a6c-0eb88d2bdd44",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4625,
+        "kind": "event",
+        "outcome": "failure",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "laoxejp-8828-z9"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012r2-logon.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "laoxejp-8828-z9",
+        "event_data": {
+          "AuthenticationPackageName": "Negotiate",
+          "FailureReason": "%%2313",
+          "IpAddress": "::1",
+          "IpPort": "0",
+          "KeyLength": "0",
+          "LmPackageName": "-",
+          "LogonProcessName": "seclogo",
+          "LogonType": "2",
+          "ProcessId": "0x344",
+          "ProcessName": "C:\\Windows\\System32\\svchost.exe",
+          "Status": "0xc000006d",
+          "SubStatus": "0xc0000064",
+          "SubjectDomainName": "LAOXEJP-8828-Z9",
+          "SubjectLogonId": "0x1008e",
+          "SubjectUserName": "vazmbnu",
+          "SubjectUserSid": "S-1-5-21-3541430928-2051711210-1391384369-1001",
+          "TargetDomainName": "LAOXEJP-8828-Z9",
+          "TargetUserName": "evgct",
+          "TargetUserSid": "S-1-0-0",
+          "TransmittedServices": "-",
+          "WorkstationName": "LAOXEJP-8828-Z9"
+        },
+        "event_id": 4625,
+        "keywords": [
+          "Audit Failure"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "failure",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 2756
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 1585,
+        "time_created": "2047-03-29T21:45:35.177Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 18,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,482 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-10-04T15:27:55.000-02:00",
+      "agent": {
+        "ephemeral_id": "8ad11ea0-b61f-4df8-8a3c-1724365cc9ce",
+        "id": "60273868-5876-4d74-8148-aef389d20051",
+        "name": "f24c96c6b555",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "OUTSIDE",
+          "rule_name": "AL-DMZ-LB-IN",
+          "source_interface": "LB-DMZ"
+        }
+      },
+      "destination": {
+        "address": "203.0.113.42",
+        "ip": "203.0.113.42",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "firewall-rule",
+        "category": [
+          "network"
+        ],
+        "code": "106100",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "<165>Oct 04 2047 15:27:55: %ASA-5-106100: access-list AL-DMZ-LB-IN denied tcp LB-DMZ/WHAT-IS-THIS-A-HOSTNAME-192.0.2.244(27218) -> OUTSIDE/203.0.113.42(53) hit-cnt 1 first hit [0x16847359, 0x00000000]",
+        "outcome": "failure",
+        "severity": 5,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "notification",
+        "offset": 0,
+        "syslog": {
+          "facility": {
+            "code": 20
+          },
+          "priority": 165,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "OUTSIDE"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "LB-DMZ"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "WHAT-IS-THIS-A-HOSTNAME-192.0.2.244"
+        ],
+        "ip": [
+          "203.0.113.42"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "WHAT-IS-THIS-A-HOSTNAME-192.0.2.244",
+        "domain": "WHAT-IS-THIS-A-HOSTNAME-192.0.2.244",
+        "port": 27218
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-01-01T10:42:53.000-02:00",
+      "agent": {
+        "ephemeral_id": "8ad11ea0-b61f-4df8-8a3c-1724365cc9ce",
+        "id": "60273868-5876-4d74-8148-aef389d20051",
+        "name": "f24c96c6b555",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "mapped_source_host": "mydomain.example.net"
+        }
+      },
+      "destination": {
+        "address": "172.27.111.33",
+        "ip": "172.27.111.33"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-expiration",
+        "category": [
+          "network"
+        ],
+        "code": "302021",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  1 2048 10:42:53 localhost : %ASA-6-302021: Teardown ICMP connection for faddr 172.27.111.33/0 gaddr mydomain.example.net/17233 laddr 192.168.221.36/17233",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "localhost"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 201
+      },
+      "network": {
+        "community_id": "1:Rzwz6yWBaDfIjpT8dZ74IbG0WBY=",
+        "iana_number": "1",
+        "transport": "icmp"
+      },
+      "observer": {
+        "hostname": "localhost",
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "localhost"
+        ],
+        "ip": [
+          "192.168.221.36",
+          "172.27.111.33"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "192.168.221.36",
+        "ip": "192.168.221.36"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-01-02T11:33:20.000-02:00",
+      "agent": {
+        "ephemeral_id": "8ad11ea0-b61f-4df8-8a3c-1724365cc9ce",
+        "id": "60273868-5876-4d74-8148-aef389d20051",
+        "name": "f24c96c6b555",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "destination_interface": "wan",
+          "mapped_destination_host": "www.example.org",
+          "mapped_destination_port": 80,
+          "mapped_source_host": "source.example.net",
+          "mapped_source_port": 11234,
+          "rule_name": "dynamic",
+          "source_interface": "eth0",
+          "threat_category": "malware",
+          "threat_level": "high"
+        }
+      },
+      "destination": {
+        "address": "172.31.134.132",
+        "domain": "example.org",
+        "ip": "172.31.134.132",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "dynamic-filter",
+        "category": [
+          "network"
+        ],
+        "code": "338204",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jan  2 2048 11:33:20 localhost : %ASA-4-338204: Dynamic filter dropped greylisted TCP traffic from eth0:10.95.224.34/1234 (source.example.net/11234) to wan:172.31.134.132/80 (www.example.org/80), destination malicious address resolved from dynamic list: example.org, threat-level: high, category: malware",
+        "outcome": "failure",
+        "severity": 4,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "localhost"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "warning",
+        "offset": 360
+      },
+      "network": {
+        "community_id": "1:J+FYz+uXLolwkDhvAksFuat5m5o=",
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "wan"
+          }
+        },
+        "hostname": "localhost",
+        "ingress": {
+          "interface": {
+            "name": "eth0"
+          }
+        },
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "localhost",
+          "example.org"
+        ],
+        "ip": [
+          "10.95.224.34",
+          "172.31.134.132"
+        ]
+      },
+      "server": {
+        "domain": "example.org"
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "10.95.224.34",
+        "ip": "10.95.224.34",
+        "nat": {
+          "port": 11234
+        },
+        "port": 1234
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T05:33:55.640Z",
+      "agent": {
+        "ephemeral_id": "8ad11ea0-b61f-4df8-8a3c-1724365cc9ce",
+        "id": "60273868-5876-4d74-8148-aef389d20051",
+        "name": "f24c96c6b555",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "<165>Oct 04 2047 15:27:55: %ASA-5-106100: access-list AL-DMZ-LB-IN denied tcp LB-DMZ/WHAT-IS-THIS-A-HOSTNAME-192.0.2.244(27218) -> OUTSIDE/203.0.113.42(53) hit-cnt 1 first hit [0x16847359, 0x00000000]",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T05:33:55.640Z",
+      "agent": {
+        "ephemeral_id": "8ad11ea0-b61f-4df8-8a3c-1724365cc9ce",
+        "id": "60273868-5876-4d74-8148-aef389d20051",
+        "name": "f24c96c6b555",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 201
+      },
+      "message": "Jan  1 2048 10:42:53 localhost : %ASA-6-302021: Teardown ICMP connection for faddr 172.27.111.33/0 gaddr mydomain.example.net/17233 laddr 192.168.221.36/17233",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T05:33:55.640Z",
+      "agent": {
+        "ephemeral_id": "8ad11ea0-b61f-4df8-8a3c-1724365cc9ce",
+        "id": "60273868-5876-4d74-8148-aef389d20051",
+        "name": "f24c96c6b555",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 360
+      },
+      "message": "Jan  2 2048 11:33:20 localhost : %ASA-4-338204: Dynamic filter dropped greylisted TCP traffic from eth0:10.95.224.34/1234 (source.example.net/11234) to wan:172.31.134.132/80 (www.example.org/80), destination malicious address resolved from dynamic list: example.org, threat-level: high, category: malware",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.end": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.start": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_asa-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cisco_asa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "expected": [
+    {
+      "cif3": {
+        "deleted_at": "2050-09-02T08:35:05.971Z",
+        "expiration_duration": "45d",
+        "indicator": "198.51.100.144",
+        "itype": "ipv4",
+        "rdata": "http://203.0.113.66/theme/inc/e26dbe0dcc481e.php",
+        "uuid": "1ccef619-b0c6-473b-8b48-df64bec10707"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"indicator\":\"198.51.100.144\",\"itype\":\"ipv4\",\"tlp\":\"white\",\"provider\":\"qzsebqcpq.ccnma.ch\",\"group\":[\"everyone\"],\"count\":1,\"tags\":[\"agenttesla\",\"botnet\",\"hunter\"],\"confidence\":8.0,\"description\":\"agent tesla\",\"uuid\":\"1ccef619-b0c6-473b-8b48-df64bec10707\",\"reference\":\"https://threatfox.abuse.ch/ioc/838651/\",\"rdata\":\"http://203.0.113.66/theme/inc/e26dbe0dcc481e.php\",\"firsttime\":\"2050-07-19T07:40:41.000000Z\",\"lasttime\":\"2050-07-19T08:35:05.971696Z\",\"reporttime\":\"2050-07-19T08:35:05.971696Z\",\"indicator_ipv4\":\"198.51.100.144\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "agenttesla",
+        "botnet",
+        "hunter"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "description": "agent tesla",
+          "first_seen": "2050-07-19T07:40:41.000Z",
+          "ip": "198.51.100.144",
+          "last_seen": "2050-07-19T08:35:05.971Z",
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2050-07-19T08:35:05.971696Z",
+          "name": "198.51.100.144",
+          "provider": "qzsebqcpq.ccnma.ch",
+          "reference": "https://threatfox.abuse.ch/ioc/838651/",
+          "sightings": 1,
+          "type": "ipv4-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_expiration_duration": "5d"
+      },
+      "message": "{\"indicator\":\"198.51.100.144\",\"itype\":\"ipv4\",\"tlp\":\"white\",\"provider\":\"qzsebqcpq.ccnma.ch\",\"group\":[\"everyone\"],\"count\":1,\"tags\":[\"agenttesla\",\"botnet\",\"hunter\"],\"confidence\":8.0,\"description\":\"agent tesla\",\"uuid\":\"1ccef619-b0c6-473b-8b48-df64bec10707\",\"reference\":\"https://threatfox.abuse.ch/ioc/838651/\",\"rdata\":\"http://203.0.113.66/theme/inc/e26dbe0dcc481e.php\",\"firsttime\":\"2050-07-19T07:40:41.000000Z\",\"lasttime\":\"2050-07-19T08:35:05.971696Z\",\"reporttime\":\"2050-07-19T08:35:05.971696Z\",\"indicator_ipv4\":\"198.51.100.144\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "feed",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_cif3-feed-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_cif3",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

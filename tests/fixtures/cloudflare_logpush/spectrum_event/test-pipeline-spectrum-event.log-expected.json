@@ -1,0 +1,756 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-05-26T09:24:00.000Z",
+      "cloudflare_logpush": {
+        "spectrum_event": {
+          "action": "connect",
+          "application": "8ba399e5e6ea3837f6bdbe28ccbd8a09",
+          "client": {
+            "asn": 200391,
+            "bytes": 0,
+            "country": "bg",
+            "ip": "203.0.113.212",
+            "matched_ip_firewall": "UNKNOWN",
+            "port": 40456,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "client_hello_server_name": "server name",
+              "protocol": "TLSv1.2",
+              "status": "UNKNOWN"
+            }
+          },
+          "colo": {
+            "code": "SOF"
+          },
+          "connect": {
+            "time": "2050-05-26T09:24:00.000Z"
+          },
+          "disconnect": {
+            "time": "2050-06-01T00:00:00.000Z"
+          },
+          "ip_firewall": false,
+          "origin": {
+            "bytes": 0,
+            "ip": "192.0.2.54",
+            "port": 3389,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000.",
+              "mode": "off",
+              "protocol": "unknown",
+              "status": "UNKNOWN"
+            }
+          },
+          "proxy": {
+            "protocol": "off"
+          },
+          "status": 0,
+          "timestamp": "2050-05-26T09:24:00.000Z"
+        }
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "connect",
+        "category": [
+          "network"
+        ],
+        "duration": 484560000000000,
+        "end": "2050-06-01T00:00:00.000Z",
+        "id": "8ba399e5e6ea3837f6bdbe28ccbd8a09",
+        "kind": "event",
+        "original": "{\"Application\":\"8ba399e5e6ea3837f6bdbe28ccbd8a09\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"2050-05-26T09:24:00Z\",\"DisconnectTimestamp\":\"2050-06-01T00:00:00Z\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginTlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2050-05-26T09:24:00Z\"}",
+        "start": "2050-05-26T09:24:00.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 0
+        }
+      },
+      "network": {
+        "community_id": "1:BAxNNimyATlgoy8bffEgylI5WUE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000."
+        ],
+        "ip": [
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "as": {
+          "number": 200391
+        },
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "bg"
+        },
+        "ip": "203.0.113.212",
+        "port": 40456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "UNK",
+        "client": {
+          "server_name": "server name"
+        },
+        "server": {
+          "hash": {
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000."
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    },
+    {
+      "@timestamp": "2050-05-26T09:24:00.000Z",
+      "cloudflare_logpush": {
+        "spectrum_event": {
+          "action": "connect",
+          "application": "8ba399e5e6ea3837f6bdbe28ccbd8a09",
+          "client": {
+            "asn": 200391,
+            "bytes": 0,
+            "country": "bg",
+            "ip": "203.0.113.212",
+            "matched_ip_firewall": "UNKNOWN",
+            "port": 40456,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "client_hello_server_name": "server name",
+              "protocol": "TLSv1.2",
+              "status": "UNKNOWN"
+            }
+          },
+          "colo": {
+            "code": "SOF"
+          },
+          "connect": {
+            "time": "2050-05-26T09:24:00.000Z"
+          },
+          "ip_firewall": false,
+          "origin": {
+            "bytes": 0,
+            "ip": "192.0.2.54",
+            "port": 3389,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000.",
+              "mode": "off",
+              "protocol": "unknown",
+              "status": "UNKNOWN"
+            }
+          },
+          "proxy": {
+            "protocol": "off"
+          },
+          "status": 0,
+          "timestamp": "2050-05-26T09:24:00.000Z"
+        }
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "connect",
+        "category": [
+          "network"
+        ],
+        "id": "8ba399e5e6ea3837f6bdbe28ccbd8a09",
+        "kind": "event",
+        "original": "{\"Application\":\"8ba399e5e6ea3837f6bdbe28ccbd8a09\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"2537169840\",\"DisconnectTimestamp\":\"0\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginTlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840\"}",
+        "start": "2050-05-26T09:24:00.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 0
+        }
+      },
+      "network": {
+        "community_id": "1:BAxNNimyATlgoy8bffEgylI5WUE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000."
+        ],
+        "ip": [
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "as": {
+          "number": 200391
+        },
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "bg"
+        },
+        "ip": "203.0.113.212",
+        "port": 40456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "UNK",
+        "client": {
+          "server_name": "server name"
+        },
+        "server": {
+          "hash": {
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000."
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    },
+    {
+      "@timestamp": "2050-05-26T09:24:00.000Z",
+      "cloudflare_logpush": {
+        "spectrum_event": {
+          "action": "connect",
+          "application": "8ba399e5e6ea3837f6bdbe28ccbd8a09",
+          "client": {
+            "asn": 200391,
+            "bytes": 0,
+            "country": "bg",
+            "ip": "203.0.113.212",
+            "matched_ip_firewall": "UNKNOWN",
+            "port": 40456,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "client_hello_server_name": "server name",
+              "protocol": "TLSv1.2",
+              "status": "UNKNOWN"
+            }
+          },
+          "colo": {
+            "code": "SOF"
+          },
+          "connect": {
+            "time": "2050-05-26T09:24:00.000Z"
+          },
+          "ip_firewall": false,
+          "origin": {
+            "bytes": 0,
+            "ip": "192.0.2.54",
+            "port": 3389,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000.",
+              "mode": "off",
+              "protocol": "unknown",
+              "status": "UNKNOWN"
+            }
+          },
+          "proxy": {
+            "protocol": "off"
+          },
+          "status": 0,
+          "timestamp": "2050-05-26T09:24:00.000Z"
+        }
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "connect",
+        "category": [
+          "network"
+        ],
+        "id": "8ba399e5e6ea3837f6bdbe28ccbd8a09",
+        "kind": "event",
+        "original": "{\"Application\":\"8ba399e5e6ea3837f6bdbe28ccbd8a09\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"2537169840000000000\",\"DisconnectTimestamp\":\"0\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginTlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+        "start": "2050-05-26T09:24:00.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 0
+        }
+      },
+      "network": {
+        "community_id": "1:BAxNNimyATlgoy8bffEgylI5WUE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000."
+        ],
+        "ip": [
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "as": {
+          "number": 200391
+        },
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "bg"
+        },
+        "ip": "203.0.113.212",
+        "port": 40456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "UNK",
+        "client": {
+          "server_name": "server name"
+        },
+        "server": {
+          "hash": {
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000."
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    },
+    {
+      "@timestamp": "2050-05-26T09:24:00.000Z",
+      "cloudflare_logpush": {
+        "spectrum_event": {
+          "action": "connect",
+          "application": "4dd068d7c8bb2223e2debc34defe3b85",
+          "client": {
+            "asn": 200391,
+            "bytes": 0,
+            "country": "bg",
+            "ip": "203.0.113.212",
+            "matched_ip_firewall": "UNKNOWN",
+            "port": 40456,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "client_hello_server_name": "server name",
+              "protocol": "TLSv1.2",
+              "status": "UNKNOWN"
+            }
+          },
+          "colo": {
+            "code": "SOF"
+          },
+          "ip_firewall": false,
+          "origin": {
+            "bytes": 0,
+            "ip": "192.0.2.54",
+            "port": 3389,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000.",
+              "mode": "off",
+              "protocol": "unknown",
+              "status": "UNKNOWN"
+            }
+          },
+          "proxy": {
+            "protocol": "off"
+          },
+          "status": 0,
+          "timestamp": "2050-05-26T09:24:00.000Z"
+        }
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "connect",
+        "category": [
+          "network"
+        ],
+        "id": "4dd068d7c8bb2223e2debc34defe3b85",
+        "kind": "event",
+        "original": "{\"Application\":\"4dd068d7c8bb2223e2debc34defe3b85\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"0\",\"DisconnectTimestamp\":\"0\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginT{\\\"Application\\\":\\\"8ba399e5e6ea3837f6bdbe28ccbd8a09\\\",\\\"ClientAsn\\\":200391,\\\"ClientBytes\\\":0,\\\"ClientCountry\\\":\\\"bg\\\",\\\"ClientIP\\\":\\\"203.0.113.212\\\",\\\"ClientMatchedIpFirewall\\\":\\\"UNKNOWN\\\",\\\"ClientPort\\\":40456,\\\"ClientProto\\\":\\\"tcp\\\",\\\"ClientTcpRtt\\\":0,\\\"ClientTlsCipher\\\":\\\"UNK\\\",\\\"ClientTlsClientHelloServerName\\\":\\\"server name\\\",\\\"ClientTlsProtocol\\\":\\\"TLSv1.2\\\",\\\"ClientTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ColoCode\\\":\\\"SOF\\\",\\\"ConnectTimestamp\\\":\\\"0\\\",\\\"DisconnectTimestamp\\\":\\\"0\\\",\\\"Event\\\":\\\"connect\\\",\\\"IpFirewall\\\":false,\\\"OriginBytes\\\":0,\\\"OriginIP\\\":\\\"192.0.2.54\\\",\\\"OriginPort\\\":3389,\\\"OriginProto\\\":\\\"tcp\\\",\\\"OriginTcpRtt\\\":0,\\\"OriginTlsCipher\\\":\\\"UNK\\\",\\\"OriginTlsFingerprint\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000.\\\",\\\"OriginTlsMode\\\":\\\"off\\\",\\\"OriginTlsProtocol\\\":\\\"unknown\\\",\\\"OriginTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ProxyProtocol\\\":\\\"off\\\",\\\"Status\\\":0,\\\"Timestamp\\\":\\\"2537169840000000000\\\"}\\nconnectedlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 0
+        }
+      },
+      "network": {
+        "community_id": "1:BAxNNimyATlgoy8bffEgylI5WUE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000."
+        ],
+        "ip": [
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "as": {
+          "number": 200391
+        },
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "bg"
+        },
+        "ip": "203.0.113.212",
+        "port": 40456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "UNK",
+        "client": {
+          "server_name": "server name"
+        },
+        "server": {
+          "hash": {
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000."
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    },
+    {
+      "@timestamp": "2050-05-26T09:24:00.000Z",
+      "cloudflare_logpush": {
+        "spectrum_event": {
+          "action": "connect",
+          "application": "1de810a1a1ce1741d8baed92aaac5e97",
+          "client": {
+            "asn": 200391,
+            "bytes": 0,
+            "country": "bg",
+            "ip": "203.0.113.212",
+            "matched_ip_firewall": "UNKNOWN",
+            "port": 40456,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "client_hello_server_name": "server name",
+              "protocol": "TLSv1.2",
+              "status": "UNKNOWN"
+            }
+          },
+          "colo": {
+            "code": "SOF"
+          },
+          "ip_firewall": false,
+          "origin": {
+            "bytes": 0,
+            "ip": "192.0.2.54",
+            "port": 3389,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000.",
+              "mode": "off",
+              "protocol": "unknown",
+              "status": "UNKNOWN"
+            }
+          },
+          "proxy": {
+            "protocol": "off"
+          },
+          "status": 0,
+          "timestamp": "2050-05-26T09:24:00.000Z"
+        }
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "connect",
+        "category": [
+          "network"
+        ],
+        "id": "1de810a1a1ce1741d8baed92aaac5e97",
+        "kind": "event",
+        "original": "{\"Application\":\"1de810a1a1ce1741d8baed92aaac5e97\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\": 0,\"DisconnectTimestamp\": 0,\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginT{\\\"Application\\\":\\\"8ba399e5e6ea3837f6bdbe28ccbd8a09\\\",\\\"ClientAsn\\\":200391,\\\"ClientBytes\\\":0,\\\"ClientCountry\\\":\\\"bg\\\",\\\"ClientIP\\\":\\\"203.0.113.212\\\",\\\"ClientMatchedIpFirewall\\\":\\\"UNKNOWN\\\",\\\"ClientPort\\\":40456,\\\"ClientProto\\\":\\\"tcp\\\",\\\"ClientTcpRtt\\\":0,\\\"ClientTlsCipher\\\":\\\"UNK\\\",\\\"ClientTlsClientHelloServerName\\\":\\\"server name\\\",\\\"ClientTlsProtocol\\\":\\\"TLSv1.2\\\",\\\"ClientTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ColoCode\\\":\\\"SOF\\\",\\\"ConnectTimestamp\\\": 0,\\\"DisconnectTimestamp\\\": 0,\\\"Event\\\":\\\"connect\\\",\\\"IpFirewall\\\":false,\\\"OriginBytes\\\":0,\\\"OriginIP\\\":\\\"192.0.2.54\\\",\\\"OriginPort\\\":3389,\\\"OriginProto\\\":\\\"tcp\\\",\\\"OriginTcpRtt\\\":0,\\\"OriginTlsCipher\\\":\\\"UNK\\\",\\\"OriginTlsFingerprint\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000.\\\",\\\"OriginTlsMode\\\":\\\"off\\\",\\\"OriginTlsProtocol\\\":\\\"unknown\\\",\\\"OriginTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ProxyProtocol\\\":\\\"off\\\",\\\"Status\\\":0,\\\"Timestamp\\\":\\\"2537169840000000000\\\"}\\nconnectedlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 0
+        }
+      },
+      "network": {
+        "community_id": "1:BAxNNimyATlgoy8bffEgylI5WUE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000."
+        ],
+        "ip": [
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "as": {
+          "number": 200391
+        },
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "bg"
+        },
+        "ip": "203.0.113.212",
+        "port": 40456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "UNK",
+        "client": {
+          "server_name": "server name"
+        },
+        "server": {
+          "hash": {
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000."
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    },
+    {
+      "@timestamp": "2050-05-26T09:24:00.000Z",
+      "cloudflare_logpush": {
+        "spectrum_event": {
+          "action": "connect",
+          "application": "1de418a4d0ce4277e3dabe21fafc6f97",
+          "client": {
+            "asn": 200391,
+            "bytes": 0,
+            "country": "bg",
+            "ip": "203.0.113.212",
+            "matched_ip_firewall": "UNKNOWN",
+            "port": 40456,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "cipher": "UNK",
+              "client_hello_server_name": "server name",
+              "protocol": "TLSv1.2",
+              "status": "UNKNOWN"
+            }
+          },
+          "colo": {
+            "code": "SOF"
+          },
+          "ip_firewall": false,
+          "origin": {
+            "bytes": 0,
+            "ip": "192.0.2.54",
+            "port": 3389,
+            "protocol": "tcp",
+            "tcp_rtt": 0,
+            "tls": {
+              "fingerprint": "0000000000000000000000000000000000000000000000000000000000000000.",
+              "mode": "off",
+              "protocol": "unknown",
+              "status": "UNKNOWN"
+            }
+          },
+          "proxy": {
+            "protocol": "off"
+          },
+          "status": 0,
+          "timestamp": "2050-05-26T09:24:00.000Z"
+        }
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.54",
+        "port": 3389
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "connect",
+        "category": [
+          "network"
+        ],
+        "id": "1de418a4d0ce4277e3dabe21fafc6f97",
+        "kind": "event",
+        "original": "{\"Application\":\"1de418a4d0ce4277e3dabe21fafc6f97\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"\",\",DisconnectTimestamp\":\"\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginT{\\\"Application\\\":\\\"8ba399e5e6ea3837f6bdbe28ccbd8a09\\\",\\\"ClientAsn\\\":200391,\\\"ClientBytes\\\":0,\\\"ClientCountry\\\":\\\"bg\\\",\\\"ClientIP\\\":\\\"203.0.113.212\\\",\\\"ClientMatchedIpFirewall\\\":\\\"UNKNOWN\\\",\\\"ClientPort\\\":40456,\\\"ClientProto\\\":\\\"tcp\\\",\\\"ClientTcpRtt\\\":0,\\\"ClientTlsCipher\\\":\\\"UNK\\\",\\\"ClientTlsClientHelloServerName\\\":\\\"server name\\\",\\\"ClientTlsProtocol\\\":\\\"TLSv1.2\\\",\\\"ClientTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ColoCode\\\":\\\"SOF\\\",\\\"ConnectTimestamp\\\":\\\"\\\",\\\"DisconnectTimestamp\\\":\\\"\\\",\\\"Event\\\":\\\"connect\\\",\\\"IpFirewall\\\":false,\\\"OriginBytes\\\":0,\\\"OriginIP\\\":\\\"192.0.2.54\\\",\\\"OriginPort\\\":3389,\\\"OriginProto\\\":\\\"tcp\\\",\\\"OriginTcpRtt\\\":0,\\\"OriginTlsCipher\\\":\\\"UNK\\\",\\\"OriginTlsFingerprint\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000.\\\",\\\"OriginTlsMode\\\":\\\"off\\\",\\\"OriginTlsProtocol\\\":\\\"unknown\\\",\\\"OriginTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ProxyProtocol\\\":\\\"off\\\",\\\"Status\\\":0,\\\"Timestamp\\\":\\\"2537169840000000000\\\"}\\nconnectedlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 0
+        }
+      },
+      "network": {
+        "community_id": "1:BAxNNimyATlgoy8bffEgylI5WUE=",
+        "transport": "tcp"
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000."
+        ],
+        "ip": [
+          "203.0.113.212",
+          "192.0.2.54"
+        ]
+      },
+      "source": {
+        "as": {
+          "number": 200391
+        },
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "bg"
+        },
+        "ip": "203.0.113.212",
+        "port": 40456
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "UNK",
+        "client": {
+          "server_name": "server name"
+        },
+        "server": {
+          "hash": {
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000."
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Application\":\"8ba399e5e6ea3837f6bdbe28ccbd8a09\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"2050-05-26T09:24:00Z\",\"DisconnectTimestamp\":\"2050-06-01T00:00:00Z\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginTlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2050-05-26T09:24:00Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Application\":\"8ba399e5e6ea3837f6bdbe28ccbd8a09\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"2537169840\",\"DisconnectTimestamp\":\"0\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginTlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Application\":\"8ba399e5e6ea3837f6bdbe28ccbd8a09\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"2537169840000000000\",\"DisconnectTimestamp\":\"0\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginTlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Application\":\"4dd068d7c8bb2223e2debc34defe3b85\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"0\",\"DisconnectTimestamp\":\"0\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginT{\\\"Application\\\":\\\"8ba399e5e6ea3837f6bdbe28ccbd8a09\\\",\\\"ClientAsn\\\":200391,\\\"ClientBytes\\\":0,\\\"ClientCountry\\\":\\\"bg\\\",\\\"ClientIP\\\":\\\"203.0.113.212\\\",\\\"ClientMatchedIpFirewall\\\":\\\"UNKNOWN\\\",\\\"ClientPort\\\":40456,\\\"ClientProto\\\":\\\"tcp\\\",\\\"ClientTcpRtt\\\":0,\\\"ClientTlsCipher\\\":\\\"UNK\\\",\\\"ClientTlsClientHelloServerName\\\":\\\"server name\\\",\\\"ClientTlsProtocol\\\":\\\"TLSv1.2\\\",\\\"ClientTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ColoCode\\\":\\\"SOF\\\",\\\"ConnectTimestamp\\\":\\\"0\\\",\\\"DisconnectTimestamp\\\":\\\"0\\\",\\\"Event\\\":\\\"connect\\\",\\\"IpFirewall\\\":false,\\\"OriginBytes\\\":0,\\\"OriginIP\\\":\\\"192.0.2.54\\\",\\\"OriginPort\\\":3389,\\\"OriginProto\\\":\\\"tcp\\\",\\\"OriginTcpRtt\\\":0,\\\"OriginTlsCipher\\\":\\\"UNK\\\",\\\"OriginTlsFingerprint\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000.\\\",\\\"OriginTlsMode\\\":\\\"off\\\",\\\"OriginTlsProtocol\\\":\\\"unknown\\\",\\\"OriginTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ProxyProtocol\\\":\\\"off\\\",\\\"Status\\\":0,\\\"Timestamp\\\":\\\"2537169840000000000\\\"}\\nconnectedlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Application\":\"1de810a1a1ce1741d8baed92aaac5e97\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\": 0,\"DisconnectTimestamp\": 0,\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginT{\\\"Application\\\":\\\"8ba399e5e6ea3837f6bdbe28ccbd8a09\\\",\\\"ClientAsn\\\":200391,\\\"ClientBytes\\\":0,\\\"ClientCountry\\\":\\\"bg\\\",\\\"ClientIP\\\":\\\"203.0.113.212\\\",\\\"ClientMatchedIpFirewall\\\":\\\"UNKNOWN\\\",\\\"ClientPort\\\":40456,\\\"ClientProto\\\":\\\"tcp\\\",\\\"ClientTcpRtt\\\":0,\\\"ClientTlsCipher\\\":\\\"UNK\\\",\\\"ClientTlsClientHelloServerName\\\":\\\"server name\\\",\\\"ClientTlsProtocol\\\":\\\"TLSv1.2\\\",\\\"ClientTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ColoCode\\\":\\\"SOF\\\",\\\"ConnectTimestamp\\\": 0,\\\"DisconnectTimestamp\\\": 0,\\\"Event\\\":\\\"connect\\\",\\\"IpFirewall\\\":false,\\\"OriginBytes\\\":0,\\\"OriginIP\\\":\\\"192.0.2.54\\\",\\\"OriginPort\\\":3389,\\\"OriginProto\\\":\\\"tcp\\\",\\\"OriginTcpRtt\\\":0,\\\"OriginTlsCipher\\\":\\\"UNK\\\",\\\"OriginTlsFingerprint\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000.\\\",\\\"OriginTlsMode\\\":\\\"off\\\",\\\"OriginTlsProtocol\\\":\\\"unknown\\\",\\\"OriginTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ProxyProtocol\\\":\\\"off\\\",\\\"Status\\\":0,\\\"Timestamp\\\":\\\"2537169840000000000\\\"}\\nconnectedlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Application\":\"1de418a4d0ce4277e3dabe21fafc6f97\",\"ClientAsn\":200391,\"ClientBytes\":0,\"ClientCountry\":\"bg\",\"ClientIP\":\"203.0.113.212\",\"ClientMatchedIpFirewall\":\"UNKNOWN\",\"ClientPort\":40456,\"ClientProto\":\"tcp\",\"ClientTcpRtt\":0,\"ClientTlsCipher\":\"UNK\",\"ClientTlsClientHelloServerName\":\"server name\",\"ClientTlsProtocol\":\"TLSv1.2\",\"ClientTlsStatus\":\"UNKNOWN\",\"ColoCode\":\"SOF\",\"ConnectTimestamp\":\"\",\",DisconnectTimestamp\":\"\",\"Event\":\"connect\",\"IpFirewall\":false,\"OriginBytes\":0,\"OriginIP\":\"192.0.2.54\",\"OriginPort\":3389,\"OriginProto\":\"tcp\",\"OriginTcpRtt\":0,\"OriginT{\\\"Application\\\":\\\"8ba399e5e6ea3837f6bdbe28ccbd8a09\\\",\\\"ClientAsn\\\":200391,\\\"ClientBytes\\\":0,\\\"ClientCountry\\\":\\\"bg\\\",\\\"ClientIP\\\":\\\"203.0.113.212\\\",\\\"ClientMatchedIpFirewall\\\":\\\"UNKNOWN\\\",\\\"ClientPort\\\":40456,\\\"ClientProto\\\":\\\"tcp\\\",\\\"ClientTcpRtt\\\":0,\\\"ClientTlsCipher\\\":\\\"UNK\\\",\\\"ClientTlsClientHelloServerName\\\":\\\"server name\\\",\\\"ClientTlsProtocol\\\":\\\"TLSv1.2\\\",\\\"ClientTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ColoCode\\\":\\\"SOF\\\",\\\"ConnectTimestamp\\\":\\\"\\\",\\\"DisconnectTimestamp\\\":\\\"\\\",\\\"Event\\\":\\\"connect\\\",\\\"IpFirewall\\\":false,\\\"OriginBytes\\\":0,\\\"OriginIP\\\":\\\"192.0.2.54\\\",\\\"OriginPort\\\":3389,\\\"OriginProto\\\":\\\"tcp\\\",\\\"OriginTcpRtt\\\":0,\\\"OriginTlsCipher\\\":\\\"UNK\\\",\\\"OriginTlsFingerprint\\\":\\\"0000000000000000000000000000000000000000000000000000000000000000.\\\",\\\"OriginTlsMode\\\":\\\"off\\\",\\\"OriginTlsProtocol\\\":\\\"unknown\\\",\\\"OriginTlsStatus\\\":\\\"UNKNOWN\\\",\\\"ProxyProtocol\\\":\\\"off\\\",\\\"Status\\\":0,\\\"Timestamp\\\":\\\"2537169840000000000\\\"}\\nconnectedlsCipher\":\"UNK\",\"OriginTlsFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000000.\",\"OriginTlsMode\":\"off\",\"OriginTlsProtocol\":\"unknown\",\"OriginTlsStatus\":\"UNKNOWN\",\"ProxyProtocol\":\"off\",\"Status\":0,\"Timestamp\":\"2537169840000000000\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "spectrum_event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-spectrum_event-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

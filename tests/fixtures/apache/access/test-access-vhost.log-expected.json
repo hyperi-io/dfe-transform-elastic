@@ -1,0 +1,99 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-12-26T16:22:14.000Z",
+      "apache": {
+        "access": {
+          "remote_addresses": [
+            "192.168.12.237"
+          ]
+        }
+      },
+      "destination": {
+        "domain": "vwhgo8.cxwekve.fr"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:03:30.244070509Z",
+        "kind": "event",
+        "original": "vwhgo8.cxwekve.fr 192.168.12.237 - - [26/Dec/2044:16:22:14 +0000] \"GET /hello HTTP/1.1\" 404 499 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:50.0) Gecko/20100101 Firefox/50.0\"",
+        "outcome": "failure"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 499
+          },
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "related": {
+        "hosts": [
+          "vwhgo8.cxwekve.fr"
+        ],
+        "ip": [
+          "192.168.12.237"
+        ]
+      },
+      "source": {
+        "address": "192.168.12.237",
+        "ip": "192.168.12.237"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "vwhgo8.cxwekve.fr",
+        "original": "/hello",
+        "path": "/hello"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:50.0) Gecko/20100101 Firefox/50.0",
+        "os": {
+          "full": "Mac OS X 10.12",
+          "name": "Mac OS X",
+          "version": "10.12"
+        },
+        "version": "50.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "vwhgo8.cxwekve.fr 192.168.12.237 - - [26/Dec/2044:16:22:14 +0000] \"GET /hello HTTP/1.1\" 404 499 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:50.0) Gecko/20100101 Firefox/50.0\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache-access-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

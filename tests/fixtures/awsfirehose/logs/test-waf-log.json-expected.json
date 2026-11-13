@@ -1,0 +1,92 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-23T16:47:26Z",
+      "aws.firehose.arn": "arn:aws:firehose:us-east-1:428152502467:deliverystream/aws-waf-logs-test",
+      "aws.firehose.request_id": "5cfded70-a296-4c2d-b40d-d6a3dd8dfc80",
+      "aws.kinesis.name": "aws-waf-logs-test",
+      "aws.kinesis.type": "deliverystream",
+      "cloud.account.id": "428152502467",
+      "cloud.provider": "aws",
+      "cloud.region": "us-east-1",
+      "data_stream.dataset": "awsfirehose",
+      "data_stream.namespace": "default",
+      "data_stream.type": "logs",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "aws.waf"
+      },
+      "message": "{\"timestamp\":2459893212771,\"formatVersion\":1,\"webaclId\":\"arn:aws:wafv2:ap-southeast-2:EXAMPLE12345:regional/webacl/STMTest/1EXAMPLE-2ARN-3ARN-4ARN-123456EXAMPLE\",\"terminatingRuleId\":\"STMTest_SQLi_XSS\",\"terminatingRuleType\":\"REGULAR\",\"action\":\"BLOCK\",\"terminatingRuleMatchDetails\":[{\"conditionType\":\"SQL_INJECTION\",\"location\":\"HEADER\",\"matchedData\":[\"10\",\"AND\",\"1\"]}],\"httpSourceName\":\"-\",\"httpSourceId\":\"-\",\"ruleGroupList\":[],\"rateBasedRuleList\":[],\"nonTerminatingMatchingRules\":[],\"httpRequest\":{\"clientIp\":\"198.51.100.144\",\"country\":\"AU\",\"headers\":[{\"name\":\"Host\",\"value\":\"localhost:1989\"},{\"name\":\"User-Agent\",\"value\":\"curl/7.61.1\"},{\"name\":\"Accept\",\"value\":\"*/*\"},{\"name\":\"x-stm-test\",\"value\":\"10 AND 1=1\"}],\"uri\":\"/foo\",\"args\":\"\",\"httpVersion\":\"HTTP/1.1\",\"httpMethod\":\"GET\",\"requestId\":\"rid\"},\"labels\":[{\"name\":\"value\"}]}\n"
+    },
+    {
+      "@timestamp": "2051-08-23T16:47:26Z",
+      "aws.cloudwatch.log_group": "aws-waf-logs-test-firehose",
+      "aws.cloudwatch.log_stream": "us-east-1_web-acl-name_1",
+      "aws.firehose.arn": "arn:aws:firehose:us-east-1:123456789:deliverystream/test-waf-logs",
+      "aws.firehose.request_id": "bbe10a72-ab38-4d66-848f-2c3a495e591b",
+      "aws.firehose.subscription_filters": "[test-waf-logs-to-firehose]",
+      "aws.kinesis.name": "test-waf-logs",
+      "aws.kinesis.type": "deliverystream",
+      "cloud.account.id": "123456789",
+      "cloud.provider": "aws",
+      "cloud.region": "us-east-1",
+      "data_stream.dataset": "awsfirehose",
+      "data_stream.namespace": "default",
+      "data_stream.type": "logs",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "dataset": "aws.waf"
+      },
+      "event.id": "37728046078123216000395549868459931814660237705210691585",
+      "message": "{\"timestamp\":2459893212771,\"formatVersion\":1,\"webaclId\":\"arn:aws:wafv2:ap-southeast-2:EXAMPLE12345:regional/webacl/STMTest/1EXAMPLE-2ARN-3ARN-4ARN-123456EXAMPLE\",\"terminatingRuleId\":\"STMTest_SQLi_XSS\",\"terminatingRuleType\":\"REGULAR\",\"action\":\"BLOCK\",\"terminatingRuleMatchDetails\":[{\"conditionType\":\"SQL_INJECTION\",\"location\":\"HEADER\",\"matchedData\":[\"10\",\"AND\",\"1\"]}],\"httpSourceName\":\"-\",\"httpSourceId\":\"-\",\"ruleGroupList\":[],\"rateBasedRuleList\":[],\"nonTerminatingMatchingRules\":[],\"httpRequest\":{\"clientIp\":\"198.51.100.144\",\"country\":\"AU\",\"headers\":[{\"name\":\"Host\",\"value\":\"localhost:1989\"},{\"name\":\"User-Agent\",\"value\":\"curl/7.61.1\"},{\"name\":\"Accept\",\"value\":\"*/*\"},{\"name\":\"x-stm-test\",\"value\":\"10 AND 1=1\"}],\"uri\":\"/foo\",\"args\":\"\",\"httpVersion\":\"HTTP/1.1\",\"httpMethod\":\"GET\",\"requestId\":\"rid\"},\"labels\":[{\"name\":\"value\"}]}\n"
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-08-23T16:47:26Z",
+      "aws.firehose.arn": "arn:aws:firehose:us-east-1:428152502467:deliverystream/aws-waf-logs-test",
+      "aws.firehose.request_id": "5cfded70-a296-4c2d-b40d-d6a3dd8dfc80",
+      "aws.kinesis.name": "aws-waf-logs-test",
+      "aws.kinesis.type": "deliverystream",
+      "cloud.account.id": "428152502467",
+      "cloud.provider": "aws",
+      "cloud.region": "us-east-1",
+      "data_stream.dataset": "awsfirehose",
+      "data_stream.namespace": "default",
+      "data_stream.type": "logs",
+      "message": "{\"timestamp\":2459893212771,\"formatVersion\":1,\"webaclId\":\"arn:aws:wafv2:ap-southeast-2:EXAMPLE12345:regional/webacl/STMTest/1EXAMPLE-2ARN-3ARN-4ARN-123456EXAMPLE\",\"terminatingRuleId\":\"STMTest_SQLi_XSS\",\"terminatingRuleType\":\"REGULAR\",\"action\":\"BLOCK\",\"terminatingRuleMatchDetails\":[{\"conditionType\":\"SQL_INJECTION\",\"location\":\"HEADER\",\"matchedData\":[\"10\",\"AND\",\"1\"]}],\"httpSourceName\":\"-\",\"httpSourceId\":\"-\",\"ruleGroupList\":[],\"rateBasedRuleList\":[],\"nonTerminatingMatchingRules\":[],\"httpRequest\":{\"clientIp\":\"198.51.100.144\",\"country\":\"AU\",\"headers\":[{\"name\":\"Host\",\"value\":\"localhost:1989\"},{\"name\":\"User-Agent\",\"value\":\"curl/7.61.1\"},{\"name\":\"Accept\",\"value\":\"*/*\"},{\"name\":\"x-stm-test\",\"value\":\"10 AND 1=1\"}],\"uri\":\"/foo\",\"args\":\"\",\"httpVersion\":\"HTTP/1.1\",\"httpMethod\":\"GET\",\"requestId\":\"rid\"},\"labels\":[{\"name\":\"value\"}]}\n"
+    },
+    {
+      "@timestamp": "2051-08-23T16:47:26Z",
+      "aws.cloudwatch.log_group": "aws-waf-logs-test-firehose",
+      "aws.cloudwatch.log_stream": "us-east-1_web-acl-name_1",
+      "aws.firehose.arn": "arn:aws:firehose:us-east-1:123456789:deliverystream/test-waf-logs",
+      "aws.firehose.request_id": "bbe10a72-ab38-4d66-848f-2c3a495e591b",
+      "aws.firehose.subscription_filters": "[test-waf-logs-to-firehose]",
+      "aws.kinesis.name": "test-waf-logs",
+      "aws.kinesis.type": "deliverystream",
+      "cloud.account.id": "123456789",
+      "cloud.provider": "aws",
+      "cloud.region": "us-east-1",
+      "data_stream.dataset": "awsfirehose",
+      "data_stream.namespace": "default",
+      "data_stream.type": "logs",
+      "event.id": "37728046078123216000395549868459931814660237705210691585",
+      "message": "{\"timestamp\":2459893212771,\"formatVersion\":1,\"webaclId\":\"arn:aws:wafv2:ap-southeast-2:EXAMPLE12345:regional/webacl/STMTest/1EXAMPLE-2ARN-3ARN-4ARN-123456EXAMPLE\",\"terminatingRuleId\":\"STMTest_SQLi_XSS\",\"terminatingRuleType\":\"REGULAR\",\"action\":\"BLOCK\",\"terminatingRuleMatchDetails\":[{\"conditionType\":\"SQL_INJECTION\",\"location\":\"HEADER\",\"matchedData\":[\"10\",\"AND\",\"1\"]}],\"httpSourceName\":\"-\",\"httpSourceId\":\"-\",\"ruleGroupList\":[],\"rateBasedRuleList\":[],\"nonTerminatingMatchingRules\":[],\"httpRequest\":{\"clientIp\":\"198.51.100.144\",\"country\":\"AU\",\"headers\":[{\"name\":\"Host\",\"value\":\"localhost:1989\"},{\"name\":\"User-Agent\",\"value\":\"curl/7.61.1\"},{\"name\":\"Accept\",\"value\":\"*/*\"},{\"name\":\"x-stm-test\",\"value\":\"10 AND 1=1\"}],\"uri\":\"/foo\",\"args\":\"\",\"httpVersion\":\"HTTP/1.1\",\"httpMethod\":\"GET\",\"requestId\":\"rid\"},\"labels\":[{\"name\":\"value\"}]}\n"
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-awsfirehose-logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "awsfirehose",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

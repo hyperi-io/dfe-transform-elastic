@@ -1,0 +1,245 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-05-15T15:42:27.000Z",
+      "destination": {
+        "address": "10.34.193.17",
+        "ip": "10.34.193.17",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"app_target\":\"eicar.exe\",\"component\":\"firewall\",\"date\":\"2018 05 15\",\"description\":\"Eicar-Test-Signature\",\"dst_ip\":\"10.34.193.17\",\"operation\":\"Block\",\"port\":\"443\",\"severity\":\"Warning\",\"src_ip\":\"10.50.237.137\",\"threat_severity\":\"3\",\"time\":\"15:42:27\",\"timestamp\":\"2046-05-15T15:42:27+00:00\",\"timezone\":\"+00:00\",\"trans_proto\":\"TCP\",\"type\":\"Virus\",\"user\":\"phfg12\"}",
+        "severity": 3,
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "cpd-gdwln-mrt",
+        "product": "ngfw",
+        "serial_number": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "firewall",
+        "vendor": "Barracuda"
+      },
+      "related": {
+        "ip": [
+          "10.50.237.137",
+          "10.34.193.17"
+        ]
+      },
+      "rule": {
+        "description": "Eicar-Test-Signature",
+        "ruleset": "Virus"
+      },
+      "source": {
+        "address": "10.50.237.137",
+        "ip": "10.50.237.137"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "phfg12"
+      }
+    },
+    {
+      "@timestamp": "2046-05-15T15:42:32.000Z",
+      "destination": {
+        "address": "203.0.113.88",
+        "ip": "203.0.113.88",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"app_target\":\"boese.pdf\",\"component\":\"firewall\",\"date\":\"2018 05 15\",\"description\":\"aa59d9ee5b706c2d835912acb02b2b56c810d3e6;.pdf\",\"dst_ip\":\"203.0.113.88\",\"operation\":\"Block\",\"port\":\"80\",\"severity\":\"Warning\",\"src_ip\":\"10.50.237.137\",\"threat_severity\":\"3\",\"time\":\"15:42:32\",\"timestamp\":\"2046-05-15T15:42:32+00:00\",\"timezone\":\"+00:00\",\"trans_proto\":\"TCP\",\"type\":\"ATD\",\"user\":\"phfg12\"}",
+        "severity": 3,
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "cpd-gdwln-mrt",
+        "product": "ngfw",
+        "serial_number": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "firewall",
+        "vendor": "Barracuda"
+      },
+      "related": {
+        "ip": [
+          "10.50.237.137",
+          "203.0.113.88"
+        ]
+      },
+      "rule": {
+        "description": "aa59d9ee5b706c2d835912acb02b2b56c810d3e6;.pdf",
+        "ruleset": "ATD"
+      },
+      "source": {
+        "address": "10.50.237.137",
+        "ip": "10.50.237.137"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "phfg12"
+      }
+    },
+    {
+      "@timestamp": "2046-05-15T15:46:06.000Z",
+      "destination": {
+        "address": "198.51.100.21",
+        "ip": "198.51.100.21",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "block",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"component\":\"firewall\",\"date\":\"2018 05 15\",\"description\":\"ID: 1054837 WEB Remote File Inclusion /etc/passwd\",\"dst_ip\":\"198.51.100.21\",\"ips_category\":\"Web Attack\",\"operation\":\"Block\",\"port\":\"80\",\"severity\":\"Warning\",\"src_ip\":\"10.50.237.137\",\"threat_severity\":\"3\",\"time\":\"15:46:06\",\"timestamp\":\"2046-05-15T15:46:06+00:00\",\"timezone\":\"+00:00\",\"trans_proto\":\"TCP\",\"type\":\"IPS\",\"user\":\"lmdq52\"}",
+        "severity": 3,
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "Warning"
+      },
+      "network": {
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "cpd-gdwln-mrt",
+        "product": "ngfw",
+        "serial_number": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "firewall",
+        "vendor": "Barracuda"
+      },
+      "related": {
+        "ip": [
+          "10.50.237.137",
+          "198.51.100.21"
+        ]
+      },
+      "rule": {
+        "category": "Web Attack",
+        "description": "ID: 1054837 WEB Remote File Inclusion /etc/passwd",
+        "ruleset": "IPS"
+      },
+      "source": {
+        "address": "10.50.237.137",
+        "ip": "10.50.237.137"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "lmdq52"
+      }
+    }
+  ],
+  "input": [
+    {
+      "lumberjack": {
+        "beat": {
+          "hostname": "cpd-gdwln-mrt"
+        },
+        "product": "ngfw",
+        "sn": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "ngfw-threat"
+      },
+      "message": "{\"app_target\":\"eicar.exe\",\"component\":\"firewall\",\"date\":\"2018 05 15\",\"description\":\"Eicar-Test-Signature\",\"dst_ip\":\"10.34.193.17\",\"operation\":\"Block\",\"port\":\"443\",\"severity\":\"Warning\",\"src_ip\":\"10.50.237.137\",\"threat_severity\":\"3\",\"time\":\"15:42:27\",\"timestamp\":\"2046-05-15T15:42:27+00:00\",\"timezone\":\"+00:00\",\"trans_proto\":\"TCP\",\"type\":\"Virus\",\"user\":\"phfg12\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "lumberjack": {
+        "beat": {
+          "hostname": "cpd-gdwln-mrt"
+        },
+        "product": "ngfw",
+        "sn": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "ngfw-threat"
+      },
+      "message": "{\"app_target\":\"boese.pdf\",\"component\":\"firewall\",\"date\":\"2018 05 15\",\"description\":\"aa59d9ee5b706c2d835912acb02b2b56c810d3e6;.pdf\",\"dst_ip\":\"203.0.113.88\",\"operation\":\"Block\",\"port\":\"80\",\"severity\":\"Warning\",\"src_ip\":\"10.50.237.137\",\"threat_severity\":\"3\",\"time\":\"15:42:32\",\"timestamp\":\"2046-05-15T15:42:32+00:00\",\"timezone\":\"+00:00\",\"trans_proto\":\"TCP\",\"type\":\"ATD\",\"user\":\"phfg12\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "lumberjack": {
+        "beat": {
+          "hostname": "cpd-gdwln-mrt"
+        },
+        "product": "ngfw",
+        "sn": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "ngfw-threat"
+      },
+      "message": "{\"component\":\"firewall\",\"date\":\"2018 05 15\",\"description\":\"ID: 1054837 WEB Remote File Inclusion /etc/passwd\",\"dst_ip\":\"198.51.100.21\",\"ips_category\":\"Web Attack\",\"operation\":\"Block\",\"port\":\"80\",\"severity\":\"Warning\",\"src_ip\":\"10.50.237.137\",\"threat_severity\":\"3\",\"time\":\"15:46:06\",\"timestamp\":\"2046-05-15T15:46:06+00:00\",\"timezone\":\"+00:00\",\"trans_proto\":\"TCP\",\"type\":\"IPS\",\"user\":\"lmdq52\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-barracuda_cloudgen_firewall-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "barracuda_cloudgen_firewall",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

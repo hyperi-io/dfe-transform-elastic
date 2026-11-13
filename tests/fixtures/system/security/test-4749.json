@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:02.974Z",
+            "host": {
+                "name": "CA_TBIY4q29.XCYX.SAAS"
+            },
+            "agent": {
+                "ephemeral_id": "64406937-19db-44af-8af8-629059f096a2",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            },
+            "winlog": {
+                "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "outcome": "success",
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-12-19T08:03:42.723Z",
+                "level": "information",
+                "channel": "Security",
+                "event_id": 4749,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 3707497,
+                "event_data": {
+                    "TargetUserName": "zdllogkcfs",
+                    "SubjectUserName": "ev_aav",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x2e67800",
+                    "PrivilegeList": "-",
+                    "SamAccountName": "zdllogkcfs",
+                    "TargetDomainName": "TEST",
+                    "TargetSid": "S-1-5-21-1717121054-434620538-60925301-2904",
+                    "SubjectUserSid": "S-1-5-21-1717121054-434620538-60925301-2794",
+                    "SidHistory": "-"
+                },
+                "process": {
+                    "pid": 492,
+                    "thread": {
+                        "id": 1348
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4749,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4749.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            }
+        }
+    ]
+}

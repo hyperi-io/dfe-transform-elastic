@@ -1,0 +1,48 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "May 21 21:54:44 localhost foo[1234]: This message\n spans multiple lines.",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "May 21 21:54:44 localhost foo[1234]: This message\n spans multiple lines."
+    },
+    {
+      "event": {
+        "original": "May 21 21:54:45 localhost foo[1234]: Single-line message.",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "May 21 21:54:45 localhost foo[1234]: Single-line message."
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "May 21 21:54:44 localhost foo[1234]: This message\n spans multiple lines."
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "May 21 21:54:45 localhost foo[1234]: Single-line message."
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

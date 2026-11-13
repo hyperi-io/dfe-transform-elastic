@@ -1,0 +1,603 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-30T12:50:13.457Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399754736Z",
+        "original": "4961:M 30 May 12:50:13.457 * Increased maximum number of open files to 10032 (it was originally set to 4864)."
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Increased maximum number of open files to 10032 (it was originally set to 4864).",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:50:13.463Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399760776Z",
+        "original": "4961:M 30 May 12:50:13.463 # Server started, Redis version 3.0.2"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "Server started, Redis version 3.0.2",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:50:13.464Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399761676Z",
+        "original": "4961:M 30 May 12:50:13.464 * DB loaded from disk: 0.001 seconds"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "DB loaded from disk: 0.001 seconds",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:50:13.464Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399762276Z",
+        "original": "4961:M 30 May 12:50:13.464 * The server is now ready to accept connections on port 6379"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "The server is now ready to accept connections on port 6379",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2017-05-30T10:52:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399762876Z",
+        "original": "4961:signal-handler (1496141561) Received SIGINT scheduling shutdown..."
+      },
+      "message": "Received SIGINT scheduling shutdown...",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:41.448Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399763496Z",
+        "original": "4961:M 30 May 12:52:41.448 # User requested shutdown..."
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "User requested shutdown...",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:41.448Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399764136Z",
+        "original": "4961:M 30 May 12:52:41.448 * Saving the final RDB snapshot before exiting."
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Saving the final RDB snapshot before exiting.",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:41.452Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399765146Z",
+        "original": "4961:M 30 May 12:52:41.452 * DB saved on disk"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "DB saved on disk",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:41.452Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399765786Z",
+        "original": "4961:M 30 May 12:52:41.452 # Redis is now ready to exit, bye bye..."
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "Redis is now ready to exit, bye bye...",
+      "process": {
+        "pid": 4961
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:42.131Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399766476Z",
+        "original": "5092:M 30 May 12:52:42.131 * Increased maximum number of open files to 10032 (it was originally set to 4864)."
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Increased maximum number of open files to 10032 (it was originally set to 4864).",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:42.133Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399767076Z",
+        "original": "5092:M 30 May 12:52:42.133 # Server started, Redis version 3.0.2"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "Server started, Redis version 3.0.2",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:42.133Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399767766Z",
+        "original": "5092:M 30 May 12:52:42.133 * DB loaded from disk: 0.000 seconds"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "DB loaded from disk: 0.000 seconds",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:52:42.133Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399768356Z",
+        "original": "5092:M 30 May 12:52:42.133 * The server is now ready to accept connections on port 6379"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "The server is now ready to accept connections on port 6379",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2017-05-30T10:57:24.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399769566Z",
+        "original": "5092:signal-handler (1496141844) Received SIGINT scheduling shutdown..."
+      },
+      "message": "Received SIGINT scheduling shutdown...",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:57:24.231Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399770496Z",
+        "original": "5092:M 30 May 12:57:24.231 # User requested shutdown..."
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "User requested shutdown...",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:57:24.231Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399771106Z",
+        "original": "5092:M 30 May 12:57:24.231 * Saving the final RDB snapshot before exiting."
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Saving the final RDB snapshot before exiting.",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:57:24.234Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399771776Z",
+        "original": "5092:M 30 May 12:57:24.234 * DB saved on disk"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "DB saved on disk",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-30T12:57:24.234Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.399772446Z",
+        "original": "5092:M 30 May 12:57:24.234 # Redis is now ready to exit, bye bye..."
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "Redis is now ready to exit, bye bye...",
+      "process": {
+        "pid": 5092
+      },
+      "redis": {
+        "log": {
+          "role": "master"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:50:13.457 * Increased maximum number of open files to 10032 (it was originally set to 4864).",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:50:13.463 # Server started, Redis version 3.0.2",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:50:13.464 * DB loaded from disk: 0.001 seconds",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:50:13.464 * The server is now ready to accept connections on port 6379",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:signal-handler (1496141561) Received SIGINT scheduling shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:52:41.448 # User requested shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:52:41.448 * Saving the final RDB snapshot before exiting.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:52:41.452 * DB saved on disk",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "4961:M 30 May 12:52:41.452 # Redis is now ready to exit, bye bye...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:52:42.131 * Increased maximum number of open files to 10032 (it was originally set to 4864).",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:52:42.133 # Server started, Redis version 3.0.2",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:52:42.133 * DB loaded from disk: 0.000 seconds",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:52:42.133 * The server is now ready to accept connections on port 6379",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:signal-handler (1496141844) Received SIGINT scheduling shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:57:24.231 # User requested shutdown...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:57:24.231 * Saving the final RDB snapshot before exiting.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:57:24.234 * DB saved on disk",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "5092:M 30 May 12:57:24.234 # Redis is now ready to exit, bye bye...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-redis-log-default",
+    "event_count": 18,
+    "numeric_keyword_fields": [],
+    "package": "redis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

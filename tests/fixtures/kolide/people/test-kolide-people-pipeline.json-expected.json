@@ -1,0 +1,114 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:01:57.396947109Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "person",
+        "category": [
+          "iam"
+        ],
+        "kind": "state",
+        "original": "{\"id\":\"861637\",\"name\":\"Alice Johnson\",\"email\":\"eprde.rgwqnrr@example.com\",\"created_at\":\"2052-01-10T08:00:00Z\",\"last_authenticated_at\":\"2052-06-15T12:00:00Z\",\"has_registered_device\":true,\"usernames\":[\"eprde.rgwqnrr@example.com\"]}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "kolide": {
+        "people": {
+          "created_at": "2052-01-10T08:00:00.000Z",
+          "has_registered_device": true,
+          "id": "861637",
+          "last_authenticated_at": "2052-06-15T12:00:00.000Z",
+          "usernames": [
+            "eprde.rgwqnrr@example.com"
+          ]
+        }
+      },
+      "related": {
+        "user": [
+          "eprde.rgwqnrr@example.com",
+          "861637"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "eprde.rgwqnrr@example.com",
+        "full_name": "Alice Johnson",
+        "id": "861637",
+        "name": "eprde.rgwqnrr@example.com"
+      }
+    },
+    {
+      "@timestamp": "2026-11-13T23:01:57.396958569Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "person",
+        "category": [
+          "iam"
+        ],
+        "kind": "state",
+        "original": "{\"id\":\"864140\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\",\"created_at\":\"2052-02-05T09:30:00Z\",\"last_authenticated_at\":null,\"has_registered_device\":false,\"usernames\":[]}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "kolide": {
+        "people": {
+          "created_at": "2052-02-05T09:30:00.000Z",
+          "has_registered_device": false,
+          "id": "864140"
+        }
+      },
+      "related": {
+        "user": [
+          "drc.zsgwr@example.com",
+          "864140"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "drc.zsgwr@example.com",
+        "full_name": "Bob Smith",
+        "id": "864140",
+        "name": "drc.zsgwr@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"861637\",\"name\":\"Alice Johnson\",\"email\":\"eprde.rgwqnrr@example.com\",\"created_at\":\"2052-01-10T08:00:00Z\",\"last_authenticated_at\":\"2052-06-15T12:00:00Z\",\"has_registered_device\":true,\"usernames\":[\"eprde.rgwqnrr@example.com\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"864140\",\"name\":\"Bob Smith\",\"email\":\"drc.zsgwr@example.com\",\"created_at\":\"2052-02-05T09:30:00Z\",\"last_authenticated_at\":null,\"has_registered_device\":false,\"usernames\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "people",
+    "dynamic_fields": {
+      "@timestamp": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kolide-people-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "kolide",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

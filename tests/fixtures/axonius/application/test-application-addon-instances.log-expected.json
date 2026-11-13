@@ -1,0 +1,171 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-26T00:03:29.000Z",
+      "axonius": {
+        "application": {
+          "accurate_for_datetime": "2026-05-26T00:03:29.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "google_mdm_adapter"
+          ],
+          "app_id": "49923C739ec5B5711E18",
+          "application_and_account_name": "google workspace/google_mdm-demo",
+          "asset_type": "application_addon_instances",
+          "association_scope": "Specific User",
+          "event": {
+            "adapter_categories": [
+              "IAM",
+              "MDM/EMM",
+              "SaaS Management"
+            ],
+            "client_used": "67fd09f2fe1c8e812a176bcf",
+            "initial_plugin_unique_name": "google_mdm_adapter_0",
+            "plugin_name": "google_mdm_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "google_mdm_adapter_0",
+            "quick_id": "google_mdm_adapter_0!b972ea8dea373006993d",
+            "type": "entitydata"
+          },
+          "extension_type": "Plugin",
+          "fetch_time": "2026-05-26T00:03:05.000Z",
+          "first_fetch_time": "2025-12-14T16:50:33.000Z",
+          "from_last_fetch": true,
+          "id": "b972ea8dea373006993d",
+          "id_raw": "AcaeAb64B2E8f06BFb83/49923C739ec5B5711E18",
+          "integration_type": "Add-on",
+          "internal_axon_id": "e1d52c525cfd6f40fd1996afe15a0098",
+          "is_fetched_from_adapter": true,
+          "is_operational": true,
+          "last_access": "2025-11-25T09:47:13.000Z",
+          "last_fetch_connection_id": "67fd09f2fe1c8e812a176bcf",
+          "last_fetch_connection_label": "google_mdm-demo",
+          "name": "Asana",
+          "never_accessed": false,
+          "not_fetched_count": 0,
+          "permissions": [
+            {
+              "is_admin": false,
+              "name": "allow_user_modification"
+            },
+            {
+              "is_admin": false,
+              "name": "allow_basic_access"
+            },
+            {
+              "is_admin": false,
+              "name": "allow_language_selection"
+            }
+          ],
+          "related_vendor_name": "Asana",
+          "sm_entity_type": "user_extension",
+          "source_application": "Google Workspace",
+          "tenant_number": [
+            4
+          ],
+          "transform_unique_id": "C8OLFyvVkfeKu26/b0gpp7lzeJ0=",
+          "type": "UserExtensions",
+          "user_account": {
+            "remote_id": "4722f3be-c22a-40e9-b182-98aaf38261c2"
+          }
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2025-02-21T00:10:02.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"application_addon_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:03:29 GMT\",\"adapter_categories\":[\"IAM\",\"MDM/EMM\",\"SaaS Management\"],\"client_used\":\"67fd09f2fe1c8e812a176bcf\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:03:29 GMT\",\"app_id\":\"49923C739ec5B5711E18\",\"application_and_account_name\":\"google workspace/google_mdm-demo\",\"association_scope\":\"Specific User\",\"created\":\"Fri, 21 Feb 2025 00:10:02 GMT\",\"extension_type\":\"Plugin\",\"fetch_time\":\"Tue, 26 May 2026 00:03:05 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:50:33 GMT\",\"from_last_fetch\":true,\"id\":\"b972ea8dea373006993d\",\"id_raw\":\"AcaeAb64B2E8f06BFb83/49923C739ec5B5711E18\",\"integration_type\":\"Add-on\",\"is_fetched_from_adapter\":true,\"is_operational\":true,\"last_access\":\"Tue, 25 Nov 2025 09:47:13 GMT\",\"last_fetch_connection_id\":\"67fd09f2fe1c8e812a176bcf\",\"last_fetch_connection_label\":\"google_mdm-demo\",\"name\":\"Asana\",\"never_accessed\":false,\"not_fetched_count\":0,\"permissions\":[{\"is_admin\":false,\"name\":\"allow_user_modification\"},{\"is_admin\":false,\"name\":\"allow_basic_access\"},{\"is_admin\":false,\"name\":\"allow_language_selection\"}],\"related_vendor_name\":\"Asana\",\"sm_entity_type\":\"user_extension\",\"source_application\":\"Google Workspace\",\"tenant_number\":[\"4\"],\"type\":\"UserExtensions\",\"user_account\":{\"email\":\"fsevea.mcxondl@abui.local\",\"remote_id\":\"4722f3be-c22a-40e9-b182-98aaf38261c2\",\"username\":\"fsevea.mcxondl@abui.local\"}},\"initial_plugin_unique_name\":\"google_mdm_adapter_0\",\"plugin_name\":\"google_mdm_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"google_mdm_adapter_0\",\"quick_id\":\"google_mdm_adapter_0!b972ea8dea373006993d\",\"type\":\"entitydata\"},\"internal_axon_id\":\"e1d52c525cfd6f40fd1996afe15a0098\",\"adapters\":[\"google_mdm_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "fsevea.mcxondl@abui.local"
+        ]
+      },
+      "user": {
+        "domain": "abui.local",
+        "email": "fsevea.mcxondl@abui.local",
+        "name": "fsevea.mcxondl@abui.local"
+      }
+    },
+    {
+      "@timestamp": "2026-05-26T00:18:21.000Z",
+      "axonius": {
+        "application": {
+          "adapter_list_length": 1,
+          "adapters": [
+            "google_mdm_adapter"
+          ],
+          "asset_type": "application_addon_instances",
+          "event": {
+            "association_type": "Tag",
+            "entity": "user_extensions",
+            "hidden_for_gui": true,
+            "name": "static_analysis_0_UserCountSchema",
+            "plugin_name": "static_analysis",
+            "plugin_unique_name": "static_analysis_0_UserCountSchema",
+            "type": "adapterdata"
+          },
+          "internal_axon_id": "e1d52c525cfd6f40fd1996afe15a0098",
+          "transform_unique_id": "xVMq31ZHoiLJNGMSXjXs2b+QMOk=",
+          "user_count": 1,
+          "user_count_link": [
+            {
+              "bracketWeight": 0,
+              "compOp": "equals",
+              "field": "specific_data.data.mail",
+              "leftBracket": 0,
+              "not": false,
+              "rightBracket": 0,
+              "value": "fsevea.mcxondl@abui.local"
+            }
+          ]
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"asset_type\":\"application_addon_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:18:21 GMT\",\"action_if_exists\":\"update\",\"associated_adapters\":[],\"association_type\":\"Tag\",\"data\":{\"user_count\":1,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"equals\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"fsevea.mcxondl@abui.local\"}]},\"entity\":\"user_extensions\",\"hidden_for_gui\":true,\"name\":\"static_analysis_0_UserCountSchema\",\"plugin_name\":\"static_analysis\",\"plugin_unique_name\":\"static_analysis_0_UserCountSchema\",\"type\":\"adapterdata\"},\"internal_axon_id\":\"e1d52c525cfd6f40fd1996afe15a0098\",\"adapters\":[\"google_mdm_adapter\"],\"adapter_list_length\":1}",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "user": [
+          "fsevea.mcxondl@abui.local"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"application_addon_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:03:29 GMT\",\"adapter_categories\":[\"IAM\",\"MDM/EMM\",\"SaaS Management\"],\"client_used\":\"67fd09f2fe1c8e812a176bcf\",\"data\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:03:29 GMT\",\"app_id\":\"49923C739ec5B5711E18\",\"application_and_account_name\":\"google workspace/google_mdm-demo\",\"association_scope\":\"Specific User\",\"created\":\"Fri, 21 Feb 2025 00:10:02 GMT\",\"extension_type\":\"Plugin\",\"fetch_time\":\"Tue, 26 May 2026 00:03:05 GMT\",\"first_fetch_time\":\"Sun, 14 Dec 2025 16:50:33 GMT\",\"from_last_fetch\":true,\"id\":\"b972ea8dea373006993d\",\"id_raw\":\"AcaeAb64B2E8f06BFb83/49923C739ec5B5711E18\",\"integration_type\":\"Add-on\",\"is_fetched_from_adapter\":true,\"is_operational\":true,\"last_access\":\"Tue, 25 Nov 2025 09:47:13 GMT\",\"last_fetch_connection_id\":\"67fd09f2fe1c8e812a176bcf\",\"last_fetch_connection_label\":\"google_mdm-demo\",\"name\":\"Asana\",\"never_accessed\":false,\"not_fetched_count\":0,\"permissions\":[{\"is_admin\":false,\"name\":\"allow_user_modification\"},{\"is_admin\":false,\"name\":\"allow_basic_access\"},{\"is_admin\":false,\"name\":\"allow_language_selection\"}],\"related_vendor_name\":\"Asana\",\"sm_entity_type\":\"user_extension\",\"source_application\":\"Google Workspace\",\"tenant_number\":[\"4\"],\"type\":\"UserExtensions\",\"user_account\":{\"email\":\"fsevea.mcxondl@abui.local\",\"remote_id\":\"4722f3be-c22a-40e9-b182-98aaf38261c2\",\"username\":\"fsevea.mcxondl@abui.local\"}},\"initial_plugin_unique_name\":\"google_mdm_adapter_0\",\"plugin_name\":\"google_mdm_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"google_mdm_adapter_0\",\"quick_id\":\"google_mdm_adapter_0!b972ea8dea373006993d\",\"type\":\"entitydata\"},\"internal_axon_id\":\"e1d52c525cfd6f40fd1996afe15a0098\",\"adapters\":[\"google_mdm_adapter\"],\"adapter_list_length\":1}"
+    },
+    {
+      "message": "{\"asset_type\":\"application_addon_instances\",\"event\":{\"accurate_for_datetime\":\"Tue, 26 May 2026 00:18:21 GMT\",\"action_if_exists\":\"update\",\"associated_adapters\":[],\"association_type\":\"Tag\",\"data\":{\"user_count\":1,\"user_count_link\":[{\"bracketWeight\":0,\"compOp\":\"equals\",\"field\":\"specific_data.data.mail\",\"leftBracket\":0,\"logicOp\":\"\",\"not\":false,\"rightBracket\":0,\"value\":\"fsevea.mcxondl@abui.local\"}]},\"entity\":\"user_extensions\",\"hidden_for_gui\":true,\"name\":\"static_analysis_0_UserCountSchema\",\"plugin_name\":\"static_analysis\",\"plugin_unique_name\":\"static_analysis_0_UserCountSchema\",\"type\":\"adapterdata\"},\"internal_axon_id\":\"e1d52c525cfd6f40fd1996afe15a0098\",\"adapters\":[\"google_mdm_adapter\"],\"adapter_list_length\":1}"
+    }
+  ],
+  "meta": {
+    "data_stream": "application",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-application-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,526 @@
+{
+  "expected": [
+    {
+      "cloud": {
+        "account": {
+          "id": "Non-onboarded cloud accounts"
+        },
+        "instance": {
+          "id": "ngppyt",
+          "name": "ngppyt"
+        },
+        "machine": {
+          "type": "ngppyt"
+        },
+        "provider": [
+          "aws"
+        ],
+        "region": "ngppyt"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "id": "FESZXHU-0YSRDKO",
+        "kind": "event",
+        "original": "{\"_id\":\"FESZXHU-0YSRDKO\",\"binaries\":[{\"altered\":true,\"cveCount\":0,\"deps\":[\"ngppyt\"],\"fileMode\":0,\"functionLayer\":\"ngppyt\",\"md5\":\"ngppyt\",\"missingPkg\":true,\"name\":\"ngppyt\",\"path\":\"ngppyt\",\"pkgRootDir\":\"ngppyt\",\"services\":[\"ngppyt\"],\"version\":\"ngppyt\"}],\"startupBinaries\":[{\"altered\":true,\"cveCount\":0,\"deps\":[\"ngppyt\"],\"fileMode\":0,\"functionLayer\":\"ngppyt\",\"md5\":\"ngppyt\",\"missingPkg\":true,\"name\":\"ngppyt\",\"path\":\"ngppyt\",\"pkgRootDir\":\"ngppyt\",\"services\":[\"ngppyt\"],\"version\":\"ngppyt\"}],\"cloudMetadata\":{\"accountID\":\"Non-onboarded cloud accounts\",\"awsExecutionEnv\":\"ngppyt\",\"image\":\"ngppyt\",\"labels\":[{\"key\":\"ngppyt\",\"sourceName\":\"ngppyt\",\"sourceType\":[\"namespace\",\"deployment\",\"aws\",\"azure\",\"gcp\",\"oci\"],\"timestamp\":\"2051-09-08T04:01:49.949Z\",\"value\":\"ngppyt\"}],\"name\":\"ngppyt\",\"provider\":[\"aws\"],\"region\":\"ngppyt\",\"resourceID\":\"ngppyt\",\"resourceURL\":\"ngppyt\",\"type\":\"ngppyt\",\"vmID\":\"ngppyt\",\"vmImageID\":\"ngppyt\"},\"type\":\"host\",\"hostname\":\"FESZXHU-0YSRDKO\",\"scanTime\":\"2051-08-23T11:48:41.803Z\",\"Secrets\":[],\"osDistro\":\"windows\",\"osDistroVersion\":\"ngppyt\",\"osDistroRelease\":\"Windows\",\"distro\":\"Microsoft Windows [Version 10.0.19045.2006]\",\"packageManager\":true,\"packages\":[{\"pkgs\":[{\"binaryIdx\":[0],\"binaryPkgs\":[\"ngppyt\"],\"cveCount\":0,\"defaultGem\":true,\"files\":[{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"sha1\":\"ngppyt\",\"sha256\":\"ngppyt\"}],\"functionLayer\":\"ngppyt\",\"goPkg\":true,\"jarIdentifier\":\"ngppyt\",\"layerTime\":0,\"license\":\"ngppyt\",\"name\":\"ngppyt\",\"osPackage\":true,\"path\":\"ngppyt\",\"version\":\"ngppyt\"}],\"pkgsType\":\"nodejs\"}],\"isARM64\":false,\"packageCorrelationDone\":true,\"redHatNonRPMImage\":false,\"image\":{\"created\":\"0001-01-01T00:00:00Z\",\"entrypoint\":[\"ngppyt\"],\"env\":[\"ngppyt\"],\"healthcheck\":true,\"history\":[{\"baseLayer\":true,\"created\":0,\"emptyLayer\":true,\"id\":\"ngppyt\",\"instruction\":\"ngppyt\",\"sizeBytes\":0,\"tags\":[\"ngppyt\"],\"vulnerabilities\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.950Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}]}],\"id\":\"ngppyt\",\"labels\":{},\"layers\":[\"ngppyt\"],\"os\":\"ngppyt\",\"repoDigest\":[\"ngppyt\"],\"repoTags\":[\"ngppyt\"],\"user\":\"ngppyt\",\"workingDir\":\"ngppyt\"},\"allCompliance\":{\"compliance\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.949Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]},{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}],\"enabled\":\"true\"},\"clusters\":[\"ngppyt\"],\"repoTag\":null,\"tags\":[{\"digest\":\"ngppyt\",\"id\":\"ngppyt\",\"registry\":\"ngppyt\",\"repo\":\"ngppyt\",\"tag\":\"ngppyt\"}],\"trustResult\":{\"groups\":[{\"_id\":\"ngppyt\",\"disabled\":true,\"images\":[\"ngppyt\"],\"layers\":[\"ngppyt\"],\"modified\":\"2051-09-08T04:01:49.951Z\",\"name\":\"ngppyt\",\"notes\":\"ngppyt\",\"owner\":\"ngppyt\",\"previousName\":\"ngppyt\"}],\"hostsStatuses\":[{\"host\":\"ngppyt\",\"status\":\"trusted\"}]},\"repoDigests\":[],\"creationTime\":\"0001-01-01T00:00:00Z\",\"pushTime\":\"0001-01-01T00:00:00Z\",\"vulnerabilities\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.951Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}],\"vulnerabilitiesCount\":0,\"complianceIssues\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":\"5.2\",\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.949Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}],\"complianceIssuesCount\":4,\"vulnerabilityDistribution\":{\"critical\":0,\"high\":0,\"medium\":0,\"low\":0,\"total\":0},\"complianceDistribution\":{\"critical\":4,\"high\":0,\"medium\":0,\"low\":0,\"total\":4},\"vulnerabilityRiskScore\":0,\"complianceRiskScore\":4000000,\"riskFactors\":{},\"installedProducts\":{\"agentless\":true,\"apache\":\"ngppyt\",\"awsCloud\":true,\"clusterType\":[\"AKS\",\"ECS\",\"EKS\",\"GKE\",\"Kubernetes\"],\"crio\":true,\"docker\":\"ngppyt\",\"dockerEnterprise\":true,\"hasPackageManager\":true,\"k8sApiServer\":true,\"k8sControllerManager\":true,\"k8sEtcd\":true,\"k8sFederationApiServer\":true,\"k8sFederationControllerManager\":true,\"k8sKubelet\":true,\"k8sProxy\":true,\"k8sScheduler\":true,\"kubernetes\":\"ngppyt\",\"managedClusterVersion\":\"ngppyt\",\"openshift\":true,\"openshiftVersion\":\"ngppyt\",\"osDistro\":\"Windows\",\"serverless\":true,\"swarmManager\":true,\"swarmNode\":true},\"firstScanTime\":\"2051-08-11T06:53:57.456Z\",\"history\":[{\"baseLayer\":true,\"created\":0,\"emptyLayer\":true,\"id\":\"ngppyt\",\"instruction\":\"ngppyt\",\"sizeBytes\":0,\"tags\":[\"ngppyt\"],\"vulnerabilities\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.950Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\"],[\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}]}],\"hostDevices\":[{\"ip\":\"0.0.0.0\",\"name\":\"ngppyt\"}],\"hosts\":{},\"id\":\"ngppyt\",\"err\":\"\",\"collections\":[\"All\"],\"instances\":[{\"host\":\"ngppyt\",\"image\":\"ngppyt\",\"modified\":\"2051-09-08T04:01:49.951Z\",\"registry\":\"ngppyt\",\"repo\":\"ngppyt\",\"tag\":\"ngppyt\"}],\"scanID\":0,\"trustStatus\":\"\",\"externalLabels\":[{\"key\":\"ngppyt\",\"sourceName\":\"ngppyt\",\"sourceType\":[\"namespace\",\"deployment\",\"aws\",\"azure\",\"gcp\",\"oci\"],\"timestamp\":\"2051-09-08T04:01:49.949Z\",\"value\":\"ngppyt\"}],\"files\":[{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"sha1\":\"ngppyt\",\"sha256\":\"ngppyt\"}],\"firewallProtection\":{\"enabled\":false,\"supported\":false,\"outOfBandMode\":\"Observation\",\"ports\":[0],\"tlsPorts\":[0],\"unprotectedProcesses\":[{\"port\":0,\"process\":\"ngppyt\",\"tls\":true}]},\"applications\":[{\"installedFromPackage\":true,\"knownVulnerabilities\":0,\"layerTime\":0,\"name\":\"ngppyt\",\"path\":\"ngppyt\",\"service\":true,\"version\":\"ngppyt\"}],\"appEmbedded\":false,\"wildFireUsage\":null,\"agentless\":false,\"malwareAnalyzedTime\":\"0001-01-01T00:00:00Z\"}",
+        "start": "0001-01-01T00:00:00.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "md5": [
+            "ngppyt"
+          ],
+          "sha1": [
+            "ngppyt"
+          ],
+          "sha256": [
+            "ngppyt"
+          ]
+        },
+        "path": [
+          "ngppyt"
+        ]
+      },
+      "group": {
+        "name": [
+          "ngppyt"
+        ]
+      },
+      "host": {
+        "hostname": "FESZXHU-0YSRDKO",
+        "ip": [
+          "0.0.0.0"
+        ],
+        "type": "host"
+      },
+      "os": {
+        "family": "windows",
+        "name": "Windows",
+        "version": "ngppyt"
+      },
+      "package": {
+        "license": [
+          "ngppyt"
+        ],
+        "name": [
+          "ngppyt"
+        ],
+        "path": [
+          "ngppyt"
+        ],
+        "type": [
+          "nodejs"
+        ],
+        "version": [
+          "ngppyt"
+        ]
+      },
+      "prisma_cloud": {
+        "host": {
+          "_id": "FESZXHU-0YSRDKO",
+          "agentless": false,
+          "all_compliance": {
+            "data": {
+              "cve": [
+                "ngppyt"
+              ]
+            },
+            "enabled": true
+          },
+          "app_embedded": false,
+          "applications": [
+            {
+              "installed_from_package": true,
+              "known_vulnerabilities": 0,
+              "layer_time": "1970-01-01T00:00:00.000Z",
+              "name": "ngppyt",
+              "path": "ngppyt",
+              "service": true,
+              "version": "ngppyt"
+            }
+          ],
+          "binaries": [
+            {
+              "altered": true,
+              "cve_count": 0,
+              "deps": [
+                "ngppyt"
+              ],
+              "file_mode": 0,
+              "function_layer": "ngppyt",
+              "md5": "ngppyt",
+              "missing_pkg": true,
+              "name": "ngppyt",
+              "path": "ngppyt",
+              "pkg_root_dir": "ngppyt",
+              "services": [
+                "ngppyt"
+              ],
+              "version": "ngppyt"
+            }
+          ],
+          "cloud_metadata": {
+            "account_id": "Non-onboarded cloud accounts",
+            "aws_execution_env": "ngppyt",
+            "image": "ngppyt",
+            "labels": [
+              {
+                "key": "ngppyt",
+                "source": {
+                  "name": "ngppyt",
+                  "type": [
+                    "namespace",
+                    "deployment",
+                    "aws",
+                    "azure",
+                    "gcp",
+                    "oci"
+                  ]
+                },
+                "timestamp": "2051-09-08T04:01:49.949Z",
+                "value": "ngppyt"
+              }
+            ],
+            "name": "ngppyt",
+            "provider": [
+              "aws"
+            ],
+            "region": "ngppyt",
+            "resource": {
+              "id": "ngppyt",
+              "url": "ngppyt"
+            },
+            "type": "ngppyt",
+            "vm": {
+              "id": "ngppyt",
+              "image_id": "ngppyt"
+            }
+          },
+          "clusters": [
+            "ngppyt"
+          ],
+          "collections": [
+            "All"
+          ],
+          "compliance_distribution": {
+            "critical": 4,
+            "high": 0,
+            "low": 0,
+            "medium": 0,
+            "total": 4
+          },
+          "compliance_issues": {
+            "count": 4,
+            "data": {
+              "cve": [
+                "ngppyt"
+              ]
+            }
+          },
+          "compliance_risk_score": 4000000.0,
+          "creation_time": "0001-01-01T00:00:00.000Z",
+          "devices": [
+            {
+              "ip": "0.0.0.0",
+              "name": "ngppyt"
+            }
+          ],
+          "distro": "Microsoft Windows [Version 10.0.19045.2006]",
+          "external_labels": [
+            {
+              "key": "ngppyt",
+              "source": {
+                "name": "ngppyt",
+                "type": [
+                  "namespace",
+                  "deployment",
+                  "aws",
+                  "azure",
+                  "gcp",
+                  "oci"
+                ]
+              },
+              "timestamp": "2051-09-08T04:01:49.949Z",
+              "value": "ngppyt"
+            }
+          ],
+          "files": [
+            {
+              "md5": "ngppyt",
+              "path": "ngppyt",
+              "sha1": "ngppyt",
+              "sha256": "ngppyt"
+            }
+          ],
+          "firewall_protection": {
+            "enabled": false,
+            "out_of_band_mode": "Observation",
+            "ports": [
+              0
+            ],
+            "supported": false,
+            "tls_ports": [
+              0
+            ],
+            "unprotected_processes": [
+              {
+                "port": 0,
+                "process": "ngppyt",
+                "tls": true
+              }
+            ]
+          },
+          "first_scan_time": "2051-08-11T06:53:57.456Z",
+          "history": [
+            {
+              "base_layer": true,
+              "created": "1970-01-01T00:00:00.000Z",
+              "empty_layer": true,
+              "id": "ngppyt",
+              "instruction": "ngppyt",
+              "size_bytes": 0,
+              "tags": [
+                "ngppyt"
+              ],
+              "vulnerabilities": {
+                "cve": [
+                  "ngppyt"
+                ]
+              }
+            }
+          ],
+          "hostname": "FESZXHU-0YSRDKO",
+          "id": "ngppyt",
+          "image": {
+            "created": "0001-01-01T00:00:00.000Z",
+            "entrypoint": [
+              "ngppyt"
+            ],
+            "env": [
+              "ngppyt"
+            ],
+            "healthcheck": true,
+            "history": [
+              {
+                "base_layer": true,
+                "created": "1970-01-01T00:00:00.000Z",
+                "empty_layer": true,
+                "id": "ngppyt",
+                "instruction": "ngppyt",
+                "size_bytes": 0,
+                "tags": [
+                  "ngppyt"
+                ],
+                "vulnerabilities": {
+                  "cve": [
+                    "ngppyt"
+                  ]
+                }
+              }
+            ],
+            "id": "ngppyt",
+            "layers": [
+              "ngppyt"
+            ],
+            "os": "ngppyt",
+            "repo": {
+              "digest": [
+                "ngppyt"
+              ],
+              "tags": [
+                "ngppyt"
+              ]
+            },
+            "user": "ngppyt",
+            "working_dir": "ngppyt"
+          },
+          "installed_products": {
+            "agentless": true,
+            "apache": "ngppyt",
+            "aws_cloud": true,
+            "cluster_type": [
+              "AKS",
+              "ECS",
+              "EKS",
+              "GKE",
+              "Kubernetes"
+            ],
+            "crio": true,
+            "docker": "ngppyt",
+            "docker_enterprise": true,
+            "has_package_manager": true,
+            "k8s_api_server": true,
+            "k8s_controller_manager": true,
+            "k8s_etcd": true,
+            "k8s_federation_api_server": true,
+            "k8s_federation_controller_manager": true,
+            "k8s_kubelet": true,
+            "k8s_proxy": true,
+            "k8s_scheduler": true,
+            "kubernetes": "ngppyt",
+            "managed_cluster_version": "ngppyt",
+            "openshift": true,
+            "openshift_version": "ngppyt",
+            "os_distro": "Windows",
+            "serverless": true,
+            "swarm": {
+              "manager": true,
+              "node": true
+            }
+          },
+          "instances": [
+            {
+              "host": "ngppyt",
+              "image": "ngppyt",
+              "modified": "2051-09-08T04:01:49.951Z",
+              "registry": "ngppyt",
+              "repo": "ngppyt",
+              "tag": "ngppyt"
+            }
+          ],
+          "is_arm64": false,
+          "malware_analyzed_time": "0001-01-01T00:00:00.000Z",
+          "os_distro": {
+            "release": "Windows",
+            "value": "windows",
+            "version": "ngppyt"
+          },
+          "package": {
+            "correlation_done": true,
+            "manager": true
+          },
+          "packages": [
+            {
+              "pkgs": [
+                {
+                  "binary_idx": [
+                    0
+                  ],
+                  "binary_pkgs": [
+                    "ngppyt"
+                  ],
+                  "cve_count": 0,
+                  "default_gem": true,
+                  "files": [
+                    {
+                      "md5": "ngppyt",
+                      "path": "ngppyt",
+                      "sha1": "ngppyt",
+                      "sha256": "ngppyt"
+                    }
+                  ],
+                  "function_layer": "ngppyt",
+                  "go_pkg": true,
+                  "jar_identifier": "ngppyt",
+                  "layer_time": "1970-01-01T00:00:00.000Z",
+                  "license": "ngppyt",
+                  "name": "ngppyt",
+                  "os_package": true,
+                  "path": "ngppyt",
+                  "version": "ngppyt"
+                }
+              ],
+              "pkgs_type": "nodejs"
+            }
+          ],
+          "push_time": "0001-01-01T00:00:00.000Z",
+          "red_hat_non_rpm_image": false,
+          "scan": {
+            "time": "2051-08-23T11:48:41.803Z"
+          },
+          "startup_binaries": [
+            {
+              "altered": true,
+              "cve_count": 0,
+              "deps": [
+                "ngppyt"
+              ],
+              "file_mode": 0,
+              "function_layer": "ngppyt",
+              "md5": "ngppyt",
+              "missing_pkg": true,
+              "name": "ngppyt",
+              "path": "ngppyt",
+              "pkg_root_dir": "ngppyt",
+              "services": [
+                "ngppyt"
+              ],
+              "version": "ngppyt"
+            }
+          ],
+          "tags": [
+            {
+              "digest": "ngppyt",
+              "id": "ngppyt",
+              "registry": "ngppyt",
+              "repo": "ngppyt",
+              "tag": "ngppyt"
+            }
+          ],
+          "trust_result": {
+            "groups": [
+              {
+                "_id": "ngppyt",
+                "disabled": true,
+                "images": [
+                  "ngppyt"
+                ],
+                "layers": [
+                  "ngppyt"
+                ],
+                "modified": "2051-09-08T04:01:49.951Z",
+                "name": "ngppyt",
+                "notes": "ngppyt",
+                "owner": "ngppyt",
+                "previous_name": "ngppyt"
+              }
+            ],
+            "hosts_statuses": [
+              {
+                "host": "ngppyt",
+                "status": "trusted"
+              }
+            ]
+          },
+          "type": "host",
+          "vulnerabilities": {
+            "count": 0,
+            "data": {
+              "cve": [
+                "ngppyt"
+              ]
+            }
+          },
+          "vulnerability": {
+            "distribution": {
+              "critical": 0,
+              "high": 0,
+              "low": 0,
+              "medium": 0,
+              "total": 0
+            },
+            "risk_score": 0
+          }
+        }
+      },
+      "related": {
+        "hash": [
+          "ngppyt"
+        ],
+        "hosts": [
+          "ngppyt",
+          "FESZXHU-0YSRDKO"
+        ],
+        "ip": [
+          "0.0.0.0"
+        ]
+      },
+      "rule": {
+        "author": [
+          "ngppyt"
+        ],
+        "name": [
+          "ngppyt"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "vulnerability": {
+        "id": [
+          "ngppyt"
+        ],
+        "severity": [
+          "ngppyt"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"_id\":\"FESZXHU-0YSRDKO\",\"binaries\":[{\"altered\":true,\"cveCount\":0,\"deps\":[\"ngppyt\"],\"fileMode\":0,\"functionLayer\":\"ngppyt\",\"md5\":\"ngppyt\",\"missingPkg\":true,\"name\":\"ngppyt\",\"path\":\"ngppyt\",\"pkgRootDir\":\"ngppyt\",\"services\":[\"ngppyt\"],\"version\":\"ngppyt\"}],\"startupBinaries\":[{\"altered\":true,\"cveCount\":0,\"deps\":[\"ngppyt\"],\"fileMode\":0,\"functionLayer\":\"ngppyt\",\"md5\":\"ngppyt\",\"missingPkg\":true,\"name\":\"ngppyt\",\"path\":\"ngppyt\",\"pkgRootDir\":\"ngppyt\",\"services\":[\"ngppyt\"],\"version\":\"ngppyt\"}],\"cloudMetadata\":{\"accountID\":\"Non-onboarded cloud accounts\",\"awsExecutionEnv\":\"ngppyt\",\"image\":\"ngppyt\",\"labels\":[{\"key\":\"ngppyt\",\"sourceName\":\"ngppyt\",\"sourceType\":[\"namespace\",\"deployment\",\"aws\",\"azure\",\"gcp\",\"oci\"],\"timestamp\":\"2051-09-08T04:01:49.949Z\",\"value\":\"ngppyt\"}],\"name\":\"ngppyt\",\"provider\":[\"aws\"],\"region\":\"ngppyt\",\"resourceID\":\"ngppyt\",\"resourceURL\":\"ngppyt\",\"type\":\"ngppyt\",\"vmID\":\"ngppyt\",\"vmImageID\":\"ngppyt\"},\"type\":\"host\",\"hostname\":\"FESZXHU-0YSRDKO\",\"scanTime\":\"2051-08-23T11:48:41.803Z\",\"Secrets\":[],\"osDistro\":\"windows\",\"osDistroVersion\":\"ngppyt\",\"osDistroRelease\":\"Windows\",\"distro\":\"Microsoft Windows [Version 10.0.19045.2006]\",\"packageManager\":true,\"packages\":[{\"pkgs\":[{\"binaryIdx\":[0],\"binaryPkgs\":[\"ngppyt\"],\"cveCount\":0,\"defaultGem\":true,\"files\":[{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"sha1\":\"ngppyt\",\"sha256\":\"ngppyt\"}],\"functionLayer\":\"ngppyt\",\"goPkg\":true,\"jarIdentifier\":\"ngppyt\",\"layerTime\":0,\"license\":\"ngppyt\",\"name\":\"ngppyt\",\"osPackage\":true,\"path\":\"ngppyt\",\"version\":\"ngppyt\"}],\"pkgsType\":\"nodejs\"}],\"isARM64\":false,\"packageCorrelationDone\":true,\"redHatNonRPMImage\":false,\"image\":{\"created\":\"0001-01-01T00:00:00Z\",\"entrypoint\":[\"ngppyt\"],\"env\":[\"ngppyt\"],\"healthcheck\":true,\"history\":[{\"baseLayer\":true,\"created\":0,\"emptyLayer\":true,\"id\":\"ngppyt\",\"instruction\":\"ngppyt\",\"sizeBytes\":0,\"tags\":[\"ngppyt\"],\"vulnerabilities\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.950Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}]}],\"id\":\"ngppyt\",\"labels\":{},\"layers\":[\"ngppyt\"],\"os\":\"ngppyt\",\"repoDigest\":[\"ngppyt\"],\"repoTags\":[\"ngppyt\"],\"user\":\"ngppyt\",\"workingDir\":\"ngppyt\"},\"allCompliance\":{\"compliance\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.949Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]},{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}],\"enabled\":\"true\"},\"clusters\":[\"ngppyt\"],\"repoTag\":null,\"tags\":[{\"digest\":\"ngppyt\",\"id\":\"ngppyt\",\"registry\":\"ngppyt\",\"repo\":\"ngppyt\",\"tag\":\"ngppyt\"}],\"trustResult\":{\"groups\":[{\"_id\":\"ngppyt\",\"disabled\":true,\"images\":[\"ngppyt\"],\"layers\":[\"ngppyt\"],\"modified\":\"2051-09-08T04:01:49.951Z\",\"name\":\"ngppyt\",\"notes\":\"ngppyt\",\"owner\":\"ngppyt\",\"previousName\":\"ngppyt\"}],\"hostsStatuses\":[{\"host\":\"ngppyt\",\"status\":\"trusted\"}]},\"repoDigests\":[],\"creationTime\":\"0001-01-01T00:00:00Z\",\"pushTime\":\"0001-01-01T00:00:00Z\",\"vulnerabilities\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.951Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}],\"vulnerabilitiesCount\":0,\"complianceIssues\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":\"5.2\",\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.949Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[\"PCI\",\"HIPAA\",\"NIST SP 800-190\",\"GDPR\",\"DISA STIG\"],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}],\"complianceIssuesCount\":4,\"vulnerabilityDistribution\":{\"critical\":0,\"high\":0,\"medium\":0,\"low\":0,\"total\":0},\"complianceDistribution\":{\"critical\":4,\"high\":0,\"medium\":0,\"low\":0,\"total\":4},\"vulnerabilityRiskScore\":0,\"complianceRiskScore\":4000000,\"riskFactors\":{},\"installedProducts\":{\"agentless\":true,\"apache\":\"ngppyt\",\"awsCloud\":true,\"clusterType\":[\"AKS\",\"ECS\",\"EKS\",\"GKE\",\"Kubernetes\"],\"crio\":true,\"docker\":\"ngppyt\",\"dockerEnterprise\":true,\"hasPackageManager\":true,\"k8sApiServer\":true,\"k8sControllerManager\":true,\"k8sEtcd\":true,\"k8sFederationApiServer\":true,\"k8sFederationControllerManager\":true,\"k8sKubelet\":true,\"k8sProxy\":true,\"k8sScheduler\":true,\"kubernetes\":\"ngppyt\",\"managedClusterVersion\":\"ngppyt\",\"openshift\":true,\"openshiftVersion\":\"ngppyt\",\"osDistro\":\"Windows\",\"serverless\":true,\"swarmManager\":true,\"swarmNode\":true},\"firstScanTime\":\"2051-08-11T06:53:57.456Z\",\"history\":[{\"baseLayer\":true,\"created\":0,\"emptyLayer\":true,\"id\":\"ngppyt\",\"instruction\":\"ngppyt\",\"sizeBytes\":0,\"tags\":[\"ngppyt\"],\"vulnerabilities\":[{\"applicableRules\":[\"ngppyt\"],\"binaryPkgs\":[\"ngppyt\"],\"block\":true,\"cause\":\"ngppyt\",\"cri\":true,\"custom\":true,\"cve\":\"ngppyt\",\"cvss\":0,\"description\":\"ngppyt\",\"discovered\":\"2051-09-08T04:01:49.950Z\",\"exploit\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"],\"exploits\":[{\"kind\":[\"poc\",\"in-the-wild\"],\"link\":\"ngppyt\",\"source\":[\"\",\"exploit-db\",\"exploit-windows\",\"cisa-kev\"]}],\"fixDate\":0,\"fixLink\":\"ngppyt\",\"functionLayer\":\"ngppyt\",\"gracePeriodDays\":0,\"id\":0,\"layerTime\":0,\"link\":\"ngppyt\",\"packageName\":\"ngppyt\",\"packageVersion\":\"ngppyt\",\"published\":0,\"riskFactors\":{},\"severity\":\"ngppyt\",\"status\":\"ngppyt\",\"templates\":[[\"PCI\",\"HIPAA\",\"NIST SP 800-190\"],[\"GDPR\",\"DISA STIG\"]],\"text\":\"ngppyt\",\"title\":\"ngppyt\",\"twistlock\":true,\"type\":[\"container\",\"image\",\"host_config\",\"daemon_config\",\"daemon_config_files\",\"security_operations\",\"k8s_master\",\"k8s_worker\",\"k8s_federation\",\"linux\",\"windows\",\"istio\",\"serverless\",\"custom\",\"docker_stig\",\"openshift_master\",\"openshift_worker\",\"application_control_linux\",\"gke_worker\",\"image_malware\",\"host_malware\"],\"vecStr\":\"ngppyt\",\"vulnTagInfos\":[{\"color\":\"ngppyt\",\"comment\":\"ngppyt\",\"name\":\"ngppyt\"}],\"wildfireMalware\":{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"verdict\":\"ngppyt\"}}]}],\"hostDevices\":[{\"ip\":\"0.0.0.0\",\"name\":\"ngppyt\"}],\"hosts\":{},\"id\":\"ngppyt\",\"err\":\"\",\"collections\":[\"All\"],\"instances\":[{\"host\":\"ngppyt\",\"image\":\"ngppyt\",\"modified\":\"2051-09-08T04:01:49.951Z\",\"registry\":\"ngppyt\",\"repo\":\"ngppyt\",\"tag\":\"ngppyt\"}],\"scanID\":0,\"trustStatus\":\"\",\"externalLabels\":[{\"key\":\"ngppyt\",\"sourceName\":\"ngppyt\",\"sourceType\":[\"namespace\",\"deployment\",\"aws\",\"azure\",\"gcp\",\"oci\"],\"timestamp\":\"2051-09-08T04:01:49.949Z\",\"value\":\"ngppyt\"}],\"files\":[{\"md5\":\"ngppyt\",\"path\":\"ngppyt\",\"sha1\":\"ngppyt\",\"sha256\":\"ngppyt\"}],\"firewallProtection\":{\"enabled\":false,\"supported\":false,\"outOfBandMode\":\"Observation\",\"ports\":[0],\"tlsPorts\":[0],\"unprotectedProcesses\":[{\"port\":0,\"process\":\"ngppyt\",\"tls\":true}]},\"applications\":[{\"installedFromPackage\":true,\"knownVulnerabilities\":0,\"layerTime\":0,\"name\":\"ngppyt\",\"path\":\"ngppyt\",\"service\":true,\"version\":\"ngppyt\"}],\"appEmbedded\":false,\"wildFireUsage\":null,\"agentless\":false,\"malwareAnalyzedTime\":\"0001-01-01T00:00:00Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "host",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-prisma_cloud-host-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "prisma_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "expected": [
+    {
+      "destination": {
+        "address": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "ip": "2001:db8:5bff:23b8:b0b2:237:3d1:721c",
+        "mac": "CD-DA-CF-ED-DF-DB"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "blocked",
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 1,
+        "end": "2048-01-30T07:48:18.000Z",
+        "kind": "event",
+        "original": "exampleHostname,Local Host IP: fe80::1.1.1.1,Local Port: 143,Local Host MAC: aa.bb.cc.dd.ee.ff,Remote Host IP: 2001:db8:5bff:23b8:b0b2:237:3d1:721c,Remote Host Name: ,Remote Port: 0,Remote Host MAC: cd:da:cf:ed:df:db,OTHERS,Outbound,Begin: 2048-01-30 07:48:18,End Time: 2048-01-30 07:48:18,Occurrences: 1,Application: C:/WINDOWS/system32/NTOSKRNL.EXE,Rule: Drop all IPv4,Location: Default,User Name: _originUser,Domain Name: _domainOrigin,Action: Blocked,SHA-256: 5379732000000000000000000000000000000000000000000000000000000000,MD-5: 53797320000000000000000000000000",
+        "provider": "Agent Traffic Log",
+        "start": "2048-01-30T07:48:18.000Z",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "exampleHostname",
+        "ip": [
+          "fe80::1.1.1.1"
+        ],
+        "mac": [
+          "AA-BB-CC-DD-EE-FF"
+        ],
+        "name": "exampleHostname"
+      },
+      "network": {
+        "direction": "egress",
+        "transport": "others",
+        "type": "ipv6"
+      },
+      "process": {
+        "executable": "C:/WINDOWS/system32/NTOSKRNL.EXE",
+        "hash": {
+          "md5": "53797320000000000000000000000000",
+          "sha256": "5379732000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "related": {
+        "hash": [
+          "53797320000000000000000000000000",
+          "5379732000000000000000000000000000000000000000000000000000000000"
+        ],
+        "ip": [
+          "fe80::1.1.1.1",
+          "2001:db8:5bff:23b8:b0b2:237:3d1:721c"
+        ]
+      },
+      "rule": {
+        "name": "Drop all IPv4"
+      },
+      "source": {
+        "address": "fe80::1.1.1.1",
+        "geo": {
+          "name": "Default"
+        },
+        "ip": "fe80::1.1.1.1",
+        "mac": "AA-BB-CC-DD-EE-FF",
+        "port": 143
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "_domainOrigin",
+        "name": "_originUser"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "blocked",
+        "category": [
+          "intrusion_detection",
+          "process"
+        ],
+        "end": "2048-11-12T09:22:22.000Z",
+        "kind": "event",
+        "original": "exampleserver,192.0.2.22,Blocked,[AC15-1.1] Prevent registration of new Browser Helper Objects - Registry Value=0x1 - Caller MD5=e37e74b0d162f1400422ecfa4cdf6321,Registry Write,Begin: 2048-11-12 09:22:22,End Time: 2048-11-12 09:22:22,Rule: Prevent registration of new Browser Helper Objects | [AC15-1.1] Prevent registration of new Browser Helper Objects,16464,C:/Windows/SysWOW64/msiexec.exe,0,No Module Name,/REGISTRY/MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/Browser Helper Objects/{E0861FE7-BFC7-4051-9805-129B0EA9A686}/NoExplorer,User Name: SYSTEM,Domain Name: SMPL,Action Type: ,File size (bytes): 0,Device ID:",
+        "provider": "Agent Behavior Log",
+        "start": "2048-11-12T09:22:22.000Z",
+        "type": [
+          "denied"
+        ]
+      },
+      "file": {
+        "size": 0
+      },
+      "host": {
+        "hostname": "exampleserver",
+        "ip": [
+          "192.0.2.22"
+        ],
+        "name": "exampleserver"
+      },
+      "message": "[AC15-1.1] Prevent registration of new Browser Helper Objects - Registry Value=0x1 - Caller MD5=e37e74b0d162f1400422ecfa4cdf6321",
+      "network": {
+        "type": "ipv4"
+      },
+      "process": {
+        "executable": "C:/Windows/SysWOW64/msiexec.exe",
+        "hash": {
+          "md5": "e37e74b0d162f1400422ecfa4cdf6321"
+        },
+        "pid": 16464
+      },
+      "related": {
+        "hash": [
+          "e37e74b0d162f1400422ecfa4cdf6321"
+        ],
+        "ip": [
+          "192.0.2.22"
+        ]
+      },
+      "rule": {
+        "name": "Prevent registration of new Browser Helper Objects | [AC15-1.1] Prevent registration of new Browser Helper Objects"
+      },
+      "source": {
+        "address": "192.0.2.22",
+        "ip": "192.0.2.22"
+      },
+      "symantec_endpoint": {
+        "log": {
+          "api_name": "Registry Write",
+          "caller_return_address": "0",
+          "caller_return_module_name": "No Module Name",
+          "parameters": "/REGISTRY/MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/Browser Helper Objects/{E0861FE7-BFC7-4051-9805-129B0EA9A686}/NoExplorer"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "SMPL",
+        "name": "SYSTEM"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "remove_mapped_fields": true,
+        "tz_offset": "UTC"
+      },
+      "message": "exampleHostname,Local Host IP: fe80::1.1.1.1,Local Port: 143,Local Host MAC: aa.bb.cc.dd.ee.ff,Remote Host IP: 2001:db8:5bff:23b8:b0b2:237:3d1:721c,Remote Host Name: ,Remote Port: 0,Remote Host MAC: cd:da:cf:ed:df:db,OTHERS,Outbound,Begin: 2048-01-30 07:48:18,End Time: 2048-01-30 07:48:18,Occurrences: 1,Application: C:/WINDOWS/system32/NTOSKRNL.EXE,Rule: Drop all IPv4,Location: Default,User Name: _originUser,Domain Name: _domainOrigin,Action: Blocked,SHA-256: 5379732000000000000000000000000000000000000000000000000000000000,MD-5: 53797320000000000000000000000000",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "remove_mapped_fields": true,
+        "tz_offset": "UTC"
+      },
+      "message": "exampleserver,192.0.2.22,Blocked,[AC15-1.1] Prevent registration of new Browser Helper Objects - Registry Value=0x1 - Caller MD5=e37e74b0d162f1400422ecfa4cdf6321,Registry Write,Begin: 2048-11-12 09:22:22,End Time: 2048-11-12 09:22:22,Rule: Prevent registration of new Browser Helper Objects | [AC15-1.1] Prevent registration of new Browser Helper Objects,16464,C:/Windows/SysWOW64/msiexec.exe,0,No Module Name,/REGISTRY/MACHINE/SOFTWARE/Microsoft/Windows/CurrentVersion/Explorer/Browser Helper Objects/{E0861FE7-BFC7-4051-9805-129B0EA9A686}/NoExplorer,User Name: SYSTEM,Domain Name: SMPL,Action Type: ,File size (bytes): 0,Device ID:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

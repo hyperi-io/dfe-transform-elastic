@@ -1,0 +1,58 @@
+{
+    "events": [
+        {
+            "cloud.region": "us-east-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-2:123456:deliverystream/firehose-apigateway-logs-to-elastic",
+            "data_stream.namespace": "default",
+            "aws.firehose.subscription_filters": "[apigateway-to-firehose]",
+            "message": "{\"requestId\":\"GQIVriFLIAMEMsA=\",\"ip\":\"192.0.2.134\",\"requestTime\":\"09/Jun/2051:12:54:08 +0000\",\"httpMethod\":\"GET\",\"routeKey\":\"GET /\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"47140\"}",
+            "aws.kinesis.type": "deliverystream",
+            "data_stream.type": "logs",
+            "aws.firehose.request_id": "606eb21f-a644-4a4a-b292-68b0fb272a63",
+            "aws.cloudwatch.log_stream": "6am6mj7iqf_.default-2051-07-25-21-04",
+            "cloud.provider": "aws",
+            "@timestamp": "2051-07-25T21:04:35Z",
+            "cloud.account.id": "123456",
+            "data_stream.dataset": "awsfirehose",
+            "aws.kinesis.name": "firehose-apigateway-logs-to-elastic",
+            "event.id": "37670326805251200781477669690942747782212394134076063744",
+            "aws.cloudwatch.log_group": "aws/api-gateway/test-HTTP"
+        },
+        {
+            "cloud.region": "us-east-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-2:123456:deliverystream/firehose-apigateway-logs-to-elastic",
+            "data_stream.namespace": "default",
+            "aws.firehose.subscription_filters": "[apigateway-to-firehose]",
+            "message": "{\"requestId\":\"Iq9gjE_aIAMFZTg=\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"26/Jul/2051:12:20:44 +0000\",\"eventType\":\"CONNECT\",\"routeKey\":\"$connect\",\"status\":\"500\",\"connectionId\":\"Iq8gj1UmIAMCKpA=\",\"apiId\":\"z1ctxygne5\",\"stage\":\"production\",\"domainName\":\"z1ctxygne5.execute-api.us-east-1.amazonaws.com\"}",
+            "aws.kinesis.type": "deliverystream",
+            "data_stream.type": "logs",
+            "aws.firehose.request_id": "606eb21f-a644-4a4a-b292-68b0fb272a63",
+            "aws.cloudwatch.log_stream": "401dc5ca0f6b76c24c43fc13e09e36f2",
+            "cloud.provider": "aws",
+            "@timestamp": "2051-07-25T21:04:35Z",
+            "cloud.account.id": "123456",
+            "data_stream.dataset": "awsfirehose",
+            "aws.kinesis.name": "firehose-apigateway-logs-to-elastic",
+            "event.id": "37670326805251200781477669690942747782212394134076063744",
+            "aws.cloudwatch.log_group": "aws/api-gateway/test-websocket"
+        },
+        {
+            "cloud.region": "us-east-1",
+            "aws.firehose.arn": "arn:aws:firehose:us-east-2:123456:deliverystream/firehose-apigateway-logs-to-elastic",
+            "data_stream.namespace": "default",
+            "aws.firehose.subscription_filters": "[apigateway-to-firehose]",
+            "message": "{\"requestId\":\"18337f6c-d26b-4adf-a9d5-c1c8232d87a2\",\"ip\":\"192.0.2.134\",\"caller\":\"-\",\"user\":\"-\",\"requestTime\":\"10/Jun/2051:15:36:28 +0000\",\"httpMethod\":\"GET\",\"resourcePath\":\"/pets\",\"status\":\"200\",\"protocol\":\"HTTP/1.1\",\"responseLength\":\"184\"}",
+            "aws.kinesis.type": "deliverystream",
+            "data_stream.type": "logs",
+            "aws.firehose.request_id": "606eb21f-a644-4a4a-b292-68b0fb272a63",
+            "aws.cloudwatch.log_stream": "386caab23690586cf380171f719a9388",
+            "cloud.provider": "aws",
+            "@timestamp": "2051-07-25T21:04:35Z",
+            "cloud.account.id": "123456",
+            "data_stream.dataset": "awsfirehose",
+            "aws.kinesis.name": "firehose-apigateway-logs-to-elastic",
+            "event.id": "37670326805251200781477669690942747782212394134076063744",
+            "aws.cloudwatch.log_group": "aws/api-gateway/test-REST"
+        }
+    ]
+}

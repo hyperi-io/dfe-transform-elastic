@@ -1,0 +1,378 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2042-07-16T15:49:27.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::111122223333:user/TrqvDxc"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "additional_eventdata": "{LoginTo=https://console.aws.amazon.com/s3/, MobileVersion=No, MFAUsed=No}",
+          "console_login": {
+            "additional_eventdata": {
+              "login_to": "https://console.aws.amazon.com/s3/",
+              "mfa_used": false,
+              "mobile_version": false
+            }
+          },
+          "event_version": "1.05",
+          "flattened": {
+            "additional_eventdata": {
+              "LoginTo": "https://console.aws.amazon.com/s3/",
+              "MFAUsed": "No",
+              "MobileVersion": "No"
+            },
+            "response_elements": {
+              "ConsoleLogin": "Success"
+            }
+          },
+          "response_elements": "{ConsoleLogin=Success}",
+          "user_identity": {
+            "arn": "arn:aws:iam::111122223333:user/TrqvDxc",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "111122223333"
+        },
+        "region": "us-east-2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ConsoleLogin",
+        "category": [
+          "authentication"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "3fcfb182-98f8-4744-bd45-10aEXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"AIDACKCEVSQ6C2EXAMPLE\",\"arn\":\"arn:aws:iam::111122223333:user/TrqvDxc\",\"accountId\":\"111122223333\",\"userName\":\"TrqvDxc\"},\"eventTime\":\"2042-07-16T15:49:27Z\",\"eventSource\":\"signin.amazonaws.com\",\"eventName\":\"ConsoleLogin\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.144\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0\",\"requestParameters\":null,\"responseElements\":{\"ConsoleLogin\":\"Success\"},\"additionalEventData\":{\"MobileVersion\":\"No\",\"LoginTo\":\"https://console.aws.amazon.com/s3/\",\"MFAUsed\":\"No\"},\"eventID\":\"3fcfb182-98f8-4744-bd45-10aEXAMPLE\"}",
+        "outcome": "success",
+        "provider": "signin.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "arn:aws:iam::111122223333:user/TrqvDxc",
+          "TrqvDxc"
+        ],
+        "user": [
+          "AIDACKCEVSQ6C2EXAMPLE",
+          "TrqvDxc"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::111122223333:user/TrqvDxc"
+          ]
+        },
+        "id": "AIDACKCEVSQ6C2EXAMPLE",
+        "name": "TrqvDxc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "24.0"
+      }
+    },
+    {
+      "@timestamp": "2042-07-08T17:35:27.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::111122223333:user/ScsbFgc"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "additional_eventdata": "{LoginTo=https://console.aws.amazon.com/sns, MobileVersion=No, MFAUsed=No}",
+          "console_login": {
+            "additional_eventdata": {
+              "login_to": "https://console.aws.amazon.com/sns",
+              "mfa_used": false,
+              "mobile_version": false
+            }
+          },
+          "error_message": "Failed authentication",
+          "event_version": "1.05",
+          "flattened": {
+            "additional_eventdata": {
+              "LoginTo": "https://console.aws.amazon.com/sns",
+              "MFAUsed": "No",
+              "MobileVersion": "No"
+            },
+            "response_elements": {
+              "ConsoleLogin": "Failure"
+            }
+          },
+          "response_elements": "{ConsoleLogin=Failure}",
+          "user_identity": {
+            "arn": "arn:aws:iam::111122223333:user/ScsbFgc",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "111122223333"
+        },
+        "region": "us-east-2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ConsoleLogin",
+        "category": [
+          "authentication"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "11ea990b-4678-4bcd-8fbe-625EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"AIDACKCEVSQ6C2EXAMPLE\",\"arn\":\"arn:aws:iam::111122223333:user/ScsbFgc\",\"accountId\":\"111122223333\",\"userName\":\"ScsbFgc\"},\"eventTime\":\"2042-07-08T17:35:27Z\",\"eventSource\":\"signin.amazonaws.com\",\"eventName\":\"ConsoleLogin\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.144\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0\",\"errorMessage\":\"Failed authentication\",\"requestParameters\":null,\"responseElements\":{\"ConsoleLogin\":\"Failure\"},\"additionalEventData\":{\"MobileVersion\":\"No\",\"LoginTo\":\"https://console.aws.amazon.com/sns\",\"MFAUsed\":\"No\"},\"eventID\":\"11ea990b-4678-4bcd-8fbe-625EXAMPLE\"}",
+        "outcome": "failure",
+        "provider": "signin.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "ScsbFgc",
+          "arn:aws:iam::111122223333:user/ScsbFgc"
+        ],
+        "user": [
+          "AIDACKCEVSQ6C2EXAMPLE",
+          "ScsbFgc"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::111122223333:user/ScsbFgc"
+          ]
+        },
+        "id": "AIDACKCEVSQ6C2EXAMPLE",
+        "name": "ScsbFgc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "24.0"
+      }
+    },
+    {
+      "@timestamp": "2042-07-08T17:35:27.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::123456789012:assumed-role/IshbWuCeCmmzsfc/MySessionName"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "additional_eventdata": "{LoginTo=https://console.aws.amazon.com/sns, MobileVersion=No, MFAUsed=No}",
+          "console_login": {
+            "additional_eventdata": {
+              "login_to": "https://console.aws.amazon.com/sns",
+              "mfa_used": false,
+              "mobile_version": false
+            }
+          },
+          "error_message": "Failed authentication",
+          "event_version": "1.05",
+          "flattened": {
+            "additional_eventdata": {
+              "LoginTo": "https://console.aws.amazon.com/sns",
+              "MFAUsed": "No",
+              "MobileVersion": "No"
+            },
+            "response_elements": {
+              "ConsoleLogin": "Failure"
+            }
+          },
+          "response_elements": "{ConsoleLogin=Failure}",
+          "user_identity": {
+            "access_key_id": "AKIAIOSFODNN7EXAMPLE",
+            "arn": "arn:aws:sts::123456789012:assumed-role/IshbWuCeCmmzsfc/MySessionName",
+            "session_context": {
+              "mfa_authenticated": "false",
+              "session_issuer": {
+                "account_id": "123456789012",
+                "arn": "arn:aws:iam::123456789012:role/IshbWuCeCmmzsfc",
+                "principal_id": "AROAIDPPEZS35WEXAMPLE",
+                "type": "Role"
+              }
+            },
+            "type": "AssumedRole"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "123456789012"
+        },
+        "region": "us-east-2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ConsoleLogin",
+        "category": [
+          "authentication"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "11ea990b-4678-4bcd-8fbe-625EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"AROAIDPPEZS35WEXAMPLE:AssumedRoleSessionName\",\"arn\":\"arn:aws:sts::123456789012:assumed-role/IshbWuCeCmmzsfc/MySessionName\",\"accountId\":\"123456789012\",\"accessKeyId\":\"AKIAIOSFODNN7EXAMPLE\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"false\",\"creationDate\":\"20131102T010628Z\"},\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"AROAIDPPEZS35WEXAMPLE\",\"arn\":\"arn:aws:iam::123456789012:role/IshbWuCeCmmzsfc\",\"accountId\":\"123456789012\",\"userName\":\"IshbWuCeCmmzsfc\"}}},\"eventTime\":\"2042-07-08T17:35:27Z\",\"eventSource\":\"signin.amazonaws.com\",\"eventName\":\"ConsoleLogin\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.144\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0\",\"errorMessage\":\"Failed authentication\",\"requestParameters\":null,\"responseElements\":{\"ConsoleLogin\":\"Failure\"},\"additionalEventData\":{\"MobileVersion\":\"No\",\"LoginTo\":\"https://console.aws.amazon.com/sns\",\"MFAUsed\":\"No\"},\"eventID\":\"11ea990b-4678-4bcd-8fbe-625EXAMPLE\"}",
+        "outcome": "failure",
+        "provider": "signin.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "arn:aws:iam::123456789012:role/IshbWuCeCmmzsfc",
+          "arn:aws:sts::123456789012:assumed-role/IshbWuCeCmmzsfc/MySessionName",
+          "AKIAIOSFODNN7EXAMPLE",
+          "IshbWuCeCmmzsfc"
+        ],
+        "user": [
+          "MySessionName",
+          "AROAIDPPEZS35WEXAMPLE:AssumedRoleSessionName",
+          "IshbWuCeCmmzsfc"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::123456789012:assumed-role/IshbWuCeCmmzsfc/MySessionName"
+          ]
+        },
+        "id": "AROAIDPPEZS35WEXAMPLE:AssumedRoleSessionName",
+        "name": "IshbWuCeCmmzsfc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "24.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"AIDACKCEVSQ6C2EXAMPLE\",\"arn\":\"arn:aws:iam::111122223333:user/TrqvDxc\",\"accountId\":\"111122223333\",\"userName\":\"TrqvDxc\"},\"eventTime\":\"2042-07-16T15:49:27Z\",\"eventSource\":\"signin.amazonaws.com\",\"eventName\":\"ConsoleLogin\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.144\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0\",\"requestParameters\":null,\"responseElements\":{\"ConsoleLogin\":\"Success\"},\"additionalEventData\":{\"MobileVersion\":\"No\",\"LoginTo\":\"https://console.aws.amazon.com/s3/\",\"MFAUsed\":\"No\"},\"eventID\":\"3fcfb182-98f8-4744-bd45-10aEXAMPLE\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"AIDACKCEVSQ6C2EXAMPLE\",\"arn\":\"arn:aws:iam::111122223333:user/ScsbFgc\",\"accountId\":\"111122223333\",\"userName\":\"ScsbFgc\"},\"eventTime\":\"2042-07-08T17:35:27Z\",\"eventSource\":\"signin.amazonaws.com\",\"eventName\":\"ConsoleLogin\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.144\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0\",\"errorMessage\":\"Failed authentication\",\"requestParameters\":null,\"responseElements\":{\"ConsoleLogin\":\"Failure\"},\"additionalEventData\":{\"MobileVersion\":\"No\",\"LoginTo\":\"https://console.aws.amazon.com/sns\",\"MFAUsed\":\"No\"},\"eventID\":\"11ea990b-4678-4bcd-8fbe-625EXAMPLE\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"AROAIDPPEZS35WEXAMPLE:AssumedRoleSessionName\",\"arn\":\"arn:aws:sts::123456789012:assumed-role/IshbWuCeCmmzsfc/MySessionName\",\"accountId\":\"123456789012\",\"accessKeyId\":\"AKIAIOSFODNN7EXAMPLE\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"false\",\"creationDate\":\"20131102T010628Z\"},\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"AROAIDPPEZS35WEXAMPLE\",\"arn\":\"arn:aws:iam::123456789012:role/IshbWuCeCmmzsfc\",\"accountId\":\"123456789012\",\"userName\":\"IshbWuCeCmmzsfc\"}}},\"eventTime\":\"2042-07-08T17:35:27Z\",\"eventSource\":\"signin.amazonaws.com\",\"eventName\":\"ConsoleLogin\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.144\",\"userAgent\":\"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0\",\"errorMessage\":\"Failed authentication\",\"requestParameters\":null,\"responseElements\":{\"ConsoleLogin\":\"Failure\"},\"additionalEventData\":{\"MobileVersion\":\"No\",\"LoginTo\":\"https://console.aws.amazon.com/sns\",\"MFAUsed\":\"No\"},\"eventID\":\"11ea990b-4678-4bcd-8fbe-625EXAMPLE\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

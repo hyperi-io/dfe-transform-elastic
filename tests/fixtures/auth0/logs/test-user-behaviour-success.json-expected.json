@@ -1,0 +1,150 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-04T00:26:45.208Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "User/Behavioral - Success",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-04T00:26:45.208Z",
+            "description": "Your email was verified. You can continue using the application.",
+            "details": {
+              "body": {
+                "tenant": "dev-yoj8axza",
+                "ticket": "0Mv2ahpY1NemCgOEgqoILAsGGhc7mMNK"
+              },
+              "email": "glrrwsxyh1@gmail.com",
+              "query": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "Username-Password-Authentication",
+                "email": "glrrwsxyh1@gmail.com",
+                "includeEmailInRedirect": false,
+                "tenant": "dev-yoj8axza",
+                "user_id": "auth0|6183285d6e5071006a61f319"
+              },
+              "title": "Email Verification"
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Sent verification email",
+            "type_id": "sv"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "sent-verification-email",
+        "category": [
+          "authentication",
+          "iam"
+        ],
+        "id": "90020211104002646275334544781046043980552751708637233250",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|6183285d6e5071006a61f319",
+          "glrrwsxyh1",
+          "glrrwsxyh1@gmail.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "gmail.com",
+        "email": "glrrwsxyh1@gmail.com",
+        "id": "auth0|6183285d6e5071006a61f319",
+        "name": "glrrwsxyh1"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0) Gecko/20100101 Firefox/93.0",
+        "os": {
+          "full": "Mac OS X 10.15",
+          "name": "Mac OS X",
+          "version": "10.15"
+        },
+        "version": "93.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "data": {
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-04T00:26:45.208Z",
+          "description": "Your email was verified. You can continue using the application.",
+          "details": {
+            "body": {
+              "tenant": "dev-yoj8axza",
+              "ticket": "0Mv2ahpY1NemCgOEgqoILAsGGhc7mMNK"
+            },
+            "email": "glrrwsxyh1@gmail.com",
+            "query": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "Username-Password-Authentication",
+              "email": "glrrwsxyh1@gmail.com",
+              "idp_user_id": null,
+              "includeEmailInRedirect": false,
+              "resultUrl": null,
+              "tenant": "dev-yoj8axza",
+              "user_id": "auth0|6183285d6e5071006a61f319"
+            },
+            "title": "Email Verification"
+          },
+          "ip": "198.51.100.111",
+          "log_id": "90020211104002646275334544781046043980552751708637233250",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "sv",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0) Gecko/20100101 Firefox/93.0",
+          "user_id": "auth0|6183285d6e5071006a61f319",
+          "user_name": "glrrwsxyh1@gmail.com"
+        },
+        "log_id": "90020211104002646275334544781046043980552751708637233250"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auth0-logs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "auth0",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

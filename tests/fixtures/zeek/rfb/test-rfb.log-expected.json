@@ -1,0 +1,93 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2040-02-07T16:35:34.517Z",
+      "destination": {
+        "address": "192.168.26.209",
+        "ip": "192.168.26.209",
+        "port": 5900
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CXoIzM3wH3fUwXtKN1",
+        "kind": "event",
+        "original": "{\"ts\":2212245334.517208,\"uid\":\"CXoIzM3wH3fUwXtKN1\",\"id.orig_h\":\"192.168.35.82\",\"id.orig_p\":58102,\"id.resp_h\":\"192.168.26.209\",\"id.resp_p\":5900,\"client_major_version\":\"003\",\"client_minor_version\":\"008\",\"server_major_version\":\"003\",\"server_minor_version\":\"008\",\"authentication_method\":\"VNC\",\"auth\":true,\"share_flag\":false,\"desktop_name\":\"\\u00a0\",\"width\":800,\"height\":600}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:3umAEhEYDGtn1xMXoCONQzYQqu0=",
+        "protocol": "rfb",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.35.82",
+          "192.168.26.209"
+        ]
+      },
+      "source": {
+        "address": "192.168.35.82",
+        "ip": "192.168.35.82",
+        "port": 58102
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "rfb": {
+          "auth": {
+            "method": "VNC",
+            "success": true
+          },
+          "desktop_name": " ",
+          "height": 600,
+          "share_flag": false,
+          "version": {
+            "client": {
+              "major": "003",
+              "minor": "008"
+            },
+            "server": {
+              "major": "003",
+              "minor": "008"
+            }
+          },
+          "width": 800
+        },
+        "session_id": "CXoIzM3wH3fUwXtKN1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2212245334.517208,\"uid\":\"CXoIzM3wH3fUwXtKN1\",\"id.orig_h\":\"192.168.35.82\",\"id.orig_p\":58102,\"id.resp_h\":\"192.168.26.209\",\"id.resp_p\":5900,\"client_major_version\":\"003\",\"client_minor_version\":\"008\",\"server_major_version\":\"003\",\"server_minor_version\":\"008\",\"authentication_method\":\"VNC\",\"auth\":true,\"share_flag\":false,\"desktop_name\":\"\\u00a0\",\"width\":800,\"height\":600}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "rfb",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-rfb-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

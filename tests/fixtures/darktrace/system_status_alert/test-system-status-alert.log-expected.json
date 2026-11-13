@@ -1,0 +1,139 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-04-18T15:44:11.000Z",
+      "darktrace": {
+        "system_status_alert": {
+          "alert_name": "Advanced Search",
+          "child_id": 1,
+          "hostname": "bnewlze-hwcqnwy",
+          "ip_address": "192.0.2.87",
+          "last_updated": "2049-04-18T15:44:11.000Z",
+          "last_updated_status": "2049-04-18T15:44:11.000Z",
+          "message": "There have been no Advanced Search hits for this instance seen since Sun 18 April 2021 13:20:23 (UTC). If this is not expected behaviour, please open a ticket using the following link or get in touch with your Cyber Technology Specialist. https://example.com/test",
+          "name": "advanced_search",
+          "priority": 43.0,
+          "priority_level": "medium",
+          "status": "active",
+          "uuid": "ebffcdeb-7342-1918-1540-0bfabbadfae3"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "ebffcdeb-7342-1918-1540-0bfabbadfae3",
+        "kind": "alert",
+        "original": "{\"last_updated\":2502373451,\"uuid\":\"ebffcdeb-7342-1918-1540-0bfabbadfae3\",\"priority\":43,\"priority_level\":\"medium\",\"hostname\":\"bnewlze-hwcqnwy\",\"ip_address\":\"192.0.2.87\",\"message\":\"There have been no Advanced Search hits for this instance seen since Sun 18 April 2021 13:20:23 (UTC). If this is not expected behaviour, please open a ticket using the following link or get in touch with your Cyber Technology Specialist. https://example.com/test\",\"name\":\"advanced_search\",\"acknowledge_timeout\":null,\"alert_name\":\"Advanced Search\",\"child_id\":1,\"last_updated_status\":2502373451,\"status\":\"active\"}",
+        "reason": "There have been no Advanced Search hits for this instance seen since Sun 18 April 2021 13:20:23 (UTC). If this is not expected behaviour, please open a ticket using the following link or get in touch with your Cyber Technology Specialist. https://example.com/test",
+        "risk_score": 43.0,
+        "risk_score_norm": 43.0,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "bnewlze-hwcqnwy",
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "bnewlze-hwcqnwy"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-07-18T02:20:10.556Z",
+      "darktrace": {
+        "system_status_alert": {
+          "alert_name": "Probe Down",
+          "hostname": "vgday-cdf",
+          "ip_address": "192.0.2.87",
+          "last_updated": "2050-07-18T02:20:10.556Z",
+          "last_updated_status": "2050-07-18T02:20:10.556Z",
+          "message": "The probe 1/175.16.199.1 has lost connection to the Master instance. Please ensure HTTPS bidirectional connectivity exists between the Master and the Probe.\n\nIf you have any issues, please open a ticket using the following link. https://example.com/test",
+          "name": "probe_down-0",
+          "priority": 98.0,
+          "priority_level": "critical",
+          "status": "active",
+          "url": {
+            "domain": "example.com",
+            "original": "https://example.com/test?value=ebcf5034-2188-1164-1951-8cebfacbefb7",
+            "path": "/test",
+            "query": "value=ebcf5034-2188-1164-1951-8cebfacbefb7",
+            "scheme": "https"
+          },
+          "uuid": "ebcf5034-2188-1164-1951-8cebfacbefb7"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "ebcf5034-2188-1164-1951-8cebfacbefb7",
+        "kind": "alert",
+        "original": "{\"hostname\":\"vgday-cdf\",\"ip_address\":\"192.0.2.87\",\"child_id\":null,\"name\":\"probe_down-0\",\"priority\":98,\"priority_level\":\"critical\",\"alert_name\":\"Probe Down\",\"status\":\"Active\",\"message\":\"The probe 1/175.16.199.1 has lost connection to the Master instance. Please ensure HTTPS bidirectional connectivity exists between the Master and the Probe.\\n\\nIf you have any issues, please open a ticket using the following link. https://example.com/test\",\"last_updated\":2541723610.556194,\"last_updated_status\":2541723610.556194,\"acknowledge_timeout\":null,\"uuid\":\"ebcf5034-2188-1164-1951-8cebfacbefb7\",\"url\":\"https://example.com/test?value=ebcf5034-2188-1164-1951-8cebfacbefb7\"}",
+        "reason": "The probe 1/175.16.199.1 has lost connection to the Master instance. Please ensure HTTPS bidirectional connectivity exists between the Master and the Probe.\n\nIf you have any issues, please open a ticket using the following link. https://example.com/test",
+        "risk_score": 98.0,
+        "risk_score_norm": 98.0,
+        "type": [
+          "info"
+        ],
+        "url": "https://example.com/test?value=ebcf5034-2188-1164-1951-8cebfacbefb7"
+      },
+      "host": {
+        "hostname": "vgday-cdf",
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "vgday-cdf"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"last_updated\":2502373451,\"uuid\":\"ebffcdeb-7342-1918-1540-0bfabbadfae3\",\"priority\":43,\"priority_level\":\"medium\",\"hostname\":\"bnewlze-hwcqnwy\",\"ip_address\":\"192.0.2.87\",\"message\":\"There have been no Advanced Search hits for this instance seen since Sun 18 April 2021 13:20:23 (UTC). If this is not expected behaviour, please open a ticket using the following link or get in touch with your Cyber Technology Specialist. https://example.com/test\",\"name\":\"advanced_search\",\"acknowledge_timeout\":null,\"alert_name\":\"Advanced Search\",\"child_id\":1,\"last_updated_status\":2502373451,\"status\":\"active\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"hostname\":\"vgday-cdf\",\"ip_address\":\"192.0.2.87\",\"child_id\":null,\"name\":\"probe_down-0\",\"priority\":98,\"priority_level\":\"critical\",\"alert_name\":\"Probe Down\",\"status\":\"Active\",\"message\":\"The probe 1/175.16.199.1 has lost connection to the Master instance. Please ensure HTTPS bidirectional connectivity exists between the Master and the Probe.\\n\\nIf you have any issues, please open a ticket using the following link. https://example.com/test\",\"last_updated\":2541723610.556194,\"last_updated_status\":2541723610.556194,\"acknowledge_timeout\":null,\"uuid\":\"ebcf5034-2188-1164-1951-8cebfacbefb7\",\"url\":\"https://example.com/test?value=ebcf5034-2188-1164-1951-8cebfacbefb7\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "system_status_alert",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-darktrace-system_status_alert-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "darktrace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

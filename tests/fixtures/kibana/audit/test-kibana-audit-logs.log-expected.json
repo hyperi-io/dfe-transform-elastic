@@ -1,0 +1,250 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-09T13:15:24.041+00:00",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "action": "http_request",
+        "category": [
+          "web"
+        ],
+        "created": "2050-09-09T13:15:24.041+00:00",
+        "ingested": "2026-11-13T23:02:51.132053525Z",
+        "kind": "event",
+        "outcome": "unknown"
+      },
+      "http": {
+        "request": {
+          "method": "get"
+        }
+      },
+      "kibana": {
+        "space_id": "default"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "plugins.security.audit.ecs"
+      },
+      "message": "User is requesting [/api/fleet/enrollment_api_keys/b8b3e336-f39d-4eb1-b655-a547a939cb97] endpoint",
+      "process": {
+        "pid": 7
+      },
+      "service": {
+        "node": {
+          "roles": [
+            "background_tasks",
+            "ui"
+          ]
+        }
+      },
+      "trace": {
+        "id": "2eafdd79-58a3-4dec-889c-6750f6b2e79f"
+      },
+      "transaction": {
+        "id": "858c45e94edb1814"
+      },
+      "url": {
+        "domain": "kibana",
+        "path": "/api/fleet/enrollment_api_keys/b8b3e336-f39d-4eb1-b655-a547a939cb97",
+        "port": 5601,
+        "scheme": "https"
+      },
+      "user": {
+        "name": "fkcuwrc",
+        "roles": [
+          "superuser"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-09-09T13:16:57.990+00:00",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "action": "user_login",
+        "category": [
+          "authentication"
+        ],
+        "created": "2050-09-09T13:16:57.990+00:00",
+        "ingested": "2026-11-13T23:02:51.132070965Z",
+        "kind": "event",
+        "outcome": "success"
+      },
+      "kibana": {
+        "authentication_provider": "basic",
+        "authentication_realm": "reserved",
+        "authentication_type": "basic",
+        "lookup_realm": "reserved",
+        "session_id": "Bv1bSOJ7dMYoppdDmlCiPfP1v8Q7JHXDpc2mOrfoxJs="
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "plugins.security.audit.ecs"
+      },
+      "message": "User [fkcuwrc] has logged in using basic provider [name=basic]",
+      "process": {
+        "pid": 7
+      },
+      "service": {
+        "node": {
+          "roles": [
+            "background_tasks",
+            "ui"
+          ]
+        }
+      },
+      "trace": {
+        "id": "2776a649-41d8-498a-9b94-d326985d1a44"
+      },
+      "transaction": {
+        "id": "2fd40f9b4f4ca767"
+      },
+      "user": {
+        "name": "fkcuwrc",
+        "roles": [
+          "superuser"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-09-09T13:16:58.044+00:00",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "action": "space_get",
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-09T13:16:58.044+00:00",
+        "ingested": "2026-11-13T23:02:51.132073155Z",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "kibana": {
+        "saved_object": {
+          "id": "default",
+          "type": "space"
+        },
+        "session_id": "Bv1bSOJ7dMYoppdDmlCiPfP1v8Q7JHXDpc2mOrfoxJs=",
+        "space_id": "default"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "plugins.security.audit.ecs"
+      },
+      "message": "User has accessed space [id=default]",
+      "process": {
+        "pid": 7
+      },
+      "service": {
+        "node": {
+          "roles": [
+            "background_tasks",
+            "ui"
+          ]
+        }
+      },
+      "trace": {
+        "id": "bfbf5a1c-4b6e-4938-9513-390d8f032c41"
+      },
+      "transaction": {
+        "id": "256b899bfffe8b3f"
+      },
+      "user": {
+        "name": "fkcuwrc",
+        "roles": [
+          "superuser"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-09-09T13:16:58.044+00:00",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "action": "bulk_get",
+        "category": [
+          "database"
+        ],
+        "created": "2050-09-09T13:16:58.044+00:00",
+        "ingested": "2026-11-13T23:02:51.132074405Z",
+        "kind": "event",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "kibana": {
+        "saved_object": {
+          "id": "1",
+          "name": "so_name_1",
+          "type": "fake"
+        },
+        "session_id": "Bv1bSOJ7dMYoppdDmlCiPfP1v8Q7JHXDpc2mOrfoxJs=",
+        "space_id": "default"
+      },
+      "log": {
+        "level": "INFO",
+        "logger": "plugins.security.audit.ecs"
+      },
+      "message": "User has accessed space [id=default]",
+      "process": {
+        "pid": 7
+      },
+      "service": {
+        "node": {
+          "roles": [
+            "background_tasks",
+            "ui"
+          ]
+        }
+      },
+      "trace": {
+        "id": "bfbf5a1c-4b6e-4938-9513-390d8f032c41"
+      },
+      "transaction": {
+        "id": "256b899bfffe8b3f"
+      },
+      "user": {
+        "name": "fkcuwrc",
+        "roles": [
+          "superuser"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"event\":{\"action\":\"http_request\",\"category\":[\"web\"],\"outcome\":\"unknown\"},\"http\":{\"request\":{\"method\":\"get\"}},\"url\":{\"domain\":\"kibana\",\"path\":\"/api/fleet/enrollment_api_keys/b8b3e336-f39d-4eb1-b655-a547a939cb97\",\"port\":5601,\"scheme\":\"https\"},\"user\":{\"name\":\"fkcuwrc\",\"roles\":[\"superuser\"]},\"kibana\":{\"space_id\":\"default\"},\"trace\":{\"id\":\"2eafdd79-58a3-4dec-889c-6750f6b2e79f\"},\"service\":{\"node\":{\"roles\":[\"background_tasks\",\"ui\"]}},\"ecs\":{\"version\":\"8.4.0\"},\"@timestamp\":\"2050-09-09T13:15:24.041+00:00\",\"message\":\"User is requesting [/api/fleet/enrollment_api_keys/b8b3e336-f39d-4eb1-b655-a547a939cb97] endpoint\",\"log\":{\"level\":\"INFO\",\"logger\":\"plugins.security.audit.ecs\"},\"process\":{\"pid\":7},\"transaction\":{\"id\":\"858c45e94edb1814\"}}"
+    },
+    {
+      "message": "{\"event\":{\"action\":\"user_login\",\"category\":[\"authentication\"],\"outcome\":\"success\"},\"user\":{\"name\":\"fkcuwrc\",\"roles\":[\"superuser\"]},\"kibana\":{\"session_id\":\"Bv1bSOJ7dMYoppdDmlCiPfP1v8Q7JHXDpc2mOrfoxJs=\",\"authentication_provider\":\"basic\",\"authentication_type\":\"basic\",\"authentication_realm\":\"reserved\",\"lookup_realm\":\"reserved\"},\"trace\":{\"id\":\"2776a649-41d8-498a-9b94-d326985d1a44\"},\"service\":{\"node\":{\"roles\":[\"background_tasks\",\"ui\"]}},\"ecs\":{\"version\":\"8.4.0\"},\"@timestamp\":\"2050-09-09T13:16:57.990+00:00\",\"message\":\"User [fkcuwrc] has logged in using basic provider [name=basic]\",\"log\":{\"level\":\"INFO\",\"logger\":\"plugins.security.audit.ecs\"},\"process\":{\"pid\":7},\"transaction\":{\"id\":\"2fd40f9b4f4ca767\"}}"
+    },
+    {
+      "message": "{\"event\":{\"action\":\"space_get\",\"category\":[\"database\"],\"type\":[\"access\"],\"outcome\":\"success\"},\"kibana\":{\"space_id\":\"default\",\"session_id\":\"Bv1bSOJ7dMYoppdDmlCiPfP1v8Q7JHXDpc2mOrfoxJs=\",\"saved_object\":{\"type\":\"space\",\"id\":\"default\"}},\"user\":{\"name\":\"fkcuwrc\",\"roles\":[\"superuser\"]},\"trace\":{\"id\":\"bfbf5a1c-4b6e-4938-9513-390d8f032c41\"},\"service\":{\"node\":{\"roles\":[\"background_tasks\",\"ui\"]}},\"ecs\":{\"version\":\"8.4.0\"},\"@timestamp\":\"2050-09-09T13:16:58.044+00:00\",\"message\":\"User has accessed space [id=default]\",\"log\":{\"level\":\"INFO\",\"logger\":\"plugins.security.audit.ecs\"},\"process\":{\"pid\":7},\"transaction\":{\"id\":\"256b899bfffe8b3f\"}}"
+    },
+    {
+      "message": "{\"event\":{\"action\":\"bulk_get\",\"category\":[\"database\"],\"type\":[\"access\"],\"outcome\":\"success\"},\"kibana\":{\"space_id\":\"default\",\"session_id\":\"Bv1bSOJ7dMYoppdDmlCiPfP1v8Q7JHXDpc2mOrfoxJs=\",\"saved_object\":{\"type\":\"fake\",\"id\":\"1\",\"name\":\"so_name_1\"}},\"user\":{\"name\":\"fkcuwrc\",\"roles\":[\"superuser\"]},\"trace\":{\"id\":\"bfbf5a1c-4b6e-4938-9513-390d8f032c41\"},\"service\":{\"node\":{\"roles\":[\"background_tasks\",\"ui\"]}},\"ecs\":{\"version\":\"8.4.0\"},\"@timestamp\":\"2050-09-09T13:16:58.044+00:00\",\"message\":\"User has accessed space [id=default]\",\"log\":{\"level\":\"INFO\",\"logger\":\"plugins.security.audit.ecs\"},\"process\":{\"pid\":7},\"transaction\":{\"id\":\"256b899bfffe8b3f\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kibana-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "kibana",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

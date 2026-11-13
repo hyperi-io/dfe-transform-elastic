@@ -1,0 +1,66 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:08:54.080Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4716_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "42182957-62c4-49e4-bc8f-d974b56a29e3",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+            },
+            "winlog": {
+                "event_id": 4716,
+                "activity_id": "{cf562571-08d7-0833-a019-00cfd604b915}",
+                "channel": "Security",
+                "time_created": "2048-07-28T08:17:00.470Z",
+                "record_id": 14929,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "outcome": "success",
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-21-2024912787-2692429404-2351956786-500",
+                    "DomainSid": "S-1-0-0",
+                    "TdoAttributes": "1",
+                    "SidFilteringEnabled": "-",
+                    "SubjectUserName": "Administrator",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x6a868",
+                    "DomainName": "-",
+                    "TdoType": "3",
+                    "TdoDirection": "3"
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+                "opcode": "Info",
+                "level": "information",
+                "process": {
+                    "pid": 776,
+                    "thread": {
+                        "id": 3776
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4716,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            }
+        }
+    ]
+}

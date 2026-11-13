@@ -1,0 +1,181 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-12-26T16:15:55.103Z",
+      "apache": {
+        "error": {
+          "module": "mpm_prefork"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.479648633Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:15:55.103522 2044] [mpm_prefork:notice] [pid 11379] AH00163: Apache/2.4.23 (Unix) configured -- resuming normal operations",
+        "type": [
+          "info"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "log": {
+        "level": "notice"
+      },
+      "message": "AH00163: Apache/2.4.23 (Unix) configured -- resuming normal operations",
+      "process": {
+        "pid": 11379
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:15:55.103Z",
+      "apache": {
+        "error": {
+          "module": "core"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.479654223Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:15:55.103786 2044] [core:notice] [pid 11379] AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+        "type": [
+          "info"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "log": {
+        "level": "notice"
+      },
+      "message": "AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+      "process": {
+        "pid": 11379
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-26T16:15:55.103Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.479656783Z",
+        "kind": "event",
+        "original": "[Mon Dec 26 16:15:55.103786 2044] [:notice] [pid 11379] AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+        "type": [
+          "info"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "log": {
+        "level": "notice"
+      },
+      "message": "AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+      "process": {
+        "pid": 11379
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-07-22T13:45:51.323Z",
+      "apache": {
+        "error": {
+          "module": "core"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "ingested": "2026-11-13T23:03:30.479657503Z",
+        "kind": "event",
+        "original": "[2053-07-22 15:45:51.323610 +0200] [core:notice] [pid 11379] AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+        "type": [
+          "info"
+        ]
+      },
+      "event.timezone": "GMT+2",
+      "log": {
+        "level": "notice"
+      },
+      "message": "AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+      "process": {
+        "pid": 11379
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:15:55.103522 2044] [mpm_prefork:notice] [pid 11379] AH00163: Apache/2.4.23 (Unix) configured -- resuming normal operations",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:15:55.103786 2044] [core:notice] [pid 11379] AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[Mon Dec 26 16:15:55.103786 2044] [:notice] [pid 11379] AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "event.timezone": "GMT+2",
+      "message": "[2053-07-22 15:45:51.323610 +0200] [core:notice] [pid 11379] AH00094: Command line: '/usr/local/Cellar/httpd24/2.4.23_2/bin/httpd'",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "error",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache-error-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "apache",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

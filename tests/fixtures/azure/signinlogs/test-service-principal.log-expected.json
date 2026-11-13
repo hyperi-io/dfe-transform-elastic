@@ -1,0 +1,183 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-signinlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-07-30T11:29:26.673Z",
+      "agent": {
+        "ephemeral_id": "70870d18-b593-440d-8130-9b4872533414",
+        "id": "b727da22-a63f-4025-8934-b2c6ff93c96e",
+        "name": "8678f4fe2c4a",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "azure": {
+        "correlation_id": "41156086-faa6-48cb-8c6a-7d7c6e3df97f",
+        "resource": {
+          "id": "/tenants/1111111111-902d-4dea-8026-5a790862fede/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "signinlogs": {
+          "caller_ip_address": "192.0.2.139",
+          "category": "ServicePrincipalSignInLogs",
+          "operation_name": "Sign-in activity",
+          "operation_version": "1.0",
+          "properties": {
+            "app_id": "06240227-aed0-4ae5-b99b-d63d1e883789",
+            "correlation_id": "41156086-faa6-48cb-8c6a-7d7c6e3df97f",
+            "created_at": "2049-07-30T11:29:26.6733668+00:00",
+            "cross_tenant_access_type": "none",
+            "flagged_for_review": false,
+            "id": "64481432-0ad1-4035-ba4f-0672dbe42b31",
+            "is_interactive": false,
+            "is_tenant_restricted": false,
+            "processing_time_ms": 0,
+            "resource_display_name": "Configuration Manager Microservice",
+            "resource_id": "86565561-c992-4851-8266-b137831f35cc",
+            "risk_detail": "none",
+            "risk_level_aggregated": "low",
+            "risk_level_during_signin": "low",
+            "risk_state": "none",
+            "service_principal_id": "08499757-3136-44c0-a9ab-feb1829d4327",
+            "service_principal_name": "ConfigMgrSvc_56934938-acb1-4990-ae87-ad4b09420df0",
+            "status": {
+              "error_code": 7000222
+            },
+            "token_issuer_type": "AzureAD"
+          },
+          "result_signature": "None",
+          "result_type": "7000222"
+        },
+        "tenant_id": "1111111111-902d-4dea-8026-5a790862fede"
+      },
+      "client": {
+        "ip": "192.0.2.139"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Sign-in activity",
+        "category": [
+          "authentication"
+        ],
+        "dataset": "azure.signinlogs",
+        "duration": 0,
+        "id": "64481432-0ad1-4035-ba4f-0672dbe42b31",
+        "kind": "event",
+        "module": "azure",
+        "original": "{\"Level\":4,\"callerIpAddress\":\"192.0.2.139\",\"category\":\"ServicePrincipalSignInLogs\",\"correlationId\":\"41156086-faa6-48cb-8c6a-7d7c6e3df97f\",\"durationMs\":0,\"location\":\"DE\",\"operationName\":\"Sign-in activity\",\"operationVersion\":\"1.0\",\"properties\":{\"appId\":\"06240227-aed0-4ae5-b99b-d63d1e883789\",\"correlationId\":\"41156086-faa6-48cb-8c6a-7d7c6e3df97f\",\"createdDateTime\":\"2049-07-30T11:29:26.6733668+00:00\",\"crossTenantAccessType\":\"none\",\"flaggedForReview\":false,\"id\":\"64481432-0ad1-4035-ba4f-0672dbe42b31\",\"ipAddress\":\"192.0.2.139\",\"isInteractive\":false,\"isTenantRestricted\":false,\"location\":{\"city\":\"Hannover\",\"countryOrRegion\":\"DE\",\"geoCoordinates\":{\"latitude\":50.12345678912345,\"longitude\":9.123456789012345},\"state\":\"Niedersachsen\"},\"processingTimeInMilliseconds\":0,\"resourceDisplayName\":\"Configuration Manager Microservice\",\"resourceId\":\"86565561-c992-4851-8266-b137831f35cc\",\"riskDetail\":\"none\",\"riskLevelAggregated\":\"low\",\"riskLevelDuringSignIn\":\"low\",\"riskState\":\"none\",\"servicePrincipalId\":\"08499757-3136-44c0-a9ab-feb1829d4327\",\"servicePrincipalName\":\"ConfigMgrSvc_56934938-acb1-4990-ae87-ad4b09420df0\",\"status\":{\"errorCode\":7000222},\"tokenIssuerType\":\"AzureAD\",\"userId\":null},\"resourceId\":\"/tenants/1111111111-902d-4dea-8026-5a790862fede/providers/Microsoft.aadiam\",\"resultSignature\":\"None\",\"resultType\":\"7000222\",\"tenantId\":\"1111111111-902d-4dea-8026-5a790862fede\",\"time\":\"2049-07-30T11:29:26.6733668Z\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "signinlogs"
+      },
+      "geo": {
+        "city_name": "Hannover",
+        "country_iso_code": "DE",
+        "location": {
+          "lat": 50.12345678912345,
+          "lon": 9.123456789012344
+        },
+        "region_name": "Niedersachsen"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "4",
+        "offset": 0
+      },
+      "related": {
+        "entity": [
+          "06240227-aed0-4ae5-b99b-d63d1e883789",
+          "86565561-c992-4851-8266-b137831f35cc",
+          "08499757-3136-44c0-a9ab-feb1829d4327"
+        ],
+        "ip": [
+          "192.0.2.139"
+        ]
+      },
+      "service": {
+        "name": "ConfigMgrSvc_56934938-acb1-4990-ae87-ad4b09420df0",
+        "type": "azure"
+      },
+      "source": {
+        "address": "192.0.2.139",
+        "ip": "192.0.2.139"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-azure-signinlogs-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-21T03:11:31.368Z",
+      "agent": {
+        "ephemeral_id": "70870d18-b593-440d-8130-9b4872533414",
+        "id": "b727da22-a63f-4025-8934-b2c6ff93c96e",
+        "name": "8678f4fe2c4a",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "azure.signinlogs",
+        "module": "azure"
+      },
+      "fileset": {
+        "name": "signinlogs"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "{\"Level\":4,\"callerIpAddress\":\"192.0.2.139\",\"category\":\"ServicePrincipalSignInLogs\",\"correlationId\":\"41156086-faa6-48cb-8c6a-7d7c6e3df97f\",\"durationMs\":0,\"location\":\"DE\",\"operationName\":\"Sign-in activity\",\"operationVersion\":\"1.0\",\"properties\":{\"appId\":\"06240227-aed0-4ae5-b99b-d63d1e883789\",\"correlationId\":\"41156086-faa6-48cb-8c6a-7d7c6e3df97f\",\"createdDateTime\":\"2049-07-30T11:29:26.6733668+00:00\",\"crossTenantAccessType\":\"none\",\"flaggedForReview\":false,\"id\":\"64481432-0ad1-4035-ba4f-0672dbe42b31\",\"ipAddress\":\"192.0.2.139\",\"isInteractive\":false,\"isTenantRestricted\":false,\"location\":{\"city\":\"Hannover\",\"countryOrRegion\":\"DE\",\"geoCoordinates\":{\"latitude\":50.12345678912345,\"longitude\":9.123456789012345},\"state\":\"Niedersachsen\"},\"processingTimeInMilliseconds\":0,\"resourceDisplayName\":\"Configuration Manager Microservice\",\"resourceId\":\"86565561-c992-4851-8266-b137831f35cc\",\"riskDetail\":\"none\",\"riskLevelAggregated\":\"low\",\"riskLevelDuringSignIn\":\"low\",\"riskState\":\"none\",\"servicePrincipalId\":\"08499757-3136-44c0-a9ab-feb1829d4327\",\"servicePrincipalName\":\"ConfigMgrSvc_56934938-acb1-4990-ae87-ad4b09420df0\",\"status\":{\"errorCode\":7000222},\"tokenIssuerType\":\"AzureAD\",\"userId\":null},\"resourceId\":\"/tenants/1111111111-902d-4dea-8026-5a790862fede/providers/Microsoft.aadiam\",\"resultSignature\":\"None\",\"resultType\":\"7000222\",\"tenantId\":\"1111111111-902d-4dea-8026-5a790862fede\",\"time\":\"2049-07-30T11:29:26.6733668Z\"}",
+      "service": {
+        "type": "azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "signinlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-signinlogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-01-27T19:46:57.654Z",
+      "aws": {
+        "bedrock_agentcore": {
+          "memory": {
+            "actor_id": "PREMIUM",
+            "conversation_id": "b1e0d3f7-9d5f-4141-a010-bec319300963",
+            "memory_strategy": "conversation_history",
+            "memory_strategy_id": "conversation_history-7bXy4m89KL",
+            "namespace": "sales/customer/PREMIUM/history",
+            "operation_name": "invoke_memory",
+            "payload_object": {
+              "currentConversations": [
+                {
+                  "content": {
+                    "text": "Can you show me the latest pricing for enterprise plans?"
+                  },
+                  "role": "USER"
+                },
+                {
+                  "content": {
+                    "text": "I'd be happy to help you with enterprise pricing information. Based on your account status as a Premium customer, I can offer you our special enterprise rates."
+                  },
+                  "role": "ASSISTANT"
+                }
+              ],
+              "isError": false,
+              "log": "Processing conversation history for customer context retrieval.",
+              "requestId": "50ef94df-dd26-5747-99fd-ccdf50414118"
+            },
+            "provider_name": "aws_bedrock_agentcore",
+            "request_id": "50ef94df-dd26-5747-99fd-ccdf50414118",
+            "resource_arn": "arn:aws:bedrock-agentcore:eu-west-1:912345678012:memory/salesassistant-8k2pq9RtyH",
+            "session_id": "b1e0d3f7-9d5f-4141-a010-bec319300963",
+            "severity_number": 9
+          }
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "bedrock-agentcore"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"resource_arn\":\"arn:aws:bedrock-agentcore:eu-west-1:912345678012:memory/salesassistant-8k2pq9RtyH\",\"event_timestamp\":2653156017654,\"memory_strategy_id\":\"conversation_history-7bXy4m89KL\",\"namespace\":\"sales/customer/PREMIUM/history\",\"actor_id\":\"PREMIUM\",\"session_id\":\"b1e0d3f7-9d5f-4141-a010-bec319300963\",\"body\":{\"log\":\"Processing conversation history for customer context retrieval.\",\"requestId\":\"50ef94df-dd26-5747-99fd-ccdf50414118\",\"isError\":false,\"currentConversations\":[{\"role\":\"USER\",\"content\":{\"text\":\"Can you show me the latest pricing for enterprise plans?\"}},{\"role\":\"ASSISTANT\",\"content\":{\"text\":\"I'd be happy to help you with enterprise pricing information. Based on your account status as a Premium customer, I can offer you our special enterprise rates.\"}}]},\"resource\":{\"attributes\":{\"service.name\":\"salesassistant-8k2pq9RtyH\",\"cloud.resource_id\":\"arn:aws:bedrock-agentcore:eu-west-1:912345678012:memory/salesassistant-8k2pq9RtyH\",\"cloud.platform\":\"aws_bedrock_agentcore\"}},\"attributes\":{\"aws.resource.type\":\"AWS::BedrockAgentCore::Memory\",\"aws.agentcore.memory.namespace\":\"sales/customer/PREMIUM/history\",\"session.id\":\"b1e0d3f7-9d5f-4141-a010-bec319300963\",\"actor.id\":\"PREMIUM\"},\"timeUnixNano\":2653156017654321098,\"severityNumber\":9,\"severityText\":\"INFO\"}",
+        "outcome": "success"
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "Processing conversation history for customer context retrieval.",
+      "service": {
+        "name": "salesassistant-8k2pq9RtyH"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"resource_arn\":\"arn:aws:bedrock-agentcore:eu-west-1:912345678012:memory/salesassistant-8k2pq9RtyH\",\"event_timestamp\":2653156017654,\"memory_strategy_id\":\"conversation_history-7bXy4m89KL\",\"namespace\":\"sales/customer/PREMIUM/history\",\"actor_id\":\"PREMIUM\",\"session_id\":\"b1e0d3f7-9d5f-4141-a010-bec319300963\",\"body\":{\"log\":\"Processing conversation history for customer context retrieval.\",\"requestId\":\"50ef94df-dd26-5747-99fd-ccdf50414118\",\"isError\":false,\"currentConversations\":[{\"role\":\"USER\",\"content\":{\"text\":\"Can you show me the latest pricing for enterprise plans?\"}},{\"role\":\"ASSISTANT\",\"content\":{\"text\":\"I'd be happy to help you with enterprise pricing information. Based on your account status as a Premium customer, I can offer you our special enterprise rates.\"}}]},\"resource\":{\"attributes\":{\"service.name\":\"salesassistant-8k2pq9RtyH\",\"cloud.resource_id\":\"arn:aws:bedrock-agentcore:eu-west-1:912345678012:memory/salesassistant-8k2pq9RtyH\",\"cloud.platform\":\"aws_bedrock_agentcore\"}},\"attributes\":{\"aws.resource.type\":\"AWS::BedrockAgentCore::Memory\",\"aws.agentcore.memory.namespace\":\"sales/customer/PREMIUM/history\",\"session.id\":\"b1e0d3f7-9d5f-4141-a010-bec319300963\",\"actor.id\":\"PREMIUM\"},\"timeUnixNano\":2653156017654321098,\"severityNumber\":9,\"severityText\":\"INFO\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "memory_application_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws_bedrock_agentcore-memory_application_logs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws_bedrock_agentcore",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

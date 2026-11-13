@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:07:18.907Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG.jwbfen.local"
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "066cce9b-bf08-4e6a-9164-5ee8c5ffbcf9",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain"
+            },
+            "winlog": {
+                "event_id": 4737,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 4668,
+                "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "level": "information",
+                "channel": "Security",
+                "process": {
+                    "pid": 772,
+                    "thread": {
+                        "id": 1664
+                    }
+                },
+                "event_data": {
+                    "TargetUserName": "jbtq_smhhu3l5",
+                    "SubjectUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "SubjectDomainName": "WLBEAT",
+                    "SubjectLogonId": "0x4a727",
+                    "SamAccountName": "-",
+                    "TargetDomainName": "WLBEAT",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1112",
+                    "SubjectUserName": "Administrator",
+                    "PrivilegeList": "-",
+                    "SidHistory": "-"
+                },
+                "time_created": "2047-10-22T11:33:57.271Z",
+                "outcome": "success",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4737,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "level": "information",
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4737.xml"
+                }
+            }
+        }
+    ]
+}

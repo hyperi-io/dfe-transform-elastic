@@ -1,0 +1,176 @@
+{
+  "expected": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "81.2.69.145",
+        "ip": "81.2.69.145"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "<166>Aug 21 22:08:13 kyeqydmfsh.qz-frmfyl.tld (squid-1)[6802]: [1598040493.253 325](tel:1598040493.253 325) 192.0.2.87 TCP_MISS/304 2912 GET https://github.com/5kylhh/pfelk/file-list/master - HIER_DIRECT/81.2.69.145 -",
+        "outcome": "success",
+        "provider": "squid"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 2912,
+          "status_code": 304
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 166
+        }
+      },
+      "message": "[1598040493.253 325](tel:1598040493.253 325) 192.0.2.87 TCP_MISS/304 2912 GET https://github.com/5kylhh/pfelk/file-list/master - HIER_DIRECT/81.2.69.145 -",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "kyeqydmfsh.qz-frmfyl.tld",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "squid-1",
+        "pid": 6802
+      },
+      "related": {
+        "ip": [
+          "81.2.69.145",
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "squid": {
+        "hierarchy_status": "HIER_DIRECT",
+        "request_status": "TCP_MISS"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "github.com",
+        "original": "https://github.com/5kylhh/pfelk/file-list/master",
+        "path": "/5kylhh/pfelk/file-list/master",
+        "scheme": "https"
+      }
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "destination": {
+        "address": "81.2.69.145",
+        "ip": "81.2.69.145"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "<166>Aug 21 22:08:13 kyeqydmfsh.qz-frmfyl.tld (squid-1)[6802]: [1598040493.253 325](tel:1598040493.253 325) 192.0.2.87 TCP_MISS/304 2912 CONNECT github.com:443 - HIER_DIRECT/81.2.69.145 -",
+        "outcome": "success",
+        "provider": "squid"
+      },
+      "http": {
+        "request": {
+          "method": "CONNECT"
+        },
+        "response": {
+          "bytes": 2912,
+          "status_code": 304
+        }
+      },
+      "log": {
+        "syslog": {
+          "priority": 166
+        }
+      },
+      "message": "[1598040493.253 325](tel:1598040493.253 325) 192.0.2.87 TCP_MISS/304 2912 CONNECT github.com:443 - HIER_DIRECT/81.2.69.145 -",
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "name": "kyeqydmfsh.qz-frmfyl.tld",
+        "type": "firewall",
+        "vendor": "netgate"
+      },
+      "process": {
+        "name": "squid-1",
+        "pid": 6802
+      },
+      "related": {
+        "ip": [
+          "81.2.69.145",
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87"
+      },
+      "squid": {
+        "hierarchy_status": "HIER_DIRECT",
+        "request_status": "TCP_MISS"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "github.com",
+        "port": 443
+      }
+    }
+  ],
+  "input": [
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<166>Aug 21 22:08:13 kyeqydmfsh.qz-frmfyl.tld (squid-1)[6802]: [1598040493.253 325](tel:1598040493.253 325) 192.0.2.87 TCP_MISS/304 2912 GET https://github.com/5kylhh/pfelk/file-list/master - HIER_DIRECT/81.2.69.145 -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_tmp.tz_offset": "-04:00",
+      "message": "<166>Aug 21 22:08:13 kyeqydmfsh.qz-frmfyl.tld (squid-1)[6802]: [1598040493.253 325](tel:1598040493.253 325) 192.0.2.87 TCP_MISS/304 2912 CONNECT github.com:443 - HIER_DIRECT/81.2.69.145 -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-pfsense-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "pfsense",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

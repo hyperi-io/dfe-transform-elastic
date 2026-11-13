@@ -1,0 +1,64 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:07:38.937Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "7507c65b-ae5e-4993-810d-db9b55cd2783",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "winlog": {
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2048-08-19T07:56:51.579Z",
+                "event_id": 4905,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "level": "information",
+                "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 146938,
+                "opcode": "Info",
+                "channel": "Security",
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x3e7",
+                    "AuditSourceName": "IIS-METABASE",
+                    "EventSourceId": "0x457b22",
+                    "ProcessId": "0x1364",
+                    "ProcessName": "-"
+                },
+                "activity_id": "{afe30a25-81ff-0215-c39f-b3ffce90a981}",
+                "process": {
+                    "pid": 784,
+                    "thread": {
+                        "id": 824
+                    }
+                },
+                "outcome": "success"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4905,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4905_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

@@ -1,0 +1,761 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-03T03:06:05.696Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Login - Failure",
+            "date": "2049-11-03T03:06:05.696Z",
+            "description": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+            "details": {
+              "error": {
+                "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+                "oauthError": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs. Please go to 'https://manage.auth0.com/#/applications/aI61p8I8aFjmYRliLWgvM9ev97kCCNDB/settings' and make sure you are sending the same callback url from your application.",
+                "payload": {
+                  "attempt": "http://localhost:3000/callback",
+                  "client": {
+                    "clientID": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB"
+                  },
+                  "code": "unauthorized_client",
+                  "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+                  "name": "CallbackMismatchError",
+                  "status": 403
+                },
+                "type": "callback-url-mismatch"
+              },
+              "qs": {
+                "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                "redirect_uri": "http://localhost:3000/callback",
+                "response_type": "code",
+                "scope": "openid profile",
+                "state": "Vz6G2zZf95/FCOQALrpvd4bS6jx5xvRos2pVldFAiw4="
+              }
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Failed login",
+            "type_id": "f"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed-login",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103030609732115389415260839021644201259064885298",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "error"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+        "os": {
+          "name": "Ubuntu"
+        },
+        "version": "93.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T03:06:05.699Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Login - Failure",
+            "date": "2049-11-03T03:06:05.699Z",
+            "description": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+            "details": {
+              "error": {
+                "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+                "oauthError": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs. Please go to 'https://manage.auth0.com/#/applications/aI61p8I8aFjmYRliLWgvM9ev97kCCNDB/settings' and make sure you are sending the same callback url from your application.",
+                "payload": {
+                  "attempt": "http://localhost:3000/callback",
+                  "client": {
+                    "clientID": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB"
+                  },
+                  "code": "unauthorized_client",
+                  "log_url": "https://manage.auth0.com/#/logs/",
+                  "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+                  "name": "CallbackMismatchError",
+                  "status": 403
+                },
+                "type": "callback-url-mismatch"
+              },
+              "qs": {
+                "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+                "redirect_uri": "http://localhost:3000/callback",
+                "response_type": "code",
+                "scope": "openid profile",
+                "state": "Vz6G2zZf95/FCOQALrpvd4bS6jx5xvRos2pVldFAiw4="
+              }
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "type": "Failed login",
+            "type_id": "f"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed-login",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103030609732115389415262047947463815888239591474",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "error"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+        "os": {
+          "name": "Ubuntu"
+        },
+        "version": "93.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-04T00:29:50.035Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+            "classification": "Login - Failure",
+            "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+            "client_name": "All Applications",
+            "connection": "NewDB",
+            "connection_id": "con_H5LL8aMFnXVZ2TS8",
+            "date": "2049-11-04T00:29:50.035Z",
+            "description": "the connection is not enabled",
+            "details": {
+              "connection": "NewDB",
+              "error": {
+                "message": "the connection is not enabled",
+                "oauthError": "invalid_request",
+                "type": "request-error"
+              },
+              "qs": {
+                "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+                "connection": "NewDB",
+                "prompt": "login",
+                "redirect_uri": "https://manage.auth0.com/tester/callback?connection=NewDB",
+                "response_type": "code",
+                "scope": "openid profile"
+              },
+              "session_id": "V_QCm3HK4OyQ3t-2HAp6aNUSV4wj5nQP"
+            },
+            "hostname": "adw-mml2dqgb.fk.dunv1.com",
+            "scope": [
+              "openid",
+              "profile"
+            ],
+            "type": "Failed login",
+            "type_id": "f"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed-login",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211104002953320334544994860291215054924285237788770",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "error"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "95.0.4638.69"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T03:07:24.384Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Login - Failure",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T03:07:24.384Z",
+            "description": "Wrong email or password.",
+            "details": {
+              "error": {
+                "message": "Wrong email or password."
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Invalid email or username",
+            "type_id": "fu"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "invalid-username-or-email",
+        "category": [
+          "authentication",
+          "intrusion_detection"
+        ],
+        "id": "90020211103030725428115389447533113776256732300526485554",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "error"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "jfx",
+          "jfx@gmail.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "gmail.com",
+        "email": "jfx@gmail.com",
+        "name": "jfx"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+        "os": {
+          "name": "Ubuntu"
+        },
+        "version": "93.0"
+      }
+    },
+    {
+      "@timestamp": "2049-11-03T08:25:14.466Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "Login - Failure",
+            "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+            "client_name": "Default App",
+            "connection": "Username-Password-Authentication",
+            "connection_id": "con_1a5wCUmAs6VOU17n",
+            "date": "2049-11-03T08:25:14.466Z",
+            "description": "Wrong email or password.",
+            "details": {
+              "error": {
+                "message": "Wrong email or password."
+              }
+            },
+            "strategy": "auth0",
+            "strategy_type": "database",
+            "type": "Incorrect password",
+            "type_id": "fp"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "incorrect-password",
+        "category": [
+          "authentication"
+        ],
+        "id": "90020211103082515482106767167326018758436529088273317970",
+        "kind": "event",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "error"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "related": {
+        "user": [
+          "auth0|61823277a44a21007221a59a",
+          "kcj",
+          "kcj@xcyx.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.111"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "xcyx.com",
+        "email": "kcj@xcyx.com",
+        "id": "auth0|61823277a44a21007221a59a",
+        "name": "kcj"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "95.0.4638.69"
+      }
+    },
+    {
+      "@timestamp": "2053-04-08T09:25:15.000Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "System - Notification",
+            "date": "2053-04-08T09:25:15.000Z",
+            "description": "An IP address is blocked with 10 failed login attempts into a single account from the same IP address",
+            "details": {
+              "attempts": 10,
+              "connection": "Username-Password-Authentication",
+              "email": "alxctaclpaj@example.com",
+              "user_id": "auth0|6431a2b7b4d29e0068d88abc"
+            },
+            "hostname": "abh-tumzwcjdpo.dunv1.com",
+            "type": "An IP address is blocked with 10 failed login attempts into a single account from the same IP address",
+            "type_id": "limit_wc"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "ten-failed-logins-ip-address-blocked",
+        "category": [
+          "authentication",
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "source": {
+        "ip": "192.168.202.32"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "112.0.0.0"
+      }
+    },
+    {
+      "@timestamp": "2053-04-08T09:26:16.000Z",
+      "auth0": {
+        "logs": {
+          "data": {
+            "classification": "System - Notification",
+            "date": "2053-04-08T09:26:16.000Z",
+            "description": "An IP address is blocked with 100 failed login attempts using different usernames",
+            "details": {
+              "attempts": 100,
+              "connection": "Username-Password-Authentication",
+              "usernames_attempted": [
+                "zqay7@example.com",
+                "admin@example.com",
+                "guest@example.com"
+              ]
+            },
+            "hostname": "abh-tumzwcjdpo.dunv1.com",
+            "type": "An IP address is blocked with 100 failed login attempts using different usernames",
+            "type_id": "limit_mu"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "hundred-failed-logins-ip-address-blocked",
+        "category": [
+          "authentication",
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "source": {
+        "ip": "192.168.211.141"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Safari",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "15.1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "data": {
+          "connection_id": "",
+          "date": "2049-11-03T03:06:05.696Z",
+          "description": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+          "details": {
+            "body": {},
+            "error": {
+              "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+              "oauthError": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs. Please go to 'https://manage.auth0.com/#/applications/aI61p8I8aFjmYRliLWgvM9ev97kCCNDB/settings' and make sure you are sending the same callback url from your application.",
+              "payload": {
+                "attempt": "http://localhost:3000/callback",
+                "authorized": [],
+                "client": {
+                  "clientID": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB"
+                },
+                "code": "unauthorized_client",
+                "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+                "name": "CallbackMismatchError",
+                "status": 403
+              },
+              "type": "callback-url-mismatch"
+            },
+            "qs": {
+              "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+              "redirect_uri": "http://localhost:3000/callback",
+              "response_type": "code",
+              "scope": "openid profile",
+              "state": "Vz6G2zZf95/FCOQALrpvd4bS6jx5xvRos2pVldFAiw4="
+            }
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103030609732115389415260839021644201259064885298",
+          "type": "f",
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0"
+        },
+        "log_id": "90020211103030609732115389415260839021644201259064885298"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "connection_id": "",
+          "date": "2049-11-03T03:06:05.699Z",
+          "description": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+          "details": {
+            "body": {},
+            "error": {
+              "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+              "oauthError": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs. Please go to 'https://manage.auth0.com/#/applications/aI61p8I8aFjmYRliLWgvM9ev97kCCNDB/settings' and make sure you are sending the same callback url from your application.",
+              "payload": {
+                "attempt": "http://localhost:3000/callback",
+                "authorized": [],
+                "client": {
+                  "clientID": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB"
+                },
+                "code": "unauthorized_client",
+                "log_url": "https://manage.auth0.com/#/logs/",
+                "message": "Callback URL mismatch. http://localhost:3000/callback is not in the list of allowed callback URLs",
+                "name": "CallbackMismatchError",
+                "status": 403
+              },
+              "type": "callback-url-mismatch"
+            },
+            "qs": {
+              "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+              "redirect_uri": "http://localhost:3000/callback",
+              "response_type": "code",
+              "scope": "openid profile",
+              "state": "Vz6G2zZf95/FCOQALrpvd4bS6jx5xvRos2pVldFAiw4="
+            }
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211103030609732115389415262047947463815888239591474",
+          "type": "f",
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0"
+        },
+        "log_id": "90020211103030609732115389415262047947463815888239591474"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "audience": "https://dev-yoj8axza.au.auth0.com/userinfo",
+          "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+          "client_name": "All Applications",
+          "connection": "NewDB",
+          "connection_id": "con_H5LL8aMFnXVZ2TS8",
+          "date": "2049-11-04T00:29:50.035Z",
+          "description": "the connection is not enabled",
+          "details": {
+            "body": {},
+            "connection": "NewDB",
+            "error": {
+              "message": "the connection is not enabled",
+              "oauthError": "invalid_request",
+              "type": "request-error"
+            },
+            "qs": {
+              "client_id": "360yuN1BXP4u3tBChK5VOgekgGJ7CwLL",
+              "connection": "NewDB",
+              "prompt": "login",
+              "redirect_uri": "https://manage.auth0.com/tester/callback?connection=NewDB",
+              "response_type": "code",
+              "scope": "openid profile"
+            },
+            "riskAssessment": null,
+            "session_id": "V_QCm3HK4OyQ3t-2HAp6aNUSV4wj5nQP"
+          },
+          "hostname": "adw-mml2dqgb.fk.dunv1.com",
+          "ip": "198.51.100.111",
+          "log_id": "90020211104002953320334544994860291215054924285237788770",
+          "scope": [
+            "openid",
+            "profile"
+          ],
+          "type": "f",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
+        },
+        "log_id": "90020211104002953320334544994860291215054924285237788770"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T03:07:24.384Z",
+          "description": "Wrong email or password.",
+          "details": {
+            "error": {
+              "message": "Wrong email or password."
+            }
+          },
+          "ip": "198.51.100.111",
+          "log_id": "90020211103030725428115389447533113776256732300526485554",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "fu",
+          "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:93.0) Gecko/20100101 Firefox/93.0",
+          "user_id": "",
+          "user_name": "jfx@gmail.com"
+        },
+        "log_id": "90020211103030725428115389447533113776256732300526485554"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "client_id": "aI61p8I8aFjmYRliLWgvM9ev97kCCNDB",
+          "client_name": "Default App",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_1a5wCUmAs6VOU17n",
+          "date": "2049-11-03T08:25:14.466Z",
+          "description": "Wrong email or password.",
+          "details": {
+            "error": {
+              "message": "Wrong email or password."
+            }
+          },
+          "ip": "198.51.100.111",
+          "log_id": "90020211103082515482106767167326018758436529088273317970",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "type": "fp",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+          "user_id": "auth0|61823277a44a21007221a59a",
+          "user_name": "kcj@xcyx.com"
+        },
+        "log_id": "90020211103082515482106767167326018758436529088273317970"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "date": "2053-04-08T09:25:15.000Z",
+          "description": "An IP address is blocked with 10 failed login attempts into a single account from the same IP address",
+          "details": {
+            "attempts": 10,
+            "connection": "Username-Password-Authentication",
+            "email": "alxctaclpaj@example.com",
+            "user_id": "auth0|6431a2b7b4d29e0068d88abc"
+          },
+          "hostname": "abh-tumzwcjdpo.dunv1.com",
+          "ip": "192.168.202.32",
+          "type": "limit_wc",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+        },
+        "log_id": "90020250408092515987654321012345678901234567890123456789"
+      }
+    },
+    {
+      "json": {
+        "data": {
+          "date": "2053-04-08T09:26:16.000Z",
+          "description": "An IP address is blocked with 100 failed login attempts using different usernames",
+          "details": {
+            "attempts": 100,
+            "connection": "Username-Password-Authentication",
+            "usernames_attempted": [
+              "zqay7@example.com",
+              "admin@example.com",
+              "guest@example.com"
+            ]
+          },
+          "hostname": "abh-tumzwcjdpo.dunv1.com",
+          "ip": "192.168.211.141",
+          "type": "limit_mu",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15"
+        },
+        "log_id": "90020250408092616987654321098765432109876543210987654321"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auth0-logs-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "auth0",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

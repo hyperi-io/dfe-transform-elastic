@@ -1,0 +1,170 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-06-22T02:20:41.924Z",
+      "claude_code": {
+        "events": {
+          "decision_source": "user_temporary",
+          "decision_type": "accept",
+          "event": {
+            "name": "tool_result",
+            "sequence": 67,
+            "timestamp": "2054-06-22T02:20:41.924Z"
+          },
+          "mcp_server_name": "codebase-memory-mcp",
+          "mcp_server_scope": "user",
+          "prompt": {
+            "id": "60763458-7366-3513-4028-632370982420"
+          },
+          "session": {
+            "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+          },
+          "success": "true",
+          "terminal": {
+            "type": "gnome-terminal"
+          },
+          "tool_input": "{}",
+          "tool_input_size_bytes": 2,
+          "tool_parameters": "{\"mcp_server_name\":\"codebase-memory-mcp\",\"mcp_tool_name\":\"list_projects\"}",
+          "tool_result_size_bytes": 1206,
+          "user": {
+            "account_id": "user_01ExampleAccountId00000",
+            "account_uuid": "93713061-9622-2531-3758-372154648850"
+          }
+        }
+      },
+      "data_stream": {
+        "dataset": "claude_code.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "tool_result",
+        "category": [
+          "process"
+        ],
+        "duration": 120000000,
+        "kind": "event",
+        "original": "{\"observed_timestamp\":\"2054-06-22T02:20:41.924Z\",\"@timestamp\":\"2054-06-22T02:20:41.924Z\",\"resource\":{\"attributes\":{\"service.name\":\"claude-code\",\"service.version\":\"2.1.175\",\"host.arch\":\"amd64\",\"os.type\":\"linux\",\"os.version\":\"6.17.0-14-generic\"}},\"data_stream\":{\"namespace\":\"default\",\"type\":\"logs\",\"dataset\":\"claude_code.events.otel\"},\"scope\":{\"name\":\"com.anthropic.claude_code.events\",\"version\":\"2.1.175\"},\"event_name\":\"tool_result\",\"attributes\":{\"tool_name\":\"mcp_tool\",\"tool_result_size_bytes\":\"1206\",\"user.id\":\"c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4\",\"tool_use_id\":\"toolu_01ExampleToolUseId00000\",\"terminal.type\":\"gnome-terminal\",\"user.account_uuid\":\"93713061-9622-2531-3758-372154648850\",\"tool_input_size_bytes\":\"2\",\"event.name\":\"tool_result\",\"event.timestamp\":\"2054-06-22T02:20:41.924Z\",\"tool_input\":\"{}\",\"prompt.id\":\"60763458-7366-3513-4028-632370982420\",\"duration_ms\":120,\"event.sequence\":67,\"decision_type\":\"accept\",\"user.email\":\"fnvfc@example.com\",\"success\":\"true\",\"decision_source\":\"user_temporary\",\"organization.id\":\"08166994-2766-0080-0901-658708848682\",\"mcp_server_scope\":\"user\",\"user.account_id\":\"user_01ExampleAccountId00000\",\"session.id\":\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\",\"tool_parameters\":\"{\\\"mcp_server_name\\\":\\\"codebase-memory-mcp\\\",\\\"mcp_tool_name\\\":\\\"list_projects\\\"}\"},\"body\":{\"text\":\"claude_code.tool_result\"},\"event\":{},\"tags\":[\"preserve_original_event\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "outcome": "success",
+        "provider": "claude-code",
+        "type": [
+          "info"
+        ]
+      },
+      "gen_ai": {
+        "provider": {
+          "name": "anthropic"
+        },
+        "tool": {
+          "call": {
+            "arguments": {
+              "mcp_server_name": "codebase-memory-mcp",
+              "mcp_tool_name": "list_projects"
+            },
+            "id": "toolu_01ExampleToolUseId00000"
+          },
+          "name": "list_projects"
+        }
+      },
+      "observed_timestamp": "2054-06-22T02:20:41.924Z",
+      "organization": {
+        "id": "08166994-2766-0080-0901-658708848682"
+      },
+      "related": {
+        "user": [
+          "fnvfc@example.com",
+          "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+        ]
+      },
+      "resource": {
+        "attributes": {
+          "host.arch": "amd64",
+          "os.type": "linux",
+          "os.version": "6.17.0-14-generic",
+          "service.name": "claude-code",
+          "service.version": "2.1.175"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.175"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "fnvfc@example.com",
+        "id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-06-22T02:20:41.924Z",
+      "attributes": {
+        "decision_source": "user_temporary",
+        "decision_type": "accept",
+        "duration_ms": 120,
+        "event.name": "tool_result",
+        "event.sequence": 67,
+        "event.timestamp": "2054-06-22T02:20:41.924Z",
+        "mcp_server_scope": "user",
+        "organization.id": "08166994-2766-0080-0901-658708848682",
+        "prompt.id": "60763458-7366-3513-4028-632370982420",
+        "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+        "success": "true",
+        "terminal.type": "gnome-terminal",
+        "tool_input": "{}",
+        "tool_input_size_bytes": "2",
+        "tool_name": "mcp_tool",
+        "tool_parameters": "{\"mcp_server_name\":\"codebase-memory-mcp\",\"mcp_tool_name\":\"list_projects\"}",
+        "tool_result_size_bytes": "1206",
+        "tool_use_id": "toolu_01ExampleToolUseId00000",
+        "user.account_id": "user_01ExampleAccountId00000",
+        "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+        "user.email": "fnvfc@example.com",
+        "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      },
+      "body": {
+        "text": "claude_code.tool_result"
+      },
+      "data_stream": {
+        "dataset": "claude_code.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "event_name": "tool_result",
+      "observed_timestamp": "2054-06-22T02:20:41.924Z",
+      "resource": {
+        "attributes": {
+          "host.arch": "amd64",
+          "os.type": "linux",
+          "os.version": "6.17.0-14-generic",
+          "service.name": "claude-code",
+          "service.version": "2.1.175"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.175"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claude_code-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "claude_code",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

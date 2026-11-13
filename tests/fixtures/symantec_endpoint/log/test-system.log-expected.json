@@ -1,0 +1,162 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Site: SEPSite,Server: exampleHostname,Symantec Endpoint Protection Manager could not update Intrusion Prevention Signatures 14.0.",
+        "provider": "System Log"
+      },
+      "message": "Symantec Endpoint Protection Manager could not update Intrusion Prevention Signatures 14.0.",
+      "symantec_endpoint": {
+        "log": {
+          "event_description": "Symantec Endpoint Protection Manager could not update Intrusion Prevention Signatures 14.0.",
+          "server": "exampleHostname",
+          "site": "SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Site: SEPSite,Server: exampleHostname,Number of old risk events swept: 130",
+        "provider": "System Log"
+      },
+      "message": "Number of old risk events swept: 130",
+      "symantec_endpoint": {
+        "log": {
+          "event_description": "Number of old risk events swept: 130",
+          "server": "exampleHostname",
+          "site": "SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Site: SEPSite,Server: exampleHostname,LiveUpdate started.",
+        "provider": "System Log"
+      },
+      "message": "LiveUpdate started.",
+      "symantec_endpoint": {
+        "log": {
+          "event_description": "LiveUpdate started.",
+          "server": "exampleHostname",
+          "site": "SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Site: SEPSite,Server: exampleHostname,Database maintenance started.",
+        "provider": "System Log"
+      },
+      "message": "Database maintenance started.",
+      "symantec_endpoint": {
+        "log": {
+          "event_description": "Database maintenance started.",
+          "server": "exampleHostname",
+          "site": "SEPSite"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server: exampleHostname,Symantec Endpoint Protection Manager could not update Intrusion Prevention Signatures 14.0.",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server: exampleHostname,Number of old risk events swept: 130",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server: exampleHostname,LiveUpdate started.",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server: exampleHostname,Database maintenance started.",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

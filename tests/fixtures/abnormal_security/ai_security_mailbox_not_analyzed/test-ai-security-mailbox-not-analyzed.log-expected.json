@@ -1,0 +1,205 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-03-06T17:27:15.000Z",
+      "abnormal_security": {
+        "ai_security_mailbox_not_analyzed": {
+          "abx_message_id": "-7361381340273523750",
+          "reason": "ROUTED_SUBMISSION",
+          "recipient": {
+            "address": "mkpuuuwg@xcyx.com",
+            "name": "Phishing Test"
+          },
+          "reported_time": "2053-03-06T17:27:15Z",
+          "reporter": {
+            "address": "qcmkymcj@xcyx.com",
+            "name": "Reporter Test"
+          },
+          "subject": "Re: Subject"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "subject": "Re: Subject",
+        "to": {
+          "address": [
+            "mkpuuuwg@xcyx.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "id": "-7361381340273523750",
+        "kind": "event",
+        "original": "{\"abx_message_id\":-7361381340273523750,\"recipient\":{\"email\":\"mkpuuuwg@xcyx.com\",\"name\":\"Phishing Test\"},\"reported_datetime\":\"2053-03-06T17:27:15Z\",\"reporter\":{\"email\":\"qcmkymcj@xcyx.com\",\"name\":\"Reporter Test\"},\"subject\":\"Re: Subject\",\"not_analyzed_reason\":\"ROUTED_SUBMISSION\"}",
+        "reason": "ROUTED_SUBMISSION",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "mkpuuuwg@xcyx.com",
+          "Phishing Test",
+          "qcmkymcj@xcyx.com",
+          "Reporter Test"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-04T18:50:27.000Z",
+      "abnormal_security": {
+        "ai_security_mailbox_not_analyzed": {
+          "abx_message_id": "240750237502375023",
+          "reason": "INVALID_SUBMISSION",
+          "recipient": {
+            "address": "mkpuuuwg@xcyx.com",
+            "name": "Phishing Test"
+          },
+          "reported_time": "2053-03-04T18:50:27Z",
+          "reporter": {
+            "address": "sbgq@example.com",
+            "name": "Test Example"
+          },
+          "subject": "Fw: Forwarded email"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "subject": "Fw: Forwarded email",
+        "to": {
+          "address": [
+            "mkpuuuwg@xcyx.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "id": "240750237502375023",
+        "kind": "event",
+        "original": "{\"abx_message_id\":240750237502375023,\"recipient\":{\"email\":\"mkpuuuwg@xcyx.com\",\"name\":\"Phishing Test\"},\"reported_datetime\":\"2053-03-04T18:50:27Z\",\"reporter\":{\"email\":\"sbgq@example.com\",\"name\":\"Test Example\"},\"subject\":\"Fw: Forwarded email\",\"not_analyzed_reason\":\"INVALID_SUBMISSION\"}",
+        "reason": "INVALID_SUBMISSION",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "mkpuuuwg@xcyx.com",
+          "Phishing Test",
+          "sbgq@example.com",
+          "Test Example"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-04T17:03:55.000Z",
+      "abnormal_security": {
+        "ai_security_mailbox_not_analyzed": {
+          "abx_message_id": "-1234567891234567891",
+          "reason": "PHISHING_SIMULATION",
+          "recipient": {
+            "address": "mkpuuuwg@xcyx.com",
+            "name": "Phishing Test"
+          },
+          "reported_time": "2053-03-04T17:03:55Z",
+          "reporter": {
+            "address": "info@xcyx.com",
+            "name": "Info Test"
+          },
+          "subject": "Fwd: Forwarded email"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "subject": "Fwd: Forwarded email",
+        "to": {
+          "address": [
+            "mkpuuuwg@xcyx.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "id": "-1234567891234567891",
+        "kind": "event",
+        "original": "{\"abx_message_id\":-1234567891234567891,\"recipient\":{\"email\":\"mkpuuuwg@xcyx.com\",\"name\":\"Phishing Test\"},\"reported_datetime\":\"2053-03-04T17:03:55Z\",\"reporter\":{\"email\":\"info@xcyx.com\",\"name\":\"Info Test\"},\"subject\":\"Fwd: Forwarded email\",\"not_analyzed_reason\":\"PHISHING_SIMULATION\"}",
+        "reason": "PHISHING_SIMULATION",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Inbound Email Security",
+        "vendor": "Abnormal"
+      },
+      "related": {
+        "user": [
+          "mkpuuuwg@xcyx.com",
+          "Phishing Test",
+          "info@xcyx.com",
+          "Info Test"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"abx_message_id\":-7361381340273523750,\"recipient\":{\"email\":\"mkpuuuwg@xcyx.com\",\"name\":\"Phishing Test\"},\"reported_datetime\":\"2053-03-06T17:27:15Z\",\"reporter\":{\"email\":\"qcmkymcj@xcyx.com\",\"name\":\"Reporter Test\"},\"subject\":\"Re: Subject\",\"not_analyzed_reason\":\"ROUTED_SUBMISSION\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"abx_message_id\":240750237502375023,\"recipient\":{\"email\":\"mkpuuuwg@xcyx.com\",\"name\":\"Phishing Test\"},\"reported_datetime\":\"2053-03-04T18:50:27Z\",\"reporter\":{\"email\":\"sbgq@example.com\",\"name\":\"Test Example\"},\"subject\":\"Fw: Forwarded email\",\"not_analyzed_reason\":\"INVALID_SUBMISSION\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"abx_message_id\":-1234567891234567891,\"recipient\":{\"email\":\"mkpuuuwg@xcyx.com\",\"name\":\"Phishing Test\"},\"reported_datetime\":\"2053-03-04T17:03:55Z\",\"reporter\":{\"email\":\"info@xcyx.com\",\"name\":\"Info Test\"},\"subject\":\"Fwd: Forwarded email\",\"not_analyzed_reason\":\"PHISHING_SIMULATION\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ai_security_mailbox_not_analyzed",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-abnormal_security-ai_security_mailbox_not_analyzed-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "abnormal_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

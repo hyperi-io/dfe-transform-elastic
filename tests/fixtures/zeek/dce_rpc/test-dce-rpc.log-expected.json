@@ -1,0 +1,81 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2041-02-26T22:05:32.298Z",
+      "destination": {
+        "address": "172.26.243.193",
+        "ip": "172.26.243.193",
+        "port": 445
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "BrowserrQueryOtherDomains",
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CsNHVHa1lzFtvJzT8",
+        "kind": "event",
+        "original": "{\"ts\":2245529132.298338,\"uid\":\"CsNHVHa1lzFtvJzT8\",\"id.orig_h\":\"172.29.188.105\",\"id.orig_p\":1728,\"id.resp_h\":\"172.26.243.193\",\"id.resp_p\":445,\"rtt\":0.09211,\"named_pipe\":\"\\u005cPIPE\\u005cbrowser\",\"endpoint\":\"browser\",\"operation\":\"BrowserrQueryOtherDomains\"}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "network": {
+        "community_id": "1:HQOiuk3actLYsG2YCDcwHQDcFGY=",
+        "protocol": "dce_rpc",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "172.29.188.105",
+          "172.26.243.193"
+        ]
+      },
+      "source": {
+        "address": "172.29.188.105",
+        "ip": "172.29.188.105",
+        "port": 1728
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "dce_rpc": {
+          "endpoint": "browser",
+          "named_pipe": "\\PIPE\\browser",
+          "operation": "BrowserrQueryOtherDomains",
+          "rtt": 0.09211
+        },
+        "session_id": "CsNHVHa1lzFtvJzT8"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2245529132.298338,\"uid\":\"CsNHVHa1lzFtvJzT8\",\"id.orig_h\":\"172.29.188.105\",\"id.orig_p\":1728,\"id.resp_h\":\"172.26.243.193\",\"id.resp_p\":445,\"rtt\":0.09211,\"named_pipe\":\"\\u005cPIPE\\u005cbrowser\",\"endpoint\":\"browser\",\"operation\":\"BrowserrQueryOtherDomains\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "dce_rpc",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-dce_rpc-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,1328 @@
+{
+  "expected": [
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-2234",
+            "sn": "953",
+            "upn": "pmdoyxah.841"
+          },
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNTUzNzYwIiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=",
+          "email": "pmdoyxah.841@example.com",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "MockUser 953",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "1090",
+          "type": "internal",
+          "uid": "4d62bba36f317a9deabcd622194f1b9a08873125792dfefefdfedaa9a4bc3e64",
+          "username": "pmdoyxah.841",
+          "uuid": "beabbd70-0270-5043-9885-bbfacceadbfe"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":1090,\"username\":\"pmdoyxah.841\",\"name\":\"MockUser 953\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"pmdoyxah.841@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNTUzNzYwIiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"953\",\"upn\":\"pmdoyxah.841\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-2234\"},\"uid\":\"4d62bba36f317a9deabcd622194f1b9a08873125792dfefefdfedaa9a4bc3e64\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"beabbd70-0270-5043-9885-bbfacceadbfe\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "1090",
+          "pmdoyxah.841",
+          "MockUser 953",
+          "pmdoyxah.841@example.com",
+          "4d62bba36f317a9deabcd622194f1b9a08873125792dfefefdfedaa9a4bc3e64",
+          "beabbd70-0270-5043-9885-bbfacceadbfe"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "pmdoyxah.841@example.com",
+        "full_name": "MockUser 953",
+        "id": "1090",
+        "name": "pmdoyxah.841"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-3234",
+            "sn": "954",
+            "upn": "sgczhxau.724"
+          },
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc0NmM4IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=",
+          "email": "sgczhxau.724@example.com",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "MockUser 954",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "1092",
+          "type": "internal",
+          "uid": "9a97febf3a311a6dbbbbb616629d2a5b19185713478ddedebcadbbd5d0bd0d44",
+          "username": "sgczhxau.724",
+          "uuid": "fdfbad12-3210-5240-9889-aebbdcbacfbb"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":1092,\"username\":\"sgczhxau.724\",\"name\":\"MockUser 954\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"sgczhxau.724@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc0NmM4IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"954\",\"upn\":\"sgczhxau.724\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-3234\"},\"uid\":\"9a97febf3a311a6dbbbbb616629d2a5b19185713478ddedebcadbbd5d0bd0d44\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"fdfbad12-3210-5240-9889-aebbdcbacfbb\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "1092",
+          "sgczhxau.724",
+          "MockUser 954",
+          "sgczhxau.724@example.com",
+          "9a97febf3a311a6dbbbbb616629d2a5b19185713478ddedebcadbbd5d0bd0d44",
+          "fdfbad12-3210-5240-9889-aebbdcbacfbb"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "sgczhxau.724@example.com",
+        "full_name": "MockUser 954",
+        "id": "1092",
+        "name": "sgczhxau.724"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-3454",
+            "sn": "955",
+            "upn": "mkdoslbq.717"
+          },
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc1MmM4IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=",
+          "email": "mkdoslbq.717@example.com",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "MockUser 955",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "1094",
+          "type": "internal",
+          "uid": "0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabcdef4f5cd4e99",
+          "username": "mkdoslbq.717",
+          "uuid": "ddfbcb58-6149-5717-8362-fceeddfbfbcd"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":1094,\"username\":\"mkdoslbq.717\",\"name\":\"MockUser 955\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"mkdoslbq.717@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc1MmM4IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"955\",\"upn\":\"mkdoslbq.717\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-3454\"},\"uid\":\"0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabcdef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"ddfbcb58-6149-5717-8362-fceeddfbfbcd\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "1094",
+          "mkdoslbq.717",
+          "MockUser 955",
+          "mkdoslbq.717@example.com",
+          "0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabcdef4f5cd4e99",
+          "ddfbcb58-6149-5717-8362-fceeddfbfbcd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "mkdoslbq.717@example.com",
+        "full_name": "MockUser 955",
+        "id": "1094",
+        "name": "mkdoslbq.717"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-3196",
+            "sn": "956",
+            "upn": "hsexutfl.368"
+          },
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNTQzNzM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=",
+          "email": "hsexutfl.368@example.com",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "MockUser 956",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "1096",
+          "type": "internal",
+          "uid": "0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabefef4f5cd4e99",
+          "username": "hsexutfl.368",
+          "uuid": "fffedc96-6478-5876-8019-beebdaebaadd"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":1096,\"username\":\"hsexutfl.368\",\"name\":\"MockUser 956\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"hsexutfl.368@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNTQzNzM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"956\",\"upn\":\"hsexutfl.368\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-3196\"},\"uid\":\"0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabefef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"fffedc96-6478-5876-8019-beebdaebaadd\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "1096",
+          "hsexutfl.368",
+          "MockUser 956",
+          "hsexutfl.368@example.com",
+          "0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabefef4f5cd4e99",
+          "fffedc96-6478-5876-8019-beebdaebaadd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "hsexutfl.368@example.com",
+        "full_name": "MockUser 956",
+        "id": "1096",
+        "name": "hsexutfl.368"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-4085",
+            "sn": "957",
+            "upn": "rsdohiak.230"
+          },
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNThhMWE5IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=",
+          "email": "rsdohiak.230@example.com",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "MockUser 957",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "1098",
+          "type": "internal",
+          "uid": "0c20aac19d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "rsdohiak.230",
+          "uuid": "fadbfa82-0168-5776-8936-dafdbbdefdff"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":1098,\"username\":\"rsdohiak.230\",\"name\":\"MockUser 957\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"rsdohiak.230@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNThhMWE5IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"957\",\"upn\":\"rsdohiak.230\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-4085\"},\"uid\":\"0c20aac19d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"fadbfa82-0168-5776-8936-dafdbbdefdff\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "1098",
+          "rsdohiak.230",
+          "MockUser 957",
+          "rsdohiak.230@example.com",
+          "0c20aac19d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "fadbfa82-0168-5776-8936-dafdbbdefdff"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "rsdohiak.230@example.com",
+        "full_name": "MockUser 957",
+        "id": "1098",
+        "name": "rsdohiak.230"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-4080",
+            "sn": "Lane",
+            "upn": "wowr.ibtc@example.local"
+          },
+          "email": "wowr.ibtc@example.com",
+          "is_active": false,
+          "is_superuser": false,
+          "name": "Lois Lane",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "69",
+          "type": "internal",
+          "uid": "0c20aabcd9d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "wowr.ibtc",
+          "uuid": "dfbafb17-0068-5035-0747-cebbaabfeeed"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":69,\"username\":\"wowr.ibtc\",\"name\":\"Lois Lane\",\"is_active\":false,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"wowr.ibtc@example.com\",\"avatar\":null,\"attributes\":{\"sn\":\"Lane\",\"upn\":\"wowr.ibtc@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-4080\"},\"uid\":\"0c20aabcd9d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"dfbafb17-0068-5035-0747-cebbaabfeeed\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "69",
+          "wowr.ibtc",
+          "Lois Lane",
+          "wowr.ibtc@example.com",
+          "0c20aabcd9d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "dfbafb17-0068-5035-0747-cebbaabfeeed"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "wowr.ibtc@example.com",
+        "full_name": "Lois Lane",
+        "id": "69",
+        "name": "wowr.ibtc"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-4890",
+            "sn": "Kent",
+            "upn": "eofso.mcip@example.local"
+          },
+          "email": "eofso.mcip@example.com",
+          "is_active": false,
+          "is_superuser": false,
+          "name": "Clark Kent",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "72",
+          "type": "internal",
+          "uid": "0c20aabcd25614b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "eofso.mcip",
+          "uuid": "cacfde66-1746-5903-0594-bcafeadbfabf"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":72,\"username\":\"eofso.mcip\",\"name\":\"Clark Kent\",\"is_active\":false,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"eofso.mcip@example.com\",\"avatar\":null,\"attributes\":{\"sn\":\"Kent\",\"upn\":\"eofso.mcip@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-4890\"},\"uid\":\"0c20aabcd25614b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"cacfde66-1746-5903-0594-bcafeadbfabf\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "72",
+          "eofso.mcip",
+          "Clark Kent",
+          "eofso.mcip@example.com",
+          "0c20aabcd25614b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "cacfde66-1746-5903-0594-bcafeadbfabf"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eofso.mcip@example.com",
+        "full_name": "Clark Kent",
+        "id": "72",
+        "name": "eofso.mcip"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-1897",
+            "sn": "Higgins",
+            "upn": "jcvwv.tioimpy@example.local"
+          },
+          "email": "jcvwv.tioimpy@example.com",
+          "is_active": false,
+          "is_superuser": false,
+          "name": "Henry Higgins",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "74",
+          "type": "internal",
+          "uid": "0c20aabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "jcvwv.tioimpy",
+          "uuid": "bcbcae17-9263-5691-0508-eaceeddfcbac"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":74,\"username\":\"jcvwv.tioimpy\",\"name\":\"Henry Higgins\",\"is_active\":false,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"jcvwv.tioimpy@example.com\",\"attributes\":{\"sn\":\"Higgins\",\"upn\":\"jcvwv.tioimpy@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-1897\"},\"uid\":\"0c20aabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"bcbcae17-9263-5691-0508-eaceeddfcbac\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "74",
+          "jcvwv.tioimpy",
+          "Henry Higgins",
+          "jcvwv.tioimpy@example.com",
+          "0c20aabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "bcbcae17-9263-5691-0508-eaceeddfcbac"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "jcvwv.tioimpy@example.com",
+        "full_name": "Henry Higgins",
+        "id": "74",
+        "name": "jcvwv.tioimpy"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-1890",
+            "sn": "Normous",
+            "upn": "dunja.wrlvgnz@example.local"
+          },
+          "email": "dunja.wrlvgnz@example.com",
+          "groups": [
+            "43884bf1-2cf0-4137-9238-93ea1164a84a"
+          ],
+          "is_active": true,
+          "is_superuser": false,
+          "name": "Dixie Normous",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "66",
+          "type": "internal",
+          "uid": "0abfaabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "dunja.wrlvgnz",
+          "uuid": "bddeaf94-6266-5408-1402-bfeabaceadcd"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":66,\"username\":\"dunja.wrlvgnz\",\"name\":\"Dixie Normous\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[\"43884bf1-2cf0-4137-9238-93ea1164a84a\"],\"groups_obj\":null,\"email\":\"dunja.wrlvgnz@example.com\",\"attributes\":{\"sn\":\"Normous\",\"upn\":\"dunja.wrlvgnz@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-1890\"},\"uid\":\"0abfaabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"bddeaf94-6266-5408-1402-bfeabaceadcd\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "66",
+          "dunja.wrlvgnz",
+          "Dixie Normous",
+          "dunja.wrlvgnz@example.com",
+          "0abfaabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "bddeaf94-6266-5408-1402-bfeabaceadcd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "dunja.wrlvgnz@example.com",
+        "full_name": "Dixie Normous",
+        "group": {
+          "id": [
+            "43884bf1-2cf0-4137-9238-93ea1164a84a"
+          ]
+        },
+        "id": "66",
+        "name": "dunja.wrlvgnz"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc3YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQTwvdGV4dD48L3N2Zz4=",
+          "email": "xxps963@example.com",
+          "groups": [
+            "540a7e73-4f83-4c97-9f9e-fad3f2f92b88",
+            "3caed83c-9cf1-414b-80a5-66e277209568"
+          ],
+          "is_active": true,
+          "is_superuser": true,
+          "last_login": "2052-08-13T05:33:54.801Z",
+          "name": "authentik Default Admin",
+          "path": "users",
+          "pk": "4",
+          "type": "internal",
+          "uid": "0abfaa5432568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "fibdixw",
+          "uuid": "cfbbaa18-3124-5754-1509-ebfeafdbfeed"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":4,\"username\":\"fibdixw\",\"name\":\"authentik Default Admin\",\"is_active\":true,\"last_login\":\"2052-08-13T05:33:54.801600Z\",\"is_superuser\":true,\"groups\":[\"540a7e73-4f83-4c97-9f9e-fad3f2f92b88\",\"3caed83c-9cf1-414b-80a5-66e277209568\"],\"groups_obj\":null,\"email\":\"xxps963@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc3YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQTwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"0abfaa5432568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"cfbbaa18-3124-5754-1509-ebfeafdbfeed\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "4",
+          "fibdixw",
+          "authentik Default Admin",
+          "xxps963@example.com",
+          "0abfaa5432568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "cfbbaa18-3124-5754-1509-ebfeafdbfeed"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "xxps963@example.com",
+        "full_name": "authentik Default Admin",
+        "group": {
+          "id": [
+            "540a7e73-4f83-4c97-9f9e-fad3f2f92b88",
+            "3caed83c-9cf1-414b-80a5-66e277209568"
+          ]
+        },
+        "id": "4",
+        "name": "fibdixw"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-9990",
+            "sn": "Case",
+            "upn": "usceepg.edoe@example.local"
+          },
+          "email": "usceepg.edoe@example.com",
+          "groups": [
+            "43884bf1-2cf0-4137-9238-93ea1164a84a"
+          ],
+          "is_active": true,
+          "is_superuser": false,
+          "name": "Tiffany Case",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "7",
+          "type": "internal",
+          "uid": "0abfaa5acd568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "usceepg.edoe",
+          "uuid": "dbaaea09-1575-5076-1252-fdbdebacafeb"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":7,\"username\":\"usceepg.edoe\",\"name\":\"Tiffany Case\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[\"43884bf1-2cf0-4137-9238-93ea1164a84a\"],\"groups_obj\":null,\"email\":\"usceepg.edoe@example.com\",\"attributes\":{\"sn\":\"Case\",\"upn\":\"usceepg.edoe@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-9990\"},\"uid\":\"0abfaa5acd568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"dbaaea09-1575-5076-1252-fdbdebacafeb\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "7",
+          "usceepg.edoe",
+          "Tiffany Case",
+          "usceepg.edoe@example.com",
+          "0abfaa5acd568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "dbaaea09-1575-5076-1252-fdbdebacafeb"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "usceepg.edoe@example.com",
+        "full_name": "Tiffany Case",
+        "group": {
+          "id": [
+            "43884bf1-2cf0-4137-9238-93ea1164a84a"
+          ]
+        },
+        "id": "7",
+        "name": "usceepg.edoe"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzdjOGE5IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQjwvdGV4dD48L3N2Zz4=",
+          "email": "dfb@example.org",
+          "is_active": true,
+          "is_superuser": false,
+          "last_login": "2052-08-08T10:47:00.586Z",
+          "name": "dfb",
+          "path": "users",
+          "pk": "2107",
+          "type": "internal",
+          "uid": "0abfaa5acd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "dfb",
+          "uuid": "befeae33-7965-5564-9227-cebadfcdfdbd"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":2107,\"username\":\"dfb\",\"name\":\"dfb\",\"is_active\":true,\"last_login\":\"2052-08-08T10:47:00.586952Z\",\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"dfb@example.org\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzdjOGE5IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQjwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"0abfaa5acd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"befeae33-7965-5564-9227-cebadfcdfdbd\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "2107",
+          "dfb",
+          "dfb@example.org",
+          "0abfaa5acd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "befeae33-7965-5564-9227-cebadfcdfdbd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.org",
+        "email": "dfb@example.org",
+        "full_name": "dfb",
+        "id": "2107",
+        "name": "dfb"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "attributes": {
+            "ldap_uniq": "S-1-5-21-1234567890-1234567890-1234567890-0990",
+            "sn": "Arimathea",
+            "upn": "zlpeip.esisegrcb@example.local"
+          },
+          "email": "zlpeip.esisegrcb@example.com",
+          "groups": [
+            "43884bf1-2cf0-4137-9238-93ea1164a84a"
+          ],
+          "is_active": true,
+          "is_superuser": false,
+          "name": "Joseph Arimathea",
+          "path": "qvekomajkvv.io/sources/test-ldap/Company/AllUsers",
+          "pk": "87",
+          "type": "internal",
+          "uid": "0abfa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "zlpeip.esisegrcb",
+          "uuid": "eedbda61-4399-5824-9695-dfefabcfbfca"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":87,\"username\":\"zlpeip.esisegrcb\",\"name\":\"Joseph Arimathea\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[\"43884bf1-2cf0-4137-9238-93ea1164a84a\"],\"groups_obj\":null,\"email\":\"zlpeip.esisegrcb@example.com\",\"avatar\":null,\"attributes\":{\"sn\":\"Arimathea\",\"upn\":\"zlpeip.esisegrcb@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-0990\"},\"uid\":\"0abfa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"eedbda61-4399-5824-9695-dfefabcfbfca\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "87",
+          "zlpeip.esisegrcb",
+          "Joseph Arimathea",
+          "zlpeip.esisegrcb@example.com",
+          "0abfa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "eedbda61-4399-5824-9695-dfefabcfbfca"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "zlpeip.esisegrcb@example.com",
+        "full_name": "Joseph Arimathea",
+        "group": {
+          "id": [
+            "43884bf1-2cf0-4137-9238-93ea1164a84a"
+          ]
+        },
+        "id": "87",
+        "name": "zlpeip.esisegrcb"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNDA0NjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5PUzwvdGV4dD48L3N2Zz4=",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "Outpost authentik Embedded Outpost Service-Account",
+          "path": "qvekomajkvv.io/outposts",
+          "pk": "2",
+          "type": "internal_service_account",
+          "uid": "80afa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "fw-mshkvzw-92bfdcc5d9da1747d0cb76f4e1752d8d",
+          "uuid": "adeccf42-3416-5409-9257-abacfdddaded"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":2,\"username\":\"fw-mshkvzw-92bfdcc5d9da1747d0cb76f4e1752d8d\",\"name\":\"Outpost authentik Embedded Outpost Service-Account\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNDA0NjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5PUzwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"80afa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/outposts\",\"type\":\"internal_service_account\",\"uuid\":\"adeccf42-3416-5409-9257-abacfdddaded\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "2",
+          "fw-mshkvzw-92bfdcc5d9da1747d0cb76f4e1752d8d",
+          "Outpost authentik Embedded Outpost Service-Account",
+          "80afa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "adeccf42-3416-5409-9257-abacfdddaded"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "full_name": "Outpost authentik Embedded Outpost Service-Account",
+        "id": "2",
+        "name": "fw-mshkvzw-92bfdcc5d9da1747d0cb76f4e1752d8d"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc3YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQTwvdGV4dD48L3N2Zz4=",
+          "email": "root@example.com",
+          "groups": [
+            "704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996"
+          ],
+          "is_active": true,
+          "is_superuser": true,
+          "name": "authentik Default Admin User",
+          "path": "users",
+          "pk": "6",
+          "type": "internal",
+          "uid": "80afa5ad3d820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "ajacvqmdcaemrh",
+          "uuid": "cacacb34-3214-5295-8672-efdfacbcfbaf"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":6,\"username\":\"ajacvqmdcaemrh\",\"name\":\"authentik Default Admin User\",\"is_active\":true,\"last_login\":null,\"is_superuser\":true,\"groups\":[\"704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996\"],\"groups_obj\":null,\"email\":\"root@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc3YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQTwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"80afa5ad3d820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"cacacb34-3214-5295-8672-efdfacbcfbaf\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "6",
+          "ajacvqmdcaemrh",
+          "authentik Default Admin User",
+          "root@example.com",
+          "80afa5ad3d820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "cacacb34-3214-5295-8672-efdfacbcfbaf"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "root@example.com",
+        "full_name": "authentik Default Admin User",
+        "group": {
+          "id": [
+            "704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996"
+          ]
+        },
+        "id": "6",
+        "name": "ajacvqmdcaemrh"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNDA0NjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5PUzwvdGV4dD48L3N2Zz4=",
+          "is_active": true,
+          "is_superuser": false,
+          "name": "Default Outpost authentik Embedded Outpost Service-Account",
+          "path": "qvekomajkvv.io/outposts",
+          "pk": "20",
+          "type": "internal_service_account",
+          "uid": "80afa5ad25620967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "username": "ak-guqwlmg-231aa512d77e1ef03351205472f0fb4f",
+          "uuid": "cfeaad32-7574-5688-2847-fdebafeaccfd"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":20,\"username\":\"ak-guqwlmg-231aa512d77e1ef03351205472f0fb4f\",\"name\":\"Default Outpost authentik Embedded Outpost Service-Account\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNDA0NjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5PUzwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"80afa5ad25620967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/outposts\",\"type\":\"internal_service_account\",\"uuid\":\"cfeaad32-7574-5688-2847-fdebafeaccfd\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "20",
+          "ak-guqwlmg-231aa512d77e1ef03351205472f0fb4f",
+          "Default Outpost authentik Embedded Outpost Service-Account",
+          "80afa5ad25620967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99",
+          "cfeaad32-7574-5688-2847-fdebafeaccfd"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "full_name": "Default Outpost authentik Embedded Outpost Service-Account",
+        "id": "20",
+        "name": "ak-guqwlmg-231aa512d77e1ef03351205472f0fb4f"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "avatar": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc0YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5FTDwvdGV4dD48L3N2Zz4=",
+          "groups": [
+            "704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996"
+          ],
+          "is_active": true,
+          "is_superuser": true,
+          "last_login": "2052-08-12T11:06:29.678Z",
+          "name": "fkcuwrc guest",
+          "path": "users",
+          "pk": "8",
+          "type": "internal",
+          "uid": "cf71ffe11f964a9decafb646094a1d8c12515101205cebdafffccfd4b0cb4d03",
+          "username": "fkcuwrc",
+          "uuid": "edbffc06-5979-5221-2107-fcfcdfabfacc"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":8,\"username\":\"fkcuwrc\",\"name\":\"fkcuwrc guest\",\"is_active\":true,\"last_login\":\"2052-08-12T11:06:29.678344Z\",\"is_superuser\":true,\"groups\":[\"704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996\"],\"groups_obj\":null,\"email\":\"\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc0YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5FTDwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"cf71ffe11f964a9decafb646094a1d8c12515101205cebdafffccfd4b0cb4d03\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"edbffc06-5979-5221-2107-fcfcdfabfacc\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "8",
+          "fkcuwrc",
+          "fkcuwrc guest",
+          "cf71ffe11f964a9decafb646094a1d8c12515101205cebdafffccfd4b0cb4d03",
+          "edbffc06-5979-5221-2107-fcfcdfabfacc"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "full_name": "fkcuwrc guest",
+        "group": {
+          "id": [
+            "704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996"
+          ]
+        },
+        "id": "8",
+        "name": "fkcuwrc"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "email": "vcv.aeu@areggve.io",
+          "groups": [
+            "704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996"
+          ],
+          "is_active": true,
+          "is_superuser": true,
+          "last_login": "2052-08-06T13:05:47.426Z",
+          "name": "May Day",
+          "path": "qvekomajkvv.io/sources/authentik",
+          "pk": "70",
+          "type": "internal",
+          "uid": "bd53dbf943c83e9ddbccf509176b8b0a43071001546bceabdcafaad7c1ee0d07",
+          "username": "yancah",
+          "uuid": "aeccfe57-4983-5460-3304-fbeebfdbbbde"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":70,\"username\":\"yancah\",\"name\":\"May Day\",\"is_active\":true,\"last_login\":\"2052-08-06T13:05:47.426678Z\",\"is_superuser\":true,\"groups\":[\"704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996\"],\"groups_obj\":null,\"email\":\"vcv.aeu@areggve.io\",\"avatar\":null,\"attributes\":{},\"uid\":\"bd53dbf943c83e9ddbccf509176b8b0a43071001546bceabdcafaad7c1ee0d07\",\"path\":\"qvekomajkvv.io/sources/authentik\",\"type\":\"internal\",\"uuid\":\"aeccfe57-4983-5460-3304-fbeebfdbbbde\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "70",
+          "yancah",
+          "May Day",
+          "vcv.aeu@areggve.io",
+          "bd53dbf943c83e9ddbccf509176b8b0a43071001546bceabdcafaad7c1ee0d07",
+          "aeccfe57-4983-5460-3304-fbeebfdbbbde"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "areggve.io",
+        "email": "vcv.aeu@areggve.io",
+        "full_name": "May Day",
+        "group": {
+          "id": [
+            "704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996"
+          ]
+        },
+        "id": "70",
+        "name": "yancah"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "email": "hzawmvueo@example.com",
+          "is_active": true,
+          "is_superuser": false,
+          "last_login": "2052-08-13T05:42:32.012Z",
+          "name": "Guest User",
+          "path": "guest_users",
+          "pk": "2105",
+          "type": "external",
+          "uid": "cc25bef9067c1e8bdacbe132649b1d6b28657399981bacdecfebcbd8e4eb1f17",
+          "username": "guest",
+          "uuid": "cddaaf92-5732-5353-5351-cceebbeabfcc"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":2105,\"username\":\"guest\",\"name\":\"Guest User\",\"is_active\":true,\"last_login\":\"2052-08-13T05:42:32.012591Z\",\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"hzawmvueo@example.com\",\"avatar\":null,\"attributes\":{},\"uid\":\"cc25bef9067c1e8bdacbe132649b1d6b28657399981bacdecfebcbd8e4eb1f17\",\"path\":\"guest_users\",\"type\":\"external\",\"uuid\":\"cddaaf92-5732-5353-5351-cceebbeabfcc\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "2105",
+          "guest",
+          "Guest User",
+          "hzawmvueo@example.com",
+          "cc25bef9067c1e8bdacbe132649b1d6b28657399981bacdecfebcbd8e4eb1f17",
+          "cddaaf92-5732-5353-5351-cceebbeabfcc"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "hzawmvueo@example.com",
+        "full_name": "Guest User",
+        "id": "2105",
+        "name": "guest"
+      }
+    },
+    {
+      "authentik": {
+        "user": {
+          "is_active": true,
+          "is_superuser": false,
+          "name": "Service Guest",
+          "path": "guest_users",
+          "pk": "2108",
+          "type": "service_account",
+          "uid": "ab50aac8856a4b7abedaef895517d6d9b01234567899abcdefabcdef4f5cd4e99",
+          "username": "ndypqda_jxesv",
+          "uuid": "dceebe53-6018-5573-8933-edaafbfacfdb"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"pk\":2108,\"username\":\"ndypqda_jxesv\",\"name\":\"Service Guest\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"\",\"attributes\":{},\"uid\":\"ab50aac8856a4b7abedaef895517d6d9b01234567899abcdefabcdef4f5cd4e99\",\"path\":\"guest_users\",\"type\":\"service_account\",\"uuid\":\"dceebe53-6018-5573-8933-edaafbfacfdb\"}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "authentik",
+        "vendor": "authentik"
+      },
+      "related": {
+        "user": [
+          "2108",
+          "ndypqda_jxesv",
+          "Service Guest",
+          "ab50aac8856a4b7abedaef895517d6d9b01234567899abcdefabcdef4f5cd4e99",
+          "dceebe53-6018-5573-8933-edaafbfacfdb"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "full_name": "Service Guest",
+        "id": "2108",
+        "name": "ndypqda_jxesv"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"pk\":1090,\"username\":\"pmdoyxah.841\",\"name\":\"MockUser 953\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"pmdoyxah.841@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNTUzNzYwIiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"953\",\"upn\":\"pmdoyxah.841\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-2234\"},\"uid\":\"4d62bba36f317a9deabcd622194f1b9a08873125792dfefefdfedaa9a4bc3e64\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"beabbd70-0270-5043-9885-bbfacceadbfe\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":1092,\"username\":\"sgczhxau.724\",\"name\":\"MockUser 954\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"sgczhxau.724@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc0NmM4IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"954\",\"upn\":\"sgczhxau.724\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-3234\"},\"uid\":\"9a97febf3a311a6dbbbbb616629d2a5b19185713478ddedebcadbbd5d0bd0d44\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"fdfbad12-3210-5240-9889-aebbdcbacfbb\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":1094,\"username\":\"mkdoslbq.717\",\"name\":\"MockUser 955\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"mkdoslbq.717@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc1MmM4IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"955\",\"upn\":\"mkdoslbq.717\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-3454\"},\"uid\":\"0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabcdef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"ddfbcb58-6149-5717-8362-fceeddfbfbcd\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":1096,\"username\":\"hsexutfl.368\",\"name\":\"MockUser 956\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"hsexutfl.368@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNTQzNzM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"956\",\"upn\":\"hsexutfl.368\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-3196\"},\"uid\":\"0c20aac19d914b7abcdef895517d6d9b012345677899abcdefabefef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"fffedc96-6478-5876-8019-beebdaebaadd\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":1098,\"username\":\"rsdohiak.230\",\"name\":\"MockUser 957\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"rsdohiak.230@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNThhMWE5IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5NOTwvdGV4dD48L3N2Zz4=\",\"attributes\":{\"sn\":\"957\",\"upn\":\"rsdohiak.230\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-4085\"},\"uid\":\"0c20aac19d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"fadbfa82-0168-5776-8936-dafdbbdefdff\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":69,\"username\":\"wowr.ibtc\",\"name\":\"Lois Lane\",\"is_active\":false,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"wowr.ibtc@example.com\",\"avatar\":null,\"attributes\":{\"sn\":\"Lane\",\"upn\":\"wowr.ibtc@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-4080\"},\"uid\":\"0c20aabcd9d914b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"dfbafb17-0068-5035-0747-cebbaabfeeed\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":72,\"username\":\"eofso.mcip\",\"name\":\"Clark Kent\",\"is_active\":false,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"eofso.mcip@example.com\",\"avatar\":null,\"attributes\":{\"sn\":\"Kent\",\"upn\":\"eofso.mcip@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-4890\"},\"uid\":\"0c20aabcd25614b7abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"cacfde66-1746-5903-0594-bcafeadbfabf\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":74,\"username\":\"jcvwv.tioimpy\",\"name\":\"Henry Higgins\",\"is_active\":false,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"jcvwv.tioimpy@example.com\",\"attributes\":{\"sn\":\"Higgins\",\"upn\":\"jcvwv.tioimpy@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-1897\"},\"uid\":\"0c20aabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"bcbcae17-9263-5691-0508-eaceeddfcbac\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":66,\"username\":\"dunja.wrlvgnz\",\"name\":\"Dixie Normous\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[\"43884bf1-2cf0-4137-9238-93ea1164a84a\"],\"groups_obj\":null,\"email\":\"dunja.wrlvgnz@example.com\",\"attributes\":{\"sn\":\"Normous\",\"upn\":\"dunja.wrlvgnz@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-1890\"},\"uid\":\"0abfaabcd2568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"bddeaf94-6266-5408-1402-bfeabaceadcd\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":4,\"username\":\"fibdixw\",\"name\":\"authentik Default Admin\",\"is_active\":true,\"last_login\":\"2052-08-13T05:33:54.801600Z\",\"is_superuser\":true,\"groups\":[\"540a7e73-4f83-4c97-9f9e-fad3f2f92b88\",\"3caed83c-9cf1-414b-80a5-66e277209568\"],\"groups_obj\":null,\"email\":\"xxps963@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc3YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQTwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"0abfaa5432568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"cfbbaa18-3124-5754-1509-ebfeafdbfeed\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":7,\"username\":\"usceepg.edoe\",\"name\":\"Tiffany Case\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[\"43884bf1-2cf0-4137-9238-93ea1164a84a\"],\"groups_obj\":null,\"email\":\"usceepg.edoe@example.com\",\"attributes\":{\"sn\":\"Case\",\"upn\":\"usceepg.edoe@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-9990\"},\"uid\":\"0abfaa5acd568967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"dbaaea09-1575-5076-1252-fdbdebacafeb\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":2107,\"username\":\"dfb\",\"name\":\"dfb\",\"is_active\":true,\"last_login\":\"2052-08-08T10:47:00.586952Z\",\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"dfb@example.org\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzdjOGE5IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQjwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"0abfaa5acd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"befeae33-7965-5564-9227-cebadfcdfdbd\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":87,\"username\":\"zlpeip.esisegrcb\",\"name\":\"Joseph Arimathea\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[\"43884bf1-2cf0-4137-9238-93ea1164a84a\"],\"groups_obj\":null,\"email\":\"zlpeip.esisegrcb@example.com\",\"avatar\":null,\"attributes\":{\"sn\":\"Arimathea\",\"upn\":\"zlpeip.esisegrcb@example.local\",\"ldap_uniq\":\"S-1-5-21-1234567890-1234567890-1234567890-0990\"},\"uid\":\"0abfa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/sources/test-ldap/Company/AllUsers\",\"type\":\"internal\",\"uuid\":\"eedbda61-4399-5824-9695-dfefabcfbfca\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":2,\"username\":\"fw-mshkvzw-92bfdcc5d9da1747d0cb76f4e1752d8d\",\"name\":\"Outpost authentik Embedded Outpost Service-Account\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNDA0NjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5PUzwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"80afa129cd820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/outposts\",\"type\":\"internal_service_account\",\"uuid\":\"adeccf42-3416-5409-9257-abacfdddaded\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":6,\"username\":\"ajacvqmdcaemrh\",\"name\":\"authentik Default Admin User\",\"is_active\":true,\"last_login\":null,\"is_superuser\":true,\"groups\":[\"704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996\"],\"groups_obj\":null,\"email\":\"root@example.com\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc3YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5BQTwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"80afa5ad3d820967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"cacacb34-3214-5295-8672-efdfacbcfbaf\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":20,\"username\":\"ak-guqwlmg-231aa512d77e1ef03351205472f0fb4f\",\"name\":\"Default Outpost authentik Embedded Outpost Service-Account\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjNDA0NjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5PUzwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"80afa5ad25620967abcdef895517d6d9b012345677899abcde78befef4f5cd4e99\",\"path\":\"qvekomajkvv.io/outposts\",\"type\":\"internal_service_account\",\"uuid\":\"cfeaad32-7574-5688-2847-fdebafeaccfd\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":8,\"username\":\"fkcuwrc\",\"name\":\"fkcuwrc guest\",\"is_active\":true,\"last_login\":\"2052-08-12T11:06:29.678344Z\",\"is_superuser\":true,\"groups\":[\"704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996\"],\"groups_obj\":null,\"email\":\"\",\"avatar\":\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NHB4IiBoZWlnaHQ9IjY0cHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgdmVyc2lvbj0iMS4xIj48cmVjdCBmaWxsPSIjMzc0YjM3IiBjeD0iMzIiIGN5PSIzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByPSIzMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBzdHlsZT0iY29sb3I6ICNmZmY7IGxpbmUtaGVpZ2h0OiAxOyBmb250LWZhbWlseTogJ1JlZEhhdFRleHQnLCdPdmVycGFzcycsb3ZlcnBhc3MsaGVsdmV0aWNhLGFyaWFsLHNhbnMtc2VyaWY7ICIgZmlsbD0iI2ZmZiIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSI0MDAiIGR5PSIuMWVtIj5FTDwvdGV4dD48L3N2Zz4=\",\"attributes\":{},\"uid\":\"cf71ffe11f964a9decafb646094a1d8c12515101205cebdafffccfd4b0cb4d03\",\"path\":\"users\",\"type\":\"internal\",\"uuid\":\"edbffc06-5979-5221-2107-fcfcdfabfacc\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":70,\"username\":\"yancah\",\"name\":\"May Day\",\"is_active\":true,\"last_login\":\"2052-08-06T13:05:47.426678Z\",\"is_superuser\":true,\"groups\":[\"704a1cf7-5f65-4ddc-ac7b-dbdfc4a3b996\"],\"groups_obj\":null,\"email\":\"vcv.aeu@areggve.io\",\"avatar\":null,\"attributes\":{},\"uid\":\"bd53dbf943c83e9ddbccf509176b8b0a43071001546bceabdcafaad7c1ee0d07\",\"path\":\"qvekomajkvv.io/sources/authentik\",\"type\":\"internal\",\"uuid\":\"aeccfe57-4983-5460-3304-fbeebfdbbbde\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":2105,\"username\":\"guest\",\"name\":\"Guest User\",\"is_active\":true,\"last_login\":\"2052-08-13T05:42:32.012591Z\",\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"hzawmvueo@example.com\",\"avatar\":null,\"attributes\":{},\"uid\":\"cc25bef9067c1e8bdacbe132649b1d6b28657399981bacdecfebcbd8e4eb1f17\",\"path\":\"guest_users\",\"type\":\"external\",\"uuid\":\"cddaaf92-5732-5353-5351-cceebbeabfcc\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"pk\":2108,\"username\":\"ndypqda_jxesv\",\"name\":\"Service Guest\",\"is_active\":true,\"last_login\":null,\"is_superuser\":false,\"groups\":[],\"groups_obj\":null,\"email\":\"\",\"attributes\":{},\"uid\":\"ab50aac8856a4b7abedaef895517d6d9b01234567899abcdefabcdef4f5cd4e99\",\"path\":\"guest_users\",\"type\":\"service_account\",\"uuid\":\"dceebe53-6018-5573-8933-edaafbfacfdb\"}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "user",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-authentik-user-default",
+    "event_count": 20,
+    "numeric_keyword_fields": [],
+    "package": "authentik",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

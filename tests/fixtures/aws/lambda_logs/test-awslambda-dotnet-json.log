@@ -1,0 +1,30 @@
+{
+    "timestamp": "2051-09-07T01:30:06.977Z",
+    "level": "Information",
+    "requestId": "6f510472-5c29-44b7-ac30-9e23d8f05cb8",
+    "traceId": "3-0651fe62-98e71d2a2858d4f409605434",
+    "message": "{@users} have joined the group",
+    "users": 
+    [
+        {
+            "FirstName": "Esczcpaht",
+            "LastName": "Gvwdoak"
+        },
+        {
+            "FirstName": "Kmjo",
+            "LastName": "Siwnep"
+        }        
+    ] 
+}
+{
+    "timestamp": "2051-09-07T01:30:06.977Z",
+    "level": "Information",
+    "requestId": "6f510472-5c29-44b7-ac30-9e23d8f05cb8",
+    "traceId": "3-0651fe62-98e71d2a2858d4f409605434",
+    "message": "{users} have joined the group",
+    "users": 
+    [
+        "Gvwdoak, Esczcpaht",
+        "Siwnep, Kmjo"       
+    ] 
+}

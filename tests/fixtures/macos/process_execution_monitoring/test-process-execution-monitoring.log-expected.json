@@ -1,0 +1,172 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-01-13T12:28:13.140Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "kind": "event",
+        "original": "{\"timezoneName\":\"\",\"messageType\":\"Default\",\"eventType\":\"logEvent\",\"source\":null,\"formatString\":\"code signing internal problem: unexpected error from xpc: %s\",\"userID\":501,\"activityIdentifier\":0,\"subsystem\":\"com.apple.securityd\",\"category\":\"SecError\",\"threadID\":199743,\"senderImageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\",\"backtrace\":{\"frames\":[{\"imageOffset\":2219233,\"imageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\"}]},\"bootUUID\":\"BF936DA1-B0ED-4170-9A3F-F75B3ABB5333\",\"processImagePath\":\"\\/System\\/Library\\/Frameworks\\/StoreKit.framework\\/Support\\/storekitagent\",\"senderImagePath\":\"\\/System\\/Library\\/Frameworks\\/Security.framework\\/Versions\\/A\\/Security\",\"timestamp\":\"2054-01-13 17:58:13.140307+0530\",\"machTimestamp\":82458117633560,\"eventMessage\":\"code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\\n\\t\\\"XPCErrorDescription\\\" => <string: 0x7ff8593dce78> { length = 18, contents = \\\"Connection invalid\\\" }\\n}\",\"processImageUUID\":\"74C1E20E-89DB-3DFB-98D4-2460E3AC5B92\",\"traceID\":232616665735757828,\"processID\":552,\"senderProgramCounter\":2219233,\"parentActivityIdentifier\":0}",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "macos": {
+        "activity_identifier": "0",
+        "backtrace": {
+          "frames": [
+            {
+              "image": {
+                "offset": "2219233",
+                "uuid": "CC63C57D-150B-3E7D-B5D8-0665FA4A099F"
+              }
+            }
+          ]
+        },
+        "boot_uuid": "BF936DA1-B0ED-4170-9A3F-F75B3ABB5333",
+        "category": "SecError",
+        "event": {
+          "message": {
+            "description": "code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\n\t\"XPCErrorDescription\" => <string: 0x7ff8593dce78> { length = 18, contents = \"Connection invalid\" }\n}"
+          },
+          "type": "logEvent"
+        },
+        "format_string": "code signing internal problem: unexpected error from xpc: %s",
+        "mach_timestamp": 82458117633560.0,
+        "parent_activity_identifier": "0",
+        "process": {
+          "image_path": "/System/Library/Frameworks/StoreKit.framework/Support/storekitagent",
+          "image_uuid": "74C1E20E-89DB-3DFB-98D4-2460E3AC5B92"
+        },
+        "sender": {
+          "image_path": "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+          "image_uuid": "CC63C57D-150B-3E7D-B5D8-0665FA4A099F",
+          "program_counter": 2219233
+        },
+        "subsystem": "com.apple.securityd",
+        "trace_id": "232616665735757828"
+      },
+      "message": "code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\n\t\"XPCErrorDescription\" => <string: 0x7ff8593dce78> { length = 18, contents = \"Connection invalid\" }\n}",
+      "process": {
+        "pid": 552,
+        "thread": {
+          "id": 199743
+        }
+      },
+      "related": {
+        "user": [
+          "501"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "501"
+      }
+    },
+    {
+      "@timestamp": "2053-10-21T09:57:16.289Z",
+      "ecs": {
+        "version": "9.2.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "kind": "event",
+        "original": "{\"timezoneName\":\"\",\"messageType\":\"Default\",\"eventType\":\"logEvent\",\"source\":null,\"formatString\":\"code signing internal problem: unexpected error from xpc: %s\",\"userID\":501,\"activityIdentifier\":0,\"subsystem\":\"com.apple.securityd\",\"category\":\"SecError\",\"threadID\":199743,\"senderImageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\",\"backtrace\":{\"frames\":[{\"imageOffset\":2219233,\"imageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\"}]},\"bootUUID\":\"BF936DA1-B0ED-4170-9A3F-F75B3ABB5333\",\"processImagePath\":\"\\/System\\/Library\\/Frameworks\\/StoreKit.framework\\/Support\\/storekitagent\",\"senderImagePath\":\"\\/System\\/Library\\/Frameworks\\/Security.framework\\/Versions\\/A\\/Security\",\"timestamp\":\"2053-10-21 15:27:16.289787+0530\",\"machTimestamp\":82458070242618,\"eventMessage\":\"code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\\n\\t\\\"XPCErrorDescription\\\" => <string: 0x7ff8593dce78> { length = 18, contents = \\\"Connection invalid\\\" }\\n}\",\"processImageUUID\":\"74C1E20E-89DB-3DFB-98D4-2460E3AC5B92\",\"traceID\":232616665735757828,\"processID\":552,\"senderProgramCounter\":2219233,\"parentActivityIdentifier\":0}",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "info"
+      },
+      "macos": {
+        "activity_identifier": "0",
+        "backtrace": {
+          "frames": [
+            {
+              "image": {
+                "offset": "2219233",
+                "uuid": "CC63C57D-150B-3E7D-B5D8-0665FA4A099F"
+              }
+            }
+          ]
+        },
+        "boot_uuid": "BF936DA1-B0ED-4170-9A3F-F75B3ABB5333",
+        "category": "SecError",
+        "event": {
+          "message": {
+            "description": "code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\n\t\"XPCErrorDescription\" => <string: 0x7ff8593dce78> { length = 18, contents = \"Connection invalid\" }\n}"
+          },
+          "type": "logEvent"
+        },
+        "format_string": "code signing internal problem: unexpected error from xpc: %s",
+        "mach_timestamp": 82458070242618.0,
+        "parent_activity_identifier": "0",
+        "process": {
+          "image_path": "/System/Library/Frameworks/StoreKit.framework/Support/storekitagent",
+          "image_uuid": "74C1E20E-89DB-3DFB-98D4-2460E3AC5B92"
+        },
+        "sender": {
+          "image_path": "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+          "image_uuid": "CC63C57D-150B-3E7D-B5D8-0665FA4A099F",
+          "program_counter": 2219233
+        },
+        "subsystem": "com.apple.securityd",
+        "trace_id": "232616665735757828"
+      },
+      "message": "code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\n\t\"XPCErrorDescription\" => <string: 0x7ff8593dce78> { length = 18, contents = \"Connection invalid\" }\n}",
+      "process": {
+        "pid": 552,
+        "thread": {
+          "id": 199743
+        }
+      },
+      "related": {
+        "user": [
+          "501"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "501"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"timezoneName\":\"\",\"messageType\":\"Default\",\"eventType\":\"logEvent\",\"source\":null,\"formatString\":\"code signing internal problem: unexpected error from xpc: %s\",\"userID\":501,\"activityIdentifier\":0,\"subsystem\":\"com.apple.securityd\",\"category\":\"SecError\",\"threadID\":199743,\"senderImageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\",\"backtrace\":{\"frames\":[{\"imageOffset\":2219233,\"imageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\"}]},\"bootUUID\":\"BF936DA1-B0ED-4170-9A3F-F75B3ABB5333\",\"processImagePath\":\"\\/System\\/Library\\/Frameworks\\/StoreKit.framework\\/Support\\/storekitagent\",\"senderImagePath\":\"\\/System\\/Library\\/Frameworks\\/Security.framework\\/Versions\\/A\\/Security\",\"timestamp\":\"2054-01-13 17:58:13.140307+0530\",\"machTimestamp\":82458117633560,\"eventMessage\":\"code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\\n\\t\\\"XPCErrorDescription\\\" => <string: 0x7ff8593dce78> { length = 18, contents = \\\"Connection invalid\\\" }\\n}\",\"processImageUUID\":\"74C1E20E-89DB-3DFB-98D4-2460E3AC5B92\",\"traceID\":232616665735757828,\"processID\":552,\"senderProgramCounter\":2219233,\"parentActivityIdentifier\":0}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timezoneName\":\"\",\"messageType\":\"Default\",\"eventType\":\"logEvent\",\"source\":null,\"formatString\":\"code signing internal problem: unexpected error from xpc: %s\",\"userID\":501,\"activityIdentifier\":0,\"subsystem\":\"com.apple.securityd\",\"category\":\"SecError\",\"threadID\":199743,\"senderImageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\",\"backtrace\":{\"frames\":[{\"imageOffset\":2219233,\"imageUUID\":\"CC63C57D-150B-3E7D-B5D8-0665FA4A099F\"}]},\"bootUUID\":\"BF936DA1-B0ED-4170-9A3F-F75B3ABB5333\",\"processImagePath\":\"\\/System\\/Library\\/Frameworks\\/StoreKit.framework\\/Support\\/storekitagent\",\"senderImagePath\":\"\\/System\\/Library\\/Frameworks\\/Security.framework\\/Versions\\/A\\/Security\",\"timestamp\":\"2053-10-21 15:27:16.289787+0530\",\"machTimestamp\":82458070242618,\"eventMessage\":\"code signing internal problem: unexpected error from xpc: <dictionary: 0x7ff8593dcce0> { count = 1, transaction: 0, voucher = 0x0, contents =\\n\\t\\\"XPCErrorDescription\\\" => <string: 0x7ff8593dce78> { length = 18, contents = \\\"Connection invalid\\\" }\\n}\",\"processImageUUID\":\"74C1E20E-89DB-3DFB-98D4-2460E3AC5B92\",\"traceID\":232616665735757828,\"processID\":552,\"senderProgramCounter\":2219233,\"parentActivityIdentifier\":0}",
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "process_execution_monitoring",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-macos-process_execution_monitoring-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "macos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

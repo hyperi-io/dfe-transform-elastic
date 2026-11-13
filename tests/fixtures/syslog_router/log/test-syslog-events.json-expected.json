@@ -1,0 +1,56 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-04-23T09:16:40.645Z",
+      "_conf": {
+        "dataset": "cisco_asa.log"
+      },
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "message": "Oct 10 2046 12:34:56 localhost CiscoASA[999]: %ASA-4-106023: Deny tcp src outside:192.168.246.224/80 dst inside:172.22.122.27/8277 by access-group \"inbound\" [0x0, 0x0]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-04-23T09:16:40.645Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "message": "Custom log",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-04-23T09:16:40.645Z",
+      "_conf": {
+        "dataset": "cisco_asa.log"
+      },
+      "message": "Oct 10 2046 12:34:56 localhost CiscoASA[999]: %ASA-4-106023: Deny tcp src outside:192.168.246.224/80 dst inside:172.22.122.27/8277 by access-group \"inbound\" [0x0, 0x0]",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2052-04-23T09:16:40.645Z",
+      "message": "Custom log",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-syslog_router-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "syslog_router",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

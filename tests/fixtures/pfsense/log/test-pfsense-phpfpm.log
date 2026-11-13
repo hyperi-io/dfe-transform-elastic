@@ -1,0 +1,4 @@
+<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: Successful login for user 'admin' from: 10.72.134.126 (RADIUS/PFsense Radius)
+<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: Successful login for user 'admin' from: 10.72.134.126 (Local Database Fallback)
+<134>Jul  3 19:10:30 php-fpm[99932]: /index.php: webConfigurator authentication error for user 'asdf' from: 192.0.2.87
+<27>1 2054-05-12T19:57:53.381917+08:00 ovts-7.areggve.local php-fpm 18801 - - /firewall_rules.php: Configuration Change: alice.johnson@198.51.100.10 (Local Database): Firewall: Rules - disabled a firewall rule.

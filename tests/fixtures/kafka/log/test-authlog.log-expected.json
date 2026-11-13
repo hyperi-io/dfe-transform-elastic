@@ -1,0 +1,123 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-01-01T12:39:15.875Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "2053-01-01 12:39:15,875 INFO org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler: [data-plane-kafka-network-thread-543-ListenerName(SASL_SSL)-SASL_SSL-32]: Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+        "type": [
+          "info"
+        ]
+      },
+      "kafka": {
+        "log": {
+          "class": "org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler",
+          "component": "unknown",
+          "thread": "data-plane-kafka-network-thread-543-ListenerName(SASL_SSL)-SASL_SSL-32"
+        }
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-01-01T12:40:15.875Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "2053-01-01 12:40:15,875 INFO  org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler: [data-plane-kafka-network-thread-543-ListenerName(SASL_SSL)-SASL_SSL-32]: Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+        "type": [
+          "info"
+        ]
+      },
+      "kafka": {
+        "log": {
+          "class": "org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler",
+          "component": "unknown",
+          "thread": "data-plane-kafka-network-thread-543-ListenerName(SASL_SSL)-SASL_SSL-32"
+        }
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-01-01T12:40:15.155Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "2053-01-01 12:40:15,155 INFO  org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler: [data-plane-kafka-network-thread-302-ListenerName(SASL_SSL)-SASL_SSL-3]: Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+        "type": [
+          "info"
+        ]
+      },
+      "kafka": {
+        "log": {
+          "class": "org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler",
+          "component": "unknown",
+          "thread": "data-plane-kafka-network-thread-302-ListenerName(SASL_SSL)-SASL_SSL-3"
+        }
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "2053-01-01 12:39:15,875 INFO org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler: [data-plane-kafka-network-thread-543-ListenerName(SASL_SSL)-SASL_SSL-32]: Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "2053-01-01 12:40:15,875 INFO  org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler: [data-plane-kafka-network-thread-543-ListenerName(SASL_SSL)-SASL_SSL-32]: Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "2053-01-01 12:40:15,155 INFO  org.apache.kafka.common.security.authenticator.SaslServerCallbackHandler: [data-plane-kafka-network-thread-302-ListenerName(SASL_SSL)-SASL_SSL-3]: Successfully authenticated client: authenticationID=svc@local; authorizationID=svc@local.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kafka-log-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "kafka",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

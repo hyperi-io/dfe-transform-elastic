@@ -1,0 +1,104 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-09-12T19:32:40.000Z",
+      "cloud": {
+        "account": {
+          "id": "XXXXXXXXXXXX"
+        },
+        "provider": "aws",
+        "service": {
+          "name": "EC2"
+        }
+      },
+      "crowdstrike": {
+        "event": {
+          "PolicyId": 249,
+          "Severity": 1,
+          "SeverityName": "High"
+        },
+        "metadata": {
+          "customerIDString": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "eventType": "CSPMIOAStreamingEvent",
+          "offset": 54712858,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "TerminateInstances",
+        "category": [
+          "configuration"
+        ],
+        "created": "2050-09-12T19:32:40.000Z",
+        "kind": "alert",
+        "original": "{\"metadata\":{\"customerIDString\":\"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\"offset\":54712858,\"eventType\":\"CSPMIOAStreamingEvent\",\"eventCreationTime\":2546623960000,\"version\":\"1.0\"},\"event\":{\"AccountId\":\"XXXXXXXXXXXX\",\"PolicyId\":249,\"PolicyStatement\":\"EC2 instance manually deleted by IAM user\",\"CloudProvider\":\"aws\",\"CloudService\":\"EC2\",\"Severity\":1,\"SeverityName\":\"High\",\"EventAction\":\"TerminateInstances\",\"EventSource\":\"aws.cloudtrail\",\"EventCreatedTimestamp\":2546623960,\"UserId\":\"AIDAXRCSSEFWEAH3BLR2Z\",\"UserName\":\"ex_njmcsjbz_rawtnba_dabz\",\"UserSourceIp\":\"198.51.100.211\",\"Tactic\":\"Impact\",\"Technique\":\"Data Destruction\"}}",
+        "provider": "aws.cloudtrail",
+        "severity": 73,
+        "type": [
+          "info",
+          "change"
+        ]
+      },
+      "message": "EC2 instance manually deleted by IAM user",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "ex_njmcsjbz_rawtnba_dabz"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "threat": {
+        "tactic": {
+          "name": [
+            "Impact"
+          ]
+        },
+        "technique": {
+          "name": [
+            "Data Destruction"
+          ]
+        }
+      },
+      "user": {
+        "id": "AIDAXRCSSEFWEAH3BLR2Z",
+        "name": "ex_njmcsjbz_rawtnba_dabz"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\"offset\":54712858,\"eventType\":\"CSPMIOAStreamingEvent\",\"eventCreationTime\":2546623960000,\"version\":\"1.0\"},\"event\":{\"AccountId\":\"XXXXXXXXXXXX\",\"PolicyId\":249,\"PolicyStatement\":\"EC2 instance manually deleted by IAM user\",\"CloudProvider\":\"aws\",\"CloudService\":\"EC2\",\"Severity\":1,\"SeverityName\":\"High\",\"EventAction\":\"TerminateInstances\",\"EventSource\":\"aws.cloudtrail\",\"EventCreatedTimestamp\":2546623960,\"UserId\":\"AIDAXRCSSEFWEAH3BLR2Z\",\"UserName\":\"ex_njmcsjbz_rawtnba_dabz\",\"UserSourceIp\":\"198.51.100.211\",\"Tactic\":\"Impact\",\"Technique\":\"Data Destruction\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

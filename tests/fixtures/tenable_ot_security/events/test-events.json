@@ -1,0 +1,156 @@
+{
+    "events": [
+        {
+            "message": {
+                "id": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+                "eventType": {
+                    "type": "InactiveAssetOneHour",
+                    "group": "InactiveNetworkInterfaceEvent",
+                    "description": "Asset Not Seen for 1 Hour",
+                    "schema": "AssetSchema",
+                    "category": "NetworkEvents",
+                    "family": null,
+                    "canCapture": false,
+                    "actions": [
+                        "Syslog",
+                        "Email"
+                    ],
+                    "exclusion": "Asset"
+                },
+                "srcIP": "192.0.2.218",
+                "dstIP": "172.28.206.116",
+                "protocolRaw": "UNKNOWN",
+                "policy": {
+                    "id": "ba60d401-4db6-4860-84d9-78dadbcb380e",
+                    "index": 164,
+                    "title": "Asset Not Seen for 1 Hour",
+                    "level": "Low",
+                    "disabled": false,
+                    "archived": false,
+                    "schema": "AssetSchema",
+                    "continuous": false,
+                    "snapshot": false,
+                    "system": true,
+                    "key": "P3-1",
+                    "eventTypeDetails": {
+                        "type": "InactiveAssetOneHour",
+                        "group": "InactiveNetworkInterfaceEvent",
+                        "description": "Asset Not Seen for 1 Hour",
+                        "schema": "AssetSchema",
+                        "category": "NetworkEvents",
+                        "family": null,
+                        "canCapture": false,
+                        "actions": [
+                            "Syslog",
+                            "Email"
+                        ],
+                        "exclusion": "Asset"
+                    },
+                    "lastModifiedDate": null,
+                    "lastModifiedBy": null,
+                    "disableAfterHit": false,
+                    "actions": {
+                        "nodes": []
+                    },
+                    "paused": false,
+                    "schedule": {
+                        "group": {
+                            "id": "d5338158-6852-49db-9b68-3a59159f23f9",
+                            "name": "Any Time",
+                            "type": "Function",
+                            "archived": false,
+                            "system": true,
+                            "key": "PG4-2",
+                            "lastModifiedDate": null,
+                            "lastModifiedBy": null,
+                            "usedInRestrictions": false,
+                            "usageInfo": {
+                                "used": true,
+                                "editable": false
+                            }
+                        },
+                        "negate": false
+                    },
+                    "protocolGroup": null,
+                    "portGroup": null,
+                    "tagGroup": null,
+                    "valueGroup": null,
+                    "ruleGroup": null,
+                    "exclusions": {
+                        "nodes": []
+                    },
+                    "aggregatedEventsCount": {
+                        "last24h": 0,
+                        "last7d": 3458,
+                        "last30d": 20059
+                    }
+                },
+                "time": "2052-12-18T06:20:30.293664Z",
+                "srcMac": "03:66:82:BC:24:59",
+                "dstMac": "19:29:41:DE:57:13",
+                "completion": "CompletionUnknown",
+                "protocolNiceName": null,
+                "resolved": false,
+                "resolvedTs": null,
+                "hitId": "f37fc2b3-805d-4ff6-b168-14db6d413892",
+                "severity": "Low",
+                "category": "NetworkEvents",
+                "comment": null,
+                "logId": 4165781,
+                "resolvedUser": "admin",
+                "type": "InactiveAssetOneHour",
+                "srcInterface": {
+                    "id": "061db4aa-84c4-4207-b323-607fc7c47eb8",
+                    "lastSeen": "2053-03-08T05:00:03.145012Z",
+                    "firstSeen": "2052-06-25T17:19:17.949295Z",
+                    "mac": "03:66:82:bc:24:59",
+                    "ips": {
+                        "nodes": [
+                            {
+                                "ip": "172.28.206.116",
+                                "dnsNames": {
+                                    "nodes": []
+                                },
+                                "openPorts": {
+                                    "ports": {
+                                        "nodes": []
+                                    },
+                                    "scannedOnce": false,
+                                    "inOnDemandScan": false
+                                }
+                            }
+                        ]
+                    },
+                    "dnsNames": {
+                        "nodes": []
+                    },
+                    "family": "VMware",
+                    "ipTrail": {
+                        "nodes": [
+                            {
+                                "ip": "172.28.206.116",
+                                "startTime": "2052-06-25T17:19:17.949295Z",
+                                "endTime": null,
+                                "isActive": true
+                            }
+                        ]
+                    }
+                },
+                "srcNames": {
+                    "nodes": [
+                        "NPW-PT1-WINXP32"
+                    ]
+                },
+                "dstInterface": null,
+                "dstNames": {
+                    "nodes": []
+                },
+                "hasDetails": true,
+                "payloadSize": 0,
+                "protocol": "Unknown",
+                "port": null,
+                "continuous": false
+            }
+        }
+    ]
+}

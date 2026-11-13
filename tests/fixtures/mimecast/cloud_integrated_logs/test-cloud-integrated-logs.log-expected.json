@@ -1,0 +1,1347 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-27T16:20:25.453Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "name": [
+                "1-MB-Test_PCI-PII.xls"
+              ]
+            }
+          }
+        ],
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one"
+          ]
+        },
+        "message_id": "<73851642-8265-4442-b3f7-93c0d07990ad@SJ0PR18MB4090.namprd18.prod.outlook.com>",
+        "subject": "Undeliverable: Book Request",
+        "to": {
+          "address": [
+            "afnpvr.oihhv@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-27T16:20:25.453Z",
+        "original": "{\"_offset\":1825747,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xz4RX59R6z84lm-ip3sazqogbn7c5haarz3ydiaeg_1732724425\",\"attachments\":[\"1-MB-Test_PCI-PII.xls\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<73851642-8265-4442-b3f7-93c0d07990ad@SJ0PR18MB4090.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"820d2e7c2735c715b8cbf8cb05824a0ed5bfbc997e8550833533a9ccefeedddf_1732724425\",\"recipients\":[\"afnpvr.oihhv@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: Book Request\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616337225453,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xz4RX59R6z84lm-ip3sazqogbn7c5haarz3ydiaeg_1732724425",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "820d2e7c2735c715b8cbf8cb05824a0ed5bfbc997e8550833533a9ccefeedddf_1732724425",
+        "senderHeader": "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+          "afnpvr.oihhv@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-21T16:33:58.263Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one"
+          ]
+        },
+        "message_id": "<2016e296-56e7-42cf-af4f-dac4a4cbfacf@BY1PR18MB5971.namprd18.prod.outlook.com>",
+        "subject": "Undeliverable: Hoecker letter",
+        "to": {
+          "address": [
+            "qrawbg.jbdg@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-21T16:33:58.263Z",
+        "original": "{\"_offset\":1803495,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XvP1x6xnGzFB8Y-djq8atkief95yfdwmtw8thpgtr_1732206838\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<2016e296-56e7-42cf-af4f-dac4a4cbfacf@BY1PR18MB5971.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"c4e04e73e1f41241d08f7e9d90582f3deccd076e3d0f043b321e04d0e1bb8417_1732206838\",\"recipients\":[\"qrawbg.jbdg@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: Hoecker letter\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615819638263,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XvP1x6xnGzFB8Y-djq8atkief95yfdwmtw8thpgtr_1732206838",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "c4e04e73e1f41241d08f7e9d90582f3deccd076e3d0f043b321e04d0e1bb8417_1732206838",
+        "senderHeader": "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+          "qrawbg.jbdg@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-22T17:07:33.577Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "ndle.npbeoodjrp@edivsdjqot-aq.e58.one"
+          ]
+        },
+        "message_id": "<d24b6fc0-81dd-c312-f2bf-f1ade268e7f2@demovation-ci.b41.one>",
+        "subject": "CONGRATULATIONS",
+        "to": {
+          "address": [
+            "zsfpcdr.fzlwh@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-22T17:07:33.577Z",
+        "original": "{\"_offset\":1807856,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xw1kF1y6dzFyJB-hduwwwo67hmfwau3khzkdbfzo8_1732295253\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<d24b6fc0-81dd-c312-f2bf-f1ade268e7f2@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"c6baa9839fa4a5276e6c177aa4e1d4235dc68da0c17a7e8ab847b6e5e2ef068e_1732295253\",\"recipients\":[\"zsfpcdr.fzlwh@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"ndle.npbeoodjrp@edivsdjqot-aq.e58.one\",\"senderHeader\":\"ndle.npbeoodjrp@edivsdjqot-aq.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"CONGRATULATIONS\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615908053577,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xw1kF1y6dzFyJB-hduwwwo67hmfwau3khzkdbfzo8_1732295253",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "c6baa9839fa4a5276e6c177aa4e1d4235dc68da0c17a7e8ab847b6e5e2ef068e_1732295253",
+        "senderHeader": "ndle.npbeoodjrp@edivsdjqot-aq.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "ndle.npbeoodjrp@edivsdjqot-aq.e58.one",
+          "zsfpcdr.fzlwh@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-22T15:46:33.848Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "name": [
+                "Mimecast Termination.docx"
+              ]
+            }
+          }
+        ],
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "raqfatx.tdi@edivsdjqot-aq.e58.one"
+          ]
+        },
+        "message_id": "<b76cc34b-c1b5-26a6-2b74-8a4d8fce9765@demovation-ci.b41.one>",
+        "subject": "FW: San Juan Volumes",
+        "to": {
+          "address": [
+            "mrvw.qwiteseckl@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-22T15:46:33.848Z",
+        "original": "{\"_offset\":1807567,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xvzwn3R6ZzFB8T-1p4nzntpnrcageetaz5mfk9bm8_1732290393\",\"attachments\":[\"Mimecast Termination.docx\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<b76cc34b-c1b5-26a6-2b74-8a4d8fce9765@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"972ccd19d60ef04297bdf563fef13abecbea7ed215d0fcc7d03ac9b5f77bfedb_1732290393\",\"recipients\":[\"mrvw.qwiteseckl@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"raqfatx.tdi@edivsdjqot-aq.e58.one\",\"senderHeader\":\"raqfatx.tdi@edivsdjqot-aq.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"FW: San Juan Volumes\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615903193848,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xvzwn3R6ZzFB8T-1p4nzntpnrcageetaz5mfk9bm8_1732290393",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "972ccd19d60ef04297bdf563fef13abecbea7ed215d0fcc7d03ac9b5f77bfedb_1732290393",
+        "senderHeader": "raqfatx.tdi@edivsdjqot-aq.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "raqfatx.tdi@edivsdjqot-aq.e58.one",
+          "mrvw.qwiteseckl@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-18T15:24:35.250Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "name": [
+                "Sandbox Test.xlsx"
+              ]
+            }
+          }
+        ],
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "cvtiolcfndust@edivsdjqot-aq.e58.one"
+          ]
+        },
+        "message_id": "<8fb6e068-4741-547a-ed22-b3780a56f1df@demovation-ci.b41.one>",
+        "subject": "Message from Node-RED",
+        "to": {
+          "address": [
+            "zxcze.jfpraqh@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-18T15:24:35.250Z",
+        "kind": "alert",
+        "original": "{\"_offset\":1790506,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XsWdG63WDzFy33-kckoq8rx19ibc7iccjsjx6hsxd_1731943475\",\"attachments\":[\"Sandbox Test.xlsx\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<8fb6e068-4741-547a-ed22-b3780a56f1df@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"BLOCK\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"95e04b195d154756bb19c663930d7ffd05e6a895f09af82d8c2a7cb3c4efe07a_1731943475\",\"recipients\":[\"zxcze.jfpraqh@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"cvtiolcfndust@edivsdjqot-aq.e58.one\",\"senderHeader\":\"\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Message from Node-RED\",\"subtype\":\"MALWARE\",\"tags\":[\"MALWARE\"],\"threatState\":\"BLOCKED\",\"threatType\":\"MALWARE\",\"timestamp\":2615556275250,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XsWdG63WDzFy33-kckoq8rx19ibc7iccjsjx6hsxd_1731943475",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "BLOCK",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "95e04b195d154756bb19c663930d7ffd05e6a895f09af82d8c2a7cb3c4efe07a_1731943475",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "MALWARE",
+        "tags": [
+          "MALWARE"
+        ],
+        "threatState": "BLOCKED",
+        "threatType": "MALWARE"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "cvtiolcfndust@edivsdjqot-aq.e58.one",
+          "zxcze.jfpraqh@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-22T18:33:00.868Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "rz-kdykq@mxlyhbeftu.com",
+            "wp_dtqqefv@ov-dyqhfcp.mxlyhbeftu.com"
+          ]
+        },
+        "message_id": "<919df553-9a1f-41a3-a515-f7cb38cbde7b@mtasv.net>",
+        "subject": "Mimecast quarantined a message detected as phishing from kdttsvw@zvnojpggxge-dlgdiyhsudv.undefined",
+        "to": {
+          "address": [
+            "dakil@ncqgqvyz472.net"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-22T18:33:00.868Z",
+        "original": "{\"_offset\":1808181,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xw3cr3g5BzFyJM-hw7nutbmioptjwcyjaxx6xiwi8_1732300380\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<919df553-9a1f-41a3-a515-f7cb38cbde7b@mtasv.net>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"9679284d92f953c8465022fe8c46b933a275c7a652cae47972dd96bb1aa1e8e2_1732300380\",\"recipients\":[\"dakil@ncqgqvyz472.net\"],\"senderEnvelope\":\"wp_dtqqefv@ov-dyqhfcp.mxlyhbeftu.com\",\"senderHeader\":\"rz-kdykq@mxlyhbeftu.com\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Mimecast quarantined a message detected as phishing from kdttsvw@zvnojpggxge-dlgdiyhsudv.undefined\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615913180868,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xw3cr3g5BzFyJM-hw7nutbmioptjwcyjaxx6xiwi8_1732300380",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "9679284d92f953c8465022fe8c46b933a275c7a652cae47972dd96bb1aa1e8e2_1732300380",
+        "senderHeader": "rz-kdykq@mxlyhbeftu.com",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "rz-kdykq@mxlyhbeftu.com",
+          "wp_dtqqefv@ov-dyqhfcp.mxlyhbeftu.com",
+          "dakil@ncqgqvyz472.net"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-27T19:12:07.836Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one"
+          ]
+        },
+        "message_id": "<441cae7b-d6cb-4006-bbc5-1d9fa365447e@PH0PR18MB3990.namprd18.prod.outlook.com>",
+        "subject": "Undeliverable: Message from Node-RED",
+        "to": {
+          "address": [
+            "wnicd.hekzqrgj@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-27T19:12:07.836Z",
+        "original": "{\"_offset\":1826382,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xz8Fg2f0Vz84mw-gii93d63mdqw55hyxwhokyohhg_1732734727\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<441cae7b-d6cb-4006-bbc5-1d9fa365447e@PH0PR18MB3990.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"f7e91684b9dc3b4a9bfa83fe895bf2d47d62aff5612e611dd640d0e49ce7fb53_1732734727\",\"recipients\":[\"wnicd.hekzqrgj@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: Message from Node-RED\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616347527836,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xz8Fg2f0Vz84mw-gii93d63mdqw55hyxwhokyohhg_1732734727",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "f7e91684b9dc3b4a9bfa83fe895bf2d47d62aff5612e611dd640d0e49ce7fb53_1732734727",
+        "senderHeader": "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+          "wnicd.hekzqrgj@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-25T10:23:51.824Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "name": [
+                "guess-what-day-it-is-hump-day-whoop-whoop-5af49483875db9003696b1cc.jpg"
+              ]
+            }
+          }
+        ],
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one"
+          ]
+        },
+        "message_id": "<caeb66dd-d65b-4b93-97e1-0e104bad9c57@CO6PR18MB3972.namprd18.prod.outlook.com>",
+        "subject": "Undeliverable: FW: CMS Opportunity",
+        "to": {
+          "address": [
+            "gahsi.jcfio@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-25T10:23:51.824Z",
+        "original": "{\"_offset\":1815844,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xxhd273wrzFB8d-thdyqe6dgj83fsus95nwuzydwg_1732530231\",\"attachments\":[\"guess-what-day-it-is-hump-day-whoop-whoop-5af49483875db9003696b1cc.jpg\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<caeb66dd-d65b-4b93-97e1-0e104bad9c57@CO6PR18MB3972.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"2d0da5322628f25ffa80003db151cd4fddbccba304bc42389d44e00e32efe180_1732530231\",\"recipients\":[\"gahsi.jcfio@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: FW: CMS Opportunity\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616143031824,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xxhd273wrzFB8d-thdyqe6dgj83fsus95nwuzydwg_1732530231",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "2d0da5322628f25ffa80003db151cd4fddbccba304bc42389d44e00e32efe180_1732530231",
+        "senderHeader": "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+          "gahsi.jcfio@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-27T20:47:14.855Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one"
+          ]
+        },
+        "message_id": "<834beb6c-1f5f-4646-914e-6e93e7c48ed9@PH0PR18MB4734.namprd18.prod.outlook.com>",
+        "subject": "Undeliverable: P&D Pilots",
+        "to": {
+          "address": [
+            "xhur.ezrpq@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-27T20:47:14.855Z",
+        "original": "{\"_offset\":1826720,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XzBMQ1fTlz84nK-5p1346dgpwaugm3gkr13k56agb_1732740434\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<834beb6c-1f5f-4646-914e-6e93e7c48ed9@PH0PR18MB4734.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"f18694e58d30fdc1f53823ff2c8c80cc1bb5eb9065d019f148c9cd58e0fb3b41_1732740434\",\"recipients\":[\"xhur.ezrpq@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: P&D Pilots\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616353234855,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XzBMQ1fTlz84nK-5p1346dgpwaugm3gkr13k56agb_1732740434",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "f18694e58d30fdc1f53823ff2c8c80cc1bb5eb9065d019f148c9cd58e0fb3b41_1732740434",
+        "senderHeader": "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one",
+          "xhur.ezrpq@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-18T17:19:39.429Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "name": [
+                "Screen Shot 2047-05-02 at 8.45.29 AM.png"
+              ]
+            }
+          }
+        ],
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "dnf.coyhdmzu@edivsdjqot-aq.e58.one"
+          ]
+        },
+        "message_id": "<646be917-531b-e320-a580-e65040b91d83@demovation-ci.b41.one>",
+        "subject": "Panhandle lateral operations",
+        "to": {
+          "address": [
+            "bbuidqp.mfgsgxbodap@edivsdjqot-aq.e58.one",
+            "ppqbh.qfhuq@edivsdjqot-aq.e58.one",
+            "vwdvfkkc.ohkfj@edivsdjqot-aq.e58.one",
+            "qfc.hxffj@edivsdjqot-aq.e58.one"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-18T17:19:39.429Z",
+        "original": "{\"_offset\":1790982,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XsZB263RjzFy2g-xjt37dsesi7fddbre96gprgpor_1731950379\",\"attachments\":[\"Screen Shot 2047-05-02 at 8.45.29 AM.png\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<646be917-531b-e320-a580-e65040b91d83@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"22a954125270218338a765ffe0ffbadbe1a5446caefd5e6605e14bcd19116b58_1731950379\",\"recipients\":[\"bbuidqp.mfgsgxbodap@edivsdjqot-aq.e58.one\",\"ppqbh.qfhuq@edivsdjqot-aq.e58.one\",\"vwdvfkkc.ohkfj@edivsdjqot-aq.e58.one\",\"qfc.hxffj@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"dnf.coyhdmzu@edivsdjqot-aq.e58.one\",\"senderHeader\":\"dnf.coyhdmzu@edivsdjqot-aq.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Panhandle lateral operations\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615563179429,\"type\":\"entities\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XsZB263RjzFy2g-xjt37dsesi7fddbre96gprgpor_1731950379",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "action": "DO_NOTHING",
+            "mode": "ACTIVE",
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "22a954125270218338a765ffe0ffbadbe1a5446caefd5e6605e14bcd19116b58_1731950379",
+        "senderHeader": "dnf.coyhdmzu@edivsdjqot-aq.e58.one",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "NO_DETECTIONS",
+        "threatState": "DELIVERY_IN_PROGRESS",
+        "threatType": "NO_DETECTIONS"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "dnf.coyhdmzu@edivsdjqot-aq.e58.one",
+          "bbuidqp.mfgsgxbodap@edivsdjqot-aq.e58.one",
+          "ppqbh.qfhuq@edivsdjqot-aq.e58.one",
+          "vwdvfkkc.ohkfj@edivsdjqot-aq.e58.one",
+          "qfc.hxffj@edivsdjqot-aq.e58.one"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-26T22:26:40.405Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<3571d273-18b5-4033-9377-b0b5497d5dbc@mtasv.net>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-26T22:26:40.405Z",
+        "original": "{\"_offset\":1822823,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xyccc0QWKz84PS-m1xto1ropcrh1cnp4tb7rzjsgn_1732660000\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"pass\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<3571d273-18b5-4033-9377-b0b5497d5dbc@mtasv.net>\",\"processingId\":\"c2806ce5e78a8d260e588e0f71230c44d915de6968597c3909d5f395092b16a5_1732660000\",\"subtype\":null,\"timestamp\":2616272800405,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xyccc0QWKz84PS-m1xto1ropcrh1cnp4tb7rzjsgn_1732660000",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "pass",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "c2806ce5e78a8d260e588e0f71230c44d915de6968597c3909d5f395092b16a5_1732660000"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-27T21:31:09.761Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<146fac27-6555-4ea2-9807-ced255f1d240@LV3PR18MB6327.namprd18.prod.outlook.com>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-27T21:31:09.761Z",
+        "original": "{\"_offset\":1826870,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XzCL50vjVz84QW-1aohygaqrhj4oifhu6wz4xh36b_1732743069\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"pass\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"fail\",\"type\":\"DMARC\"}],\"messageId\":\"<146fac27-6555-4ea2-9807-ced255f1d240@LV3PR18MB6327.namprd18.prod.outlook.com>\",\"processingId\":\"47f30ee1e27c2604073be11ca2d4603c25a81c85fe68c810550baa6cd3828032_1732743069\",\"subtype\":null,\"timestamp\":2616355869761,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XzCL50vjVz84QW-1aohygaqrhj4oifhu6wz4xh36b_1732743069",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "pass",
+            "type": "DKIM"
+          },
+          {
+            "result": "fail",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "47f30ee1e27c2604073be11ca2d4603c25a81c85fe68c810550baa6cd3828032_1732743069"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-18T14:52:38.336Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<343a85a6-31a1-ca64-f48e-21786dce8a28@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-18T14:52:38.336Z",
+        "original": "{\"_offset\":1790380,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XsVwP74NKzFyJL-enzpecqrdi9b61fxxktmow9rsd_1731941558\",\"authResults\":[{\"aligned\":false,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<343a85a6-31a1-ca64-f48e-21786dce8a28@demovation-ci.b41.one>\",\"processingId\":\"e2d4cb7fb95944079830726045e6d7bc114e542b5c6693f6084dd51e4e5d14cf_1731941558\",\"subtype\":null,\"timestamp\":2615554358336,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XsVwP74NKzFyJL-enzpecqrdi9b61fxxktmow9rsd_1731941558",
+        "authResults": [
+          {
+            "aligned": false,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "e2d4cb7fb95944079830726045e6d7bc114e542b5c6693f6084dd51e4e5d14cf_1731941558"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-26T13:55:27.226Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<90c0f3a5-9654-82ad-9750-152d985ee764@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-26T13:55:27.226Z",
+        "original": "{\"_offset\":1820809,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XyPGk5t8bz84mw-uonit3w88iwq13dqpqtzozhfir_1732629326\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<90c0f3a5-9654-82ad-9750-152d985ee764@demovation-ci.b41.one>\",\"processingId\":\"08e3a8b6e736e0f6cfc44165ac4141de55f6303601c9dcffa5cbe53f1102c470_1732629327\",\"subtype\":null,\"timestamp\":2616242127226,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XyPGk5t8bz84mw-uonit3w88iwq13dqpqtzozhfir_1732629326",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "08e3a8b6e736e0f6cfc44165ac4141de55f6303601c9dcffa5cbe53f1102c470_1732629327"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-21T14:17:31.453Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<ed3dbe53-8c3c-438e-4502-4b263e25dc8d@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-21T14:17:31.453Z",
+        "original": "{\"_offset\":1802955,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XvL0W0KRGzFB8k-fxoe7ics1f9uk7y6aiuba5ek8g_1732198651\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<ed3dbe53-8c3c-438e-4502-4b263e25dc8d@demovation-ci.b41.one>\",\"processingId\":\"5d4b444ba13333a7aa0fbf43ece3cc1cce1896faacb015832bd771757676fc75_1732198651\",\"subtype\":null,\"timestamp\":2615811451453,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XvL0W0KRGzFB8k-fxoe7ics1f9uk7y6aiuba5ek8g_1732198651",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "5d4b444ba13333a7aa0fbf43ece3cc1cce1896faacb015832bd771757676fc75_1732198651"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-22T18:19:42.518Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<44c313a9-5485-4171-95b9-c62441a9b30f@CO1PR18MB4571.namprd18.prod.outlook.com>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-22T18:19:42.518Z",
+        "original": "{\"_offset\":1808128,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xw3KV0jVqzFB8f-z3wa1ajy1jn6cftuepsu47xdob_1732299582\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"pass\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"fail\",\"type\":\"DMARC\"}],\"messageId\":\"<44c313a9-5485-4171-95b9-c62441a9b30f@CO1PR18MB4571.namprd18.prod.outlook.com>\",\"processingId\":\"4b05c4d45a33d552c362c73a9668894f7c5e0ec403de52a3ea2f1ff745b77317_1732299582\",\"subtype\":null,\"timestamp\":2615912382518,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xw3KV0jVqzFB8f-z3wa1ajy1jn6cftuepsu47xdob_1732299582",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "pass",
+            "type": "DKIM"
+          },
+          {
+            "result": "fail",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "4b05c4d45a33d552c362c73a9668894f7c5e0ec403de52a3ea2f1ff745b77317_1732299582"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-27T19:07:55.302Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<973b78eb-dc34-9104-07d4-ee22635f804d@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-27T19:07:55.302Z",
+        "original": "{\"_offset\":1826377,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xz88p751Yz84nC-a8cr4y85yq3hh6jjczgnn5sgj8_1732734475\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<973b78eb-dc34-9104-07d4-ee22635f804d@demovation-ci.b41.one>\",\"processingId\":\"2c8e7dba58482b8a32d24db211eab8d7d1326f2f8474c6062930647a95a9d7ea_1732734475\",\"subtype\":null,\"timestamp\":2616347275302,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xz88p751Yz84nC-a8cr4y85yq3hh6jjczgnn5sgj8_1732734475",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "2c8e7dba58482b8a32d24db211eab8d7d1326f2f8474c6062930647a95a9d7ea_1732734475"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-25T09:11:33.398Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<063ac542-835f-2f3f-d6d0-e908532ad5a8@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-25T09:11:33.398Z",
+        "original": "{\"_offset\":1815702,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xxg1c71KpzFB8T-j9zj9y3f91byjes4ysqetgk19g_1732525893\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<063ac542-835f-2f3f-d6d0-e908532ad5a8@demovation-ci.b41.one>\",\"processingId\":\"380ecc31dda8a00d6ca2df923505aacbe69a4064a7ef0ae4ec924940e4d099b0_1732525893\",\"subtype\":null,\"timestamp\":2616138693398,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4Xxg1c71KpzFB8T-j9zj9y3f91byjes4ysqetgk19g_1732525893",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "380ecc31dda8a00d6ca2df923505aacbe69a4064a7ef0ae4ec924940e4d099b0_1732525893"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-26T14:16:30.705Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<0d992fc0-acb3-8b6b-3dfe-78878f77dcb4@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-26T14:16:30.705Z",
+        "original": "{\"_offset\":1820908,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XyPl23Kn4z84ly-hnj5fgu9nbwnghx86mj18qp44b_1732630590\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<0d992fc0-acb3-8b6b-3dfe-78878f77dcb4@demovation-ci.b41.one>\",\"processingId\":\"2985cb5ae75e545de9521c23914f448fbe60c233c7e605d5563aea5071b3df98_1732630590\",\"subtype\":null,\"timestamp\":2616243390705,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XyPl23Kn4z84ly-hnj5fgu9nbwnghx86mj18qp44b_1732630590",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "2985cb5ae75e545de9521c23914f448fbe60c233c7e605d5563aea5071b3df98_1732630590"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-11-21T18:03:26.960Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "<3eb68530-38f3-81af-df14-b7d49b3a9de7@demovation-ci.b41.one>"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-21T18:03:26.960Z",
+        "original": "{\"_offset\":1803841,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XvR1B4m7BzFB8L-qk59b4szrgayciaagczc977rzb_1732212206\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<3eb68530-38f3-81af-df14-b7d49b3a9de7@demovation-ci.b41.one>\",\"processingId\":\"a10661d1543bf1435309d8d52024faf463d1d225f0b3b56ff8a343849bb44f29_1732212206\",\"subtype\":null,\"timestamp\":2615825006960,\"type\":\"mailflow\"}"
+      },
+      "mimecast": {
+        "accountId": "AUS2474",
+        "aggregateId": "4XvR1B4m7BzFB8L-qk59b4szrgayciaagczc977rzb_1732212206",
+        "authResults": [
+          {
+            "aligned": true,
+            "result": "pass",
+            "type": "SPF"
+          },
+          {
+            "aligned": false,
+            "result": "none",
+            "type": "DKIM"
+          },
+          {
+            "result": "pass",
+            "type": "DMARC"
+          }
+        ],
+        "log_type": "mailflow",
+        "processingId": "a10661d1543bf1435309d8d52024faf463d1d225f0b3b56ff8a343849bb44f29_1732212206"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-07-18T12:57:17.899Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "name": [
+                "tpsreport.xlsx"
+              ]
+            }
+          }
+        ],
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "eloco@vsxfeayv.com"
+          ]
+        },
+        "message_id": "messageId",
+        "subject": "RE: Your archive mailbox is almost full.",
+        "to": {
+          "address": [
+            "eloco@gbphcuwczy.com"
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "created": "2051-07-18T12:57:17.899Z",
+        "kind": "alert",
+        "original": "{\"attachments\":[\"tpsreport.xlsx\"],\"subject\":\"RE: Your archive mailbox is almost full.\",\"senderEnvelope\":\"eloco@vsxfeayv.com\",\"messageId\":\"messageId\",\"threatState\":\"DELIVERED\",\"senderHeader\":\"eloco@vsxfeayv.com\",\"source\":\"OFFICE_365_MAIL\",\"type\":\"entities\",\"tags\":[\"UNTRUSTWORTHY\",\"SPAM\"],\"accountId\":\"C0A0\",\"aggregateId\":\"aggregateId\",\"processingId\":\"processingId\",\"threatType\":\"POLICIES_DISABLED\",\"recipients\":[\"eloco@gbphcuwczy.com\"],\"policiesApplied\":[{\"action\":null,\"mode\":null,\"name\":\"Default O365 Mail policy\"},{\"action\":null,\"mode\":null,\"name\":\"Default O365 Mail policy\"}],\"historicalMail\":false,\"subtype\":\"POLICIES_DISABLED\",\"senderIp\":\"198.51.100.211\",\"timestamp\":2573297837899,\"direction\":\"Inbound\"}"
+      },
+      "mimecast": {
+        "accountId": "C0A0",
+        "aggregateId": "aggregateId",
+        "historicalMail": false,
+        "log_type": "entities",
+        "policiesApplied": [
+          {
+            "name": "Default O365 Mail policy"
+          },
+          {
+            "name": "Default O365 Mail policy"
+          }
+        ],
+        "processingId": "processingId",
+        "senderHeader": "eloco@vsxfeayv.com",
+        "source": "OFFICE_365_MAIL",
+        "subtype": "POLICIES_DISABLED",
+        "tags": [
+          "UNTRUSTWORTHY",
+          "SPAM"
+        ],
+        "threatState": "DELIVERED",
+        "threatType": "POLICIES_DISABLED"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "eloco@vsxfeayv.com",
+          "eloco@gbphcuwczy.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"_offset\":1825747,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xz4RX59R6z84lm-ip3sazqogbn7c5haarz3ydiaeg_1732724425\",\"attachments\":[\"1-MB-Test_PCI-PII.xls\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<73851642-8265-4442-b3f7-93c0d07990ad@SJ0PR18MB4090.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"820d2e7c2735c715b8cbf8cb05824a0ed5bfbc997e8550833533a9ccefeedddf_1732724425\",\"recipients\":[\"afnpvr.oihhv@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: Book Request\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616337225453,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1803495,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XvP1x6xnGzFB8Y-djq8atkief95yfdwmtw8thpgtr_1732206838\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<2016e296-56e7-42cf-af4f-dac4a4cbfacf@BY1PR18MB5971.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"c4e04e73e1f41241d08f7e9d90582f3deccd076e3d0f043b321e04d0e1bb8417_1732206838\",\"recipients\":[\"qrawbg.jbdg@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: Hoecker letter\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615819638263,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1807856,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xw1kF1y6dzFyJB-hduwwwo67hmfwau3khzkdbfzo8_1732295253\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<d24b6fc0-81dd-c312-f2bf-f1ade268e7f2@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"c6baa9839fa4a5276e6c177aa4e1d4235dc68da0c17a7e8ab847b6e5e2ef068e_1732295253\",\"recipients\":[\"zsfpcdr.fzlwh@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"ndle.npbeoodjrp@edivsdjqot-aq.e58.one\",\"senderHeader\":\"ndle.npbeoodjrp@edivsdjqot-aq.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"CONGRATULATIONS\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615908053577,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1807567,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xvzwn3R6ZzFB8T-1p4nzntpnrcageetaz5mfk9bm8_1732290393\",\"attachments\":[\"Mimecast Termination.docx\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<b76cc34b-c1b5-26a6-2b74-8a4d8fce9765@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"972ccd19d60ef04297bdf563fef13abecbea7ed215d0fcc7d03ac9b5f77bfedb_1732290393\",\"recipients\":[\"mrvw.qwiteseckl@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"raqfatx.tdi@edivsdjqot-aq.e58.one\",\"senderHeader\":\"raqfatx.tdi@edivsdjqot-aq.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"FW: San Juan Volumes\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615903193848,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1790506,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XsWdG63WDzFy33-kckoq8rx19ibc7iccjsjx6hsxd_1731943475\",\"attachments\":[\"Sandbox Test.xlsx\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<8fb6e068-4741-547a-ed22-b3780a56f1df@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"BLOCK\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"95e04b195d154756bb19c663930d7ffd05e6a895f09af82d8c2a7cb3c4efe07a_1731943475\",\"recipients\":[\"zxcze.jfpraqh@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"cvtiolcfndust@edivsdjqot-aq.e58.one\",\"senderHeader\":\"\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Message from Node-RED\",\"subtype\":\"MALWARE\",\"tags\":[\"MALWARE\"],\"threatState\":\"BLOCKED\",\"threatType\":\"MALWARE\",\"timestamp\":2615556275250,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1808181,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xw3cr3g5BzFyJM-hw7nutbmioptjwcyjaxx6xiwi8_1732300380\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<919df553-9a1f-41a3-a515-f7cb38cbde7b@mtasv.net>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"9679284d92f953c8465022fe8c46b933a275c7a652cae47972dd96bb1aa1e8e2_1732300380\",\"recipients\":[\"dakil@ncqgqvyz472.net\"],\"senderEnvelope\":\"wp_dtqqefv@ov-dyqhfcp.mxlyhbeftu.com\",\"senderHeader\":\"rz-kdykq@mxlyhbeftu.com\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Mimecast quarantined a message detected as phishing from kdttsvw@zvnojpggxge-dlgdiyhsudv.undefined\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615913180868,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1826382,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xz8Fg2f0Vz84mw-gii93d63mdqw55hyxwhokyohhg_1732734727\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<441cae7b-d6cb-4006-bbc5-1d9fa365447e@PH0PR18MB3990.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"f7e91684b9dc3b4a9bfa83fe895bf2d47d62aff5612e611dd640d0e49ce7fb53_1732734727\",\"recipients\":[\"wnicd.hekzqrgj@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: Message from Node-RED\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616347527836,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1815844,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xxhd273wrzFB8d-thdyqe6dgj83fsus95nwuzydwg_1732530231\",\"attachments\":[\"guess-what-day-it-is-hump-day-whoop-whoop-5af49483875db9003696b1cc.jpg\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<caeb66dd-d65b-4b93-97e1-0e104bad9c57@CO6PR18MB3972.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"2d0da5322628f25ffa80003db151cd4fddbccba304bc42389d44e00e32efe180_1732530231\",\"recipients\":[\"gahsi.jcfio@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: FW: CMS Opportunity\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616143031824,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1826720,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XzBMQ1fTlz84nK-5p1346dgpwaugm3gkr13k56agb_1732740434\",\"attachments\":[],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<834beb6c-1f5f-4646-914e-6e93e7c48ed9@PH0PR18MB4734.namprd18.prod.outlook.com>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"f18694e58d30fdc1f53823ff2c8c80cc1bb5eb9065d019f148c9cd58e0fb3b41_1732740434\",\"recipients\":[\"xhur.ezrpq@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"\",\"senderHeader\":\"QsbvouvbyCtepeora453c33fb68ca3032acf19ce8ab91090e@ma-aj.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Undeliverable: P&D Pilots\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2616353234855,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1790982,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XsZB263RjzFy2g-xjt37dsesi7fddbre96gprgpor_1731950379\",\"attachments\":[\"Screen Shot 2047-05-02 at 8.45.29 AM.png\"],\"direction\":\"INBOUND\",\"historicalMail\":false,\"messageId\":\"<646be917-531b-e320-a580-e65040b91d83@demovation-ci.b41.one>\",\"policiesApplied\":[{\"action\":\"DO_NOTHING\",\"mode\":\"ACTIVE\",\"name\":\"Default O365 Mail policy\"}],\"processingId\":\"22a954125270218338a765ffe0ffbadbe1a5446caefd5e6605e14bcd19116b58_1731950379\",\"recipients\":[\"bbuidqp.mfgsgxbodap@edivsdjqot-aq.e58.one\",\"ppqbh.qfhuq@edivsdjqot-aq.e58.one\",\"vwdvfkkc.ohkfj@edivsdjqot-aq.e58.one\",\"qfc.hxffj@edivsdjqot-aq.e58.one\"],\"senderEnvelope\":\"dnf.coyhdmzu@edivsdjqot-aq.e58.one\",\"senderHeader\":\"dnf.coyhdmzu@edivsdjqot-aq.e58.one\",\"senderIp\":\"198.51.100.211\",\"source\":\"OFFICE_365_MAIL\",\"subject\":\"Panhandle lateral operations\",\"subtype\":\"NO_DETECTIONS\",\"tags\":null,\"threatState\":\"DELIVERY_IN_PROGRESS\",\"threatType\":\"NO_DETECTIONS\",\"timestamp\":2615563179429,\"type\":\"entities\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1822823,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xyccc0QWKz84PS-m1xto1ropcrh1cnp4tb7rzjsgn_1732660000\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"pass\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<3571d273-18b5-4033-9377-b0b5497d5dbc@mtasv.net>\",\"processingId\":\"c2806ce5e78a8d260e588e0f71230c44d915de6968597c3909d5f395092b16a5_1732660000\",\"subtype\":null,\"timestamp\":2616272800405,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1826870,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XzCL50vjVz84QW-1aohygaqrhj4oifhu6wz4xh36b_1732743069\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"pass\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"fail\",\"type\":\"DMARC\"}],\"messageId\":\"<146fac27-6555-4ea2-9807-ced255f1d240@LV3PR18MB6327.namprd18.prod.outlook.com>\",\"processingId\":\"47f30ee1e27c2604073be11ca2d4603c25a81c85fe68c810550baa6cd3828032_1732743069\",\"subtype\":null,\"timestamp\":2616355869761,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1790380,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XsVwP74NKzFyJL-enzpecqrdi9b61fxxktmow9rsd_1731941558\",\"authResults\":[{\"aligned\":false,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<343a85a6-31a1-ca64-f48e-21786dce8a28@demovation-ci.b41.one>\",\"processingId\":\"e2d4cb7fb95944079830726045e6d7bc114e542b5c6693f6084dd51e4e5d14cf_1731941558\",\"subtype\":null,\"timestamp\":2615554358336,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1820809,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XyPGk5t8bz84mw-uonit3w88iwq13dqpqtzozhfir_1732629326\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<90c0f3a5-9654-82ad-9750-152d985ee764@demovation-ci.b41.one>\",\"processingId\":\"08e3a8b6e736e0f6cfc44165ac4141de55f6303601c9dcffa5cbe53f1102c470_1732629327\",\"subtype\":null,\"timestamp\":2616242127226,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1802955,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XvL0W0KRGzFB8k-fxoe7ics1f9uk7y6aiuba5ek8g_1732198651\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<ed3dbe53-8c3c-438e-4502-4b263e25dc8d@demovation-ci.b41.one>\",\"processingId\":\"5d4b444ba13333a7aa0fbf43ece3cc1cce1896faacb015832bd771757676fc75_1732198651\",\"subtype\":null,\"timestamp\":2615811451453,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1808128,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xw3KV0jVqzFB8f-z3wa1ajy1jn6cftuepsu47xdob_1732299582\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"pass\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"fail\",\"type\":\"DMARC\"}],\"messageId\":\"<44c313a9-5485-4171-95b9-c62441a9b30f@CO1PR18MB4571.namprd18.prod.outlook.com>\",\"processingId\":\"4b05c4d45a33d552c362c73a9668894f7c5e0ec403de52a3ea2f1ff745b77317_1732299582\",\"subtype\":null,\"timestamp\":2615912382518,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1826377,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xz88p751Yz84nC-a8cr4y85yq3hh6jjczgnn5sgj8_1732734475\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<973b78eb-dc34-9104-07d4-ee22635f804d@demovation-ci.b41.one>\",\"processingId\":\"2c8e7dba58482b8a32d24db211eab8d7d1326f2f8474c6062930647a95a9d7ea_1732734475\",\"subtype\":null,\"timestamp\":2616347275302,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1815702,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4Xxg1c71KpzFB8T-j9zj9y3f91byjes4ysqetgk19g_1732525893\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<063ac542-835f-2f3f-d6d0-e908532ad5a8@demovation-ci.b41.one>\",\"processingId\":\"380ecc31dda8a00d6ca2df923505aacbe69a4064a7ef0ae4ec924940e4d099b0_1732525893\",\"subtype\":null,\"timestamp\":2616138693398,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1820908,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XyPl23Kn4z84ly-hnj5fgu9nbwnghx86mj18qp44b_1732630590\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<0d992fc0-acb3-8b6b-3dfe-78878f77dcb4@demovation-ci.b41.one>\",\"processingId\":\"2985cb5ae75e545de9521c23914f448fbe60c233c7e605d5563aea5071b3df98_1732630590\",\"subtype\":null,\"timestamp\":2616243390705,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"_offset\":1803841,\"_partition\":53,\"accountId\":\"AUS2474\",\"aggregateId\":\"4XvR1B4m7BzFB8L-qk59b4szrgayciaagczc977rzb_1732212206\",\"authResults\":[{\"aligned\":true,\"result\":\"pass\",\"type\":\"SPF\"},{\"aligned\":false,\"result\":\"none\",\"type\":\"DKIM\"},{\"aligned\":null,\"result\":\"pass\",\"type\":\"DMARC\"}],\"messageId\":\"<3eb68530-38f3-81af-df14-b7d49b3a9de7@demovation-ci.b41.one>\",\"processingId\":\"a10661d1543bf1435309d8d52024faf463d1d225f0b3b56ff8a343849bb44f29_1732212206\",\"subtype\":null,\"timestamp\":2615825006960,\"type\":\"mailflow\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"attachments\":[\"tpsreport.xlsx\"],\"subject\":\"RE: Your archive mailbox is almost full.\",\"senderEnvelope\":\"eloco@vsxfeayv.com\",\"messageId\":\"messageId\",\"threatState\":\"DELIVERED\",\"senderHeader\":\"eloco@vsxfeayv.com\",\"source\":\"OFFICE_365_MAIL\",\"type\":\"entities\",\"tags\":[\"UNTRUSTWORTHY\",\"SPAM\"],\"accountId\":\"C0A0\",\"aggregateId\":\"aggregateId\",\"processingId\":\"processingId\",\"threatType\":\"POLICIES_DISABLED\",\"recipients\":[\"eloco@gbphcuwczy.com\"],\"policiesApplied\":[{\"action\":null,\"mode\":null,\"name\":\"Default O365 Mail policy\"},{\"action\":null,\"mode\":null,\"name\":\"Default O365 Mail policy\"}],\"historicalMail\":false,\"subtype\":\"POLICIES_DISABLED\",\"senderIp\":\"198.51.100.211\",\"timestamp\":2573297837899,\"direction\":\"Inbound\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloud_integrated_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mimecast-cloud_integrated_logs-default",
+    "event_count": 21,
+    "numeric_keyword_fields": [],
+    "package": "mimecast",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

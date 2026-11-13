@@ -1,0 +1,397 @@
+{
+  "expected": [
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "dial tcp 198.51.100.23:853: connect: no route to host"
+          }
+        }
+      },
+      "dns": {
+        "question": {
+          "name": "19-courier.push.apple.com",
+          "registered_domain": "apple.com",
+          "subdomain": "19-courier.push",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[ERROR] plugin/errors: 2 19-courier.push.apple.com. A: dial tcp 198.51.100.23:853: connect: no route to host",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "error",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "related": {
+        "hosts": [
+          "19-courier.push.apple.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "dial tcp 192.0.2.248:853: i/o timeout"
+          }
+        }
+      },
+      "dns": {
+        "question": {
+          "name": "avs-alexa-18-na.amazon.com",
+          "registered_domain": "amazon.com",
+          "subdomain": "avs-alexa-18-na",
+          "top_level_domain": "com",
+          "type": "A"
+        },
+        "response_code": "2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[ERROR] plugin/errors: 2 avs-alexa-18-na.amazon.com. A: dial tcp 192.0.2.248:853: i/o timeout",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "error",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "related": {
+        "hosts": [
+          "avs-alexa-18-na.amazon.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "read tcp 10.155.124.42:39436->192.0.2.248:853: i/o timeout"
+          }
+        }
+      },
+      "dns": {
+        "question": {
+          "name": "tno-gnud56.dchddmysyv.com",
+          "registered_domain": "dchddmysyv.com",
+          "subdomain": "tno-gnud56",
+          "top_level_domain": "com",
+          "type": "HTTPS"
+        },
+        "response_code": "2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[ERROR] plugin/errors: 2 tno-gnud56.dchddmysyv.com. HTTPS: read tcp 10.155.124.42:39436->192.0.2.248:853: i/o timeout",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "error",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "related": {
+        "hosts": [
+          "tno-gnud56.dchddmysyv.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "read udp 10.214.106.169:39548->10.214.106.169:8600: i/o timeout"
+          }
+        }
+      },
+      "dns": {
+        "question": {
+          "name": "active.vault.service.va.consul",
+          "type": "AAAA"
+        },
+        "response_code": "2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[ERROR] plugin/errors: 2 active.vault.service.va.consul. AAAA: read udp 10.214.106.169:39548->10.214.106.169:8600: i/o timeout",
+        "outcome": "failure",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "error",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "related": {
+        "hosts": [
+          "active.vault.service.va.consul"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "4 errors like '^error.*!$' occurred in last 2s"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[ERROR] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "error",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "4 errors like '^error.*!$' occurred in last 2s"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[WARNING] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "warning",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "4 errors like '^error.*!$' occurred in last 2s"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[INFO] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "info",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "coredns": {
+        "log": {
+          "error": {
+            "message": "4 errors like '^error.*!$' occurred in last 2s"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "[DEBUG] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+        "type": [
+          "protocol"
+        ]
+      },
+      "log": {
+        "level": "debug",
+        "logger": "plugin/errors"
+      },
+      "network": {
+        "protocol": "dns"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "[ERROR] plugin/errors: 2 19-courier.push.apple.com. A: dial tcp 198.51.100.23:853: connect: no route to host",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[ERROR] plugin/errors: 2 avs-alexa-18-na.amazon.com. A: dial tcp 192.0.2.248:853: i/o timeout",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[ERROR] plugin/errors: 2 tno-gnud56.dchddmysyv.com. HTTPS: read tcp 10.155.124.42:39436->192.0.2.248:853: i/o timeout",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[ERROR] plugin/errors: 2 active.vault.service.va.consul. AAAA: read udp 10.214.106.169:39548->10.214.106.169:8600: i/o timeout",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[ERROR] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[WARNING] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[INFO] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "[DEBUG] plugin/errors: 4 errors like '^error.*!$' occurred in last 2s",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-coredns-log-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "coredns",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

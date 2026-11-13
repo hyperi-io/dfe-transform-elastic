@@ -1,0 +1,51 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "kind": "metric",
+        "original": "{\"clusterId\":\"ea10a874-da66-41b9-b33e-12f36b2b8ca4\",\"clusterName\":\"cluster-1\",\"capacityBytes\":3834792386560,\"diskId\":\"sdd\",\"diskType\":\"HDD\",\"isEncrypted\":false,\"path\":\"/mnt/wwn-0x9000b3100b3610c9\",\"status\":\"ACTIVE\",\"unallocatedBytes\":1497465520128,\"usableBytes\":1457440894976,\"nodeId\":\"8a5a3b1a-0675-400c-aecd-3bd64c2b4cd8\"}"
+      },
+      "rubrik": {
+        "cluster": {
+          "id": "ea10a874-da66-41b9-b33e-12f36b2b8ca4",
+          "name": "cluster-1"
+        },
+        "drives": {
+          "capacity": {
+            "bytes": 3834792386560
+          },
+          "id": "sdd",
+          "is_encrypted": false,
+          "node_id": "8a5a3b1a-0675-400c-aecd-3bd64c2b4cd8",
+          "path": "/mnt/wwn-0x9000b3100b3610c9",
+          "status": "ACTIVE",
+          "type": "HDD",
+          "unallocated": {
+            "bytes": 1497465520128
+          },
+          "usable": {
+            "bytes": 1457440894976
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"clusterId\":\"ea10a874-da66-41b9-b33e-12f36b2b8ca4\",\"clusterName\":\"cluster-1\",\"capacityBytes\":3834792386560,\"diskId\":\"sdd\",\"diskType\":\"HDD\",\"isEncrypted\":false,\"path\":\"/mnt/wwn-0x9000b3100b3610c9\",\"status\":\"ACTIVE\",\"unallocatedBytes\":1497465520128,\"usableBytes\":1457440894976,\"nodeId\":\"8a5a3b1a-0675-400c-aecd-3bd64c2b4cd8\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "drives",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-rubrik-drives-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "rubrik",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

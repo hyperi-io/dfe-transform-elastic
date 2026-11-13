@@ -1,0 +1,251 @@
+{
+    "events": [
+        {
+            "zoom": {
+                "event": "user.created",
+                "payload": {
+                    "account_id": "AAAAAA",
+                    "creation_type": "create",
+                    "object": {
+                        "email": "jfvpqkcwfmt@dobjr.com",
+                        "first_name": "Ndijt",
+                        "id": "abcD3ojfdbjfg",
+                        "last_name": "Rncp",
+                        "type": "3"
+                    },
+                    "operator": "fnbyduoqclkdy@dobjr.com"
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.invitation_accepted",
+                "payload": {
+                    "account_id": "EPjyjVYxHMA",
+                    "object": {
+                        "email": "zdzsf@nakle.dejarnybn.dfgfdgf",
+                        "first_name": "Zdjva",
+                        "id": "sbyjt3ODg",
+                        "last_name": "DipvQfxvkr",
+                        "type": 1
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.updated",
+                "payload": {
+                    "account_id": "lAA_EBBBBBBB",
+                    "object": {
+                        "company": "Zoom",
+                        "id": "uLobbbbbbbb_qQsQ"
+                    },
+                    "old_object": {
+                        "company": "NotZoom",
+                        "id": "uLobbbbbbbb_qQsQ"
+                    },
+                    "operator": "trjjnf1065+eei_vf@gmail.com",
+                    "operator_id": "uLobbbbbbbb_qQsQ",
+                    "time_stamp": 2447172654861
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.settings_updated",
+                "payload": {
+                    "account_id": "CAl6ByEyAq8KK_CCCCCC",
+                    "object": {
+                        "id": "uL34AAbbbbAAAAAAQsQ",
+                        "settings": {
+                            "in_meeting": {
+                                "private_chat": false
+                            }
+                        }
+                    },
+                    "old_object": {
+                        "id": "uL34AAbbbbAAAAAAQsQ",
+                        "settings": {
+                            "in_meeting": {
+                                "private_chat": true
+                            }
+                        }
+                    },
+                    "operator": "ycsgjalmeyapun@gmail.com",
+                    "operator_id": "uLoRgfbbTayCX6r2Q_qQsQ",
+                    "time_stamp": 2447185626929
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.settings_updated",
+                "payload": {
+                    "account_id": "EPbbbbb@@@@@2sfdfdA",
+                    "object": {
+                        "id": "fdhjfdhsj536274gfd",
+                        "settings": {
+                            "meeting_authentication": false
+                        }
+                    },
+                    "old_object": {
+                        "id": "fdhjfdhsj536274gfd",
+                        "settings": {
+                            "meeting_authentication": true
+                        }
+                    },
+                    "operator": "nnybtfsfpo@ldxeogscmoau72.com",
+                    "operator_id": "fdhjfdhsj536274gfd",
+                    "time_stamp": 2477064739427
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.deactivated",
+                "payload": {
+                    "account_id": "AAAAAABBBB",
+                    "object": {
+                        "email": "jfvpqkcwfmt@dobjr.com",
+                        "first_name": "Ndijt",
+                        "id": "abcD3ojfdbjfg",
+                        "last_name": "Rncp",
+                        "type": 1
+                    },
+                    "operator": "fnbyduoqclkdy@dobjr.com",
+                    "operator_id": "z8yCxjabcdEFGHfp8uQ"
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.activated",
+                "payload": {
+                    "account_id": "AAAAAABBBB",
+                    "object": {
+                        "email": "jfvpqkcwfmt@dobjr.com",
+                        "first_name": "Ndijt",
+                        "id": "abcD3ojfdbjfg",
+                        "last_name": "Rncp",
+                        "type": 3
+                    },
+                    "operator": "fnbyduoqclkdy@dobjr.com",
+                    "operator_id": "z8yCxjabcdEFGHfp8uQ"
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.disassociated",
+                "payload": {
+                    "account_id": "AAAAAABBBB",
+                    "object": {
+                        "email": "jfvpqkcwfmt@dobjr.com",
+                        "first_name": "Ndijt",
+                        "id": "abcD3ojfdbjfg",
+                        "last_name": "Rncp",
+                        "type": 3
+                    },
+                    "operator": "fnbyduoqclkdy@dobjr.com",
+                    "operator_id": "z8yCxjabcdEFGHfp8uQ"
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.deleted",
+                "payload": {
+                    "account_id": "AAAAAABBBB",
+                    "object": {
+                        "email": "jfvpqkcwfmt@dobjr.com",
+                        "first_name": "Ndijt",
+                        "id": "abcD3ojfdbjfg",
+                        "last_name": "Rncp",
+                        "type": "3"
+                    },
+                    "operator": "fnbyduoqclkdy@dobjr.com",
+                    "operator_id": "z8yCxjabcdEFGHfp8uQ"
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.presence_status_updated",
+                "payload": {
+                    "account_id": "EPjfyjxHMA",
+                    "object": {
+                        "date_time": "2047-11-26T20:13:57Z",
+                        "email": "sfbjawxdyo@ejkcdc.com",
+                        "id": "z8ycx1223fq",
+                        "presence_status": "Available"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.personal_notes_updated",
+                "payload": {
+                    "account_id": "EPfhhdrYxHMA",
+                    "object": {
+                        "date_time": "2047-11-26T21:29:08Z",
+                        "email": "kafnhcci@fsnpl.ghm",
+                        "id": "z8aggp8uq",
+                        "personal_notes": "Out of Office until February 31"
+                    },
+                    "old_object": {
+                        "personal_notes": "this is the old note"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.signed_in",
+                "payload": {
+                    "account_id": "dsjfosdfpdosgifdjg",
+                    "object": {
+                        "client_type": "android",
+                        "date_time": "2047-09-10T14:36:10Z",
+                        "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+                        "id": "djkglfdgkjdflghfdpe",
+                        "version": "4.5.3308.0902"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.signed_out",
+                "payload": {
+                    "account_id": "dsjfosdfpdosgifdjg",
+                    "object": {
+                        "client_type": "android",
+                        "date_time": "2047-09-10T14:36:10Z",
+                        "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+                        "id": "djkglfdgkjdflghfdpe",
+                        "version": "4.5.3308.0902"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "user.signed_in",
+                "event_ts": 2635741513153,
+                "payload": {
+                    "account_id": "HzozXXXXXXXX",
+                    "object": {
+                        "client_type": "iphone",
+                        "date_time": "2053-07-10T06:25:13Z",
+                        "email": "username@elastic",
+                        "id": "WYVlJyXXXXXXXXXXXXX",
+                        "login_type": 101,
+                        "version": "6.5.1.25747"
+                    }
+                }
+            }
+        }
+    ]
+}

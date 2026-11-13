@@ -1,0 +1,304 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2023-04-28T00:50:54.000Z",
+      "destination": {
+        "ip": "203.0.113.88",
+        "mac": "09-94-47-38-62-02",
+        "port": 42181
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "drop",
+        "category": [
+          "network"
+        ],
+        "id": "2021",
+        "kind": "event",
+        "original": "2023:04:28-00:50:54 sophos-test-vm1 ulogd[12511]: id=\"2021\" severity=\"info\" sys=\"SecureNet\" sub=\"packetfilter\" name=\"Packet dropped (GEOIP)\" action=\"drop\" fwrule=\"60019\" initf=\"eth6\" srcmac=\"8d:eb:0e:95:5d:3e\" dstmac=\"09:94:47:38:62:02\" srcip=\"192.0.2.127\" dstip=\"203.0.113.88\" proto=\"6\" length=\"88\" tos=\"0x00\" prec=\"0x00\" ttl=\"227\" srcport=\"443\" dstport=\"42181\" tcpflags=\"ACK PSH\"",
+        "provider": "packetfilter",
+        "severity": 6,
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm1",
+        "name": "sophos-test-vm1"
+      },
+      "network": {
+        "iana_number": "6"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth6"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "ulogd",
+        "pid": 12511
+      },
+      "related": {
+        "hosts": [
+          "sophos-test-vm1"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88"
+        ]
+      },
+      "rule": {
+        "id": "60019"
+      },
+      "sophos": {
+        "utm": {
+          "length": 88,
+          "name": "Packet dropped (GEOIP)",
+          "prec": "0x00",
+          "severity": "info",
+          "sub": "packetfilter",
+          "sys": "SecureNet",
+          "tcpflags": [
+            "ack",
+            "psh"
+          ],
+          "tos": "0x00",
+          "ttl": 227
+        }
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "mac": "8D-EB-0E-95-5D-3E",
+        "port": 443
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2023-04-28T11:08:04.000Z",
+      "destination": {
+        "ip": "203.0.113.88",
+        "mac": "09-94-47-38-62-02",
+        "port": 5060
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "drop",
+        "category": [
+          "network"
+        ],
+        "id": "2001",
+        "kind": "event",
+        "original": "2023:04:28-11:08:04 sophos-test-vm1 ulogd[12511]: id=\"2001\" severity=\"info\" sys=\"SecureNet\" sub=\"packetfilter\" name=\"Packet dropped\" action=\"drop\" fwrule=\"60001\" initf=\"eth6\" mark=\"0x21bd\" app=\"445\" srcmac=\"8d:eb:0e:95:5d:3e\" dstmac=\"09:94:47:38:62:02\" srcip=\"192.0.2.127\" dstip=\"203.0.113.88\" proto=\"17\" length=\"438\" tos=\"0x00\" prec=\"0x00\" ttl=\"56\" srcport=\"5319\" dstport=\"5060\"",
+        "provider": "packetfilter",
+        "severity": 6,
+        "timezone": "UTC",
+        "type": [
+          "info",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm1",
+        "name": "sophos-test-vm1"
+      },
+      "network": {
+        "iana_number": "17"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth6"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "ulogd",
+        "pid": 12511
+      },
+      "related": {
+        "hosts": [
+          "sophos-test-vm1"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88"
+        ]
+      },
+      "rule": {
+        "id": "60001"
+      },
+      "sophos": {
+        "utm": {
+          "app_id": "445",
+          "length": 438,
+          "mark": "0x21bd",
+          "name": "Packet dropped",
+          "prec": "0x00",
+          "severity": "info",
+          "sub": "packetfilter",
+          "sys": "SecureNet",
+          "tos": "0x00",
+          "ttl": 56
+        }
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "mac": "8D-EB-0E-95-5D-3E",
+        "port": 5319
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2023-04-28T11:28:41.000Z",
+      "destination": {
+        "ip": "203.0.113.88",
+        "mac": "09-94-47-38-62-02",
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "DNS request",
+        "category": [
+          "network"
+        ],
+        "id": "2014",
+        "kind": "event",
+        "original": "<30>2023:04:28-11:28:41 sophos-test-vm1 ulogd[12511]: id=\"2014\" severity=\"info\" sys=\"SecureNet\" sub=\"packetfilter\" name=\"DNS request\" action=\"DNS request\" fwrule=\"60011\" initf=\"eth7\" srcmac=\"90:69:34:b3:77:ff\" dstmac=\"09:94:47:38:62:02\" srcip=\"192.0.2.127\" dstip=\"203.0.113.88\" proto=\"17\" length=\"75\" tos=\"0x00\" prec=\"0x00\" ttl=\"64\" srcport=\"34200\" dstport=\"53\" ",
+        "provider": "packetfilter",
+        "severity": 6,
+        "timezone": "UTC",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "sophos-test-vm1",
+        "name": "sophos-test-vm1"
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 3,
+            "name": "System"
+          },
+          "priority": 30,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "iana_number": "17"
+      },
+      "observer": {
+        "ingress": {
+          "interface": {
+            "name": "eth7"
+          }
+        },
+        "product": "UTM",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "process": {
+        "name": "ulogd",
+        "pid": 12511
+      },
+      "related": {
+        "hosts": [
+          "sophos-test-vm1"
+        ],
+        "ip": [
+          "192.0.2.127",
+          "203.0.113.88"
+        ]
+      },
+      "rule": {
+        "id": "60011"
+      },
+      "sophos": {
+        "utm": {
+          "length": 75,
+          "name": "DNS request",
+          "prec": "0x00",
+          "severity": "info",
+          "sub": "packetfilter",
+          "sys": "SecureNet",
+          "tos": "0x00",
+          "ttl": 64
+        }
+      },
+      "source": {
+        "ip": "192.0.2.127",
+        "mac": "90-69-34-B3-77-FF",
+        "port": 34200
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "2023:04:28-00:50:54 sophos-test-vm1 ulogd[12511]: id=\"2021\" severity=\"info\" sys=\"SecureNet\" sub=\"packetfilter\" name=\"Packet dropped (GEOIP)\" action=\"drop\" fwrule=\"60019\" initf=\"eth6\" srcmac=\"8d:eb:0e:95:5d:3e\" dstmac=\"09:94:47:38:62:02\" srcip=\"192.0.2.127\" dstip=\"203.0.113.88\" proto=\"6\" length=\"88\" tos=\"0x00\" prec=\"0x00\" ttl=\"227\" srcport=\"443\" dstport=\"42181\" tcpflags=\"ACK PSH\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "2023:04:28-11:08:04 sophos-test-vm1 ulogd[12511]: id=\"2001\" severity=\"info\" sys=\"SecureNet\" sub=\"packetfilter\" name=\"Packet dropped\" action=\"drop\" fwrule=\"60001\" initf=\"eth6\" mark=\"0x21bd\" app=\"445\" srcmac=\"8d:eb:0e:95:5d:3e\" dstmac=\"09:94:47:38:62:02\" srcip=\"192.0.2.127\" dstip=\"203.0.113.88\" proto=\"17\" length=\"438\" tos=\"0x00\" prec=\"0x00\" ttl=\"56\" srcport=\"5319\" dstport=\"5060\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "<30>2023:04:28-11:28:41 sophos-test-vm1 ulogd[12511]: id=\"2014\" severity=\"info\" sys=\"SecureNet\" sub=\"packetfilter\" name=\"DNS request\" action=\"DNS request\" fwrule=\"60011\" initf=\"eth7\" srcmac=\"90:69:34:b3:77:ff\" dstmac=\"09:94:47:38:62:02\" srcip=\"192.0.2.127\" dstip=\"203.0.113.88\" proto=\"17\" length=\"75\" tos=\"0x00\" prec=\"0x00\" ttl=\"64\" srcport=\"34200\" dstport=\"53\" ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "utm",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-utm-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

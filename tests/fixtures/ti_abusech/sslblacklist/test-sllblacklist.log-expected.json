@@ -1,0 +1,509 @@
+{
+  "expected": [
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574746312Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"HijackLoader C&C\",\"sha1\":\"440b673de1e1e1d61dc72a9ef864fb2862126ae2\",\"ts\":\"2053-06-25T06:50:28Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "440b673de1e1e1d61dc72a9ef864fb2862126ae2"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "HijackLoader C&C",
+          "first_seen": "2053-06-25T06:50:28.000Z",
+          "name": "440b673de1e1e1d61dc72a9ef864fb2862126ae2",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574753402Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"ACRStealer C&C\",\"sha1\":\"746b1359e7a5f4c32763db1c0e1a3f94e96783dc\",\"ts\":\"2053-06-25T06:26:43Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "746b1359e7a5f4c32763db1c0e1a3f94e96783dc"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "ACRStealer C&C",
+          "first_seen": "2053-06-25T06:26:43.000Z",
+          "name": "746b1359e7a5f4c32763db1c0e1a3f94e96783dc",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574754542Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"QuasarRAT C&C\",\"sha1\":\"d685c0b735afb1540ab1c74790b22f53fb970433\",\"ts\":\"2053-06-25T06:24:44Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "d685c0b735afb1540ab1c74790b22f53fb970433"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "QuasarRAT C&C",
+          "first_seen": "2053-06-25T06:24:44.000Z",
+          "name": "d685c0b735afb1540ab1c74790b22f53fb970433",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574755092Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"ResolverRAT C&C\",\"sha1\":\"c469540cf038f80ddd4f5a40d2d859f708230568\",\"ts\":\"2053-06-24T05:56:41Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "c469540cf038f80ddd4f5a40d2d859f708230568"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "ResolverRAT C&C",
+          "first_seen": "2053-06-24T05:56:41.000Z",
+          "name": "c469540cf038f80ddd4f5a40d2d859f708230568",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574755582Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"ConnectWise C&C\",\"sha1\":\"15f623202b498f30a88acd03a862251c243ea573\",\"ts\":\"2053-06-24T05:31:47Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "15f623202b498f30a88acd03a862251c243ea573"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "ConnectWise C&C",
+          "first_seen": "2053-06-24T05:31:47.000Z",
+          "name": "15f623202b498f30a88acd03a862251c243ea573",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574756172Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"Havoc C&C\",\"sha1\":\"d30400a239bec174b6fea5087249d236af9aa2db\",\"ts\":\"2053-06-24T05:31:22Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "d30400a239bec174b6fea5087249d236af9aa2db"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "Havoc C&C",
+          "first_seen": "2053-06-24T05:31:22.000Z",
+          "name": "d30400a239bec174b6fea5087249d236af9aa2db",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574756682Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"AsyncRAT C&C\",\"sha1\":\"e0c35b696ff15e1e23c0ba8f7a70431c22030a87\",\"ts\":\"2053-06-24T05:31:06Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "e0c35b696ff15e1e23c0ba8f7a70431c22030a87"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "AsyncRAT C&C",
+          "first_seen": "2053-06-24T05:31:06.000Z",
+          "name": "e0c35b696ff15e1e23c0ba8f7a70431c22030a87",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574757172Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"QuasarRAT C&C\",\"sha1\":\"45f8004f2846c092d0c2e70227a43a515c86301a\",\"ts\":\"2053-06-24T05:30:45Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "45f8004f2846c092d0c2e70227a43a515c86301a"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "QuasarRAT C&C",
+          "first_seen": "2053-06-24T05:30:45.000Z",
+          "name": "45f8004f2846c092d0c2e70227a43a515c86301a",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574758092Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"QuasarRAT C&C\",\"sha1\":\"156e0266d3be8b23e28c7253d0bb8855fbb9fd61\",\"ts\":\"2053-06-24T05:30:41Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "156e0266d3be8b23e28c7253d0bb8855fbb9fd61"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "QuasarRAT C&C",
+          "first_seen": "2053-06-24T05:30:41.000Z",
+          "name": "156e0266d3be8b23e28c7253d0bb8855fbb9fd61",
+          "type": "x509-certificate"
+        }
+      }
+    },
+    {
+      "abusech": {
+        "sslblacklist": {
+          "deleted_at": "2026-11-14T00:06:15.574Z"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:45.574758632Z",
+        "kind": "enrichment",
+        "original": "{\"reason\":\"OffLoader C&C\",\"sha1\":\"e571afd02df564c99d4a3fd660341d3ba0b1978e\",\"ts\":\"2053-06-24T05:29:44Z\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "labels": {
+        "interval": "1h"
+      },
+      "related": {
+        "hash": [
+          "e571afd02df564c99d4a3fd660341d3ba0b1978e"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "description": "OffLoader C&C",
+          "first_seen": "2053-06-24T05:29:44.000Z",
+          "name": "e571afd02df564c99d4a3fd660341d3ba0b1978e",
+          "type": "x509-certificate"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"HijackLoader C&C\",\"sha1\":\"440b673de1e1e1d61dc72a9ef864fb2862126ae2\",\"ts\":\"2053-06-25T06:50:28Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"ACRStealer C&C\",\"sha1\":\"746b1359e7a5f4c32763db1c0e1a3f94e96783dc\",\"ts\":\"2053-06-25T06:26:43Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"QuasarRAT C&C\",\"sha1\":\"d685c0b735afb1540ab1c74790b22f53fb970433\",\"ts\":\"2053-06-25T06:24:44Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"ResolverRAT C&C\",\"sha1\":\"c469540cf038f80ddd4f5a40d2d859f708230568\",\"ts\":\"2053-06-24T05:56:41Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"ConnectWise C&C\",\"sha1\":\"15f623202b498f30a88acd03a862251c243ea573\",\"ts\":\"2053-06-24T05:31:47Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"Havoc C&C\",\"sha1\":\"d30400a239bec174b6fea5087249d236af9aa2db\",\"ts\":\"2053-06-24T05:31:22Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"AsyncRAT C&C\",\"sha1\":\"e0c35b696ff15e1e23c0ba8f7a70431c22030a87\",\"ts\":\"2053-06-24T05:31:06Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"QuasarRAT C&C\",\"sha1\":\"45f8004f2846c092d0c2e70227a43a515c86301a\",\"ts\":\"2053-06-24T05:30:45Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"QuasarRAT C&C\",\"sha1\":\"156e0266d3be8b23e28c7253d0bb8855fbb9fd61\",\"ts\":\"2053-06-24T05:30:41Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interval": "1h"
+      },
+      "message": "{\"reason\":\"OffLoader C&C\",\"sha1\":\"e571afd02df564c99d4a3fd660341d3ba0b1978e\",\"ts\":\"2053-06-24T05:29:44Z\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "sslblacklist",
+    "dynamic_fields": {
+      "abusech.sslblacklist.deleted_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_abusech-sslblacklist-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "ti_abusech",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

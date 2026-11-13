@@ -1,0 +1,5 @@
+<174>1 2050-01-19T10:19:35+01:00 203.0.113.248 PulseSecure: - - - 2050-01-19 10:19:35 - pcs-name - [198.51.100.144] username(REALM)[ROLE] - Primary authentication successful for username/REALM from 198.51.100.144
+<174>1 2050-01-19T10:23:16+01:00 203.0.113.248 PulseSecure: - - - 2050-01-19 10:23:16 - pcs-name - [198.51.100.144] username(REALM)[ROLE] - Host Checker policy 'HC_POLICY' passed on host '198.51.100.144' address '5B-FE-78-FB-BB-BC' for user 'username'.
+<174>1 2050-01-19T10:24:04+01:00 203.0.113.248 PulseSecure: - - - 2050-01-19 10:24:04 - pcs-name - [198.51.100.144] username(REALM)[ROLE] - Syslog server 198.51.100.211 (facility LOCAL5, filter Standard, type UDP, interface Global) removed from Events logs
+<174>1 2050-01-19T10:23:06+01:00 203.0.113.248 PulseSecure: - - - 2050-01-19 10:23:06 - pcs-name - [127.0.0.1] System()[] - The current virus signature list imported successfully.
+<174>1 2050-01-19T10:23:06+01:00 203.0.113.248 PulseSecure: - - - 2050-01-19 10:23:06 - pcs-name - [127.0.0.1] System()[] - The current virus signature list downloaded successfully from 'https://download.pulsesecure.net/software/av/uac/epupdate_hist.xml'

@@ -1,0 +1,6 @@
+# Test inputs for this directory's fixtures.
+dynamic_fields:
+  event.ingested: .*
+numeric_keyword_fields:
+- mongodb_atlas.project.additional_info.hidden
+- mongodb_atlas.project.additional_info.is_mms_admin

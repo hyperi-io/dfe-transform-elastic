@@ -1,0 +1,94 @@
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Login Verification Email Sent","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Multifactor Enabled","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Enterprise API Secret regenerated","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Master Password Changed","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"SAML Login","Data":"authorizationserver.oidc"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Delete Policy","Data":"Require passwordless verification via LastPass Authenticator"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Add Policy","Data":"Require passwordless verification via LastPass Authenticator New value: 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Reporting","Data":"Initiated by API"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Get User Data","Data":"Initiated by API"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Get Shared Folder Data","Data":"Initiated by API"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Log in","Data":"ofglidmx.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Failed Login Attempt","Data":"ofglidmx.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Log in","Data":"198.51.100.23:1234/example"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Login to Admin Console","Data":"zqay7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Employee Account Created","Data":"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Employee Invited","Data":"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Make Admin","Data":"szbs2@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Login to Admin Console","Data":"user1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Make Admin","Data":"user4"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Site Added","Data":"example.com/ServiceLogin"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Deleted Sites","Data":"example.com/ServiceLogin"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Site Added","Data":"example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Deleted Sites","Data":"ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Created Shared Folder","Data":"temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Deleted Shared Folder","Data":"temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Add Secure Note","Data":"Secure Note (Address) from temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Open Secure Note","Data":"Secure Note (Address)"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Open Secure Note","Data":"Secure Note (Address) from temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Add to Shared Folder","Data":"'temp-1' 'zqay7@example.com'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Create Group","Data":"'temp-group'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Adding User to Group","Data":"zqay7@example.com - temp-group"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Created LastPass Account","Data":"user1@example.com-Shared-temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Update Folder Permissions","Data":"'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Master Password Reset by Super Admin","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Employee Account Deleted","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Require Password Change","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Remove Admin","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Edit Secure Note","Data":"Secure Note (Wifi renamed)"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Renamed Shared Folder","Data":"'test1' 'test2'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move to Shared Folder","Data":"example.com to Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move to Shared Folder","Data":" to Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move from Shared Folder","Data":"example.com from Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move from Shared Folder","Data":" from Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Limit Shared Folder","Data":"shared folder sbgq@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Removed From Shared Folder","Data":"'test1' 'sbgq@example.com'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Delete Shared Sites","Data":"example.com from Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move from Shared Folder","Data":" from INVALID SHARED FOLDER"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Login verification email sent","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Multifactor enabled","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Enterprise API secret regenerated","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Master password changed","Data":""}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"SAML login","Data":"authorizationserver.oidc"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Delete policy","Data":"Require passwordless verification via LastPass Authenticator"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Add policy","Data":"Require passwordless verification via LastPass Authenticator New value: 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Reporting","Data":"Initiated by API"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Get user data","Data":"Initiated by API"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Get shared folder data","Data":"Initiated by API"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Log in","Data":"ofglidmx.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Failed login attempt","Data":"ofglidmx.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Log in","Data":"198.51.100.23:1234/example"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Login to admin console","Data":"zqay7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Employee account created","Data":"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Employee invited","Data":"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Make admin","Data":"szbs2@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Login to admin console","Data":"user1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Make admin","Data":"user4"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Site added","Data":"example.com/ServiceLogin"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Deleted sites","Data":"example.com/ServiceLogin"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Site added","Data":"example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Deleted sites","Data":"ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Created shared folder","Data":"temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Deleted shared folder","Data":"temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Add secure note","Data":"Secure Note (Address) from temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Open secure note","Data":"Secure Note (Address)"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Open secure note","Data":"Secure Note (Address) from temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Add to shared folder","Data":"'temp-1' 'zqay7@example.com'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Create group","Data":"'temp-group'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Adding user to group","Data":"zqay7@example.com - temp-group"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Created LastPass account","Data":"user1@example.com-Shared-temp-1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Update folder permissions","Data":"'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Master password reset by super admin","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Employee account deleted","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Require password change","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Remove admin","Data":"qwfl7@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Edit secure note","Data":"Secure Note (Wifi renamed)"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Renamed shared folder","Data":"'test1' 'test2'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move to shared folder","Data":"example.com to Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move to shared folder","Data":" to Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move from shared folder","Data":"example.com from Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move from shared folder","Data":" from Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Limit shared folder","Data":"shared folder sbgq@example.com"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Removed from shared folder","Data":"'test1' 'sbgq@example.com'"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Delete shared sites","Data":"example.com from Shared Folder 1"}
+{"Time":"2043-07-17 09:51:51","Username":"sbgq@example.com","IP_Address":"203.0.113.212","Action":"Move from shared folder","Data":" from INVALID SHARED FOLDER"}

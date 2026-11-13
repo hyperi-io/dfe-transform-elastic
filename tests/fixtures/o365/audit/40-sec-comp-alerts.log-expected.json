@@ -1,0 +1,706 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "92b5f006-af00-4794-8494-996d93ba8769",
+        "id": "95796580-2740-4801-9ada-6e12c5acb414",
+        "name": "f41b3126535f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'conditional' with tag 'set_message_186a70fd' failed with message 'field [o365audit] not present as part of path [o365audit.Name]'"
+        ]
+      },
+      "event": {
+        "action": "AlertEntityGenerated",
+        "category": [
+          "authentication",
+          "web"
+        ],
+        "code": "SecurityComplianceAlerts",
+        "dataset": "o365.audit",
+        "id": "114201c6-57a2-4d02-d46f-14d1d8d6cb6b",
+        "kind": "pipeline_error",
+        "module": "o365",
+        "original": "New alert",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "severity": 2,
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "AlertEntityId": "apq@testsiem.onmicrosoft.com",
+          "AlertId": "1ac5b067-0a5a-17de-b753-36a9b920037e",
+          "AlertLinks": [
+            "http://example.net/alert",
+            "http://example.net/info"
+          ],
+          "AlertType": "System",
+          "Category": "AccessGovernance",
+          "Comments": "New alert",
+          "CreationTime": "2048-02-14T19:00:00",
+          "Data": "{\"etype\":\"User\",\"eid\":\"apq@testsiem.onmicrosoft.com\",\"tid\":\"d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf\",\"ts\":\"2048-02-14T18:54:45.0000000Z\",\"te\":\"2048-02-14T18:54:45.0000000Z\",\"op\":\"GrantAdminPermission\",\"tdc\":\"1\",\"suid\":\"apq@testsiem.onmicrosoft.com\",\"ut\":\"Admin\",\"lon\":\"GrantAdminPermission\"}",
+          "EntityType": "User",
+          "Id": "114201c6-57a2-4d02-d46f-14d1d8d6cb6b",
+          "Name": "Elevation of Exchange admin privilege",
+          "ObjectId": "apq@testsiem.onmicrosoft.com",
+          "Operation": "AlertEntityGenerated",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "PolicyId": "75f77271-05b8-48f9-8be6-22efe5b40976",
+          "RecordType": 40,
+          "ResultStatus": "Succeeded",
+          "Severity": "Low",
+          "Source": "Office 365 Security & Compliance",
+          "Status": "Active",
+          "UserId": "SecurityComplianceAlerts",
+          "UserKey": "SecurityComplianceAlerts",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "related": {
+        "user": "apq"
+      },
+      "rule": {
+        "category": "AccessGovernance",
+        "description": "apq@testsiem.onmicrosoft.com",
+        "id": "75f77271-05b8-48f9-8be6-22efe5b40976",
+        "name": "Elevation of Exchange admin privilege",
+        "reference": [
+          "http://example.net/alert",
+          "http://example.net/info"
+        ],
+        "ruleset": "User"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "92b5f006-af00-4794-8494-996d93ba8769",
+        "id": "95796580-2740-4801-9ada-6e12c5acb414",
+        "name": "f41b3126535f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'conditional' with tag 'set_message_186a70fd' failed with message 'field [o365audit] not present as part of path [o365audit.Name]'"
+        ]
+      },
+      "event": {
+        "action": "AlertTriggered",
+        "category": [
+          "authentication",
+          "web"
+        ],
+        "code": "SecurityComplianceAlerts",
+        "dataset": "o365.audit",
+        "id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+        "kind": "pipeline_error",
+        "module": "o365",
+        "original": "New alert",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "severity": 2,
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1285
+      },
+      "o365": {
+        "audit": {
+          "AlertId": "1ac5b067-0a5a-17de-b753-36a9b920037e",
+          "AlertLinks": "http://example.net/single",
+          "AlertType": "System",
+          "Category": "AccessGovernance",
+          "Comments": "New alert",
+          "CreationTime": "2048-02-14T19:00:00",
+          "Data": "{\"f3u\":\"apq@testsiem.onmicrosoft.com\",\"ts\":\"2048-02-14T18:45:00.0000000Z\",\"te\":\"2048-02-14T19:00:00.0000000Z\",\"op\":\"GrantAdminPermission\",\"wl\":\"Exchange\",\"tid\":\"d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf\",\"tdc\":\"1\",\"reid\":\"87c8d131-c838-4a19-fa33-81c2d08f7cd7\",\"rid\":\"e65d0f40-ac11-4fdd-965a-a55e6a88d99c\",\"cid\":\"75f77271-05b8-48f9-8be6-22efe5b40976\",\"ad\":\"This alert is triggered when someone in your organization becomes an Exchange admin or gets new Exchange admin permissions -V1.0.0.1\",\"lon\":\"GrantAdminPermission\",\"an\":\"Elevation of Exchange admin privilege\",\"sev\":\"Low\"}",
+          "Id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+          "Name": "Elevation of Exchange admin privilege",
+          "ObjectId": "1ac5b067-0a5a-17de-b753-36a9b920037e",
+          "Operation": "AlertTriggered",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "PolicyId": "75f77271-05b8-48f9-8be6-22efe5b40976",
+          "RecordType": 40,
+          "ResultStatus": "Succeeded",
+          "Severity": "Low",
+          "Source": "Office 365 Security & Compliance",
+          "Status": "Active",
+          "UserId": "SecurityComplianceAlerts",
+          "UserKey": "SecurityComplianceAlerts",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "rule": {
+        "category": "AccessGovernance",
+        "id": "75f77271-05b8-48f9-8be6-22efe5b40976",
+        "name": "Elevation of Exchange admin privilege",
+        "reference": "http://example.net/single"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "SecurityComplianceAlerts"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "92b5f006-af00-4794-8494-996d93ba8769",
+        "id": "95796580-2740-4801-9ada-6e12c5acb414",
+        "name": "f41b3126535f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'conditional' with tag 'set_message_186a70fd' failed with message 'field [o365audit] not present as part of path [o365audit.Name]'"
+        ]
+      },
+      "event": {
+        "action": "AlertTriggered",
+        "category": [
+          "malware",
+          "web"
+        ],
+        "code": "SecurityComplianceAlerts",
+        "dataset": "o365.audit",
+        "id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+        "kind": "pipeline_error",
+        "module": "o365",
+        "original": "This is a phony threat alert",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "severity": 4,
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2755
+      },
+      "o365": {
+        "audit": {
+          "AlertEntityId": "Malware/Evil.Malware.B",
+          "AlertId": "1233344-8b6e-13bd-b800-08d7b180173c",
+          "AlertType": "System",
+          "Category": "ThreatManagement",
+          "Comments": "This is a phony threat alert",
+          "CreationTime": "2048-02-14T19:00:00",
+          "Data": "{\"something\":\"blabla\"}",
+          "EntityType": "MalwareFamily",
+          "Id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+          "Name": "Phony Malware Alert",
+          "ObjectId": "25518716-3c7b-10bc-b248-20d3d546005d",
+          "Operation": "AlertTriggered",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "PolicyId": "75f77271-05b8-48f9-8be6-22efe5b40976",
+          "RecordType": 40,
+          "ResultStatus": "Succeeded",
+          "Severity": "High",
+          "Source": "Office 365 Security & Compliance",
+          "Status": "Active",
+          "UserId": "SecurityComplianceAlerts",
+          "UserKey": "SecurityComplianceAlerts",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "rule": {
+        "category": "ThreatManagement",
+        "description": "Malware/Evil.Malware.B",
+        "id": "75f77271-05b8-48f9-8be6-22efe5b40976",
+        "name": "Phony Malware Alert",
+        "ruleset": "MalwareFamily"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "technique": {
+          "id": "Malware/Evil.Malware.B"
+        }
+      },
+      "user": {
+        "id": "SecurityComplianceAlerts"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "92b5f006-af00-4794-8494-996d93ba8769",
+        "id": "95796580-2740-4801-9ada-6e12c5acb414",
+        "name": "f41b3126535f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "AlertEntityGenerated",
+        "category": "authentication",
+        "code": "SecurityComplianceAlerts",
+        "dataset": "o365.audit",
+        "id": "114201c6-57a2-4d02-d46f-14d1d8d6cb6b",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "severity": 2,
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "New alert",
+      "o365": {
+        "audit": {
+          "AlertEntityId": "apq@testsiem.onmicrosoft.com",
+          "AlertId": "1ac5b067-0a5a-17de-b753-36a9b920037e",
+          "AlertLinks": [
+            "http://example.net/alert",
+            "http://example.net/info"
+          ],
+          "AlertType": "System",
+          "Category": "AccessGovernance",
+          "Comments": "New alert",
+          "CreationTime": "2048-02-14T19:00:00",
+          "Data": "{\"etype\":\"User\",\"eid\":\"apq@testsiem.onmicrosoft.com\",\"tid\":\"d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf\",\"ts\":\"2048-02-14T18:54:45.0000000Z\",\"te\":\"2048-02-14T18:54:45.0000000Z\",\"op\":\"GrantAdminPermission\",\"tdc\":\"1\",\"suid\":\"apq@testsiem.onmicrosoft.com\",\"ut\":\"Admin\",\"lon\":\"GrantAdminPermission\"}",
+          "EntityType": "User",
+          "Id": "114201c6-57a2-4d02-d46f-14d1d8d6cb6b",
+          "Name": "Elevation of Exchange admin privilege",
+          "ObjectId": "apq@testsiem.onmicrosoft.com",
+          "Operation": "AlertEntityGenerated",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "PolicyId": "75f77271-05b8-48f9-8be6-22efe5b40976",
+          "RecordType": 40,
+          "ResultStatus": "Succeeded",
+          "Severity": "Low",
+          "Source": "Office 365 Security & Compliance",
+          "Status": "Active",
+          "UserId": "SecurityComplianceAlerts",
+          "UserKey": "SecurityComplianceAlerts",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "related": {
+        "user": "apq"
+      },
+      "rule": {
+        "category": "AccessGovernance",
+        "description": "apq@testsiem.onmicrosoft.com",
+        "id": "75f77271-05b8-48f9-8be6-22efe5b40976",
+        "name": "Elevation of Exchange admin privilege",
+        "reference": [
+          "http://example.net/alert",
+          "http://example.net/info"
+        ],
+        "ruleset": "User"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem.onmicrosoft.com",
+        "email": "apq@testsiem.onmicrosoft.com",
+        "id": "apq@testsiem.onmicrosoft.com",
+        "name": "apq"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "92b5f006-af00-4794-8494-996d93ba8769",
+        "id": "95796580-2740-4801-9ada-6e12c5acb414",
+        "name": "f41b3126535f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "AlertTriggered",
+        "category": "authentication",
+        "code": "SecurityComplianceAlerts",
+        "dataset": "o365.audit",
+        "id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "severity": 2,
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1285
+      },
+      "message": "New alert",
+      "o365": {
+        "audit": {
+          "AlertId": "1ac5b067-0a5a-17de-b753-36a9b920037e",
+          "AlertLinks": "http://example.net/single",
+          "AlertType": "System",
+          "Category": "AccessGovernance",
+          "Comments": "New alert",
+          "CreationTime": "2048-02-14T19:00:00",
+          "Data": "{\"f3u\":\"apq@testsiem.onmicrosoft.com\",\"ts\":\"2048-02-14T18:45:00.0000000Z\",\"te\":\"2048-02-14T19:00:00.0000000Z\",\"op\":\"GrantAdminPermission\",\"wl\":\"Exchange\",\"tid\":\"d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf\",\"tdc\":\"1\",\"reid\":\"87c8d131-c838-4a19-fa33-81c2d08f7cd7\",\"rid\":\"e65d0f40-ac11-4fdd-965a-a55e6a88d99c\",\"cid\":\"75f77271-05b8-48f9-8be6-22efe5b40976\",\"ad\":\"This alert is triggered when someone in your organization becomes an Exchange admin or gets new Exchange admin permissions -V1.0.0.1\",\"lon\":\"GrantAdminPermission\",\"an\":\"Elevation of Exchange admin privilege\",\"sev\":\"Low\"}",
+          "Id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+          "Name": "Elevation of Exchange admin privilege",
+          "ObjectId": "1ac5b067-0a5a-17de-b753-36a9b920037e",
+          "Operation": "AlertTriggered",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "PolicyId": "75f77271-05b8-48f9-8be6-22efe5b40976",
+          "RecordType": 40,
+          "ResultStatus": "Succeeded",
+          "Severity": "Low",
+          "Source": "Office 365 Security & Compliance",
+          "Status": "Active",
+          "UserId": "SecurityComplianceAlerts",
+          "UserKey": "SecurityComplianceAlerts",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "rule": {
+        "category": "AccessGovernance",
+        "id": "75f77271-05b8-48f9-8be6-22efe5b40976",
+        "name": "Elevation of Exchange admin privilege",
+        "reference": "http://example.net/single"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "SecurityComplianceAlerts"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "92b5f006-af00-4794-8494-996d93ba8769",
+        "id": "95796580-2740-4801-9ada-6e12c5acb414",
+        "name": "f41b3126535f",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "AlertTriggered",
+        "category": "malware",
+        "code": "SecurityComplianceAlerts",
+        "dataset": "o365.audit",
+        "id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SecurityComplianceCenter",
+        "severity": 4,
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 2755
+      },
+      "message": "This is a phony threat alert",
+      "o365": {
+        "audit": {
+          "AlertEntityId": "Malware/Evil.Malware.B",
+          "AlertId": "1233344-8b6e-13bd-b800-08d7b180173c",
+          "AlertType": "System",
+          "Category": "ThreatManagement",
+          "Comments": "This is a phony threat alert",
+          "CreationTime": "2048-02-14T19:00:00",
+          "Data": "{\"something\":\"blabla\"}",
+          "EntityType": "MalwareFamily",
+          "Id": "3b8836f5-d4d1-47a0-3a0d-42b3e5d2ce54",
+          "Name": "Phony Malware Alert",
+          "ObjectId": "25518716-3c7b-10bc-b248-20d3d546005d",
+          "Operation": "AlertTriggered",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "PolicyId": "75f77271-05b8-48f9-8be6-22efe5b40976",
+          "RecordType": 40,
+          "ResultStatus": "Succeeded",
+          "Severity": "High",
+          "Source": "Office 365 Security & Compliance",
+          "Status": "Active",
+          "UserId": "SecurityComplianceAlerts",
+          "UserKey": "SecurityComplianceAlerts",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SecurityComplianceCenter"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf"
+      },
+      "rule": {
+        "category": "ThreatManagement",
+        "description": "Malware/Evil.Malware.B",
+        "id": "75f77271-05b8-48f9-8be6-22efe5b40976",
+        "name": "Phony Malware Alert",
+        "ruleset": "MalwareFamily"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "technique": {
+          "id": "Malware/Evil.Malware.B"
+        }
+      },
+      "user": {
+        "id": "SecurityComplianceAlerts"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

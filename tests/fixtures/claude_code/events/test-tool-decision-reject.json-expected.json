@@ -1,0 +1,161 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-06-22T02:33:16.507Z",
+      "claude_code": {
+        "events": {
+          "decision": "reject",
+          "event": {
+            "name": "tool_decision",
+            "sequence": 30,
+            "timestamp": "2054-06-22T02:33:16.507Z"
+          },
+          "prompt": {
+            "id": "60763458-7366-3513-4028-632370982420"
+          },
+          "session": {
+            "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+          },
+          "source": "user_reject",
+          "terminal": {
+            "type": "gnome-terminal"
+          },
+          "tool_parameters": "{\"bash_command\":\"echo hello\",\"full_command\":\"echo hello\",\"description\":\"Delete the test file\"}",
+          "user": {
+            "account_id": "user_01ExampleAccountId00000",
+            "account_uuid": "93713061-9622-2531-3758-372154648850"
+          }
+        }
+      },
+      "data_stream": {
+        "dataset": "claude_code.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "tool_decision",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"observed_timestamp\":\"2054-06-22T02:33:16.507Z\",\"@timestamp\":\"2054-06-22T02:33:16.507Z\",\"resource\":{\"attributes\":{\"service.name\":\"claude-code\",\"service.version\":\"2.1.185\",\"host.arch\":\"amd64\",\"os.type\":\"linux\",\"os.version\":\"6.17.0-14-generic\"}},\"data_stream\":{\"namespace\":\"default\",\"type\":\"logs\",\"dataset\":\"claude_code.events.otel\"},\"scope\":{\"name\":\"com.anthropic.claude_code.events\",\"version\":\"2.1.185\"},\"event_name\":\"tool_decision\",\"attributes\":{\"tool_name\":\"Bash\",\"decision\":\"reject\",\"user.id\":\"c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4\",\"tool_use_id\":\"toolu_01ExampleToolUseId00000\",\"terminal.type\":\"gnome-terminal\",\"user.account_uuid\":\"93713061-9622-2531-3758-372154648850\",\"event.name\":\"tool_decision\",\"source\":\"user_reject\",\"event.timestamp\":\"2054-06-22T02:33:16.507Z\",\"prompt.id\":\"60763458-7366-3513-4028-632370982420\",\"event.sequence\":30,\"user.email\":\"fnvfc@example.com\",\"organization.id\":\"08166994-2766-0080-0901-658708848682\",\"user.account_id\":\"user_01ExampleAccountId00000\",\"session.id\":\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\",\"tool_parameters\":\"{\\\"bash_command\\\":\\\"echo hello\\\",\\\"full_command\\\":\\\"echo hello\\\",\\\"description\\\":\\\"Delete the test file\\\"}\"},\"body\":{\"text\":\"claude_code.tool_decision\"},\"event\":{},\"tags\":[\"preserve_original_event\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "outcome": "failure",
+        "provider": "claude-code",
+        "type": [
+          "info"
+        ]
+      },
+      "gen_ai": {
+        "provider": {
+          "name": "anthropic"
+        },
+        "tool": {
+          "call": {
+            "arguments": {
+              "bash_command": "echo hello",
+              "description": "Delete the test file",
+              "full_command": "echo hello"
+            },
+            "id": "toolu_01ExampleToolUseId00000"
+          },
+          "name": "Bash"
+        }
+      },
+      "observed_timestamp": "2054-06-22T02:33:16.507Z",
+      "organization": {
+        "id": "08166994-2766-0080-0901-658708848682"
+      },
+      "process": {
+        "command_line": "echo hello"
+      },
+      "related": {
+        "user": [
+          "fnvfc@example.com",
+          "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+        ]
+      },
+      "resource": {
+        "attributes": {
+          "host.arch": "amd64",
+          "os.type": "linux",
+          "os.version": "6.17.0-14-generic",
+          "service.name": "claude-code",
+          "service.version": "2.1.185"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.185"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "fnvfc@example.com",
+        "id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-06-22T02:33:16.507Z",
+      "attributes": {
+        "decision": "reject",
+        "event.name": "tool_decision",
+        "event.sequence": 30,
+        "event.timestamp": "2054-06-22T02:33:16.507Z",
+        "organization.id": "08166994-2766-0080-0901-658708848682",
+        "prompt.id": "60763458-7366-3513-4028-632370982420",
+        "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+        "source": "user_reject",
+        "terminal.type": "gnome-terminal",
+        "tool_name": "Bash",
+        "tool_parameters": "{\"bash_command\":\"echo hello\",\"full_command\":\"echo hello\",\"description\":\"Delete the test file\"}",
+        "tool_use_id": "toolu_01ExampleToolUseId00000",
+        "user.account_id": "user_01ExampleAccountId00000",
+        "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+        "user.email": "fnvfc@example.com",
+        "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      },
+      "body": {
+        "text": "claude_code.tool_decision"
+      },
+      "data_stream": {
+        "dataset": "claude_code.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "event_name": "tool_decision",
+      "observed_timestamp": "2054-06-22T02:33:16.507Z",
+      "resource": {
+        "attributes": {
+          "host.arch": "amd64",
+          "os.type": "linux",
+          "os.version": "6.17.0-14-generic",
+          "service.name": "claude-code",
+          "service.version": "2.1.185"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.185"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claude_code-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "claude_code",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

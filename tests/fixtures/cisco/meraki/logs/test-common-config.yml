@@ -1,0 +1,5 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - forwarded
+  - preserve_original_event

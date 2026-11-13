@@ -1,0 +1,76 @@
+{
+    "events": [
+        {
+            "zoom": {
+                "event": "zoomroom.alert",
+                "payload": {
+                    "account_id": "EPAbcdefyZslakjflP",
+                    "object": {
+                        "alert_kind": 1,
+                        "alert_type": 1,
+                        "calendar_name": "ysficniczvdescpabvrgqfzpbgpvv@mqrfblxerr.com",
+                        "component": 2,
+                        "email": "sofybrhfyyosjoqoli@mqrfblxerr.com",
+                        "id": "EbY5jzz2R5KVPn6ZY9wh0A",
+                        "issue": "Room Controller disconnected",
+                        "room_name": "MyFabulousZoomRoom"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "zoomroom.delayed_alert",
+                "payload": {
+                    "account_id": "EPAbcdefyZslakjflP",
+                    "object": {
+                        "alert_kind": 1,
+                        "alert_type": 1,
+                        "calendar_name": "ysficniczvdescpabvrgqfzpbgpvv@mqrfblxerr.com",
+                        "component": 2,
+                        "email": "sofybrhfyyosjoqoli@mqrfblxerr.com",
+                        "id": "EbY5jzz2R5KVPn6ZY9wh0A",
+                        "issue": "Room Controller disconnected",
+                        "room_name": "MyFabulousZoomRoom"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "zoomroom.checked_in",
+                "payload": {
+                    "account_id": "vhdnmf673q2543rfhgsca",
+                    "object": {
+                        "calendar_id": "vnifrrbzcmlaafjfyw218614@zoom.us",
+                        "calendar_name": "jxpi.pm_efee805s235t0tqpi6@group.calendar.google.com",
+                        "change_key": "DwAAABYAAABQ/N0JvB/FRqv5UT2rFfkVAAE2XqVw",
+                        "email": "teekbwo@bksct.sfgjgdf",
+                        "event_id": "AbbbbbGYxLTc3OTVkMzFmZDc0MwBGAAAAAAD48FI58voYSqDgJePOSZblBwBQ/N0JvB/FRqv5UT2rFfkVAAAAAAENAABQ/N0JvB/FRqv5UT2rFfkVAAE2YC8DAAA=",
+                        "id": "365743fgshfh63",
+                        "resource_email": "kwbuta.hbzi@tegrnfwm628nfqcn.com",
+                        "room_name": "Sharks Room"
+                    }
+                }
+            }
+        },
+        {
+            "zoom": {
+                "event": "zoomroom.checked_in",
+                "payload": {
+                    "account_id": "vhdnmf673q2543rfhgsca",
+                    "object": {
+                        "calendar_id": "vnifrrbzcmlaafjfyw218614@zoom.us",
+                        "calendar_name": "jxpi.pm_efee805s235t0tqpi6@group.calendar.google.com",
+                        "change_key": "DwAAABYAAABQ/N0JvB/FRqv5UT2rFfkVAAE2XqVw",
+                        "email": "teekbwo@bksct.sfgjgdf",
+                        "event_id": "AbbbbbGYxLTc3OTVkMzFmZDc0MwBGAAAAAAD48FI58voYSqDgJePOSZblBwBQ/N0JvB/FRqv5UT2rFfkVAAAAAAENAABQ/N0JvB/FRqv5UT2rFfkVAAE2YC8DAAA=",
+                        "id": "365743fgshfh63",
+                        "resource_email": "kwbuta.hbzi@tegrnfwm628nfqcn.com",
+                        "room_name": "Sharks Room"
+                    }
+                }
+            }
+        }
+    ]
+}

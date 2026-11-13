@@ -1,0 +1,29 @@
+# Test inputs for this directory's fixtures.
+fields:
+  '@timestamp': '2048-04-28T11:07:58.223Z'
+  _conf:
+    tenants:
+      d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf: mytenant.onmicrosoft.com
+  tags:
+  - preserve_original_event
+dynamic_fields:
+  user_agent.version: ^\d+\.\d+(\.|\..*)?$
+numeric_keyword_fields:
+- event.id
+- host.id
+- o365.audit.ExceptionInfo.FalsePositive
+- o365.audit.ExchangeMetaData.CC
+- o365.audit.ExchangeMetaData.MessageID
+- o365.audit.ExchangeMetaData.Sent
+- o365.audit.ExchangeMetaData.To
+- o365.audit.ExchangeMetaData.UniqueID
+- o365.audit.FileSize
+- o365.audit.Item.IsRecord
+- o365.audit.Item.SizeInBytes
+- o365.audit.OperationId
+- o365.audit.RequestId
+- o365.audit.SharePointMetaData.FileSize
+- o365.audit.SharePointMetaData.IsViewableByExternalUsers
+- o365.audit.UserId
+- o365.audit.WorkspaceId
+- organization.id

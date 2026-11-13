@@ -1,0 +1,1474 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-07-10T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "email": {
+        "attachments": {
+          "file": {
+            "hash": {
+              "sha256": [
+                "98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b",
+                "908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7",
+                "3da7123a65297262f52b575e8831d88f212cc3537b249fa58fb06667cca56f94"
+              ]
+            }
+          }
+        },
+        "delivery_timestamp": [
+          "2050-07-01T10:38:13.194Z"
+        ],
+        "message_id": [
+          "ecfffts572@example.com",
+          "ecebbqu@example.com"
+        ],
+        "subject": [
+          "Sales",
+          "RE: Example salesorderspca JSON request"
+        ],
+        "to": {
+          "address": [
+            "dsbxpsf@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Gmail phishing",
+        "category": [
+          "email",
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-10T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.MailPhishing\",\"domainId\":{\"customerPrimaryDomain\":\"example.com\"},\"maliciousEntity\":{\"entity\":{\"emailAddress\":\"dsbxpsf@example.com\",\"displayName\":\"dsbxpsf\"},\"fromHeader\":\"meaceu@example.com\",\"displayName\":\"ngppyt\"},\"messages\":[{\"attachmentsSha256Hash\":[\"98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b\",\"908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7\"],\"date\":\"2050-07-01T10:38:13.194711Z\",\"md5HashMessageBody\":\"c45558872785ade3ceb0a3a3bae04c13\",\"md5HashSubject\":\"b4209c5651731a720759a24408dc2693\",\"messageBodySnippet\":\" hi greetings from sales \",\"messageId\":\"ecfffts572@example.com\",\"recipient\":\"dsbxpsf@example.com\",\"subjectText\":\"Sales\"},{\"attachmentsSha256Hash\":[\"3da7123a65297262f52b575e8831d88f212cc3537b249fa58fb06667cca56f94\"],\"md5HashMessageBody\":\"c45558872785ade3ceb0a3a3bae04c13\",\"md5HashSubject\":\"b4209c5651731a720759a24408dc2693\",\"messageBodySnippet\":\" hi greetings \",\"messageId\":\"ecebbqu@example.com\",\"recipient\":\"dsbxpsf@example.com\",\"subjectText\":\"RE: Example salesorderspca JSON request\"}],\"isInternal\":true,\"systemActionType\":\"NO_OPERATION\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Gmail phishing\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"User reported phishing\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-10T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "domain_id": {
+              "customer_primary_domain": "example.com"
+            },
+            "is_internal": true,
+            "malicious_entity": {
+              "display_name": "ngppyt",
+              "entity": {
+                "display_name": "dsbxpsf",
+                "email_address": "dsbxpsf@example.com"
+              },
+              "from_header": "meaceu@example.com"
+            },
+            "messages": [
+              {
+                "attachments_sha256_hash": [
+                  "98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b",
+                  "908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7"
+                ],
+                "date": "2050-07-01T10:38:13.194Z",
+                "id": "ecfffts572@example.com",
+                "md5": {
+                  "hash": {
+                    "message_body": "c45558872785ade3ceb0a3a3bae04c13",
+                    "subject": "b4209c5651731a720759a24408dc2693"
+                  }
+                },
+                "message_body_snippet": " hi greetings from sales ",
+                "recipient_email": "dsbxpsf@example.com",
+                "subject_text": "Sales"
+              },
+              {
+                "attachments_sha256_hash": [
+                  "3da7123a65297262f52b575e8831d88f212cc3537b249fa58fb06667cca56f94"
+                ],
+                "id": "ecebbqu@example.com",
+                "md5": {
+                  "hash": {
+                    "message_body": "c45558872785ade3ceb0a3a3bae04c13",
+                    "subject": "b4209c5651731a720759a24408dc2693"
+                  }
+                },
+                "message_body_snippet": " hi greetings ",
+                "recipient_email": "dsbxpsf@example.com",
+                "subject_text": "RE: Example salesorderspca JSON request"
+              }
+            ],
+            "system_action_type": "NO_OPERATION",
+            "type": "type.googleapis.com/google.apps.alertcenter.type.MailPhishing"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Gmail phishing",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "User reported phishing",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "related": {
+        "hash": [
+          "b4209c5651731a720759a24408dc2693",
+          "98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b",
+          "908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7",
+          "3da7123a65297262f52b575e8831d88f212cc3537b249fa58fb06667cca56f94"
+        ],
+        "user": [
+          "dsbxpsf"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": [
+          "dsbxpsf@example.com"
+        ],
+        "name": "dsbxpsf"
+      }
+    },
+    {
+      "@timestamp": "2050-07-11T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Domain wide takeout",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-11T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.DomainWideTakeoutInitiated\",\"takeoutRequestId\":\"ngppyt\",\"email\":\"ngppyt\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Domain wide takeout\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Customer takeout initiated\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-11T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "email": "ngppyt",
+            "takeout": {
+              "request": {
+                "id": "ngppyt"
+              }
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.DomainWideTakeoutInitiated"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Domain wide takeout",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Customer takeout initiated",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com",
+          "ngppyt"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-12T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "email": {
+        "attachments": {
+          "file": {
+            "hash": {
+              "sha256": [
+                "98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b",
+                "908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7"
+              ]
+            }
+          }
+        },
+        "delivery_timestamp": [
+          "2050-07-01T10:38:13.194Z"
+        ],
+        "message_id": [
+          "ecfffts572@example.com"
+        ],
+        "subject": [
+          "Sales"
+        ],
+        "to": {
+          "address": [
+            "dsbxpsf@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "Gmail phishing",
+        "category": [
+          "email",
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-12T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.BadWhitelist\",\"domainId\":{\"customerPrimaryDomain\":\"example.com\"},\"maliciousEntity\":{\"entity\":{\"emailAddress\":\"dsbxpsf@example.com\",\"displayName\":\"dsbxpsf\"},\"fromHeader\":\"sbgq@mawfv.com\",\"displayName\":\"ngppyt\"},\"messages\":[{\"attachmentsSha256Hash\":[\"98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b\",\"908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7\"],\"date\":\"2050-07-01T10:38:13.194711Z\",\"md5HashMessageBody\":\"c45558872785ade3ceb0a3a3bae04c13\",\"md5HashSubject\":\"b4209c5651731a720759a24408dc2693\",\"messageBodySnippet\":\" hi greetings from sales \",\"messageId\":\"ecfffts572@example.com\",\"recipient\":\"dsbxpsf@example.com\",\"subjectText\":\"Sales\"}],\"sourceIp\":\"203.0.113.177\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Gmail phishing\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Misconfigured whitelist\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-12T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "domain_id": {
+              "customer_primary_domain": "example.com"
+            },
+            "malicious_entity": {
+              "display_name": "ngppyt",
+              "entity": {
+                "display_name": "dsbxpsf",
+                "email_address": "dsbxpsf@example.com"
+              },
+              "from_header": "sbgq@mawfv.com"
+            },
+            "messages": [
+              {
+                "attachments_sha256_hash": [
+                  "98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b",
+                  "908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7"
+                ],
+                "date": "2050-07-01T10:38:13.194Z",
+                "id": "ecfffts572@example.com",
+                "md5": {
+                  "hash": {
+                    "message_body": "c45558872785ade3ceb0a3a3bae04c13",
+                    "subject": "b4209c5651731a720759a24408dc2693"
+                  }
+                },
+                "message_body_snippet": " hi greetings from sales ",
+                "recipient_email": "dsbxpsf@example.com",
+                "subject_text": "Sales"
+              }
+            ],
+            "source": {
+              "ip": "203.0.113.177"
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.BadWhitelist"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Gmail phishing",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Misconfigured whitelist",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "related": {
+        "hash": [
+          "b4209c5651731a720759a24408dc2693",
+          "98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b",
+          "908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7"
+        ],
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "dsbxpsf"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": [
+          "dsbxpsf@example.com"
+        ],
+        "name": "dsbxpsf"
+      }
+    },
+    {
+      "@timestamp": "2050-07-13T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Google identity",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-13T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AccountWarning\",\"email\":\"cnk@example.com\",\"loginDetails\":{\"loginTime\":\"2049-03-03T23:41:46.826274Z\",\"ipAddress\":\"203.0.113.177\"}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Google identity\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Leaked password\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-13T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "email": "cnk@example.com",
+            "login_details": {
+              "ip_address": "203.0.113.177",
+              "login_time": "2049-03-03T23:41:46.826Z"
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.AccountWarning"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Google identity",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Leaked password",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com",
+          "cnk@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-14T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Google Operations",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-14T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.GoogleOperations\",\"title\":\"Security update for Drive\",\"description\":\"hi shaik could you please describe the\",\"affectedUserEmails\":[\"sbgq@example.com\"],\"attachmentData\":{\"csv\":{\"headers\":[\"headers\"],\"dataRows\":[{\"entries\":[\"entries\"]}]}},\"header\":\"header\",\"domain\":\"example.com\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Google Operations\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Google Operations\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-14T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "affected": {
+              "user_emails": [
+                "sbgq@example.com"
+              ]
+            },
+            "attachment": {
+              "data": {
+                "csv": {
+                  "data_rows": [
+                    {
+                      "entries": [
+                        "entries"
+                      ]
+                    }
+                  ],
+                  "headers": [
+                    "headers"
+                  ]
+                }
+              }
+            },
+            "description": "hi shaik could you please describe the",
+            "domain": "example.com",
+            "header": "header",
+            "title": "Security update for Drive",
+            "type": "type.googleapis.com/google.apps.alertcenter.type.GoogleOperations"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Google Operations",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Google Operations",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": [
+          "dsbxpsf@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-15T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "State Sponsored Attack",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-15T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.StateSponsoredAttack\",\"email\":\"dsbxpsf@example.com\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"State Sponsored Attack\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Government attack warning\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-15T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "email": "dsbxpsf@example.com",
+            "type": "type.googleapis.com/google.apps.alertcenter.type.StateSponsoredAttack"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "State Sponsored Attack",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Government attack warning",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-16T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "State Sponsored Attack",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-16T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.DeviceCompromised\",\"email\":\"dsbxpsf@fake.com\",\"events\":[{\"deviceId\":\"840a82\",\"serialNumber\":\"625c1cf0c3f7\",\"deviceType\":\"device type\",\"deviceModel\":\"device model\",\"resourceId\":\"3af0\",\"iosVendorId\":\"46d7\",\"deviceCompromisedState\":\"state\",\"deviceProperty\":\"property\",\"oldValue\":\"old\",\"newValue\":\"new\"}]},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"State Sponsored Attack\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Device compromised\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-16T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "email": "dsbxpsf@fake.com",
+            "events": [
+              {
+                "device": {
+                  "id": "840a82",
+                  "model": "device model",
+                  "property": "property",
+                  "type": "device type"
+                },
+                "device_compromised_state": "state",
+                "ios_vendor": {
+                  "id": "46d7"
+                },
+                "new_value": "new",
+                "old_value": "old",
+                "resource": {
+                  "id": "3af0"
+                },
+                "serial": {
+                  "number": "625c1cf0c3f7"
+                }
+              }
+            ],
+            "type": "type.googleapis.com/google.apps.alertcenter.type.DeviceCompromised"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "State Sponsored Attack",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Device compromised",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com",
+          "dsbxpsf@fake.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-17T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "AppMaker Editor",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-17T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AppMakerSqlSetupNotification\",\"requestInfo\":[{\"appKey\":\"91840a82\",\"appDeveloperEmail\":[\"email@example.com\"],\"numberOfRequests\":\"5\"}]},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"AppMaker Editor\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"AppMaker Default Cloud SQL setup\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-17T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "request": {
+              "info": [
+                {
+                  "app": {
+                    "developer_email": [
+                      "email@example.com"
+                    ],
+                    "key": "91840a82"
+                  },
+                  "number_of_requests": "5"
+                }
+              ]
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.AppMakerSqlSetupNotification"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "AppMaker Editor",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "AppMaker Default Cloud SQL setup",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-18T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Security Center rules",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-18T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.ActivityRule\",\"name\":\"ngppyt\",\"displayName\":\"erypveo sbgd\",\"description\":\"description\",\"windowSize\":\"10\",\"threshold\":\"5\",\"createTime\":\"2050-07-02T10:47:04.530834Z\",\"updateTime\":\"2050-07-03T10:47:04.530834Z\",\"triggerSource\":\"source\",\"supersededAlerts\":[\"alerts\"],\"supersedingAlert\":\"suspending alert\",\"actionNames\":[\"action name\"],\"query\":\"query\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Security Center rules\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Activity Rule\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-18T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "action": {
+              "name": [
+                "action name"
+              ]
+            },
+            "create_time": "2050-07-02T10:47:04.530Z",
+            "display": {
+              "name": "erypveo sbgd"
+            },
+            "name": "ngppyt",
+            "query": "query",
+            "rule_description": "description",
+            "superseded_alerts": [
+              "alerts"
+            ],
+            "superseding_alert": "suspending alert",
+            "threshold": "5",
+            "trigger": {
+              "source": "source"
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.ActivityRule",
+            "update_time": "2050-07-03T10:47:04.530Z",
+            "window_size": "10"
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Security Center rules",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Activity Rule",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "rule": {
+        "description": "description",
+        "name": "ngppyt"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-19T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Data Loss Prevention",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-19T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.DlpRuleViolation \",\"ruleViolationInfo\":{\"ruleInfo\":{\"resourceName\":\"ngppyt\",\"displayName\":\"ngppyt\"},\"dataSource\":\"DRIVE\",\"trigger\":\"DRIVE_SHARE\",\"triggeringUserEmail\":\"ngppyt\",\"recipients\":[\"ngppyt\"],\"resourceInfo\":{\"resourceTitle\":\"ngppyt\",\"documentId\":\"ngppyt\"},\"matchInfo\":[{\"userDefinedDetector\":{\"resourceName\":\"ngppyt\",\"displayName\":\"ngppyt\"},\"predefinedDetector\":{\"detectorName\":\"ngppyt\"}}],\"triggeredActionTypes\":[\"RULE_ACTIVATE\"],\"triggeredActionInfo\":[{\"object\":\"info\"}],\"suppressedActionTypes\":[\"RULE_DEACTIVATE\"]}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Data Loss Prevention\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Data Loss Prevention\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-19T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "rule": {
+              "violation_info": {
+                "data": {
+                  "source": "DRIVE"
+                },
+                "match_info": [
+                  {
+                    "predefined_detector": {
+                      "name": "ngppyt"
+                    },
+                    "user_defined_detector": {
+                      "display": {
+                        "name": "ngppyt"
+                      },
+                      "resource": {
+                        "name": "ngppyt"
+                      }
+                    }
+                  }
+                ],
+                "recipients": [
+                  "ngppyt"
+                ],
+                "resource_info": {
+                  "document": {
+                    "id": "ngppyt"
+                  },
+                  "resource": {
+                    "title": "ngppyt"
+                  }
+                },
+                "rule_info": {
+                  "display": {
+                    "name": "ngppyt"
+                  },
+                  "resource": {
+                    "name": "ngppyt"
+                  }
+                },
+                "suppressed": {
+                  "action": {
+                    "types": [
+                      "RULE_DEACTIVATE"
+                    ]
+                  }
+                },
+                "trigger": {
+                  "user": {
+                    "email": "ngppyt"
+                  },
+                  "value": "DRIVE_SHARE"
+                },
+                "triggered": {
+                  "action": {
+                    "info": [
+                      {
+                        "object": "info"
+                      }
+                    ],
+                    "types": [
+                      "RULE_ACTIVATE"
+                    ]
+                  }
+                }
+              }
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.DlpRuleViolation "
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Data Loss Prevention",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Data Loss Prevention",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "rule": {
+        "name": "ngppyt"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-20T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Apps outage",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-20T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AppsOutage \",\"products\":[\"ngppyt\"],\"nextUpdateTime\":\"2050-07-02T10:49:29.436Z\",\"resolutionTime\":\"2050-07-03T10:49:29.436Z\",\"dashboardUri\":\"ngppyt\",\"status\":\"NEW\",\"incidentTrackingId\":\"ngppyt\",\"mergeInfo\":{\"newIncidentTrackingId\":\"ngppyt\",\"newAlertId\":\"ngppyt\"}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Apps outage\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Apps outage\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-20T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "dashboard": {
+              "uri": "ngppyt"
+            },
+            "incident_tracking": {
+              "id": "ngppyt"
+            },
+            "merge_info": {
+              "new_alert": {
+                "id": "ngppyt"
+              },
+              "new_incident_tracking": {
+                "id": "ngppyt"
+              }
+            },
+            "next_update_time": "2050-07-02T10:49:29.436Z",
+            "products": [
+              "ngppyt"
+            ],
+            "resolution_time": "2050-07-03T10:49:29.436Z",
+            "status": "NEW",
+            "type": "type.googleapis.com/google.apps.alertcenter.type.AppsOutage "
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Apps outage",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "Apps outage",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2050-07-21T10:49:29.436Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Sensitive Admin Action",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "end": "2050-07-01T10:47:04.530Z",
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-21T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.SensitiveAdminAction \",\"eventTime\":\"2050-07-01T10:49:29.436Z\",\"actorEmail\":\"ngppyt\",\"primaryAdminChangedEvent\":{\"domain\":\"ngppyt\",\"previousAdminEmail\":\"ngppyt\",\"updatedAdminEmail\":\"ngppyt\"},\"ssoProfileCreatedEvent\":{\"inboundSsoProfileName\":\"ngppyt\"},\"ssoProfileUpdatedEvent\":{\"inboundSsoProfileName\":\"ngppyt\",\"inboundSsoProfileChanges\":\"ngppyt\"},\"ssoProfileDeletedEvent\":{\"inboundSsoProfileName\":\"ngppyt\"},\"superAdminPasswordResetEvent\":{\"userEmail\":\"ngppyt\"}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Sensitive Admin Action\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"SSO profile added\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+        "start": "2050-07-01T10:38:13.194Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-21T10:49:29.436Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "actor": {
+              "email": "ngppyt"
+            },
+            "event_time": "2050-07-01T10:49:29.436Z",
+            "primary": {
+              "admin": {
+                "changed_event": {
+                  "domain": "ngppyt",
+                  "previous_admin_email": "ngppyt",
+                  "updated_admin_email": "ngppyt"
+                }
+              }
+            },
+            "sso_profile": {
+              "created_event": {
+                "inbound_sso": {
+                  "profile_name": "ngppyt"
+                }
+              },
+              "deleted_event": {
+                "inbound_sso": {
+                  "profile_name": "ngppyt"
+                }
+              },
+              "updated_event": {
+                "inbound_sso": {
+                  "profile_changes": "ngppyt",
+                  "profile_name": "ngppyt"
+                }
+              }
+            },
+            "super_admin_password_reset_event": {
+              "user": {
+                "email": "ngppyt"
+              }
+            },
+            "type": "type.googleapis.com/google.apps.alertcenter.type.SensitiveAdminAction "
+          },
+          "deleted": false,
+          "end_time": "2050-07-01T10:47:04.530Z",
+          "etag": "wF2Ix2DWDv8=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "assignee": "dsbxpsf@example.com",
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "wF2Ix2DWDv8=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-01T10:49:29.436Z"
+          },
+          "security_investigation_tool_link": "ngppyt",
+          "source": "Sensitive Admin Action",
+          "start_time": "2050-07-01T10:38:13.194Z",
+          "type": "SSO profile added",
+          "update_time": "2050-07-01T10:49:29.436Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "related": {
+        "user": [
+          "ngppyt"
+        ]
+      },
+      "source": {
+        "user": {
+          "email": "ngppyt"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": [
+          "dsbxpsf@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-08-10T14:06:29.101Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Google identity",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2049-08-10T14:06:29.101302Z\",\"customerId\":\"02umwv6u\",\"startTime\":\"2047-02-05T17:43:54Z\",\"type\":\"Account suspension warning\",\"source\":\"Google identity\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AccountSuspensionWarning\",\"state\":\"WARNING\",\"suspensionDetails\":[{\"abuseReason\":\"SPAM\",\"productName\":\"Gmail\"}],\"appealWindow\":\"259200s\"},\"securityInvestigationToolLink\":\"admin.google.com/ac/ac/investigate?alert=xxxx\",\"metadata\":{\"customerId\":\"02umwv6u\",\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2049-08-10T14:06:29.101302Z\",\"severity\":\"HIGH\",\"etag\":\"OiGPjc-58EQ=\"},\"updateTime\":\"2049-08-10T14:06:29.101302Z\",\"etag\":\"OiGPjc-58EQ=\"}",
+        "start": "2047-02-05T17:43:54.000Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2049-08-10T14:06:29.101Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "appeal_window": "259200s",
+            "state": "WARNING",
+            "suspension_details": [
+              {
+                "abuse_reason": "SPAM",
+                "product_name": "Gmail"
+              }
+            ],
+            "type": "type.googleapis.com/google.apps.alertcenter.type.AccountSuspensionWarning"
+          },
+          "etag": "OiGPjc-58EQ=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "OiGPjc-58EQ=",
+            "severity": "HIGH",
+            "status": "NOT_STARTED",
+            "update_time": "2049-08-10T14:06:29.101Z"
+          },
+          "security_investigation_tool_link": "admin.google.com/ac/ac/investigate?alert=xxxx",
+          "source": "Google identity",
+          "start_time": "2047-02-05T17:43:54.000Z",
+          "type": "Account suspension warning",
+          "update_time": "2049-08-10T14:06:29.101Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-07-27T03:31:28.440Z",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "action": "Reporting Rule",
+        "category": [
+          "threat",
+          "malware"
+        ],
+        "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+        "kind": "alert",
+        "original": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-27T03:31:28.440710Z\",\"customerId\":\"02umwv6u\",\"startTime\":\"2050-07-27T03:31:26.688Z\",\"type\":\"Reporting Rule\",\"source\":\"Reporting Rule\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.ReportingRule\",\"alertDetails\":\"Cg8SCQoFCgEBEAESABoAMAM=\",\"name\":\"Drive Visibility rule update check\",\"query\":\"CkAKPgj22tyw0BYaEmNoYW5nZV91c2VyX2FjY2VzcyIhCgp2aXNpYmlsaXR5EhFzaGFyZWRfZXh0ZXJuYWxseRgA\"},\"securityInvestigationToolLink\":\"admin.google.com/ac/ac/investigate?alert=xxxxxxx\",\"metadata\":{\"customerId\":\"02umwv6u\",\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-27T03:31:28.440710Z\",\"severity\":\"LOW\",\"etag\":\"6Gj8JvSu1u0=\"},\"updateTime\":\"2050-07-27T03:31:28.440710Z\",\"etag\":\"6Gj8JvSu1u0=\"}",
+        "start": "2050-07-27T03:31:26.688Z",
+        "type": [
+          "info"
+        ]
+      },
+      "google_workspace": {
+        "alert": {
+          "create_time": "2050-07-27T03:31:28.440Z",
+          "customer": {
+            "id": "02umwv6u"
+          },
+          "data": {
+            "alert_details": "Cg8SCQoFCgEBEAESABoAMAM=",
+            "name": "Drive Visibility rule update check",
+            "query": "CkAKPgj22tyw0BYaEmNoYW5nZV91c2VyX2FjY2VzcyIhCgp2aXNpYmlsaXR5EhFzaGFyZWRfZXh0ZXJuYWxseRgA",
+            "type": "type.googleapis.com/google.apps.alertcenter.type.ReportingRule"
+          },
+          "etag": "6Gj8JvSu1u0=",
+          "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3",
+          "metadata": {
+            "alert": {
+              "id": "06673f25-1ff5-48a5-92ff-965d1ab6b7c3"
+            },
+            "customer": {
+              "id": "02umwv6u"
+            },
+            "etag": "6Gj8JvSu1u0=",
+            "severity": "LOW",
+            "status": "NOT_STARTED",
+            "update_time": "2050-07-27T03:31:28.440Z"
+          },
+          "security_investigation_tool_link": "admin.google.com/ac/ac/investigate?alert=xxxxxxx",
+          "source": "Reporting Rule",
+          "start_time": "2050-07-27T03:31:26.688Z",
+          "type": "Reporting Rule",
+          "update_time": "2050-07-27T03:31:28.440Z"
+        }
+      },
+      "organization": {
+        "id": "02umwv6u"
+      },
+      "rule": {
+        "name": "Drive Visibility rule update check"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-10T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.MailPhishing\",\"domainId\":{\"customerPrimaryDomain\":\"example.com\"},\"maliciousEntity\":{\"entity\":{\"emailAddress\":\"dsbxpsf@example.com\",\"displayName\":\"dsbxpsf\"},\"fromHeader\":\"meaceu@example.com\",\"displayName\":\"ngppyt\"},\"messages\":[{\"attachmentsSha256Hash\":[\"98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b\",\"908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7\"],\"date\":\"2050-07-01T10:38:13.194711Z\",\"md5HashMessageBody\":\"c45558872785ade3ceb0a3a3bae04c13\",\"md5HashSubject\":\"b4209c5651731a720759a24408dc2693\",\"messageBodySnippet\":\" hi greetings from sales \",\"messageId\":\"ecfffts572@example.com\",\"recipient\":\"dsbxpsf@example.com\",\"subjectText\":\"Sales\"},{\"attachmentsSha256Hash\":[\"3da7123a65297262f52b575e8831d88f212cc3537b249fa58fb06667cca56f94\"],\"md5HashMessageBody\":\"c45558872785ade3ceb0a3a3bae04c13\",\"md5HashSubject\":\"b4209c5651731a720759a24408dc2693\",\"messageBodySnippet\":\" hi greetings \",\"messageId\":\"ecebbqu@example.com\",\"recipient\":\"dsbxpsf@example.com\",\"subjectText\":\"RE: Example salesorderspca JSON request\"}],\"isInternal\":true,\"systemActionType\":\"NO_OPERATION\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Gmail phishing\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"User reported phishing\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-11T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.DomainWideTakeoutInitiated\",\"takeoutRequestId\":\"ngppyt\",\"email\":\"ngppyt\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Domain wide takeout\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Customer takeout initiated\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-12T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.BadWhitelist\",\"domainId\":{\"customerPrimaryDomain\":\"example.com\"},\"maliciousEntity\":{\"entity\":{\"emailAddress\":\"dsbxpsf@example.com\",\"displayName\":\"dsbxpsf\"},\"fromHeader\":\"sbgq@mawfv.com\",\"displayName\":\"ngppyt\"},\"messages\":[{\"attachmentsSha256Hash\":[\"98f177e3435cfb7b53381efc2cc0cd117e82f5736b573560e5b7cdcaa9a0590b\",\"908d10a38cfc5fbc38903676fa0a9cf997815ef4d68999f17b05514947fab2c7\"],\"date\":\"2050-07-01T10:38:13.194711Z\",\"md5HashMessageBody\":\"c45558872785ade3ceb0a3a3bae04c13\",\"md5HashSubject\":\"b4209c5651731a720759a24408dc2693\",\"messageBodySnippet\":\" hi greetings from sales \",\"messageId\":\"ecfffts572@example.com\",\"recipient\":\"dsbxpsf@example.com\",\"subjectText\":\"Sales\"}],\"sourceIp\":\"203.0.113.177\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Gmail phishing\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Misconfigured whitelist\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-13T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AccountWarning\",\"email\":\"cnk@example.com\",\"loginDetails\":{\"loginTime\":\"2049-03-03T23:41:46.826274Z\",\"ipAddress\":\"203.0.113.177\"}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Google identity\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Leaked password\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-14T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.GoogleOperations\",\"title\":\"Security update for Drive\",\"description\":\"hi shaik could you please describe the\",\"affectedUserEmails\":[\"sbgq@example.com\"],\"attachmentData\":{\"csv\":{\"headers\":[\"headers\"],\"dataRows\":[{\"entries\":[\"entries\"]}]}},\"header\":\"header\",\"domain\":\"example.com\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Google Operations\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Google Operations\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-15T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.StateSponsoredAttack\",\"email\":\"dsbxpsf@example.com\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"State Sponsored Attack\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Government attack warning\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-16T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.DeviceCompromised\",\"email\":\"dsbxpsf@fake.com\",\"events\":[{\"deviceId\":\"840a82\",\"serialNumber\":\"625c1cf0c3f7\",\"deviceType\":\"device type\",\"deviceModel\":\"device model\",\"resourceId\":\"3af0\",\"iosVendorId\":\"46d7\",\"deviceCompromisedState\":\"state\",\"deviceProperty\":\"property\",\"oldValue\":\"old\",\"newValue\":\"new\"}]},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"State Sponsored Attack\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Device compromised\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-17T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AppMakerSqlSetupNotification\",\"requestInfo\":[{\"appKey\":\"91840a82\",\"appDeveloperEmail\":[\"email@example.com\"],\"numberOfRequests\":\"5\"}]},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"AppMaker Editor\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"AppMaker Default Cloud SQL setup\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-18T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.ActivityRule\",\"name\":\"ngppyt\",\"displayName\":\"erypveo sbgd\",\"description\":\"description\",\"windowSize\":\"10\",\"threshold\":\"5\",\"createTime\":\"2050-07-02T10:47:04.530834Z\",\"updateTime\":\"2050-07-03T10:47:04.530834Z\",\"triggerSource\":\"source\",\"supersededAlerts\":[\"alerts\"],\"supersedingAlert\":\"suspending alert\",\"actionNames\":[\"action name\"],\"query\":\"query\"},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Security Center rules\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Activity Rule\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-19T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.DlpRuleViolation \",\"ruleViolationInfo\":{\"ruleInfo\":{\"resourceName\":\"ngppyt\",\"displayName\":\"ngppyt\"},\"dataSource\":\"DRIVE\",\"trigger\":\"DRIVE_SHARE\",\"triggeringUserEmail\":\"ngppyt\",\"recipients\":[\"ngppyt\"],\"resourceInfo\":{\"resourceTitle\":\"ngppyt\",\"documentId\":\"ngppyt\"},\"matchInfo\":[{\"userDefinedDetector\":{\"resourceName\":\"ngppyt\",\"displayName\":\"ngppyt\"},\"predefinedDetector\":{\"detectorName\":\"ngppyt\"}}],\"triggeredActionTypes\":[\"RULE_ACTIVATE\"],\"triggeredActionInfo\":[{\"object\":\"info\"}],\"suppressedActionTypes\":[\"RULE_DEACTIVATE\"]}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Data Loss Prevention\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Data Loss Prevention\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-20T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AppsOutage \",\"products\":[\"ngppyt\"],\"nextUpdateTime\":\"2050-07-02T10:49:29.436Z\",\"resolutionTime\":\"2050-07-03T10:49:29.436Z\",\"dashboardUri\":\"ngppyt\",\"status\":\"NEW\",\"incidentTrackingId\":\"ngppyt\",\"mergeInfo\":{\"newIncidentTrackingId\":\"ngppyt\",\"newAlertId\":\"ngppyt\"}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Apps outage\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"Apps outage\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-21T10:49:29.436394Z\",\"customerId\":\"02umwv6u\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.SensitiveAdminAction \",\"eventTime\":\"2050-07-01T10:49:29.436Z\",\"actorEmail\":\"ngppyt\",\"primaryAdminChangedEvent\":{\"domain\":\"ngppyt\",\"previousAdminEmail\":\"ngppyt\",\"updatedAdminEmail\":\"ngppyt\"},\"ssoProfileCreatedEvent\":{\"inboundSsoProfileName\":\"ngppyt\"},\"ssoProfileUpdatedEvent\":{\"inboundSsoProfileName\":\"ngppyt\",\"inboundSsoProfileChanges\":\"ngppyt\"},\"ssoProfileDeletedEvent\":{\"inboundSsoProfileName\":\"ngppyt\"},\"superAdminPasswordResetEvent\":{\"userEmail\":\"ngppyt\"}},\"endTime\":\"2050-07-01T10:47:04.530834Z\",\"etag\":\"wF2Ix2DWDv8=\",\"metadata\":{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"customerId\":\"02umwv6u\",\"etag\":\"wF2Ix2DWDv8=\",\"assignee\":\"dsbxpsf@example.com\",\"severity\":\"HIGH\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"},\"securityInvestigationToolLink\":\"ngppyt\",\"deleted\":false,\"source\":\"Sensitive Admin Action\",\"startTime\":\"2050-07-01T10:38:13.194711Z\",\"type\":\"SSO profile added\",\"updateTime\":\"2050-07-01T10:49:29.436394Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2049-08-10T14:06:29.101302Z\",\"customerId\":\"02umwv6u\",\"startTime\":\"2047-02-05T17:43:54Z\",\"type\":\"Account suspension warning\",\"source\":\"Google identity\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.AccountSuspensionWarning\",\"state\":\"WARNING\",\"suspensionDetails\":[{\"abuseReason\":\"SPAM\",\"productName\":\"Gmail\"}],\"appealWindow\":\"259200s\"},\"securityInvestigationToolLink\":\"admin.google.com/ac/ac/investigate?alert=xxxx\",\"metadata\":{\"customerId\":\"02umwv6u\",\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2049-08-10T14:06:29.101302Z\",\"severity\":\"HIGH\",\"etag\":\"OiGPjc-58EQ=\"},\"updateTime\":\"2049-08-10T14:06:29.101302Z\",\"etag\":\"OiGPjc-58EQ=\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"createTime\":\"2050-07-27T03:31:28.440710Z\",\"customerId\":\"02umwv6u\",\"startTime\":\"2050-07-27T03:31:26.688Z\",\"type\":\"Reporting Rule\",\"source\":\"Reporting Rule\",\"data\":{\"@type\":\"type.googleapis.com/google.apps.alertcenter.type.ReportingRule\",\"alertDetails\":\"Cg8SCQoFCgEBEAESABoAMAM=\",\"name\":\"Drive Visibility rule update check\",\"query\":\"CkAKPgj22tyw0BYaEmNoYW5nZV91c2VyX2FjY2VzcyIhCgp2aXNpYmlsaXR5EhFzaGFyZWRfZXh0ZXJuYWxseRgA\"},\"securityInvestigationToolLink\":\"admin.google.com/ac/ac/investigate?alert=xxxxxxx\",\"metadata\":{\"customerId\":\"02umwv6u\",\"alertId\":\"06673f25-1ff5-48a5-92ff-965d1ab6b7c3\",\"status\":\"NOT_STARTED\",\"updateTime\":\"2050-07-27T03:31:28.440710Z\",\"severity\":\"LOW\",\"etag\":\"6Gj8JvSu1u0=\"},\"updateTime\":\"2050-07-27T03:31:28.440710Z\",\"etag\":\"6Gj8JvSu1u0=\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alert",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-google_workspace-alert-default",
+    "event_count": 14,
+    "numeric_keyword_fields": [],
+    "package": "google_workspace",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,477 @@
+{
+    "events": [
+        {
+            "message": {
+                "id": "6",
+                "udid": "C1FC4465-F78D-5CE4-B905-12C0CF35A67E",
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                },
+                "diskEncryption": null,
+                "localUserAccounts": null,
+                "purchasing": {
+                    "purchased": true,
+                    "leased": false,
+                    "poNumber": "21",
+                    "lifeExpectancy": 0,
+                    "purchasePrice": 100,
+                    "purchasingAccount": "acme-purchasingAccount",
+                    "purchasingContact": "acme-purchasingContact",
+                    "appleCareId": "acme-appleCareId",
+                    "vendor": "acme-vendor",
+                    "leaseDate": "2052-06-19T15:54:37.692Z",
+                    "poDate": "2052-06-19T15:54:37.692Z",
+                    "warrantyDate": "2052-06-19T15:54:37.692Z",
+                    "extensionAttributes": []
+                },
+                "printers": null,
+                "storage": null,
+                "applications": [
+                    {
+                        "name": "Slack.app",
+                        "path": "/Applications/Slack.app",
+                        "version": "4.38.125",
+                        "macAppStore": false,
+                        "sizeMegabytes": 0,
+                        "bundleId": "acme-bundleId",
+                        "updateAvailable": false,
+                        "externalVersionId": "0"
+                    },
+                    {
+                        "name": "Siri.app",
+                        "path": "/System/Applications/Siri.app",
+                        "version": "1.0",
+                        "macAppStore": false,
+                        "sizeMegabytes": 0,
+                        "bundleId": "acme-bundleId",
+                        "updateAvailable": false,
+                        "externalVersionId": "0"
+                    }
+                ],
+                "userAndLocation": null,
+                "configurationProfiles": null,
+                "services": null,
+                "plugins": [],
+                "hardware": null,
+                "certificates": null,
+                "attachments": null,
+                "packageReceipts": {
+                    "installedByJamfPro": [],
+                    "installedByInstallerSwu": [],
+                    "cached": []
+                },
+                "fonts": [],
+                "security": null,
+                "operatingSystem": null,
+                "licensedSoftware": null,
+                "softwareUpdates": [
+                    {
+                        "name": "macOS Sonoma 14.4.1",
+                        "packageName": "macOS Sonoma 14.4.1-23E224",
+                        "version": "14.4.1"
+                    }
+                ],
+                "groupMemberships": [
+                    {
+                        "groupId": "1",
+                        "groupName": "All Managed Clients",
+                        "smartGroup": true
+                    },
+                    {
+                        "groupId": "4",
+                        "groupName": "Computers with updates",
+                        "smartGroup": true
+                    }
+                ],
+                "extensionAttributes": [],
+                "contentCaching": null,
+                "ibeacons": null
+            }
+        },
+        {
+            "message": {
+                "id": "4",
+                "udid": "EFCEE4C8-08E3-5422-A220-C473B06E7A72",
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                },
+                "diskEncryption": {
+                    "individualRecoveryKeyValidityStatus": "UNKNOWN",
+                    "institutionalRecoveryKeyPresent": false,
+                    "diskEncryptionConfigurationName": "acme",
+                    "fileVault2EligibilityMessage": "acme",
+                    "fileVault2EnabledUserNames": [
+                        "jamfadmin"
+                    ],
+                    "bootPartitionEncryptionDetails": {
+                        "partitionName": "Macintosh HD (Boot Partition)",
+                        "partitionFileVault2State": "UNENCRYPTED",
+                        "partitionFileVault2Percent": 0
+                    }
+                },
+                "localUserAccounts": null,
+                "purchasing": null,
+                "printers": [],
+                "storage": null,
+                "applications": null,
+                "userAndLocation": {
+                    "username": "sbjd.dke",
+                    "realname": "Jane Doe",
+                    "email": "sbjd.dke@jamf.com",
+                    "position": "Contractor",
+                    "phone": "+123345827276",
+                    "departmentId": "1",
+                    "buildingId": "1",
+                    "room": "1",
+                    "extensionAttributes": []
+                },
+                "configurationProfiles": null,
+                "services": [],
+                "plugins": null,
+                "hardware": null,
+                "certificates": null,
+                "attachments": null,
+                "packageReceipts": null,
+                "fonts": null,
+                "security": null,
+                "operatingSystem": null,
+                "licensedSoftware": null,
+                "softwareUpdates": null,
+                "groupMemberships": null,
+                "extensionAttributes": null,
+                "contentCaching": null,
+                "ibeacons": null
+            }
+        },
+        {
+            "message": {
+                "id": "3",
+                "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+                "general": {
+                    "name": "acme-C07DM3AZQ6NV",
+                    "lastReportedIp": "198.51.100.144",
+                    "lastIpAddress": "198.51.100.144",
+                    "jamfBinaryVersion": "11.4.1-t1712591696",
+                    "platform": "Mac",
+                    "barcode1": "null",
+                    "remoteManagement": {
+                        "managed": true
+                    },
+                    "supervised": false,
+                    "mdmCapable": {
+                        "capable": false,
+                        "capableUsers": []
+                    },
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastContactTime": "2052-04-18T14:26:51.514Z",
+                    "lastEnrolledDate": "2051-02-22T10:46:17.199Z",
+                    "initialEntryDate": "2052-06-19",
+                    "site": {
+                        "id": "-1",
+                        "name": "None"
+                    },
+                    "itunesStoreAccountActive": false,
+                    "enrolledViaAutomatedDeviceEnrollment": false,
+                    "userApprovedMdm": false,
+                    "declarativeDeviceManagementEnabled": false,
+                    "managementId": "8c85b576-b3b9-45de-8abc-0d5293ac64e0",
+                    "extensionAttributes": []
+                },
+                "diskEncryption": null,
+                "localUserAccounts": null,
+                "purchasing": null,
+                "printers": null,
+                "storage": null,
+                "applications": null,
+                "userAndLocation": null,
+                "configurationProfiles": [
+                    {
+                        "id": "",
+                        "username": "Kmjo",
+                        "lastInstalled": "",
+                        "removable": false,
+                        "displayName": "Kmjo",
+                        "profileIdentifier": ""
+                    }
+                ],
+                "services": null,
+                "plugins": null,
+                "hardware": null,
+                "certificates": null,
+                "attachments": null,
+                "packageReceipts": null,
+                "fonts": null,
+                "security": null,
+                "operatingSystem": null,
+                "licensedSoftware": null,
+                "softwareUpdates": null,
+                "groupMemberships": null,
+                "extensionAttributes": null,
+                "contentCaching": null,
+                "ibeacons": null
+            }
+        },
+        {
+            "message": {
+                "id": "3",
+                "udid": "5349DC66-8445-569A-B8C9-DAE7710168CD",
+                "general": {
+                    "name": "acme-C07DM3AZQ6NV",
+                    "lastReportedIp": "198.51.100.144",
+                    "lastIpAddress": "198.51.100.144",
+                    "jamfBinaryVersion": "11.4.1-t1712591696",
+                    "platform": "Mac",
+                    "barcode1": "null",
+                    "enrollmentMethod": {
+                        "id": "7",
+                        "objectName": "Corp Div 1.20.0",
+                        "objectType": "PreStage enrollment"
+                    },
+                    "remoteManagement": {
+                        "managed": true
+                    },
+                    "supervised": false,
+                    "mdmCapable": {
+                        "capable": false,
+                        "capableUsers": [
+                            "jgcy.retydjafae@djxlbxr.com"
+                        ]
+                    },
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastContactTime": "2052-04-18T14:26:51.514Z",
+                    "lastEnrolledDate": "2051-02-22T10:46:17.199Z",
+                    "initialEntryDate": "2052-06-19",
+                    "site": {
+                        "id": "-1",
+                        "name": "None"
+                    },
+                    "itunesStoreAccountActive": false,
+                    "enrolledViaAutomatedDeviceEnrollment": false,
+                    "userApprovedMdm": false,
+                    "declarativeDeviceManagementEnabled": false,
+                    "managementId": "8c85b576-b3b9-45de-8abc-0d5293ac64e0",
+                    "extensionAttributes": []
+                },
+                "diskEncryption": null,
+                "localUserAccounts": null,
+                "purchasing": null,
+                "printers": null,
+                "storage": null,
+                "applications": null,
+                "userAndLocation": null,
+                "configurationProfiles": [
+                    {
+                        "id": "",
+                        "username": "Kmjo",
+                        "lastInstalled": "",
+                        "removable": false,
+                        "displayName": "Kmjo",
+                        "profileIdentifier": ""
+                    }
+                ],
+                "services": null,
+                "plugins": null,
+                "hardware": null,
+                "certificates": null,
+                "attachments": null,
+                "packageReceipts": null,
+                "fonts": null,
+                "security": null,
+                "operatingSystem": null,
+                "licensedSoftware": null,
+                "softwareUpdates": null,
+                "groupMemberships": null,
+                "extensionAttributes": null,
+                "contentCaching": null,
+                "ibeacons": null
+            }
+        },
+        {
+            "message": {
+                "applications": [
+                    {
+                        "bundleId": "com.apple.podcasts",
+                        "externalVersionId": "0",
+                        "macAppStore": false,
+                        "name": "Podcasts.app",
+                        "path": "/System/Applications/Podcasts.app",
+                        "sizeMegabytes": 49,
+                        "updateAvailable": false,
+                        "version": "1.1.0"
+                    },
+                    {
+                        "bundleId": "com.apple.freeform",
+                        "externalVersionId": "0",
+                        "macAppStore": false,
+                        "name": "Freeform.app",
+                        "path": "/System/Applications/Freeform.app",
+                        "sizeMegabytes": 57,
+                        "updateAvailable": false,
+                        "version": "2.4"
+                    }
+                ],
+                "attachments": null,
+                "certificates": null,
+                "configurationProfiles": [
+                    {
+                        "displayName": "Restriction/Passcode",
+                        "id": "5",
+                        "lastInstalled": "2053-02-13T13:10:14.549Z",
+                        "profileIdentifier": "719CAEFF-34E2-43C2-AEFA-FF71A9268665",
+                        "removable": false,
+                        "username": null
+                    },
+                    {
+                        "displayName": "TBO Njrflke",
+                        "id": "-27",
+                        "lastInstalled": null,
+                        "profileIdentifier": "20525158-1292-0010-A712-9B789D742792",
+                        "removable": false,
+                        "username": null
+                    }
+                ],
+                "contentCaching": null,
+                "extensionAttributes": null,
+                "fonts": null,
+                "groupMemberships": [
+                    {
+                        "groupId": "1",
+                        "groupName": "All Managed Clients",
+                        "smartGroup": true
+                    },
+                    {
+                        "groupId": "5",
+                        "groupName": "Zero Touch Devices",
+                        "smartGroup": true
+                    }
+                ],
+                "hardware": {
+                    "altMacAddress": "67:D1:88:1E:1C:45",
+                    "altNetworkAdapterType": "Ethernet",
+                    "appleSilicon": true,
+                    "batteryCapacityPercent": 83,
+                    "bleCapable": false,
+                    "bootRom": "11881.61.3",
+                    "busSpeedMhz": 0,
+                    "cacheSizeKilobytes": 0,
+                    "coreCount": 10,
+                    "extensionAttributes": [],
+                    "macAddress": "76:3D:9A:62:2A:42",
+                    "make": "Apple",
+                    "model": "MacBook Pro (14-inch, 2021)",
+                    "modelIdentifier": "MacBookPro18,4",
+                    "networkAdapterType": "IEEE80211",
+                    "nicSpeed": "n/a",
+                    "openRamSlots": 0,
+                    "opticalDrive": null,
+                    "processorArchitecture": "arm64",
+                    "processorCount": 1,
+                    "processorSpeedMhz": 0,
+                    "processorType": "Apple M1 Max",
+                    "serialNumber": "XXXXXXXXXXX",
+                    "smcVersion": null,
+                    "supportsIosAppInstalls": true,
+                    "totalRamMegabytes": 32768
+                },
+                "ibeacons": null,
+                "id": "288",
+                "licensedSoftware": [],
+                "localUserAccounts": [],
+                "operatingSystem": {
+                    "activeDirectoryStatus": "Not Bound",
+                    "build": "23H311",
+                    "extensionAttributes": [],
+                    "fileVault2Status": "NOT_ENCRYPTED",
+                    "name": "macOS",
+                    "rapidSecurityResponse": null,
+                    "softwareUpdateDeviceId": "J314cAP",
+                    "supplementalBuildVersion": "23H311",
+                    "version": "14.7.2"
+                },
+                "packageReceipts": null,
+                "plugins": null,
+                "printers": null,
+                "purchasing": null,
+                "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A",
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                }
+            }
+        },
+        {
+            "message": {
+                "applications": [
+                    {
+                        "bundleId": "com.apple.freeform",
+                        "externalVersionId": "0",
+                        "macAppStore": false,
+                        "name": "Freeform.app",
+                        "path": "/System/Applications/Freeform.app",
+                        "sizeMegabytes": 57,
+                        "updateAvailable": false,
+                        "version": "2.4"
+                    }
+                ],
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                },
+                "operatingSystem": {
+                    "activeDirectoryStatus": "Not Bound",
+                    "build": "23H311",
+                    "extensionAttributes": [],
+                    "fileVault2Status": "NOT_ENCRYPTED",
+                    "name": "macOS",
+                    "rapidSecurityResponse": null,
+                    "softwareUpdateDeviceId": "J314cAP",
+                    "supplementalBuildVersion": "23H311",
+                    "version": "14.7"
+                },
+                "packageReceipts": null,
+                "plugins": null,
+                "printers": null,
+                "purchasing": null,
+                "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+            }
+        },
+        {
+            "message": {
+                "applications": [
+                    {
+                        "bundleId": "com.apple.freeform",
+                        "externalVersionId": "0",
+                        "macAppStore": false,
+                        "name": "Freeform.app",
+                        "path": "/System/Applications/Freeform.app",
+                        "sizeMegabytes": 57,
+                        "updateAvailable": false,
+                        "version": "2.4"
+                    }
+                ],
+                "general": {
+                    "reportDate": "2052-06-19T15:54:37.692Z",
+                    "lastIpAddress": "198.51.100.144"
+                },
+                "operatingSystem": {
+                    "activeDirectoryStatus": "Not Bound",
+                    "build": "23H311",
+                    "extensionAttributes": [],
+                    "fileVault2Status": "NOT_ENCRYPTED",
+                    "name": "macOS",
+                    "rapidSecurityResponse": null,
+                    "softwareUpdateDeviceId": "J314cAP",
+                    "supplementalBuildVersion": "23H311",
+                    "version": "14"
+                },
+                "packageReceipts": null,
+                "plugins": null,
+                "printers": null,
+                "purchasing": null,
+                "udid": "42CA89C9-BB3C-58CF-A32D-04F97852704A"
+            }
+        }
+    ]
+}

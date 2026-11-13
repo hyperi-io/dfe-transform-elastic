@@ -1,0 +1,76 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-11-07T10:37:04.226Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "code": "65536",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog"
+      },
+      "log": {
+        "level": "information"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": "65536",
+        "keywords": [
+          "Unknown Event ID"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": "65536",
+        "time_created": "2047-11-07T10:37:04.226Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:07:13.883Z",
+      "event": {
+        "code": 65536,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Eventlog"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "SOV-86VA2XP94FG.jwbfen.local",
+        "event_id": 65536,
+        "keywords": [
+          "Unknown Event ID"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "provider_guid": "{cd70abd9-f2ce-4855-83a5-2b1ffa7fb066}",
+        "provider_name": "Microsoft-Windows-Eventlog",
+        "record_id": 65536,
+        "time_created": "2047-11-07T10:37:04.226Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

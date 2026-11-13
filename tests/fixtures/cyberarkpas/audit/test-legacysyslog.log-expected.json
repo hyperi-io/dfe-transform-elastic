@@ -1,0 +1,76 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-03-08T03:41:01.000Z",
+      "cyberarkpas": {
+        "audit": {
+          "action": "Retrieve File",
+          "desc": "Retrieve File",
+          "file": "Root\\Policies\\Policy-BusinessWebsite.ini",
+          "issuer": "PasswordManager",
+          "message": "Retrieve File",
+          "rfc5424": false,
+          "safe": "PasswordManagerShared",
+          "severity": "Info",
+          "station": "10.129.17.24"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "retrieve file",
+        "code": "51",
+        "kind": "event",
+        "original": "Mar 08 03:41:01 XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"no\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"51\",\"Desc\":\"Retrieve File\",\"Severity\":\"Info\",\"Issuer\":\"PasswordManager\",\"Action\":\"Retrieve File\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"PasswordManagerShared\",\"File\":\"Root\\\\Policies\\\\Policy-BusinessWebsite.ini\",\"Station\":\"10.129.17.24\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Retrieve File\",\"GatewayStation\":\"\"}}}",
+        "severity": 2
+      },
+      "file": {
+        "path": "Root\\Policies\\Policy-BusinessWebsite.ini"
+      },
+      "host": {
+        "name": "XASHY"
+      },
+      "observer": {
+        "hostname": "XASHY",
+        "product": "Vault",
+        "vendor": "Cyber-Ark",
+        "version": "11.7.0000"
+      },
+      "related": {
+        "ip": [
+          "10.129.17.24"
+        ]
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "ip": "10.129.17.24"
+      },
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "Mar 08 03:41:01 XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"no\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"51\",\"Desc\":\"Retrieve File\",\"Severity\":\"Info\",\"Issuer\":\"PasswordManager\",\"Action\":\"Retrieve File\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"PasswordManagerShared\",\"File\":\"Root\\\\Policies\\\\Policy-BusinessWebsite.ini\",\"Station\":\"10.129.17.24\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Retrieve File\",\"GatewayStation\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cyberarkpas-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cyberarkpas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

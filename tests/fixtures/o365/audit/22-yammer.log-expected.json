@@ -1,0 +1,479 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "271760da-c7fb-43b8-91c2-09d45b38fecc",
+        "id": "0732ff09-6584-4bea-8085-60a950ebf33d",
+        "name": "be5a84530055",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.135:12345",
+        "ip": "198.51.100.135",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "GroupCreation",
+        "category": [
+          "iam",
+          "web",
+          "iam"
+        ],
+        "code": "Yammer",
+        "dataset": "o365.audit",
+        "id": "1ce6bbd9-d4a2-5bd6-8cfd-f3cb5d724486",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "Yammer",
+        "type": [
+          "group",
+          "creation",
+          "info",
+          "creation",
+          "group"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "group": {
+        "name": "Sales"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ActorUserId": "fnvfc@testsiem2.onmicrosoft.com",
+          "ActorYammerUserId": 36787265537,
+          "ClientIP": "198.51.100.135:12345",
+          "CreationTime": "2048-02-28T09:42:45",
+          "GroupName": "Sales",
+          "Id": "1ce6bbd9-d4a2-5bd6-8cfd-f3cb5d724486",
+          "ObjectId": "Sales",
+          "Operation": "GroupCreation",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "RecordType": 22,
+          "ResultStatus": "TRUE",
+          "UserId": "fnvfc@testsiem2.onmicrosoft.com",
+          "UserKey": "100320009d6edf94",
+          "UserType": 0,
+          "Version": 1,
+          "Workload": "Yammer",
+          "YammerNetworkId": 5846122497
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "ip": "198.51.100.135",
+        "user": [
+          "36787265537",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "36787265537"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "271760da-c7fb-43b8-91c2-09d45b38fecc",
+        "id": "0732ff09-6584-4bea-8085-60a950ebf33d",
+        "name": "be5a84530055",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[2001:db8:e6cc:528:28b1:2804:ee7d:c322]:12346",
+        "ip": "2001:db8:e6cc:528:28b1:2804:ee7d:c322",
+        "port": 12346
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "GroupCreation",
+        "category": [
+          "iam",
+          "web",
+          "iam"
+        ],
+        "code": "Yammer",
+        "dataset": "o365.audit",
+        "id": "2b0f4f7f-83c2-59bc-9ef1-a6a4544afc95",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "Yammer",
+        "type": [
+          "group",
+          "creation",
+          "info",
+          "creation",
+          "group"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "group": {
+        "name": "Company group"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 503
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ActorUserId": "apq@testsiem2.onmicrosoft.com",
+          "ActorYammerUserId": 36085768193,
+          "ClientIP": "[2001:db8:e6cc:528:28b1:2804:ee7d:c322]:12346",
+          "CreationTime": "2048-02-28T09:39:20",
+          "GroupName": "Company group",
+          "Id": "2b0f4f7f-83c2-59bc-9ef1-a6a4544afc95",
+          "ObjectId": "Company group",
+          "Operation": "GroupCreation",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "RecordType": 22,
+          "ResultStatus": "TRUE",
+          "UserId": "apq@testsiem2.onmicrosoft.com",
+          "UserKey": "100320009d292e16",
+          "UserType": 0,
+          "Version": 1,
+          "Workload": "Yammer",
+          "YammerNetworkId": 5846122497
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "ip": "2001:db8:e6cc:528:28b1:2804:ee7d:c322",
+        "user": [
+          "36085768193",
+          "apq@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "2001:db8:e6cc:528:28b1:2804:ee7d:c322",
+        "port": 12346
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "apq@testsiem2.onmicrosoft.com",
+        "id": "36085768193"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "271760da-c7fb-43b8-91c2-09d45b38fecc",
+        "id": "0732ff09-6584-4bea-8085-60a950ebf33d",
+        "name": "be5a84530055",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.135:12345",
+        "ip": "198.51.100.135",
+        "port": 12345
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "GroupCreation",
+        "category": "iam",
+        "code": "Yammer",
+        "dataset": "o365.audit",
+        "id": "1ce6bbd9-d4a2-5bd6-8cfd-f3cb5d724486",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Yammer",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "group": {
+        "name": "Sales"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "ActorUserId": "fnvfc@testsiem2.onmicrosoft.com",
+          "ActorYammerUserId": 36787265537,
+          "ClientIP": "198.51.100.135:12345",
+          "CreationTime": "2048-02-28T09:42:45",
+          "GroupName": "Sales",
+          "Id": "1ce6bbd9-d4a2-5bd6-8cfd-f3cb5d724486",
+          "ObjectId": "Sales",
+          "Operation": "GroupCreation",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "RecordType": 22,
+          "ResultStatus": "TRUE",
+          "UserId": "fnvfc@testsiem2.onmicrosoft.com",
+          "UserKey": "100320009d6edf94",
+          "UserType": 0,
+          "Version": 1,
+          "Workload": "Yammer",
+          "YammerNetworkId": 5846122497
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "ip": "198.51.100.135"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.135",
+        "port": 12345
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "36787265537"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "271760da-c7fb-43b8-91c2-09d45b38fecc",
+        "id": "0732ff09-6584-4bea-8085-60a950ebf33d",
+        "name": "be5a84530055",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "[2001:db8:e6cc:528:28b1:2804:ee7d:c322]:12346",
+        "ip": "2001:db8:e6cc:528:28b1:2804:ee7d:c322",
+        "port": 12346
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "GroupCreation",
+        "category": "iam",
+        "code": "Yammer",
+        "dataset": "o365.audit",
+        "id": "2b0f4f7f-83c2-59bc-9ef1-a6a4544afc95",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Yammer",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "group": {
+        "name": "Company group"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 503
+      },
+      "network": {
+        "type": "ipv6"
+      },
+      "o365": {
+        "audit": {
+          "ActorUserId": "apq@testsiem2.onmicrosoft.com",
+          "ActorYammerUserId": 36085768193,
+          "ClientIP": "[2001:db8:e6cc:528:28b1:2804:ee7d:c322]:12346",
+          "CreationTime": "2048-02-28T09:39:20",
+          "GroupName": "Company group",
+          "Id": "2b0f4f7f-83c2-59bc-9ef1-a6a4544afc95",
+          "ObjectId": "Company group",
+          "Operation": "GroupCreation",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "RecordType": 22,
+          "ResultStatus": "TRUE",
+          "UserId": "apq@testsiem2.onmicrosoft.com",
+          "UserKey": "100320009d292e16",
+          "UserType": 0,
+          "Version": 1,
+          "Workload": "Yammer",
+          "YammerNetworkId": 5846122497
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "ip": "2001:db8:e6cc:528:28b1:2804:ee7d:c322"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "2001:db8:e6cc:528:28b1:2804:ee7d:c322",
+        "port": 12346
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "apq@testsiem2.onmicrosoft.com",
+        "id": "36085768193"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

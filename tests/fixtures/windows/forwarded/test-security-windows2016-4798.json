@@ -1,0 +1,65 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:17.623Z",
+            "event": {
+                "kind": "event",
+                "code": 4798,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016_4798.xml"
+                },
+                "level": "information"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "c0c197ca-0905-4cbe-b226-82b28f7f1b44"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "winlog": {
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 2996,
+                "computer_name": "SOV-86VA2XP94FG",
+                "outcome": "success",
+                "channel": "Security",
+                "level": "information",
+                "activity_id": "{b3af2f2a-0df7-0735-209f-eea7c25ab594}",
+                "event_id": 4798,
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 1740
+                    }
+                },
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "time_created": "2047-10-08T10:20:34.053Z",
+                "event_data": {
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectLogonId": "0x3e7",
+                    "TargetUserName": "avexgxagdln7",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "SubjectDomainName": "WORKGROUP",
+                    "CallerProcessId": "0x3f0",
+                    "CallerProcessName": "C:\\Windows\\System32\\LogonUI.exe",
+                    "TargetSid": "S-1-5-21-101361758-2486510592-3018839910-1005",
+                    "SubjectUserName": "SOV-86VA2XP94FG$"
+                }
+            }
+        }
+    ]
+}

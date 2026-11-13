@@ -1,0 +1,631 @@
+{
+  "expected": [
+    {
+      "destination": {
+        "geo": {
+          "name": "Office"
+        },
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 2,
+        "end": "2048-07-12T08:05:50.000Z",
+        "kind": "event",
+        "original": "server01,Event Description: [SID: 29464] Audit: Nessus Vulnerability Scanner Activity attack detected but not blocked. Application path: C:\\PROGRAM FILES (X86)\\VMWARE\\VMWARE WORKSTATION\\VMWARE-HOSTD.EXE,Local Host IP: 0.0.0.0,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 0.0.0.0,Remote Host MAC: 000000000000,Inbound,TCP,Intrusion ID: 0,Begin: 2048-07-12 08:05:50,End Time: 2048-07-12 08:05:50,Occurrences: 2,Application: C:/PROGRAM FILES (X86)/VMWARE/VMWARE WORKSTATION/VMWARE-HOSTD.EXE,Location: Office,User Name: axelrod,Domain Name: CC,Local Port: 8080,Remote Port: 63462,CIDS Signature ID: 29464,CIDS Signature string: Audit: Nessus Vulnerability Scanner Activity,CIDS Signature SubID: 75167,Intrusion URL: server01.example.com/sdk,Intrusion Payload URL: ,SHA-256: 4AF482D70D21EB5CCC6B3D00E5283D6EF658D1BD87944527B5BE9E6EC23BC7D5,MD-5:",
+        "provider": "Agent Security Log",
+        "start": "2048-07-12T08:05:50.000Z",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "host": {
+        "hostname": "server01",
+        "name": "server01"
+      },
+      "message": "[SID: 29464] Audit: Nessus Vulnerability Scanner Activity attack detected but not blocked. Application path: C:\\PROGRAM FILES (X86)\\VMWARE\\VMWARE WORKSTATION\\VMWARE-HOSTD.EXE",
+      "network": {
+        "direction": "ingress",
+        "transport": "tcp"
+      },
+      "process": {
+        "executable": "C:/PROGRAM FILES (X86)/VMWARE/VMWARE WORKSTATION/VMWARE-HOSTD.EXE",
+        "hash": {
+          "sha256": "4af482d70d21eb5ccc6b3d00e5283d6ef658d1bd87944527b5be9e6ec23bc7d5"
+        }
+      },
+      "related": {
+        "hash": [
+          "4af482d70d21eb5ccc6b3d00e5283d6ef658d1bd87944527b5be9e6ec23bc7d5"
+        ]
+      },
+      "rule": {
+        "id": "0"
+      },
+      "source": {
+        "port": 63462
+      },
+      "symantec_endpoint": {
+        "log": {
+          "application": "C:/PROGRAM FILES (X86)/VMWARE/VMWARE WORKSTATION/VMWARE-HOSTD.EXE",
+          "begin": "2048-07-12 08:05:50",
+          "cids_signature_id": "29464",
+          "cids_signature_string": "Audit: Nessus Vulnerability Scanner Activity",
+          "cids_signature_subid": "75167",
+          "domain_name": "CC",
+          "end": "2048-07-12 08:05:50",
+          "event_description": "[SID: 29464] Audit: Nessus Vulnerability Scanner Activity attack detected but not blocked. Application path: C:\\PROGRAM FILES (X86)\\VMWARE\\VMWARE WORKSTATION\\VMWARE-HOSTD.EXE",
+          "intrusion_id": "0",
+          "intrusion_url": "server01.example.com/sdk",
+          "local_host_ip": "0.0.0.0",
+          "local_host_mac": "000000000000",
+          "local_port": "8080",
+          "location": "Office",
+          "network_protocol": "TCP",
+          "occurrences": "2",
+          "remote_host_ip": "0.0.0.0",
+          "remote_host_mac": "000000000000",
+          "remote_port": "63462",
+          "sha-256": "4AF482D70D21EB5CCC6B3D00E5283D6EF658D1BD87944527B5BE9E6EC23BC7D5",
+          "traffic_direction": "Inbound",
+          "user_name": "axelrod"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "server01.example.com/sdk"
+      },
+      "user": {
+        "domain": "CC",
+        "name": "axelrod"
+      }
+    },
+    {
+      "destination": {
+        "address": "203.0.113.61",
+        "geo": {
+          "name": "Office"
+        },
+        "ip": "203.0.113.61"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 1,
+        "end": "2048-12-08T09:08:01.000Z",
+        "kind": "event",
+        "original": "server02,Event Description: Portscan,Local Host IP: 203.0.113.61,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 203.0.113.61,Remote Host MAC: 000000000000,Inbound,TCP,Intrusion ID: 0,Begin: 2048-12-08 09:08:01,End Time: 2048-12-08 09:08:01,Occurrences: 1,Application: ,Location: Office,User Name: john,Domain Name: local,Local Port: 0,Remote Port: 0,CIDS Signature ID: 10000,CIDS Signature string: Portscan,CIDS Signature SubID: 0,Intrusion URL: ,Intrusion Payload URL: ,SHA-256: ,MD-5:",
+        "provider": "Agent Security Log",
+        "start": "2048-12-08T09:08:01.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "server02",
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "server02"
+      },
+      "message": "Portscan",
+      "network": {
+        "direction": "ingress",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.61"
+        ]
+      },
+      "rule": {
+        "id": "0"
+      },
+      "source": {
+        "address": "203.0.113.61",
+        "ip": "203.0.113.61"
+      },
+      "symantec_endpoint": {
+        "log": {
+          "begin": "2048-12-08 09:08:01",
+          "cids_signature_id": "10000",
+          "cids_signature_string": "Portscan",
+          "cids_signature_subid": "0",
+          "domain_name": "local",
+          "end": "2048-12-08 09:08:01",
+          "event_description": "Portscan",
+          "intrusion_id": "0",
+          "local_host_ip": "203.0.113.61",
+          "local_host_mac": "000000000000",
+          "local_port": "0",
+          "location": "Office",
+          "network_protocol": "TCP",
+          "occurrences": "1",
+          "remote_host_ip": "203.0.113.61",
+          "remote_host_mac": "000000000000",
+          "remote_port": "0",
+          "traffic_direction": "Inbound",
+          "user_name": "john"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "local",
+        "name": "john"
+      }
+    },
+    {
+      "destination": {
+        "geo": {
+          "name": "Remote"
+        },
+        "mac": "2D-FF-88-AA-BB-DC"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 1,
+        "end": "2048-11-23T13:56:35.000Z",
+        "kind": "event",
+        "original": "server03,Event Description: ARP Cache Poison,Local Host IP: 0.0.0.0,Local Host MAC: 2DFF88AABBDC,Remote Host Name: ,Remote Host IP: 0.0.0.0,Remote Host MAC: AABBCCDDEEFF,Inbound,Unknown,Intrusion ID: 0,Begin: 2048-11-23 13:56:35,End Time: 2048-11-23 13:56:35,Occurrences: 1,Application: ,Location: Remote,User Name: bobby,Domain Name: local,Local Port: 0,Remote Port: 0,CIDS Signature ID: 99990,CIDS Signature string: ARP Cache Poison,CIDS Signature SubID: 0,Intrusion URL: ,Intrusion Payload URL: ,SHA-256: ,MD-5:",
+        "provider": "Agent Security Log",
+        "start": "2048-11-23T13:56:35.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "server03",
+        "mac": [
+          "2D-FF-88-AA-BB-DC"
+        ],
+        "name": "server03"
+      },
+      "message": "ARP Cache Poison",
+      "network": {
+        "direction": "ingress",
+        "transport": "unknown"
+      },
+      "rule": {
+        "id": "0"
+      },
+      "source": {
+        "mac": "AA-BB-CC-DD-EE-FF"
+      },
+      "symantec_endpoint": {
+        "log": {
+          "begin": "2048-11-23 13:56:35",
+          "cids_signature_id": "99990",
+          "cids_signature_string": "ARP Cache Poison",
+          "cids_signature_subid": "0",
+          "domain_name": "local",
+          "end": "2048-11-23 13:56:35",
+          "event_description": "ARP Cache Poison",
+          "intrusion_id": "0",
+          "local_host_ip": "0.0.0.0",
+          "local_host_mac": "2DFF88AABBDC",
+          "local_port": "0",
+          "location": "Remote",
+          "network_protocol": "Unknown",
+          "occurrences": "1",
+          "remote_host_ip": "0.0.0.0",
+          "remote_host_mac": "AABBCCDDEEFF",
+          "remote_port": "0",
+          "traffic_direction": "Inbound",
+          "user_name": "bobby"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "local",
+        "name": "bobby"
+      }
+    },
+    {
+      "destination": {
+        "address": "203.0.113.61",
+        "geo": {
+          "name": "Wireless"
+        },
+        "ip": "203.0.113.61",
+        "port": 5985
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 1,
+        "end": "2048-12-11T10:08:25.000Z",
+        "kind": "event",
+        "original": "server04,Event Description: [SID: 30369] Audit: Nessus Vulnerability Scanner Activity 3 attack detected but not blocked. Application path: SYSTEM,Local Host IP: 203.0.113.61,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 198.51.100.111,Remote Host MAC: 000000000000,Inbound,TCP,Intrusion ID: 0,Begin: 2048-12-11 10:08:25,End Time: 2048-12-11 10:08:25,Occurrences: 1,Application: SYSTEM,Location: Wireless,User Name: none,Domain Name: ,Local Port: 5985,Remote Port: 42734,CIDS Signature ID: 30369,CIDS Signature string: Audit: Nessus Vulnerability Scanner Activity 3,CIDS Signature SubID: 75185,\"Intrusion URL: server04.example.com//${%23w%3d%23context.get('com.opensymphony.xwork2.dispatcher.HttpServletResponse').getWriter(),%23w.print('Nessus%20Response:%20'),%23w.println('struts_2_3_14_3_command_execution-1365356639'),%23w.flush(),%23w.close()}.action\",Intrusion Payload URL: ,SHA-256: 0000000000000000000000000000000000000000000000000000000000000000,MD-5:",
+        "provider": "Agent Security Log",
+        "start": "2048-12-11T10:08:25.000Z",
+        "type": [
+          "connection",
+          "allowed"
+        ]
+      },
+      "host": {
+        "hostname": "server04",
+        "ip": [
+          "203.0.113.61"
+        ],
+        "name": "server04"
+      },
+      "message": "[SID: 30369] Audit: Nessus Vulnerability Scanner Activity 3 attack detected but not blocked. Application path: SYSTEM",
+      "network": {
+        "community_id": "1:O8aQ0Ekos0kMJJJK8aWhMksYDUw=",
+        "direction": "ingress",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "process": {
+        "executable": "SYSTEM",
+        "hash": {
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "related": {
+        "hash": [
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        "ip": [
+          "203.0.113.61",
+          "198.51.100.111"
+        ]
+      },
+      "rule": {
+        "id": "0"
+      },
+      "source": {
+        "address": "198.51.100.111",
+        "ip": "198.51.100.111",
+        "port": 42734
+      },
+      "symantec_endpoint": {
+        "log": {
+          "application": "SYSTEM",
+          "begin": "2048-12-11 10:08:25",
+          "cids_signature_id": "30369",
+          "cids_signature_string": "Audit: Nessus Vulnerability Scanner Activity 3",
+          "cids_signature_subid": "75185",
+          "end": "2048-12-11 10:08:25",
+          "event_description": "[SID: 30369] Audit: Nessus Vulnerability Scanner Activity 3 attack detected but not blocked. Application path: SYSTEM",
+          "intrusion_id": "0",
+          "intrusion_url": "server04.example.com//${%23w%3d%23context.get('com.opensymphony.xwork2.dispatcher.HttpServletResponse').getWriter(),%23w.print('Nessus%20Response:%20'),%23w.println('struts_2_3_14_3_command_execution-1365356639'),%23w.flush(),%23w.close()}.action",
+          "local_host_ip": "203.0.113.61",
+          "local_host_mac": "000000000000",
+          "local_port": "5985",
+          "location": "Wireless",
+          "network_protocol": "TCP",
+          "occurrences": "1",
+          "remote_host_ip": "198.51.100.111",
+          "remote_host_mac": "000000000000",
+          "remote_port": "42734",
+          "sha-256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "traffic_direction": "Inbound",
+          "user_name": "none"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "server04.example.com//${%23w%3d%23context.get('com.opensymphony.xwork2.dispatcher.HttpServletResponse').getWriter(),%23w.print('Nessus%20Response:%20'),%23w.println('struts_2_3_14_3_command_execution-1365356639'),%23w.flush(),%23w.close()}.action"
+      },
+      "user": {
+        "name": "none"
+      }
+    },
+    {
+      "destination": {
+        "address": "192.0.2.139",
+        "geo": {
+          "name": "Test Loc - VPN"
+        },
+        "ip": "192.0.2.139"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 1,
+        "end": "2047-10-03T23:52:04.000Z",
+        "kind": "event",
+        "original": "20-11111A111111,Event Description: The client will block traffic from IP address 198.51.100.111 for the next 60 seconds (from 03/10/2047 23:51:04 to 03/10/2047 23:52:04). ,Local: 192.0.2.139,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 192.0.2.139,Remote Host MAC: 000000000000,Inbound,OTHERS,,Begin: 2047-10-03 23:51:04,End: 2047-10-03 23:52:04,Occurrences: 1,Application: ,Location: Test Loc - VPN,User: A1111111,Domain: TESTDOMAIN,Local Port: 0,Remote Port: 0,CIDS Signature ID: 0,CIDS Signature string: ,CIDS Signature SubID: 0,Intrusion URL: ,Intrusion Payload URL: ,SHA-256: ,MD-5:",
+        "provider": "Agent Security Log",
+        "start": "2047-10-03T23:51:04.000Z",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "20-11111A111111",
+        "ip": [
+          "192.0.2.139"
+        ],
+        "name": "20-11111A111111"
+      },
+      "message": "The client will block traffic from IP address 198.51.100.111 for the next 60 seconds (from 03/10/2047 23:51:04 to 03/10/2047 23:52:04).",
+      "network": {
+        "direction": "ingress",
+        "transport": "others",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.139"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.139",
+        "ip": "192.0.2.139"
+      },
+      "symantec_endpoint": {
+        "log": {
+          "begin": "2047-10-03 23:51:04",
+          "cids_signature_id": "0",
+          "cids_signature_subid": "0",
+          "domain_name": "TESTDOMAIN",
+          "end": "2047-10-03 23:52:04",
+          "event_description": "The client will block traffic from IP address 198.51.100.111 for the next 60 seconds (from 03/10/2047 23:51:04 to 03/10/2047 23:52:04).",
+          "local_host_ip": "192.0.2.139",
+          "local_host_mac": "000000000000",
+          "local_port": "0",
+          "location": "Test Loc - VPN",
+          "network_protocol": "OTHERS",
+          "occurrences": "1",
+          "remote_host_ip": "192.0.2.139",
+          "remote_host_mac": "000000000000",
+          "remote_port": "0",
+          "traffic_direction": "Inbound",
+          "user_name": "A1111111"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TESTDOMAIN",
+        "name": "A1111111"
+      }
+    },
+    {
+      "destination": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1",
+        "port": 5112
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection",
+          "network",
+          "process"
+        ],
+        "count": 1,
+        "end": "2049-12-27T14:48:07.000Z",
+        "kind": "event",
+        "original": "udoxcw81.local,Event Description: [SID: 30413] Web Attack: Passwd File Download Attempt attack blocked. Traffic has been blocked for this application: C:\\WINDOWS\\SYSTEM32\\INETSRV\\W3WP.EXE,Local Host IP: 127.0.0.1,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 127.0.0.1,Remote Host MAC: 000000000000,Outbound,TCP,Intrusion ID: 0,Begin: 2049-12-27 14:48:07,End: 2049-12-27 14:48:07,Occurrences: 1,Application: C:/WINDOWS/SYSTEM32/INETSRV/W3WP.EXE,Location: Default,User: pxmacct,Domain: DOL,Local Port: 53937,Remote Port: 5112,CIDS Signature ID: 30413,CIDS Signature string: Web Attack: Passwd File Download Attempt,CIDS Signature SubID: 74503,Intrusion URL: www.example.com/cgi-bin/ion-p.exe?page=../../../../../etc/passwd,Intrusion Payload URL: ,SHA-256: EEE7BC4E01DE12C533E00A474C4BE8BB378A6FC26EB40990CB84263B12796FE8,MD-5:",
+        "provider": "Agent Security Log",
+        "start": "2049-12-27T14:48:07.000Z",
+        "type": [
+          "connection",
+          "denied"
+        ]
+      },
+      "host": {
+        "hostname": "udoxcw81.local",
+        "ip": [
+          "127.0.0.1"
+        ],
+        "name": "udoxcw81.local"
+      },
+      "message": "[SID: 30413] Web Attack: Passwd File Download Attempt attack blocked. Traffic has been blocked for this application: C:\\WINDOWS\\SYSTEM32\\INETSRV\\W3WP.EXE",
+      "network": {
+        "community_id": "1:+32QT9hg7SQvrU586lDabMcw4rw=",
+        "direction": "egress",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "process": {
+        "executable": "C:/WINDOWS/SYSTEM32/INETSRV/W3WP.EXE",
+        "hash": {
+          "sha256": "eee7bc4e01de12c533e00a474c4be8bb378a6fc26eb40990cb84263b12796fe8"
+        }
+      },
+      "related": {
+        "hash": [
+          "eee7bc4e01de12c533e00a474c4be8bb378a6fc26eb40990cb84263b12796fe8"
+        ],
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "rule": {
+        "id": "0"
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "geo": {
+          "name": "Default"
+        },
+        "ip": "127.0.0.1",
+        "port": 53937
+      },
+      "symantec_endpoint": {
+        "log": {
+          "application": "C:/WINDOWS/SYSTEM32/INETSRV/W3WP.EXE",
+          "begin": "2049-12-27 14:48:07",
+          "cids_signature_id": "30413",
+          "cids_signature_string": "Web Attack: Passwd File Download Attempt",
+          "cids_signature_subid": "74503",
+          "domain_name": "DOL",
+          "end": "2049-12-27 14:48:07",
+          "event_description": "[SID: 30413] Web Attack: Passwd File Download Attempt attack blocked. Traffic has been blocked for this application: C:\\WINDOWS\\SYSTEM32\\INETSRV\\W3WP.EXE",
+          "intrusion_id": "0",
+          "intrusion_url": "www.example.com/cgi-bin/ion-p.exe?page=../../../../../etc/passwd",
+          "local_host_ip": "127.0.0.1",
+          "local_host_mac": "000000000000",
+          "local_port": "53937",
+          "location": "Default",
+          "network_protocol": "TCP",
+          "occurrences": "1",
+          "remote_host_ip": "127.0.0.1",
+          "remote_host_mac": "000000000000",
+          "remote_port": "5112",
+          "sha-256": "EEE7BC4E01DE12C533E00A474C4BE8BB378A6FC26EB40990CB84263B12796FE8",
+          "traffic_direction": "Outbound",
+          "user_name": "pxmacct"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "www.example.com/cgi-bin/ion-p.exe?page=../../../../../etc/passwd"
+      },
+      "user": {
+        "domain": "DOL",
+        "name": "pxmacct"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "server01,Event Description: [SID: 29464] Audit: Nessus Vulnerability Scanner Activity attack detected but not blocked. Application path: C:\\PROGRAM FILES (X86)\\VMWARE\\VMWARE WORKSTATION\\VMWARE-HOSTD.EXE,Local Host IP: 0.0.0.0,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 0.0.0.0,Remote Host MAC: 000000000000,Inbound,TCP,Intrusion ID: 0,Begin: 2048-07-12 08:05:50,End Time: 2048-07-12 08:05:50,Occurrences: 2,Application: C:/PROGRAM FILES (X86)/VMWARE/VMWARE WORKSTATION/VMWARE-HOSTD.EXE,Location: Office,User Name: axelrod,Domain Name: CC,Local Port: 8080,Remote Port: 63462,CIDS Signature ID: 29464,CIDS Signature string: Audit: Nessus Vulnerability Scanner Activity,CIDS Signature SubID: 75167,Intrusion URL: server01.example.com/sdk,Intrusion Payload URL: ,SHA-256: 4AF482D70D21EB5CCC6B3D00E5283D6EF658D1BD87944527B5BE9E6EC23BC7D5,MD-5:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "server02,Event Description: Portscan,Local Host IP: 203.0.113.61,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 203.0.113.61,Remote Host MAC: 000000000000,Inbound,TCP,Intrusion ID: 0,Begin: 2048-12-08 09:08:01,End Time: 2048-12-08 09:08:01,Occurrences: 1,Application: ,Location: Office,User Name: john,Domain Name: local,Local Port: 0,Remote Port: 0,CIDS Signature ID: 10000,CIDS Signature string: Portscan,CIDS Signature SubID: 0,Intrusion URL: ,Intrusion Payload URL: ,SHA-256: ,MD-5:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "server03,Event Description: ARP Cache Poison,Local Host IP: 0.0.0.0,Local Host MAC: 2DFF88AABBDC,Remote Host Name: ,Remote Host IP: 0.0.0.0,Remote Host MAC: AABBCCDDEEFF,Inbound,Unknown,Intrusion ID: 0,Begin: 2048-11-23 13:56:35,End Time: 2048-11-23 13:56:35,Occurrences: 1,Application: ,Location: Remote,User Name: bobby,Domain Name: local,Local Port: 0,Remote Port: 0,CIDS Signature ID: 99990,CIDS Signature string: ARP Cache Poison,CIDS Signature SubID: 0,Intrusion URL: ,Intrusion Payload URL: ,SHA-256: ,MD-5:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "server04,Event Description: [SID: 30369] Audit: Nessus Vulnerability Scanner Activity 3 attack detected but not blocked. Application path: SYSTEM,Local Host IP: 203.0.113.61,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 198.51.100.111,Remote Host MAC: 000000000000,Inbound,TCP,Intrusion ID: 0,Begin: 2048-12-11 10:08:25,End Time: 2048-12-11 10:08:25,Occurrences: 1,Application: SYSTEM,Location: Wireless,User Name: none,Domain Name: ,Local Port: 5985,Remote Port: 42734,CIDS Signature ID: 30369,CIDS Signature string: Audit: Nessus Vulnerability Scanner Activity 3,CIDS Signature SubID: 75185,\"Intrusion URL: server04.example.com//${%23w%3d%23context.get('com.opensymphony.xwork2.dispatcher.HttpServletResponse').getWriter(),%23w.print('Nessus%20Response:%20'),%23w.println('struts_2_3_14_3_command_execution-1365356639'),%23w.flush(),%23w.close()}.action\",Intrusion Payload URL: ,SHA-256: 0000000000000000000000000000000000000000000000000000000000000000,MD-5:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "20-11111A111111,Event Description: The client will block traffic from IP address 198.51.100.111 for the next 60 seconds (from 03/10/2047 23:51:04 to 03/10/2047 23:52:04). ,Local: 192.0.2.139,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 192.0.2.139,Remote Host MAC: 000000000000,Inbound,OTHERS,,Begin: 2047-10-03 23:51:04,End: 2047-10-03 23:52:04,Occurrences: 1,Application: ,Location: Test Loc - VPN,User: A1111111,Domain: TESTDOMAIN,Local Port: 0,Remote Port: 0,CIDS Signature ID: 0,CIDS Signature string: ,CIDS Signature SubID: 0,Intrusion URL: ,Intrusion Payload URL: ,SHA-256: ,MD-5:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "udoxcw81.local,Event Description: [SID: 30413] Web Attack: Passwd File Download Attempt attack blocked. Traffic has been blocked for this application: C:\\WINDOWS\\SYSTEM32\\INETSRV\\W3WP.EXE,Local Host IP: 127.0.0.1,Local Host MAC: 000000000000,Remote Host Name: ,Remote Host IP: 127.0.0.1,Remote Host MAC: 000000000000,Outbound,TCP,Intrusion ID: 0,Begin: 2049-12-27 14:48:07,End: 2049-12-27 14:48:07,Occurrences: 1,Application: C:/WINDOWS/SYSTEM32/INETSRV/W3WP.EXE,Location: Default,User: pxmacct,Domain: DOL,Local Port: 53937,Remote Port: 5112,CIDS Signature ID: 30413,CIDS Signature string: Web Attack: Passwd File Download Attempt,CIDS Signature SubID: 74503,Intrusion URL: www.example.com/cgi-bin/ion-p.exe?page=../../../../../etc/passwd,Intrusion Payload URL: ,SHA-256: EEE7BC4E01DE12C533E00A474C4BE8BB378A6FC26EB40990CB84263B12796FE8,MD-5:",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

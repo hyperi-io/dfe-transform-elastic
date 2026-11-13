@@ -1,0 +1,283 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-07-07T19:25:32.904Z",
+      "destination": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CajWfz1b3qnnWT0BU9",
+        "kind": "event",
+        "original": "{\"ts\":2446140332.904291,\"uid\":\"CajWfz1b3qnnWT0BU9\",\"id.orig_h\":\"192.168.97.98\",\"id.orig_p\":48380,\"id.resp_h\":\"192.168.124.110\",\"id.resp_p\":22,\"version\":2,\"auth_success\":false,\"auth_attempts\":2,\"client\":\"SSH-2.0-OpenSSH_7.9p1 Ubuntu-10\",\"server\":\"SSH-2.0-OpenSSH_6.6.1p1 Debian-4~bpo70+1\",\"cipher_alg\":\"blefzc38-tvjh5865@wlegsgw.com\",\"mac_alg\":\"ltda-64-bvm@wlegsgw.com\",\"compression_alg\":\"none\",\"kex_alg\":\"fthuc08195-vsa282@xseywr.org\",\"host_key_alg\":\"ecdsa-sha2-nistp256\",\"host_key\":\"86:71:ac:9c:35:1c:28:29:05:81:48:ec:66:67:de:bd\"}",
+        "outcome": "failure",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:Nf0ZfTNgdep6+cZ7ywj2u4t61a8=",
+        "protocol": "ssh",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.97.98",
+          "192.168.124.110"
+        ]
+      },
+      "source": {
+        "address": "192.168.97.98",
+        "ip": "192.168.97.98",
+        "port": 48380
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "session_id": "CajWfz1b3qnnWT0BU9",
+        "ssh": {
+          "algorithm": {
+            "cipher": "blefzc38-tvjh5865@wlegsgw.com",
+            "compression": "none",
+            "host_key": "ecdsa-sha2-nistp256",
+            "key_exchange": "fthuc08195-vsa282@xseywr.org",
+            "mac": "ltda-64-bvm@wlegsgw.com"
+          },
+          "auth": {
+            "attempts": 2,
+            "success": false
+          },
+          "client": "SSH-2.0-OpenSSH_7.9p1 Ubuntu-10",
+          "host_key": "86:71:ac:9c:35:1c:28:29:05:81:48:ec:66:67:de:bd",
+          "server": "SSH-2.0-OpenSSH_6.6.1p1 Debian-4~bpo70+1",
+          "version": 2
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T16:56:57.413Z",
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "COXxsJ3dlSh6ECRYQj",
+        "kind": "event",
+        "original": "{\"ts\":2500736217.413634,\"uid\":\"COXxsJ3dlSh6ECRYQj\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":38204,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":22,\"auth_attempts\":0,\"direction\":\"INBOUND\",\"client\":\"SSH-2.0-libssh-0.6.3\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:dTybpWAFu082O31wVZL2PC8bA14=",
+        "protocol": "ssh",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 38204
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "session_id": "COXxsJ3dlSh6ECRYQj",
+        "ssh": {
+          "auth": {
+            "attempts": 0
+          },
+          "client": "SSH-2.0-libssh-0.6.3",
+          "direction": "INBOUND"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T16:57:25.615Z",
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CZPdXz1jfKSWzIDAeb",
+        "kind": "event",
+        "original": "{\"ts\":2500736245.61524,\"uid\":\"CZPdXz1jfKSWzIDAeb\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":44164,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":22,\"auth_attempts\":0,\"direction\":\"INBOUND\",\"client\":\"SSH-2.0-libssh-0.6.3\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:SGsIY/9EIBaCMs1qi+fGi5aRVao=",
+        "protocol": "ssh",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 44164
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "session_id": "CZPdXz1jfKSWzIDAeb",
+        "ssh": {
+          "auth": {
+            "attempts": 0
+          },
+          "client": "SSH-2.0-libssh-0.6.3",
+          "direction": "INBOUND"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T16:57:30.957Z",
+      "destination": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "Cha1rs3OamonAZ4Nz6",
+        "kind": "event",
+        "original": "{\"ts\":2500736250.957272,\"uid\":\"Cha1rs3OamonAZ4Nz6\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":33953,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":22,\"auth_attempts\":0,\"direction\":\"INBOUND\",\"client\":\"SSH-2.0-ZGrab ZGrab SSH Survey\"}",
+        "type": [
+          "connection",
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:NeX2mQxtAGVG8GSkdlRSG8Jt40c=",
+        "protocol": "ssh",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144",
+          "10.55.23.134"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 33953
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "session_id": "Cha1rs3OamonAZ4Nz6",
+        "ssh": {
+          "auth": {
+            "attempts": 0
+          },
+          "client": "SSH-2.0-ZGrab ZGrab SSH Survey",
+          "direction": "INBOUND"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2446140332.904291,\"uid\":\"CajWfz1b3qnnWT0BU9\",\"id.orig_h\":\"192.168.97.98\",\"id.orig_p\":48380,\"id.resp_h\":\"192.168.124.110\",\"id.resp_p\":22,\"version\":2,\"auth_success\":false,\"auth_attempts\":2,\"client\":\"SSH-2.0-OpenSSH_7.9p1 Ubuntu-10\",\"server\":\"SSH-2.0-OpenSSH_6.6.1p1 Debian-4~bpo70+1\",\"cipher_alg\":\"blefzc38-tvjh5865@wlegsgw.com\",\"mac_alg\":\"ltda-64-bvm@wlegsgw.com\",\"compression_alg\":\"none\",\"kex_alg\":\"fthuc08195-vsa282@xseywr.org\",\"host_key_alg\":\"ecdsa-sha2-nistp256\",\"host_key\":\"86:71:ac:9c:35:1c:28:29:05:81:48:ec:66:67:de:bd\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500736217.413634,\"uid\":\"COXxsJ3dlSh6ECRYQj\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":38204,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":22,\"auth_attempts\":0,\"direction\":\"INBOUND\",\"client\":\"SSH-2.0-libssh-0.6.3\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500736245.61524,\"uid\":\"CZPdXz1jfKSWzIDAeb\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":44164,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":22,\"auth_attempts\":0,\"direction\":\"INBOUND\",\"client\":\"SSH-2.0-libssh-0.6.3\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500736250.957272,\"uid\":\"Cha1rs3OamonAZ4Nz6\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":33953,\"id.resp_h\":\"10.55.23.134\",\"id.resp_p\":22,\"auth_attempts\":0,\"direction\":\"INBOUND\",\"client\":\"SSH-2.0-ZGrab ZGrab SSH Survey\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ssh",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-ssh-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

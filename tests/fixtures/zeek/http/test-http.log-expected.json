@@ -1,0 +1,991 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-01-17T01:05:30.172Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "GET",
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CCNp8v1SNzY7v9d1Ih",
+        "kind": "event",
+        "original": "{\"ts\":2431299930.172944,\"uid\":\"CCNp8v1SNzY7v9d1Ih\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":62995,\"id.resp_h\":\"198.51.100.144\",\"username\":\"user\",\"id.resp_p\":80,\"trans_depth\":1,\"method\":\"GET\",\"host\":\"ocsp.apple.com\",\"uri\":\"/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=\",\"version\":\"1.1\",\"user_agent\":\"com.apple.trustd/2.0\",\"request_body_len\":0,\"response_body_len\":3735,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F5zuip1tSwASjNAHy7\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 3735
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "community_id": "1:3JeBYKTXShFDlmhoBjgXZzmN42g=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.6.58.226",
+          "198.51.100.144"
+        ],
+        "user": [
+          "user"
+        ]
+      },
+      "source": {
+        "address": "10.6.58.226",
+        "ip": "10.6.58.226",
+        "port": 62995
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ocsp.apple.com",
+        "original": "/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=",
+        "path": "/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=",
+        "username": "user"
+      },
+      "user": {
+        "name": "user"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "com.apple.trustd/2.0"
+      },
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "F5zuip1tSwASjNAHy7"
+          ],
+          "resp_mime_types": [
+            "application/ocsp-response"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CCNp8v1SNzY7v9d1Ih"
+      }
+    },
+    {
+      "@timestamp": "2047-01-17T06:36:59.757Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "GET",
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CMnIaR2V8VXyu7EPs",
+        "kind": "event",
+        "original": "{\"ts\":2431319819.757479,\"uid\":\"CMnIaR2V8VXyu7EPs\",\"id.orig_h\":\"10.106.104.74\",\"id.orig_p\":35684,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"method\":\"GET\",\"host\":\"xgktblv.org\",\"uri\":\"/ip\",\"version\":\"1.1\",\"user_agent\":\"curl/7.58.0\",\"request_body_len\":0,\"response_body_len\":32,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"FwGPlr1GcKUWWdkXoi\"],\"resp_mime_types\":[\"text/json\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 32
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "community_id": "1:4n5cH/MJbJh0fsjZZo1ECngwtp8=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.106.104.74",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.106.104.74",
+        "ip": "10.106.104.74",
+        "port": 35684
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "xgktblv.org",
+        "original": "/ip",
+        "path": "/ip"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      },
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "FwGPlr1GcKUWWdkXoi"
+          ],
+          "resp_mime_types": [
+            "text/json"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CMnIaR2V8VXyu7EPs"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T05:15:54.277Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CdqHhA1AsxBIjmVZ9",
+        "kind": "event",
+        "original": "{\"ts\":2500694154.277591,\"uid\":\"CdqHhA1AsxBIjmVZ9\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":57896,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"FM01o54RU9pez8AJba\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          }
+        },
+        "response": {
+          "body": {
+            "bytes": 503
+          },
+          "status_code": 200
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "community_id": "1:xcwTaHwg0YziWEayDVBFMYC1OM0=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 57896
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "FM01o54RU9pez8AJba"
+          ],
+          "resp_mime_types": [
+            "application/ocsp-response"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CdqHhA1AsxBIjmVZ9"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T05:15:55.599Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CxhRTwkHNRsHxBw34",
+        "kind": "event",
+        "original": "{\"ts\":2500694155.599548,\"uid\":\"CxhRTwkHNRsHxBw34\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":55378,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.1\",\"request_body_len\":0,\"response_body_len\":191,\"status_code\":301,\"status_msg\":\"Moved Permanently\",\"tags\":[],\"resp_fuids\":[\"FVGTq31RBgKGE02hx7\"],\"resp_mime_types\":[\"text/html\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          }
+        },
+        "response": {
+          "body": {
+            "bytes": 191
+          },
+          "status_code": 301
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "community_id": "1:JOs46IOnXoH+tm25Q2SeZT9Xcdo=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 55378
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "FVGTq31RBgKGE02hx7"
+          ],
+          "resp_mime_types": [
+            "text/html"
+          ],
+          "status_msg": "Moved Permanently",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CxhRTwkHNRsHxBw34"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T05:16:00.171Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CrI5Xg30caNXnNvEse",
+        "kind": "event",
+        "original": "{\"ts\":2500694160.171904,\"uid\":\"CrI5Xg30caNXnNvEse\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":41960,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F8vozz46VoxeAmqLv3\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          }
+        },
+        "response": {
+          "body": {
+            "bytes": 503
+          },
+          "status_code": 200
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "community_id": "1:Dwzii4oIx2VegR0K9RZeDVVqpkU=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 41960
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "F8vozz46VoxeAmqLv3"
+          ],
+          "resp_mime_types": [
+            "application/ocsp-response"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CrI5Xg30caNXnNvEse"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T05:16:04.250Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C6oCGd24yB2dZ7y7z7",
+        "kind": "event",
+        "original": "{\"ts\":2500694164.250251,\"uid\":\"C6oCGd24yB2dZ7y7z7\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":42164,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F1imAq4yUjbwyK7NO2\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          }
+        },
+        "response": {
+          "body": {
+            "bytes": 503
+          },
+          "status_code": 200
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "community_id": "1:k3K7KWLWpK8NOyx/V6jqfnLSoFc=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 42164
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "F1imAq4yUjbwyK7NO2"
+          ],
+          "resp_mime_types": [
+            "application/ocsp-response"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "C6oCGd24yB2dZ7y7z7"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T05:16:06.285Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C7DWRE1zsvxUK9RyW1",
+        "kind": "event",
+        "original": "{\"ts\":2500694166.285075,\"uid\":\"C7DWRE1zsvxUK9RyW1\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":42292,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"FQhm6z1cISaOxMzzR6\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          }
+        },
+        "response": {
+          "body": {
+            "bytes": 503
+          },
+          "status_code": 200
+        },
+        "version": "1.0"
+      },
+      "network": {
+        "community_id": "1:OCe0u0bcfoERUS6V4rVn3VYKTs0=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 42292
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "http": {
+          "resp_fuids": [
+            "FQhm6z1cISaOxMzzR6"
+          ],
+          "resp_mime_types": [
+            "application/ocsp-response"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "C7DWRE1zsvxUK9RyW1"
+      }
+    },
+    {
+      "@timestamp": "2050-01-11T14:19:28.499Z",
+      "destination": {
+        "address": "10.225.83.137",
+        "ip": "10.225.83.137",
+        "port": 7000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "GET",
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CZVlyH3mlEGvfFfTJh",
+        "kind": "event",
+        "original": "{\"ts\":2525523568.499966,\"uid\":\"CZVlyH3mlEGvfFfTJh\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52962,\"id.resp_h\":\"10.225.83.137\",\"id.resp_p\":7000,\"trans_depth\":1,\"method\":\"GET\",\"uri\":\"/info?txtAirPlay&txtRAOP RTSP/1.\",\"request_body_len\":0,\"response_body_len\":0,\"tags\":[]}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:Wkk8RsyKzvZduaUrcQLGj7e5MW0=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "10.225.83.137"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 52962
+      },
+      "tags": [
+        "preserve_original_event",
+        "_zeek_http_url_parse_failure",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/info?txtAirPlay&txtRAOP RTSP/1."
+      },
+      "zeek": {
+        "http": {
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CZVlyH3mlEGvfFfTJh"
+      }
+    },
+    {
+      "@timestamp": "2050-01-11T14:19:28.499Z",
+      "destination": {
+        "address": "10.225.83.137",
+        "ip": "10.225.83.137",
+        "port": 7000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "GET",
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CZVlyH3mlEGvfFfTJh",
+        "kind": "event",
+        "original": "{\"ts\":2525523568.499966,\"uid\":\"CZVlyH3mlEGvfFfTJh\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52962,\"id.resp_h\":\"10.225.83.137\",\"id.resp_p\":7000,\"trans_depth\":1,\"method\":\"GET\",\"uri\":\"http://msedge.b.tlw.d2.delivery.mp.microsoft.com/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/\",\"request_body_len\":0,\"response_body_len\":0,\"tags\":[],\"host\":\"msedge.b.tlw.d2.delivery.mp.microsoft.com\"}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:Wkk8RsyKzvZduaUrcQLGj7e5MW0=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "10.225.83.137"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 52962
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "msedge.b.tlw.d2.delivery.mp.microsoft.com",
+        "original": "http://msedge.b.tlw.d2.delivery.mp.microsoft.com/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/",
+        "path": "/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/",
+        "scheme": "http"
+      },
+      "zeek": {
+        "http": {
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CZVlyH3mlEGvfFfTJh"
+      }
+    },
+    {
+      "@timestamp": "2050-01-11T14:19:28.499Z",
+      "destination": {
+        "address": "10.225.83.137",
+        "ip": "10.225.83.137",
+        "port": 7000
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "GET",
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CZVlyH3mlEGvfFfTJh",
+        "kind": "event",
+        "original": "{\"ts\":2525523568.499966,\"uid\":\"CZVlyH3mlEGvfFfTJh\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52962,\"id.resp_h\":\"10.225.83.137\",\"id.resp_p\":7000,\"trans_depth\":1,\"method\":\"GET\",\"uri\":\"http://msedge.b.tlw.d2.delivery.mp.microsoft.com/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/\",\"request_body_len\":0,\"response_body_len\":0,\"tags\":[]}",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:Wkk8RsyKzvZduaUrcQLGj7e5MW0=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "10.225.83.137"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "ip": "10.55.23.134",
+        "port": 52962
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "msedge.b.tlw.d2.delivery.mp.microsoft.com",
+        "original": "http://msedge.b.tlw.d2.delivery.mp.microsoft.com/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/",
+        "path": "/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/",
+        "scheme": "http"
+      },
+      "zeek": {
+        "http": {
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CZVlyH3mlEGvfFfTJh"
+      }
+    },
+    {
+      "@timestamp": "2047-01-17T01:05:30.172Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "GET",
+        "category": [
+          "network",
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CCNp8v1SNzY7v9d1Ih",
+        "kind": "event",
+        "original": "{\"ts\":2431299930.172944,\"uid\":\"CCNp8v1SNzY7v9d1Ih\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":62995,\"id.resp_h\":\"198.51.100.144\",\"username\":\"user\",\"id.resp_p\":80,\"trans_depth\":1,\"method\":\"GET\",\"host\":\"ocsp.apple.com\",\"uri\":\"http://msedge.b.tlu.di.delivery.mp.microsoft.com/filestreamingservice/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=\",\"version\":\"1.1\",\"user_agent\":\"com.apple.trustd/2.0\",\"request_body_len\":0,\"response_body_len\":3735,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F5zuip1tSwASjNAHy7\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 3735
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "network": {
+        "community_id": "1:3JeBYKTXShFDlmhoBjgXZzmN42g=",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.6.58.226",
+          "198.51.100.144"
+        ],
+        "user": [
+          "user"
+        ]
+      },
+      "source": {
+        "address": "10.6.58.226",
+        "ip": "10.6.58.226",
+        "port": 62995
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "msedge.b.tlu.di.delivery.mp.microsoft.com",
+        "original": "http://msedge.b.tlu.di.delivery.mp.microsoft.com/filestreamingservice/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=",
+        "path": "/filestreamingservice/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=",
+        "scheme": "http",
+        "username": "user"
+      },
+      "user": {
+        "name": "user"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "com.apple.trustd/2.0"
+      },
+      "zeek": {
+        "http": {
+          "host": "ocsp.apple.com",
+          "resp_fuids": [
+            "F5zuip1tSwASjNAHy7"
+          ],
+          "resp_mime_types": [
+            "application/ocsp-response"
+          ],
+          "status_msg": "OK",
+          "tags": [],
+          "trans_depth": 1
+        },
+        "session_id": "CCNp8v1SNzY7v9d1Ih"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2431299930.172944,\"uid\":\"CCNp8v1SNzY7v9d1Ih\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":62995,\"id.resp_h\":\"198.51.100.144\",\"username\":\"user\",\"id.resp_p\":80,\"trans_depth\":1,\"method\":\"GET\",\"host\":\"ocsp.apple.com\",\"uri\":\"/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=\",\"version\":\"1.1\",\"user_agent\":\"com.apple.trustd/2.0\",\"request_body_len\":0,\"response_body_len\":3735,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F5zuip1tSwASjNAHy7\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2431319819.757479,\"uid\":\"CMnIaR2V8VXyu7EPs\",\"id.orig_h\":\"10.106.104.74\",\"id.orig_p\":35684,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"method\":\"GET\",\"host\":\"xgktblv.org\",\"uri\":\"/ip\",\"version\":\"1.1\",\"user_agent\":\"curl/7.58.0\",\"request_body_len\":0,\"response_body_len\":32,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"FwGPlr1GcKUWWdkXoi\"],\"resp_mime_types\":[\"text/json\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500694154.277591,\"uid\":\"CdqHhA1AsxBIjmVZ9\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":57896,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"FM01o54RU9pez8AJba\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500694155.599548,\"uid\":\"CxhRTwkHNRsHxBw34\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":55378,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.1\",\"request_body_len\":0,\"response_body_len\":191,\"status_code\":301,\"status_msg\":\"Moved Permanently\",\"tags\":[],\"resp_fuids\":[\"FVGTq31RBgKGE02hx7\"],\"resp_mime_types\":[\"text/html\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500694160.171904,\"uid\":\"CrI5Xg30caNXnNvEse\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":41960,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F8vozz46VoxeAmqLv3\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500694164.250251,\"uid\":\"C6oCGd24yB2dZ7y7z7\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":42164,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F1imAq4yUjbwyK7NO2\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500694166.285075,\"uid\":\"C7DWRE1zsvxUK9RyW1\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":42292,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":80,\"trans_depth\":1,\"version\":\"1.0\",\"request_body_len\":0,\"response_body_len\":503,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"FQhm6z1cISaOxMzzR6\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2525523568.499966,\"uid\":\"CZVlyH3mlEGvfFfTJh\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52962,\"id.resp_h\":\"10.225.83.137\",\"id.resp_p\":7000,\"trans_depth\":1,\"method\":\"GET\",\"uri\":\"/info?txtAirPlay&txtRAOP RTSP/1.\",\"request_body_len\":0,\"response_body_len\":0,\"tags\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2525523568.499966,\"uid\":\"CZVlyH3mlEGvfFfTJh\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52962,\"id.resp_h\":\"10.225.83.137\",\"id.resp_p\":7000,\"trans_depth\":1,\"method\":\"GET\",\"uri\":\"http://msedge.b.tlw.d2.delivery.mp.microsoft.com/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/\",\"request_body_len\":0,\"response_body_len\":0,\"tags\":[],\"host\":\"msedge.b.tlw.d2.delivery.mp.microsoft.com\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2525523568.499966,\"uid\":\"CZVlyH3mlEGvfFfTJh\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":52962,\"id.resp_h\":\"10.225.83.137\",\"id.resp_p\":7000,\"trans_depth\":1,\"method\":\"GET\",\"uri\":\"http://msedge.b.tlw.d2.delivery.mp.microsoft.com/filestreamingservice/files/48327492874837349827394-ajsdbasdbisuabdiqsnakjndaks-7634287634872368462/\",\"request_body_len\":0,\"response_body_len\":0,\"tags\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2431299930.172944,\"uid\":\"CCNp8v1SNzY7v9d1Ih\",\"id.orig_h\":\"10.6.58.226\",\"id.orig_p\":62995,\"id.resp_h\":\"198.51.100.144\",\"username\":\"user\",\"id.resp_p\":80,\"trans_depth\":1,\"method\":\"GET\",\"host\":\"ocsp.apple.com\",\"uri\":\"http://msedge.b.tlu.di.delivery.mp.microsoft.com/filestreamingservice/ocsp04-aaica02/ME4wTKADAgEAMEUwQzBBMAkGBSsOAwIaBQAEFNqvF+Za6oA4ceFRLsAWwEInjUhJBBQx6napI3Sl39T97qDBpp7GEQ4R7AIIUP1IOZZ86ns=\",\"version\":\"1.1\",\"user_agent\":\"com.apple.trustd/2.0\",\"request_body_len\":0,\"response_body_len\":3735,\"status_code\":200,\"status_msg\":\"OK\",\"tags\":[],\"resp_fuids\":[\"F5zuip1tSwASjNAHy7\"],\"resp_mime_types\":[\"application/ocsp-response\"]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "http",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-http-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

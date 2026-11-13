@@ -1,0 +1,397 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-10-09T21:34:29.084Z",
+      "asset": {
+        "category": "entity",
+        "create_date": "2050-03-02T21:14:42.000Z",
+        "id": "S-1-5-21-1133191089-1850170202-1535859923-274531",
+        "last_updated": "2053-09-30T14:42:41.000Z",
+        "name": "wcwo82201.gvi.xcyx.local",
+        "type": "activedirectory_device"
+      },
+      "device": {
+        "id": "S-1-5-21-1133191089-1850170202-1535859923-274531"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "entityanalytics_ad": {
+        "device": {
+          "account_expires": "9223372036854775807",
+          "account_never_expires": true,
+          "bad_password_time": "133251039041149826",
+          "bad_pwd_count": "0",
+          "cn": "TEST12009",
+          "description": "Kretts, Topsy",
+          "direct_reports": [
+            "CN=SubDevice01,OU=Computers,DC=org,DC=test,DC=local"
+          ],
+          "distinguished_name": "CN=TEST12009,OU=Policy Exception 3,OU=Computers,OU=Information Technology Services,OU=Executive,OU=Users and Computers,DC=org,DC=test,DC=local",
+          "dns_host_name": "WCWO82201.gvi.xcyx.local",
+          "enabled": true,
+          "instance_type": "4",
+          "is_critical_system_object": false,
+          "last_logon": "2053-10-07T13:39:18.7867226Z",
+          "last_logon_timestamp": "2053-09-30T14:42:35.7840088Z",
+          "logon_count": "2275",
+          "managed_objects": [
+            "CN=SomeResource,OU=Resources,DC=org,DC=test,DC=local"
+          ],
+          "member_of": [
+            "CN=GPOD Office Updates,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Test Defender for Endpoint,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Windows 11,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Applocker Enforce,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Office 365 & OneDrive,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Remote Desktop,OU=User Groups,DC=org,DC=test,DC=local"
+          ],
+          "name": "TEST12009",
+          "object_class": [
+            "top",
+            "person",
+            "organizationalPerson",
+            "user",
+            "computer"
+          ],
+          "object_dn": "CN=TEST12009,OU=Policy Exception 3,OU=Computers,OU=Information Technology Services,OU=Executive,OU=Users and Computers,DC=org,DC=test,DC=local",
+          "object_guid": "7b71aacc-bfe0-4530-ad4d-b2cb59fe9cbf",
+          "object_sid": "S-1-5-21-1133191089-1850170202-1535859923-274531",
+          "operating_system": "Windows 11 Enterprise",
+          "operating_system_version": "10.0 (26100)",
+          "privileged_group_member": false,
+          "pwd_last_set": "2053-09-10T13:45:36.9983472Z",
+          "sam_account_name": "TEST12009$",
+          "service_principal_name": [
+            "WSMAN/TEST12009",
+            "WSMAN/TEST12009.org.test.local",
+            "TERMSRV/TEST12009",
+            "TERMSRV/TEST12009.org.test.local",
+            "RestrictedKrbHost/TEST12009",
+            "HOST/TEST12009",
+            "RestrictedKrbHost/TEST12009.org.test.local",
+            "HOST/TEST12009.org.test.local"
+          ],
+          "uac_list": [
+            "WORKSTATION_TRUST_ACCOUNT"
+          ],
+          "user_account_control": "4096",
+          "when_changed": "2053-09-30T14:42:41Z",
+          "when_created": "2050-03-02T21:14:42Z"
+        },
+        "groups": [
+          {
+            "distinguished_name": "CN=GPOD Office Updates,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Office Updates",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "52ef4dd4-0cfa-4f64-8a4e-761ce26c6340",
+            "sam_account_name": "GPOD Office Updates",
+            "when_changed": "2053-10-09T14:02:02Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Test Defender for Endpoint,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Test Defender for Endpoint",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "958c7049-af04-4401-9b93-ab459e71c6dc",
+            "sam_account_name": "GPOD Test Defender for Endpoint",
+            "when_changed": "2050-09-14T02:04:25Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Windows 11,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Windows 11",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "d2947e39-b592-4916-a9e9-784de6e31622",
+            "sam_account_name": "GPOD Windows 11",
+            "when_changed": "2053-10-09T21:11:28Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Applocker Enforce,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Applocker Enforce",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "c8ef4a21-7669-4ed0-b0d8-a492cc31d3f2",
+            "sam_account_name": "GPOD Applocker Enforce",
+            "when_changed": "2053-07-14T15:14:38Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Office 365 & OneDrive,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Office 365 & OneDrive",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "6f791b25-7c31-47ac-baa7-71c521dc16b4",
+            "sam_account_name": "GPOD Office 365 & OneDrive",
+            "when_changed": "2053-10-09T21:11:28Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Remote Desktop,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Remote Desktop",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "d3424f5b-6a01-435c-b73e-24d8671fb258",
+            "sam_account_name": "GPOD Remote Desktop",
+            "when_changed": "2053-10-09T18:45:27Z"
+          }
+        ],
+        "when_changed": "2053-10-09T21:11:28Z"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "asset",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "entity": {
+          "attributes": {
+            "managed": true
+          },
+          "lifecycle": {
+            "last_activity": "2053-09-30T14:42:35.784Z"
+          },
+          "relationships": {
+            "administers": {
+              "host": {
+                "id": [
+                  "CN=SomeResource,OU=Resources,DC=org,DC=test,DC=local"
+                ],
+                "name": [
+                  "someresource.org.test.local"
+                ]
+              },
+              "user": {
+                "domain": [
+                  "org.test.local"
+                ]
+              }
+            },
+            "supervises": {
+              "user": {
+                "domain": [
+                  "org.test.local"
+                ],
+                "id": [
+                  "CN=SubDevice01,OU=Computers,DC=org,DC=test,DC=local"
+                ],
+                "name": [
+                  "SubDevice01"
+                ]
+              }
+            }
+          }
+        },
+        "hostname": "TEST12009",
+        "name": "wcwo82201.gvi.xcyx.local",
+        "os": {
+          "full": "Windows 11 Enterprise",
+          "version": "10.0 (26100)"
+        }
+      },
+      "labels": {
+        "identity_source": "entity-analytics-entityanalytics_ad.device-8c3c1f67-428d-4a95-a6de-69a2b8f952c3"
+      },
+      "related": {
+        "hosts": [
+          "wcwo82201.gvi.xcyx.local",
+          "CN=TEST12009,OU=Policy Exception 3,OU=Computers,OU=Information Technology Services,OU=Executive,OU=Users and Computers,DC=org,DC=test,DC=local",
+          "7b71aacc-bfe0-4530-ad4d-b2cb59fe9cbf"
+        ],
+        "user": [
+          "TEST12009$"
+        ]
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "account": {
+          "password_change_date": "2053-09-10T13:45:36.998Z"
+        },
+        "group": {
+          "name": [
+            "GPOD Applocker Enforce",
+            "GPOD Office 365 & OneDrive",
+            "GPOD Test Defender for Endpoint",
+            "GPOD Remote Desktop",
+            "GPOD Office Updates",
+            "GPOD Windows 11"
+          ]
+        },
+        "name": "TEST12009$"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-10-09T21:34:29.084Z",
+      "activedirectory": {
+        "device": {
+          "account_expires": "9223372036854775807",
+          "account_never_expires": true,
+          "bad_password_time": "133251039041149826",
+          "bad_pwd_count": "0",
+          "cn": "TEST12009",
+          "dNSHostName": "WCWO82201.gvi.xcyx.local",
+          "description": "Kretts, Topsy",
+          "directReports": [
+            "CN=SubDevice01,OU=Computers,DC=org,DC=test,DC=local"
+          ],
+          "distinguished_name": "CN=TEST12009,OU=Policy Exception 3,OU=Computers,OU=Information Technology Services,OU=Executive,OU=Users and Computers,DC=org,DC=test,DC=local",
+          "instance_type": "4",
+          "is_critical_system_object": false,
+          "last_logon": "2053-10-07T13:39:18.7867226Z",
+          "last_logon_timestamp": "2053-09-30T14:42:35.7840088Z",
+          "logon_count": "2275",
+          "managedObjects": [
+            "CN=SomeResource,OU=Resources,DC=org,DC=test,DC=local"
+          ],
+          "member_of": [
+            "CN=GPOD Office Updates,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Test Defender for Endpoint,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Windows 11,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Applocker Enforce,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Office 365 & OneDrive,OU=User Groups,DC=org,DC=test,DC=local",
+            "CN=GPOD Remote Desktop,OU=User Groups,DC=org,DC=test,DC=local"
+          ],
+          "name": "TEST12009",
+          "object_class": [
+            "top",
+            "person",
+            "organizationalPerson",
+            "user",
+            "computer"
+          ],
+          "object_guid": "7b71aacc-bfe0-4530-ad4d-b2cb59fe9cbf",
+          "object_sid": "S-1-5-21-1133191089-1850170202-1535859923-274531",
+          "operatingSystem": "Windows 11 Enterprise",
+          "operatingSystemVersion": "10.0 (26100)",
+          "privileged_group_member": false,
+          "pwd_last_set": "2053-09-10T13:45:36.9983472Z",
+          "sam_account_name": "TEST12009$",
+          "service_principal_name": [
+            "WSMAN/TEST12009",
+            "WSMAN/TEST12009.org.test.local",
+            "TERMSRV/TEST12009",
+            "TERMSRV/TEST12009.org.test.local",
+            "RestrictedKrbHost/TEST12009",
+            "HOST/TEST12009",
+            "RestrictedKrbHost/TEST12009.org.test.local",
+            "HOST/TEST12009.org.test.local"
+          ],
+          "userAccountControl": "4096",
+          "when_changed": "2053-09-30T14:42:41Z",
+          "when_created": "2050-03-02T21:14:42Z"
+        },
+        "groups": [
+          {
+            "distinguished_name": "CN=GPOD Office Updates,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Office Updates",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "52ef4dd4-0cfa-4f64-8a4e-761ce26c6340",
+            "sam_account_name": "GPOD Office Updates",
+            "when_changed": "2053-10-09T14:02:02Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Test Defender for Endpoint,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Test Defender for Endpoint",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "958c7049-af04-4401-9b93-ab459e71c6dc",
+            "sam_account_name": "GPOD Test Defender for Endpoint",
+            "when_changed": "2050-09-14T02:04:25Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Windows 11,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Windows 11",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "d2947e39-b592-4916-a9e9-784de6e31622",
+            "sam_account_name": "GPOD Windows 11",
+            "when_changed": "2053-10-09T21:11:28Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Applocker Enforce,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Applocker Enforce",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "c8ef4a21-7669-4ed0-b0d8-a492cc31d3f2",
+            "sam_account_name": "GPOD Applocker Enforce",
+            "when_changed": "2053-07-14T15:14:38Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Office 365 & OneDrive,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Office 365 & OneDrive",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "6f791b25-7c31-47ac-baa7-71c521dc16b4",
+            "sam_account_name": "GPOD Office 365 & OneDrive",
+            "when_changed": "2053-10-09T21:11:28Z"
+          },
+          {
+            "distinguished_name": "CN=GPOD Remote Desktop,OU=User Groups,DC=org,DC=test,DC=local",
+            "name": "GPOD Remote Desktop",
+            "object_class": [
+              "top",
+              "group"
+            ],
+            "object_guid": "d3424f5b-6a01-435c-b73e-24d8671fb258",
+            "sam_account_name": "GPOD Remote Desktop",
+            "when_changed": "2053-10-09T18:45:27Z"
+          }
+        ],
+        "id": "CN=TEST12009,OU=Policy Exception 3,OU=Computers,OU=Information Technology Services,OU=Executive,OU=Users and Computers,DC=org,DC=test,DC=local",
+        "when_changed": "2053-10-09T21:11:28Z"
+      },
+      "device": {
+        "id": "CN=TEST12009,OU=Policy Exception 3,OU=Computers,OU=Information Technology Services,OU=Executive,OU=Users and Computers,DC=org,DC=test,DC=local"
+      },
+      "event": {
+        "action": "device-discovered"
+      },
+      "labels": {
+        "identity_source": "entity-analytics-entityanalytics_ad.device-8c3c1f67-428d-4a95-a6de-69a2b8f952c3"
+      },
+      "tags": [
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "entity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-entityanalytics_ad-entity-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "entityanalytics_ad",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

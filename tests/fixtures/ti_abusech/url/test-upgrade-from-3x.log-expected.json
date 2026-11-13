@@ -1,0 +1,80 @@
+{
+  "expected": [
+    {
+      "abusech": {
+        "url": {
+          "blacklists": {
+            "spamhaus_dbl": "not listed",
+            "surbl": "not listed"
+          },
+          "deleted_at": "2050-01-03T13:57:05.000Z",
+          "id": "1656008",
+          "larted": true,
+          "threat": "malware_download",
+          "url_status": "online"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "ingested": "2026-11-13T23:07:46.492552590Z",
+        "kind": "enrichment",
+        "original": "{\"id\":\"1656008\",\"urlhaus_reference\":\"https://urlhaus.abuse.ch/url/1656008/\",\"url\":\"http://203.0.113.138:55871/mozi.m\",\"url_status\":\"online\",\"host\":\"203.0.113.138\",\"date_added\":\"2049-10-05 13:57:05 UTC\",\"threat\":\"malware_download\",\"blacklists\":{\"spamhaus_dbl\":\"not listed\",\"surbl\":\"not listed\"},\"reporter\":\"tammeto\",\"larted\":\"true\",\"tags\":null}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "indicator": {
+          "first_seen": "2049-10-05T13:57:05.000Z",
+          "ip": "203.0.113.138",
+          "name": "http://203.0.113.138:55871/mozi.m",
+          "provider": "tammeto",
+          "reference": "https://urlhaus.abuse.ch/url/1656008/",
+          "type": "url",
+          "url": {
+            "domain": "203.0.113.138",
+            "extension": "m",
+            "full": "http://203.0.113.138:55871/mozi.m",
+            "original": "http://203.0.113.138:55871/mozi.m",
+            "path": "/mozi.m",
+            "port": 55871,
+            "scheme": "http"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "interval": "24h",
+        "ioc_expiration_duration": ""
+      },
+      "message": "{\"id\":\"1656008\",\"urlhaus_reference\":\"https://urlhaus.abuse.ch/url/1656008/\",\"url\":\"http://203.0.113.138:55871/mozi.m\",\"url_status\":\"online\",\"host\":\"203.0.113.138\",\"date_added\":\"2049-10-05 13:57:05 UTC\",\"threat\":\"malware_download\",\"blacklists\":{\"spamhaus_dbl\":\"not listed\",\"surbl\":\"not listed\"},\"reporter\":\"tammeto\",\"larted\":\"true\",\"tags\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "url",
+    "dynamic_fields": {
+      "abusech.url.deleted_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_abusech-url-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_abusech",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

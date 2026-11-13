@@ -1,0 +1,58 @@
+{
+  "expected": [
+    {
+      "bitwarden": {
+        "collection": {
+          "external": {
+            "id": "external_id_123456"
+          },
+          "id": "585c48d6-d7a5-4be5-929e-62ebc9de5576"
+        },
+        "object": "collection"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "{\"externalId\":\"external_id_123456\",\"object\":\"collection\",\"id\":\"585c48d6-d7a5-4be5-929e-62ebc9de5576\",\"groups\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"externalId\":\"external_id_123456\",\"object\":\"collection\",\"id\":\"585c48d6-d7a5-4be5-929e-62ebc9de5576\",\"groups\":null}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"object\":\"list\",\"data\":[],\"continuationToken\":null}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "collection",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-bitwarden-collection-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "bitwarden",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

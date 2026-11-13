@@ -1,0 +1,5 @@
+# Test inputs for this directory's fixtures.
+fields:
+  '@timestamp': '2050-10-24T21:16:62.827288935Z'
+  tags:
+  - preserve_original_event

@@ -1,0 +1,352 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-08-24T21:04:17.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 - remote_monitoring_user [24/Aug/2050:21:04:17 +0000] \"POST /_bulk HTTP/1.1\" 200 470 \"-\" \"Elastic-metricbeat/7.16.3 (linux; amd64; c2edbc6d01be8214cb2524ba9b0074cc; 2050-01-07 00:50:33 +0000 UTC)\" 2057 0.033 [esmon-esmon-es-http-9200] [] [2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]:9200 470 0.036 200 3db22d5e417f6654ede644f9ea70f6ee",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 2057,
+          "id": "3db22d5e417f6654ede644f9ea70f6ee",
+          "method": "POST"
+        },
+        "response": {
+          "body": {
+            "bytes": 470
+          },
+          "status_code": 200
+        },
+        "version": "1.1"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "3db22d5e417f6654ede644f9ea70f6ee",
+              "length": 2057,
+              "time": 0.033
+            }
+          },
+          "remote_ip_list": [
+            "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+            "name": "esmon-esmon-es-http-9200",
+            "port": 9200,
+            "response": {
+              "length": 470,
+              "length_list": [
+                "470"
+              ],
+              "status_code": 200,
+              "status_code_list": [
+                "200"
+              ],
+              "time": 0.036,
+              "time_list": [
+                "0.036"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "[2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]:9200"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+        ],
+        "user": [
+          "remote_monitoring_user"
+        ]
+      },
+      "source": {
+        "address": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153",
+        "ip": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/_bulk",
+        "path": "/_bulk"
+      },
+      "user": {
+        "name": "remote_monitoring_user"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Elastic-metricbeat/7.16.3 (linux; amd64; c2edbc6d01be8214cb2524ba9b0074cc; 2050-01-07 00:50:33 +0000 UTC)",
+        "os": {
+          "name": "Linux"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-08-24T18:05:41.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "2001:db8:7958:4542:53b:d668:2325:dc43 - - [24/Aug/2050:18:05:41 +0000] \"GET /favicon.ico HTTP/2.0\" 502 552 \"https://localhost:8080/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36\" 27 0.000 [localhost-8080] [] [2001:db8:dc49:4e0e:1570:e298:1b0:9906]:5000, [2001:db8:7958:4542:53b:d668:2325:dc43]:5000 0, 0 1.000, 2.000 502, 502 3db22d5e417f6654ede644f9ea70f6ee",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 27,
+          "id": "3db22d5e417f6654ede644f9ea70f6ee",
+          "method": "GET",
+          "referrer": "https://localhost:8080/"
+        },
+        "response": {
+          "body": {
+            "bytes": 552
+          },
+          "status_code": 502
+        },
+        "version": "2.0"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "3db22d5e417f6654ede644f9ea70f6ee",
+              "length": 27,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "2001:db8:7958:4542:53b:d668:2325:dc43"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "ip": "2001:db8:7958:4542:53b:d668:2325:dc43",
+            "name": "localhost-8080",
+            "port": 5000,
+            "response": {
+              "length": 0,
+              "length_list": [
+                "0",
+                "0"
+              ],
+              "status_code": 502,
+              "status_code_list": [
+                "502",
+                "502"
+              ],
+              "time": 3.0,
+              "time_list": [
+                "1.000",
+                "2.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "[2001:db8:dc49:4e0e:1570:e298:1b0:9906]:5000",
+            "[2001:db8:7958:4542:53b:d668:2325:dc43]:5000"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "2001:db8:7958:4542:53b:d668:2325:dc43"
+        ]
+      },
+      "source": {
+        "address": "2001:db8:7958:4542:53b:d668:2325:dc43",
+        "ip": "2001:db8:7958:4542:53b:d668:2325:dc43"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "104.0.0.0"
+      }
+    },
+    {
+      "@timestamp": "2050-08-24T18:05:41.000Z",
+      "ecs": {
+        "version": "8.4.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "2001:db8:7958:4542:53b:d668:2325:dc43 - - [24/Aug/2050:18:05:41 +0000] \"GET /favicon.ico HTTP/2.0\" 502 552 \"https://localhost:8080/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36\" 27 0.000 [localhost-8080] [] [2001:db8:dc49:4e0e:1570:e298:1b0:9906]:5000, [2a02:cf40::::::::::::4e36]:50000000 0, 0 1.000, 2.000 502, 502 3db22d5e417f6654ede644f9ea70f6ee",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "bytes": 27,
+          "id": "3db22d5e417f6654ede644f9ea70f6ee",
+          "method": "GET",
+          "referrer": "https://localhost:8080/"
+        },
+        "response": {
+          "body": {
+            "bytes": 552
+          },
+          "status_code": 502
+        },
+        "version": "2.0"
+      },
+      "nginx_ingress_controller": {
+        "access": {
+          "http": {
+            "request": {
+              "id": "3db22d5e417f6654ede644f9ea70f6ee",
+              "length": 27,
+              "time": 0.0
+            }
+          },
+          "remote_ip_list": [
+            "2001:db8:7958:4542:53b:d668:2325:dc43"
+          ],
+          "upstream": {
+            "alternative_name": "",
+            "name": "localhost-8080",
+            "response": {
+              "length": 0,
+              "length_list": [
+                "0",
+                "0"
+              ],
+              "status_code": 502,
+              "status_code_list": [
+                "502",
+                "502"
+              ],
+              "time": 3.0,
+              "time_list": [
+                "1.000",
+                "2.000"
+              ]
+            }
+          },
+          "upstream_address_list": [
+            "[2001:db8:dc49:4e0e:1570:e298:1b0:9906]:5000",
+            "[2a02:cf40::::::::::::4e36]:50000000"
+          ]
+        }
+      },
+      "related": {
+        "ip": [
+          "2001:db8:7958:4542:53b:d668:2325:dc43"
+        ]
+      },
+      "source": {
+        "address": "2001:db8:7958:4542:53b:d668:2325:dc43",
+        "ip": "2001:db8:7958:4542:53b:d668:2325:dc43"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "extension": "ico",
+        "original": "/favicon.ico",
+        "path": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "104.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "2001:db8:dfd5:c2d1:ef97:9e27:1831:3153 - remote_monitoring_user [24/Aug/2050:21:04:17 +0000] \"POST /_bulk HTTP/1.1\" 200 470 \"-\" \"Elastic-metricbeat/7.16.3 (linux; amd64; c2edbc6d01be8214cb2524ba9b0074cc; 2050-01-07 00:50:33 +0000 UTC)\" 2057 0.033 [esmon-esmon-es-http-9200] [] [2001:db8:dfd5:c2d1:ef97:9e27:1831:3153]:9200 470 0.036 200 3db22d5e417f6654ede644f9ea70f6ee",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "2001:db8:7958:4542:53b:d668:2325:dc43 - - [24/Aug/2050:18:05:41 +0000] \"GET /favicon.ico HTTP/2.0\" 502 552 \"https://localhost:8080/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36\" 27 0.000 [localhost-8080] [] [2001:db8:dc49:4e0e:1570:e298:1b0:9906]:5000, [2001:db8:7958:4542:53b:d668:2325:dc43]:5000 0, 0 1.000, 2.000 502, 502 3db22d5e417f6654ede644f9ea70f6ee",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "2001:db8:7958:4542:53b:d668:2325:dc43 - - [24/Aug/2050:18:05:41 +0000] \"GET /favicon.ico HTTP/2.0\" 502 552 \"https://localhost:8080/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36\" 27 0.000 [localhost-8080] [] [2001:db8:dc49:4e0e:1570:e298:1b0:9906]:5000, [2a02:cf40::::::::::::4e36]:50000000 0, 0 1.000, 2.000 502, 502 3db22d5e417f6654ede644f9ea70f6ee",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-nginx_ingress_controller-access-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "nginx_ingress_controller",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

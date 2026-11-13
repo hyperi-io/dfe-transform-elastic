@@ -1,0 +1,124 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2053-05-05T04:01:36.154Z",
+      "aws": {
+        "lambda": {
+          "arn": "arn:aws:lambda:ap-south-1:11212121212112:function:sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx",
+          "cold_start": false,
+          "correlation_id": "14a16a19-9beb-47c2-a3a5-d7d7f34d9387",
+          "error": {
+            "location": "hello:32"
+          },
+          "message": {
+            "function_memory_size": "128",
+            "message": "Hello world API - HTTP 200",
+            "timestamp": "2053-05-05 04:01:36,154+0000",
+            "xray_trace_id": "1-68183820-1a7106da2a0a87650e15c2d9"
+          },
+          "metrics": {
+            "memory_size_mb": 128
+          },
+          "name": "sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx",
+          "request_id": "162337ac-0ed2-4069-a676-2078d7d88da5"
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"level\":\"INFO\",\"location\":\"hello:32\",\"message\":\"Hello world API - HTTP 200\",\"timestamp\":\"2053-05-05 04:01:36,154+0000\",\"service\":\"PowertoolsHelloWorld\",\"cold_start\":false,\"function_name\":\"sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_memory_size\":\"128\",\"function_arn\":\"arn:aws:lambda:ap-south-1:11212121212112:function:sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_request_id\":\"162337ac-0ed2-4069-a676-2078d7d88da5\",\"correlation_id\":\"14a16a19-9beb-47c2-a3a5-d7d7f34d9387\",\"xray_trace_id\":\"1-68183820-1a7106da2a0a87650e15c2d9\"}"
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "Hello world API - HTTP 200",
+      "service": {
+        "name": "PowertoolsHelloWorld"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-05-08T14:28:33.173Z",
+      "aws": {
+        "lambda": {
+          "arn": "arn:aws:lambda:ap-south-1:11212121212112:function:sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx",
+          "cold_start": false,
+          "correlation_id": "ff11158f-d6f3-44e8-a496-968cd3f573d4",
+          "error": {
+            "location": "hello_name:19"
+          },
+          "message": {
+            "function_memory_size": "128",
+            "message": "Request from user received",
+            "timestamp": "2053-05-08 14:28:33,173+0000",
+            "xray_trace_id": "1-681cbf91-2f73e10615dd891f489d7b39"
+          },
+          "metrics": {
+            "memory_size_mb": 128
+          },
+          "name": "sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx",
+          "request_id": "a63f7c28-e0c2-4a0d-b39d-2c850ef8444c"
+        }
+      },
+      "cloud": {
+        "provider": "aws",
+        "service": {
+          "name": "aws_lambda"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"level\":\"INFO\",\"location\":\"hello_name:19\",\"message\":\"Request from user received\",\"timestamp\":\"2053-05-08 14:28:33,173+0000\",\"service\":\"PowertoolsHelloWorld\",\"cold_start\":false,\"function_name\":\"sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_memory_size\":\"128\",\"function_arn\":\"arn:aws:lambda:ap-south-1:11212121212112:function:sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_request_id\":\"a63f7c28-e0c2-4a0d-b39d-2c850ef8444c\",\"correlation_id\":\"ff11158f-d6f3-44e8-a496-968cd3f573d4\",\"xray_trace_id\":\"1-681cbf91-2f73e10615dd891f489d7b39\"}"
+      },
+      "log": {
+        "level": "INFO"
+      },
+      "message": "Request from user received",
+      "service": {
+        "name": "PowertoolsHelloWorld"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\"level\":\"INFO\",\"location\":\"hello:32\",\"message\":\"Hello world API - HTTP 200\",\"timestamp\":\"2053-05-05 04:01:36,154+0000\",\"service\":\"PowertoolsHelloWorld\",\"cold_start\":false,\"function_name\":\"sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_memory_size\":\"128\",\"function_arn\":\"arn:aws:lambda:ap-south-1:11212121212112:function:sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_request_id\":\"162337ac-0ed2-4069-a676-2078d7d88da5\",\"correlation_id\":\"14a16a19-9beb-47c2-a3a5-d7d7f34d9387\",\"xray_trace_id\":\"1-68183820-1a7106da2a0a87650e15c2d9\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2053-03-20T11:07:58.223Z",
+      "message": "{\"level\":\"INFO\",\"location\":\"hello_name:19\",\"message\":\"Request from user received\",\"timestamp\":\"2053-05-08 14:28:33,173+0000\",\"service\":\"PowertoolsHelloWorld\",\"cold_start\":false,\"function_name\":\"sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_memory_size\":\"128\",\"function_arn\":\"arn:aws:lambda:ap-south-1:11212121212112:function:sam-app-powertools-python-HelloWorldFunction-snAkfaCNYJjx\",\"function_request_id\":\"a63f7c28-e0c2-4a0d-b39d-2c850ef8444c\",\"correlation_id\":\"ff11158f-d6f3-44e8-a496-968cd3f573d4\",\"xray_trace_id\":\"1-681cbf91-2f73e10615dd891f489d7b39\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "lambda_logs",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-lambda_logs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

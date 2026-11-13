@@ -1,0 +1,180 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-30T09:54:09.983Z",
+      "agent": {
+        "ephemeral_id": "a95256a5-e51d-4345-a2ac-055236e8e023",
+        "hostname": "Newjbj7",
+        "id": "51e3dbc0-2ce5-4de7-92a8-7a4a8285f42b",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "workstation-unlocked",
+        "category": [
+          "authentication"
+        ],
+        "code": "4801",
+        "created": "2050-11-30T09:54:11.162Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "Newjbj7",
+        "id": "53609417-2b27-4acc-9518-9f5ff7ba3aa3",
+        "name": "Newjbj7",
+        "os": {
+          "build": "14393.693",
+          "family": "windows",
+          "kernel": "10.0.14393.693 (rs1_release.161220-1747)",
+          "name": "Windows Server 2016 Standard Evaluation",
+          "platform": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "The workstation was unlocked.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-3498697890-273193191-2741109841-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tIT\n\tLogon ID:\t\t0x4C598\n\tSession ID:\t1",
+      "related": {
+        "user": [
+          "administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "IT",
+        "effective": {
+          "domain": "IT",
+          "id": "S-1-5-21-3498697890-273193191-2741109841-500",
+          "name": "administrator"
+        },
+        "id": "S-1-5-21-3498697890-273193191-2741109841-500",
+        "name": "administrator",
+        "target": {
+          "domain": "IT",
+          "name": "administrator"
+        }
+      },
+      "winlog": {
+        "activity_id": "{610AD0D1-DE9B-0230-D5E7-6C303CDDC992}",
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Newjbj7.qt.local",
+        "event_data": {
+          "SessionId": "1",
+          "TargetDomainName": "IT",
+          "TargetLogonId": "0x4c598",
+          "TargetUserName": "administrator",
+          "TargetUserSid": "S-1-5-21-3498697890-273193191-2741109841-500"
+        },
+        "event_id": "4801",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x4c598"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 648,
+          "thread": {
+            "id": 6264
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "62703266",
+        "task": "Other Logon/Logoff Events"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2050-11-30T09:54:09.983Z",
+      "agent": {
+        "ephemeral_id": "a95256a5-e51d-4345-a2ac-055236e8e023",
+        "hostname": "Newjbj7",
+        "id": "51e3dbc0-2ce5-4de7-92a8-7a4a8285f42b",
+        "type": "winlogbeat",
+        "version": "7.3.1"
+      },
+      "ecs": {
+        "version": "1.0.1"
+      },
+      "event": {
+        "action": "Other Logon/Logoff Events",
+        "code": 4801,
+        "created": "2050-11-30T09:54:11.162Z",
+        "kind": "event"
+      },
+      "host": {
+        "architecture": "x86_64",
+        "hostname": "Newjbj7",
+        "id": "53609417-2b27-4acc-9518-9f5ff7ba3aa3",
+        "name": "Newjbj7",
+        "os": {
+          "build": "14393.693",
+          "family": "windows",
+          "kernel": "10.0.14393.693 (rs1_release.161220-1747)",
+          "name": "Windows Server 2016 Standard Evaluation",
+          "platform": "windows",
+          "version": "10.0"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "The workstation was unlocked.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-3498697890-273193191-2741109841-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tIT\n\tLogon ID:\t\t0x4C598\n\tSession ID:\t1",
+      "winlog": {
+        "activity_id": "{610AD0D1-DE9B-0230-D5E7-6C303CDDC992}",
+        "api": "wineventlog",
+        "channel": "Security",
+        "computer_name": "Newjbj7.qt.local",
+        "event_data": {
+          "SessionId": "1",
+          "TargetDomainName": "IT",
+          "TargetLogonId": "0x4c598",
+          "TargetUserName": "administrator",
+          "TargetUserSid": "S-1-5-21-3498697890-273193191-2741109841-500"
+        },
+        "event_id": 4801,
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 648,
+          "thread": {
+            "id": 6264
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 62703266,
+        "task": "Other Logon/Logoff Events"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

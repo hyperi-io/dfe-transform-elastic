@@ -1,0 +1,1918 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[1001]: kernel time sync enabled utl",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "restorecond: : Reset file context quasiarc: liqua",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "auditd[5699]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[5066]: Normal exit ehend",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "restorecond: : Reset file context vol: luptat",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<eumiu.medium> Processing command: accept",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "restorecond: : Reset file context nci: ofdeFin",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "auditd[6668]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[1613]: Normal exit mvolu",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[2959]: ntpd gelit-r tatno",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[654]: Updated timestamp for job rmagni to sit",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "dmd: : <<tenima.very-high> Health state for metric\"seq3874.mail.domain\" \"quid\" changed to \"fug\", reason: \"success\"",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "auditd[2067]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "pm[5969]: <<tquovol.very-high> check_license_validity(), tae",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "logrotate: : ALERT exited abnormally with temUten",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "sshd: : <<dun.medium> error: Bind to port Duisau on psum failed: failure",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "configd: : <<end.medium> itaut@rveli: command: accept",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "authd: : <<luptat.low> authd_signal_handler(), quam",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "xinetd[6547]: Started working: onproide available services",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "logrotate: : ALERT exited abnormally with tfug",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<urE.medium> Processing command: deny",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "rsyslogd: : Warning: rehe",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "sshd: : <<stiae.medium> error: Bind to port erc on amqu failed: unknown",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[4515]: ntpd emp-r aperia",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "restorecond: : Reset file context run: vol",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "logrotate: : ALERT exited abnormally with mporain",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<mpori.very-high> connect: atu",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cmd: : <<texp.medium> cmd starting adeseru",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cli[7108]: <<-uam.low> tmo@::fficiade:10.221.194.42 : CLI launched",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "pm[7061]: <<ihilmo.very-high> ntpd will start in tlabo",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "poller[795]: <<oluptate.low> Querying content system for job results.",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "runner[6134]: <<edo.very-high> Processing command: allow",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "epmd: : epmd: epmd running orpor",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "runner[602]: <<emvel.very-high> Failed to exec olup",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "shutdown[2807]: shutting down non",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "configd: : <<ugiatnu.high> sperna@sintocc: command: cancel",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "auditd[2986]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "configd: : <<ccaecat.medium> CREATE onsequ",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "auditd[1243]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "xinetd[6599]: Started working: naal available services",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "xinetd[5850]: Started working: rQu available services",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<boree.low> queips: undefined symbol: ncidi",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "authd: : <<olor.very-high> authd_close(): npr",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[6373]: Anacron 1.3962 started on epre",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cli[3979]: <<-iduntu.medium> wblPu@fizn942.ogg9.test : Processing command accept",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cmd: : <<amc.medium> cmd starting isiuta",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "sshd[5227]: dutp(psaquaea:taevita): pam_putenv: ameiusm",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ccd: : <<olab.low> Device elitse6672.internal.localdomain: mquisno",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "runner[1859]: <<tasnulap.high> Failed to exec umSe",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "shutdown[6110]: shutting down itau",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "sshd[2415]: PAM lorsita more authentication failure; dolore",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "rsyslogd: : Warning: tio",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cli[802]: <<-gnaaliqu.very-high> velillu@::cteturad:10.213.214.188 : Processing a secure command...",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<reprehe.high> connect: inimveni",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "authd: : <<litani.low> authd_close(): psumqu",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "runner[2558]: <<icabo.high> Failed to exec edquiac",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[4538]: Updated timestamp for job remips to uisaute",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "auditd[6837]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "pm[1493]: <<etdolor.high> print_msg(), dic",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "configd: : <<avolupt.low> Device \"itation4168.api.domain\" completed command(s) accept ;; CPL generated by Visual Policy Manager: isciv ;rroqu ; nofd ; dipisci",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "epmd: : epmd: invalid packet size (mquae)",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "runner[429]: <<corpori.very-high> File reading failed",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "shutdown[7595]: shutting down emqu",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<leumiur.low> The HB command is accept",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "authd: : <<est.very-high> authd_signal_handler(), isetquas",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "authd: : <<psaqua.medium> authd_signal_handler(), gnaal",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "logrotate: : ALERT exited abnormally with voluptas",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[627]: ntpd exiting on signal orin",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "restorecond: : Reset file context ecillu: mmodoc",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cli[1140]: <<-abore.high> ykbyeqh@ksnq4588.mail.test : Processing command: deny",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "sshd: : bad username mquisn",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[1313]: ntpd derit-r orese",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ccd: : <<leumiur.medium> Device Communication Daemon online",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "rsyslogd: : Warning: moles",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "restorecond: : Reset file context olup: aco",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "shutdown[609]: shutting down ser",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[2991]: ntpd orinrep-r quiavol",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "dmd: : <<quin.medium> inserted device id = sBonor2001.www5.example and serial number = amc into DB",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ccd: : <<ame.very-high> ccd_handle_read_failure(), uid",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cmd: : <<scivel.high> cmd starting lmolesti",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "dmd: : <<emaperia.high> inserted device id = ersp6625.internal.domain and serial number = seq into DB",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cmd: : <<tanimid.medium> cmd starting uipexe",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<ore.low> The HB command is cancel",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[7360]: Normal exit tperspic",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "dmd: : <<ict.very-high> Filter on (tetura) things. riosamni",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ccd: : <<umetMa.low> Device anaqull2372.api.local: tat",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "schedulerd: : <<lumqu.very-high> System time changed, recomputing job run times.",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "xinetd[3450]: Started working: aconsequ available services",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "authd: : <<sequat.high> handle_authd unknown message =utemvel",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "rsyslogd: : Warning: iusm",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[16]: time reset stquido",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ccd: : <<aaliq.high> Device olu5333.www.domain: orumSe",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "anacron[80]: Normal exit ici",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[7612]: kernel time sync enabled nturmag",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "cli[7128]: eseruntm(lpaquiof:oloreeu): pam_putenv: olor",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "schedulerd: : <<ici.very-high> Executing Job \"tquo\" execution iatnu",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "logrotate: : ALERT exited abnormally with ntut",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "poller[7151]: <<ess.high> Querying content system for job results.",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "ntpd[2314]: ntpd litanim-r rQuisaut",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.8.0"
+      },
+      "message": "heartbeat: : <<metco.high> Processing command: block",
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "ntpd[1001]: kernel time sync enabled utl",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "restorecond: : Reset file context quasiarc: liqua",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "auditd[5699]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[5066]: Normal exit ehend",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "restorecond: : Reset file context vol: luptat",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<eumiu.medium> Processing command: accept",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "restorecond: : Reset file context nci: ofdeFin",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "auditd[6668]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[1613]: Normal exit mvolu",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[2959]: ntpd gelit-r tatno",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[654]: Updated timestamp for job rmagni to sit",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "dmd: : <<tenima.very-high> Health state for metric\"seq3874.mail.domain\" \"quid\" changed to \"fug\", reason: \"success\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "auditd[2067]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "pm[5969]: <<tquovol.very-high> check_license_validity(), tae",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "logrotate: : ALERT exited abnormally with temUten",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "sshd: : <<dun.medium> error: Bind to port Duisau on psum failed: failure",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "configd: : <<end.medium> itaut@rveli: command: accept",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "authd: : <<luptat.low> authd_signal_handler(), quam",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "xinetd[6547]: Started working: onproide available services",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "logrotate: : ALERT exited abnormally with tfug",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<urE.medium> Processing command: deny",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "rsyslogd: : Warning: rehe",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "sshd: : <<stiae.medium> error: Bind to port erc on amqu failed: unknown",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[4515]: ntpd emp-r aperia",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "restorecond: : Reset file context run: vol",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "logrotate: : ALERT exited abnormally with mporain",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<mpori.very-high> connect: atu",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cmd: : <<texp.medium> cmd starting adeseru",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cli[7108]: <<-uam.low> tmo@::fficiade:10.221.194.42 : CLI launched",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "pm[7061]: <<ihilmo.very-high> ntpd will start in tlabo",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "poller[795]: <<oluptate.low> Querying content system for job results.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "runner[6134]: <<edo.very-high> Processing command: allow",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "epmd: : epmd: epmd running orpor",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "runner[602]: <<emvel.very-high> Failed to exec olup",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "shutdown[2807]: shutting down non",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "configd: : <<ugiatnu.high> sperna@sintocc: command: cancel",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "auditd[2986]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "configd: : <<ccaecat.medium> CREATE onsequ",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "auditd[1243]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "xinetd[6599]: Started working: naal available services",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "xinetd[5850]: Started working: rQu available services",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<boree.low> queips: undefined symbol: ncidi",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "authd: : <<olor.very-high> authd_close(): npr",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[6373]: Anacron 1.3962 started on epre",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cli[3979]: <<-iduntu.medium> wblPu@fizn942.ogg9.test : Processing command accept",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cmd: : <<amc.medium> cmd starting isiuta",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "sshd[5227]: dutp(psaquaea:taevita): pam_putenv: ameiusm",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ccd: : <<olab.low> Device elitse6672.internal.localdomain: mquisno",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "runner[1859]: <<tasnulap.high> Failed to exec umSe",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "shutdown[6110]: shutting down itau",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "sshd[2415]: PAM lorsita more authentication failure; dolore",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "rsyslogd: : Warning: tio",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cli[802]: <<-gnaaliqu.very-high> velillu@::cteturad:10.213.214.188 : Processing a secure command...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<reprehe.high> connect: inimveni",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "authd: : <<litani.low> authd_close(): psumqu",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "runner[2558]: <<icabo.high> Failed to exec edquiac",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[4538]: Updated timestamp for job remips to uisaute",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "auditd[6837]: Audit daemon rotating log files",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "pm[1493]: <<etdolor.high> print_msg(), dic",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "configd: : <<avolupt.low> Device \"itation4168.api.domain\" completed command(s) accept ;; CPL generated by Visual Policy Manager: isciv ;rroqu ; nofd ; dipisci",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "epmd: : epmd: invalid packet size (mquae)",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "runner[429]: <<corpori.very-high> File reading failed",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "shutdown[7595]: shutting down emqu",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<leumiur.low> The HB command is accept",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "authd: : <<est.very-high> authd_signal_handler(), isetquas",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "authd: : <<psaqua.medium> authd_signal_handler(), gnaal",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "logrotate: : ALERT exited abnormally with voluptas",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[627]: ntpd exiting on signal orin",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "restorecond: : Reset file context ecillu: mmodoc",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cli[1140]: <<-abore.high> ykbyeqh@ksnq4588.mail.test : Processing command: deny",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "sshd: : bad username mquisn",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[1313]: ntpd derit-r orese",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ccd: : <<leumiur.medium> Device Communication Daemon online",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "rsyslogd: : Warning: moles",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "restorecond: : Reset file context olup: aco",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "shutdown[609]: shutting down ser",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[2991]: ntpd orinrep-r quiavol",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "dmd: : <<quin.medium> inserted device id = sBonor2001.www5.example and serial number = amc into DB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ccd: : <<ame.very-high> ccd_handle_read_failure(), uid",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cmd: : <<scivel.high> cmd starting lmolesti",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "dmd: : <<emaperia.high> inserted device id = ersp6625.internal.domain and serial number = seq into DB",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cmd: : <<tanimid.medium> cmd starting uipexe",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<ore.low> The HB command is cancel",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[7360]: Normal exit tperspic",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "dmd: : <<ict.very-high> Filter on (tetura) things. riosamni",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ccd: : <<umetMa.low> Device anaqull2372.api.local: tat",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "schedulerd: : <<lumqu.very-high> System time changed, recomputing job run times.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "xinetd[3450]: Started working: aconsequ available services",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "authd: : <<sequat.high> handle_authd unknown message =utemvel",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "rsyslogd: : Warning: iusm",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[16]: time reset stquido",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ccd: : <<aaliq.high> Device olu5333.www.domain: orumSe",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "anacron[80]: Normal exit ici",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[7612]: kernel time sync enabled nturmag",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "cli[7128]: eseruntm(lpaquiof:oloreeu): pam_putenv: olor",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "schedulerd: : <<ici.very-high> Executing Job \"tquo\" execution iatnu",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "logrotate: : ALERT exited abnormally with ntut",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "poller[7151]: <<ess.high> Querying content system for job results.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "ntpd[2314]: ntpd litanim-r rQuisaut",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "heartbeat: : <<metco.high> Processing command: block",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "director",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-bluecoat-director-default",
+    "event_count": 100,
+    "numeric_keyword_fields": [],
+    "package": "bluecoat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

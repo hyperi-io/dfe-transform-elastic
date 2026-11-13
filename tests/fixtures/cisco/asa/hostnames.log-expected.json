@@ -1,0 +1,301 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2047-10-10T10:21:36.000-02:00",
+      "agent": {
+        "ephemeral_id": "28350e0c-37d1-406c-9deb-ae0fab001e81",
+        "id": "65622c11-734e-4fa9-b168-e5e0db3a70a7",
+        "name": "acb642da9468",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "mapped_source_ip": "10.252.41.49"
+        }
+      },
+      "destination": {
+        "domain": "gfzhcl.ecpsssfjxqu.puowtdib.local"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-expiration",
+        "category": [
+          "network"
+        ],
+        "code": "302021",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Oct 10 2047 10:21:36 localhost: %ASA-6-302021: Teardown ICMP connection for faddr gfzhcl.ecpsssfjxqu.puowtdib.local/10005 gaddr 10.252.41.49/0 laddr Prod-host.name.addr/0",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "localhost"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 0
+      },
+      "network": {
+        "iana_number": "1",
+        "transport": "icmp"
+      },
+      "observer": {
+        "hostname": "localhost",
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "localhost",
+          "gfzhcl.ecpsssfjxqu.puowtdib.local",
+          "Prod-host.name.addr"
+        ],
+        "ip": [
+          "10.252.41.49"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "domain": "Prod-host.name.addr",
+        "nat": {
+          "ip": "10.252.41.49"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2039-06-04T21:59:52.000-02:00",
+      "agent": {
+        "ephemeral_id": "28350e0c-37d1-406c-9deb-ae0fab001e81",
+        "id": "65622c11-734e-4fa9-b168-e5e0db3a70a7",
+        "name": "acb642da9468",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "cisco": {
+        "asa": {
+          "icmp_code": 0,
+          "icmp_type": 8,
+          "mapped_source_ip": "192.0.2.134"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.15",
+        "ip": "192.0.2.15"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow-expiration",
+        "category": [
+          "network"
+        ],
+        "code": "302021",
+        "dataset": "cisco.asa",
+        "kind": "event",
+        "module": "cisco",
+        "original": "Jun 04 2039 21:59:52 MYHOSTNAME : %ASA-6-302021: Teardown ICMP connection for faddr 192.0.2.15/0 gaddr 192.0.2.134/57808 laddr 192.0.2.134/57808 type 8 code 0",
+        "outcome": "success",
+        "severity": 6,
+        "timezone": "-02:00",
+        "type": [
+          "connection",
+          "end"
+        ]
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "host": {
+        "hostname": "MYHOSTNAME"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "level": "informational",
+        "offset": 169
+      },
+      "network": {
+        "community_id": "1:TIG5OyXflKDSW/Fgd/O5r5A7Zk4=",
+        "iana_number": "1",
+        "transport": "icmp"
+      },
+      "observer": {
+        "hostname": "MYHOSTNAME",
+        "product": "asa",
+        "type": "firewall",
+        "vendor": "Cisco"
+      },
+      "related": {
+        "hosts": [
+          "MYHOSTNAME"
+        ],
+        "ip": [
+          "192.0.2.134",
+          "192.0.2.15"
+        ]
+      },
+      "service": {
+        "type": "cisco"
+      },
+      "source": {
+        "address": "192.0.2.134",
+        "ip": "192.0.2.134"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T05:28:46.478Z",
+      "agent": {
+        "ephemeral_id": "28350e0c-37d1-406c-9deb-ae0fab001e81",
+        "id": "65622c11-734e-4fa9-b168-e5e0db3a70a7",
+        "name": "acb642da9468",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Oct 10 2047 10:21:36 localhost: %ASA-6-302021: Teardown ICMP connection for faddr gfzhcl.ecpsssfjxqu.puowtdib.local/10005 gaddr 10.252.41.49/0 laddr Prod-host.name.addr/0",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-cisco-asa-asa-ftd-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-06-17T05:28:46.478Z",
+      "agent": {
+        "ephemeral_id": "28350e0c-37d1-406c-9deb-ae0fab001e81",
+        "id": "65622c11-734e-4fa9-b168-e5e0db3a70a7",
+        "name": "acb642da9468",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "dataset": "cisco.asa",
+        "module": "cisco",
+        "timezone": "-02:00"
+      },
+      "fileset": {
+        "name": "asa"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 169
+      },
+      "message": "Jun 04 2039 21:59:52 MYHOSTNAME : %ASA-6-302021: Teardown ICMP connection for faddr 192.0.2.15/0 gaddr 192.0.2.134/57808 laddr 192.0.2.134/57808 type 8 code 0",
+      "service": {
+        "type": "cisco"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.end": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$",
+      "event.start": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}(?:Z|[-+][0-9]{2}:[0-9]{2})$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_asa-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "cisco_asa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

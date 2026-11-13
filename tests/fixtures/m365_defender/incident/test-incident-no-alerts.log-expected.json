@@ -1,0 +1,169 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-02-25T16:29:33.100Z",
+      "cloud": {
+        "account": {
+          "id": "accbfa21-465b-1915-5250-5e8a1aedd889"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2054-01-22T12:09:23.143Z",
+        "id": "29",
+        "kind": "alert",
+        "original": "{\"@odata.type\":\"#microsoft.graph.security.incident\",\"id\":\"29\",\"tenantId\":\"accbfa21-465b-1915-5250-5e8a1aedd889\",\"status\":\"active\",\"incidentWebUrl\":\"https://security.microsoft.com/incidents/29?tid=accbfa21-465b-1915-5250-5e8a1aedd889\",\"redirectIncidentId\":null,\"displayName\":\"Multi-stage incident involving Execution & Command and control on one endpoint\",\"createdDateTime\":\"2054-01-22T12:09:23.1433333Z\",\"lastUpdateDateTime\":\"2054-02-25T16:29:33.1Z\",\"assignedTo\":\"admin@egmukjj.com\",\"classification\":\"truePositive\",\"determination\":\"multiStagedAttack\",\"severity\":\"high\",\"tags\":[\"Demo\"],\"comments\":[{\"comment\":\"Demo incident\",\"createdBy\":\"sbgq@contoso.onmicrosoft.com\",\"createdTime\":\"2054-01-30T12:07:37.2756993Z\"}]}",
+        "severity": 73,
+        "url": "https://security.microsoft.com/incidents/29?tid=accbfa21-465b-1915-5250-5e8a1aedd889"
+      },
+      "m365_defender": {
+        "incident": {
+          "assigned_to": "admin@egmukjj.com",
+          "classification": "truePositive",
+          "comments": [
+            {
+              "comment": "Demo incident",
+              "createdBy": "sbgq@contoso.onmicrosoft.com",
+              "createdTime": "2054-01-30T12:07:37.2756993Z"
+            }
+          ],
+          "created_datetime": "2054-01-22T12:09:23.143Z",
+          "determination": "multiStagedAttack",
+          "display_name": "Multi-stage incident involving Execution & Command and control on one endpoint",
+          "id": "29",
+          "last_update_datetime": "2054-02-25T16:29:33.100Z",
+          "odata_type": "#microsoft.graph.security.incident",
+          "severity": "high",
+          "status": "active",
+          "tags": [
+            "Demo"
+          ],
+          "tenant_id": "accbfa21-465b-1915-5250-5e8a1aedd889",
+          "web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/incidents/29?tid=accbfa21-465b-1915-5250-5e8a1aedd889",
+            "path": "/incidents/29",
+            "query": "tid=accbfa21-465b-1915-5250-5e8a1aedd889",
+            "scheme": "https"
+          }
+        }
+      },
+      "message": "Multi-stage incident involving Execution & Command and control on one endpoint",
+      "related": {
+        "user": [
+          "admin",
+          "admin@egmukjj.com",
+          "sbgq@contoso.onmicrosoft.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "egmukjj.com",
+          "email": "admin@egmukjj.com",
+          "name": "admin"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2054-02-20T14:30:22.800Z",
+      "cloud": {
+        "account": {
+          "id": "accbfa21-465b-1915-5250-5e8a1aedd889"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "created": "2054-01-10T08:15:00.553Z",
+        "id": "42",
+        "kind": "alert",
+        "original": "{\"@odata.type\":\"#microsoft.graph.security.incident\",\"id\":\"42\",\"tenantId\":\"accbfa21-465b-1915-5250-5e8a1aedd889\",\"status\":\"resolved\",\"incidentWebUrl\":\"https://security.microsoft.com/incidents/42?tid=accbfa21-465b-1915-5250-5e8a1aedd889\",\"redirectIncidentId\":null,\"displayName\":\"Xxvimegxgu bwffdjmpct wweal edypigqy\",\"createdDateTime\":\"2054-01-10T08:15:00.5533333Z\",\"lastUpdateDateTime\":\"2054-02-20T14:30:22.8Z\",\"assignedTo\":\"MabtzkruTcdm@contoso.onmicrosoft.com\",\"classification\":\"truePositive\",\"determination\":\"malware\",\"severity\":\"medium\",\"tags\":[\"Production\",\"Automated\"],\"comments\":[]}",
+        "severity": 47,
+        "type": [
+          "info"
+        ],
+        "url": "https://security.microsoft.com/incidents/42?tid=accbfa21-465b-1915-5250-5e8a1aedd889"
+      },
+      "m365_defender": {
+        "incident": {
+          "assigned_to": "MabtzkruTcdm@contoso.onmicrosoft.com",
+          "classification": "truePositive",
+          "created_datetime": "2054-01-10T08:15:00.553Z",
+          "determination": "malware",
+          "display_name": "Xxvimegxgu bwffdjmpct wweal edypigqy",
+          "id": "42",
+          "last_update_datetime": "2054-02-20T14:30:22.800Z",
+          "odata_type": "#microsoft.graph.security.incident",
+          "severity": "medium",
+          "status": "resolved",
+          "tags": [
+            "Production",
+            "Automated"
+          ],
+          "tenant_id": "accbfa21-465b-1915-5250-5e8a1aedd889",
+          "web_url": {
+            "domain": "security.microsoft.com",
+            "original": "https://security.microsoft.com/incidents/42?tid=accbfa21-465b-1915-5250-5e8a1aedd889",
+            "path": "/incidents/42",
+            "query": "tid=accbfa21-465b-1915-5250-5e8a1aedd889",
+            "scheme": "https"
+          }
+        }
+      },
+      "message": "Xxvimegxgu bwffdjmpct wweal edypigqy",
+      "related": {
+        "user": [
+          "MabtzkruTcdm",
+          "MabtzkruTcdm@contoso.onmicrosoft.com"
+        ]
+      },
+      "source": {
+        "user": {
+          "domain": "contoso.onmicrosoft.com",
+          "email": "MabtzkruTcdm@contoso.onmicrosoft.com",
+          "name": "MabtzkruTcdm"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"@odata.type\":\"#microsoft.graph.security.incident\",\"id\":\"29\",\"tenantId\":\"accbfa21-465b-1915-5250-5e8a1aedd889\",\"status\":\"active\",\"incidentWebUrl\":\"https://security.microsoft.com/incidents/29?tid=accbfa21-465b-1915-5250-5e8a1aedd889\",\"redirectIncidentId\":null,\"displayName\":\"Multi-stage incident involving Execution & Command and control on one endpoint\",\"createdDateTime\":\"2054-01-22T12:09:23.1433333Z\",\"lastUpdateDateTime\":\"2054-02-25T16:29:33.1Z\",\"assignedTo\":\"admin@egmukjj.com\",\"classification\":\"truePositive\",\"determination\":\"multiStagedAttack\",\"severity\":\"high\",\"tags\":[\"Demo\"],\"comments\":[{\"comment\":\"Demo incident\",\"createdBy\":\"sbgq@contoso.onmicrosoft.com\",\"createdTime\":\"2054-01-30T12:07:37.2756993Z\"}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"@odata.type\":\"#microsoft.graph.security.incident\",\"id\":\"42\",\"tenantId\":\"accbfa21-465b-1915-5250-5e8a1aedd889\",\"status\":\"resolved\",\"incidentWebUrl\":\"https://security.microsoft.com/incidents/42?tid=accbfa21-465b-1915-5250-5e8a1aedd889\",\"redirectIncidentId\":null,\"displayName\":\"Xxvimegxgu bwffdjmpct wweal edypigqy\",\"createdDateTime\":\"2054-01-10T08:15:00.5533333Z\",\"lastUpdateDateTime\":\"2054-02-20T14:30:22.8Z\",\"assignedTo\":\"MabtzkruTcdm@contoso.onmicrosoft.com\",\"classification\":\"truePositive\",\"determination\":\"malware\",\"severity\":\"medium\",\"tags\":[\"Production\",\"Automated\"],\"comments\":[]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "incident",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-m365_defender-incident-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "m365_defender",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

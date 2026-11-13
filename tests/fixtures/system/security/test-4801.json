@@ -1,0 +1,69 @@
+{
+    "events": [
+        {
+            "@timestamp": "2050-11-30T09:54:09.983Z",
+            "agent": {
+                "ephemeral_id": "a95256a5-e51d-4345-a2ac-055236e8e023",
+                "hostname": "Newjbj7",
+                "id": "51e3dbc0-2ce5-4de7-92a8-7a4a8285f42b",
+                "version": "7.3.1",
+                "type": "winlogbeat"
+            },
+            "ecs": {
+                "version": "1.0.1"
+            },
+            "winlog": {
+                "api": "wineventlog",
+                "task": "Other Logon/Logoff Events",
+                "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+                "event_id": 4801,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "event_data": {
+                    "TargetUserName": "administrator",
+                    "TargetDomainName": "IT",
+                    "TargetLogonId": "0x4c598",
+                    "SessionId": "1",
+                    "TargetUserSid": "S-1-5-21-3498697890-273193191-2741109841-500"
+                },
+                "channel": "Security",
+                "opcode": "Info",
+                "process": {
+                    "pid": 648,
+                    "thread": {
+                        "id": 6264
+                    }
+                },
+                "activity_id": "{610AD0D1-DE9B-0230-D5E7-6C303CDDC992}",
+                "record_id": 62703266,
+                "computer_name": "Newjbj7.qt.local"
+            },
+            "event": {
+                "code": 4801,
+                "action": "Other Logon/Logoff Events",
+                "created": "2050-11-30T09:54:11.162Z",
+                "kind": "event"
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "The workstation was unlocked.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-21-3498697890-273193191-2741109841-500\n\tAccount Name:\t\tadministrator\n\tAccount Domain:\t\tIT\n\tLogon ID:\t\t0x4C598\n\tSession ID:\t1",
+            "host": {
+                "name": "Newjbj7",
+                "architecture": "x86_64",
+                "os": {
+                    "kernel": "10.0.14393.693 (rs1_release.161220-1747)",
+                    "build": "14393.693",
+                    "platform": "windows",
+                    "version": "10.0",
+                    "family": "windows",
+                    "name": "Windows Server 2016 Standard Evaluation"
+                },
+                "id": "53609417-2b27-4acc-9518-9f5ff7ba3aa3",
+                "hostname": "Newjbj7"
+            }
+        }
+    ]
+}

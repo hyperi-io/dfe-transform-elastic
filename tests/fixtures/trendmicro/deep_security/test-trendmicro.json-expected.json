@@ -1,0 +1,854 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-10-06T08:29:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "integrity-monitoring-rule-updated",
+        "code": "482",
+        "kind": "event",
+        "original": "<190>2049-10-06T01:29:43-07:00 192.168.102.60 CEF:0|Trend Micro|Deep Security Manager|12.0.327|482|Integrity Monitoring Rule Updated|3|src=192.168.102.60 suser=System target=1011144 - Microsoft Windows - AutoRun registries modified (ATT&CK T1547.001) msg=Description Omitted TrendMicroDsTenant=Primary TrendMicroDsTenantId=0",
+        "severity": 3
+      },
+      "log": {
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "Description Omitted",
+      "observer": {
+        "product": "Deep Security Manager",
+        "vendor": "Trend Micro",
+        "version": "12.0.327"
+      },
+      "related": {
+        "ip": [
+          "192.168.102.60"
+        ],
+        "user": [
+          "System"
+        ]
+      },
+      "source": {
+        "ip": "192.168.102.60",
+        "user": {
+          "name": "System"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "trendmicro": {
+        "deep_security": {
+          "device": {
+            "product": "Deep Security Manager",
+            "vendor": "Trend Micro",
+            "version": "12.0.327"
+          },
+          "event_category": "system-event",
+          "event_class_id": "482",
+          "message": "Description Omitted",
+          "name": "Integrity Monitoring Rule Updated",
+          "severity": 3,
+          "signature_id": 482,
+          "source": {
+            "address": "192.168.102.60",
+            "user_name": "System"
+          },
+          "target": {
+            "value": "1011144 - Microsoft Windows - AutoRun registries modified (ATT&CK T1547.001)"
+          },
+          "trendmicro": {
+            "ds_tenant": "Primary",
+            "ds_tenant_id": "0"
+          },
+          "version": "0"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-10-06T08:34:40.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "alert-started",
+        "code": "190",
+        "kind": "event",
+        "original": "<190>2049-10-06T01:34:40-07:00 192.168.102.60 CEF:0|Trend Micro|Deep Security Manager|12.0.327|190|Alert Started|3|src=192.168.102.60 suser=System msg=Alert: Memory Critical Threshold Exceeded\\nSubject: 192.168.102.60\\nSeverity: Critical TrendMicroDsTenant=Primary TrendMicroDsTenantId=0",
+        "severity": 3
+      },
+      "log": {
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "Alert: Memory Critical Threshold Exceeded\\nSubject: 192.168.102.60\\nSeverity: Critical",
+      "observer": {
+        "product": "Deep Security Manager",
+        "vendor": "Trend Micro",
+        "version": "12.0.327"
+      },
+      "related": {
+        "ip": [
+          "192.168.102.60"
+        ],
+        "user": [
+          "System"
+        ]
+      },
+      "source": {
+        "ip": "192.168.102.60",
+        "user": {
+          "name": "System"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "trendmicro": {
+        "deep_security": {
+          "device": {
+            "product": "Deep Security Manager",
+            "vendor": "Trend Micro",
+            "version": "12.0.327"
+          },
+          "event_category": "system-event",
+          "event_class_id": "190",
+          "message": "Alert: Memory Critical Threshold Exceeded\\nSubject: 192.168.102.60\\nSeverity: Critical",
+          "name": "Alert Started",
+          "severity": 3,
+          "signature_id": 190,
+          "source": {
+            "address": "192.168.102.60",
+            "user_name": "System"
+          },
+          "trendmicro": {
+            "ds_tenant": "Primary",
+            "ds_tenant_id": "0"
+          },
+          "version": "0"
+        }
+      }
+    },
+    {
+      "@timestamp": "2049-10-09T08:54:56.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "agent-appliance-error",
+        "code": "740",
+        "kind": "event",
+        "original": "<190>2049-10-09T01:54:56-07:00 192.168.102.60 CEF:0|Trend Micro|Deep Security Manager|12.0.327|740|Agent/Appliance Error|8|src=192.168.102.60 suser=System target=SMC-NewAPP (192.168.116.140) msg=The Agent/Appliance reported one or more warnings or errors. Details are found in the Agent/Appliance events listed below. TrendMicroDsTenant=Primary TrendMicroDsTenantId=0",
+        "severity": 8
+      },
+      "log": {
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "The Agent/Appliance reported one or more warnings or errors. Details are found in the Agent/Appliance events listed below.",
+      "observer": {
+        "product": "Deep Security Manager",
+        "vendor": "Trend Micro",
+        "version": "12.0.327"
+      },
+      "related": {
+        "ip": [
+          "192.168.102.60"
+        ],
+        "user": [
+          "System"
+        ]
+      },
+      "source": {
+        "ip": "192.168.102.60",
+        "user": {
+          "name": "System"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "trendmicro": {
+        "deep_security": {
+          "device": {
+            "product": "Deep Security Manager",
+            "vendor": "Trend Micro",
+            "version": "12.0.327"
+          },
+          "event_category": "system-event",
+          "event_class_id": "740",
+          "message": "The Agent/Appliance reported one or more warnings or errors. Details are found in the Agent/Appliance events listed below.",
+          "name": "Agent/Appliance Error",
+          "severity": 8,
+          "signature_id": 740,
+          "source": {
+            "address": "192.168.102.60",
+            "user_name": "System"
+          },
+          "target": {
+            "value": "SMC-NewAPP (192.168.116.140)"
+          },
+          "trendmicro": {
+            "ds_tenant": "Primary",
+            "ds_tenant_id": "0"
+          },
+          "version": "0"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-01-19T13:36:47.000Z",
+      "destination": {
+        "ip": "198.51.100.211",
+        "mac": "58-FB-77-42-FD-37",
+        "port": 65535
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "reset",
+        "category": [
+          "intrusion_detection"
+        ],
+        "code": "1001251",
+        "kind": "event",
+        "original": "<190>Jan 19 13:36:47 2K19-va CEF:0|Trend Micro|Deep Security Agent|20.0.1.690|1001251|Disallow Web Proxy Autodiscovery Protocol|6|cn1=4 cn1Label=Host ID dvchost=4W35-vd.xcyx.local TrendMicroDsTenant=814726098539 TrendMicroDsTenantId=16005 dmac=58-FB-77-42-FD-37 smac=05-CB-93-63-BE-79 TrendMicroDsFrameType=IP src=198.51.100.124 dst=198.51.100.211 in=150 proto=UDP spt=53 dpt=65535 cnt=1 act=Reset cn3=16 cn3Label=DPI Packet Position cs5=16 cs5Label=DPI Stream Position cs1=CVE-2007-5355 cs1Label=DPI Note cs6=8 cs6Label=DPI Flags TrendMicroDsPacketData=PUaBgwABAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+        "severity": 6,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "4"
+      },
+      "log": {
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "Disallow Web Proxy Autodiscovery Protocol",
+      "network": {
+        "community_id": "1:XdR6kcM2bTGhX3y8tSfQvkqevpY=",
+        "transport": "udp"
+      },
+      "observer": {
+        "hostname": "4W35-vd.xcyx.local",
+        "product": "Deep Security Agent",
+        "vendor": "Trend Micro",
+        "version": "20.0.1.690"
+      },
+      "related": {
+        "hosts": [
+          "4"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "198.51.100.124"
+        ]
+      },
+      "source": {
+        "bytes": 150,
+        "ip": "198.51.100.124",
+        "mac": "05-CB-93-63-BE-79",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "trendmicro": {
+        "deep_security": {
+          "action": "Reset",
+          "base_event_count": 1,
+          "bytes_in": 150,
+          "destination": {
+            "address": "198.51.100.211",
+            "mac_address": "58-FB-77-42-FD-37",
+            "port": 65535
+          },
+          "device": {
+            "custom_number1": {
+              "label": "Host ID",
+              "value": "4"
+            },
+            "custom_number3": {
+              "label": "DPI Packet Position",
+              "value": 16
+            },
+            "custom_string1": {
+              "label": "DPI Note",
+              "value": "CVE-2007-5355"
+            },
+            "custom_string5": {
+              "label": "DPI Stream Position",
+              "value": "16"
+            },
+            "custom_string6": {
+              "label": "DPI Flags",
+              "value": "8"
+            },
+            "product": "Deep Security Agent",
+            "vendor": "Trend Micro",
+            "version": "20.0.1.690"
+          },
+          "deviceHostName": "4W35-vd.xcyx.local",
+          "event_category": "intrusion-prevention-event",
+          "event_class_id": "1001251",
+          "name": "Disallow Web Proxy Autodiscovery Protocol",
+          "severity": 6,
+          "signature_id": 1001251,
+          "source": {
+            "address": "198.51.100.124",
+            "mac_address": "05-CB-93-63-BE-79",
+            "port": 53
+          },
+          "transport_protocol": "UDP",
+          "trendmicro": {
+            "ds_frame_type": "IP",
+            "ds_packet_data": "PUaBgwAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+            "ds_tenant": "814726098539",
+            "ds_tenant_id": "16005"
+          },
+          "version": "0"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-01-19T13:36:47.000Z",
+      "destination": {
+        "ip": "198.51.100.211",
+        "mac": "58-FB-77-42-FD-37",
+        "port": 65535
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "reset",
+        "category": [
+          "malware"
+        ],
+        "code": "4000001",
+        "kind": "alert",
+        "original": "<190>Jan 19 13:36:47 2K19-va CEF:0|Trend Micro|Deep Security Agent|20.0.1.690|1001251|Disallow Web Proxy Autodiscovery Protocol|6|cn1=4 cn1Label=Host ID dvchost=4W35-vd.xcyx.local TrendMicroDsTenant=814726098539 TrendMicroDsTenantId=16005 dmac=58-FB-77-42-FD-37 smac=05-CB-93-63-BE-79 TrendMicroDsFrameType=IP src=198.51.100.124 dst=198.51.100.211 in=150 proto=UDP spt=53 dpt=65535 cnt=1 act=Reset cn3=16 cn3Label=DPI Packet Position cs5=16 cs5Label=DPI Stream Position cs1=CVE-2007-5355 cs1Label=DPI Note cs6=8 cs6Label=DPI Flags TrendMicroDsPacketData=PUaBgwABAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+        "severity": 6,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "4"
+      },
+      "log": {
+        "syslog": {
+          "priority": 190
+        }
+      },
+      "message": "Disallow Web Proxy Autodiscovery Protocol",
+      "network": {
+        "community_id": "1:XdR6kcM2bTGhX3y8tSfQvkqevpY=",
+        "transport": "udp"
+      },
+      "observer": {
+        "hostname": "4W35-vd.xcyx.local",
+        "product": "Deep Security Agent",
+        "vendor": "Trend Micro",
+        "version": "20.0.1.690"
+      },
+      "related": {
+        "hosts": [
+          "4"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "198.51.100.124"
+        ]
+      },
+      "source": {
+        "bytes": 150,
+        "ip": "198.51.100.124",
+        "mac": "05-CB-93-63-BE-79",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "trendmicro": {
+        "deep_security": {
+          "action": "Reset",
+          "base_event_count": 1,
+          "bytes_in": 150,
+          "destination": {
+            "address": "198.51.100.211",
+            "mac_address": "58-FB-77-42-FD-37",
+            "port": 65535
+          },
+          "device": {
+            "custom_number1": {
+              "label": "Host ID",
+              "value": "4"
+            },
+            "custom_number3": {
+              "label": "DPI Packet Position",
+              "value": 16
+            },
+            "custom_string1": {
+              "label": "DPI Note",
+              "value": "CVE-2007-5355"
+            },
+            "custom_string5": {
+              "label": "DPI Stream Position",
+              "value": "16"
+            },
+            "custom_string6": {
+              "label": "DPI Flags",
+              "value": "8"
+            },
+            "product": "Deep Security Agent",
+            "vendor": "Trend Micro",
+            "version": "20.0.1.690"
+          },
+          "deviceHostName": "4W35-vd.xcyx.local",
+          "event_category": "anti-malware-event",
+          "event_class_id": "4000001",
+          "malware": {
+            "name": "Disallow Web Proxy Autodiscovery Protocol"
+          },
+          "name": "Disallow Web Proxy Autodiscovery Protocol",
+          "severity": 6,
+          "signature_id": 4000001,
+          "source": {
+            "address": "198.51.100.124",
+            "mac_address": "05-CB-93-63-BE-79",
+            "port": 53
+          },
+          "transport_protocol": "UDP",
+          "trendmicro": {
+            "ds_frame_type": "IP",
+            "ds_packet_data": "PUaBgwAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+            "ds_tenant": "814726098539",
+            "ds_tenant_id": "16005"
+          },
+          "version": "0"
+        }
+      }
+    },
+    {
+      "@timestamp": "2026-04-18T02:35:59.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "quarantine",
+        "category": [
+          "malware"
+        ],
+        "code": "4000010",
+        "kind": "alert",
+        "original": "<134>Apr 18 02:35:59 lwyx-95.areggve.local CEF:0|Trend Micro|Deep Security Agent|20.0.1073|4000010|PUA.XML.GhostBuilder.SM|6|cn1=42 cn1Label=Host ID dvchost=zoviyrcuzqg-63.areggve.local TrendMicroDsTenant=Primary TrendMicroDsTenantId=0 act=Quarantine",
+        "severity": 6,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "42"
+      },
+      "log": {
+        "syslog": {
+          "priority": 134
+        }
+      },
+      "message": "PUA.XML.GhostBuilder.SM",
+      "observer": {
+        "hostname": "zoviyrcuzqg-63.areggve.local",
+        "product": "Deep Security Agent",
+        "vendor": "Trend Micro",
+        "version": "20.0.1073"
+      },
+      "related": {
+        "hosts": [
+          "42"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "trendmicro": {
+        "deep_security": {
+          "action": "Quarantine",
+          "device": {
+            "custom_number1": {
+              "label": "Host ID",
+              "value": "42"
+            },
+            "product": "Deep Security Agent",
+            "vendor": "Trend Micro",
+            "version": "20.0.1073"
+          },
+          "deviceHostName": "zoviyrcuzqg-63.areggve.local",
+          "event_category": "anti-malware-event",
+          "event_class_id": "4000010",
+          "malware": {
+            "name": "PUA.XML.GhostBuilder.SM"
+          },
+          "name": "PUA.XML.GhostBuilder.SM",
+          "severity": 6,
+          "signature_id": 4000010,
+          "trendmicro": {
+            "ds_tenant": "Primary",
+            "ds_tenant_id": "0"
+          },
+          "version": "0"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-02-02T11:22:00.200Z",
+      "cef": {
+        "device": {
+          "event_class_id": "482",
+          "product": "Deep Security Manager",
+          "vendor": "Trend Micro",
+          "version": "12.0.327"
+        },
+        "extensions": {
+          "TrendMicroDsTenant": "Primary",
+          "TrendMicroDsTenantId": "0",
+          "message": "Description Omitted",
+          "sourceAddress": "192.168.102.60",
+          "sourceUserName": "System",
+          "target": "1011144 - Microsoft Windows - AutoRun registries modified (ATT&CK T1547.001)"
+        },
+        "name": "Integrity Monitoring Rule Updated",
+        "severity": "3",
+        "version": "0"
+      },
+      "event": {
+        "code": "482",
+        "original": "<190>2049-10-06T01:29:43-07:00 192.168.102.60 CEF:0|Trend Micro|Deep Security Manager|12.0.327|482|Integrity Monitoring Rule Updated|3|src=192.168.102.60 suser=System target=1011144 - Microsoft Windows - AutoRun registries modified (ATT&CK T1547.001) msg=Description Omitted TrendMicroDsTenant=Primary TrendMicroDsTenantId=0",
+        "severity": 3
+      },
+      "message": "Description Omitted",
+      "observer": {
+        "product": "Deep Security Manager",
+        "vendor": "Trend Micro",
+        "version": "12.0.327"
+      },
+      "source": {
+        "ip": "192.168.102.60",
+        "user": {
+          "name": "System"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-02T11:28:40.844Z",
+      "cef": {
+        "device": {
+          "event_class_id": "190",
+          "product": "Deep Security Manager",
+          "vendor": "Trend Micro",
+          "version": "12.0.327"
+        },
+        "extensions": {
+          "TrendMicroDsTenant": "Primary",
+          "TrendMicroDsTenantId": "0",
+          "message": "Alert: Memory Critical Threshold Exceeded\\nSubject: 192.168.102.60\\nSeverity: Critical",
+          "sourceAddress": "192.168.102.60",
+          "sourceUserName": "System"
+        },
+        "name": "Alert Started",
+        "severity": "3",
+        "version": "0"
+      },
+      "event": {
+        "code": "190",
+        "original": "<190>2049-10-06T01:34:40-07:00 192.168.102.60 CEF:0|Trend Micro|Deep Security Manager|12.0.327|190|Alert Started|3|src=192.168.102.60 suser=System msg=Alert: Memory Critical Threshold Exceeded\\nSubject: 192.168.102.60\\nSeverity: Critical TrendMicroDsTenant=Primary TrendMicroDsTenantId=0",
+        "severity": 3
+      },
+      "message": "Alert: Memory Critical Threshold Exceeded\\nSubject: 192.168.102.60\\nSeverity: Critical",
+      "observer": {
+        "product": "Deep Security Manager",
+        "vendor": "Trend Micro",
+        "version": "12.0.327"
+      },
+      "source": {
+        "ip": "192.168.102.60",
+        "user": {
+          "name": "System"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-02-02T11:36:52.185Z",
+      "cef": {
+        "device": {
+          "event_class_id": "740",
+          "product": "Deep Security Manager",
+          "vendor": "Trend Micro",
+          "version": "12.0.327"
+        },
+        "extensions": {
+          "TrendMicroDsTenant": "Primary",
+          "TrendMicroDsTenantId": "0",
+          "message": "The Agent/Appliance reported one or more warnings or errors. Details are found in the Agent/Appliance events listed below.",
+          "sourceAddress": "192.168.102.60",
+          "sourceUserName": "System",
+          "target": "SMC-NewAPP (192.168.116.140)"
+        },
+        "name": "Agent/Appliance Error",
+        "severity": "8",
+        "version": "0"
+      },
+      "event": {
+        "code": "740",
+        "original": "<190>2049-10-09T01:54:56-07:00 192.168.102.60 CEF:0|Trend Micro|Deep Security Manager|12.0.327|740|Agent/Appliance Error|8|src=192.168.102.60 suser=System target=SMC-NewAPP (192.168.116.140) msg=The Agent/Appliance reported one or more warnings or errors. Details are found in the Agent/Appliance events listed below. TrendMicroDsTenant=Primary TrendMicroDsTenantId=0",
+        "severity": 8
+      },
+      "message": "The Agent/Appliance reported one or more warnings or errors. Details are found in the Agent/Appliance events listed below.",
+      "observer": {
+        "product": "Deep Security Manager",
+        "vendor": "Trend Micro",
+        "version": "12.0.327"
+      },
+      "source": {
+        "ip": "192.168.102.60",
+        "user": {
+          "name": "System"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-22T10:19:47.482Z",
+      "cef": {
+        "device": {
+          "event_class_id": "1001251",
+          "product": "Deep Security Agent",
+          "vendor": "Trend Micro",
+          "version": "20.0.1.690"
+        },
+        "extensions": {
+          "TrendMicroDsFrameType": "IP",
+          "TrendMicroDsPacketData": "PUaBgwAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+          "TrendMicroDsTenant": "814726098539",
+          "TrendMicroDsTenantId": "16005",
+          "baseEventCount": 1,
+          "bytesIn": 150,
+          "destinationAddress": "198.51.100.211",
+          "destinationMacAddress": "58-FB-77-42-FD-37",
+          "destinationPort": 65535,
+          "deviceAction": "Reset",
+          "deviceCustomNumber1": 4,
+          "deviceCustomNumber1Label": "Host ID",
+          "deviceCustomNumber3": 16,
+          "deviceCustomNumber3Label": "DPI Packet Position",
+          "deviceCustomString1": "CVE-2007-5355",
+          "deviceCustomString1Label": "DPI Note",
+          "deviceCustomString5": "16",
+          "deviceCustomString5Label": "DPI Stream Position",
+          "deviceCustomString6": "8",
+          "deviceCustomString6Label": "DPI Flags",
+          "deviceHostName": "4W35-vd.xcyx.local",
+          "sourceAddress": "198.51.100.124",
+          "sourceMacAddress": "05-CB-93-63-BE-79",
+          "sourcePort": 53,
+          "transportProtocol": "UDP"
+        },
+        "name": "Disallow Web Proxy Autodiscovery Protocol",
+        "severity": "6",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "mac": "58-FB-77-42-FD-37",
+        "port": 65535
+      },
+      "event": {
+        "action": "Reset",
+        "code": "1001251",
+        "original": "<190>Jan 19 13:36:47 2K19-va CEF:0|Trend Micro|Deep Security Agent|20.0.1.690|1001251|Disallow Web Proxy Autodiscovery Protocol|6|cn1=4 cn1Label=Host ID dvchost=4W35-vd.xcyx.local TrendMicroDsTenant=814726098539 TrendMicroDsTenantId=16005 dmac=58-FB-77-42-FD-37 smac=05-CB-93-63-BE-79 TrendMicroDsFrameType=IP src=198.51.100.124 dst=198.51.100.211 in=150 proto=UDP spt=53 dpt=65535 cnt=1 act=Reset cn3=16 cn3Label=DPI Packet Position cs5=16 cs5Label=DPI Stream Position cs1=CVE-2007-5355 cs1Label=DPI Note cs6=8 cs6Label=DPI Flags TrendMicroDsPacketData=PUaBgwABAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+        "severity": 6
+      },
+      "message": "Disallow Web Proxy Autodiscovery Protocol",
+      "network": {
+        "transport": "udp"
+      },
+      "observer": {
+        "hostname": "4W35-vd.xcyx.local",
+        "product": "Deep Security Agent",
+        "vendor": "Trend Micro",
+        "version": "20.0.1.690"
+      },
+      "source": {
+        "bytes": 150,
+        "ip": "198.51.100.124",
+        "mac": "05-CB-93-63-BE-79",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-01-22T10:19:47.482Z",
+      "cef": {
+        "device": {
+          "event_class_id": "4000001",
+          "product": "Deep Security Agent",
+          "vendor": "Trend Micro",
+          "version": "20.0.1.690"
+        },
+        "extensions": {
+          "TrendMicroDsFrameType": "IP",
+          "TrendMicroDsPacketData": "PUaBgwAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+          "TrendMicroDsTenant": "814726098539",
+          "TrendMicroDsTenantId": "16005",
+          "baseEventCount": 1,
+          "bytesIn": 150,
+          "destinationAddress": "198.51.100.211",
+          "destinationMacAddress": "58-FB-77-42-FD-37",
+          "destinationPort": 65535,
+          "deviceAction": "Reset",
+          "deviceCustomNumber1": 4,
+          "deviceCustomNumber1Label": "Host ID",
+          "deviceCustomNumber3": 16,
+          "deviceCustomNumber3Label": "DPI Packet Position",
+          "deviceCustomString1": "CVE-2007-5355",
+          "deviceCustomString1Label": "DPI Note",
+          "deviceCustomString5": "16",
+          "deviceCustomString5Label": "DPI Stream Position",
+          "deviceCustomString6": "8",
+          "deviceCustomString6Label": "DPI Flags",
+          "deviceHostName": "4W35-vd.xcyx.local",
+          "sourceAddress": "198.51.100.124",
+          "sourceMacAddress": "05-CB-93-63-BE-79",
+          "sourcePort": 53,
+          "transportProtocol": "UDP"
+        },
+        "name": "Disallow Web Proxy Autodiscovery Protocol",
+        "severity": "6",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "198.51.100.211",
+        "mac": "58-FB-77-42-FD-37",
+        "port": 65535
+      },
+      "event": {
+        "action": "Reset",
+        "code": "4000000",
+        "original": "<190>Jan 19 13:36:47 2K19-va CEF:0|Trend Micro|Deep Security Agent|20.0.1.690|1001251|Disallow Web Proxy Autodiscovery Protocol|6|cn1=4 cn1Label=Host ID dvchost=4W35-vd.xcyx.local TrendMicroDsTenant=814726098539 TrendMicroDsTenantId=16005 dmac=58-FB-77-42-FD-37 smac=05-CB-93-63-BE-79 TrendMicroDsFrameType=IP src=198.51.100.124 dst=198.51.100.211 in=150 proto=UDP spt=53 dpt=65535 cnt=1 act=Reset cn3=16 cn3Label=DPI Packet Position cs5=16 cs5Label=DPI Stream Position cs1=CVE-2007-5355 cs1Label=DPI Note cs6=8 cs6Label=DPI Flags TrendMicroDsPacketData=PUaBgwABAAAAAQAABHdwYWQEdGVzdAVsb2NhbAAAAQABAAAGAAEAAVF5AEABYQxyb290LXNlcnZlcnMDbmV0AAVuc3RsZAx2ZXJpc2lnbi1ncnMDY29tAHij+HwAAAcIAAADhAAJOoAAAVGA",
+        "severity": 6
+      },
+      "message": "Disallow Web Proxy Autodiscovery Protocol",
+      "network": {
+        "transport": "udp"
+      },
+      "observer": {
+        "hostname": "4W35-vd.xcyx.local",
+        "product": "Deep Security Agent",
+        "vendor": "Trend Micro",
+        "version": "20.0.1.690"
+      },
+      "source": {
+        "bytes": 150,
+        "ip": "198.51.100.124",
+        "mac": "05-CB-93-63-BE-79",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2052-04-18T02:35:59.000Z",
+      "cef": {
+        "device": {
+          "event_class_id": "4000010",
+          "product": "Deep Security Agent",
+          "vendor": "Trend Micro",
+          "version": "20.0.1073"
+        },
+        "extensions": {
+          "TrendMicroDsTenant": "Primary",
+          "TrendMicroDsTenantId": "0",
+          "deviceAction": "Quarantine",
+          "deviceCustomNumber1": 42,
+          "deviceCustomNumber1Label": "Host ID",
+          "deviceHostName": "zoviyrcuzqg-63.areggve.local"
+        },
+        "name": "PUA.XML.GhostBuilder.SM",
+        "severity": "6",
+        "version": "0"
+      },
+      "event": {
+        "code": "4000010",
+        "original": "<134>Apr 18 02:35:59 lwyx-95.areggve.local CEF:0|Trend Micro|Deep Security Agent|20.0.1073|4000010|PUA.XML.GhostBuilder.SM|6|cn1=42 cn1Label=Host ID dvchost=zoviyrcuzqg-63.areggve.local TrendMicroDsTenant=Primary TrendMicroDsTenantId=0 act=Quarantine",
+        "severity": 6
+      },
+      "message": "PUA.XML.GhostBuilder.SM",
+      "observer": {
+        "hostname": "zoviyrcuzqg-63.areggve.local",
+        "product": "Deep Security Agent",
+        "vendor": "Trend Micro",
+        "version": "20.0.1073"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "deep_security",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-trendmicro-deep_security-default",
+    "event_count": 6,
+    "numeric_keyword_fields": [],
+    "package": "trendmicro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

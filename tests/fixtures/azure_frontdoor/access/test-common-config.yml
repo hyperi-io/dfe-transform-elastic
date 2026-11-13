@@ -1,0 +1,8 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  - azure-frontdoor-access
+dynamic_fields:
+  event.ingested: .*
+  url.extension: ^.*$

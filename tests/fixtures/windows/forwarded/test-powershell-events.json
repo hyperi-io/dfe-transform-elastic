@@ -1,0 +1,239 @@
+{
+    "events": [
+        {
+            "@timestamp": "2048-05-13T13:21:43.183Z",
+            "winlog": {
+                "channel": "Windows PowerShell",
+                "record_id": 1089,
+                "computer_name": "xfzkaqq",
+                "keywords": [
+                    "Classic"
+                ],
+                "level": "information",
+                "event_id": "600",
+                "provider_name": "PowerShell",
+                "time_created": "2048-05-13T13:21:43.183Z",
+                "event_data": {
+                    "param1": "Certificate",
+                    "param2": "Started",
+                    "param3": "\tProviderName=Certificate\n\tNewProviderState=Started\n\n\tSequenceNumber=35\n\n\tHostName=Windows PowerShell ISE Host\n\tHostVersion=5.1.17763.1007\n\tHostId=47dca99b-8434-427a-8ca9-ec7420210280\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe C:\\Users\\xfzkaqq\\Desktop\\lateral.ps1\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=1a55be4d-b151-49c2-99ab-85e9db8310b1\n\tPipelineId=15\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine="
+                }
+            },
+            "host": {
+                "name": "xfzkaqq"
+            },
+            "log": {
+                "level": "information"
+            },
+            "event": {
+                "original": "\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e600\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e6\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-13T13:21:43.183180900Z'/\u003e\u003cEventRecordID\u003e1089\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eCertificate\u003c/Data\u003e\u003cData\u003eStarted\u003c/Data\u003e\u003cData\u003e\tProviderName=Certificate\n\tNewProviderState=Started\n\n\tSequenceNumber=35\n\n\tHostName=Windows PowerShell ISE Host\n\tHostVersion=5.1.17763.1007\n\tHostId=47dca99b-8434-427a-8ca9-ec7420210280\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe C:\\Users\\xfzkaqq\\Desktop\\lateral.ps1\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=1a55be4d-b151-49c2-99ab-85e9db8310b1\n\tPipelineId=15\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e600\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e6\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-13T13:25:04.656426900Z'/\u003e\u003cEventRecordID\u003e1266\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eRegistry\u003c/Data\u003e\u003cData\u003eStarted\u003c/Data\u003e\u003cData\u003e\tProviderName=Registry\n\tNewProviderState=Started\n\n\tSequenceNumber=1\n\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=09f7e26c-f1e5-4daa-ab2a-8ec85277f4f2\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=\n\tRunspaceId=\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e600\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e6\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-06-04T07:25:04.857430200Z'/\u003e\u003cEventRecordID\u003e18640\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eCertificate\u003c/Data\u003e\u003cData\u003eStarted\u003c/Data\u003e\u003cData\u003e\tProviderName=Certificate\n\tNewProviderState=Started\n\n\tSequenceNumber=8\n\n\tHostName=ConsoleHost\n\tHostVersion=2.0\n\tHostId=66b54638-7279-488b-adc5-4c7fc87de670\n\tEngineVersion=\n\tRunspaceId=\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e",
+                "code": "600",
+                "kind": "event",
+                "provider": "PowerShell"
+            },
+            "tags": [
+                "forwarded"
+            ]
+        },
+        {
+            "@timestamp": "2048-05-14T07:00:30.891Z",
+            "event": {
+                "kind": "event",
+                "provider": "PowerShell",
+                "original": "\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e400\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-14T07:00:30.891423500Z'/\u003e\u003cEventRecordID\u003e1492\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003eNone\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Available\n\tPreviousEngineState=None\n\n\tSequenceNumber=13\n\n\tHostName=ServerRemoteHost\n\tHostVersion=192.0.2.142\n\tHostId=4547458c-1f33-42d8-bdda-01ee5700a391\n\tHostApplication=C:\\Windows\\system32\\wsmprovhost.exe -Embedding\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=616a68fa-0ce9-46e1-a0bb-ab7ea0f78fe6\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e400\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-14T07:01:14.371507600Z'/\u003e\u003cEventRecordID\u003e1511\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003eNone\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Available\n\tPreviousEngineState=None\n\n\tSequenceNumber=13\n\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=19c9c430-753b-4143-bba5-55b9d7aa820f\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=512f6954-f9db-41b3-9e9f-5bf59fbeb594\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e400\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-14T11:32:51.989256800Z'/\u003e\u003cEventRecordID\u003e1579\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003eNone\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Available\n\tPreviousEngineState=None\n\n\tSequenceNumber=13\n\n\tHostName=Windows PowerShell ISE Host\n\tHostVersion=5.1.17763.1007\n\tHostId=e2b4eaa9-1db3-4e3d-9c6f-07aa33ced1ff\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell_ise.exe C:\\Users\\xfzkaqq\\Desktop\\patata.ps1\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=13224f76-c50f-4ddc-9bab-710f0a90245e\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e400\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-06-04T07:20:27.747227500Z'/\u003e\u003cEventRecordID\u003e18591\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003eNone\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Available\n\tPreviousEngineState=None\n\n\tSequenceNumber=9\n\n\tHostName=ConsoleHost\n\tHostVersion=2.0\n\tHostId=8458c656-b76f-4e27-9d7b-4981b15a2870\n\tEngineVersion=2.0\n\tRunspaceId=8eeacc19-f521-4c71-a4e1-5099d683d264\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e",
+                "code": "400"
+            },
+            "tags": [
+                "forwarded"
+            ],
+            "winlog": {
+                "channel": "Windows PowerShell",
+                "event_id": "400",
+                "record_id": 1492,
+                "computer_name": "xfzkaqq",
+                "keywords": [
+                    "Classic"
+                ],
+                "time_created": "2048-05-14T07:00:30.891Z",
+                "provider_name": "PowerShell",
+                "level": "information",
+                "event_data": {
+                    "param3": "\tNewEngineState=Available\n\tPreviousEngineState=None\n\n\tSequenceNumber=13\n\n\tHostName=ServerRemoteHost\n\tHostVersion=192.0.2.142\n\tHostId=4547458c-1f33-42d8-bdda-01ee5700a391\n\tHostApplication=C:\\Windows\\system32\\wsmprovhost.exe -Embedding\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=616a68fa-0ce9-46e1-a0bb-ab7ea0f78fe6\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=",
+                    "param1": "Available",
+                    "param2": "None"
+                }
+            },
+            "host": {
+                "name": "xfzkaqq"
+            },
+            "log": {
+                "level": "information"
+            }
+        },
+        {
+            "@timestamp": "2048-02-26T09:37:40.487Z",
+            "log": {
+                "level": "information"
+            },
+            "event": {
+                "original": "\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e800\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e8\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-02-26T09:37:40.487241500Z'/\u003e\u003cEventRecordID\u003e191\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant-2019\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003e        Add-Type -AssemblyName System.IO.Compression.FileSystem\n\u003c/Data\u003e\u003cData\u003e\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=17\n\n\tUserId=VAGRANT-2019\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=fb6d99ab-2803-4366-835c-1e414febc44c\n\tHostApplication=powershell -executionpolicy bypass \u0026amp; { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. c:/Windows/Temp/packer-ps-env-vars-5e5637dd-15a9-73e0-889a-c01f541a8bc6.ps1; \u0026amp;'c:/Windows/Temp/script-5e5637dd-5626-019d-027a-02e78baaacc9.ps1'; exit $LastExitCode }\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=2f154a2c-195b-4b80-972d-260e846a3125\n\tPipelineId=1\n\tScriptName=C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Archive\\Microsoft.PowerShell.Archive.psm1\n\tCommandLine=        Add-Type -AssemblyName System.IO.Compression.FileSystem\n\u003c/Data\u003e\u003cData\u003eCommandInvocation(Add-Type): \"Add-Type\"\nParameterBinding(Add-Type): name=\"AssemblyName\"; value=\"System.IO.Compression.FileSystem\"\n\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e800\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e8\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-15T08:33:26.376993100Z'/\u003e\u003cEventRecordID\u003e1843\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003e\u0026amp; { Set-StrictMode -Version 1; $this.Exception.InnerException.PSMessageDetails }\u003c/Data\u003e\u003cData\u003e\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=135\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine=\u0026amp; { Set-StrictMode -Version 1; $this.Exception.InnerException.PSMessageDetails }\u003c/Data\u003e\u003cData\u003eCommandInvocation(Set-StrictMode): \"Set-StrictMode\"\nParameterBinding(Set-StrictMode): name=\"Version\"; value=\"1.0\"\n\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e800\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e8\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-15T08:33:26.393089000Z'/\u003e\u003cEventRecordID\u003e1846\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eImport-LocalizedData  LocalizedData -filename ArchiveResources\n\u003c/Data\u003e\u003cData\u003e\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=141\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine=Import-LocalizedData  LocalizedData -filename ArchiveResources\n\u003c/Data\u003e\u003cData\u003eCommandInvocation(Import-LocalizedData): \"Import-LocalizedData\"\nParameterBinding(Import-LocalizedData): name=\"FileName\"; value=\"ArchiveResources\"\nParameterBinding(Import-LocalizedData): name=\"BindingVariable\"; value=\"LocalizedData\"\nNonTerminatingError(Import-LocalizedData): \"Cannot find the Windows PowerShell data file 'ArchiveResources.psd1' in directory 'C:\\Gopath\\src\\github.com\\elastic\\beats\\x-pack\\winlogbeat\\en-US\\', or in any parent culture directories.\"\n\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e800\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e8\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-15T08:33:26.393089000Z'/\u003e\u003cEventRecordID\u003e1847\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003e\u003c/Data\u003e\u003cData\u003e\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=143\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine=\u003c/Data\u003e\u003cData\u003eCommandInvocation(Out-Default): \"Out-Default\"\nParameterBinding(Out-Default): name=\"InputObject\"; value=\"Cannot find the Windows PowerShell data file 'ArchiveResources.psd1' in directory 'C:\\Gopath\\src\\github.com\\elastic\\beats\\x-pack\\winlogbeat\\en-US\\', or in any parent culture directories.\"\n\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e",
+                "code": "800",
+                "kind": "event",
+                "provider": "PowerShell"
+            },
+            "tags": [
+                "forwarded"
+            ],
+            "winlog": {
+                "channel": "Windows PowerShell",
+                "event_id": "800",
+                "provider_name": "PowerShell",
+                "record_id": 191,
+                "computer_name": "wdlwaiq-8342",
+                "event_data": {
+                    "param2": "\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=17\n\n\tUserId=VAGRANT-2019\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=fb6d99ab-2803-4366-835c-1e414febc44c\n\tHostApplication=powershell -executionpolicy bypass \u0026 { if (Test-Path variable:global:ProgressPreference){set-variable -name variable:global:ProgressPreference -value 'SilentlyContinue'};. c:/Windows/Temp/packer-ps-env-vars-5e5637dd-15a9-73e0-889a-c01f541a8bc6.ps1; \u0026'c:/Windows/Temp/script-5e5637dd-5626-019d-027a-02e78baaacc9.ps1'; exit $LastExitCode }\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=2f154a2c-195b-4b80-972d-260e846a3125\n\tPipelineId=1\n\tScriptName=C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\Modules\\Microsoft.PowerShell.Archive\\Microsoft.PowerShell.Archive.psm1\n\tCommandLine=        Add-Type -AssemblyName System.IO.Compression.FileSystem",
+                    "param3": "CommandInvocation(Add-Type): \"Add-Type\"\nParameterBinding(Add-Type): name=\"AssemblyName\"; value=\"System.IO.Compression.FileSystem\"",
+                    "param1": "        Add-Type -AssemblyName System.IO.Compression.FileSystem"
+                },
+                "keywords": [
+                    "Classic"
+                ],
+                "time_created": "2048-02-26T09:37:40.487Z",
+                "level": "information"
+            },
+            "host": {
+                "name": "wdlwaiq-8342"
+            }
+        },
+        {
+            "@timestamp": "2048-05-14T15:31:22.426Z",
+            "log": {
+                "level": "information"
+            },
+            "event": {
+                "kind": "event",
+                "original": "\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e403\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-14T15:31:22.426923800Z'/\u003e\u003cEventRecordID\u003e1687\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eStopped\u003c/Data\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Stopped\n\tPreviousEngineState=Available\n\n\tSequenceNumber=33\n\n\tHostName=Windows PowerShell ISE Host\n\tHostVersion=5.1.17763.1007\n\tHostId=2893be51-221a-436f-8dde-52aa9d67a6cb\n\tHostApplication=C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\PowerShell_ISE.exe\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=4c94e35a-3912-42ed-b45d-41441f57e3b4\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e403\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-15T08:11:47.932007000Z'/\u003e\u003cEventRecordID\u003e1706\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eStopped\u003c/Data\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Stopped\n\tPreviousEngineState=Available\n\n\tSequenceNumber=37\n\n\tHostName=ServerRemoteHost\n\tHostVersion=192.0.2.142\n\tHostId=ea97536f-ca1f-4a61-88d7-cee11436c44f\n\tHostApplication=C:\\Windows\\system32\\wsmprovhost.exe -Embedding\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=7815534c-3632-4850-8f70-073823d9379c\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e403\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-05-15T08:28:53.626698200Z'/\u003e\u003cEventRecordID\u003e1766\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eStopped\u003c/Data\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Stopped\n\tPreviousEngineState=Available\n\n\tSequenceNumber=37\n\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=e3ea4a11-7818-4c01-9860-f77c1c93a1f0\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -executionpolicy bypass -encodedCommand IABpAGYAIAAoAFQAZQBzAHQALQBQAGEAdABoACAAdgBhAHIAaQBhAGIAbABlADoAZwBsAG8AYgBhAGwAOgBQAHIAbwBnAHIAZQBzAHMAUAByAGUAZgBlAHIAZQBuAGMAZQApAHsAcwBlAHQALQB2AGEAcgBpAGEAYgBsAGUAIAAtAG4AYQBtAGUAIAB2AGEAcgBpAGEAYgBsAGUAOgBnAGwAbwBiAGEAbAA6AFAAcgBvAGcAcgBlAHMAcwBQAHIAZQBmAGUAcgBlAG4AYwBlACAALQB2AGEAbAB1AGUAIAAnAFMAaQBsAGUAbgB0AGwAeQBDAG8AbgB0AGkAbgB1AGUAJwB9ADsALgAgAGMAOgAvAFcAaQBuAGQAbwB3AHMALwBUAGUAbQBwAC8AcABhAGMAawBlAHIALQBwAHMALQBlAG4AdgAtAHYAYQByAHMALQA1AGUANQA2ADMANwBkAGQALQAxADUAYQA5AC0ANwAzAGUAMAAtADgAOAA5AGEALQBjADAAMQBmADUANAAxAGEAOABiAGMANgAuAHAAcwAxADsAIAAmACcAYwA6AC8AVwBpAG4AZABvAHcAcwAvAFQAZQBtAHAALwBzAGMAcgBpAHAAdAAtADUAZQA1ADYAMwA3AGQAZAAtADUANgAyADYALQAwADEAOQBkAC0AMAAyADcAYQAtADAAMgBlADcAOABiAGEAYQBhAGMAYwA5AC4AcABzADEAJwA7ACAAZQB4AGkAdAAgACQATABhAHMAdABFAHgAaQB0AEMAbwBkAGUAIAA= -inputFormat xml -outputFormat text\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=7232e6fa-2576-4a5f-934e-6d0bd7c173a6\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e\n\u003cEvent xmlns='http://schemas.microsoft.com/win/2004/08/events/event'\u003e\u003cSystem\u003e\u003cProvider Name='PowerShell'/\u003e\u003cEventID Qualifiers='0'\u003e403\u003c/EventID\u003e\u003cLevel\u003e4\u003c/Level\u003e\u003cTask\u003e4\u003c/Task\u003e\u003cKeywords\u003e0x80000000000000\u003c/Keywords\u003e\u003cTimeCreated SystemTime='2048-06-04T07:20:28.686193900Z'/\u003e\u003cEventRecordID\u003e18592\u003c/EventRecordID\u003e\u003cChannel\u003eWindows PowerShell\u003c/Channel\u003e\u003cComputer\u003evagrant\u003c/Computer\u003e\u003cSecurity/\u003e\u003c/System\u003e\u003cEventData\u003e\u003cData\u003eStopped\u003c/Data\u003e\u003cData\u003eAvailable\u003c/Data\u003e\u003cData\u003e\tNewEngineState=Stopped\n\tPreviousEngineState=Available\n\n\tSequenceNumber=10\n\n\tHostName=ConsoleHost\n\tHostVersion=2.0\n\tHostId=8458c656-b76f-4e27-9d7b-4981b15a2870\n\tEngineVersion=2.0\n\tRunspaceId=8eeacc19-f521-4c71-a4e1-5099d683d264\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=\u003c/Data\u003e\u003c/EventData\u003e\u003c/Event\u003e",
+                "provider": "PowerShell",
+                "code": "403"
+            },
+            "tags": [
+                "forwarded"
+            ],
+            "winlog": {
+                "time_created": "2048-05-14T15:31:22.426Z",
+                "event_data": {
+                    "param1": "Stopped",
+                    "param2": "Available",
+                    "param3": "\tNewEngineState=Stopped\n\tPreviousEngineState=Available\n\n\tSequenceNumber=33\n\n\tHostName=Windows PowerShell ISE Host\n\tHostVersion=5.1.17763.1007\n\tHostId=2893be51-221a-436f-8dde-52aa9d67a6cb\n\tHostApplication=C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\PowerShell_ISE.exe\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=4c94e35a-3912-42ed-b45d-41441f57e3b4\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine="
+                },
+                "channel": "Windows PowerShell",
+                "event_id": "403",
+                "keywords": [
+                    "Classic"
+                ],
+                "level": "information",
+                "provider_name": "PowerShell",
+                "record_id": 1687,
+                "computer_name": "xfzkaqq"
+            },
+            "host": {
+                "name": "xfzkaqq"
+            }
+        },
+        {
+            "@timestamp": "2048-05-15T08:33:26.393089Z",
+            "event": {
+                "action": "Pipeline Execution Details",
+                "code": "800",
+                "kind": "event",
+                "provider": "PowerShell"
+            },
+            "host": {
+                "name": "xfzkaqq"
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "Pipeline execution details for command line: Import-LocalizedData  LocalizedData -filename ArchiveResources\n. \n\nContext Information: \n\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=141\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine=Import-LocalizedData  LocalizedData -filename ArchiveResources\n \n\nDetails: \nCommandInvocation(Import-LocalizedData): \"Import-LocalizedData\"\nParameterBinding(Import-LocalizedData): name=\"FileName\"; value=\"ArchiveResources\"\nParameterBinding(Import-LocalizedData): name=\"BindingVariable\"; value=\"LocalizedData\"\nNonTerminatingError(Import-LocalizedData): \"Cannot find the Windows PowerShell data file 'ArchiveResources.psd1' in directory 'C:\\Gopath\\src\\github.com\\elastic\\beats\\x-pack\\winlogbeat\\en-US\\', or in any parent culture directories.\"",
+            "winlog": {
+                "api": "wineventlog",
+                "channel": "Windows PowerShell",
+                "computer_name": "xfzkaqq",
+                "event_data": {
+                    "param1": "Import-LocalizedData  LocalizedData -filename ArchiveResources",
+                    "param2": "\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=141\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine=Import-LocalizedData  LocalizedData -filename ArchiveResources",
+                    "param3": "CommandInvocation(Import-LocalizedData): \"Import-LocalizedData\"\nParameterBinding(Import-LocalizedData): name=\"FileName\"; value=\"ArchiveResources\"\nParameterBinding(Import-LocalizedData): name=\"BindingVariable\"; value=\"LocalizedData\"\nNonTerminatingError(Import-LocalizedData): \"Cannot find the Windows PowerShell data file 'ArchiveResources.psd1' in directory 'C:\\Gopath\\src\\github.com\\elastic\\beats\\x-pack\\winlogbeat\\en-US\\', or in any parent culture directories.\""
+                },
+                "event_id": "800",
+                "keywords": [
+                    "Classic"
+                ],
+                "opcode": "Info",
+                "provider_name": "PowerShell",
+                "record_id": 1846,
+                "task": "Pipeline Execution Details"
+            }
+        },
+        {
+            "@timestamp": "2048-05-15T08:33:26.393089Z",
+            "event": {
+                "action": "Pipeline Execution Details",
+                "code": "800",
+                "kind": "event",
+                "provider": "PowerShell"
+            },
+            "host": {
+                "name": "xfzkaqq"
+            },
+            "log": {
+                "level": "information"
+            },
+            "message": "Pipeline execution details for command line: . \n\nContext Information: \n\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=143\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine= \n\nDetails: \nCommandInvocation(Out-Default): \"Out-Default\"\nParameterBinding(Out-Default): name=\"InputObject\"; value=\"Cannot find the Windows PowerShell data file 'ArchiveResources.psd1' in directory 'C:\\Gopath\\src\\github.com\\elastic\\beats\\x-pack\\winlogbeat\\en-US\\', or in any parent culture directories.\"",
+            "winlog": {
+                "api": "wineventlog",
+                "channel": "Windows PowerShell",
+                "computer_name": "xfzkaqq",
+                "event_data": {
+                    "param2": "\tDetailSequence=1\n\tDetailTotal=1\n\n\tSequenceNumber=143\n\n\tUserId=VAGRANT\\xfzkaqq\n\tHostName=ConsoleHost\n\tHostVersion=5.1.17763.1007\n\tHostId=cfc1860d-929b-428b-9756-5d6ebfd36487\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -noexit -command 'C:\\Gopath\\src\\github.com\\elastic\\beats'\n\tEngineVersion=5.1.17763.1007\n\tRunspaceId=d49c2874-43e8-4036-90ca-a54f877547fb\n\tPipelineId=71\n\tScriptName=\n\tCommandLine=",
+                    "param3": "ParameterBinding(Out-Default): name=\"InputObject\"; value=\"Cannot find the Windows PowerShell data file 'ArchiveResources.psd1' in directory 'C:\\Gopath\\src\\github.com\\elastic\\beats\\x-pack\\winlogbeat\\en-US\\', or in any parent culture directories.\""
+                },
+                "event_id": "800",
+                "keywords": [
+                    "Classic"
+                ],
+                "opcode": "Info",
+                "provider_name": "PowerShell",
+                "record_id": 1847,
+                "task": "Pipeline Execution Details"
+            }
+        },
+        {
+            "winlog": {
+                "computer_name": "fxz",
+                "record_id": 67086,
+                "event_id": "600",
+                "task": "Provider Lifecycle",
+                "keywords": [
+                    "Classic"
+                ],
+                "channel": "Windows PowerShell",
+                "event_data": {
+                    "param3": "\tProviderName=Function\n\tNewProviderState=Started\n\n\tSequenceNumber=9\n\n\tHostName=ConsoleHost\n\tHostVersion=5.1.20348.2227\n\tHostId=72440768-46cf-44be-ad16-4cdbe4a89e58\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe function Convert-GuidToCompressedGuid {\n\t[CmdletBinding()]\n\t\t\t\t\t\t[OutputType('System.String')]\n\tparam (\n\t\t\t\t\t\t\t[Parameter(ValueFromPipeline=\"\", ValueFromPipelineByPropertyName=\"\", Mandatory=$true)]\n\t\t\t\t\t\t\t[string]$Guid\n\t\t\t\t\t\t)\n\t\t\t\t\t\tbegin {\n\t$Guid= $Guid.Replace('-', '').Replace('{', '').Replace('}', '')\n\t\t\t\t\t\t}\n\t\t\t\t\t\tprocess {\n\t\t\t\t\t\t\ttry {\n\t\t\t\t\t\t\t\t$Groups = @(\n\t\t\t\t\t\t\t\t\t$Guid.Substring(0, 8).ToCharArray(),\n\t\t\t\t\t\t\t\t\t$Guid.Substring(8, 4).ToCharArray(),\n\t\t\t\t\t\t\t\t\t$Guid.Substring(12, 4).ToCharArray(),\n\t\t\t\t\t\t\t\t\t$Guid.Substring(16, 16).ToCharArray()\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t$Groups[0..2] | foreach {\n\t\t\t\t\t\t\t\t\t[array]::Reverse($_)\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t$CompressedGuid = ($Groups[0..2] | foreach { $_ -join '' }) -join ''\n\n\t\t\t\t\t\t\t\t$chararr = $Groups[3]\n\t\t\t\t\t\t\t\tfor ($i = 0; $i -lt $chararr.count; $i++) {\n\t\t\t\t\t\t\t\t\tif (($i % 2) -eq 0) {\n\t\t\t\t\t\t\t\t\t\t$CompressedGuid += ($chararr[$i+1] + $chararr[$i]) -join ''\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t$CompressedGuid\n\t\t\t\t\t\t\t} catch {\n\t\t\t\t\t\t\t\tWrite-Error $_.Exception.Message\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n                    function Clean-Quotes-Backslash {\n                         param ([string]$str)\n                         if($str.length -ge 2 -and $str.Substring(0,1) -eq '\"' -and $str.Substring($str.length - 1) -eq '\"'){\n                                 $str = $str.Substring(1, $str.length - 2)\n                             }\n                         $str = $str.Replace('\\', '\\\\')\n                         $str = $str.Replace('\"', '\\\"')\n                         return $str\n                     }\n\t\t\t\t     $products = Get-ItemProperty HKLM:\\Software\\Classes\\Installer\\Products\\* | Select-Object  @{n=\"PSChildName\";e={$_.\"PSChildName\"}} |\n\t\t\t\t      Select -expand PSChildName\n\n\t\t\t\t     \n[Console]::OutputEncoding = [System.Text.Encoding]::UTF8\nGet-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* |\nWhere-Object {($_.DisplayName -ne $null -and $_DisplayName -ne '' -and $_.DisplayName -notmatch '^KB[000000-999999]') -and\n\t($_.SystemComponent -eq $null -or ($_.SystemComponent -ne $null -and $_.SystemComponent -eq '0'))  -and\n\t($_.ParentKeyName -eq $null) -and\n\t($_.WindowsInstaller -eq $null -or ($_.WindowsInstaller -eq '0') -or ($_.WindowsInstaller -eq 1 -and $products -contains (Convert-GuidToCompressedGuid $_.PSChildName))) -and\n\t($_.ReleaseType -eq $null -or ($_.ReleaseType -ne $null -and\n\t\t$_.ReleaseType -ne 'Security Update' -and\n\t\t$_.ReleaseType -ne 'Update Rollup' -and\n\t\t$_.ReleaseType -ne 'Hotfix'))\n} |\nSelect-Object @{n=\"Name\";e={$_.\"DisplayName\"}},\n\t@{n=\"PackageId\";e={$_.\"PSChildName\"}}, @{n=\"Version\";e={$_.\"DisplayVersion\"}}, Publisher,\n\t@{n=\"InstalledTime\";e={[datetime]::ParseExact($_.\"InstallDate\",\"yyyyMMdd\",$null).ToUniversalTime().ToString(\"yyyy-MM-ddTHH:mm:ssZ\")}} | % { [Console]::WriteLine(@\"\n{\"Name\":\"$(Clean-Quotes-Backslash $_.Name)\",\"PackageId\":\"$($_.PackageId)\",\"Version\":\"$(Clean-Quotes-Backslash $_.Version)\",\"Publisher\":\"$(Clean-Quotes-Backslash $_.Publisher)\",\"InstalledTime\":\"$($_.InstalledTime)\"},\n\"@)} \n\tEngineVersion=\n\tRunspaceId=\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=",
+                    "param1": "Function",
+                    "param2": "Started"
+                },
+                "api": "wineventlog",
+                "provider_name": "PowerShell",
+                "opcode": "Info"
+            },
+            "message": "Provider \"Function\" is Started. \n\nDetails: \n\tProviderName=Function\n\tNewProviderState=Started\n\n\tSequenceNumber=9\n\n\tHostName=ConsoleHost\n\tHostVersion=5.1.20348.2227\n\tHostId=72440768-46cf-44be-ad16-4cdbe4a89e58\n\tHostApplication=C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe function Convert-GuidToCompressedGuid {\n\t\t\t\t\t\t[CmdletBinding()]\n\t\t\t\t\t\t[OutputType('System.String')]\n\t\t\t\t\t\tparam (\n\t\t\t\t\t\t\t[Parameter(ValueFromPipeline=\"\", ValueFromPipelineByPropertyName=\"\", Mandatory=$true)]\n\t\t\t\t\t\t\t[string]$Guid\n\t\t\t\t\t\t)\n\t\t\t\t\t\tbegin {\n\t\t\t\t\t\t\t$Guid = $Guid.Replace('-', '').Replace('{', '').Replace('}', '')\n\t\t\t\t\t\t}\n\t\t\t\t\t\tprocess {\n\t\t\t\t\t\t\ttry {\n\t\t\t\t\t\t\t\t$Groups = @(\n\t\t\t\t\t\t\t\t\t$Guid.Substring(0, 8).ToCharArray(),\n\t\t\t\t\t\t\t\t\t$Guid.Substring(8, 4).ToCharArray(),\n\t\t\t\t\t\t\t\t\t$Guid.Substring(12, 4).ToCharArray(),\n\t\t\t\t\t\t\t\t\t$Guid.Substring(16, 16).ToCharArray()\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t$Groups[0..2] | foreach {\n\t\t\t\t\t\t\t\t\t[array]::Reverse($_)\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t$CompressedGuid = ($Groups[0..2] | foreach { $_ -join '' }) -join ''\n\n\t\t\t\t\t\t\t\t$chararr = $Groups[3]\n\t\t\t\t\t\t\t\tfor ($i = 0; $i -lt $chararr.count; $i++) {\n\t\t\t\t\t\t\t\t\tif (($i % 2) -eq 0) {\n\t\t\t\t\t\t\t\t\t\t$CompressedGuid += ($chararr[$i+1] + $chararr[$i]) -join ''\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t$CompressedGuid\n\t\t\t\t\t\t\t} catch {\n\t\t\t\t\t\t\t\tWrite-Error $_.Exception.Message\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n                    function Clean-Quotes-Backslash {\n                         param ([string]$str)\n                         if($str.length -ge 2 -and $str.Substring(0,1) -eq '\"' -and $str.Substring($str.length - 1) -eq '\"'){\n                                 $str = $str.Substring(1, $str.length - 2)\n                             }\n                         $str = $str.Replace('\\', '\\\\')\n                         $str = $str.Replace('\"', '\\\"')\n                         return $str\n                     }\n\t\t\t\t     $products = Get-ItemProperty HKLM:\\Software\\Classes\\Installer\\Products\\* | Select-Object  @{n=\"PSChildName\";e={$_.\"PSChildName\"}} |\n\t\t\t\t      Select -expand PSChildName\n\n\t\t\t\t     \n[Console]::OutputEncoding = [System.Text.Encoding]::UTF8\nGet-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* |\nWhere-Object {($_.DisplayName -ne $null -and $_DisplayName -ne '' -and $_.DisplayName -notmatch '^KB[000000-999999]') -and\n\t($_.SystemComponent -eq $null -or ($_.SystemComponent -ne $null -and $_.SystemComponent -eq '0'))  -and\n\t($_.ParentKeyName -eq $null) -and\n\t($_.WindowsInstaller -eq $null -or ($_.WindowsInstaller -eq '0') -or ($_.WindowsInstaller -eq 1 -and $products -contains (Convert-GuidToCompressedGuid $_.PSChildName))) -and\n\t($_.ReleaseType -eq $null -or ($_.ReleaseType -ne $null -and\n\t\t$_.ReleaseType -ne 'Security Update' -and\n\t\t$_.ReleaseType -ne 'Update Rollup' -and\n\t\t$_.ReleaseType -ne 'Hotfix'))\n} |\nSelect-Object @{n=\"Name\";e={$_.\"DisplayName\"}},\n\t@{n=\"PackageId\";e={$_.\"PSChildName\"}}, @{n=\"Version\";e={$_.\"DisplayVersion\"}}, Publisher,\n\t@{n=\"InstalledTime\";e={[datetime]::ParseExact($_.\"InstallDate\",\"yyyyMMdd\",$null).ToUniversalTime().ToString(\"yyyy-MM-ddTHH:mm:ssZ\")}} | % { [Console]::WriteLine(@\"\n{\"Name\":\"$(Clean-Quotes-Backslash $_.Name)\",\"PackageId\":\"$($_.PackageId)\",\"Version\":\"$(Clean-Quotes-Backslash $_.Version)\",\"Publisher\":\"$(Clean-Quotes-Backslash $_.Publisher)\",\"InstalledTime\":\"$($_.InstalledTime)\"},\n\"@)} \n\tEngineVersion=\n\tRunspaceId=\n\tPipelineId=\n\tCommandName=\n\tCommandType=\n\tScriptName=\n\tCommandPath=\n\tCommandLine=",
+            "@timestamp": "2052-03-28T19:01:28.331Z",
+            "event": {
+                "code": "600",
+                "provider": "PowerShell",
+                "action": "Provider Lifecycle",
+                "dataset": "windows.forwarded"
+            }
+        }
+    ]
+}

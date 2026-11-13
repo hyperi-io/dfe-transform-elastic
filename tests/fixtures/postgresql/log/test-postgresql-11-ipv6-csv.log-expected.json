@@ -1,0 +1,121 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-03T17:45:17.612Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "ingested": "2026-11-13T23:03:08.118583338Z",
+        "kind": "event",
+        "original": "2049-01-03 17:45:17.612 UTC,\"jose.villanova\",\"postgres\",20460,\"::1:16790\",5ff202ad.4fec,1,\"startup\",2049-01-03 17:45:17 UTC,3/15493200,0,FATAL,28000,\"role \"\"jose.villanova\"\" does not exist\",,,,,,,,,\"\"",
+        "timezone": "UTC",
+        "type": [
+          "error"
+        ]
+      },
+      "log": {
+        "level": "FATAL"
+      },
+      "message": "role \"jose.villanova\" does not exist",
+      "postgresql": {
+        "log": {
+          "client_addr": "::1",
+          "client_port": 16790,
+          "command_tag": "startup",
+          "database": "postgres",
+          "session_id": "5ff202ad.4fec",
+          "session_start_time": "2049-01-03T17:45:17.000Z",
+          "sql_state_code": "28000",
+          "timestamp": "2049-01-03 17:45:17.612 UTC",
+          "transaction_id": 0,
+          "virtual_transaction_id": "3/15493200"
+        }
+      },
+      "process": {
+        "pid": 20460
+      },
+      "related": {
+        "ip": [
+          "::1"
+        ],
+        "user": [
+          "jose.villanova"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "jose.villanova"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_map": [
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EDT"
+          },
+          {
+            "tz_long": "America/New_York",
+            "tz_short": "EST"
+          },
+          {
+            "tz_long": "America/Chicago",
+            "tz_short": "CST"
+          },
+          {
+            "tz_long": "America/Denver",
+            "tz_short": "MST"
+          },
+          {
+            "tz_long": "Asia/Karachi",
+            "tz_short": "PKT"
+          },
+          {
+            "tz_long": "Australia/Sydney",
+            "tz_short": "AEST"
+          },
+          {
+            "tz_long": "Europe/Berlin",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Asia/Singapore",
+            "tz_short": "SST"
+          },
+          {
+            "tz_long": "Europe/London",
+            "tz_short": "WEST"
+          }
+        ]
+      },
+      "message": "2049-01-03 17:45:17.612 UTC,\"jose.villanova\",\"postgres\",20460,\"::1:16790\",5ff202ad.4fec,1,\"startup\",2049-01-03 17:45:17 UTC,3/15493200,0,FATAL,28000,\"role \"\"jose.villanova\"\" does not exist\",,,,,,,,,\"\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-postgresql-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "postgresql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

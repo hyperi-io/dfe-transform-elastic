@@ -1,0 +1,109 @@
+{
+    "events": [
+        {
+            "cloud": {
+                "provider": "azure",
+                "region": "eastus"
+            },
+            "agent": {
+                "name": "khf",
+                "id": "18d14915-2b61-4568-b269-9f6b6143adee",
+                "ephemeral_id": "07f159d0-1782-445d-9fcb-6c4f161324fe",
+                "type": "metricbeat",
+                "version": "8.6.2"
+            },
+            "@timestamp": "2051-08-27T17:52:00.000Z",
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "service": {
+                "type": "azure"
+            },
+            "data_stream": {
+                "namespace": "default",
+                "type": "metrics",
+                "dataset": "azure.container_service"
+            },
+            "elastic_agent": {
+                "id": "18d14915-2b61-4568-b269-9f6b6143adee",
+                "version": "8.6.2",
+                "snapshot": false
+            },
+            "host": {
+                "hostname": "khf",
+                "os": {
+                    "kernel": "5.15.0-52-generic",
+                    "codename": "focal",
+                    "name": "Ubuntu",
+                    "type": "linux",
+                    "family": "debian",
+                    "version": "20.04.6 LTS (Focal Fossa)",
+                    "platform": "ubuntu"
+                },
+                "containerized": false,
+                "ip": [
+                    "10.166.238.174",
+                    "2001:0db8:f882:4072:e160:f3c1:d15c:edfa",
+                    "2001:db8:5ff:de1c:67f1:3f8b:e992:c26e",
+                    "2001:0db8:ac0f:055a:237b:ed72:5703:4dd2",
+                    "2001:0db8:3695:1355:56bd:7248:a824:222f",
+                    "2001:0db8:374b:7026:9f89:8350:69c2:0216",
+                    "2001:0db8:c5bf:ae78:5930:2e6b:3356:7dbb",
+                    "2001:0db8:b5f8:72c2:58a5:d153:fa8e:e2e1",
+                    "2001:0db8:9445:62c9:7b39:8f70:8e27:484d",
+                    "fe80::2712:5fda:480a:f33a",
+                    "172.22.234.160",
+                    "fe80::42:81ff:fe96:c5ac",
+                    "172.27.161.243",
+                    "fe80::42:71ff:fe31:ec12",
+                    "fe80::6864:14ff:fec8:2034"
+                ],
+                "name": "khf",
+                "id": "fba3326d54304848b8bbca930f69aadc",
+                "mac": [
+                    "95-96-72-69-FB-24",
+                    "01-49-77-26-A6-BE",
+                    "0F-42-29-C9-86-91",
+                    "16-66-F2-83-EF-0F",
+                    "F6-2B-F5-81-48-EF"
+                ],
+                "architecture": "x86_64"
+            },
+            "metricset": {
+                "period": 300000,
+                "name": "monitor"
+            },
+            "event": {
+                "duration": 6338886808,
+                "agent_id_status": "verified",
+                "ingested": "2051-08-27T17:57:19Z",
+                "module": "azure",
+                "dataset": "azure.container_service"
+            },
+            "azure": {
+                "subscription_id": "a4652007-181b-47d7-a378-d366a58ba532",
+                "timegrain": "PT5M",
+                "container_service": {
+                    "kube_node_status_condition": {
+                        "avg": 1
+                    }
+                },
+                "resource": {
+                    "name": "test",
+                    "id": "/subscriptions/a4652007-181b-47d7-a378-d366a58ba532/resourceGroups/test_group/providers/Microsoft.ContainerService/managedClusters/test",
+                    "type": "Microsoft.ContainerService/managedClusters",
+                    "group": "test_group",
+                    "tags": {
+                        "custodian_status": "Resource does not meet policy: delete@2051/09/26"
+                    }
+                },
+                "namespace": "Microsoft.ContainerService/managedClusters",
+                "dimensions": {
+                    "node": "aks-agentpool-12628255-vmss000002",
+                    "condition": "KubeletProblem",
+                    "status": "False"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,753 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-29T06:13:10.320Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "fnvfc@example.com",
+          "description": "API Get events raw details /API/24.11.0.0/Sets/87dbcdef-3118-1235-abdb-acbbab3d9f12/Events/Search?limit=5&nextCursor=start POST setId: Me, offset: 0, limit: 5, nextCursor: start, sortBy: Date, sortDir: desc, filterPayload: eventDate GE \"2052-11-01T00:00:00Z\" AND eventDate LE \"2052-11-25T10:30:00Z\"",
+          "event_time": "2052-11-29T06:13:10.320Z",
+          "feature": "Public API",
+          "internal_session_id": "1012",
+          "logged_at": "2052-11-29T06:10:35.943Z",
+          "logged_from": "192.0.2.218",
+          "permission_description": "View all events and files.",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "api"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-29T06:13:10.32Z\",\"PermissionDescription\":\"View all events and files.\",\"Description\":\"API Get events raw details /API/24.11.0.0/Sets/87dbcdef-3118-1235-abdb-acbbab3d9f12/Events/Search?limit=5&nextCursor=start POST setId: Me, offset: 0, limit: 5, nextCursor: start, sortBy: Date, sortDir: desc, filterPayload: eventDate GE \\\"2052-11-01T00:00:00Z\\\" AND eventDate LE \\\"2052-11-25T10:30:00Z\\\"\",\"Feature\":\"Public API\",\"LoggedAt\":\"2052-11-29T06:10:35.943Z\",\"LoggedFrom\":\"192.0.2.218\",\"Administrator\":\"fnvfc@example.com\",\"InternalSessionId\":1012,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "API Get events raw details /API/24.11.0.0/Sets/87dbcdef-3118-1235-abdb-acbbab3d9f12/Events/Search?limit=5&nextCursor=start POST setId: Me, offset: 0, limit: 5, nextCursor: start, sortBy: Date, sortDir: desc, filterPayload: eventDate GE \"2052-11-01T00:00:00Z\" AND eventDate LE \"2052-11-25T10:30:00Z\"",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.218"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "fnvfc@example.com",
+        "name": "fnvfc",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:37:28.373Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "fpf@example.com",
+          "description": "Enter Set Elastic/test",
+          "event_time": "2052-11-25T05:37:28.373Z",
+          "feature": "Sets",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "192.0.2.87",
+          "permission_description": "None",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:28.373Z\",\"PermissionDescription\":\"None\",\"Description\":\"Enter Set Elastic/test\",\"Feature\":\"Sets\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.87\",\"Administrator\":\"fpf@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "admin"
+        ]
+      },
+      "message": "Enter Set Elastic/test",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "fpf",
+          "fpf@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "fpf@example.com",
+        "name": "fpf",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:37:30.290Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "rvny@example.com",
+          "description": "Read \"General configuration\" Agent Configuration policy",
+          "event_time": "2052-11-25T05:37:30.290Z",
+          "feature": "Agent Config",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "192.0.2.134",
+          "permission_description": "View all policies and application groups. Read and export policy and application group",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:30.29Z\",\"PermissionDescription\":\"View all policies and application groups. Read and export policy and application group\",\"Description\":\"Read \\\"General configuration\\\" Agent Configuration policy\",\"Feature\":\"Agent Config\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.134\",\"Administrator\":\"rvny@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "Read \"General configuration\" Agent Configuration policy",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.134"
+        ],
+        "user": [
+          "rvny",
+          "rvny@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.134"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "rvny@example.com",
+        "name": "rvny",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:37:32.993Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "ktkudy.lcsn@example.com",
+          "description": "Read End User UIs",
+          "event_time": "2052-11-25T05:37:32.993Z",
+          "feature": "End-User UI",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "192.0.2.134",
+          "permission_description": "View End-user UI",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:32.993Z\",\"PermissionDescription\":\"View End-user UI\",\"Description\":\"Read End User UIs\",\"Feature\":\"End-User UI\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.134\",\"Administrator\":\"ktkudy.lcsn@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "Read End User UIs",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.134"
+        ],
+        "user": [
+          "ktkudy.lcsn",
+          "ktkudy.lcsn@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.134"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "ktkudy.lcsn@example.com",
+        "name": "ktkudy.lcsn",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:37:33.300Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "gazwwvdl@example.com",
+          "description": "Read policies",
+          "event_time": "2052-11-25T05:37:33.300Z",
+          "feature": "Policies",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "198.51.100.211",
+          "permission_description": "View all policies and application groups. Read and export policy and application group",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:33.3Z\",\"PermissionDescription\":\"View all policies and application groups. Read and export policy and application group\",\"Description\":\"Read policies\",\"Feature\":\"Policies\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"198.51.100.211\",\"Administrator\":\"gazwwvdl@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "Read policies",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "gazwwvdl",
+          "gazwwvdl@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "gazwwvdl@example.com",
+        "name": "gazwwvdl",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:37:33.870Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "gazwwvdl@example.com",
+          "description": "View Get Started",
+          "event_time": "2052-11-25T05:37:33.870Z",
+          "feature": "WebPage",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "198.51.100.211",
+          "permission_description": "None",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:33.87Z\",\"PermissionDescription\":\"None\",\"Description\":\"View Get Started\",\"Feature\":\"WebPage\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"198.51.100.211\",\"Administrator\":\"gazwwvdl@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "View Get Started",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "gazwwvdl",
+          "gazwwvdl@example.com"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "gazwwvdl@example.com",
+        "name": "gazwwvdl",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:38:39.130Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "uzqcfi@example.com",
+          "description": "Read \"General configuration\" Agent Configuration policy",
+          "event_time": "2052-11-25T05:38:39.130Z",
+          "feature": "Agent Config",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "203.0.113.177",
+          "permission_description": "View all policies and application groups. Read and export policy and application group",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:38:39.13Z\",\"PermissionDescription\":\"View all policies and application groups. Read and export policy and application group\",\"Description\":\"Read \\\"General configuration\\\" Agent Configuration policy\",\"Feature\":\"Agent Config\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"203.0.113.177\",\"Administrator\":\"uzqcfi@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "Read \"General configuration\" Agent Configuration policy",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.177"
+        ],
+        "user": [
+          "uzqcfi",
+          "uzqcfi@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.177"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "uzqcfi@example.com",
+        "name": "uzqcfi",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:38:48.917Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "njtro@example.com",
+          "description": "Get agent installation packages. OS: 'all'",
+          "event_time": "2052-11-25T05:38:48.917Z",
+          "feature": "My Computers",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "203.0.113.212",
+          "permission_description": "View Download Agent Installation",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:38:48.917Z\",\"PermissionDescription\":\"View Download Agent Installation\",\"Description\":\"Get agent installation packages. OS: 'all'\",\"Feature\":\"My Computers\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"203.0.113.212\",\"Administrator\":\"njtro@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Get agent installation packages. OS: 'all'",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "njtro",
+          "njtro@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "njtro@example.com",
+        "name": "njtro",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T05:43:18.180Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "udydq@example.com",
+          "description": "Get agent installation package URL: https://epm-downloads.s3.us-east-2.amazonaws.com/latest/Windows/VFAgentSetupX64.msi",
+          "event_time": "2052-11-25T05:43:18.180Z",
+          "feature": "My Computers",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "203.0.113.212",
+          "permission_description": "View Download Agent Installation",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:43:18.18Z\",\"PermissionDescription\":\"View Download Agent Installation\",\"Description\":\"Get agent installation package URL: https://epm-downloads.s3.us-east-2.amazonaws.com/latest/Windows/VFAgentSetupX64.msi\",\"Feature\":\"My Computers\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"203.0.113.212\",\"Administrator\":\"udydq@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Get agent installation package URL: https://epm-downloads.s3.us-east-2.amazonaws.com/latest/Windows/VFAgentSetupX64.msi",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "udydq",
+          "udydq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "udydq@example.com",
+        "name": "udydq",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T06:36:26.657Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "fnvfc@example.com",
+          "description": "(ReportController) GetReportTypes executed successfully.",
+          "event_time": "2052-11-25T06:36:26.657Z",
+          "feature": "Reports",
+          "internal_session_id": "876",
+          "logged_at": "2052-11-25T05:25:13.167Z",
+          "logged_from": "192.0.2.87",
+          "permission_description": "View Reports",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T06:36:26.657Z\",\"PermissionDescription\":\"View Reports\",\"Description\":\"(ReportController) GetReportTypes executed successfully.\",\"Feature\":\"Reports\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.87\",\"Administrator\":\"fnvfc@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "(ReportController) GetReportTypes executed successfully.",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "fnvfc@example.com",
+        "name": "fnvfc",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2052-11-25T10:24:47.010Z",
+      "cyberark_epm": {
+        "admin_audit": {
+          "administrator": "gazwwvdl@example.com",
+          "description": "View My Computers",
+          "event_time": "2052-11-25T10:24:47.010Z",
+          "feature": "WebPage",
+          "internal_session_id": "884",
+          "logged_at": "2052-11-25T09:46:23.630Z",
+          "logged_from": "192.0.2.218",
+          "permission_description": "None",
+          "role": "SetAdmin",
+          "set_name": "Elastic/test"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T10:24:47.01Z\",\"PermissionDescription\":\"None\",\"Description\":\"View My Computers\",\"Feature\":\"WebPage\",\"LoggedAt\":\"2052-11-25T09:46:23.63Z\",\"LoggedFrom\":\"192.0.2.218\",\"Administrator\":\"gazwwvdl@example.com\",\"InternalSessionId\":884,\"Role\":\"SetAdmin\"}",
+        "type": [
+          "access"
+        ]
+      },
+      "message": "View My Computers",
+      "observer": {
+        "product": "Endpoint Privilege Manager",
+        "vendor": "CyberArk"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "gazwwvdl",
+          "gazwwvdl@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.218"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "gazwwvdl@example.com",
+        "name": "gazwwvdl",
+        "roles": [
+          "SetAdmin"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-29T06:13:10.32Z\",\"PermissionDescription\":\"View all events and files.\",\"Description\":\"API Get events raw details /API/24.11.0.0/Sets/87dbcdef-3118-1235-abdb-acbbab3d9f12/Events/Search?limit=5&nextCursor=start POST setId: Me, offset: 0, limit: 5, nextCursor: start, sortBy: Date, sortDir: desc, filterPayload: eventDate GE \\\"2052-11-01T00:00:00Z\\\" AND eventDate LE \\\"2052-11-25T10:30:00Z\\\"\",\"Feature\":\"Public API\",\"LoggedAt\":\"2052-11-29T06:10:35.943Z\",\"LoggedFrom\":\"192.0.2.218\",\"Administrator\":\"fnvfc@example.com\",\"InternalSessionId\":1012,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:28.373Z\",\"PermissionDescription\":\"None\",\"Description\":\"Enter Set Elastic/test\",\"Feature\":\"Sets\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.87\",\"Administrator\":\"fpf@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:30.29Z\",\"PermissionDescription\":\"View all policies and application groups. Read and export policy and application group\",\"Description\":\"Read \\\"General configuration\\\" Agent Configuration policy\",\"Feature\":\"Agent Config\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.134\",\"Administrator\":\"rvny@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:32.993Z\",\"PermissionDescription\":\"View End-user UI\",\"Description\":\"Read End User UIs\",\"Feature\":\"End-User UI\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.134\",\"Administrator\":\"ktkudy.lcsn@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:33.3Z\",\"PermissionDescription\":\"View all policies and application groups. Read and export policy and application group\",\"Description\":\"Read policies\",\"Feature\":\"Policies\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"198.51.100.211\",\"Administrator\":\"gazwwvdl@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:37:33.87Z\",\"PermissionDescription\":\"None\",\"Description\":\"View Get Started\",\"Feature\":\"WebPage\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"198.51.100.211\",\"Administrator\":\"gazwwvdl@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:38:39.13Z\",\"PermissionDescription\":\"View all policies and application groups. Read and export policy and application group\",\"Description\":\"Read \\\"General configuration\\\" Agent Configuration policy\",\"Feature\":\"Agent Config\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"203.0.113.177\",\"Administrator\":\"uzqcfi@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:38:48.917Z\",\"PermissionDescription\":\"View Download Agent Installation\",\"Description\":\"Get agent installation packages. OS: 'all'\",\"Feature\":\"My Computers\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"203.0.113.212\",\"Administrator\":\"njtro@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T05:43:18.18Z\",\"PermissionDescription\":\"View Download Agent Installation\",\"Description\":\"Get agent installation package URL: https://epm-downloads.s3.us-east-2.amazonaws.com/latest/Windows/VFAgentSetupX64.msi\",\"Feature\":\"My Computers\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"203.0.113.212\",\"Administrator\":\"udydq@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T06:36:26.657Z\",\"PermissionDescription\":\"View Reports\",\"Description\":\"(ReportController) GetReportTypes executed successfully.\",\"Feature\":\"Reports\",\"LoggedAt\":\"2052-11-25T05:25:13.167Z\",\"LoggedFrom\":\"192.0.2.87\",\"Administrator\":\"fnvfc@example.com\",\"InternalSessionId\":876,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"SetName\":\"Elastic/test\",\"EventTime\":\"2052-11-25T10:24:47.01Z\",\"PermissionDescription\":\"None\",\"Description\":\"View My Computers\",\"Feature\":\"WebPage\",\"LoggedAt\":\"2052-11-25T09:46:23.63Z\",\"LoggedFrom\":\"192.0.2.218\",\"Administrator\":\"gazwwvdl@example.com\",\"InternalSessionId\":884,\"Role\":\"SetAdmin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "admin_audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cyberark_epm-admin_audit-default",
+    "event_count": 11,
+    "numeric_keyword_fields": [],
+    "package": "cyberark_epm",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

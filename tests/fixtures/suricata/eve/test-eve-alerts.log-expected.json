@@ -1,0 +1,2807 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-10-03T14:42:44.836Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "example.net",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-03T14:42:44.836744+0000\",\"flow_id\":2191386088856669,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32858,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.net\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T14:42:44.613469+0000\"}}",
+        "severity": 2,
+        "start": "2046-10-03T14:42:44.613Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1121
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "bytes": 2001,
+        "community_id": "1:VoVwmy+GULcvGpf0ax6SzSRxIPk=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "example.net"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "id": "2013028",
+        "name": "ET POLICY curl User-Agent Outbound"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 347,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 32858
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Attempted Information Leak",
+            "gid": 1,
+            "rev": 4,
+            "signature": "ET POLICY curl User-Agent Outbound",
+            "signature_id": 2013028
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "2191386088856669",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.net",
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    },
+    {
+      "@timestamp": "2046-10-03T16:16:26.711Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "example.net",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-03T16:16:26.711841+0000\",\"flow_id\":678269478904081,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32864,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.net\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:16:26.467217+0000\"}}",
+        "severity": 2,
+        "start": "2046-10-03T16:16:26.467Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1121
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "bytes": 2001,
+        "community_id": "1:j5hzIMhBPaEHsoSIcfMHBvDh4nM=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "example.net"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "id": "2013028",
+        "name": "ET POLICY curl User-Agent Outbound"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 347,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 32864
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Attempted Information Leak",
+            "gid": 1,
+            "rev": 4,
+            "signature": "ET POLICY curl User-Agent Outbound",
+            "signature_id": 2013028
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "678269478904081",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.net",
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    },
+    {
+      "@timestamp": "2046-10-03T16:44:50.813Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "example.net",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-03T16:44:50.813100+0000\",\"flow_id\":1170030461115650,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32870,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.net\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1126},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:44:50.580866+0000\"}}",
+        "severity": 2,
+        "start": "2046-10-03T16:44:50.580Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1126
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "bytes": 2001,
+        "community_id": "1:ikG0vs93190CONDFsx9S3Wb/hAc=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "example.net"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "id": "2013028",
+        "name": "ET POLICY curl User-Agent Outbound"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 347,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 32870
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Attempted Information Leak",
+            "gid": 1,
+            "rev": 4,
+            "signature": "ET POLICY curl User-Agent Outbound",
+            "signature_id": 2013028
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "1170030461115650",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.net",
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    },
+    {
+      "@timestamp": "2046-10-03T16:45:09.267Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "example.org",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-03T16:45:09.267308+0000\",\"flow_id\":49628113637132,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32872,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.org\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:45:09.036620+0000\"}}",
+        "severity": 2,
+        "start": "2046-10-03T16:45:09.036Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1121
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "bytes": 2001,
+        "community_id": "1:HD/3QyEkADPspSe0XBuaWDas9WA=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "example.org"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "id": "2013028",
+        "name": "ET POLICY curl User-Agent Outbound"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 347,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 32872
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Attempted Information Leak",
+            "gid": 1,
+            "rev": 4,
+            "signature": "ET POLICY curl User-Agent Outbound",
+            "signature_id": 2013028
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "49628113637132",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.org",
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    },
+    {
+      "@timestamp": "2046-10-03T16:45:34.481Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "example.org",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-03T16:45:34.481113+0000\",\"flow_id\":116307482565223,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32876,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.org\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:45:34.252519+0000\"}}",
+        "severity": 2,
+        "start": "2046-10-03T16:45:34.252Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1121
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "bytes": 2001,
+        "community_id": "1:j/Yh4t4AcDYQq1vqXSqBDoD+tZo=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "example.org"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "id": "2013028",
+        "name": "ET POLICY curl User-Agent Outbound"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 347,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 32876
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Attempted Information Leak",
+            "gid": 1,
+            "rev": 4,
+            "signature": "ET POLICY curl User-Agent Outbound",
+            "signature_id": 2013028
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "116307482565223",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.org",
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    },
+    {
+      "@timestamp": "2046-10-03T17:02:38.900Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "example.org",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-03T17:02:38.900976+0000\",\"flow_id\":1205867738178946,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32892,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.org\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1126},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T17:02:38.599426+0000\"}}",
+        "severity": 2,
+        "start": "2046-10-03T17:02:38.599Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1126
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "bytes": 2001,
+        "community_id": "1:7OFO9eyQK69tf+mfeopd08imBuU=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "example.org"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Attempted Information Leak",
+        "id": "2013028",
+        "name": "ET POLICY curl User-Agent Outbound"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 347,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 32892
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Attempted Information Leak",
+            "gid": 1,
+            "rev": 4,
+            "signature": "ET POLICY curl User-Agent Outbound",
+            "signature_id": 2013028
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "1205867738178946",
+          "http": {
+            "http_content_type": "text/html",
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.org",
+        "original": "/",
+        "path": "/"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.58.0",
+        "version": "7.58.0"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.009Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1654,
+        "domain": "mfeuvqhr.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.009897+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1138},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":497,\"bytes_toclient\":1654,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.924Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1138
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 2151,
+        "community_id": "1:AVOsa92RkAkzqniLqkYtyw/XmEE=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "mfeuvqhr.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 497,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 37742
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "764842923400056",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "mfeuvqhr.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-security/InRelease",
+        "path": "/ubuntu/dists/bionic-security/InRelease"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.168Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 417,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 3,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.168340+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":304,\"length\":0},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":487,\"bytes_toclient\":417,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 304
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 904,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 7,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 487,
+        "ip": "192.168.251.179",
+        "packets": 4,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 0
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic/InRelease",
+        "path": "/ubuntu/dists/bionic/InRelease"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.288Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 3445,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 5,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.288862+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":1,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2601},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":6,\"pkts_toclient\":5,\"bytes_toserver\":842,\"bytes_toclient\":3445,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2601
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 4287,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 11,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 842,
+        "ip": "192.168.251.179",
+        "packets": 6,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 1
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/InRelease",
+        "path": "/ubuntu/dists/bionic-updates/InRelease"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.289Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 90543,
+        "domain": "mfeuvqhr.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 62,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.289324+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":1,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/main\\/source\\/by-hash\\/SHA256\\/a7fb23a58aa63c50101f9434b4f4f807d56649f3357601258dfd9f9e169a6a64\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1241},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":64,\"pkts_toclient\":62,\"bytes_toserver\":4810,\"bytes_toclient\":90543,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.924Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 1241
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 95353,
+        "community_id": "1:AVOsa92RkAkzqniLqkYtyw/XmEE=",
+        "packets": 126,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "mfeuvqhr.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 4810,
+        "ip": "192.168.251.179",
+        "packets": 64,
+        "port": 37742
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "764842923400056",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 1
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "mfeuvqhr.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-security/main/source/by-hash/SHA256/a7fb23a58aa63c50101f9434b4f4f807d56649f3357601258dfd9f9e169a6a64",
+        "path": "/ubuntu/dists/bionic-security/main/source/by-hash/SHA256/a7fb23a58aa63c50101f9434b4f4f807d56649f3357601258dfd9f9e169a6a64"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.356Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 145014,
+        "domain": "mfeuvqhr.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 98,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.356132+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":2,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/main\\/binary-amd64\\/by-hash\\/SHA256\\/c6c1347d1581dc4e33d51dd8cc3d506c0421a89dc3c41954cba01745b1330553\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":87,\"pkts_toclient\":98,\"bytes_toserver\":6591,\"bytes_toclient\":145014,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.924Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2687
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 151605,
+        "community_id": "1:AVOsa92RkAkzqniLqkYtyw/XmEE=",
+        "packets": 185,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "mfeuvqhr.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 6591,
+        "ip": "192.168.251.179",
+        "packets": 87,
+        "port": 37742
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "764842923400056",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 2
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "mfeuvqhr.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-security/main/binary-amd64/by-hash/SHA256/c6c1347d1581dc4e33d51dd8cc3d506c0421a89dc3c41954cba01745b1330553",
+        "path": "/ubuntu/dists/bionic-security/main/binary-amd64/by-hash/SHA256/c6c1347d1581dc4e33d51dd8cc3d506c0421a89dc3c41954cba01745b1330553"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.456Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 330525,
+        "domain": "mfeuvqhr.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 221,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.456919+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":3,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/universe\\/binary-amd64\\/by-hash\\/SHA256\\/d6fa281152a73e7dbd21aec7b2ced5ed4aba03501e9c04abf415035422b6a534\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2688},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":156,\"pkts_toclient\":221,\"bytes_toserver\":11460,\"bytes_toclient\":330525,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.924Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2688
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 341985,
+        "community_id": "1:AVOsa92RkAkzqniLqkYtyw/XmEE=",
+        "packets": 377,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "mfeuvqhr.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 11460,
+        "ip": "192.168.251.179",
+        "packets": 156,
+        "port": 37742
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "764842923400056",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 3
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "mfeuvqhr.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-security/universe/binary-amd64/by-hash/SHA256/d6fa281152a73e7dbd21aec7b2ced5ed4aba03501e9c04abf415035422b6a534",
+        "path": "/ubuntu/dists/bionic-security/universe/binary-amd64/by-hash/SHA256/d6fa281152a73e7dbd21aec7b2ced5ed4aba03501e9c04abf415035422b6a534"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.747Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 96554,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 67,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.747122+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":2,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-backports\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2601},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":64,\"pkts_toclient\":67,\"bytes_toserver\":4895,\"bytes_toclient\":96554,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2601
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 101449,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 131,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 4895,
+        "ip": "192.168.251.179",
+        "packets": 64,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 2
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-backports/InRelease",
+        "path": "/ubuntu/dists/bionic-backports/InRelease"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:34:59.953Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 174843,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 119,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:34:59.953886+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":3,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/main\\/source\\/by-hash\\/SHA256\\/94d4c9c5f6c55a1a5c7e7a00e282eb31c50f75169d7cb9e6c091555c40a74b97\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":91,\"pkts_toclient\":119,\"bytes_toserver\":6932,\"bytes_toclient\":174843,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2687
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 181775,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 210,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 6932,
+        "ip": "192.168.251.179",
+        "packets": 91,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 3
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/main/source/by-hash/SHA256/94d4c9c5f6c55a1a5c7e7a00e282eb31c50f75169d7cb9e6c091555c40a74b97",
+        "path": "/ubuntu/dists/bionic-updates/main/source/by-hash/SHA256/94d4c9c5f6c55a1a5c7e7a00e282eb31c50f75169d7cb9e6c091555c40a74b97"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:00.250Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 376452,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 253,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:35:00.250560+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":4,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/universe\\/source\\/by-hash\\/SHA256\\/56bdd9fe4bab77cbf1800aace067d5ea0098ee7a7729e0a2438f8f4b0820b0ef\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2688},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":159,\"pkts_toclient\":253,\"bytes_toserver\":11679,\"bytes_toclient\":376452,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2688
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 388131,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 412,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 11679,
+        "ip": "192.168.251.179",
+        "packets": 159,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 4
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/universe/source/by-hash/SHA256/56bdd9fe4bab77cbf1800aace067d5ea0098ee7a7729e0a2438f8f4b0820b0ef",
+        "path": "/ubuntu/dists/bionic-updates/universe/source/by-hash/SHA256/56bdd9fe4bab77cbf1800aace067d5ea0098ee7a7729e0a2438f8f4b0820b0ef"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:00.401Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 468170,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 314,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:35:00.401788+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":5,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/main\\/binary-amd64\\/by-hash\\/SHA256\\/8820525bc8b03d15811df7daf4472db695ea16663af1b27233cfefce70538c62\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":190,\"pkts_toclient\":314,\"bytes_toserver\":13986,\"bytes_toclient\":468170,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2687
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 482156,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 504,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 13986,
+        "ip": "192.168.251.179",
+        "packets": 190,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 5
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/main/binary-amd64/by-hash/SHA256/8820525bc8b03d15811df7daf4472db695ea16663af1b27233cfefce70538c62",
+        "path": "/ubuntu/dists/bionic-updates/main/binary-amd64/by-hash/SHA256/8820525bc8b03d15811df7daf4472db695ea16663af1b27233cfefce70538c62"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:00.776Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 880323,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 588,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:35:00.776438+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":6,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/restricted\\/binary-amd64\\/by-hash\\/SHA256\\/b29dae6e60bab9952274dd0b8fcc4d4c7509233c27ff813f0c15388f550e0a77\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2691},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":328,\"pkts_toclient\":588,\"bytes_toserver\":23361,\"bytes_toclient\":880323,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2691
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 903684,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 916,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 23361,
+        "ip": "192.168.251.179",
+        "packets": 328,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 6
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/restricted/binary-amd64/by-hash/SHA256/b29dae6e60bab9952274dd0b8fcc4d4c7509233c27ff813f0c15388f550e0a77",
+        "path": "/ubuntu/dists/bionic-updates/restricted/binary-amd64/by-hash/SHA256/b29dae6e60bab9952274dd0b8fcc4d4c7509233c27ff813f0c15388f550e0a77"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:00.897Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 884342,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 591,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:35:00.897009+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":7,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/universe\\/binary-amd64\\/by-hash\\/SHA256\\/5645e7dfcdd54c4df16128be795ccacca32f27fbe3f3283a33145733ff7f8dfe\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":330,\"pkts_toclient\":591,\"bytes_toserver\":23758,\"bytes_toclient\":884342,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 2687
+          },
+          "status_code": 200
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 908100,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 921,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 23758,
+        "ip": "192.168.251.179",
+        "packets": 330,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 7
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/universe/binary-amd64/by-hash/SHA256/5645e7dfcdd54c4df16128be795ccacca32f27fbe3f3283a33145733ff7f8dfe",
+        "path": "/ubuntu/dists/bionic-updates/universe/binary-amd64/by-hash/SHA256/5645e7dfcdd54c4df16128be795ccacca32f27fbe3f3283a33145733ff7f8dfe"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:01.362Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1467603,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 979,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:35:01.362208+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":8,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/universe\\/i18n\\/by-hash\\/SHA256\\/8ea120a4574f23286bd36af7c9a6fb7dd10a95095466ef3ec6067f5c32bcb8d5\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"length\":0},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":524,\"pkts_toclient\":979,\"bytes_toserver\":36819,\"bytes_toclient\":1467603,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          }
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 1504422,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 1503,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 36819,
+        "ip": "192.168.251.179",
+        "packets": 524,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 8
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/universe/i18n/by-hash/SHA256/8ea120a4574f23286bd36af7c9a6fb7dd10a95095466ef3ec6067f5c32bcb8d5",
+        "path": "/ubuntu/dists/bionic-updates/universe/i18n/by-hash/SHA256/8ea120a4574f23286bd36af7c9a6fb7dd10a95095466ef3ec6067f5c32bcb8d5"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:01.575Z",
+      "destination": {
+        "address": "203.0.113.248",
+        "bytes": 1618380,
+        "domain": "ateqzoc.sagwtm.com",
+        "ip": "203.0.113.248",
+        "packets": 1079,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"timestamp\":\"2046-10-04T09:35:01.575088+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":9,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/multiverse\\/binary-amd64\\/by-hash\\/SHA256\\/9ca9af693f4d26739b819cda0fe9f31e7300238b8d059a7757078adbfa53ad91\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"length\":0},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":575,\"pkts_toclient\":1079,\"bytes_toserver\":40452,\"bytes_toclient\":1618380,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+        "severity": 3,
+        "start": "2046-10-04T09:34:58.926Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          }
+        }
+      },
+      "message": "Not Suspicious Traffic",
+      "network": {
+        "bytes": 1658832,
+        "community_id": "1:eZGeIZ7h1nNmbdCJ1HS3bOY9Dmk=",
+        "packets": 1654,
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hosts": [
+          "ateqzoc.sagwtm.com"
+        ],
+        "ip": [
+          "192.168.251.179",
+          "203.0.113.248"
+        ]
+      },
+      "rule": {
+        "category": "Not Suspicious Traffic",
+        "id": "2013504",
+        "name": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management"
+      },
+      "source": {
+        "address": "192.168.251.179",
+        "bytes": 40452,
+        "ip": "192.168.251.179",
+        "packets": 575,
+        "port": 52340
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "Not Suspicious Traffic",
+            "gid": 1,
+            "rev": 5,
+            "signature": "ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management",
+            "signature_id": 2013504
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "112424506237238",
+          "http": {
+            "protocol": "HTTP/1.1"
+          },
+          "in_iface": "enp0s3",
+          "tx_id": 9
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "ateqzoc.sagwtm.com",
+        "original": "/ubuntu/dists/bionic-updates/multiverse/binary-amd64/by-hash/SHA256/9ca9af693f4d26739b819cda0fe9f31e7300238b8d059a7757078adbfa53ad91",
+        "path": "/ubuntu/dists/bionic-updates/multiverse/binary-amd64/by-hash/SHA256/9ca9af693f4d26739b819cda0fe9f31e7300238b8d059a7757078adbfa53ad91"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Debian APT-HTTP",
+        "original": "Debian APT-HTTP/1.3 (1.6.3ubuntu0.1)",
+        "os": {
+          "name": "Debian"
+        },
+        "version": "1.3"
+      }
+    },
+    {
+      "@timestamp": "2046-10-04T09:35:02.796Z",
+      "destination": {
+        "address": "10.72.94.35",
+        "domain": "puowtdib.dwofop.net",
+        "ip": "10.72.94.35",
+        "port": 9080
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"tls\":{\"ja3s\":{\"string\":\"333,55555,66666-22\",\"hash\":\"1084974e79dd13a5ab31966ec0ff5902\"},\"ja3\":{\"string\":\"001,22222-33333-00-44444-66666-333-333-55555-55555-22-55555-44444-22-33-66666-77777-22-88888-99999-333-22-66666-77777-22-99999-96611-22-33-88888-33333-88888-333-22222-33333-333-222-88888-444-99999-22222-666-777-888,22-33-44-55-6,77-88-99-0-11-11-22-33-44-55,0\",\"hash\":\"a36571d135c5915a0cc0e10863a5a1c8\"},\"notafter\":\"2052-07-16T14:52:35\",\"notbefore\":\"2047-07-17T14:52:35\",\"version\":\"TLS 1.2\",\"sni\":\"puowtdib.dwofop.net\",\"fingerprint\":\"00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33\",\"serial\":\"00:11:22:33:44:55:66:77:88\",\"issuerdn\":\"C=US, O=Google Inc, CN=Google Internet Authority G2\",\"subject\":\"C=US, ST=California, L=Mountain View, O=Google Inc, CN=*.google.com\"},\"proto\":\"TCP\",\"dest_port\":9080,\"dest_ip\":\"10.72.94.35\",\"src_port\":45884,\"src_ip\":\"10.195.88.95\",\"event_type\":\"tls\",\"in_iface\":\"enp5s0\",\"flow_id\":1091813059495729,\"timestamp\":\"2046-10-04T09:35:02.796615+0000\"}",
+        "type": [
+          "protocol"
+        ]
+      },
+      "network": {
+        "community_id": "1:5vr2TmK5C+oYXzKBQ/E5QLiu4KI=",
+        "protocol": "tls",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hash": [
+          "00112233445566778899AABBCCDDEEFF00112233",
+          "1084974e79dd13a5ab31966ec0ff5902",
+          "a36571d135c5915a0cc0e10863a5a1c8"
+        ],
+        "hosts": [
+          "puowtdib.dwofop.net"
+        ],
+        "ip": [
+          "10.195.88.95",
+          "10.72.94.35"
+        ]
+      },
+      "source": {
+        "address": "10.195.88.95",
+        "ip": "10.195.88.95",
+        "port": 45884
+      },
+      "suricata": {
+        "eve": {
+          "event_type": "tls",
+          "flow_id": "1091813059495729",
+          "in_iface": "enp5s0",
+          "tls": {
+            "fingerprint": "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33",
+            "issuerdn": "C=US, O=Google Inc, CN=Google Internet Authority G2",
+            "ja3": {
+              "hash": "a36571d135c5915a0cc0e10863a5a1c8",
+              "string": "001,22222-33333-00-44444-66666-333-333-55555-55555-22-55555-44444-22-33-66666-77777-22-88888-99999-333-22-66666-77777-22-99999-96611-22-33-88888-33333-88888-333-22222-33333-333-222-88888-444-99999-22222-666-777-888,22-33-44-55-6,77-88-99-0-11-11-22-33-44-55,0"
+            },
+            "ja3s": {
+              "hash": "1084974e79dd13a5ab31966ec0ff5902",
+              "string": "333,55555,66666-22"
+            },
+            "notafter": "2052-07-16T14:52:35",
+            "notbefore": "2047-07-17T14:52:35",
+            "serial": "00:11:22:33:44:55:66:77:88",
+            "sni": "puowtdib.dwofop.net",
+            "subject": "C=US, ST=California, L=Mountain View, O=Google Inc, CN=*.google.com",
+            "version": "TLS 1.2"
+          }
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "ja3": "a36571d135c5915a0cc0e10863a5a1c8",
+          "server_name": "puowtdib.dwofop.net"
+        },
+        "server": {
+          "hash": {
+            "sha1": "00112233445566778899AABBCCDDEEFF00112233"
+          },
+          "issuer": "C=US, O=Google Inc, CN=Google Internet Authority G2",
+          "ja3s": "1084974e79dd13a5ab31966ec0ff5902",
+          "not_after": "2052-07-16T14:52:35.000Z",
+          "not_before": "2047-07-17T14:52:35.000Z",
+          "subject": "C=US, ST=California, L=Mountain View, O=Google Inc, CN=*.google.com",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "Google Internet Authority G2"
+              ],
+              "country": [
+                "US"
+              ],
+              "organization": [
+                "Google Inc"
+              ]
+            },
+            "not_after": "2052-07-16T14:52:35.000Z",
+            "not_before": "2047-07-17T14:52:35.000Z",
+            "serial_number": "001122334455667788",
+            "subject": {
+              "common_name": [
+                "*.google.com"
+              ],
+              "country": [
+                "US"
+              ],
+              "locality": [
+                "Mountain View"
+              ],
+              "organization": [
+                "Google Inc"
+              ],
+              "state_or_province": [
+                "California"
+              ]
+            }
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    },
+    {
+      "@timestamp": "2048-06-26T15:00:03.342Z",
+      "destination": {
+        "address": "10.131.75.27",
+        "bytes": 4660,
+        "domain": "vxln.dwofop.net",
+        "ip": "10.131.75.27",
+        "packets": 8,
+        "port": 8443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "{\"flow\":{\"start\":\"2048-06-26T11:00:02.970011-0400\",\"bytes_toclient\":4660,\"bytes_toserver\":1074,\"pkts_toclient\":8,\"pkts_toserver\":7},\"app_proto\":\"tls\",\"tls\":{\"ja3s\":{\"string\":\"742,48172,30210-30\",\"hash\":\"957765ca8987c64531a6c2e043c3953c\"},\"ja3\":{\"string\":\"718,4682-2687-2686-41992-41911-53292-53297-41969-22905-41926-41924-94181-94711-15-23-95-12-11-205,0-33-50-53-6-61-39-23-34-85-81,93-04-52,3-9-3\",\"hash\":\"7f7ba11b8025c0593e94fe1c2c511922\"},\"notafter\":\"2054-06-25T17:36:29\",\"notbefore\":\"2044-06-27T17:36:29\",\"version\":\"TLS 1.2\",\"sni\":\"vxln.dwofop.net\",\"fingerprint\":\"36:3f:ee:2a:1c:fa:de:ad:be:ef:42:99:cf:a9:b0:91:01:eb:a9:cc\",\"serial\":\"72:A9:2C:51\",\"issuerdn\":\"C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown\",\"subject\":\"C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown\"},\"alert\":{\"severity\":3,\"category\":\"\",\"signature\":\"SURICATA TLS on unusual port\",\"rev\":1,\"signature_id\":2610003,\"gid\":1,\"action\":\"allowed\"},\"proto\":\"TCP\",\"dest_port\":8443,\"dest_ip\":\"10.131.75.27\",\"src_port\":64389,\"src_ip\":\"10.132.71.241\",\"event_type\":\"alert\",\"in_iface\":\"enp0s31f6\",\"flow_id\":991192778198299,\"timestamp\":\"2048-06-26T11:00:03.342282-0400\"}",
+        "severity": 3,
+        "start": "2048-06-26T15:00:02.970Z",
+        "type": [
+          "allowed"
+        ]
+      },
+      "message": "",
+      "network": {
+        "bytes": 5734,
+        "community_id": "1:+hxXA+I9iKwaaVBeJ6pXdfq4gN4=",
+        "packets": 15,
+        "protocol": "tls",
+        "transport": "tcp"
+      },
+      "observer": {
+        "product": "Suricata",
+        "type": "ids",
+        "vendor": "OISF"
+      },
+      "related": {
+        "hash": [
+          "363FEE2A1CFADEADBEEF4299CFA9B09101EBA9CC",
+          "957765ca8987c64531a6c2e043c3953c",
+          "7f7ba11b8025c0593e94fe1c2c511922"
+        ],
+        "hosts": [
+          "vxln.dwofop.net"
+        ],
+        "ip": [
+          "10.132.71.241",
+          "10.131.75.27"
+        ]
+      },
+      "rule": {
+        "id": "2610003",
+        "name": "SURICATA TLS on unusual port"
+      },
+      "source": {
+        "address": "10.132.71.241",
+        "bytes": 1074,
+        "ip": "10.132.71.241",
+        "packets": 7,
+        "port": 64389
+      },
+      "suricata": {
+        "eve": {
+          "alert": {
+            "category": "",
+            "gid": 1,
+            "rev": 1,
+            "signature": "SURICATA TLS on unusual port",
+            "signature_id": 2610003
+          },
+          "event_type": "alert",
+          "flow": {},
+          "flow_id": "991192778198299",
+          "in_iface": "enp0s31f6",
+          "tls": {
+            "fingerprint": "36:3f:ee:2a:1c:fa:de:ad:be:ef:42:99:cf:a9:b0:91:01:eb:a9:cc",
+            "issuerdn": "C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown",
+            "ja3": {
+              "hash": "7f7ba11b8025c0593e94fe1c2c511922",
+              "string": "718,4682-2687-2686-41992-41911-53292-53297-41969-22905-41926-41924-94181-94711-15-23-95-12-11-205,0-33-50-53-6-61-39-23-34-85-81,93-04-52,3-9-3"
+            },
+            "ja3s": {
+              "hash": "957765ca8987c64531a6c2e043c3953c",
+              "string": "742,48172,30210-30"
+            },
+            "notafter": "2054-06-25T17:36:29",
+            "notbefore": "2044-06-27T17:36:29",
+            "serial": "72:A9:2C:51",
+            "sni": "vxln.dwofop.net",
+            "subject": "C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown",
+            "version": "TLS 1.2"
+          }
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "ja3": "7f7ba11b8025c0593e94fe1c2c511922",
+          "server_name": "vxln.dwofop.net"
+        },
+        "server": {
+          "hash": {
+            "sha1": "363FEE2A1CFADEADBEEF4299CFA9B09101EBA9CC"
+          },
+          "issuer": "C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown",
+          "ja3s": "957765ca8987c64531a6c2e043c3953c",
+          "not_after": "2054-06-25T17:36:29.000Z",
+          "not_before": "2044-06-27T17:36:29.000Z",
+          "subject": "C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown",
+          "x509": {
+            "issuer": {
+              "common_name": [
+                "Unknown"
+              ],
+              "country": [
+                "Unknown"
+              ],
+              "locality": [
+                "Unknown"
+              ],
+              "organization": [
+                "Unknown"
+              ],
+              "organizational_unit": [
+                "Unknown"
+              ],
+              "state_or_province": [
+                "Unknown"
+              ]
+            },
+            "not_after": "2054-06-25T17:36:29.000Z",
+            "not_before": "2044-06-27T17:36:29.000Z",
+            "serial_number": "72A92C51",
+            "subject": {
+              "common_name": [
+                "Unknown"
+              ],
+              "country": [
+                "Unknown"
+              ],
+              "locality": [
+                "Unknown"
+              ],
+              "organization": [
+                "Unknown"
+              ],
+              "organizational_unit": [
+                "Unknown"
+              ],
+              "state_or_province": [
+                "Unknown"
+              ]
+            }
+          }
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-03T14:42:44.836744+0000\",\"flow_id\":2191386088856669,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32858,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.net\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T14:42:44.613469+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-03T16:16:26.711841+0000\",\"flow_id\":678269478904081,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32864,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.net\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:16:26.467217+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-03T16:44:50.813100+0000\",\"flow_id\":1170030461115650,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32870,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.net\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1126},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:44:50.580866+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-03T16:45:09.267308+0000\",\"flow_id\":49628113637132,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32872,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.org\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:45:09.036620+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-03T16:45:34.481113+0000\",\"flow_id\":116307482565223,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32876,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.org\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1121},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T16:45:34.252519+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-03T17:02:38.900976+0000\",\"flow_id\":1205867738178946,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":32892,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013028,\"rev\":4,\"signature\":\"ET POLICY curl User-Agent Outbound\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"http\":{\"hostname\":\"example.org\",\"url\":\"\\/\",\"http_user_agent\":\"curl\\/7.58.0\",\"http_content_type\":\"text\\/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1126},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":347,\"bytes_toclient\":1654,\"start\":\"2046-10-03T17:02:38.599426+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.009897+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1138},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":497,\"bytes_toclient\":1654,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.168340+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":304,\"length\":0},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":3,\"bytes_toserver\":487,\"bytes_toclient\":417,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.288862+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":1,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2601},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":6,\"pkts_toclient\":5,\"bytes_toserver\":842,\"bytes_toclient\":3445,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.289324+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":1,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/main\\/source\\/by-hash\\/SHA256\\/a7fb23a58aa63c50101f9434b4f4f807d56649f3357601258dfd9f9e169a6a64\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":1241},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":64,\"pkts_toclient\":62,\"bytes_toserver\":4810,\"bytes_toclient\":90543,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.356132+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":2,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/main\\/binary-amd64\\/by-hash\\/SHA256\\/c6c1347d1581dc4e33d51dd8cc3d506c0421a89dc3c41954cba01745b1330553\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":87,\"pkts_toclient\":98,\"bytes_toserver\":6591,\"bytes_toclient\":145014,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.456919+0000\",\"flow_id\":764842923400056,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":37742,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":3,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"mfeuvqhr.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-security\\/universe\\/binary-amd64\\/by-hash\\/SHA256\\/d6fa281152a73e7dbd21aec7b2ced5ed4aba03501e9c04abf415035422b6a534\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2688},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":156,\"pkts_toclient\":221,\"bytes_toserver\":11460,\"bytes_toclient\":330525,\"start\":\"2046-10-04T09:34:58.924536+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.747122+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":2,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-backports\\/InRelease\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2601},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":64,\"pkts_toclient\":67,\"bytes_toserver\":4895,\"bytes_toclient\":96554,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:34:59.953886+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":3,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/main\\/source\\/by-hash\\/SHA256\\/94d4c9c5f6c55a1a5c7e7a00e282eb31c50f75169d7cb9e6c091555c40a74b97\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":91,\"pkts_toclient\":119,\"bytes_toserver\":6932,\"bytes_toclient\":174843,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:35:00.250560+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":4,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/universe\\/source\\/by-hash\\/SHA256\\/56bdd9fe4bab77cbf1800aace067d5ea0098ee7a7729e0a2438f8f4b0820b0ef\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2688},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":159,\"pkts_toclient\":253,\"bytes_toserver\":11679,\"bytes_toclient\":376452,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:35:00.401788+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":5,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/main\\/binary-amd64\\/by-hash\\/SHA256\\/8820525bc8b03d15811df7daf4472db695ea16663af1b27233cfefce70538c62\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":190,\"pkts_toclient\":314,\"bytes_toserver\":13986,\"bytes_toclient\":468170,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:35:00.776438+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":6,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/restricted\\/binary-amd64\\/by-hash\\/SHA256\\/b29dae6e60bab9952274dd0b8fcc4d4c7509233c27ff813f0c15388f550e0a77\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2691},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":328,\"pkts_toclient\":588,\"bytes_toserver\":23361,\"bytes_toclient\":880323,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:35:00.897009+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":7,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/universe\\/binary-amd64\\/by-hash\\/SHA256\\/5645e7dfcdd54c4df16128be795ccacca32f27fbe3f3283a33145733ff7f8dfe\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"status\":200,\"length\":2687},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":330,\"pkts_toclient\":591,\"bytes_toserver\":23758,\"bytes_toclient\":884342,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:35:01.362208+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":8,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/universe\\/i18n\\/by-hash\\/SHA256\\/8ea120a4574f23286bd36af7c9a6fb7dd10a95095466ef3ec6067f5c32bcb8d5\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"length\":0},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":524,\"pkts_toclient\":979,\"bytes_toserver\":36819,\"bytes_toclient\":1467603,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"timestamp\":\"2046-10-04T09:35:01.575088+0000\",\"flow_id\":112424506237238,\"in_iface\":\"enp0s3\",\"event_type\":\"alert\",\"src_ip\":\"192.168.251.179\",\"src_port\":52340,\"dest_ip\":\"203.0.113.248\",\"dest_port\":80,\"proto\":\"TCP\",\"tx_id\":9,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":2013504,\"rev\":5,\"signature\":\"ET POLICY GNU\\/Linux APT User-Agent Outbound likely related to package management\",\"category\":\"Not Suspicious Traffic\",\"severity\":3},\"http\":{\"hostname\":\"ateqzoc.sagwtm.com\",\"url\":\"\\/ubuntu\\/dists\\/bionic-updates\\/multiverse\\/binary-amd64\\/by-hash\\/SHA256\\/9ca9af693f4d26739b819cda0fe9f31e7300238b8d059a7757078adbfa53ad91\",\"http_user_agent\":\"Debian APT-HTTP\\/1.3 (1.6.3ubuntu0.1)\",\"http_method\":\"GET\",\"protocol\":\"HTTP\\/1.1\",\"length\":0},\"app_proto\":\"http\",\"flow\":{\"pkts_toserver\":575,\"pkts_toclient\":1079,\"bytes_toserver\":40452,\"bytes_toclient\":1618380,\"start\":\"2046-10-04T09:34:58.926006+0000\"}}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"tls\":{\"ja3s\":{\"string\":\"333,55555,66666-22\",\"hash\":\"1084974e79dd13a5ab31966ec0ff5902\"},\"ja3\":{\"string\":\"001,22222-33333-00-44444-66666-333-333-55555-55555-22-55555-44444-22-33-66666-77777-22-88888-99999-333-22-66666-77777-22-99999-96611-22-33-88888-33333-88888-333-22222-33333-333-222-88888-444-99999-22222-666-777-888,22-33-44-55-6,77-88-99-0-11-11-22-33-44-55,0\",\"hash\":\"a36571d135c5915a0cc0e10863a5a1c8\"},\"notafter\":\"2052-07-16T14:52:35\",\"notbefore\":\"2047-07-17T14:52:35\",\"version\":\"TLS 1.2\",\"sni\":\"puowtdib.dwofop.net\",\"fingerprint\":\"00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33\",\"serial\":\"00:11:22:33:44:55:66:77:88\",\"issuerdn\":\"C=US, O=Google Inc, CN=Google Internet Authority G2\",\"subject\":\"C=US, ST=California, L=Mountain View, O=Google Inc, CN=*.google.com\"},\"proto\":\"TCP\",\"dest_port\":9080,\"dest_ip\":\"10.72.94.35\",\"src_port\":45884,\"src_ip\":\"10.195.88.95\",\"event_type\":\"tls\",\"in_iface\":\"enp5s0\",\"flow_id\":1091813059495729,\"timestamp\":\"2046-10-04T09:35:02.796615+0000\"}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"flow\":{\"start\":\"2048-06-26T11:00:02.970011-0400\",\"bytes_toclient\":4660,\"bytes_toserver\":1074,\"pkts_toclient\":8,\"pkts_toserver\":7},\"app_proto\":\"tls\",\"tls\":{\"ja3s\":{\"string\":\"742,48172,30210-30\",\"hash\":\"957765ca8987c64531a6c2e043c3953c\"},\"ja3\":{\"string\":\"718,4682-2687-2686-41992-41911-53292-53297-41969-22905-41926-41924-94181-94711-15-23-95-12-11-205,0-33-50-53-6-61-39-23-34-85-81,93-04-52,3-9-3\",\"hash\":\"7f7ba11b8025c0593e94fe1c2c511922\"},\"notafter\":\"2054-06-25T17:36:29\",\"notbefore\":\"2044-06-27T17:36:29\",\"version\":\"TLS 1.2\",\"sni\":\"vxln.dwofop.net\",\"fingerprint\":\"36:3f:ee:2a:1c:fa:de:ad:be:ef:42:99:cf:a9:b0:91:01:eb:a9:cc\",\"serial\":\"72:A9:2C:51\",\"issuerdn\":\"C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown\",\"subject\":\"C=Unknown, ST=Unknown, L=Unknown, O=Unknown, OU=Unknown, CN=Unknown\"},\"alert\":{\"severity\":3,\"category\":\"\",\"signature\":\"SURICATA TLS on unusual port\",\"rev\":1,\"signature_id\":2610003,\"gid\":1,\"action\":\"allowed\"},\"proto\":\"TCP\",\"dest_port\":8443,\"dest_ip\":\"10.131.75.27\",\"src_port\":64389,\"src_ip\":\"10.132.71.241\",\"event_type\":\"alert\",\"in_iface\":\"enp0s31f6\",\"flow_id\":991192778198299,\"timestamp\":\"2048-06-26T11:00:03.342282-0400\"}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "eve",
+    "dynamic_fields": {
+      "event.ingested": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-suricata-eve-default",
+    "event_count": 22,
+    "numeric_keyword_fields": [],
+    "package": "suricata",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

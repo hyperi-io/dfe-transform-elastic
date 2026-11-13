@@ -1,0 +1,5 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags: null
+  _conf:
+    ioc_expiration_duration: 5d

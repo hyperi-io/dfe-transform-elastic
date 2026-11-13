@@ -1,0 +1,11 @@
+# Test inputs for this directory's fixtures.
+fields:
+  hid_bravura_monitor.instancename: default
+  hid_bravura_monitor.node: Node1
+  hid_bravura_monitor.environment: DEVELOPMENT
+  hid_bravura_monitor.instancetype: Privilege-Identity-Password
+  event.timezone: UTC
+multiline:
+  first_line_pattern: ^[[:cntrl:]]
+  negate: true
+  match: after

@@ -1,0 +1,68 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "event",
+        "original": "Site: SEPSite,Server Name: exampleserver,Domain Name: Default,The management server received the client log successfully,TESTHOST01,sampleuser01,sample.example.com",
+        "provider": "Agent Activity Log"
+      },
+      "host": {
+        "hostname": "TESTHOST01",
+        "name": "TESTHOST01"
+      },
+      "message": "The management server received the client log successfully",
+      "source": {
+        "domain": "TESTHOST01"
+      },
+      "symantec_endpoint": {
+        "log": {
+          "domain_name": "sample.example.com",
+          "event_description": "The management server received the client log successfully",
+          "local_host_name": "TESTHOST01",
+          "server": "exampleserver",
+          "site": "SEPSite",
+          "user_name": "sampleuser01"
+        }
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "sample.example.com",
+        "name": "sampleuser01"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "tz_offset": "UTC"
+      },
+      "message": "Site: SEPSite,Server Name: exampleserver,Domain Name: Default,The management server received the client log successfully,TESTHOST01,sampleuser01,sample.example.com",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-symantec_endpoint-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "symantec_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

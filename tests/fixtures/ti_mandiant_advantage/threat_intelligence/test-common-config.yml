@@ -1,0 +1,3 @@
+# Test inputs for this directory's fixtures.
+numeric_keyword_fields:
+- mandiant.threat_intelligence.ioc.sources.osint

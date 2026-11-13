@@ -1,0 +1,116 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:03.307Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "7a1a274f-e179-49cc-bab1-21253335a131"
+            },
+            "winlog": {
+                "channel": "Security",
+                "event_id": 4634,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "opcode": "Info",
+                "time_created": "2047-05-17T11:06:58.210Z",
+                "outcome": "success",
+                "process": {
+                    "pid": 776,
+                    "thread": {
+                        "id": 540
+                    }
+                },
+                "record_id": 485,
+                "computer_name": "SOV-86VA2XP94FG",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "level": "information",
+                "event_data": {
+                    "TargetUserSid": "S-1-5-21-101361758-2486510592-3018839910-1000",
+                    "TargetUserName": "dverugdhn",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetLogonId": "0x767a77",
+                    "LogonType": "3"
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4634,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016-logoff.xml"
+                },
+                "level": "information"
+            }
+        },
+        {
+            "@timestamp": "2049-04-15T19:05:03.307Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2016-logoff.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "SOV-86VA2XP94FG"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "7a1a274f-e179-49cc-bab1-21253335a131",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "winlog": {
+                "process": {
+                    "pid": 780,
+                    "thread": {
+                        "id": 820
+                    }
+                },
+                "channel": "Security",
+                "event_id": 4634,
+                "record_id": 747,
+                "computer_name": "SOV-86VA2XP94FG",
+                "level": "information",
+                "event_data": {
+                    "TargetUserSid": "S-1-5-21-101361758-2486510592-3018839910-500",
+                    "TargetUserName": "Administrator",
+                    "TargetDomainName": "SOV-86VA2XP94FG",
+                    "TargetLogonId": "0x104a4a6",
+                    "LogonType": "3"
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2047-05-19T16:15:38.542Z",
+                "outcome": "success"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4634,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            }
+        }
+    ]
+}

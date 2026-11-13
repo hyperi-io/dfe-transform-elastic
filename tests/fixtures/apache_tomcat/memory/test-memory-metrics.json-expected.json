@@ -1,0 +1,92 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "memory": {
+          "doc_type": "memory",
+          "heap": {
+            "committed": {
+              "bytes": 538968064.0
+            },
+            "init": {
+              "bytes": 536870912.0
+            },
+            "max": {
+              "bytes": 1073741824.0
+            },
+            "used": {
+              "bytes": 45216344.0
+            }
+          },
+          "non_heap": {
+            "committed": {
+              "bytes": 39518208.0
+            },
+            "init": {
+              "bytes": 7667712.0
+            },
+            "max": {
+              "bytes": -1
+            },
+            "used": {
+              "bytes": 36318104.0
+            }
+          },
+          "object_pending_finalization": {
+            "count": 0
+          },
+          "verbose": true
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "host": "localhost",
+          "instance": "127.0.0.1:9090",
+          "job": "prometheus",
+          "name": "Memory"
+        },
+        "metrics": {
+          "java_lang_Memory_HeapMemoryUsage_committed": 538968064.0,
+          "java_lang_Memory_HeapMemoryUsage_init": 536870912.0,
+          "java_lang_Memory_HeapMemoryUsage_max": 1073741824.0,
+          "java_lang_Memory_HeapMemoryUsage_used": 45216344.0,
+          "java_lang_Memory_NonHeapMemoryUsage_committed": 39518208.0,
+          "java_lang_Memory_NonHeapMemoryUsage_init": 7667712.0,
+          "java_lang_Memory_NonHeapMemoryUsage_max": -1,
+          "java_lang_Memory_NonHeapMemoryUsage_used": 36318104.0,
+          "java_lang_Memory_ObjectPendingFinalizationCount": 0,
+          "java_lang_Memory_Verbose": 1
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "memory",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-memory-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

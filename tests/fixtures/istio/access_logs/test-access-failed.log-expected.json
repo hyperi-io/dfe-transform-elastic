@@ -1,0 +1,802 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-06-22T10:17:14.118Z",
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "5515c1e0-8133-9621-b753-1f0e178fc4ff",
+        "ingested": "2026-11-13T23:03:39.112155109Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-06-22T10:17:14.118Z] \"GET /status/418 HTTP/1.1\" 503 UH no_healthy_upstream - \"-\" 0 19 1 - \"-\" \"curl/7.83.1-DEV\" \"5515c1e0-8133-9621-b753-1f0e178fc4ff\" \"httpbin:8000\" \"-\" outbound|8000||xgktblv.default.tta.cnmypes.local - 10.144.254.120:8000 172.28.254.100:44690 - default",
+        "outcome": "failure",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 19
+          },
+          "id": "5515c1e0-8133-9621-b753-1f0e178fc4ff",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 503
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "httpbin:8000",
+          "bytes": {
+            "received": 0,
+            "sent": 19
+          },
+          "downstream": {
+            "local_address": "10.144.254.120:8000",
+            "remote_address": "172.28.254.100:44690"
+          },
+          "duration": 1,
+          "response": {
+            "code_details": "no_healthy_upstream",
+            "flags": "UH"
+          },
+          "route_name": "default",
+          "upstream": {
+            "cluster": "outbound|8000||xgktblv.default.tta.cnmypes.local"
+          }
+        }
+      },
+      "network": {
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "172.28.254.100"
+        ]
+      },
+      "source": {
+        "address": "172.28.254.100:44690",
+        "ip": "172.28.254.100",
+        "port": 44690
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/status/418"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.83.1-DEV",
+        "version": "7.83.1"
+      }
+    },
+    {
+      "@timestamp": "2050-06-22T10:27:00.362Z",
+      "destination": {
+        "address": "172.18.13.130:80",
+        "ip": "172.18.13.130",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 25000000,
+        "id": "aca1153f-634f-9830-bcba-7bd275be1b4d",
+        "ingested": "2026-11-13T23:03:39.112182889Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-06-22T10:27:00.362Z] \"GET /status/418 HTTP/1.1\" 418 - via_upstream - \"-\" 0 135 25 25 \"-\" \"curl/7.83.1-DEV\" \"aca1153f-634f-9830-bcba-7bd275be1b4d\" \"httpbin:8000\" \"172.18.13.130:80\" outbound|8000||xgktblv.default.tta.cnmypes.local 172.28.254.100:57130 10.144.254.120:8000 172.28.254.100:50514 - default",
+        "outcome": "failure",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 135
+          },
+          "id": "aca1153f-634f-9830-bcba-7bd275be1b4d",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 418
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "httpbin:8000",
+          "bytes": {
+            "received": 0,
+            "sent": 135
+          },
+          "downstream": {
+            "local_address": "10.144.254.120:8000",
+            "remote_address": "172.28.254.100:50514"
+          },
+          "duration": 25,
+          "response": {
+            "code_details": "via_upstream"
+          },
+          "route_name": "default",
+          "upstream": {
+            "cluster": "outbound|8000||xgktblv.default.tta.cnmypes.local",
+            "host": "172.18.13.130:80",
+            "local_address": "172.28.254.100:57130",
+            "service_time": 25
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:IMDfxVAqCy52LOLWSGxyoRLumuA=",
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "172.28.254.100",
+          "172.18.13.130"
+        ]
+      },
+      "source": {
+        "address": "172.28.254.100:50514",
+        "ip": "172.28.254.100",
+        "port": 50514
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/status/418"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.83.1-DEV",
+        "version": "7.83.1"
+      }
+    },
+    {
+      "@timestamp": "2050-09-01T09:50:40.396Z",
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "5759eb2c-b13d-9e5f-bb38-5de6be6333c8",
+        "ingested": "2026-11-13T23:03:39.112184789Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-09-01T09:50:40.396Z] \"GET /favicon.ico HTTP/1.1\" 404 NR route_not_found - \"-\" 0 0 0 - \"10.58.237.39\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"5759eb2c-b13d-9e5f-bb38-5de6be6333c8\" \"198.51.100.5\" \"-\" - - 10.172.52.188:8080 10.58.237.39:51978 - -",
+        "outcome": "failure",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "id": "5759eb2c-b13d-9e5f-bb38-5de6be6333c8",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "198.51.100.5",
+          "bytes": {
+            "received": 0,
+            "sent": 0
+          },
+          "downstream": {
+            "local_address": "10.172.52.188:8080",
+            "remote_address": "10.58.237.39:51978"
+          },
+          "duration": 0,
+          "response": {
+            "code_details": "route_not_found",
+            "flags": "NR"
+          },
+          "x_forwarded_for": "10.58.237.39"
+        }
+      },
+      "network": {
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.58.237.39"
+        ]
+      },
+      "source": {
+        "address": "10.58.237.39:51978",
+        "ip": "10.58.237.39",
+        "port": 51978
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/favicon.ico"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "104.0.5112.102"
+      }
+    },
+    {
+      "@timestamp": "2050-09-01T11:33:22.455Z",
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "df3af937-2a37-946c-9ea0-560331309bf5",
+        "ingested": "2026-11-13T23:03:39.112186229Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-09-01T11:33:22.455Z] \"GET /portal/redlion HTTP/1.1\" 404 NR route_not_found - \"-\" 0 0 0 - \"10.58.237.39\" \"Mozilla/5.0 zgrab/0.x\" \"df3af937-2a37-946c-9ea0-560331309bf5\" \"198.51.100.5\" \"-\" - - 10.172.52.188:8080 10.58.237.39:46713 - -",
+        "outcome": "failure",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "id": "df3af937-2a37-946c-9ea0-560331309bf5",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 404
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "198.51.100.5",
+          "bytes": {
+            "received": 0,
+            "sent": 0
+          },
+          "downstream": {
+            "local_address": "10.172.52.188:8080",
+            "remote_address": "10.58.237.39:46713"
+          },
+          "duration": 0,
+          "response": {
+            "code_details": "route_not_found",
+            "flags": "NR"
+          },
+          "x_forwarded_for": "10.58.237.39"
+        }
+      },
+      "network": {
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.58.237.39"
+        ]
+      },
+      "source": {
+        "address": "10.58.237.39:46713",
+        "ip": "10.58.237.39",
+        "port": 46713
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/portal/redlion"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0 zgrab/0.x"
+      }
+    },
+    {
+      "@timestamp": "2050-09-01T09:36:33.553Z",
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:03:39.112187379Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-09-01T09:36:33.553Z] \"- - HTTP/1.1\" 400 DPE http1.codec_error - \"-\" 0 11 46 - \"-\" \"-\" \"-\" \"-\" \"-\" - - 10.172.52.188:8080 10.77.190.175:51643 - -",
+        "outcome": "failure"
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 11
+          }
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 400
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "bytes": {
+            "received": 0,
+            "sent": 11
+          },
+          "downstream": {
+            "local_address": "10.172.52.188:8080",
+            "remote_address": "10.77.190.175:51643"
+          },
+          "duration": 46,
+          "response": {
+            "code_details": "http1.codec_error",
+            "flags": "DPE"
+          }
+        }
+      },
+      "network": {
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.77.190.175"
+        ]
+      },
+      "source": {
+        "address": "10.77.190.175:51643",
+        "ip": "10.77.190.175",
+        "port": 51643
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-09-01T13:15:57.905Z",
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "7e72bf5b-b30c-9d78-a405-32ef05ddef26",
+        "ingested": "2026-11-13T23:03:39.112188359Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-09-01T13:15:57.905Z] \"GET /productpage HTTP/1.1\" 503 UH no_healthy_upstream - \"-\" 0 19 0 - \"10.77.190.175\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"7e72bf5b-b30c-9d78-a405-32ef05ddef26\" \"198.51.100.5\" \"-\" outbound|9080||rwsdgdhifua.default.tta.cnmypes.local - 10.172.52.188:8080 10.77.190.175:21742 - -",
+        "outcome": "failure",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 19
+          },
+          "id": "7e72bf5b-b30c-9d78-a405-32ef05ddef26",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 503
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "198.51.100.5",
+          "bytes": {
+            "received": 0,
+            "sent": 19
+          },
+          "downstream": {
+            "local_address": "10.172.52.188:8080",
+            "remote_address": "10.77.190.175:21742"
+          },
+          "duration": 0,
+          "response": {
+            "code_details": "no_healthy_upstream",
+            "flags": "UH"
+          },
+          "upstream": {
+            "cluster": "outbound|9080||rwsdgdhifua.default.tta.cnmypes.local"
+          },
+          "x_forwarded_for": "10.77.190.175"
+        }
+      },
+      "network": {
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.77.190.175"
+        ]
+      },
+      "source": {
+        "address": "10.77.190.175:21742",
+        "ip": "10.77.190.175",
+        "port": 21742
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/productpage"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "104.0.5112.102"
+      }
+    },
+    {
+      "@timestamp": "2050-09-01T13:15:09.085Z",
+      "destination": {
+        "address": "10.185.133.222:9080",
+        "ip": "10.185.133.222",
+        "port": 9080
+      },
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "55689106-64b0-9bda-9d5f-cce86bdfdf3c",
+        "ingested": "2026-11-13T23:03:39.112189609Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-09-01T13:15:09.085Z] \"GET /reviews/0 HTTP/1.1\" 503 UF upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111} - \"-\" 0 145 0 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"55689106-64b0-9bda-9d5f-cce86bdfdf3c\" \"reviews:9080\" \"10.185.133.222:9080\" inbound|9080|| - 10.185.133.222:9080 10.207.112.242:48816 outbound_.9080_._.reviews.default.svc.cluster.local default",
+        "outcome": "failure",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 145
+          },
+          "id": "55689106-64b0-9bda-9d5f-cce86bdfdf3c",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 503
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "reviews:9080",
+          "bytes": {
+            "received": 0,
+            "sent": 145
+          },
+          "downstream": {
+            "local_address": "10.185.133.222:9080",
+            "remote_address": "10.207.112.242:48816"
+          },
+          "duration": 0,
+          "requested_server_name": "outbound_.9080_._.reviews.default.svc.cluster.local",
+          "response": {
+            "code_details": "upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111}",
+            "flags": "UF"
+          },
+          "route_name": "default",
+          "upstream": {
+            "cluster": "inbound|9080||",
+            "host": "10.185.133.222:9080"
+          }
+        }
+      },
+      "network": {
+        "community_id": "1:xLtNbWzpfWUsHKlivhat/GwPVz0=",
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.207.112.242",
+          "10.185.133.222"
+        ]
+      },
+      "source": {
+        "address": "10.207.112.242:48816",
+        "ip": "10.207.112.242",
+        "port": 48816
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/reviews/0"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "104.0.5112.102"
+      }
+    },
+    {
+      "@timestamp": "2050-09-01T13:08:55.358Z",
+      "destination": {
+        "address": "10.207.112.242:9080",
+        "ip": "10.207.112.242",
+        "port": 9080
+      },
+      "ecs": {
+        "version": "8.3.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "4eb47bc3-bc98-9637-864d-5a64685a0099",
+        "ingested": "2026-11-13T23:03:39.112192669Z",
+        "kind": "event",
+        "module": "istio",
+        "original": "[2050-09-01T13:08:55.358Z] \"GET /productpage HTTP/1.1\" 0 DC downstream_remote_disconnect - \"-\" 0 0 746 - \"10.77.190.175\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"4eb47bc3-bc98-9637-864d-5a64685a0099\" \"198.51.100.5\" \"10.207.112.242:9080\" inbound|9080|| 127.0.0.6:38601 10.207.112.242:9080 10.77.190.175:0 outbound_.9080_._.productpage.default.svc.cluster.local default",
+        "outcome": "success",
+        "type": [
+          "access"
+        ]
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "id": "4eb47bc3-bc98-9637-864d-5a64685a0099",
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 0
+        },
+        "version": "1.1"
+      },
+      "istio": {
+        "access": {
+          "authority": "198.51.100.5",
+          "bytes": {
+            "received": 0,
+            "sent": 0
+          },
+          "downstream": {
+            "local_address": "10.207.112.242:9080",
+            "remote_address": "10.77.190.175:0"
+          },
+          "duration": 746,
+          "requested_server_name": "outbound_.9080_._.productpage.default.svc.cluster.local",
+          "response": {
+            "code_details": "downstream_remote_disconnect",
+            "flags": "DC"
+          },
+          "route_name": "default",
+          "upstream": {
+            "cluster": "inbound|9080||",
+            "host": "10.207.112.242:9080",
+            "local_address": "127.0.0.6:38601"
+          },
+          "x_forwarded_for": "10.77.190.175"
+        }
+      },
+      "network": {
+        "protocol": "http",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.77.190.175",
+          "10.207.112.242"
+        ]
+      },
+      "source": {
+        "address": "10.77.190.175:0",
+        "ip": "10.77.190.175"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "/productpage"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Mac"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        "os": {
+          "full": "Mac OS X 10.15.7",
+          "name": "Mac OS X",
+          "version": "10.15.7"
+        },
+        "version": "104.0.5112.102"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-06-22T10:17:14.118Z] \"GET /status/418 HTTP/1.1\" 503 UH no_healthy_upstream - \"-\" 0 19 1 - \"-\" \"curl/7.83.1-DEV\" \"5515c1e0-8133-9621-b753-1f0e178fc4ff\" \"httpbin:8000\" \"-\" outbound|8000||xgktblv.default.tta.cnmypes.local - 10.144.254.120:8000 172.28.254.100:44690 - default",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-06-22T10:27:00.362Z] \"GET /status/418 HTTP/1.1\" 418 - via_upstream - \"-\" 0 135 25 25 \"-\" \"curl/7.83.1-DEV\" \"aca1153f-634f-9830-bcba-7bd275be1b4d\" \"httpbin:8000\" \"172.18.13.130:80\" outbound|8000||xgktblv.default.tta.cnmypes.local 172.28.254.100:57130 10.144.254.120:8000 172.28.254.100:50514 - default",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-09-01T09:50:40.396Z] \"GET /favicon.ico HTTP/1.1\" 404 NR route_not_found - \"-\" 0 0 0 - \"10.58.237.39\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"5759eb2c-b13d-9e5f-bb38-5de6be6333c8\" \"198.51.100.5\" \"-\" - - 10.172.52.188:8080 10.58.237.39:51978 - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-09-01T11:33:22.455Z] \"GET /portal/redlion HTTP/1.1\" 404 NR route_not_found - \"-\" 0 0 0 - \"10.58.237.39\" \"Mozilla/5.0 zgrab/0.x\" \"df3af937-2a37-946c-9ea0-560331309bf5\" \"198.51.100.5\" \"-\" - - 10.172.52.188:8080 10.58.237.39:46713 - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-09-01T09:36:33.553Z] \"- - HTTP/1.1\" 400 DPE http1.codec_error - \"-\" 0 11 46 - \"-\" \"-\" \"-\" \"-\" \"-\" - - 10.172.52.188:8080 10.77.190.175:51643 - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-09-01T13:15:57.905Z] \"GET /productpage HTTP/1.1\" 503 UH no_healthy_upstream - \"-\" 0 19 0 - \"10.77.190.175\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"7e72bf5b-b30c-9d78-a405-32ef05ddef26\" \"198.51.100.5\" \"-\" outbound|9080||rwsdgdhifua.default.tta.cnmypes.local - 10.172.52.188:8080 10.77.190.175:21742 - -",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-09-01T13:15:09.085Z] \"GET /reviews/0 HTTP/1.1\" 503 UF upstream_reset_before_response_started{connection_failure,delayed_connect_error:_111} - \"-\" 0 145 0 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"55689106-64b0-9bda-9d5f-cce86bdfdf3c\" \"reviews:9080\" \"10.185.133.222:9080\" inbound|9080|| - 10.185.133.222:9080 10.207.112.242:48816 outbound_.9080_._.reviews.default.svc.cluster.local default",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2050-09-01T13:08:55.358Z] \"GET /productpage HTTP/1.1\" 0 DC downstream_remote_disconnect - \"-\" 0 0 746 - \"10.77.190.175\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36\" \"4eb47bc3-bc98-9637-864d-5a64685a0099\" \"198.51.100.5\" \"10.207.112.242:9080\" inbound|9080|| 127.0.0.6:38601 10.207.112.242:9080 10.77.190.175:0 outbound_.9080_._.productpage.default.svc.cluster.local default",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "access_logs",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-istio-access_logs-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "istio",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

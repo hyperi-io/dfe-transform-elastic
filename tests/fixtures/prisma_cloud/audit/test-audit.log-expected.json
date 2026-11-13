@@ -1,0 +1,302 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-09-04T09:28:22.240Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv@google.com\",\"ipAddress\":\"203.0.113.138\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "prisma_cloud": {
+        "audit": {
+          "action": {
+            "type": "LOGIN",
+            "value": "'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key."
+          },
+          "ip_address": "203.0.113.138",
+          "resource": {
+            "name": "tmqm.jsfv@google.com",
+            "type": "Login"
+          },
+          "result": "fail",
+          "timestamp": "2051-09-04T09:28:22.240Z",
+          "user": "tmqm.jsfv@google.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "tmqm.jsfv",
+          "tmqm.jsfv@google.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "google.com",
+        "email": "tmqm.jsfv@google.com",
+        "name": "tmqm.jsfv"
+      }
+    },
+    {
+      "@timestamp": "2051-09-04T09:28:22.240Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv@google.com\",\"ipAddress\":\"RedLock Internal IP\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "prisma_cloud": {
+        "audit": {
+          "action": {
+            "type": "LOGIN",
+            "value": "'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key."
+          },
+          "resource": {
+            "name": "tmqm.jsfv@google.com",
+            "type": "Login"
+          },
+          "result": "fail",
+          "timestamp": "2051-09-04T09:28:22.240Z",
+          "user": "tmqm.jsfv@google.com"
+        }
+      },
+      "related": {
+        "user": [
+          "tmqm.jsfv",
+          "tmqm.jsfv@google.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "google.com",
+        "email": "tmqm.jsfv@google.com",
+        "name": "tmqm.jsfv"
+      }
+    },
+    {
+      "@timestamp": "2051-09-04T09:28:22.240Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv@google.com\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "prisma_cloud": {
+        "audit": {
+          "action": {
+            "type": "LOGIN",
+            "value": "'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key."
+          },
+          "resource": {
+            "name": "tmqm.jsfv@google.com",
+            "type": "Login"
+          },
+          "result": "fail",
+          "timestamp": "2051-09-04T09:28:22.240Z",
+          "user": "tmqm.jsfv@google.com"
+        }
+      },
+      "related": {
+        "user": [
+          "tmqm.jsfv",
+          "tmqm.jsfv@google.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "google.com",
+        "email": "tmqm.jsfv@google.com",
+        "name": "tmqm.jsfv"
+      }
+    },
+    {
+      "@timestamp": "2051-09-04T09:28:22.240Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv\",\"ipAddress\":\"203.0.113.138\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "prisma_cloud": {
+        "audit": {
+          "action": {
+            "type": "LOGIN",
+            "value": "'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key."
+          },
+          "ip_address": "203.0.113.138",
+          "resource": {
+            "name": "tmqm.jsfv@google.com",
+            "type": "Login"
+          },
+          "result": "fail",
+          "timestamp": "2051-09-04T09:28:22.240Z",
+          "user": "tmqm.jsfv"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "tmqm.jsfv"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2051-09-04T09:28:22.240Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2577432502240,\"ipAddress\":\"203.0.113.138\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "prisma_cloud": {
+        "audit": {
+          "action": {
+            "type": "LOGIN",
+            "value": "'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key."
+          },
+          "ip_address": "203.0.113.138",
+          "resource": {
+            "name": "tmqm.jsfv@google.com",
+            "type": "Login"
+          },
+          "result": "fail",
+          "timestamp": "2051-09-04T09:28:22.240Z"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv@google.com\",\"ipAddress\":\"203.0.113.138\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv@google.com\",\"ipAddress\":\"RedLock Internal IP\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv@google.com\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timestamp\":2577432502240,\"user\":\"tmqm.jsfv\",\"ipAddress\":\"203.0.113.138\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"timestamp\":2577432502240,\"ipAddress\":\"203.0.113.138\",\"actionType\":\"LOGIN\",\"resourceName\":\"tmqm.jsfv@google.com\",\"action\":\"'tmqm.jsfv@google.com'(with role 'System Admin':'System Admin') logged in via access key.\",\"resourceType\":\"Login\",\"result\":\"fail\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-prisma_cloud-audit-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "prisma_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

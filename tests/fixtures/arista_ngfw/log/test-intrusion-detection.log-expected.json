@@ -1,0 +1,826 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-23T15:55:44.770-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:55:44 INFO  uvm[0]:  {\"msg\":\"ET CINS Active Threat Intelligence Poor Reputation IP group 35\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"198.51.100.124\",\"classtype\":\"misc-attack\",\"signatureId\":2403334,\"sportItype\":60000,\"timeStamp\":\"2051-05-23 15:55:44.77\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"ciarmy\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":7122,\"timestamp\":2566073088061}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "198.51.100.124"
+        ]
+      },
+      "rule": {
+        "category": "ciarmy",
+        "id": "2403334",
+        "name": "ET CINS Active Threat Intelligence Poor Reputation IP group 35",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:55:44.769-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:55:44 INFO  uvm[0]:  {\"msg\":\"ET SCAN NMAP -sS window 1024\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.138\",\"classtype\":\"attempted-recon\",\"signatureId\":2009582,\"sportItype\":58524,\"timeStamp\":\"2051-05-23 15:55:44.769\",\"generatorId\":1,\"protocol\":\"tcp\",\"blocked\":true,\"category\":\"scan\",\"ruleId\":\"2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":29884,\"timestamp\":2566072671616}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "tcp"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "203.0.113.138"
+        ]
+      },
+      "rule": {
+        "category": "scan",
+        "id": "2009582",
+        "name": "ET SCAN NMAP -sS window 1024",
+        "ruleset": "attempted-recon"
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:55:14.729-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:55:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.242\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":49454,\"timeStamp\":\"2051-05-23 15:55:14.729\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":5916,\"timestamp\":2566072918153}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "203.0.113.242"
+        ]
+      },
+      "rule": {
+        "category": "dshield",
+        "id": "2402000",
+        "name": "ET DROP Dshield Block Listed Source group 1",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "203.0.113.242"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:55:14.729-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:55:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"198.51.100.180\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":36152,\"timeStamp\":\"2051-05-23 15:55:14.729\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":40855,\"timestamp\":2566073029999}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "198.51.100.180"
+        ]
+      },
+      "rule": {
+        "category": "dshield",
+        "id": "2402000",
+        "name": "ET DROP Dshield Block Listed Source group 1",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "198.51.100.180"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:54:44.691-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:54:44 INFO  uvm[0]:  {\"msg\":\"ET SCAN NMAP -sS window 1024\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"192.0.2.242\",\"classtype\":\"attempted-recon\",\"signatureId\":2009582,\"sportItype\":58417,\"timeStamp\":\"2051-05-23 15:54:44.691\",\"generatorId\":1,\"protocol\":\"tcp\",\"blocked\":true,\"category\":\"scan\",\"ruleId\":\"2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":27596,\"timestamp\":2566072951501}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "tcp"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "192.0.2.242"
+        ]
+      },
+      "rule": {
+        "category": "scan",
+        "id": "2009582",
+        "name": "ET SCAN NMAP -sS window 1024",
+        "ruleset": "attempted-recon"
+      },
+      "source": {
+        "ip": "192.0.2.242"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:54:14.651-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:54:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"192.0.2.242\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":51637,\"timeStamp\":\"2051-05-23 15:54:14.651\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":111,\"timestamp\":2566073305628}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "192.0.2.242"
+        ]
+      },
+      "rule": {
+        "category": "dshield",
+        "id": "2402000",
+        "name": "ET DROP Dshield Block Listed Source group 1",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "192.0.2.242"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:54:14.650-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:54:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.4\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":52549,\"timeStamp\":\"2051-05-23 15:54:14.65\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":9443,\"timestamp\":2566073189092}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "203.0.113.4"
+        ]
+      },
+      "rule": {
+        "category": "dshield",
+        "id": "2402000",
+        "name": "ET DROP Dshield Block Listed Source group 1",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "203.0.113.4"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:53:44.612-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:53:44 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.4\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":35612,\"timeStamp\":\"2051-05-23 15:53:44.612\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":30106,\"timestamp\":2566073333195}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "203.0.113.4"
+        ]
+      },
+      "rule": {
+        "category": "dshield",
+        "id": "2402000",
+        "name": "ET DROP Dshield Block Listed Source group 1",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "203.0.113.4"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:53:44.612-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:53:44 INFO  uvm[0]:  {\"msg\":\"ET CINS Active Threat Intelligence Poor Reputation IP group 83\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.4\",\"classtype\":\"misc-attack\",\"signatureId\":2403382,\"sportItype\":21442,\"timeStamp\":\"2051-05-23 15:53:44.612\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"ciarmy\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":10001,\"timestamp\":2566073228327}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "203.0.113.4"
+        ]
+      },
+      "rule": {
+        "category": "ciarmy",
+        "id": "2403382",
+        "name": "ET CINS Active Threat Intelligence Poor Reputation IP group 83",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "203.0.113.4"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2051-05-23T15:53:44.611-06:00",
+      "destination": {
+        "ip": "192.0.2.162"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "intrusion_detection"
+        ],
+        "kind": "event",
+        "original": "<174>May 23 15:53:44 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"192.0.2.197\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":43132,\"timeStamp\":\"2051-05-23 15:53:44.611\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":12300,\"timestamp\":2566073144918}",
+        "outcome": "failure",
+        "provider": "intrusion_prevention",
+        "timezone": "America/Denver",
+        "type": [
+          "denied"
+        ]
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 21,
+            "name": "Local 5"
+          },
+          "priority": 174,
+          "severity": {
+            "code": 6,
+            "name": "Informational"
+          }
+        }
+      },
+      "network": {
+        "direction": "external",
+        "iana_number": "ip"
+      },
+      "observer": {
+        "product": "Arista NG Firewall",
+        "type": "firewall",
+        "vendor": "Arista"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.162",
+          "192.0.2.197"
+        ]
+      },
+      "rule": {
+        "category": "dshield",
+        "id": "2402000",
+        "name": "ET DROP Dshield Block Listed Source group 1",
+        "ruleset": "misc-attack"
+      },
+      "source": {
+        "ip": "192.0.2.197"
+      },
+      "tags": [
+        "forwarded",
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:55:44 INFO  uvm[0]:  {\"msg\":\"ET CINS Active Threat Intelligence Poor Reputation IP group 35\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"198.51.100.124\",\"classtype\":\"misc-attack\",\"signatureId\":2403334,\"sportItype\":60000,\"timeStamp\":\"2051-05-23 15:55:44.77\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"ciarmy\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":7122,\"timestamp\":2566073088061}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:55:44 INFO  uvm[0]:  {\"msg\":\"ET SCAN NMAP -sS window 1024\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.138\",\"classtype\":\"attempted-recon\",\"signatureId\":2009582,\"sportItype\":58524,\"timeStamp\":\"2051-05-23 15:55:44.769\",\"generatorId\":1,\"protocol\":\"tcp\",\"blocked\":true,\"category\":\"scan\",\"ruleId\":\"2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":29884,\"timestamp\":2566072671616}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:55:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.242\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":49454,\"timeStamp\":\"2051-05-23 15:55:14.729\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":5916,\"timestamp\":2566072918153}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:55:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"198.51.100.180\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":36152,\"timeStamp\":\"2051-05-23 15:55:14.729\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":40855,\"timestamp\":2566073029999}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:54:44 INFO  uvm[0]:  {\"msg\":\"ET SCAN NMAP -sS window 1024\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"192.0.2.242\",\"classtype\":\"attempted-recon\",\"signatureId\":2009582,\"sportItype\":58417,\"timeStamp\":\"2051-05-23 15:54:44.691\",\"generatorId\":1,\"protocol\":\"tcp\",\"blocked\":true,\"category\":\"scan\",\"ruleId\":\"2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":27596,\"timestamp\":2566072951501}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:54:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"192.0.2.242\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":51637,\"timeStamp\":\"2051-05-23 15:54:14.651\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":111,\"timestamp\":2566073305628}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:54:14 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.4\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":52549,\"timeStamp\":\"2051-05-23 15:54:14.65\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":9443,\"timestamp\":2566073189092}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:53:44 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.4\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":35612,\"timeStamp\":\"2051-05-23 15:53:44.612\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":30106,\"timestamp\":2566073333195}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:53:44 INFO  uvm[0]:  {\"msg\":\"ET CINS Active Threat Intelligence Poor Reputation IP group 83\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"203.0.113.4\",\"classtype\":\"misc-attack\",\"signatureId\":2403382,\"sportItype\":21442,\"timeStamp\":\"2051-05-23 15:53:44.612\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"ciarmy\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":10001,\"timestamp\":2566073228327}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "interface_id_1_alias": "External",
+        "interface_id_1_name": "eth0",
+        "interface_id_2_alias": "Internal",
+        "interface_id_2_name": "eth1",
+        "tz_offset": "America/Denver"
+      },
+      "message": "<174>May 23 15:53:44 INFO  uvm[0]:  {\"msg\":\"ET DROP Dshield Block Listed Source group 1\",\"ipDestination\":\"192.0.2.162\",\"ipSource\":\"192.0.2.197\",\"classtype\":\"misc-attack\",\"signatureId\":2402000,\"sportItype\":43132,\"timeStamp\":\"2051-05-23 15:53:44.611\",\"generatorId\":1,\"protocol\":\"ip\",\"blocked\":true,\"category\":\"dshield\",\"ruleId\":\"reserved_classification__2\",\"class\":\"class com.untangle.app.intrusion_prevention.IntrusionPreventionLogEvent\",\"dportIcode\":12300,\"timestamp\":2566073144918}",
+      "tags": [
+        "forwarded",
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-arista_ngfw-log-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "arista_ngfw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

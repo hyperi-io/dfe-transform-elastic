@@ -1,0 +1,81 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-10T08:57:45.900Z",
+      "beyondinsight_password_safe": {
+        "managedaccount": {
+          "account_description": "Primary managed account for KittenGrowth system",
+          "account_id": "5",
+          "account_name": "QddbxmblbS.Jueoe",
+          "application_display_name": "AccountingApp",
+          "application_id": "123",
+          "change_state": "queued",
+          "default_release_duration": 120,
+          "domain_name": "example.com",
+          "instance_name": "Primary",
+          "is_changing": false,
+          "is_isa_access": true,
+          "last_change_date": "2052-12-10T08:57:45.900Z",
+          "maximum_release_duration": 525600,
+          "next_change_date": "2052-12-12T00:00:00.000Z",
+          "platform_id": "4",
+          "preferred_node_id": "4ad94780-e2a8-4d5f-9d02-8e58f88ab7cc",
+          "system_id": "5",
+          "system_name": "KittenGrowth",
+          "user_principal_name": "ygfhb@example.com"
+        }
+      },
+      "ecs": {
+        "version": "9.1.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"PlatformID\":4,\"SystemId\":5,\"SystemName\":\"KittenGrowth\",\"InstanceName\":\"Primary\",\"DomainName\":\"example.com\",\"AccountId\":5,\"AccountName\":\"QddbxmblbS.Jueoe\",\"UserPrincipalName\":\"ygfhb@example.com\",\"ApplicationID\":123,\"ApplicationDisplayName\":\"AccountingApp\",\"MaximumReleaseDuration\":525600,\"DefaultReleaseDuration\":120,\"LastChangeDate\":\"2052-12-10T08:57:45.9\",\"NextChangeDate\":\"2052-12-12T00:00:00.0\",\"ChangeState\":2,\"IsChanging\":false,\"IsISAAccess\":true,\"PreferredNodeID\":\"4ad94780-e2a8-4d5f-9d02-8e58f88ab7cc\",\"AccountDescription\":\"Primary managed account for KittenGrowth system\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "KittenGrowth",
+        "id": "5"
+      },
+      "related": {
+        "hosts": [
+          "5",
+          "KittenGrowth"
+        ],
+        "user": [
+          "5",
+          "QddbxmblbS.Jueoe",
+          "ygfhb@example.com"
+        ]
+      },
+      "user": {
+        "email": "ygfhb@example.com",
+        "id": "5",
+        "name": "QddbxmblbS.Jueoe"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "original": "{\"PlatformID\":4,\"SystemId\":5,\"SystemName\":\"KittenGrowth\",\"InstanceName\":\"Primary\",\"DomainName\":\"example.com\",\"AccountId\":5,\"AccountName\":\"QddbxmblbS.Jueoe\",\"UserPrincipalName\":\"ygfhb@example.com\",\"ApplicationID\":123,\"ApplicationDisplayName\":\"AccountingApp\",\"MaximumReleaseDuration\":525600,\"DefaultReleaseDuration\":120,\"LastChangeDate\":\"2052-12-10T08:57:45.9\",\"NextChangeDate\":\"2052-12-12T00:00:00.0\",\"ChangeState\":2,\"IsChanging\":false,\"IsISAAccess\":true,\"PreferredNodeID\":\"4ad94780-e2a8-4d5f-9d02-8e58f88ab7cc\",\"AccountDescription\":\"Primary managed account for KittenGrowth system\"}"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "managedaccount",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-beyondinsight_password_safe-managedaccount-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "beyondinsight_password_safe",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

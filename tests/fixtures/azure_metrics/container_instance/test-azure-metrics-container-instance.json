@@ -1,0 +1,74 @@
+{
+    "events": [
+        {
+            "cloud": {
+                "provider": "azure",
+                "region": "westeurope"
+            },
+            "@timestamp": "2049-07-26T09:52:00.000Z",
+            "data_stream": {
+                "namespace": "default",
+                "type": "metrics",
+                "dataset": "azure.container_instance"
+            },
+            "service": {
+                "type": "azure"
+            },
+            "host": {
+                "hostname": "ezdhdr-bldfh-dvenz",
+                "os": {
+                    "kernel": "4.19.128-microsoft-standard",
+                    "codename": "Core",
+                    "name": "CentOS Linux",
+                    "type": "linux",
+                    "family": "redhat",
+                    "version": "7 (Core)",
+                    "platform": "centos"
+                },
+                "containerized": true,
+                "ip": [
+                    "172.26.228.241"
+                ],
+                "name": "ezdhdr-bldfh-dvenz",
+                "id": "f7512aff323cc3de64d5c928b009c7bd",
+                "mac": [
+                    "93:53:ca:27:11:68"
+                ],
+                "architecture": "x86_64"
+            },
+            "metricset": {
+                "period": 300000,
+                "name": "monitor"
+            },
+            "event": {
+                "duration": 2096788700,
+                "agent_id_status": "verified",
+                "ingested": "2049-07-26T10:02:20.419647300Z",
+                "module": "azure",
+                "dataset": "azure.container_instance"
+            },
+            "azure": {
+                "subscription_id": "69fd8b08-6b7d-4897-8555-fb37d8acd234",
+                "timegrain": "PT5M",
+                "metrics": {
+                    "network_bytes_transmitted_per_second": {
+                        "avg": 0
+                    },
+                    "network_bytes_received_per_second": {
+                        "avg": 0
+                    }
+                },
+                "resource": {
+                    "name": "testcontainergroup",
+                    "id": "/subscriptions/69fd8b08-6b7d-4897-8555-fb37d8acd234/resourceGroups/obs-infrastructure/providers/Microsoft.ContainerInstance/containerGroups/testcontainergroup",
+                    "type": "Microsoft.ContainerInstance/containerGroups",
+                    "tags": {
+                        "tag1": "value1"
+                    },
+                    "group": "obs-infrastructure"
+                },
+                "namespace": "Microsoft.ContainerInstance/containerGroups"
+            }
+        }
+    ]
+}

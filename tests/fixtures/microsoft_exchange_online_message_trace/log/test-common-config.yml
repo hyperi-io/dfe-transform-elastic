@@ -1,0 +1,6 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  _conf.local_domains:
+  - egmukjj.com

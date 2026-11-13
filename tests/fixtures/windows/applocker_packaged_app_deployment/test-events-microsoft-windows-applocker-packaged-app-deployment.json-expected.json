@@ -1,0 +1,160 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-15T14:12:32.680Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "code": "8023",
+        "kind": "event",
+        "provider": "Microsoft-Windows-AppLocker",
+        "type": [
+          "start"
+        ]
+      },
+      "file": {
+        "pe": {
+          "file_version": "4.55.62231.00",
+          "original_file_name": "APPX",
+          "product": "MICROSOFT.BINGNEWS"
+        },
+        "x509": {
+          "subject": {
+            "common_name": [
+              "MICROSOFT CORPORATION"
+            ],
+            "country": [
+              "US"
+            ],
+            "locality": [
+              "REDMOND"
+            ],
+            "organization": [
+              "MICROSOFT CORPORATION"
+            ],
+            "state_or_province": [
+              "WASHINGTON"
+            ]
+          }
+        }
+      },
+      "host": {
+        "name": "PNW2083648VY.local"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "Microsoft.BingNews was allowed to be installed.",
+      "user": {
+        "id": "S-1-5-21-1133191089-1850170202-1535859923-200319",
+        "name": "Topsy"
+      },
+      "winlog": {
+        "activity_id": "bcb1c4da-eb60-0546-a655-e2ff71ecf620",
+        "channel": "Microsoft-Windows-AppLocker/Packaged app-Deployment",
+        "computer_name": "PNW2083648VY.local",
+        "event_id": "8023",
+        "level": "Information",
+        "opcode": "Info",
+        "process": {
+          "pid": 4584,
+          "thread": {
+            "id": 26688
+          }
+        },
+        "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+        "provider_name": "Microsoft-Windows-AppLocker",
+        "record_id": "6269",
+        "time_created": "2051-08-15T14:12:32.6801945Z",
+        "user": {
+          "identifier": "S-1-5-21-1133191089-1850170202-1535859923-200319"
+        },
+        "user_data": {
+          "Fqbn": "CN=MICROSOFT CORPORATION, O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\MICROSOFT.BINGNEWS\\APPX\\4.55.62231.00",
+          "FqbnLength": 118,
+          "Package": "Microsoft.BingNews",
+          "PackageLength": "18",
+          "PolicyName": "APPX",
+          "PolicyNameLength": 4,
+          "RuleId": "{e4d99c78-ec2e-42ad-b8ab-fe30ead444fa}",
+          "RuleName": "(Default Rule) All signed packaged apps",
+          "RuleNameLength": 39,
+          "RuleSddl": "D:(XA;;FX;;;S-1-1-0;((Exists APPID://FQBN) && ((APPID://FQBN) >= ({\"*\\*\\*\",0}))))",
+          "RuleSddlLength": 81,
+          "TargetProcessId": 4584,
+          "TargetUser": "S-1-5-21-1133191089-1850170202-1535859923-200319"
+        },
+        "version": 0
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-08-15T14:12:32.6801945Z",
+      "event": {
+        "code": 8023,
+        "kind": "event",
+        "provider": "Microsoft-Windows-AppLocker"
+      },
+      "host": {
+        "name": "PNW2083648VY.local"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "Microsoft.BingNews was allowed to be installed.",
+      "winlog": {
+        "activity_id": "bcb1c4da-eb60-0546-a655-e2ff71ecf620",
+        "channel": "Microsoft-Windows-AppLocker/Packaged app-Deployment",
+        "computer_name": "PNW2083648VY.local",
+        "event_id": "8023",
+        "level": "Information",
+        "opcode": "Info",
+        "process": {
+          "pid": 4584,
+          "thread": {
+            "id": 26688
+          }
+        },
+        "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+        "provider_name": "Microsoft-Windows-AppLocker",
+        "record_id": 6269,
+        "time_created": "2051-08-15T14:12:32.6801945Z",
+        "user": {
+          "identifier": "S-1-5-21-1133191089-1850170202-1535859923-200319",
+          "name": "Topsy"
+        },
+        "user_data": {
+          "Fqbn": "CN=MICROSOFT CORPORATION, O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\MICROSOFT.BINGNEWS\\APPX\\4.55.62231.00",
+          "FqbnLength": "118",
+          "Package": "Microsoft.BingNews",
+          "PackageLength": "18",
+          "PolicyName": "APPX",
+          "PolicyNameLength": "4",
+          "RuleId": "{e4d99c78-ec2e-42ad-b8ab-fe30ead444fa}",
+          "RuleName": "(Default Rule) All signed packaged apps",
+          "RuleNameLength": "39",
+          "RuleSddl": "D:(XA;;FX;;;S-1-1-0;((Exists APPID://FQBN) && ((APPID://FQBN) >= ({\"*\\*\\*\",0}))))",
+          "RuleSddlLength": "81",
+          "TargetProcessId": "4584",
+          "TargetUser": "S-1-5-21-1133191089-1850170202-1535859923-200319"
+        },
+        "version": 0
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "applocker_packaged_app_deployment",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-applocker_packaged_app_deployment-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

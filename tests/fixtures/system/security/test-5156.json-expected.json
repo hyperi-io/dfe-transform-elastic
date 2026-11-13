@@ -1,0 +1,159 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-17T22:18:03.557Z",
+      "destination": {
+        "ip": "10.74.193.137",
+        "port": 389
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "windows-firewall-connection",
+        "category": [
+          "network"
+        ],
+        "code": "5156",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "connection",
+          "info",
+          "allowed"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "network": {
+        "community_id": "1:m4e4EpjM6tBRARGYvTFHJ76rHKQ=",
+        "direction": "outbound",
+        "iana_number": "6",
+        "transport": "tcp"
+      },
+      "process": {
+        "executable": "\\device\\harddiskvolume3\\windows\\system32\\dsregcmd.exe",
+        "name": "dsregcmd.exe"
+      },
+      "related": {
+        "ip": [
+          "10.74.193.137",
+          "10.26.228.122"
+        ]
+      },
+      "source": {
+        "ip": "10.26.228.122",
+        "port": 49691
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "Direction": "%%14593",
+          "FilterOrigin": "Unknown",
+          "FilterRTID": "67993",
+          "InterfaceIndex": "14",
+          "LayerName": "%%14611",
+          "LayerNameDescription": "Connect",
+          "LayerRTID": "48",
+          "ProcessID": "3032",
+          "Protocol": "6",
+          "RemoteMachineDescription": "Nobody",
+          "RemoteMachineID": "S-1-0-0",
+          "RemoteUserDescription": "Nobody",
+          "RemoteUserID": "S-1-0-0"
+        },
+        "event_id": "5156",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959006",
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "5156",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "Application": "\\device\\harddiskvolume3\\windows\\system32\\dsregcmd.exe",
+          "DestAddress": "10.74.193.137",
+          "DestPort": "389",
+          "Direction": "%%14593",
+          "FilterOrigin": "Unknown",
+          "FilterRTID": "67993",
+          "InterfaceIndex": "14",
+          "LayerName": "%%14611",
+          "LayerRTID": "48",
+          "ProcessID": "3032",
+          "Protocol": "6",
+          "RemoteMachineID": "S-1-0-0",
+          "RemoteUserID": "S-1-0-0",
+          "SourceAddress": "10.26.228.122",
+          "SourcePort": "49691"
+        },
+        "event_id": "5156",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959006,
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

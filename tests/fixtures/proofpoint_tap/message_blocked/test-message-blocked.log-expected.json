@@ -1,0 +1,853 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-01-01T02:03:40.050Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          }
+        ],
+        "delivery_timestamp": "2050-01-01T00:45:55.050Z",
+        "from": {
+          "address": [
+            "info@example.com"
+          ]
+        },
+        "message_id": "7b392x0yte-1@m0116781.example.com",
+        "sender": {
+          "address": "info@example.com"
+        },
+        "subject": "Re: Delayed Mail (still being retried)",
+        "to": {
+          "address": [
+            "kevueu-ccepjw@example.com"
+          ]
+        },
+        "x_mailer": "Microsoft Outlook 16.0"
+      },
+      "event": {
+        "action": [
+          "denied"
+        ],
+        "category": [
+          "email"
+        ],
+        "id": "401ccabc-1234-123-1234-babc74fce1a4",
+        "kind": "event",
+        "original": "{\"spamScore\":0,\"phishScore\":0,\"threatsInfoMap\":[{\"threatID\":\"dhgonvjabcdefghijkabcdefghijkabcdefghijkabcdefghijkhlonvjdsabcdefgh\",\"threatStatus\":\"active\",\"classification\":\"malware\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgon-vjdsd-efghjikhlon-abcdefghij/threat/email/792e8d28448xxxxxxxxxxxxxxxxx8448c792xxxxx1af132onvjdsvsbnvjd\",\"threatTime\":\"2050-01-01T02:03:40.050Z\",\"threat\":\"example.com/xyz/\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T00:45:55.050Z\",\"impostorScore\":0.0,\"malwareScore\":100,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Re: Delayed Mail (still being retried)\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":3102,\"headerFrom\":\"<info@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"info@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":\"Microsoft Outlook 16.0\",\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"401ccabc-1234-123-1234-babc74fce1a4\",\"QID\":\"3XXXXgaXXX-1\",\"GUID\":\"qxxlnx-xxxxxNxXGxQxWxPxxxxx0\",\"sender\":\"info@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"203.0.113.61\",\"messageID\":\"<7b392x0yte-1@m0116781.example.com>\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "proofpoint_tap": {
+        "guid": "qxxlnx-xxxxxNxXGxQxWxPxxxxx0",
+        "message_blocked": {
+          "cluster": "pharmtech_hosted",
+          "completely_rewritten": "false",
+          "header": {
+            "from": "info@example.com"
+          },
+          "impostor_score": 0.0,
+          "malware_score": 100,
+          "message_parts": [
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            }
+          ],
+          "message_size": 3102,
+          "modules_run": [
+            "av",
+            "zerohour",
+            "dkimv",
+            "spf",
+            "spam",
+            "dmarc",
+            "pdr"
+          ],
+          "phish_score": 0,
+          "policy_routes": [
+            "default_inbound"
+          ],
+          "qid": "3XXXXgaXXX-1",
+          "recipient": [
+            "kevueu-ccepjw@example.com"
+          ],
+          "spam_score": 0,
+          "threat_info_map": [
+            {
+              "classification": "malware",
+              "threat": {
+                "artifact": "example.com/xyz/",
+                "id": "dhgonvjabcdefghijkabcdefghijkabcdefghijkabcdefghijkhlonvjdsabcdefgh",
+                "status": "active",
+                "time": "2050-01-01T02:03:40.050Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/adhgon-vjdsd-efghjikhlon-abcdefghij/threat/email/792e8d28448xxxxxxxxxxxxxxxxx8448c792xxxxx1af132onvjdsvsbnvjd"
+              }
+            }
+          ],
+          "to_addresses": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "c65a5ca371c9082439b6e22aa69c1af7",
+          "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+        ],
+        "ip": [
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-01T10:10:02.020Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          }
+        ],
+        "delivery_timestamp": "2050-01-01T01:25:59.059Z",
+        "from": {
+          "address": [
+            "ewwgbay@example.com"
+          ]
+        },
+        "message_id": "23053419306837.ACCD869154@example.com",
+        "sender": {
+          "address": "ewwgbay@example.com"
+        },
+        "subject": "Re: Undelivered Mail Returned to Sender",
+        "to": {
+          "address": [
+            "kevueu-ccepjw@example.com"
+          ]
+        },
+        "x_mailer": "Microsoft Outlook 16.0"
+      },
+      "event": {
+        "action": [
+          "denied"
+        ],
+        "category": [
+          "email"
+        ],
+        "id": "532ffbd2-6451-1240-1318-0bfcfef88869",
+        "kind": "event",
+        "original": "{\"spamScore\":0,\"phishScore\":0,\"threatsInfoMap\":[{\"threatID\":\"8defghjikhlonvjdsvsbdhgonvjdsdefghjikhlonvjdsvsbnvjdsvsbvjdsvsb8\",\"threatStatus\":\"active\",\"classification\":\"malware\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgo-nvjdsdef-ghjikhlonv-abcdefghij/threat/email/848c79xxxxxxxxxxxxxxxxbdadkh79xxxxxxxxxxxxxx1aa6a88fdbdadkh217b1af8\",\"threatTime\":\"2050-01-01T10:10:02.020Z\",\"threat\":\"example.com/xyz/\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T01:25:59.059Z\",\"impostorScore\":0.0,\"malwareScore\":100,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Re: Undelivered Mail Returned to Sender\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":2278,\"headerFrom\":\"<ewwgbay@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"ewwgbay@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":\"Microsoft Outlook 16.0\",\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"532ffbd2-6451-1240-1318-0bfcfef88869\",\"QID\":\"3XXfXX2X1XXX\",\"GUID\":\"LQxxx9xNxcxxx_xjxexLrxxnxQx9xdxx3xx\",\"sender\":\"ewwgbay@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"203.0.113.61\",\"messageID\":\"<23053419306837.ACCD869154@example.com>\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "proofpoint_tap": {
+        "guid": "LQxxx9xNxcxxx_xjxexLrxxnxQx9xdxx3xx",
+        "message_blocked": {
+          "cluster": "pharmtech_hosted",
+          "completely_rewritten": "false",
+          "header": {
+            "from": "ewwgbay@example.com"
+          },
+          "impostor_score": 0.0,
+          "malware_score": 100,
+          "message_parts": [
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            }
+          ],
+          "message_size": 2278,
+          "modules_run": [
+            "av",
+            "zerohour",
+            "spf",
+            "spam",
+            "dmarc",
+            "pdr"
+          ],
+          "phish_score": 0,
+          "policy_routes": [
+            "default_inbound"
+          ],
+          "qid": "3XXfXX2X1XXX",
+          "recipient": [
+            "kevueu-ccepjw@example.com"
+          ],
+          "spam_score": 0,
+          "threat_info_map": [
+            {
+              "classification": "malware",
+              "threat": {
+                "artifact": "example.com/xyz/",
+                "id": "8defghjikhlonvjdsvsbdhgonvjdsdefghjikhlonvjdsvsbnvjdsvsbvjdsvsb8",
+                "status": "active",
+                "time": "2050-01-01T10:10:02.020Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/adhgo-nvjdsdef-ghjikhlonv-abcdefghij/threat/email/848c79xxxxxxxxxxxxxxxxbdadkh79xxxxxxxxxxxxxx1aa6a88fdbdadkh217b1af8"
+              }
+            }
+          ],
+          "to_addresses": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "c65a5ca371c9082439b6e22aa69c1af7",
+          "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+        ],
+        "ip": [
+          "203.0.113.61"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-01T11:06:50.580Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          }
+        ],
+        "delivery_timestamp": "2050-01-01T04:51:56.269Z",
+        "from": {
+          "address": [
+            "xxsegwo@example.com"
+          ]
+        },
+        "message_id": "9d59vtpxpm-4@example.com",
+        "sender": {
+          "address": "xxsegwo@example.com"
+        },
+        "subject": "Re: Undelivered Mail Returned to Sender [BACKSCATTER DETECTED]",
+        "to": {
+          "address": [
+            "kevueu-ccepjw@example.com"
+          ]
+        },
+        "x_mailer": "Microsoft Outlook 16.0"
+      },
+      "event": {
+        "action": [
+          "denied"
+        ],
+        "category": [
+          "email"
+        ],
+        "id": "7a1ebec8-9687-1427-1747-beaca5e38b03",
+        "kind": "event",
+        "original": "{\"spamScore\":0,\"phishScore\":0,\"threatsInfoMap\":[{\"threatID\":\"6abcdefghijkabcdefghijkabcdefghijk7503ddcabcdefghijkabcdefghijk\",\"threatStatus\":\"active\",\"classification\":\"malware\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhg-onvjdsdefgh-jikhlonvjdsv-abcdefghij/threat/email/6d748c7921afxxxxxxxxxxxxxxxxxhc7921af13xxxxxxxxxxxxxxxxxxxxxd267a\",\"threatTime\":\"2050-01-01T11:06:50.580Z\",\"threat\":\"example.com/xyz/\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T04:51:56.269Z\",\"impostorScore\":0.0,\"malwareScore\":100,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Re: Undelivered Mail Returned to Sender [BACKSCATTER DETECTED]\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":2755,\"headerFrom\":\"<xxsegwo@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"xxsegwo@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":\"Microsoft Outlook 16.0\",\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"7a1ebec8-9687-1427-1747-beaca5e38b03\",\"QID\":\"XXsXXX-XXX1XX\",\"GUID\":\"6xxxx6xmxxxfxcxTxAxExxDxxxxx2\",\"sender\":\"xxsegwo@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"192.0.2.87\",\"messageID\":\"<9d59vtpxpm-4@example.com>\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "proofpoint_tap": {
+        "guid": "6xxxx6xmxxxfxcxTxAxExxDxxxxx2",
+        "message_blocked": {
+          "cluster": "pharmtech_hosted",
+          "completely_rewritten": "false",
+          "header": {
+            "from": "xxsegwo@example.com"
+          },
+          "impostor_score": 0.0,
+          "malware_score": 100,
+          "message_parts": [
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            }
+          ],
+          "message_size": 2755,
+          "modules_run": [
+            "av",
+            "zerohour",
+            "dkimv",
+            "spf",
+            "spam",
+            "dmarc",
+            "pdr"
+          ],
+          "phish_score": 0,
+          "policy_routes": [
+            "default_inbound"
+          ],
+          "qid": "XXsXXX-XXX1XX",
+          "recipient": [
+            "kevueu-ccepjw@example.com"
+          ],
+          "spam_score": 0,
+          "threat_info_map": [
+            {
+              "classification": "malware",
+              "threat": {
+                "artifact": "example.com/xyz/",
+                "id": "6abcdefghijkabcdefghijkabcdefghijk7503ddcabcdefghijkabcdefghijk",
+                "status": "active",
+                "time": "2050-01-01T11:06:50.580Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/adhg-onvjdsdefgh-jikhlonvjdsv-abcdefghij/threat/email/6d748c7921afxxxxxxxxxxxxxxxxxhc7921af13xxxxxxxxxxxxxxxxxxxxxd267a"
+              }
+            }
+          ],
+          "to_addresses": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "c65a5ca371c9082439b6e22aa69c1af7",
+          "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-01T05:02:48.832Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          },
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/plain",
+              "name": "text.txt"
+            }
+          },
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/plain",
+              "name": "text.txt"
+            }
+          },
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          },
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "image/png",
+              "name": "image001.png"
+            }
+          }
+        ],
+        "delivery_timestamp": "2050-01-01T00:25:20.010Z",
+        "from": {
+          "address": [
+            "dfb@example.com"
+          ]
+        },
+        "message_id": "46D6AE08-6D0B-423D-AF2A-14F741698CB8@example.com",
+        "sender": {
+          "address": "dfb@example.com"
+        },
+        "subject": "Statement From (Trinity Groundwater)",
+        "to": {
+          "address": [
+            "xboj@example.com",
+            "dfb@example.com",
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": [
+          "denied"
+        ],
+        "category": [
+          "email"
+        ],
+        "id": "8f12300-f387-1234-xxxx-a4abcd12347",
+        "kind": "event",
+        "original": "{\"spamScore\":100,\"phishScore\":100,\"threatsInfoMap\":[{\"threatID\":\"cfdhgondhgonvjdsdefghjikhlonvjdsvsbnvjd56546ghjikhlonvjdsvsbnvjd\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgon-vjdsdef-ghjikhlonv-abcdefghij/threat/email/7921af132d1aa6a88fdbdadkhlonvj1a8xxxxxxxxxxxxxxxxxxxxxdkhlonvj1\",\"threatTime\":\"2050-01-01T05:02:48.832Z\",\"threat\":\"https://example.com/\",\"campaignID\":null,\"threatType\":\"url\"},{\"threatID\":\"124563bcdefghijkabcdefghi201256abcdefghijk201256aswe20abc\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/abcdefgh-1234-1234-1234-1234-abcdefgh/threat/email/85738a8x9x7x1x04x5329xaadc9x425925abdf84089wcwe3x022xx4x19x123\",\"threatTime\":\"2050-01-01T00:00:00.000Z\",\"threat\":\"example.com\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T00:25:20.010Z\",\"impostorScore\":0.0,\"malwareScore\":0,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Statement From (Trinity Groundwater)\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\",\"allow_relay\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\"],\"messageSize\":111091,\"headerFrom\":\"Laura Schumacher <dfb@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"dfb@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"xboj@example.com\",\"dfb@example.com\"],\"xmailer\":null,\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"},{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.txt\",\"sandboxStatus\":null,\"oContentType\":\"text/plain\",\"contentType\":\"text/plain\"},{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.txt\",\"sandboxStatus\":null,\"oContentType\":\"text/plain\",\"contentType\":\"text/plain\"},{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"},{\"disposition\":\"attached\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"image001.png\",\"sandboxStatus\":null,\"oContentType\":\"image/png\",\"contentType\":\"image/png\"}],\"completelyRewritten\":false,\"id\":\"8f12300-f387-1234-xxxx-a4abcd12347\",\"QID\":\"0XX0XXXXaX3XXX-X1\",\"GUID\":\"_pxxxxOxQxxXxx4wxjxtx2xxxTxxxYxxx\",\"sender\":\"dfb@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"192.0.2.87\",\"messageID\":\"<46D6AE08-6D0B-423D-AF2A-14F741698CB8@example.com>\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "proofpoint_tap": {
+        "guid": "_pxxxxOxQxxXxx4wxjxtx2xxxTxxxYxxx",
+        "message_blocked": {
+          "cluster": "pharmtech_hosted",
+          "completely_rewritten": "false",
+          "header": {
+            "from": "Laura Schumacher dfb@example.com"
+          },
+          "impostor_score": 0.0,
+          "malware_score": 0,
+          "message_parts": [
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            },
+            {
+              "disposition": "inline",
+              "o_content_type": "text/plain"
+            },
+            {
+              "disposition": "inline",
+              "o_content_type": "text/plain"
+            },
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            },
+            {
+              "disposition": "attached",
+              "o_content_type": "image/png"
+            }
+          ],
+          "message_size": 111091,
+          "modules_run": [
+            "av",
+            "zerohour",
+            "dkimv",
+            "spf",
+            "spam",
+            "dmarc"
+          ],
+          "phish_score": 100,
+          "policy_routes": [
+            "default_inbound",
+            "allow_relay"
+          ],
+          "qid": "0XX0XXXXaX3XXX-X1",
+          "recipient": [
+            "kevueu-ccepjw@example.com"
+          ],
+          "spam_score": 100,
+          "threat_info_map": [
+            {
+              "classification": "phish",
+              "threat": {
+                "artifact": "https://example.com/",
+                "id": "cfdhgondhgonvjdsdefghjikhlonvjdsvsbnvjd56546ghjikhlonvjdsvsbnvjd",
+                "status": "active",
+                "time": "2050-01-01T05:02:48.832Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/adhgon-vjdsdef-ghjikhlonv-abcdefghij/threat/email/7921af132d1aa6a88fdbdadkhlonvj1a8xxxxxxxxxxxxxxxxxxxxxdkhlonvj1"
+              }
+            },
+            {
+              "classification": "phish",
+              "threat": {
+                "artifact": "example.com",
+                "id": "124563bcdefghijkabcdefghi201256abcdefghijk201256aswe20abc",
+                "status": "active",
+                "time": "2050-01-01T00:00:00.000Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/abcdefgh-1234-1234-1234-1234-abcdefgh/threat/email/85738a8x9x7x1x04x5329xaadc9x425925abdf84089wcwe3x022xx4x19x123"
+              }
+            }
+          ],
+          "to_addresses": [
+            "xboj@example.com",
+            "dfb@example.com"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "c65a5ca371c9082439b6e22aa69c1af7",
+          "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-01T03:02:25.092Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          }
+        ],
+        "delivery_timestamp": "2050-01-01T00:00:00.000Z",
+        "from": {
+          "address": [
+            "oeu.jdc@example.com"
+          ]
+        },
+        "message_id": "44117206000489.63878D21B4FB6D27@example.com",
+        "sender": {
+          "address": "oeu.jdc@example.com"
+        },
+        "subject": "(1) VOICE MAIL MESSSAGE",
+        "to": {
+          "address": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": [
+          "denied"
+        ],
+        "category": [
+          "email"
+        ],
+        "id": "ee212323-1234-1234-1234-0f0abcd123456",
+        "kind": "event",
+        "original": "{\"spamScore\":100,\"phishScore\":100,\"threatsInfoMap\":[{\"threatID\":\"9dhgabcdefghijkhgonvjdsdefghjikhlonvjdsvsbnvjdvjdsdefghjikhlonv\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgon-vjdsdefghj-ikhlonvj-abcdefghij/threat/email/97921af132d1aa6a88fdbdadkhlonvjbc9fxxxxxxxxxxxxxxxxxxxxxbdadkhlonvjd\",\"threatTime\":\"2050-01-01T03:02:25.092Z\",\"threat\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T00:00:00.000Z\",\"impostorScore\":0.0,\"malwareScore\":0,\"cluster\":\"pharmtech_hosted\",\"subject\":\"(1) VOICE MAIL MESSSAGE\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":5776,\"headerFrom\":\"VOICE MAIL<oeu.jdc@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"oeu.jdc@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":null,\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"ee212323-1234-1234-1234-0f0abcd123456\",\"QID\":\"3XXXf1XaXX-X1XX\",\"GUID\":\"gxxxxxgxx3xcx-MxZxixxoxxxxxAxxx2\",\"sender\":\"oeu.jdc@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"192.0.2.87\",\"messageID\":\"<44117206000489.63878D21B4FB6D27@example.com>\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "proofpoint_tap": {
+        "guid": "gxxxxxgxx3xcx-MxZxixxoxxxxxAxxx2",
+        "message_blocked": {
+          "cluster": "pharmtech_hosted",
+          "completely_rewritten": "false",
+          "header": {
+            "from": "VOICE MAILoeu.jdc@example.com"
+          },
+          "impostor_score": 0.0,
+          "malware_score": 0,
+          "message_parts": [
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            }
+          ],
+          "message_size": 5776,
+          "modules_run": [
+            "av",
+            "zerohour",
+            "dkimv",
+            "spf",
+            "spam",
+            "dmarc",
+            "pdr"
+          ],
+          "phish_score": 100,
+          "policy_routes": [
+            "default_inbound"
+          ],
+          "qid": "3XXXf1XaXX-X1XX",
+          "recipient": [
+            "kevueu-ccepjw@example.com"
+          ],
+          "spam_score": 100,
+          "threat_info_map": [
+            {
+              "classification": "phish",
+              "threat": {
+                "artifact": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c",
+                "id": "9dhgabcdefghijkhgonvjdsdefghjikhlonvjdsvsbnvjdvjdsdefghjikhlonv",
+                "status": "active",
+                "time": "2050-01-01T03:02:25.092Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/adhgon-vjdsdefghj-ikhlonvj-abcdefghij/threat/email/97921af132d1aa6a88fdbdadkhlonvjbc9fxxxxxxxxxxxxxxxxxxxxxbdadkhlonvjd"
+              }
+            }
+          ],
+          "to_addresses": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "c65a5ca371c9082439b6e22aa69c1af7",
+          "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+        ],
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2050-01-01T05:00:02.010Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": [
+          {
+            "file": {
+              "hash": {
+                "md5": "c65a5ca371c9082439b6e22aa69c1af7",
+                "sha256": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+              },
+              "mime_type": "text/html",
+              "name": "text.html"
+            }
+          }
+        ],
+        "delivery_timestamp": "2050-01-01T05:00:02.010Z",
+        "from": {
+          "address": [
+            "oeu.jdc@example.com"
+          ]
+        },
+        "message_id": "44117206000489.63878D21B4FB6D27@example.com",
+        "sender": {
+          "address": "oeu.jdc@example.com"
+        },
+        "subject": "(1) VOICE MAIL MESSSAGE",
+        "to": {
+          "address": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": [
+          "denied"
+        ],
+        "category": [
+          "email"
+        ],
+        "id": "ee212323-1234-1234-1234-0f0abcd123456",
+        "kind": "event",
+        "original": "{\"spamScore\":100,\"phishScore\":100,\"threatsInfoMap\":[{\"threatID\":\"abcdefghijkabcdefghijkabcdefghijkefghjikhlonvjdsvsbnvjd\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgonvj-dsdefgh-jikhlon-abcdefghij/threat/email/7921af132xxxxxxxxxxxxxxxxxxviuerhvuie35abcdefghabcdefghijk\",\"threatTime\":\"2050-01-01T00:00:00.000Z\",\"threat\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T05:00:02.010Z\",\"impostorScore\":0.0,\"malwareScore\":0,\"cluster\":\"pharmtech_hosted\",\"subject\":\"(1) VOICE MAIL MESSSAGE\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":5776,\"headerFrom\":\"VOICE MAIL<oeu.jdc@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"oeu.jdc@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":null,\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"ee212323-1234-1234-1234-0f0abcd123456\",\"QID\":\"3XXfXabXcXXXX1\",\"GUID\":\"gxxxxgx3xcx-xMx7xPxxZxxxxoxAx2xxxxx\",\"sender\":\"oeu.jdc@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"203.0.113.248\",\"messageID\":\"<44117206000489.63878D21B4FB6D27@example.com>\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "proofpoint_tap": {
+        "guid": "gxxxxgx3xcx-xMx7xPxxZxxxxoxAx2xxxxx",
+        "message_blocked": {
+          "cluster": "pharmtech_hosted",
+          "completely_rewritten": "false",
+          "header": {
+            "from": "VOICE MAILoeu.jdc@example.com"
+          },
+          "impostor_score": 0.0,
+          "malware_score": 0,
+          "message_parts": [
+            {
+              "disposition": "inline",
+              "o_content_type": "text/html"
+            }
+          ],
+          "message_size": 5776,
+          "modules_run": [
+            "av",
+            "zerohour",
+            "dkimv",
+            "spf",
+            "spam",
+            "dmarc",
+            "pdr"
+          ],
+          "phish_score": 100,
+          "policy_routes": [
+            "default_inbound"
+          ],
+          "qid": "3XXfXabXcXXXX1",
+          "recipient": [
+            "kevueu-ccepjw@example.com"
+          ],
+          "spam_score": 100,
+          "threat_info_map": [
+            {
+              "classification": "phish",
+              "threat": {
+                "artifact": "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c",
+                "id": "abcdefghijkabcdefghijkabcdefghijkefghjikhlonvjdsvsbnvjd",
+                "status": "active",
+                "time": "2050-01-01T00:00:00.000Z",
+                "type": "url",
+                "url": "https://threatinsight.proofpoint.com/adhgonvj-dsdefgh-jikhlon-abcdefghij/threat/email/7921af132xxxxxxxxxxxxxxxxxxviuerhvuie35abcdefghabcdefghijk"
+              }
+            }
+          ],
+          "to_addresses": [
+            "kevueu-ccepjw@example.com"
+          ]
+        }
+      },
+      "related": {
+        "hash": [
+          "c65a5ca371c9082439b6e22aa69c1af7",
+          "c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c"
+        ],
+        "ip": [
+          "203.0.113.248"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"spamScore\":0,\"phishScore\":0,\"threatsInfoMap\":[{\"threatID\":\"dhgonvjabcdefghijkabcdefghijkabcdefghijkabcdefghijkhlonvjdsabcdefgh\",\"threatStatus\":\"active\",\"classification\":\"malware\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgon-vjdsd-efghjikhlon-abcdefghij/threat/email/792e8d28448xxxxxxxxxxxxxxxxx8448c792xxxxx1af132onvjdsvsbnvjd\",\"threatTime\":\"2050-01-01T02:03:40.050Z\",\"threat\":\"example.com/xyz/\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T00:45:55.050Z\",\"impostorScore\":0.0,\"malwareScore\":100,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Re: Delayed Mail (still being retried)\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":3102,\"headerFrom\":\"<info@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"info@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":\"Microsoft Outlook 16.0\",\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"401ccabc-1234-123-1234-babc74fce1a4\",\"QID\":\"3XXXXgaXXX-1\",\"GUID\":\"qxxlnx-xxxxxNxXGxQxWxPxxxxx0\",\"sender\":\"info@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"203.0.113.61\",\"messageID\":\"<7b392x0yte-1@m0116781.example.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"spamScore\":0,\"phishScore\":0,\"threatsInfoMap\":[{\"threatID\":\"8defghjikhlonvjdsvsbdhgonvjdsdefghjikhlonvjdsvsbnvjdsvsbvjdsvsb8\",\"threatStatus\":\"active\",\"classification\":\"malware\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgo-nvjdsdef-ghjikhlonv-abcdefghij/threat/email/848c79xxxxxxxxxxxxxxxxbdadkh79xxxxxxxxxxxxxx1aa6a88fdbdadkh217b1af8\",\"threatTime\":\"2050-01-01T10:10:02.020Z\",\"threat\":\"example.com/xyz/\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T01:25:59.059Z\",\"impostorScore\":0.0,\"malwareScore\":100,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Re: Undelivered Mail Returned to Sender\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":2278,\"headerFrom\":\"<ewwgbay@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"ewwgbay@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":\"Microsoft Outlook 16.0\",\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"532ffbd2-6451-1240-1318-0bfcfef88869\",\"QID\":\"3XXfXX2X1XXX\",\"GUID\":\"LQxxx9xNxcxxx_xjxexLrxxnxQx9xdxx3xx\",\"sender\":\"ewwgbay@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"203.0.113.61\",\"messageID\":\"<23053419306837.ACCD869154@example.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"spamScore\":0,\"phishScore\":0,\"threatsInfoMap\":[{\"threatID\":\"6abcdefghijkabcdefghijkabcdefghijk7503ddcabcdefghijkabcdefghijk\",\"threatStatus\":\"active\",\"classification\":\"malware\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhg-onvjdsdefgh-jikhlonvjdsv-abcdefghij/threat/email/6d748c7921afxxxxxxxxxxxxxxxxxhc7921af13xxxxxxxxxxxxxxxxxxxxxd267a\",\"threatTime\":\"2050-01-01T11:06:50.580Z\",\"threat\":\"example.com/xyz/\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T04:51:56.269Z\",\"impostorScore\":0.0,\"malwareScore\":100,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Re: Undelivered Mail Returned to Sender [BACKSCATTER DETECTED]\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":2755,\"headerFrom\":\"<xxsegwo@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"xxsegwo@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":\"Microsoft Outlook 16.0\",\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"7a1ebec8-9687-1427-1747-beaca5e38b03\",\"QID\":\"XXsXXX-XXX1XX\",\"GUID\":\"6xxxx6xmxxxfxcxTxAxExxDxxxxx2\",\"sender\":\"xxsegwo@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"192.0.2.87\",\"messageID\":\"<9d59vtpxpm-4@example.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"spamScore\":100,\"phishScore\":100,\"threatsInfoMap\":[{\"threatID\":\"cfdhgondhgonvjdsdefghjikhlonvjdsvsbnvjd56546ghjikhlonvjdsvsbnvjd\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgon-vjdsdef-ghjikhlonv-abcdefghij/threat/email/7921af132d1aa6a88fdbdadkhlonvj1a8xxxxxxxxxxxxxxxxxxxxxdkhlonvj1\",\"threatTime\":\"2050-01-01T05:02:48.832Z\",\"threat\":\"https://example.com/\",\"campaignID\":null,\"threatType\":\"url\"},{\"threatID\":\"124563bcdefghijkabcdefghi201256abcdefghijk201256aswe20abc\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/abcdefgh-1234-1234-1234-1234-abcdefgh/threat/email/85738a8x9x7x1x04x5329xaadc9x425925abdf84089wcwe3x022xx4x19x123\",\"threatTime\":\"2050-01-01T00:00:00.000Z\",\"threat\":\"example.com\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T00:25:20.010Z\",\"impostorScore\":0.0,\"malwareScore\":0,\"cluster\":\"pharmtech_hosted\",\"subject\":\"Statement From (Trinity Groundwater)\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\",\"allow_relay\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\"],\"messageSize\":111091,\"headerFrom\":\"Laura Schumacher <dfb@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"dfb@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"xboj@example.com\",\"dfb@example.com\"],\"xmailer\":null,\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"},{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.txt\",\"sandboxStatus\":null,\"oContentType\":\"text/plain\",\"contentType\":\"text/plain\"},{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.txt\",\"sandboxStatus\":null,\"oContentType\":\"text/plain\",\"contentType\":\"text/plain\"},{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"},{\"disposition\":\"attached\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"image001.png\",\"sandboxStatus\":null,\"oContentType\":\"image/png\",\"contentType\":\"image/png\"}],\"completelyRewritten\":false,\"id\":\"8f12300-f387-1234-xxxx-a4abcd12347\",\"QID\":\"0XX0XXXXaX3XXX-X1\",\"GUID\":\"_pxxxxOxQxxXxx4wxjxtx2xxxTxxxYxxx\",\"sender\":\"dfb@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"192.0.2.87\",\"messageID\":\"<46D6AE08-6D0B-423D-AF2A-14F741698CB8@example.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"spamScore\":100,\"phishScore\":100,\"threatsInfoMap\":[{\"threatID\":\"9dhgabcdefghijkhgonvjdsdefghjikhlonvjdsvsbnvjdvjdsdefghjikhlonv\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgon-vjdsdefghj-ikhlonvj-abcdefghij/threat/email/97921af132d1aa6a88fdbdadkhlonvjbc9fxxxxxxxxxxxxxxxxxxxxxbdadkhlonvjd\",\"threatTime\":\"2050-01-01T03:02:25.092Z\",\"threat\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T00:00:00.000Z\",\"impostorScore\":0.0,\"malwareScore\":0,\"cluster\":\"pharmtech_hosted\",\"subject\":\"(1) VOICE MAIL MESSSAGE\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":5776,\"headerFrom\":\"VOICE MAIL<oeu.jdc@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"oeu.jdc@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":null,\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"ee212323-1234-1234-1234-0f0abcd123456\",\"QID\":\"3XXXf1XaXX-X1XX\",\"GUID\":\"gxxxxxgxx3xcx-MxZxixxoxxxxxAxxx2\",\"sender\":\"oeu.jdc@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"192.0.2.87\",\"messageID\":\"<44117206000489.63878D21B4FB6D27@example.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"spamScore\":100,\"phishScore\":100,\"threatsInfoMap\":[{\"threatID\":\"abcdefghijkabcdefghijkabcdefghijkefghjikhlonvjdsvsbnvjd\",\"threatStatus\":\"active\",\"classification\":\"phish\",\"threatUrl\":\"https://threatinsight.proofpoint.com/adhgonvj-dsdefgh-jikhlon-abcdefghij/threat/email/7921af132xxxxxxxxxxxxxxxxxxviuerhvuie35abcdefghabcdefghijk\",\"threatTime\":\"2050-01-01T00:00:00.000Z\",\"threat\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"campaignID\":null,\"threatType\":\"url\"}],\"messageTime\":\"2050-01-01T05:00:02.010Z\",\"impostorScore\":0.0,\"malwareScore\":0,\"cluster\":\"pharmtech_hosted\",\"subject\":\"(1) VOICE MAIL MESSSAGE\",\"quarantineFolder\":null,\"quarantineRule\":null,\"policyRoutes\":[\"default_inbound\"],\"modulesRun\":[\"av\",\"zerohour\",\"dkimv\",\"spf\",\"spam\",\"dmarc\",\"pdr\"],\"messageSize\":5776,\"headerFrom\":\"VOICE MAIL<oeu.jdc@example.com>\",\"headerReplyTo\":null,\"fromAddress\":[\"oeu.jdc@example.com\"],\"ccAddresses\":[],\"replyToAddress\":[],\"toAddresses\":[\"kevueu-ccepjw@example.com\"],\"xmailer\":null,\"messageParts\":[{\"disposition\":\"inline\",\"sha256\":\"c476a7e75ef133178a149822cfd8b348a42b51da2abec41d18a631d1ad2d100c\",\"md5\":\"c65a5ca371c9082439b6e22aa69c1af7\",\"filename\":\"text.html\",\"sandboxStatus\":null,\"oContentType\":\"text/html\",\"contentType\":\"text/html\"}],\"completelyRewritten\":false,\"id\":\"ee212323-1234-1234-1234-0f0abcd123456\",\"QID\":\"3XXfXabXcXXXX1\",\"GUID\":\"gxxxxgx3xcx-xMx7xPxxZxxxxoxAx2xxxxx\",\"sender\":\"oeu.jdc@example.com\",\"recipient\":[\"kevueu-ccepjw@example.com\"],\"senderIP\":\"203.0.113.248\",\"messageID\":\"<44117206000489.63878D21B4FB6D27@example.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"queryEndTime\":\"2052-10-11T14:34:53Z\",\"messagesBlocked\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "message_blocked",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-proofpoint_tap-message_blocked-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "proofpoint_tap",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

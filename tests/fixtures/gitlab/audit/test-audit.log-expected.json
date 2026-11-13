@@ -1,0 +1,278 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-05-10T17:46:49.058Z",
+      "client": {
+        "address": "203.0.113.21",
+        "ip": "203.0.113.21"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "id": "24QNMNUK3D03IVWYP0T9AWJ94B",
+        "kind": "event",
+        "original": "{\"severity\": \"INFO\",\"time\": \"2052-05-10T17:46:49.065Z\",\"correlation_id\": \"24QNMNUK3D03IVWYP0T9AWJ94B\",\"meta.caller_id\": \"SessionsController#create\",\"meta.remote_ip\": \"203.0.113.21\",\"meta.feature_category\": \"system_access\",\"meta.user\": \"root\",\"meta.user_id\": 1,\"meta.client_id\": \"user/1\",\"author_id\": 1,\"author_name\": \"Administrator\",\"entity_id\": 1,\"entity_type\": \"User\",\"created_at\": \"2052-05-10T17:46:49.058+00:00\",\"with\": \"standard\",\"target_id\": 1,\"target_type\": \"User\",\"target_details\": \"Administrator\"}",
+        "severity": 1,
+        "type": [
+          "info"
+        ]
+      },
+      "gitlab": {
+        "audit": {
+          "created_at": "2052-05-10T17:46:49.058+00:00",
+          "entity_id": 1,
+          "entity_type": "User",
+          "meta": {
+            "caller_id": "SessionsController#create",
+            "client_id": "user/1",
+            "feature_category": "system_access",
+            "user": "root",
+            "user_id": 1
+          },
+          "target_details": "Administrator",
+          "target_id": 1,
+          "target_type": "User",
+          "with": "standard"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.21"
+        ],
+        "user": [
+          "1",
+          "Administrator"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.21",
+        "ip": "203.0.113.21"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "1",
+        "name": "Administrator"
+      }
+    },
+    {
+      "@timestamp": "2046-10-17T17:38:22.523Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "original": "{\"severity\": \"INFO\",\"time\": \"2046-10-17T17:38:22.523Z\",\"author_id\": 3,\"entity_id\": 2,\"entity_type\": \"Project\",\"change\": \"visibility\",\"from\": \"Private\",\"to\": \"Public\",\"author_name\": \"John Doe4\",\"target_id\": 2,\"target_type\": \"Project\",\"target_details\": \"namespace2/project2\"}",
+        "severity": 1,
+        "type": [
+          "info"
+        ]
+      },
+      "gitlab": {
+        "audit": {
+          "change": "visibility",
+          "entity_id": 2,
+          "entity_type": "Project",
+          "from": "Private",
+          "target_details": "namespace2/project2",
+          "target_id": 2,
+          "target_type": "Project",
+          "to": "Public"
+        }
+      },
+      "related": {
+        "user": [
+          "3",
+          "John Doe4"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "3",
+        "name": "John Doe4"
+      }
+    },
+    {
+      "@timestamp": "2052-05-10T18:30:15.230Z",
+      "client": {
+        "address": "192.168.202.32",
+        "ip": "192.168.202.32"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "id": "36QOPIZG1E36HZKMP8V5BYM29C",
+        "kind": "event",
+        "original": "{\"severity\": \"INFO\",\"time\": \"2052-05-10T18:30:15.234Z\",\"correlation_id\": \"36QOPIZG1E36HZKMP8V5BYM29C\",\"meta.caller_id\": \"SessionsController#create\",\"meta.remote_ip\": \"192.168.202.32\",\"meta.feature_category\": \"system_access\",\"author_id\": 2,\"author_name\": \"Developer User\",\"entity_id\": 3,\"entity_type\": \"User\",\"created_at\": \"2052-05-10T18:30:15.230+00:00\",\"with\": \"ldap\",\"target_id\": 3,\"target_type\": \"User\",\"target_details\": \"developer\",\"details\": {\"custom_message\": \"Signed in with LDAPMAIN authentication\"}}",
+        "severity": 1,
+        "type": [
+          "info"
+        ]
+      },
+      "gitlab": {
+        "audit": {
+          "created_at": "2052-05-10T18:30:15.230+00:00",
+          "details": {
+            "custom_message_string": "Signed in with LDAPMAIN authentication"
+          },
+          "entity_id": 3,
+          "entity_type": "User",
+          "meta": {
+            "caller_id": "SessionsController#create",
+            "feature_category": "system_access"
+          },
+          "target_details": "developer",
+          "target_id": 3,
+          "target_type": "User",
+          "with": "ldap"
+        }
+      },
+      "related": {
+        "ip": [
+          "192.168.202.32"
+        ],
+        "user": [
+          "2",
+          "Developer User",
+          "3",
+          "developer"
+        ]
+      },
+      "source": {
+        "address": "192.168.202.32",
+        "ip": "192.168.202.32"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "2",
+        "name": "Developer User"
+      }
+    },
+    {
+      "@timestamp": "2052-05-10T19:45:22.560Z",
+      "client": {
+        "address": "192.168.125.99",
+        "ip": "192.168.125.99"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "git-upload-pack",
+        "category": [
+          "web"
+        ],
+        "id": "12PZRGKH4D76KYHQN3T0DKT64E",
+        "kind": "event",
+        "original": "{\"severity\": \"INFO\",\"time\": \"2052-05-10T19:45:22.567Z\",\"correlation_id\": \"12PZRGKH4D76KYHQN3T0DKT64E\",\"meta.caller_id\": \"GitOperationsHandler\",\"meta.remote_ip\": \"192.168.125.99\",\"meta.feature_category\": \"source_code_management\",\"author_id\": 4,\"author_name\": \"Git User\",\"entity_id\": 5,\"entity_type\": \"Project\",\"created_at\": \"2052-05-10T19:45:22.560+00:00\",\"target_id\": 5,\"target_type\": \"Project\",\"target_details\": \"namespace/my-project\",\"details\": {\"custom_message\": {\"protocol\": \"http\",\"action\": \"git-upload-pack\"}}}",
+        "severity": 1,
+        "type": [
+          "info"
+        ]
+      },
+      "gitlab": {
+        "audit": {
+          "created_at": "2052-05-10T19:45:22.560+00:00",
+          "details": {
+            "custom_message_object": {
+              "action": "git-upload-pack",
+              "protocol": "http"
+            }
+          },
+          "entity_id": 5,
+          "entity_type": "Project",
+          "meta": {
+            "caller_id": "GitOperationsHandler",
+            "feature_category": "source_code_management"
+          },
+          "target_details": "namespace/my-project",
+          "target_id": 5,
+          "target_type": "Project"
+        }
+      },
+      "network": {
+        "protocol": "http"
+      },
+      "related": {
+        "ip": [
+          "192.168.125.99"
+        ],
+        "user": [
+          "4",
+          "Git User"
+        ]
+      },
+      "source": {
+        "address": "192.168.125.99",
+        "ip": "192.168.125.99"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "4",
+        "name": "Git User"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"severity\": \"INFO\",\"time\": \"2052-05-10T17:46:49.065Z\",\"correlation_id\": \"24QNMNUK3D03IVWYP0T9AWJ94B\",\"meta.caller_id\": \"SessionsController#create\",\"meta.remote_ip\": \"203.0.113.21\",\"meta.feature_category\": \"system_access\",\"meta.user\": \"root\",\"meta.user_id\": 1,\"meta.client_id\": \"user/1\",\"author_id\": 1,\"author_name\": \"Administrator\",\"entity_id\": 1,\"entity_type\": \"User\",\"created_at\": \"2052-05-10T17:46:49.058+00:00\",\"with\": \"standard\",\"target_id\": 1,\"target_type\": \"User\",\"target_details\": \"Administrator\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"severity\": \"INFO\",\"time\": \"2046-10-17T17:38:22.523Z\",\"author_id\": 3,\"entity_id\": 2,\"entity_type\": \"Project\",\"change\": \"visibility\",\"from\": \"Private\",\"to\": \"Public\",\"author_name\": \"John Doe4\",\"target_id\": 2,\"target_type\": \"Project\",\"target_details\": \"namespace2/project2\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"severity\": \"INFO\",\"time\": \"2052-05-10T18:30:15.234Z\",\"correlation_id\": \"36QOPIZG1E36HZKMP8V5BYM29C\",\"meta.caller_id\": \"SessionsController#create\",\"meta.remote_ip\": \"192.168.202.32\",\"meta.feature_category\": \"system_access\",\"author_id\": 2,\"author_name\": \"Developer User\",\"entity_id\": 3,\"entity_type\": \"User\",\"created_at\": \"2052-05-10T18:30:15.230+00:00\",\"with\": \"ldap\",\"target_id\": 3,\"target_type\": \"User\",\"target_details\": \"developer\",\"details\": {\"custom_message\": \"Signed in with LDAPMAIN authentication\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"severity\": \"INFO\",\"time\": \"2052-05-10T19:45:22.567Z\",\"correlation_id\": \"12PZRGKH4D76KYHQN3T0DKT64E\",\"meta.caller_id\": \"GitOperationsHandler\",\"meta.remote_ip\": \"192.168.125.99\",\"meta.feature_category\": \"source_code_management\",\"author_id\": 4,\"author_name\": \"Git User\",\"entity_id\": 5,\"entity_type\": \"Project\",\"created_at\": \"2052-05-10T19:45:22.560+00:00\",\"target_id\": 5,\"target_type\": \"Project\",\"target_details\": \"namespace/my-project\",\"details\": {\"custom_message\": {\"protocol\": \"http\",\"action\": \"git-upload-pack\"}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-gitlab-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "gitlab",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

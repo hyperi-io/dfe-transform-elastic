@@ -1,0 +1,280 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "c1c06a8d-1be3-4e96-8a1b-da6ea25a4393",
+        "id": "5b881829-9b85-4875-bd0c-2dbf494d51a7",
+        "name": "5ffb46729515",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CreateArtifact",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "PowerBIAudit",
+        "dataset": "o365.audit",
+        "id": "a4420e70-b7a1-xxx-xxx-11e3364acd22",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "PowerBI",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "53d83e1d-xxx-xxx-84e9-01ec5045dd81",
+        "name": "dwofop.pl"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "Activity": "CreateArtifact",
+          "ClientIP": "198.51.100.211",
+          "CreationTime": "2052-01-30T14:23:40",
+          "Experience": "Lakehouse",
+          "Id": "a4420e70-b7a1-xxx-xxx-11e3364acd22",
+          "ObjectDisplayName": "test_lakehouse",
+          "ObjectId": "1f80e9ab-287b-4e71-93aa-1e5304850489",
+          "ObjectType": "Lakehouse",
+          "Operation": "CreateArtifact",
+          "OperationId": "a84f7f73-xxxx-xxxx-8cf3-094f69c23756",
+          "OperationProperties": "[{\"Name\":\"SystemArtifactType\",\"Value\":\"None\"}]",
+          "OrganizationId": "53d83e1d-xxx-xxx-84e9-01ec5045dd81",
+          "RecordType": 20,
+          "RequestId": "eccab009-uuq-ogur-jtwj-bd2b4d7c132d",
+          "ResultStatus": "InProgress",
+          "Timestamp": "2052-01-30T14:22:50",
+          "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "UserId": "xgcpnagc@domain.pl",
+          "UserKey": "xxxxxxxx",
+          "UserType": 0,
+          "Workload": "PowerBI",
+          "WorkspaceId": "91dad513-xxxx-xxxx-94bb-f5cbf305691c",
+          "WorkspaceName": "obszar_robaczy"
+        }
+      },
+      "organization": {
+        "id": "53d83e1d-xxx-xxx-84e9-01ec5045dd81"
+      },
+      "related": {
+        "hosts": [
+          "dwofop.pl",
+          "domain.pl"
+        ],
+        "ip": "198.51.100.211",
+        "user": [
+          "xgcpnagc",
+          "xgcpnagc@domain.pl"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "domain.pl",
+        "email": "xgcpnagc@domain.pl",
+        "id": "xgcpnagc@domain.pl",
+        "name": "xgcpnagc"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "120.0.0.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "c1c06a8d-1be3-4e96-8a1b-da6ea25a4393",
+        "id": "5b881829-9b85-4875-bd0c-2dbf494d51a7",
+        "name": "5ffb46729515",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "198.51.100.211",
+        "ip": "198.51.100.211"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "CreateArtifact",
+        "category": "web",
+        "code": "PowerBIAudit",
+        "dataset": "o365.audit",
+        "id": "a4420e70-b7a1-xxx-xxx-11e3364acd22",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "PowerBI",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "53d83e1d-xxx-xxx-84e9-01ec5045dd81",
+        "name": "dwofop.pl"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "Activity": "CreateArtifact",
+          "ClientIP": "198.51.100.211",
+          "CreationTime": "2052-01-30T14:23:40",
+          "Experience": "Lakehouse",
+          "Id": "a4420e70-b7a1-xxx-xxx-11e3364acd22",
+          "ObjectDisplayName": "test_lakehouse",
+          "ObjectId": "1f80e9ab-287b-4e71-93aa-1e5304850489",
+          "ObjectType": "Lakehouse",
+          "Operation": "CreateArtifact",
+          "OperationId": "a84f7f73-xxxx-xxxx-8cf3-094f69c23756",
+          "OperationProperties": "[{\"Name\":\"SystemArtifactType\",\"Value\":\"None\"}]",
+          "OrganizationId": "53d83e1d-xxx-xxx-84e9-01ec5045dd81",
+          "RecordType": 20,
+          "RequestId": "eccab009-uuq-ogur-jtwj-bd2b4d7c132d",
+          "ResultStatus": "InProgress",
+          "Timestamp": "2052-01-30T14:22:50",
+          "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "UserId": "xgcpnagc@domain.pl",
+          "UserKey": "xxxxxxxx",
+          "UserType": 0,
+          "Workload": "PowerBI",
+          "WorkspaceId": "91dad513-xxxx-xxxx-94bb-f5cbf305691c",
+          "WorkspaceName": "obszar_robaczy"
+        }
+      },
+      "organization": {
+        "id": "53d83e1d-xxx-xxx-84e9-01ec5045dd81"
+      },
+      "related": {
+        "ip": "198.51.100.211",
+        "user": "xgcpnagc"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "dwofop.pl",
+        "email": "xgcpnagc@domain.pl",
+        "id": "xgcpnagc@domain.pl",
+        "name": "xgcpnagc"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

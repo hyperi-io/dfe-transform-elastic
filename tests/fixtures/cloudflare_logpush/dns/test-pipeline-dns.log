@@ -1,0 +1,4 @@
+{"ColoCode":"MRS","EDNSSubnet":"192.0.2.134","EDNSSubnetLength":0,"QueryName":"example.com","QueryType":65535,"ResponseCached":false,"ResponseCode":0,"SourceIP":"192.0.2.54","Timestamp":"2050-05-26T09:23:54Z"}
+{"ColoCode":"MRS","EDNSSubnet":"192.0.2.134","EDNSSubnetLength":0,"QueryName":"example.com","QueryType":65535,"ResponseCached":false,"ResponseCode":0,"SourceIP":"192.0.2.54","Timestamp":"2537169834"}
+{"ColoCode":"MRS","EDNSSubnet":"192.0.2.134","EDNSSubnetLength":0,"QueryName":"example.com","QueryType":65535,"ResponseCached":false,"ResponseCode":0,"SourceIP":"192.0.2.54","Timestamp":"2537169834000000000"}
+{"ColoCode":"MRS","EDNSSubnet":"192.0.2.134","EDNSSubnetLength":0,"QueryName":"example.com","QueryType":28,"ResponseCached":false,"ResponseCode":3,"SourceIP":"192.0.2.54","Timestamp":"2050-05-26T09:23:54Z"}

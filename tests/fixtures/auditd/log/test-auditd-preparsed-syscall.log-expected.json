@@ -1,0 +1,91 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-01-31T20:17:14.891Z",
+      "auditd": {
+        "log": {
+          "a0": "7f095d0a4b88",
+          "record_type": "SYSCALL",
+          "sequence": 18877199,
+          "success": true,
+          "syscall": "execve"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "executed"
+        ],
+        "category": "process",
+        "kind": "event",
+        "original": "type=SYSCALL msg=audit(1485893834.891:18877199): arch=c000003e syscall=59 success=yes exit=0 a0=7f095d0a4b88 ppid=1234 pid=5678 auid=1000 uid=0 gid=0 comm=\"ls\" exe=\"/bin/ls\"",
+        "type": "info"
+      },
+      "host": {
+        "architecture": "x86_64"
+      },
+      "process": {
+        "executable": "/bin/ls",
+        "exit_code": 0,
+        "name": "ls",
+        "parent": {
+          "pid": 1234
+        },
+        "pid": 5678
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "audit": {
+          "id": "1000"
+        },
+        "group": {
+          "id": "0"
+        },
+        "id": "0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2045-01-31T20:17:14.891Z",
+      "auditd": {
+        "log": {
+          "a0": "7f095d0a4b88",
+          "arch": "x86_64",
+          "auid": "1000",
+          "comm": "ls",
+          "exe": "/bin/ls",
+          "exit": "0",
+          "gid": "0",
+          "pid": "5678",
+          "ppid": "1234",
+          "record_type": "SYSCALL",
+          "sequence": "18877199",
+          "success": "yes",
+          "syscall": "execve",
+          "uid": "0"
+        }
+      },
+      "message": "type=SYSCALL msg=audit(1485893834.891:18877199): arch=c000003e syscall=59 success=yes exit=0 a0=7f095d0a4b88 ppid=1234 pid=5678 auid=1000 uid=0 gid=0 comm=\"ls\" exe=\"/bin/ls\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-auditd-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "auditd",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

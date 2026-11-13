@@ -1,0 +1,219 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-10-15T17:10:46.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "rsxl@example.com"
+          ]
+        },
+        "message_id": "<BD4F19DE-3947-4A17-9879-C559A07305B0@emailsec.ninja>",
+        "subject": "Requested File",
+        "to": {
+          "address": [
+            "ssjzava@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "none",
+        "category": [
+          "email"
+        ],
+        "created": "2049-10-15T17:10:46+0000",
+        "id": "MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjU1NjIw1FEqSy0qzszPU7ICskvywAoNDAyVagFirRIG",
+        "kind": "alert",
+        "original": "{\"id\":\"MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjU1NjIw1FEqSy0qzszPU7ICskvywAoNDAyVagFirRIG\",\"senderAddress\":\"rsxl@example.com\",\"recipientAddress\":\"ssjzava@example.com\",\"subject\":\"Requested File\",\"definition\":\"IP - 1 hit (Tag email)\",\"hits\":1,\"identifiers\":[\"internal_user_name\"],\"action\":\"none\",\"taggedExternal\":false,\"taggedMalicious\":true,\"senderIpAddress\":\"203.0.113.53\",\"eventTime\":\"2049-10-15T17:10:46+0000\",\"impersonationResults\":[{\"impersonationDomainSource\":\"internal_user_name\",\"similarDomain\":\"John Doe Jr <iivvehfrw@example.com>\",\"stringSimilarToDomain\":\"John Doe Jr\",\"checkerResult\":\"hit\"}],\"messageId\":\"<BD4F19DE-3947-4A17-9879-C559A07305B0@emailsec.ninja>\"}"
+      },
+      "mimecast": {
+        "hits": 1,
+        "identifiers": [
+          "internal_user_name"
+        ],
+        "impersonationResults": [
+          {
+            "checkerResult": "hit",
+            "impersonationDomainSource": "internal_user_name",
+            "similarDomain": "John Doe Jr <iivvehfrw@example.com>",
+            "stringSimilarToDomain": "John Doe Jr"
+          }
+        ],
+        "taggedExternal": false,
+        "taggedMalicious": true
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53"
+        ]
+      },
+      "rule": {
+        "name": "IP - 1 hit (Tag email)"
+      },
+      "source": {
+        "ip": "203.0.113.53"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-15T06:16:34.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "ssjzava@gmail.com"
+          ]
+        },
+        "message_id": "<CAOsCE-eP_fM6j=NS6Ulhfvc_u6u9MrJcAPdLV+rZXsODAmiBwj@mail.gmail.com>",
+        "subject": "Fwd: Here ya go",
+        "to": {
+          "address": [
+            "ssjzava@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "none",
+        "category": [
+          "email"
+        ],
+        "created": "2049-10-15T06:16:34+0000",
+        "id": "MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjUzszAx0VEqSy0qzszPU7Iy1FEqyQMrNDAwVaoFAGShEhs",
+        "kind": "alert",
+        "original": "{\"id\":\"MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjUzszAx0VEqSy0qzszPU7Iy1FEqyQMrNDAwVaoFAGShEhs\",\"senderAddress\":\"ssjzava@gmail.com\",\"recipientAddress\":\"ssjzava@example.com\",\"subject\":\"Fwd: Here ya go\",\"definition\":\"IP - 1 hit (Tag email)\",\"hits\":1,\"identifiers\":[\"internal_user_name\"],\"action\":\"none\",\"taggedExternal\":false,\"taggedMalicious\":true,\"senderIpAddress\":\"203.0.113.53\",\"eventTime\":\"2049-10-15T06:16:34+0000\",\"impersonationResults\":[{\"impersonationDomainSource\":\"internal_user_name\",\"similarDomain\":\"John Doe <ssjzava@example.com>\",\"stringSimilarToDomain\":\"John Doe\",\"checkerResult\":\"hit\"}],\"messageId\":\"<CAOsCE-eP_fM6j=NS6Ulhfvc_u6u9MrJcAPdLV+rZXsODAmiBwj@mail.gmail.com>\"}"
+      },
+      "mimecast": {
+        "hits": 1,
+        "identifiers": [
+          "internal_user_name"
+        ],
+        "impersonationResults": [
+          {
+            "checkerResult": "hit",
+            "impersonationDomainSource": "internal_user_name",
+            "similarDomain": "John Doe <ssjzava@example.com>",
+            "stringSimilarToDomain": "John Doe"
+          }
+        ],
+        "taggedExternal": false,
+        "taggedMalicious": true
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53"
+        ]
+      },
+      "rule": {
+        "name": "IP - 1 hit (Tag email)"
+      },
+      "source": {
+        "ip": "203.0.113.53"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-13T16:12:07.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "from": {
+          "address": [
+            "ssjzava@vsxfeayv.com"
+          ]
+        },
+        "message_id": "<TO9L529JE07883C3AC15D0934E2350A13D1B02@PR3P194MB0618.EURP194.PROD.OUTLOOK.COM>",
+        "subject": "RE: MSP Sales of Managed E2E",
+        "to": {
+          "address": [
+            "ssjzava@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "hold",
+        "category": [
+          "email"
+        ],
+        "created": "2049-10-13T16:12:07+0000",
+        "id": "MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjUzMDMz01EqSy0qzszPU7Iy1FEqyQMrNDAwVaoFAGQhEhc",
+        "kind": "alert",
+        "original": "{\"id\":\"MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjUzMDMz01EqSy0qzszPU7Iy1FEqyQMrNDAwVaoFAGQhEhc\",\"senderAddress\":\"ssjzava@vsxfeayv.com\",\"recipientAddress\":\"ssjzava@example.com\",\"subject\":\"RE: MSP Sales of Managed E2E\",\"definition\":\"IP - 2 hits (Hold for Review \\/ User Hold)\",\"hits\":2,\"identifiers\":[\"targeted_threat_dictionary\",\"internal_user_name\"],\"action\":\"hold\",\"taggedExternal\":false,\"taggedMalicious\":true,\"senderIpAddress\":\"203.0.113.53\",\"eventTime\":\"2049-10-13T16:12:07+0000\",\"impersonationResults\":[{\"impersonationDomainSource\":\"internal_user_name\",\"similarDomain\":\"Emily Doe <drvuoatb@example.com>\",\"stringSimilarToDomain\":\"Emily Doe\",\"checkerResult\":\"hit\"},{\"impersonationDomainSource\":\"targeted_threat_dictionary\",\"stringSimilarToDomain\":\"who\"}],\"messageId\":\"<TO9L529JE07883C3AC15D0934E2350A13D1B02@PR3P194MB0618.EURP194.PROD.OUTLOOK.COM>\"}"
+      },
+      "mimecast": {
+        "hits": 2,
+        "identifiers": [
+          "targeted_threat_dictionary",
+          "internal_user_name"
+        ],
+        "impersonationResults": [
+          {
+            "checkerResult": "hit",
+            "impersonationDomainSource": "internal_user_name",
+            "similarDomain": "Emily Doe <drvuoatb@example.com>",
+            "stringSimilarToDomain": "Emily Doe"
+          },
+          {
+            "impersonationDomainSource": "targeted_threat_dictionary",
+            "stringSimilarToDomain": "who"
+          }
+        ],
+        "taggedExternal": false,
+        "taggedMalicious": true
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53"
+        ]
+      },
+      "rule": {
+        "name": "IP - 2 hits (Hold for Review / User Hold)"
+      },
+      "source": {
+        "ip": "203.0.113.53"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjU1NjIw1FEqSy0qzszPU7ICskvywAoNDAyVagFirRIG\",\"senderAddress\":\"rsxl@example.com\",\"recipientAddress\":\"ssjzava@example.com\",\"subject\":\"Requested File\",\"definition\":\"IP - 1 hit (Tag email)\",\"hits\":1,\"identifiers\":[\"internal_user_name\"],\"action\":\"none\",\"taggedExternal\":false,\"taggedMalicious\":true,\"senderIpAddress\":\"203.0.113.53\",\"eventTime\":\"2049-10-15T17:10:46+0000\",\"impersonationResults\":[{\"impersonationDomainSource\":\"internal_user_name\",\"similarDomain\":\"John Doe Jr <iivvehfrw@example.com>\",\"stringSimilarToDomain\":\"John Doe Jr\",\"checkerResult\":\"hit\"}],\"messageId\":\"<BD4F19DE-3947-4A17-9879-C559A07305B0@emailsec.ninja>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjUzszAx0VEqSy0qzszPU7Iy1FEqyQMrNDAwVaoFAGShEhs\",\"senderAddress\":\"ssjzava@gmail.com\",\"recipientAddress\":\"ssjzava@example.com\",\"subject\":\"Fwd: Here ya go\",\"definition\":\"IP - 1 hit (Tag email)\",\"hits\":1,\"identifiers\":[\"internal_user_name\"],\"action\":\"none\",\"taggedExternal\":false,\"taggedMalicious\":true,\"senderIpAddress\":\"203.0.113.53\",\"eventTime\":\"2049-10-15T06:16:34+0000\",\"impersonationResults\":[{\"impersonationDomainSource\":\"internal_user_name\",\"similarDomain\":\"John Doe <ssjzava@example.com>\",\"stringSimilarToDomain\":\"John Doe\",\"checkerResult\":\"hit\"}],\"messageId\":\"<CAOsCE-eP_fM6j=NS6Ulhfvc_u6u9MrJcAPdLV+rZXsODAmiBwj@mail.gmail.com>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"id\":\"MTOKEN:eNqrVkouLS7Jz00tSs5PSVWyUnI2MXM0N1XSUcpMUbIyMjUzMDMz01EqSy0qzszPU7Iy1FEqyQMrNDAwVaoFAGQhEhc\",\"senderAddress\":\"ssjzava@vsxfeayv.com\",\"recipientAddress\":\"ssjzava@example.com\",\"subject\":\"RE: MSP Sales of Managed E2E\",\"definition\":\"IP - 2 hits (Hold for Review \\/ User Hold)\",\"hits\":2,\"identifiers\":[\"targeted_threat_dictionary\",\"internal_user_name\"],\"action\":\"hold\",\"taggedExternal\":false,\"taggedMalicious\":true,\"senderIpAddress\":\"203.0.113.53\",\"eventTime\":\"2049-10-13T16:12:07+0000\",\"impersonationResults\":[{\"impersonationDomainSource\":\"internal_user_name\",\"similarDomain\":\"Emily Doe <drvuoatb@example.com>\",\"stringSimilarToDomain\":\"Emily Doe\",\"checkerResult\":\"hit\"},{\"impersonationDomainSource\":\"targeted_threat_dictionary\",\"stringSimilarToDomain\":\"who\"}],\"messageId\":\"<TO9L529JE07883C3AC15D0934E2350A13D1B02@PR3P194MB0618.EURP194.PROD.OUTLOOK.COM>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ttp_ip_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mimecast-ttp_ip_logs-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "mimecast",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

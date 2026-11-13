@@ -1,0 +1,167 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-17T22:18:03.557Z",
+      "destination": {
+        "ip": "10.240.70.118",
+        "port": 137
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "windows-firewall-packet-block",
+        "category": [
+          "network"
+        ],
+        "code": "5157",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "connection",
+          "info",
+          "denied"
+        ]
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "network": {
+        "community_id": "1:6g1U20i5Nx6HQNQkzsTNNl+zpNs=",
+        "direction": "inbound",
+        "iana_number": "17",
+        "transport": "udp"
+      },
+      "process": {
+        "executable": "System",
+        "name": "System"
+      },
+      "related": {
+        "ip": [
+          "10.240.70.118",
+          "10.74.193.137"
+        ]
+      },
+      "source": {
+        "ip": "10.74.193.137",
+        "port": 137
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "CurrentProfile": "%%14645",
+          "Direction": "%%14592",
+          "FilterOrigin": "Query User Default",
+          "FilterRTID": "71720",
+          "HasRemoteDynamicKeywordAddress": "%%1826",
+          "InterfaceIndex": "14",
+          "IsLoopback": "%%1826",
+          "LayerName": "%%14610",
+          "LayerNameDescription": "Receive/Accept",
+          "LayerRTID": "44",
+          "OriginalProfile": "%%14645",
+          "ProcessID": "4",
+          "Protocol": "17",
+          "RemoteMachineDescription": "Nobody",
+          "RemoteMachineID": "S-1-0-0",
+          "RemoteUserDescription": "Nobody",
+          "RemoteUserID": "S-1-0-0"
+        },
+        "event_id": "5157",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "7959006",
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "5157",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CTSNMNEZ1.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{9cd7cac8-970b-0828-53f4-d89b9a59b272}",
+        "channel": "Security",
+        "computer_name": "CTSNMNEZ1.egmukjj.com",
+        "event_data": {
+          "Application": "System",
+          "CurrentProfile": "%%14645",
+          "DestAddress": "10.240.70.118",
+          "DestPort": "137",
+          "Direction": "%%14592",
+          "FilterOrigin": "Query User Default",
+          "FilterRTID": "71720",
+          "HasRemoteDynamicKeywordAddress": "%%1826",
+          "InterfaceIndex": "14",
+          "IsLoopback": "%%1826",
+          "LayerName": "%%14610",
+          "LayerRTID": "44",
+          "OriginalProfile": "%%14645",
+          "ProcessID": "4",
+          "Protocol": "17",
+          "RemoteMachineID": "S-1-0-0",
+          "RemoteUserID": "S-1-0-0",
+          "SourceAddress": "10.74.193.137",
+          "SourcePort": "137"
+        },
+        "event_id": "5157",
+        "keywords": [
+          "Audit Failure"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 924,
+          "thread": {
+            "id": 12672
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 7959006,
+        "time_created": "2051-01-17T22:18:03.5577972Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

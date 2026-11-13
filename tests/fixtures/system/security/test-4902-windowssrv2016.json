@@ -1,0 +1,57 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:04:13.030Z",
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+            },
+            "agent": {
+                "version": "8.0.0",
+                "ephemeral_id": "bb45d98b-a51a-438b-959b-1ba79036363a",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat"
+            },
+            "winlog": {
+                "channel": "Security",
+                "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+                "event_data": {
+                    "PuaCount": "0",
+                    "PuaPolicyId": "0x9fd2"
+                },
+                "process": {
+                    "pid": 784,
+                    "thread": {
+                        "id": 832
+                    }
+                },
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "time_created": "2048-08-19T06:07:08.801Z",
+                "outcome": "success",
+                "event_id": 4902,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "record_id": 140273,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "level": "information"
+            },
+            "event": {
+                "kind": "event",
+                "code": 4902,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4902_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            }
+        }
+    ]
+}

@@ -1,0 +1,120 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-02-06T15:00:00.000Z",
+      "contrast_security": {
+        "event_type": "contrast_security_issuealert",
+        "status": "OPEN"
+      },
+      "ecs": {
+        "version": "9.1"
+      },
+      "event": {
+        "action": "issue_updated",
+        "category": [
+          "vulnerability"
+        ],
+        "created": "2054-02-06T15:00:00.000Z",
+        "dataset": "contrast_security.issue",
+        "id": "ISS-24",
+        "kind": "alert",
+        "module": "contrast_security",
+        "provider": "Contrast Security",
+        "reason": "Issue Updated Score",
+        "reference": "INC-2025-1007,INC-2025-1022",
+        "type": [
+          "info"
+        ],
+        "url": "https://test.contrast.com/Contrast/cs/index.html#/0d2cf8c3-6713-45b1-873f-298db3683909/issues/ISS-24"
+      },
+      "message": "SQL Injection from \"user_input\" Parameter on \"/vulnpy/sqli/sqlite3-executescript/\" page",
+      "observer": {
+        "product": "Contrast ADR",
+        "type": "adr",
+        "vendor": "Contrast Security"
+      },
+      "organization": {
+        "id": "0d2cf8c3-6713-45b1-873f-298db3683909"
+      },
+      "rule": {
+        "category": "Application Vulnerability",
+        "name": "sql-injection",
+        "ruleset": "Contrast ADR"
+      },
+      "service": {
+        "environment": "development",
+        "id": "c9c854c6-54a0-4fdd-904a-9771d16c771f",
+        "name": "vulnpy-protect-app1",
+        "type": ""
+      },
+      "vulnerability": {
+        "score": {
+          "base": 9.3
+        },
+        "severity": "critical"
+      }
+    }
+  ],
+  "input": [
+    {
+      "contrast_security": {
+        "event_type": "contrast_security_issuealert",
+        "status": "OPEN"
+      },
+      "ecs": {
+        "version": "9.1"
+      },
+      "event": {
+        "action": "issue_updated",
+        "category": [
+          "vulnerability"
+        ],
+        "created": "2054-02-06T15:00:00.000Z",
+        "id": "ISS-24",
+        "provider": "Contrast Security",
+        "reason": "Issue Updated Score",
+        "reference": "INC-2025-1007,INC-2025-1022",
+        "type": [
+          "info"
+        ],
+        "url": "https://test.contrast.com/Contrast/cs/index.html#/0d2cf8c3-6713-45b1-873f-298db3683909/issues/ISS-24"
+      },
+      "message": "SQL Injection from \"user_input\" Parameter on \"/vulnpy/sqli/sqlite3-executescript/\" page",
+      "observer": {
+        "product": "Contrast ADR",
+        "type": "adr",
+        "vendor": "Contrast Security"
+      },
+      "organization": {
+        "id": "0d2cf8c3-6713-45b1-873f-298db3683909"
+      },
+      "rule": {
+        "category": "Application Vulnerability",
+        "name": "sql-injection",
+        "ruleset": "Contrast ADR"
+      },
+      "service": {
+        "environment": "development",
+        "id": "c9c854c6-54a0-4fdd-904a-9771d16c771f",
+        "name": "vulnpy-protect-app1",
+        "type": ""
+      },
+      "vulnerability": {
+        "score": {
+          "base": 9.3
+        },
+        "severity": "critical"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "issue",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-contrast_security-issue-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "contrast_security",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

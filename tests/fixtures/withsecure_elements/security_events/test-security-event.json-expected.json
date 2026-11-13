@@ -1,0 +1,79 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-31T09:31:01.092Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "reported",
+        "category": [
+          "threat"
+        ],
+        "dataset": "withsecure_elements.security_events",
+        "id": "09b665bd-00bb-3134-8976-010293cd07bd_0",
+        "kind": "event",
+        "module": "withsecure_elements",
+        "original": "{\"id\":\"09b665bd-00bb-3134-8976-010293cd07bd_0\",\"action\":\"reported\",\"engine\":\"setting\",\"severity\":\"info\",\"serverTimestamp\":\"2051-08-31T09:31:01.092Z\",\"persistenceTimestamp\":\"2051-08-31T09:31:03.292Z\",\"eventTransactionId\":\"0000-187cf62797634fef\",\"clientTimestamp\":\"2051-08-31T07:31:03.292Z\",\"acknowledged\":false,\"message\":\"Firewall was turned on\",\"description\":\"Setting event\",\"organization\":{\"id\":\"633819ee-3342-4c0d-a451-e8492b2be319\",\"name\":\"my-org\"},\"target\":{\"name\":\"Doe,John DESKTOP\",\"id\":\"91fdfd8c-5873-4fd3-8e01-101ffbc06b73\"},\"device\":{\"id\":\"91fdfd8c-5873-4fd3-8e01-101ffbc06b73\",\"name\":\"Doe,John DESKTOP\"},\"userName\":\"Pnvw Eyd\",\"details\":{\"profileName\":\"My Company Profile\",\"path\":\"C:\\\\Program Files\\\\WithSecure\\\\PSB\\\\diagnostics\\\\fsdiag.exe\",\"alertType\":\"product.path.excluded\",\"throttledCount\":\"0\",\"profileId\":\"12444818\",\"profileVersion\":\"34313431491\",\"hostIpAddress\":\"192.0.2.184/8\",\"userName\":\"Pnvw Eyd\",\"clientTimestamp\":\"2579502023479\"}}",
+        "provider": "withsecure_elements",
+        "severity": 21,
+        "type": [
+          "info"
+        ]
+      },
+      "withsecure_elements": {
+        "security_events": {
+          "acknowledged": false,
+          "action": "reported",
+          "client_timestamp": "2051-08-31T07:31:03.292Z",
+          "description": "Setting event",
+          "details": {
+            "alertType": "product.path.excluded",
+            "clientTimestamp": "2579502023479",
+            "hostIpAddress": "192.0.2.184/8",
+            "path": "C:\\Program Files\\WithSecure\\PSB\\diagnostics\\fsdiag.exe",
+            "profileId": "12444818",
+            "profileName": "My Company Profile",
+            "profileVersion": "34313431491",
+            "throttledCount": "0",
+            "userName": "Pnvw Eyd"
+          },
+          "device": {
+            "id": "91fdfd8c-5873-4fd3-8e01-101ffbc06b73",
+            "name": "Doe,John DESKTOP"
+          },
+          "engine": "setting",
+          "eventTransactionId": "0000-187cf62797634fef",
+          "id": "09b665bd-00bb-3134-8976-010293cd07bd_0",
+          "message": "Firewall was turned on",
+          "organization": {
+            "id": "633819ee-3342-4c0d-a451-e8492b2be319",
+            "name": "my-org"
+          },
+          "persistence_timestamp": "2051-08-31T09:31:03.292Z",
+          "severity": "info",
+          "target": {
+            "id": "91fdfd8c-5873-4fd3-8e01-101ffbc06b73",
+            "name": "Doe,John DESKTOP"
+          },
+          "userName": "Pnvw Eyd"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":\"09b665bd-00bb-3134-8976-010293cd07bd_0\",\"action\":\"reported\",\"engine\":\"setting\",\"severity\":\"info\",\"serverTimestamp\":\"2051-08-31T09:31:01.092Z\",\"persistenceTimestamp\":\"2051-08-31T09:31:03.292Z\",\"eventTransactionId\":\"0000-187cf62797634fef\",\"clientTimestamp\":\"2051-08-31T07:31:03.292Z\",\"acknowledged\":false,\"message\":\"Firewall was turned on\",\"description\":\"Setting event\",\"organization\":{\"id\":\"633819ee-3342-4c0d-a451-e8492b2be319\",\"name\":\"my-org\"},\"target\":{\"name\":\"Doe,John DESKTOP\",\"id\":\"91fdfd8c-5873-4fd3-8e01-101ffbc06b73\"},\"device\":{\"id\":\"91fdfd8c-5873-4fd3-8e01-101ffbc06b73\",\"name\":\"Doe,John DESKTOP\"},\"userName\":\"Pnvw Eyd\",\"details\":{\"profileName\":\"My Company Profile\",\"path\":\"C:\\\\Program Files\\\\WithSecure\\\\PSB\\\\diagnostics\\\\fsdiag.exe\",\"alertType\":\"product.path.excluded\",\"throttledCount\":\"0\",\"profileId\":\"12444818\",\"profileVersion\":\"34313431491\",\"hostIpAddress\":\"192.0.2.184/8\",\"userName\":\"Pnvw Eyd\",\"clientTimestamp\":\"2579502023479\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "security_events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-withsecure_elements-security_events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "withsecure_elements",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

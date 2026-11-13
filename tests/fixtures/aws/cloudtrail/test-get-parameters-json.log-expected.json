@@ -1,0 +1,153 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-15T08:55:36.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.08",
+          "flattened": {
+            "request_parameters": {
+              "names": [
+                "/inspector-aws/service/inspector-linux-application-paths"
+              ]
+            }
+          },
+          "read_only": true,
+          "recipient_account_id": "000000000",
+          "request_id": "a6c54774-b9ad-4cb1-b4c9-bc7fcacb6a2b",
+          "request_parameters": "{names=[/inspector-aws/service/inspector-linux-application-paths]}",
+          "resources": [
+            {
+              "account_id": "000000000",
+              "arn": "arn:aws:ssm:us-east-1:000000000:parameter/inspector-aws/service/inspector-linux-application-paths"
+            }
+          ],
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "GetParameters",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "0cb7404d-de90-49dd-b7bd-10a0c4b2389c",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"0cb7404d-de90-49dd-b7bd-10a0c4b2389c\",\"eventName\":\"GetParameters\",\"eventSource\":\"ssm.amazonaws.com\",\"eventTime\":\"2052-10-15T08:55:36Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.08\",\"readOnly\":true,\"recipientAccountId\":\"000000000\",\"requestID\":\"a6c54774-b9ad-4cb1-b4c9-bc7fcacb6a2b\",\"requestParameters\":{\"names\":[\"/inspector-aws/service/inspector-linux-application-paths\"]},\"resources\":[{\"ARN\":\"arn:aws:ssm:us-east-1:000000000:parameter/inspector-aws/service/inspector-linux-application-paths\",\"accountId\":\"000000000\"}],\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"ECDHE-RSA-AES128-GCM-SHA256\",\"clientProvidedHostHeader\":\"ssm.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.2\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_34ca9714-8788-4b3f-8c81-9910507f8bc7 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#ssm.get-parameters\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "ssm.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "arn:aws:ssm:us-east-1:000000000:parameter/inspector-aws/service/inspector-linux-application-paths",
+          "ACCESSKEYID",
+          "sbgq@apejtlc.co",
+          "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "sbgq@apejtlc.co"
+        ]
+      },
+      "service": {
+        "target": {
+          "entity": {
+            "id": [
+              "arn:aws:ssm:us-east-1:000000000:parameter/inspector-aws/service/inspector-linux-application-paths"
+            ]
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "arn:aws:ssm:us-east-1:000000000:parameter/inspector-aws/service/inspector-linux-application-paths"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "ECDHE-RSA-AES128-GCM-SHA256",
+        "client": {
+          "server_name": "ssm.us-east-1.amazonaws.com"
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "sbgq@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "sbgq@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_34ca9714-8788-4b3f-8c81-9910507f8bc7 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#ssm.get-parameters",
+        "version": "2.17.60"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"0cb7404d-de90-49dd-b7bd-10a0c4b2389c\",\"eventName\":\"GetParameters\",\"eventSource\":\"ssm.amazonaws.com\",\"eventTime\":\"2052-10-15T08:55:36Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.08\",\"readOnly\":true,\"recipientAccountId\":\"000000000\",\"requestID\":\"a6c54774-b9ad-4cb1-b4c9-bc7fcacb6a2b\",\"requestParameters\":{\"names\":[\"/inspector-aws/service/inspector-linux-application-paths\"]},\"resources\":[{\"ARN\":\"arn:aws:ssm:us-east-1:000000000:parameter/inspector-aws/service/inspector-linux-application-paths\",\"accountId\":\"000000000\"}],\"responseElements\":null,\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"ECDHE-RSA-AES128-GCM-SHA256\",\"clientProvidedHostHeader\":\"ssm.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.2\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_34ca9714-8788-4b3f-8c81-9910507f8bc7 cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#ssm.get-parameters\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-07-18T22:00:30.407Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"type\":\"indicator\",\"id\":\"indicator--644bc5dc-1627-4c3a-b9d8-bb2a9fa30567\",\"created\":\"2045-07-18T22:00:30.407Z\",\"modified\":\"2045-07-18T22:00:30.407Z\",\"name\":\"IMDDOS C2 Traffic\",\"labels\":[\"malicious-activity\"],\"description\":\"Traffic to these domains indicates that the source host is under the control of the IMDDOS malware\",\"valid_from\":\"2038-04-01T00:00:00.000Z\",\"kill_chain_phases\":[{\"kill_chain_name\":\"lockheed-martin-cyber-kill-chain\",\"phase_name\":\"control\"}],\"pattern\":\"[ network-traffic:dst_ref.type = 'domain-name' AND network-traffic:dst_ref.value IN ('dns.ddos.im', 'vzo6022ccuk.0772.org', 'itqvolao.0772.org', 'om900.0772.org', 'yieiqsc2635166.0772.org', 'yz163394.0772.org', 'sj007475.0772.org', 'pqef.0772.org', '760283.0772.org', 'ehtfslfp.0772.org', 'isuh.0772.org') ]\"}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "stix": {
+        "created": "2045-07-18T22:00:30.407Z",
+        "id": "indicator--644bc5dc-1627-4c3a-b9d8-bb2a9fa30567",
+        "ioc_expiration_date": "2045-07-23T22:00:30.407Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`",
+        "kill_chain_phases": [
+          {
+            "kill_chain_name": "lockheed-martin-cyber-kill-chain",
+            "phase_name": "control"
+          }
+        ],
+        "modified": "2045-07-18T22:00:30.407Z",
+        "pattern": "[ network-traffic:dst_ref.type = 'domain-name' AND network-traffic:dst_ref.value IN ('dns.ddos.im', 'vzo6022ccuk.0772.org', 'itqvolao.0772.org', 'om900.0772.org', 'yieiqsc2635166.0772.org', 'yz163394.0772.org', 'sj007475.0772.org', 'pqef.0772.org', '760283.0772.org', 'ehtfslfp.0772.org', 'isuh.0772.org') ]",
+        "type": "indicator",
+        "valid_from": "2038-04-01T00:00:00.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "malicious-activity"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "description": "Traffic to these domains indicates that the source host is under the control of the IMDDOS malware",
+          "first_seen": "2038-04-01T00:00:00.000Z",
+          "last_seen": "2045-07-18T22:00:30.407Z",
+          "modified_at": "2045-07-18T22:00:30.407Z",
+          "name": "IMDDOS C2 Traffic"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-07-18T22:00:30.407Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"type\":\"indicator\",\"id\":\"indicator--644bc5dc-1627-4c3a-b9d8-bb2a9fa30567\",\"created\":\"2048-07-18T22:00:30.407Z\",\"modified\":\"2048-07-18T22:00:30.407Z\",\"name\":\"IMDDOS C2 Traffic\",\"labels\":[\"malicious-activity\"],\"description\":\"Traffic to these domains indicates that the source host is under the control of the IMDDOS malware\",\"valid_from\":\"2038-04-01T00:00:00.000Z\",\"kill_chain_phases\":[{\"kill_chain_name\":\"lockheed-martin-cyber-kill-chain\",\"phase_name\":\"control\"}]}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "stix": {
+        "created": "2048-07-18T22:00:30.407Z",
+        "id": "indicator--644bc5dc-1627-4c3a-b9d8-bb2a9fa30567",
+        "ioc_expiration_date": "2048-07-23T22:00:30.407Z",
+        "ioc_expiration_duration": "5d",
+        "ioc_expiration_reason": "Expiration set by Elastic from the integration's parameter `IOC Expiration Duration`",
+        "kill_chain_phases": [
+          {
+            "kill_chain_name": "lockheed-martin-cyber-kill-chain",
+            "phase_name": "control"
+          }
+        ],
+        "modified": "2048-07-18T22:00:30.407Z",
+        "type": "indicator",
+        "valid_from": "2038-04-01T00:00:00.000Z"
+      },
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator",
+        "malicious-activity"
+      ],
+      "threat": {
+        "feed": {
+          "name": "Test STIX feed"
+        },
+        "indicator": {
+          "description": "Traffic to these domains indicates that the source host is under the control of the IMDDOS malware",
+          "first_seen": "2038-04-01T00:00:00.000Z",
+          "last_seen": "2048-07-18T22:00:30.407Z",
+          "modified_at": "2048-07-18T22:00:30.407Z",
+          "name": "IMDDOS C2 Traffic"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"type\":\"indicator\",\"id\":\"indicator--644bc5dc-1627-4c3a-b9d8-bb2a9fa30567\",\"created\":\"2045-07-18T22:00:30.407Z\",\"modified\":\"2045-07-18T22:00:30.407Z\",\"name\":\"IMDDOS C2 Traffic\",\"labels\":[\"malicious-activity\"],\"description\":\"Traffic to these domains indicates that the source host is under the control of the IMDDOS malware\",\"valid_from\":\"2038-04-01T00:00:00.000Z\",\"kill_chain_phases\":[{\"kill_chain_name\":\"lockheed-martin-cyber-kill-chain\",\"phase_name\":\"control\"}],\"pattern\":\"[ network-traffic:dst_ref.type = 'domain-name' AND network-traffic:dst_ref.value IN ('dns.ddos.im', 'vzo6022ccuk.0772.org', 'itqvolao.0772.org', 'om900.0772.org', 'yieiqsc2635166.0772.org', 'yz163394.0772.org', 'sj007475.0772.org', 'pqef.0772.org', '760283.0772.org', 'ehtfslfp.0772.org', 'isuh.0772.org') ]\"}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    },
+    {
+      "_conf": {
+        "feed_name": "Test STIX feed",
+        "ioc_expiration_duration": "5d",
+        "restrict_stix": false
+      },
+      "message": "{\"type\":\"indicator\",\"id\":\"indicator--644bc5dc-1627-4c3a-b9d8-bb2a9fa30567\",\"created\":\"2048-07-18T22:00:30.407Z\",\"modified\":\"2048-07-18T22:00:30.407Z\",\"name\":\"IMDDOS C2 Traffic\",\"labels\":[\"malicious-activity\"],\"description\":\"Traffic to these domains indicates that the source host is under the control of the IMDDOS malware\",\"valid_from\":\"2038-04-01T00:00:00.000Z\",\"kill_chain_phases\":[{\"kill_chain_name\":\"lockheed-martin-cyber-kill-chain\",\"phase_name\":\"control\"}]}",
+      "tags": [
+        "forwarded",
+        "ti_custom-indicator"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "indicator",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_custom-indicator-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "ti_custom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

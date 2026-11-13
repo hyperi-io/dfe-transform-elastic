@@ -1,0 +1,411 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-10-14T18:54:32.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": {
+          "file": {
+            "extension": "pdf",
+            "hash": {
+              "sha256": "dddde70c92e92f808b7cbd0a6450d44b5939daaa325918194fed785bc05581b4"
+            },
+            "mime_type": "application/pdf",
+            "name": "numbers.pdf"
+          }
+        },
+        "direction": "inbound",
+        "message_id": "<97151386441353.D28A554F366@mail.cpucijspqjzhqi.com>",
+        "subject": "Important Updated Numbers from the Center for Disease Control",
+        "to": {
+          "address": [
+            "ssjzava@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "user_release_none",
+        "category": [
+          "email"
+        ],
+        "created": "2049-10-14T18:54:32+0000",
+        "original": "{\"senderAddress\":\"<>\",\"recipientAddress\":\"ssjzava@example.com\",\"fileName\":\"numbers.pdf\",\"fileType\":\"application\\/pdf\",\"result\":\"safe\",\"actionTriggered\":\"user release, none\",\"date\":\"2049-10-14T18:54:32+0000\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 4 sec\",\"route\":\"inbound\",\"messageId\":\"<97151386441353.D28A554F366@mail.cpucijspqjzhqi.com>\",\"subject\":\"Important Updated Numbers from the Center for Disease Control\",\"fileHash\":\"dddde70c92e92f808b7cbd0a6450d44b5939daaa325918194fed785bc05581b4\",\"definition\":\"Inbound - Safe file with On-Demand Sandbox\"}"
+      },
+      "mimecast": {
+        "details": "Safe                                              \r\nTime taken: 0 hrs, 0 min, 4 sec",
+        "result": "safe"
+      },
+      "related": {
+        "hash": [
+          "dddde70c92e92f808b7cbd0a6450d44b5939daaa325918194fed785bc05581b4"
+        ]
+      },
+      "rule": {
+        "name": "Inbound - Safe file with On-Demand Sandbox"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-14T11:24:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": {
+          "file": {
+            "extension": "docx",
+            "hash": {
+              "sha256": "9bc22eb76bd804d8c8e78169bf19ac990fac80cd972d7753df688047d7c1c33b"
+            },
+            "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "name": "Titus-Test Doc - Classification - InternalUseOnly.docx"
+          }
+        },
+        "direction": "inbound",
+        "message_id": "<BB0P993IA0956CF5D2A535FFA3CAF4036B4C19@DB8P194MB0824.EURP194.PROD.OUTLOOK.COM>",
+        "subject": "FW: Titus classification work",
+        "to": {
+          "address": [
+            "ssjzava@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "user_release_none",
+        "category": [
+          "email"
+        ],
+        "created": "2049-10-14T11:24:23+0000",
+        "original": "{\"senderAddress\":\"<>\",\"recipientAddress\":\"ssjzava@example.com\",\"fileName\":\"Titus-Test Doc - Classification - InternalUseOnly.docx\",\"fileType\":\"application\\/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"result\":\"safe\",\"actionTriggered\":\"user release, none\",\"date\":\"2049-10-14T11:24:23+0000\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"route\":\"inbound\",\"messageId\":\"<BB0P993IA0956CF5D2A535FFA3CAF4036B4C19@DB8P194MB0824.EURP194.PROD.OUTLOOK.COM>\",\"subject\":\"FW: Titus classification work\",\"fileHash\":\"9bc22eb76bd804d8c8e78169bf19ac990fac80cd972d7753df688047d7c1c33b\",\"definition\":\"Inbound - Safe file with On-Demand Sandbox\"}"
+      },
+      "mimecast": {
+        "details": "Safe                                              \r\nTime taken: 0 hrs, 0 min, 5 sec",
+        "result": "safe"
+      },
+      "related": {
+        "hash": [
+          "9bc22eb76bd804d8c8e78169bf19ac990fac80cd972d7753df688047d7c1c33b"
+        ]
+      },
+      "rule": {
+        "name": "Inbound - Safe file with On-Demand Sandbox"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-10-14T11:24:23.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": {
+          "file": {
+            "extension": "pptx",
+            "hash": {
+              "sha256": "234a31c9103be5609acc50bdca993a693c185d386f33d3155dc013e0fe222570"
+            },
+            "mime_type": "application/vnd.openxmlformats-officedocument.presentationml",
+            "name": "Titus classification v0.3.pptx"
+          }
+        },
+        "direction": "inbound",
+        "message_id": "<BB0P993IA0956CF5D2A535FFA3CAF4036B4C19@DB8P194MB0824.EURP194.PROD.OUTLOOK.COM>",
+        "subject": "FW: Titus classification work",
+        "to": {
+          "address": [
+            "ssjzava@example.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "user_release_none",
+        "category": [
+          "email"
+        ],
+        "created": "2049-10-14T11:24:23+0000",
+        "original": "{\"senderAddress\":\"<>\",\"recipientAddress\":\"ssjzava@example.com\",\"fileName\":\"Titus classification v0.3.pptx\",\"fileType\":\"application\\/vnd.openxmlformats-officedocument.presentationml\",\"result\":\"safe\",\"actionTriggered\":\"user release, none\",\"date\":\"2049-10-14T11:24:23+0000\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"route\":\"inbound\",\"messageId\":\"<BB0P993IA0956CF5D2A535FFA3CAF4036B4C19@DB8P194MB0824.EURP194.PROD.OUTLOOK.COM>\",\"subject\":\"FW: Titus classification work\",\"fileHash\":\"234a31c9103be5609acc50bdca993a693c185d386f33d3155dc013e0fe222570\",\"definition\":\"Inbound - Safe file with On-Demand Sandbox\"}"
+      },
+      "mimecast": {
+        "details": "Safe                                              \r\nTime taken: 0 hrs, 0 min, 5 sec",
+        "result": "safe"
+      },
+      "related": {
+        "hash": [
+          "234a31c9103be5609acc50bdca993a693c185d386f33d3155dc013e0fe222570"
+        ]
+      },
+      "rule": {
+        "name": "Inbound - Safe file with On-Demand Sandbox"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    },
+    {
+      "@timestamp": "2052-11-17T20:16:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "attachments": {
+          "file": {
+            "extension": "pdf",
+            "hash": {
+              "sha256": "9fb834d0250df5801725a0afaad995bda60928aa63885b92234ce5ad22c1f431"
+            },
+            "mime_type": "application/pdf",
+            "name": "attach-e398d4a5-38e6-4b89-b2fb-2e0aab6e4f50.pdf"
+          }
+        },
+        "direction": "inbound",
+        "from": {
+          "address": [
+            "nkrtbv.cdqmi@cqsowbkazkvams.e58.one"
+          ]
+        },
+        "message_id": "ʜ1d4ec23b0e90b70e-235829@uano.e58.one>",
+        "subject": "FIRE DRILL",
+        "to": {
+          "address": [
+            "nkrtbv.cdqmi@fclz-xtx.apejtlc.mxgb-bys.com"
+          ]
+        }
+      },
+      "event": {
+        "action": "none_none",
+        "category": [
+          "email"
+        ],
+        "created": "2052-11-17T20:16:00+0000",
+        "original": "{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T20:16:00+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 3 sec\",\"fileHash\":\"9fb834d0250df5801725a0afaad995bda60928aa63885b92234ce5ad22c1f431\",\"fileName\":\"attach-e398d4a5-38e6-4b89-b2fb-2e0aab6e4f50.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\u029c1d4ec23b0e90b70e-235829@uano.e58.one\\u003e\",\"recipientAddress\":\"nkrtbv.cdqmi@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"route\":\"inbound\",\"senderAddress\":\"nkrtbv.cdqmi@cqsowbkazkvams.e58.one\",\"subject\":\"FIRE DRILL\"}"
+      },
+      "mimecast": {
+        "details": "Safe                                              \r\nTime taken: 0 hrs, 0 min, 3 sec",
+        "result": "safe"
+      },
+      "related": {
+        "hash": [
+          "9fb834d0250df5801725a0afaad995bda60928aa63885b92234ce5ad22c1f431"
+        ]
+      },
+      "rule": {
+        "name": "Default Inbound Attachment Protect Definition"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'y' (code 121)\n at [Source: (String)\"{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T05:12:44+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 3 sec\",\"fileHash\":\"00fd4433b0dc58e8ecd8c455d649eeda1b91f648d605205b4668228ccc067e32\",\"fileName\":\"Mimecast.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\y266fdd0f5fe6deb2d443-275204@uano.e58.one\\u003e\",\"recipientAddress\":\"k.zlpb@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"rout\"[truncated 76 chars]; line: 1, column: 373]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T05:12:44+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 3 sec\",\"fileHash\":\"00fd4433b0dc58e8ecd8c455d649eeda1b91f648d605205b4668228ccc067e32\",\"fileName\":\"Mimecast.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\y266fdd0f5fe6deb2d443-275204@uano.e58.one\\u003e\",\"recipientAddress\":\"k.zlpb@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"route\":\"inbound\",\"senderAddress\":\"ocykt5@cqsowbkazkvams.e58.one\",\"subject\":\"Re\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'g' (code 103)\n at [Source: (String)\"{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T03:23:20+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"fileHash\":\"8177226b8f9a9a0045155695947d3c627fe035bf47281cad2ea019529270a143\",\"fileName\":\"War_of_Worlds_script.doc\",\"fileType\":\"text/rtf\",\"messageId\":\"\\g697ced8770031d39a36a-755510@uano.e58.one\\u003e\",\"recipientAddress\":\"hldplr3@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\"\"[truncated 121 chars]; line: 1, column: 378]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T03:23:20+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"fileHash\":\"8177226b8f9a9a0045155695947d3c627fe035bf47281cad2ea019529270a143\",\"fileName\":\"War_of_Worlds_script.doc\",\"fileType\":\"text/rtf\",\"messageId\":\"\\g697ced8770031d39a36a-755510@uano.e58.one\\u003e\",\"recipientAddress\":\"hldplr3@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"route\":\"inbound\",\"senderAddress\":\"xboj@dlbyjbwtgt-bqiu.e58.one\",\"subject\":\"Super sales to Las Vegas, Europe and more!\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'o' (code 111)\n at [Source: (String)\"{\"actionTriggered\":\"none\",\"date\":\"2052-11-17T00:52:30+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"Malicious                                         \\r\\nTime taken: 0 hrs, 0 min, 1 sec\",\"fileHash\":\"303adf32fd54ddb1dc93ee356f34f2fe5b588228ffa8003e79b70c7157d90318\",\"fileName\":\"Sandbox Test.xlsx\",\"fileType\":\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\"messageId\":\"\\o549c915cbe4edfbbc9b4-348704@uano.e58.one\\u003e\",\"recipientAddress\":\"dsfvmcw.x\"[truncated 150 chars]; line: 1, column: 423]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-17T00:52:30+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"Malicious                                         \\r\\nTime taken: 0 hrs, 0 min, 1 sec\",\"fileHash\":\"303adf32fd54ddb1dc93ee356f34f2fe5b588228ffa8003e79b70c7157d90318\",\"fileName\":\"Sandbox Test.xlsx\",\"fileType\":\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\"messageId\":\"\\o549c915cbe4edfbbc9b4-348704@uano.e58.one\\u003e\",\"recipientAddress\":\"dsfvmcw.xfmeiu@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"elpd.fzzh@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"RE\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'o' (code 111)\n at [Source: (String)\"{\"actionTriggered\":\"none\",\"date\":\"2052-11-17T00:52:30+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"Malicious                                         \\r\\nTime taken: 0 hrs, 0 min, 1 sec\",\"fileHash\":\"303adf32fd54ddb1dc93ee356f34f2fe5b588228ffa8003e79b70c7157d90318\",\"fileName\":\"Sandbox Test.xlsx\",\"fileType\":\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\"messageId\":\"\\o549c915cbe4edfbbc9b4-348704@uano.e58.one\\u003e\",\"recipientAddress\":\"ketrdh.ex\"[truncated 149 chars]; line: 1, column: 423]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-17T00:52:30+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"Malicious                                         \\r\\nTime taken: 0 hrs, 0 min, 1 sec\",\"fileHash\":\"303adf32fd54ddb1dc93ee356f34f2fe5b588228ffa8003e79b70c7157d90318\",\"fileName\":\"Sandbox Test.xlsx\",\"fileType\":\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\"messageId\":\"\\o549c915cbe4edfbbc9b4-348704@uano.e58.one\\u003e\",\"recipientAddress\":\"ketrdh.exaaez@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"elpd.fzzh@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"RE\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'g' (code 103)\n at [Source: (String)\"{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"agjcx.jmsmp@fclz-xtx.apejtlc.mxgb-bys.com\",\"resu\"[truncated 111 chars]; line: 1, column: 384]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"agjcx.jmsmp@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"ocjajf.fdiir@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"FW\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'g' (code 103)\n at [Source: (String)\"{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"pbwshcey.pqrwpxdg@fclz-xtx.apejtlc.mxgb-bys.com\"\"[truncated 117 chars]; line: 1, column: 384]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"pbwshcey.pqrwpxdg@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"ocjajf.fdiir@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"FW\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "error": {
+        "message": [
+          "Processor 'json' with tag '' failed with message 'Unrecognized character escape 'g' (code 103)\n at [Source: (String)\"{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"timrc.whfpeh@fclz-xtx.apejtlc.mxgb-bys.com\",\"res\"[truncated 112 chars]; line: 1, column: 384]'"
+        ]
+      },
+      "event": {
+        "kind": "pipeline_error",
+        "original": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"timrc.whfpeh@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"ocjajf.fdiir@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"FW\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"senderAddress\":\"<>\",\"recipientAddress\":\"ssjzava@example.com\",\"fileName\":\"numbers.pdf\",\"fileType\":\"application\\/pdf\",\"result\":\"safe\",\"actionTriggered\":\"user release, none\",\"date\":\"2049-10-14T18:54:32+0000\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 4 sec\",\"route\":\"inbound\",\"messageId\":\"<97151386441353.D28A554F366@mail.cpucijspqjzhqi.com>\",\"subject\":\"Important Updated Numbers from the Center for Disease Control\",\"fileHash\":\"dddde70c92e92f808b7cbd0a6450d44b5939daaa325918194fed785bc05581b4\",\"definition\":\"Inbound - Safe file with On-Demand Sandbox\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"senderAddress\":\"<>\",\"recipientAddress\":\"ssjzava@example.com\",\"fileName\":\"Titus-Test Doc - Classification - InternalUseOnly.docx\",\"fileType\":\"application\\/vnd.openxmlformats-officedocument.wordprocessingml.document\",\"result\":\"safe\",\"actionTriggered\":\"user release, none\",\"date\":\"2049-10-14T11:24:23+0000\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"route\":\"inbound\",\"messageId\":\"<BB0P993IA0956CF5D2A535FFA3CAF4036B4C19@DB8P194MB0824.EURP194.PROD.OUTLOOK.COM>\",\"subject\":\"FW: Titus classification work\",\"fileHash\":\"9bc22eb76bd804d8c8e78169bf19ac990fac80cd972d7753df688047d7c1c33b\",\"definition\":\"Inbound - Safe file with On-Demand Sandbox\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"senderAddress\":\"<>\",\"recipientAddress\":\"ssjzava@example.com\",\"fileName\":\"Titus classification v0.3.pptx\",\"fileType\":\"application\\/vnd.openxmlformats-officedocument.presentationml\",\"result\":\"safe\",\"actionTriggered\":\"user release, none\",\"date\":\"2049-10-14T11:24:23+0000\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"route\":\"inbound\",\"messageId\":\"<BB0P993IA0956CF5D2A535FFA3CAF4036B4C19@DB8P194MB0824.EURP194.PROD.OUTLOOK.COM>\",\"subject\":\"FW: Titus classification work\",\"fileHash\":\"234a31c9103be5609acc50bdca993a693c185d386f33d3155dc013e0fe222570\",\"definition\":\"Inbound - Safe file with On-Demand Sandbox\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"fail\":[],\"meta\":{\"status\":200,\"pagination\":{\"pageSize\":500,\"next\":\"nextToken\"}},\"data\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T20:16:00+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 3 sec\",\"fileHash\":\"9fb834d0250df5801725a0afaad995bda60928aa63885b92234ce5ad22c1f431\",\"fileName\":\"attach-e398d4a5-38e6-4b89-b2fb-2e0aab6e4f50.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\u029c1d4ec23b0e90b70e-235829@uano.e58.one\\u003e\",\"recipientAddress\":\"nkrtbv.cdqmi@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"route\":\"inbound\",\"senderAddress\":\"nkrtbv.cdqmi@cqsowbkazkvams.e58.one\",\"subject\":\"FIRE DRILL\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T05:12:44+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 3 sec\",\"fileHash\":\"00fd4433b0dc58e8ecd8c455d649eeda1b91f648d605205b4668228ccc067e32\",\"fileName\":\"Mimecast.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\y266fdd0f5fe6deb2d443-275204@uano.e58.one\\u003e\",\"recipientAddress\":\"k.zlpb@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"route\":\"inbound\",\"senderAddress\":\"ocykt5@cqsowbkazkvams.e58.one\",\"subject\":\"Re\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none, none\",\"date\":\"2052-11-17T03:23:20+0000\",\"definition\":\"Default Inbound Attachment Protect Definition\",\"details\":\"Safe                                              \\r\\nTime taken: 0 hrs, 0 min, 5 sec\",\"fileHash\":\"8177226b8f9a9a0045155695947d3c627fe035bf47281cad2ea019529270a143\",\"fileName\":\"War_of_Worlds_script.doc\",\"fileType\":\"text/rtf\",\"messageId\":\"\\g697ced8770031d39a36a-755510@uano.e58.one\\u003e\",\"recipientAddress\":\"hldplr3@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"safe\",\"route\":\"inbound\",\"senderAddress\":\"xboj@dlbyjbwtgt-bqiu.e58.one\",\"subject\":\"Super sales to Las Vegas, Europe and more!\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-17T00:52:30+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"Malicious                                         \\r\\nTime taken: 0 hrs, 0 min, 1 sec\",\"fileHash\":\"303adf32fd54ddb1dc93ee356f34f2fe5b588228ffa8003e79b70c7157d90318\",\"fileName\":\"Sandbox Test.xlsx\",\"fileType\":\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\"messageId\":\"\\o549c915cbe4edfbbc9b4-348704@uano.e58.one\\u003e\",\"recipientAddress\":\"dsfvmcw.xfmeiu@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"elpd.fzzh@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"RE\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-17T00:52:30+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"Malicious                                         \\r\\nTime taken: 0 hrs, 0 min, 1 sec\",\"fileHash\":\"303adf32fd54ddb1dc93ee356f34f2fe5b588228ffa8003e79b70c7157d90318\",\"fileName\":\"Sandbox Test.xlsx\",\"fileType\":\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\"messageId\":\"\\o549c915cbe4edfbbc9b4-348704@uano.e58.one\\u003e\",\"recipientAddress\":\"ketrdh.exaaez@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"elpd.fzzh@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"RE\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"agjcx.jmsmp@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"ocjajf.fdiir@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"FW\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"pbwshcey.pqrwpxdg@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"ocjajf.fdiir@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"FW\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"actionTriggered\":\"none\",\"date\":\"2052-11-16T18:37:47+0000\",\"definition\":\"Default Internal Attachment Protect Definition\",\"details\":\"[MALICIOUS_ACTIVITY: Exploit: Attempting to exploit CVE-2010-1240\\r\\nTime taken: 0 hrs, 0 min, 1 sec]\",\"fileHash\":\"34c93c368421050d37b094fe87f08fc948b1032f4af25838018a6ebb5e54bde8\",\"fileName\":\"zero-day.pdf\",\"fileType\":\"application/pdf\",\"messageId\":\"\\g278e02c4757712987039-782339@uano.e58.one\\u003e\",\"recipientAddress\":\"timrc.whfpeh@fclz-xtx.apejtlc.mxgb-bys.com\",\"result\":\"malicious\",\"route\":\"internal\",\"senderAddress\":\"ocjajf.fdiir@fclz-xtx.apejtlc.mxgb-bys.com\",\"subject\":\"FW\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "ttp_ap_logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mimecast-ttp_ap_logs-default",
+    "event_count": 12,
+    "numeric_keyword_fields": [],
+    "package": "mimecast",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "events": [
+    {
+      "request_id": "ab9f4c63-ff0d-4735-b0de-a754092f57e1",
+      "date": "2053-05-27T23:15:28.000Z"
+    },
+    {
+      "request_id": "527b8f4c-5459-4dbe-951a-d750678a59ba",
+      "secret_type": "GENERIC_CREDS",
+      "exposed_value": "password = something123",
+      "line_number": 129,
+      "date": "2053-05-27T20:12:44.000Z"
+    },
+    {
+      "request_id": "2071cb98-2aac-4b12-90ab-84dd3f6e0741",
+      "secret_type": "AWS_ACCESS_KEY_ID",
+      "exposed_value": "ABCDEF12345789",
+      "line_number": 150,
+      "date": "2053-05-27T19:24:58.000Z"
+    },
+    {
+      "request_id": "9362ce36-3dec-4d83-90cf-14dc2e4c3927",
+      "secret_type": "GENERIC_CREDS",
+      "exposed_value": ".ses_smtp_password_v4\": \"ABCDEF12345789",
+      "line_number": 138,
+      "date": "2053-05-28T19:13:58.000Z"
+    }
+  ]
+}

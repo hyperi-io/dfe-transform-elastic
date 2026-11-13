@@ -1,0 +1,71 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:52.909Z",
+            "winlog": {
+                "process": {
+                    "pid": 4,
+                    "thread": {
+                        "id": 5076
+                    }
+                },
+                "record_id": 5010,
+                "level": "information",
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "computer_name": "xfzkaqq",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "version": 2,
+                "time_created": "2047-11-14T17:10:15.151Z",
+                "channel": "Security",
+                "event_id": 4688,
+                "event_data": {
+                    "SubjectDomainName": "VAGRANT",
+                    "SubjectLogonId": "0x274a2",
+                    "TargetDomainName": "-",
+                    "MandatoryLabel": "S-1-16-12288",
+                    "SubjectUserSid": "S-1-5-21-1610636575-2290000098-1654242922-1000",
+                    "NewProcessId": "0x11cc",
+                    "TokenElevationType": "%%1937",
+                    "ProcessId": "0x122c",
+                    "CommandLine": "\"C:\\Windows\\system32\\wevtutil.exe\" cl Security",
+                    "TargetUserName": "-",
+                    "SubjectUserName": "xfzkaqq",
+                    "TargetUserSid": "S-1-0-0",
+                    "TargetLogonId": "0x0",
+                    "ParentProcessName": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                    "NewProcessName": "C:\\Windows\\System32\\wevtutil.exe"
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4688,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2019_4688_Process_Created.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "xfzkaqq"
+            },
+            "agent": {
+                "ephemeral_id": "879ca85a-2393-44a0-ac80-091cc0dbbfa5",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0"
+            }
+        }
+    ]
+}

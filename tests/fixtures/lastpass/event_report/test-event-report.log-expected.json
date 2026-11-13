@@ -1,0 +1,5536 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login verification email sent",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login Verification Email Sent\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Login Verification Email Sent",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "multifactor enabled",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Multifactor Enabled\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Multifactor Enabled",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "enterprise api secret regenerated",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Enterprise API Secret regenerated\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Enterprise API Secret regenerated",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "master password changed",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master Password Changed\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Master Password Changed",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "saml login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"SAML Login\",\"Data\":\"authorizationserver.oidc\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "SAML Login",
+          "data": {
+            "original": "authorizationserver.oidc",
+            "saml_login": "authorizationserver.oidc"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete policy",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete Policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Delete Policy",
+          "data": {
+            "original": "Require passwordless verification via LastPass Authenticator"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add policy",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add Policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator New value: 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Add Policy",
+          "data": {
+            "original": "Require passwordless verification via LastPass Authenticator New value: 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "reporting",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Reporting\",\"Data\":\"Initiated by API\"}",
+        "outcome": "unknown",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Reporting",
+          "data": {
+            "original": "Initiated by API"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "get user data",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get User Data\",\"Data\":\"Initiated by API\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Get User Data",
+          "data": {
+            "original": "Initiated by API"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "get shared folder data",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get Shared Folder Data\",\"Data\":\"Initiated by API\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Get Shared Folder Data",
+          "data": {
+            "original": "Initiated by API"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "log in",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"ofglidmx.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Log in",
+          "data": {
+            "login_site": "ofglidmx.com",
+            "original": "ofglidmx.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed login attempt",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Failed Login Attempt\",\"Data\":\"ofglidmx.com\"}",
+        "outcome": "failure",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Failed Login Attempt",
+          "data": {
+            "failed_login": "ofglidmx.com",
+            "original": "ofglidmx.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "log in",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"198.51.100.23:1234/example\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Log in",
+          "data": {
+            "login_site": "198.51.100.23:1234/example",
+            "original": "198.51.100.23:1234/example"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login to admin console",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to Admin Console\",\"Data\":\"zqay7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Login to Admin Console",
+          "data": {
+            "original": "zqay7@example.com",
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "employee account created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee Account Created\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Employee Account Created",
+          "data": {
+            "original": "pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com",
+            "user_email": [
+              "pvdx4@example.com",
+              "qwfl7@example.com",
+              "szbs2@example.com",
+              "pneq4@example.com",
+              "tmcg1@example.com"
+            ]
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "employee invited",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee Invited\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Employee Invited",
+          "data": {
+            "original": "pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com",
+            "user_email": [
+              "pvdx4@example.com",
+              "qwfl7@example.com",
+              "szbs2@example.com",
+              "pneq4@example.com",
+              "tmcg1@example.com"
+            ]
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "make admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make Admin\",\"Data\":\"szbs2@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "admin"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Make Admin",
+          "data": {
+            "original": "szbs2@example.com",
+            "user_email": "szbs2@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "szbs2@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "szbs2@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login to admin console",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to Admin Console\",\"Data\":\"user1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Login to Admin Console",
+          "data": {
+            "original": "user1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "make admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make Admin\",\"Data\":\"user4\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "admin"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Make Admin",
+          "data": {
+            "original": "user4"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "site added",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site Added\",\"Data\":\"example.com/ServiceLogin\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Site Added",
+          "data": {
+            "added_site": "example.com/ServiceLogin",
+            "original": "example.com/ServiceLogin"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted sites",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted Sites\",\"Data\":\"example.com/ServiceLogin\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Deleted Sites",
+          "data": {
+            "deleted_site": [
+              "example.com/ServiceLogin"
+            ],
+            "original": "example.com/ServiceLogin"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "site added",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site Added\",\"Data\":\"example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Site Added",
+          "data": {
+            "added_site": "example.com",
+            "original": "example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted sites",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted Sites\",\"Data\":\"ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Deleted Sites",
+          "data": {
+            "deleted_site": [
+              "ekazvrc9.com",
+              "bidorjf3.com",
+              "bsfumqc5.com",
+              "dibwusb9.com"
+            ],
+            "original": "ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "created shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created Shared Folder\",\"Data\":\"temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Created Shared Folder",
+          "data": {
+            "original": "temp-1",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted Shared Folder\",\"Data\":\"temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Deleted Shared Folder",
+          "data": {
+            "original": "temp-1",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add Secure Note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Add Secure Note",
+          "data": {
+            "original": "Secure Note (Address) from temp-1",
+            "secure_note": "Address",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "open secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open Secure Note\",\"Data\":\"Secure Note (Address)\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Open Secure Note",
+          "data": {
+            "original": "Secure Note (Address)",
+            "secure_note": "Address"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "open secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open Secure Note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Open Secure Note",
+          "data": {
+            "original": "Secure Note (Address) from temp-1",
+            "secure_note": "Address",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add to shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add to Shared Folder\",\"Data\":\"'temp-1' 'zqay7@example.com'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Add to Shared Folder",
+          "data": {
+            "original": "'temp-1' 'zqay7@example.com'",
+            "shared_folder_name": "temp-1",
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "create group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Create Group\",\"Data\":\"'temp-group'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Create Group",
+          "data": {
+            "group_name": "temp-group",
+            "original": "'temp-group'"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ],
+        "group": {
+          "name": "temp-group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "adding user to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Adding User to Group\",\"Data\":\"zqay7@example.com - temp-group\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Adding User to Group",
+          "data": {
+            "group_name": "temp-group",
+            "original": "zqay7@example.com - temp-group",
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ],
+        "group": {
+          "name": "temp-group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "created lastpass account",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created LastPass Account\",\"Data\":\"user1@example.com-Shared-temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Created LastPass Account",
+          "data": {
+            "original": "user1@example.com-Shared-temp-1",
+            "shared_folder_name": "temp-1",
+            "user_email": "user1@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "user1@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "user1@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "update folder permissions",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Update Folder Permissions\",\"Data\":\"'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Update Folder Permissions",
+          "data": {
+            "original": "'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'",
+            "shared_folder_name": "temp-1",
+            "shared_folder_user_permissions": {
+              "admin": "no",
+              "hide_password": "no",
+              "read_only": "no"
+            },
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "master password reset by super admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master Password Reset by Super Admin\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Master Password Reset by Super Admin",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": "qwfl7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "employee account deleted",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee Account Deleted\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Employee Account Deleted",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": [
+              "qwfl7@example.com"
+            ]
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "require password change",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Require Password Change\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "unknown",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Require Password Change",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": "qwfl7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "remove admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Remove Admin\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Remove Admin",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": "qwfl7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "edit secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Edit Secure Note\",\"Data\":\"Secure Note (Wifi renamed)\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Edit Secure Note",
+          "data": {
+            "original": "Secure Note (Wifi renamed)",
+            "secure_note": "Wifi renamed"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "renamed shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Renamed Shared Folder\",\"Data\":\"'test1' 'test2'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Renamed Shared Folder",
+          "data": {
+            "original": "'test1' 'test2'",
+            "renamed_shared_folder_name": "test2",
+            "shared_folder_name": "test1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move to shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to Shared Folder\",\"Data\":\"example.com to Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move to Shared Folder",
+          "data": {
+            "original": "example.com to Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1",
+            "site": "example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move to shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to Shared Folder\",\"Data\":\" to Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move to Shared Folder",
+          "data": {
+            "original": " to Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from Shared Folder\",\"Data\":\"example.com from Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move from Shared Folder",
+          "data": {
+            "original": "example.com from Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1",
+            "site": "example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from Shared Folder\",\"Data\":\" from Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move from Shared Folder",
+          "data": {
+            "original": " from Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "limit shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Limit Shared Folder\",\"Data\":\"shared folder sbgq@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Limit Shared Folder",
+          "data": {
+            "original": "shared folder sbgq@example.com",
+            "shared_folder_name": "shared folder",
+            "user_email": "sbgq@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "removed from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Removed From Shared Folder\",\"Data\":\"'test1' 'sbgq@example.com'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Removed From Shared Folder",
+          "data": {
+            "original": "'test1' 'sbgq@example.com'",
+            "shared_folder_name": "test1",
+            "user_email": "sbgq@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete shared sites",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete Shared Sites\",\"Data\":\"example.com from Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Delete Shared Sites",
+          "data": {
+            "deleted_site": "example.com",
+            "original": "example.com from Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from Shared Folder\",\"Data\":\" from INVALID SHARED FOLDER\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move from Shared Folder",
+          "data": {
+            "original": " from INVALID SHARED FOLDER"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login verification email sent",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login verification email sent\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Login verification email sent",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "multifactor enabled",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Multifactor enabled\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Multifactor enabled",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "enterprise api secret regenerated",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Enterprise API secret regenerated\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Enterprise API secret regenerated",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "master password changed",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master password changed\",\"Data\":\"\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Master password changed",
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "saml login",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"SAML login\",\"Data\":\"authorizationserver.oidc\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "SAML login",
+          "data": {
+            "original": "authorizationserver.oidc",
+            "saml_login": "authorizationserver.oidc"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete policy",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Delete policy",
+          "data": {
+            "original": "Require passwordless verification via LastPass Authenticator"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add policy",
+        "category": [
+          "configuration"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator New value: 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Add policy",
+          "data": {
+            "original": "Require passwordless verification via LastPass Authenticator New value: 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "reporting",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Reporting\",\"Data\":\"Initiated by API\"}",
+        "outcome": "unknown",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Reporting",
+          "data": {
+            "original": "Initiated by API"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "get user data",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get user data\",\"Data\":\"Initiated by API\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Get user data",
+          "data": {
+            "original": "Initiated by API"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "get shared folder data",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get shared folder data\",\"Data\":\"Initiated by API\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Get shared folder data",
+          "data": {
+            "original": "Initiated by API"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "log in",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"ofglidmx.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Log in",
+          "data": {
+            "login_site": "ofglidmx.com",
+            "original": "ofglidmx.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "failed login attempt",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Failed login attempt\",\"Data\":\"ofglidmx.com\"}",
+        "outcome": "failure",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Failed login attempt",
+          "data": {
+            "failed_login": "ofglidmx.com",
+            "original": "ofglidmx.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "log in",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"198.51.100.23:1234/example\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Log in",
+          "data": {
+            "login_site": "198.51.100.23:1234/example",
+            "original": "198.51.100.23:1234/example"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login to admin console",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to admin console\",\"Data\":\"zqay7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Login to admin console",
+          "data": {
+            "original": "zqay7@example.com",
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "employee account created",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee account created\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Employee account created",
+          "data": {
+            "original": "pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com",
+            "user_email": [
+              "pvdx4@example.com",
+              "qwfl7@example.com",
+              "szbs2@example.com",
+              "pneq4@example.com",
+              "tmcg1@example.com"
+            ]
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "employee invited",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee invited\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Employee invited",
+          "data": {
+            "original": "pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com",
+            "user_email": [
+              "pvdx4@example.com",
+              "qwfl7@example.com",
+              "szbs2@example.com",
+              "pneq4@example.com",
+              "tmcg1@example.com"
+            ]
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "pvdx4@example.com",
+          "qwfl7@example.com",
+          "szbs2@example.com",
+          "pneq4@example.com",
+          "tmcg1@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "make admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make admin\",\"Data\":\"szbs2@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "admin"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Make admin",
+          "data": {
+            "original": "szbs2@example.com",
+            "user_email": "szbs2@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "szbs2@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "szbs2@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login to admin console",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to admin console\",\"Data\":\"user1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Login to admin console",
+          "data": {
+            "original": "user1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "make admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make admin\",\"Data\":\"user4\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "admin"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Make admin",
+          "data": {
+            "original": "user4"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "site added",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site added\",\"Data\":\"example.com/ServiceLogin\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Site added",
+          "data": {
+            "added_site": "example.com/ServiceLogin",
+            "original": "example.com/ServiceLogin"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted sites",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted sites\",\"Data\":\"example.com/ServiceLogin\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Deleted sites",
+          "data": {
+            "deleted_site": [
+              "example.com/ServiceLogin"
+            ],
+            "original": "example.com/ServiceLogin"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "site added",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site added\",\"Data\":\"example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Site added",
+          "data": {
+            "added_site": "example.com",
+            "original": "example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted sites",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted sites\",\"Data\":\"ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Deleted sites",
+          "data": {
+            "deleted_site": [
+              "ekazvrc9.com",
+              "bidorjf3.com",
+              "bsfumqc5.com",
+              "dibwusb9.com"
+            ],
+            "original": "ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "created shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created shared folder\",\"Data\":\"temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Created shared folder",
+          "data": {
+            "original": "temp-1",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "deleted shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted shared folder\",\"Data\":\"temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Deleted shared folder",
+          "data": {
+            "original": "temp-1",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add secure note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Add secure note",
+          "data": {
+            "original": "Secure Note (Address) from temp-1",
+            "secure_note": "Address",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "open secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open secure note\",\"Data\":\"Secure Note (Address)\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Open secure note",
+          "data": {
+            "original": "Secure Note (Address)",
+            "secure_note": "Address"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "open secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open secure note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "start"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Open secure note",
+          "data": {
+            "original": "Secure Note (Address) from temp-1",
+            "secure_note": "Address",
+            "shared_folder_name": "temp-1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "add to shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add to shared folder\",\"Data\":\"'temp-1' 'zqay7@example.com'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Add to shared folder",
+          "data": {
+            "original": "'temp-1' 'zqay7@example.com'",
+            "shared_folder_name": "temp-1",
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "create group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Create group\",\"Data\":\"'temp-group'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Create group",
+          "data": {
+            "group_name": "temp-group",
+            "original": "'temp-group'"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ],
+        "group": {
+          "name": "temp-group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "adding user to group",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Adding user to group\",\"Data\":\"zqay7@example.com - temp-group\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "group",
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Adding user to group",
+          "data": {
+            "group_name": "temp-group",
+            "original": "zqay7@example.com - temp-group",
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ],
+        "group": {
+          "name": "temp-group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "created lastpass account",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created LastPass account\",\"Data\":\"user1@example.com-Shared-temp-1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "creation"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Created LastPass account",
+          "data": {
+            "original": "user1@example.com-Shared-temp-1",
+            "shared_folder_name": "temp-1",
+            "user_email": "user1@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "user1@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "user1@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "update folder permissions",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Update folder permissions\",\"Data\":\"'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Update folder permissions",
+          "data": {
+            "original": "'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'",
+            "shared_folder_name": "temp-1",
+            "shared_folder_user_permissions": {
+              "admin": "no",
+              "hide_password": "no",
+              "read_only": "no"
+            },
+            "user_email": "zqay7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "zqay7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "master password reset by super admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master password reset by super admin\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Master password reset by super admin",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": "qwfl7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "employee account deleted",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee account deleted\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Employee account deleted",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": [
+              "qwfl7@example.com"
+            ]
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "require password change",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Require password change\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "unknown",
+        "timezone": "US/Eastern",
+        "type": [
+          "info"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Require password change",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": "qwfl7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "remove admin",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Remove admin\",\"Data\":\"qwfl7@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Remove admin",
+          "data": {
+            "original": "qwfl7@example.com",
+            "user_email": "qwfl7@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "qwfl7@example.com",
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "edit secure note",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Edit secure note\",\"Data\":\"Secure Note (Wifi renamed)\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Edit secure note",
+          "data": {
+            "original": "Secure Note (Wifi renamed)",
+            "secure_note": "Wifi renamed"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "renamed shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Renamed shared folder\",\"Data\":\"'test1' 'test2'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Renamed shared folder",
+          "data": {
+            "original": "'test1' 'test2'",
+            "renamed_shared_folder_name": "test2",
+            "shared_folder_name": "test1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move to shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to shared folder\",\"Data\":\"example.com to Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move to shared folder",
+          "data": {
+            "original": "example.com to Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1",
+            "site": "example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move to shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to shared folder\",\"Data\":\" to Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move to shared folder",
+          "data": {
+            "original": " to Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from shared folder\",\"Data\":\"example.com from Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move from shared folder",
+          "data": {
+            "original": "example.com from Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1",
+            "site": "example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from shared folder\",\"Data\":\" from Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move from shared folder",
+          "data": {
+            "original": " from Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "limit shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Limit shared folder\",\"Data\":\"shared folder sbgq@example.com\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Limit shared folder",
+          "data": {
+            "original": "shared folder sbgq@example.com",
+            "shared_folder_name": "shared folder",
+            "user_email": "sbgq@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "removed from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Removed from shared folder\",\"Data\":\"'test1' 'sbgq@example.com'\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Removed from shared folder",
+          "data": {
+            "original": "'test1' 'sbgq@example.com'",
+            "shared_folder_name": "test1",
+            "user_email": "sbgq@example.com"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete shared sites",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete shared sites\",\"Data\":\"example.com from Shared Folder 1\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "deletion"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Delete shared sites",
+          "data": {
+            "deleted_site": "example.com",
+            "original": "example.com from Shared Folder 1",
+            "shared_folder_name": "Shared Folder 1"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2043-07-17T09:51:51.000-04:00",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "move from shared folder",
+        "kind": "event",
+        "original": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from shared folder\",\"Data\":\" from INVALID SHARED FOLDER\"}",
+        "outcome": "success",
+        "timezone": "US/Eastern",
+        "type": [
+          "change"
+        ]
+      },
+      "lastpass": {
+        "event_report": {
+          "action": "Move from shared folder",
+          "data": {
+            "original": " from INVALID SHARED FOLDER"
+          },
+          "ip": "203.0.113.212",
+          "time": "2043-07-17T09:51:51.000-04:00",
+          "user_name": "sbgq@example.com"
+        }
+      },
+      "related": {
+        "ip": [
+          "203.0.113.212"
+        ],
+        "user": [
+          "sbgq@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.212"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": [
+          "sbgq@example.com"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login Verification Email Sent\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Multifactor Enabled\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Enterprise API Secret regenerated\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master Password Changed\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"SAML Login\",\"Data\":\"authorizationserver.oidc\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete Policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add Policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator New value: 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Reporting\",\"Data\":\"Initiated by API\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get User Data\",\"Data\":\"Initiated by API\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get Shared Folder Data\",\"Data\":\"Initiated by API\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"ofglidmx.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Failed Login Attempt\",\"Data\":\"ofglidmx.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"198.51.100.23:1234/example\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to Admin Console\",\"Data\":\"zqay7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee Account Created\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee Invited\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make Admin\",\"Data\":\"szbs2@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to Admin Console\",\"Data\":\"user1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make Admin\",\"Data\":\"user4\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site Added\",\"Data\":\"example.com/ServiceLogin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted Sites\",\"Data\":\"example.com/ServiceLogin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site Added\",\"Data\":\"example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted Sites\",\"Data\":\"ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created Shared Folder\",\"Data\":\"temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted Shared Folder\",\"Data\":\"temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add Secure Note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open Secure Note\",\"Data\":\"Secure Note (Address)\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open Secure Note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add to Shared Folder\",\"Data\":\"'temp-1' 'zqay7@example.com'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Create Group\",\"Data\":\"'temp-group'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Adding User to Group\",\"Data\":\"zqay7@example.com - temp-group\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created LastPass Account\",\"Data\":\"user1@example.com-Shared-temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Update Folder Permissions\",\"Data\":\"'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master Password Reset by Super Admin\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee Account Deleted\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Require Password Change\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Remove Admin\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Edit Secure Note\",\"Data\":\"Secure Note (Wifi renamed)\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Renamed Shared Folder\",\"Data\":\"'test1' 'test2'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to Shared Folder\",\"Data\":\"example.com to Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to Shared Folder\",\"Data\":\" to Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from Shared Folder\",\"Data\":\"example.com from Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from Shared Folder\",\"Data\":\" from Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Limit Shared Folder\",\"Data\":\"shared folder sbgq@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Removed From Shared Folder\",\"Data\":\"'test1' 'sbgq@example.com'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete Shared Sites\",\"Data\":\"example.com from Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from Shared Folder\",\"Data\":\" from INVALID SHARED FOLDER\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login verification email sent\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Multifactor enabled\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Enterprise API secret regenerated\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master password changed\",\"Data\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"SAML login\",\"Data\":\"authorizationserver.oidc\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add policy\",\"Data\":\"Require passwordless verification via LastPass Authenticator New value: 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Reporting\",\"Data\":\"Initiated by API\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get user data\",\"Data\":\"Initiated by API\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Get shared folder data\",\"Data\":\"Initiated by API\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"ofglidmx.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Failed login attempt\",\"Data\":\"ofglidmx.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Log in\",\"Data\":\"198.51.100.23:1234/example\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to admin console\",\"Data\":\"zqay7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee account created\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee invited\",\"Data\":\"pvdx4@example.com,qwfl7@example.com,szbs2@example.com,pneq4@example.com,tmcg1@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make admin\",\"Data\":\"szbs2@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Login to admin console\",\"Data\":\"user1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Make admin\",\"Data\":\"user4\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site added\",\"Data\":\"example.com/ServiceLogin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted sites\",\"Data\":\"example.com/ServiceLogin\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Site added\",\"Data\":\"example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted sites\",\"Data\":\"ekazvrc9.com,bidorjf3.com,bsfumqc5.com,dibwusb9.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created shared folder\",\"Data\":\"temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Deleted shared folder\",\"Data\":\"temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add secure note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open secure note\",\"Data\":\"Secure Note (Address)\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Open secure note\",\"Data\":\"Secure Note (Address) from temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Add to shared folder\",\"Data\":\"'temp-1' 'zqay7@example.com'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Create group\",\"Data\":\"'temp-group'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Adding user to group\",\"Data\":\"zqay7@example.com - temp-group\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Created LastPass account\",\"Data\":\"user1@example.com-Shared-temp-1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Update folder permissions\",\"Data\":\"'temp-1' 'zqay7@example.com' 'Read only:no Admin:no Hide PW:no'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Master password reset by super admin\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Employee account deleted\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Require password change\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Remove admin\",\"Data\":\"qwfl7@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Edit secure note\",\"Data\":\"Secure Note (Wifi renamed)\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Renamed shared folder\",\"Data\":\"'test1' 'test2'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to shared folder\",\"Data\":\"example.com to Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move to shared folder\",\"Data\":\" to Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from shared folder\",\"Data\":\"example.com from Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from shared folder\",\"Data\":\" from Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Limit shared folder\",\"Data\":\"shared folder sbgq@example.com\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Removed from shared folder\",\"Data\":\"'test1' 'sbgq@example.com'\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Delete shared sites\",\"Data\":\"example.com from Shared Folder 1\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"Time\":\"2043-07-17 09:51:51\",\"Username\":\"sbgq@example.com\",\"IP_Address\":\"203.0.113.212\",\"Action\":\"Move from shared folder\",\"Data\":\" from INVALID SHARED FOLDER\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event_report",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-lastpass-event_report-default",
+    "event_count": 94,
+    "numeric_keyword_fields": [],
+    "package": "lastpass",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

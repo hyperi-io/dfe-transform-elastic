@@ -1,0 +1,1141 @@
+{
+  "expected": [
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "0",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "deviceAddress": "10.79.255.86",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Logging System",
+          "deviceHostName": "10.79.255.86",
+          "deviceReceiptTime": "2048-01-17T08:52:10.000Z",
+          "message": "log server connection established"
+        },
+        "name": "Generic",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "0",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|0|Generic|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 msg=log server connection established deviceFacility=Logging System rt=Jan 17 2048 08:52:10",
+        "severity": 0
+      },
+      "message": "log server connection established",
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": [
+          "10.79.255.86"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "related": {
+        "hosts": [
+          "10.79.255.86"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "9005",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "deviceAddress": "10.79.255.86",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Management",
+          "deviceHostName": "10.79.255.86",
+          "deviceReceiptTime": "2048-01-17T08:52:09.000Z",
+          "message": "Communication error: No route to host (-3, 5, 0)"
+        },
+        "name": "FW_Communication-Communication-Error",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "9005",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|9005|FW_Communication-Communication-Error|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 msg=Communication error: No route to host (-3, 5, 0) deviceFacility=Management rt=Jan 17 2048 08:52:09",
+        "severity": 0
+      },
+      "message": "Communication error: No route to host (-3, 5, 0)",
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": [
+          "10.79.255.86"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "related": {
+        "hosts": [
+          "10.79.255.86"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70018",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "applicationProtocol": "Dest. Unreachable (Host Unreachable)",
+          "destinationAddress": "10.79.255.86",
+          "deviceAction": "Allow",
+          "deviceAddress": "10.79.255.86",
+          "deviceCustomString1": "2097157.1",
+          "deviceCustomString1Label": "RuleID",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.79.255.86",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:52:09.000Z",
+          "message": "Referred connection: 10.79.255.86 -> 10.40.25.239 frag=0x4000 TCP 47413->3020",
+          "sourceAddress": "10.39.127.10",
+          "transportProtocol": "1"
+        },
+        "name": "Connection_Allowed",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "10.79.255.86"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Allow",
+        "code": "70018",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|70018|Connection_Allowed|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 src=10.39.127.10 dst=10.79.255.86 proto=1 deviceOutboundInterface=255 act=Allow msg=Referred connection: 10.79.255.86 -> 10.40.25.239 frag\\=0x4000 TCP 47413->3020 deviceFacility=Packet Filtering rt=Jan 17 2048 08:52:09 app=Dest. Unreachable (Host Unreachable) cs1Label=RuleID cs1=2097157.1",
+        "severity": 0
+      },
+      "message": "Referred connection: 10.79.255.86 -> 10.40.25.239 frag=0x4000 TCP 47413->3020",
+      "network": {
+        "application": "Dest. Unreachable (Host Unreachable)",
+        "community_id": "1:qNdDa0abCq5ZLag7I0me1UMXraw=",
+        "transport": "1"
+      },
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": [
+          "10.79.255.86"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "related": {
+        "hosts": [
+          "10.79.255.86"
+        ],
+        "ip": [
+          "10.79.255.86",
+          "10.39.127.10"
+        ]
+      },
+      "rule": {
+        "id": "2097157.1"
+      },
+      "source": {
+        "ip": "10.39.127.10"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70019",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "applicationProtocol": "BOOTPS (UDP)",
+          "destinationAddress": "198.51.100.144",
+          "destinationPort": 67,
+          "deviceAddress": "10.53.122.235",
+          "deviceCustomString1": "605.0",
+          "deviceCustomString1Label": "RuleID",
+          "deviceExternalId": "Firewall-10 node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.53.122.235",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:56:21.000Z",
+          "sourceAddress": "172.17.225.90",
+          "sourcePort": 68,
+          "transportProtocol": "17"
+        },
+        "name": "Connection_Discarded",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "198.51.100.144",
+        "port": 67
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "70019",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|70019|Connection_Discarded|0|deviceExternalId=Firewall-10 node 1 dvc=10.53.122.235 dvchost=10.53.122.235 src=172.17.225.90 dst=198.51.100.144 spt=68 dpt=67 proto=17 deviceOutboundInterface=255 deviceFacility=Packet Filtering rt=Jan 17 2048 08:56:21 app=BOOTPS (UDP) cs1Label=RuleID cs1=605.0",
+        "severity": 0
+      },
+      "message": "Connection_Discarded",
+      "network": {
+        "application": "BOOTPS (UDP)",
+        "community_id": "1:yIYEuxGdVaQ3FJ31x8kbmXM4v5A=",
+        "transport": "17"
+      },
+      "observer": {
+        "hostname": "10.53.122.235",
+        "ip": [
+          "10.53.122.235"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "related": {
+        "hosts": [
+          "10.53.122.235"
+        ],
+        "ip": [
+          "198.51.100.144",
+          "172.17.225.90"
+        ]
+      },
+      "rule": {
+        "id": "605.0"
+      },
+      "source": {
+        "ip": "172.17.225.90",
+        "port": 68
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70020",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "applicationProtocol": "Echo Request (No Code)",
+          "destinationAddress": "192.168.124.110",
+          "deviceAction": "Refuse",
+          "deviceAddress": "10.134.1.96",
+          "deviceCustomString1": "601.0",
+          "deviceCustomString1Label": "RuleID",
+          "deviceExternalId": "Firewall-1 node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.134.1.96",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:56:23.000Z",
+          "sourceAddress": "172.17.225.90",
+          "transportProtocol": "1"
+        },
+        "name": "Connection_Refused",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "192.168.124.110"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Refuse",
+        "code": "70020",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|70020|Connection_Refused|0|deviceExternalId=Firewall-1 node 1 dvc=10.134.1.96 dvchost=10.134.1.96 src=172.17.225.90 dst=192.168.124.110 proto=1 deviceOutboundInterface=255 act=Refuse deviceFacility=Packet Filtering rt=Jan 17 2048 08:56:23 app=Echo Request (No Code) cs1Label=RuleID cs1=601.0",
+        "severity": 0
+      },
+      "message": "Connection_Refused",
+      "network": {
+        "application": "Echo Request (No Code)",
+        "community_id": "1:GZ9e6Fmqp1ms8xeuc+4nxiC0j0I=",
+        "transport": "1"
+      },
+      "observer": {
+        "hostname": "10.134.1.96",
+        "ip": [
+          "10.134.1.96"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "related": {
+        "hosts": [
+          "10.134.1.96"
+        ],
+        "ip": [
+          "192.168.124.110",
+          "172.17.225.90"
+        ]
+      },
+      "rule": {
+        "id": "601.0"
+      },
+      "source": {
+        "ip": "172.17.225.90"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70021",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "applicationProtocol": "TCP",
+          "bytesIn": 32526,
+          "bytesOut": 27366,
+          "destinationServiceName": "YouTube",
+          "deviceAddress": "10.162.65.130",
+          "deviceExternalId": "Firewall-6 node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.162.65.130",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:56:20.000Z",
+          "sourceUserName": "alice",
+          "transportProtocol": "6"
+        },
+        "name": "Connection_Closed",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "bytes": 27366,
+        "service": {
+          "name": "YouTube"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "70021",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|70021|Connection_Closed|0|deviceExternalId=Firewall-6 node 1 dvc=10.162.65.130 dvchost=10.162.65.130 proto=6 deviceOutboundInterface=255 destinationServiceName=YouTube suser=alice deviceFacility=Packet Filtering rt=Jan 17 2048 08:56:20 app=TCP in=32526 out=27366",
+        "severity": 0
+      },
+      "message": "Connection_Closed",
+      "network": {
+        "application": "TCP",
+        "transport": "6"
+      },
+      "observer": {
+        "hostname": "10.162.65.130",
+        "ip": [
+          "10.162.65.130"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "related": {
+        "hosts": [
+          "10.162.65.130"
+        ],
+        "user": [
+          "alice"
+        ]
+      },
+      "source": {
+        "bytes": 32526,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "72714",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "deviceAddress": "10.9.105.153",
+          "deviceExternalId": "Firewall-3 node 1",
+          "deviceFacility": "Endpoint Context Agent",
+          "deviceHostName": "10.9.105.153",
+          "deviceReceiptTime": "2048-01-17T08:56:33.000Z",
+          "sourceAddress": "192.168.124.110",
+          "sourceUserName": "bob"
+        },
+        "name": "ECA_Metadata_login",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "72714",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|72714|ECA_Metadata_login|0|deviceExternalId=Firewall-3 node 1 dvc=10.9.105.153 dvchost=10.9.105.153 src=192.168.124.110 suser=bob deviceFacility=Endpoint Context Agent rt=Jan 17 2048 08:56:33",
+        "severity": 0
+      },
+      "message": "ECA_Metadata_login",
+      "observer": {
+        "hostname": "10.9.105.153",
+        "ip": [
+          "10.9.105.153"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "related": {
+        "hosts": [
+          "10.9.105.153"
+        ],
+        "ip": [
+          "192.168.124.110"
+        ],
+        "user": [
+          "bob"
+        ]
+      },
+      "source": {
+        "ip": "192.168.124.110",
+        "user": {
+          "name": "bob"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "72715",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "deviceAddress": "10.53.122.235",
+          "deviceExternalId": "Firewall-10 node 1",
+          "deviceFacility": "Endpoint Context Agent",
+          "deviceHostName": "10.53.122.235",
+          "deviceReceiptTime": "2048-01-17T08:56:31.000Z",
+          "sourceAddress": "192.168.124.110",
+          "sourceUserName": "bob"
+        },
+        "name": "ECA_Metadata_logout",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "72715",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|72715|ECA_Metadata_logout|0|deviceExternalId=Firewall-10 node 1 dvc=10.53.122.235 dvchost=10.53.122.235 src=192.168.124.110 suser=bob deviceFacility=Endpoint Context Agent rt=Jan 17 2048 08:56:31",
+        "severity": 0
+      },
+      "message": "ECA_Metadata_logout",
+      "observer": {
+        "hostname": "10.53.122.235",
+        "ip": [
+          "10.53.122.235"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "related": {
+        "hosts": [
+          "10.53.122.235"
+        ],
+        "ip": [
+          "192.168.124.110"
+        ],
+        "user": [
+          "bob"
+        ]
+      },
+      "source": {
+        "ip": "192.168.124.110",
+        "user": {
+          "name": "bob"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "72716",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "deviceAddress": "10.112.193.215",
+          "deviceExternalId": "Firewall-8 node 1",
+          "deviceFacility": "Endpoint Context Agent",
+          "deviceHostName": "10.112.193.215",
+          "deviceReceiptTime": "2048-01-17T08:56:26.000Z",
+          "sourceAddress": "172.18.253.223",
+          "sourceUserName": "alice"
+        },
+        "name": "ECA_Metadata_system_metadata_received",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "72716",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|72716|ECA_Metadata_system_metadata_received|0|deviceExternalId=Firewall-8 node 1 dvc=10.112.193.215 dvchost=10.112.193.215 src=172.18.253.223 suser=alice deviceFacility=Endpoint Context Agent rt=Jan 17 2048 08:56:26",
+        "severity": 0
+      },
+      "message": "ECA_Metadata_system_metadata_received",
+      "observer": {
+        "hostname": "10.112.193.215",
+        "ip": [
+          "10.112.193.215"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "related": {
+        "hosts": [
+          "10.112.193.215"
+        ],
+        "ip": [
+          "172.18.253.223"
+        ],
+        "user": [
+          "alice"
+        ]
+      },
+      "source": {
+        "ip": "172.18.253.223",
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "78002",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "deviceAddress": "10.79.255.86",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Management",
+          "deviceHostName": "10.79.255.86",
+          "deviceReceiptTime": "2048-01-17T08:52:09.000Z",
+          "message": "TLS: Couldn't establish TLS connection (11, N/A)"
+        },
+        "name": "TLS connection state",
+        "severity": "0",
+        "version": "0"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "78002",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|78002|TLS connection state|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 msg=TLS: Couldn't establish TLS connection (11, N/A) deviceFacility=Management rt=Jan 17 2048 08:52:09",
+        "severity": 0
+      },
+      "message": "TLS: Couldn't establish TLS connection (11, N/A)",
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": [
+          "10.79.255.86"
+        ],
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "related": {
+        "hosts": [
+          "10.79.255.86"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "0",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "deviceAddress": "10.79.255.86",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Logging System",
+          "deviceHostName": "10.79.255.86",
+          "deviceReceiptTime": "2048-01-17T08:52:10.000Z",
+          "message": "log server connection established"
+        },
+        "name": "Generic",
+        "severity": "0",
+        "version": "0"
+      },
+      "event": {
+        "code": "0",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|0|Generic|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 msg=log server connection established deviceFacility=Logging System rt=Jan 17 2048 08:52:10",
+        "severity": 0
+      },
+      "message": "log server connection established",
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": "10.79.255.86",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "9005",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "deviceAddress": "10.79.255.86",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Management",
+          "deviceHostName": "10.79.255.86",
+          "deviceReceiptTime": "2048-01-17T08:52:09.000Z",
+          "message": "Communication error: No route to host (-3, 5, 0)"
+        },
+        "name": "FW_Communication-Communication-Error",
+        "severity": "0",
+        "version": "0"
+      },
+      "event": {
+        "code": "9005",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|9005|FW_Communication-Communication-Error|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 msg=Communication error: No route to host (-3, 5, 0) deviceFacility=Management rt=Jan 17 2048 08:52:09",
+        "severity": 0
+      },
+      "message": "Communication error: No route to host (-3, 5, 0)",
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": "10.79.255.86",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70018",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "applicationProtocol": "Dest. Unreachable (Host Unreachable)",
+          "destinationAddress": "10.79.255.86",
+          "deviceAction": "Allow",
+          "deviceAddress": "10.79.255.86",
+          "deviceCustomString1": "2097157.1",
+          "deviceCustomString1Label": "RuleID",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.79.255.86",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:52:09.000Z",
+          "message": "Referred connection: 10.79.255.86 -> 10.40.25.239 frag=0x4000 TCP 47413->3020",
+          "sourceAddress": "10.39.127.10",
+          "transportProtocol": "1"
+        },
+        "name": "Connection_Allowed",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "10.79.255.86"
+      },
+      "event": {
+        "action": "Allow",
+        "code": "70018",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|70018|Connection_Allowed|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 src=10.39.127.10 dst=10.79.255.86 proto=1 deviceOutboundInterface=255 act=Allow msg=Referred connection: 10.79.255.86 -> 10.40.25.239 frag\\=0x4000 TCP 47413->3020 deviceFacility=Packet Filtering rt=Jan 17 2048 08:52:09 app=Dest. Unreachable (Host Unreachable) cs1Label=RuleID cs1=2097157.1",
+        "severity": 0
+      },
+      "message": "Referred connection: 10.79.255.86 -> 10.40.25.239 frag=0x4000 TCP 47413->3020",
+      "network": {
+        "application": "Dest. Unreachable (Host Unreachable)",
+        "transport": "1"
+      },
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": "10.79.255.86",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "source": {
+        "ip": "10.39.127.10"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70019",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "applicationProtocol": "BOOTPS (UDP)",
+          "destinationAddress": "198.51.100.144",
+          "destinationPort": 67,
+          "deviceAddress": "10.53.122.235",
+          "deviceCustomString1": "605.0",
+          "deviceCustomString1Label": "RuleID",
+          "deviceExternalId": "Firewall-10 node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.53.122.235",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:56:21.000Z",
+          "sourceAddress": "172.17.225.90",
+          "sourcePort": 68,
+          "transportProtocol": "17"
+        },
+        "name": "Connection_Discarded",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "198.51.100.144",
+        "port": 67
+      },
+      "event": {
+        "code": "70019",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|70019|Connection_Discarded|0|deviceExternalId=Firewall-10 node 1 dvc=10.53.122.235 dvchost=10.53.122.235 src=172.17.225.90 dst=198.51.100.144 spt=68 dpt=67 proto=17 deviceOutboundInterface=255 deviceFacility=Packet Filtering rt=Jan 17 2048 08:56:21 app=BOOTPS (UDP) cs1Label=RuleID cs1=605.0",
+        "severity": 0
+      },
+      "message": "Connection_Discarded",
+      "network": {
+        "application": "BOOTPS (UDP)",
+        "transport": "17"
+      },
+      "observer": {
+        "hostname": "10.53.122.235",
+        "ip": "10.53.122.235",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "source": {
+        "ip": "172.17.225.90",
+        "port": 68
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70020",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "applicationProtocol": "Echo Request (No Code)",
+          "destinationAddress": "192.168.124.110",
+          "deviceAction": "Refuse",
+          "deviceAddress": "10.134.1.96",
+          "deviceCustomString1": "601.0",
+          "deviceCustomString1Label": "RuleID",
+          "deviceExternalId": "Firewall-1 node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.134.1.96",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:56:23.000Z",
+          "sourceAddress": "172.17.225.90",
+          "transportProtocol": "1"
+        },
+        "name": "Connection_Refused",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "ip": "192.168.124.110"
+      },
+      "event": {
+        "action": "Refuse",
+        "code": "70020",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|70020|Connection_Refused|0|deviceExternalId=Firewall-1 node 1 dvc=10.134.1.96 dvchost=10.134.1.96 src=172.17.225.90 dst=192.168.124.110 proto=1 deviceOutboundInterface=255 act=Refuse deviceFacility=Packet Filtering rt=Jan 17 2048 08:56:23 app=Echo Request (No Code) cs1Label=RuleID cs1=601.0",
+        "severity": 0
+      },
+      "message": "Connection_Refused",
+      "network": {
+        "application": "Echo Request (No Code)",
+        "transport": "1"
+      },
+      "observer": {
+        "hostname": "10.134.1.96",
+        "ip": "10.134.1.96",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "source": {
+        "ip": "172.17.225.90"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "70021",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "applicationProtocol": "TCP",
+          "bytesIn": 32526,
+          "bytesOut": 27366,
+          "destinationServiceName": "YouTube",
+          "deviceAddress": "10.162.65.130",
+          "deviceExternalId": "Firewall-6 node 1",
+          "deviceFacility": "Packet Filtering",
+          "deviceHostName": "10.162.65.130",
+          "deviceOutboundInterface": "255",
+          "deviceReceiptTime": "2048-01-17T08:56:20.000Z",
+          "sourceUserName": "alice",
+          "transportProtocol": "6"
+        },
+        "name": "Connection_Closed",
+        "severity": "0",
+        "version": "0"
+      },
+      "destination": {
+        "bytes": 27366,
+        "service": {
+          "name": "YouTube"
+        }
+      },
+      "event": {
+        "code": "70021",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|70021|Connection_Closed|0|deviceExternalId=Firewall-6 node 1 dvc=10.162.65.130 dvchost=10.162.65.130 proto=6 deviceOutboundInterface=255 destinationServiceName=YouTube suser=alice deviceFacility=Packet Filtering rt=Jan 17 2048 08:56:20 app=TCP in=32526 out=27366",
+        "severity": 0
+      },
+      "message": "Connection_Closed",
+      "network": {
+        "application": "TCP",
+        "transport": "6"
+      },
+      "observer": {
+        "hostname": "10.162.65.130",
+        "ip": "10.162.65.130",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "source": {
+        "bytes": 32526,
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "72714",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "deviceAddress": "10.9.105.153",
+          "deviceExternalId": "Firewall-3 node 1",
+          "deviceFacility": "Endpoint Context Agent",
+          "deviceHostName": "10.9.105.153",
+          "deviceReceiptTime": "2048-01-17T08:56:33.000Z",
+          "sourceAddress": "192.168.124.110",
+          "sourceUserName": "bob"
+        },
+        "name": "ECA_Metadata_login",
+        "severity": "0",
+        "version": "0"
+      },
+      "event": {
+        "code": "72714",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|72714|ECA_Metadata_login|0|deviceExternalId=Firewall-3 node 1 dvc=10.9.105.153 dvchost=10.9.105.153 src=192.168.124.110 suser=bob deviceFacility=Endpoint Context Agent rt=Jan 17 2048 08:56:33",
+        "severity": 0
+      },
+      "message": "ECA_Metadata_login",
+      "observer": {
+        "hostname": "10.9.105.153",
+        "ip": "10.9.105.153",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "source": {
+        "ip": "192.168.124.110",
+        "user": {
+          "name": "bob"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "72715",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "deviceAddress": "10.53.122.235",
+          "deviceExternalId": "Firewall-10 node 1",
+          "deviceFacility": "Endpoint Context Agent",
+          "deviceHostName": "10.53.122.235",
+          "deviceReceiptTime": "2048-01-17T08:56:31.000Z",
+          "sourceAddress": "192.168.124.110",
+          "sourceUserName": "bob"
+        },
+        "name": "ECA_Metadata_logout",
+        "severity": "0",
+        "version": "0"
+      },
+      "event": {
+        "code": "72715",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|72715|ECA_Metadata_logout|0|deviceExternalId=Firewall-10 node 1 dvc=10.53.122.235 dvchost=10.53.122.235 src=192.168.124.110 suser=bob deviceFacility=Endpoint Context Agent rt=Jan 17 2048 08:56:31",
+        "severity": 0
+      },
+      "message": "ECA_Metadata_logout",
+      "observer": {
+        "hostname": "10.53.122.235",
+        "ip": "10.53.122.235",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "source": {
+        "ip": "192.168.124.110",
+        "user": {
+          "name": "bob"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "72716",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "unknown"
+        },
+        "extensions": {
+          "deviceAddress": "10.112.193.215",
+          "deviceExternalId": "Firewall-8 node 1",
+          "deviceFacility": "Endpoint Context Agent",
+          "deviceHostName": "10.112.193.215",
+          "deviceReceiptTime": "2048-01-17T08:56:26.000Z",
+          "sourceAddress": "172.18.253.223",
+          "sourceUserName": "alice"
+        },
+        "name": "ECA_Metadata_system_metadata_received",
+        "severity": "0",
+        "version": "0"
+      },
+      "event": {
+        "code": "72716",
+        "original": "CEF:0|FORCEPOINT|Firewall|unknown|72716|ECA_Metadata_system_metadata_received|0|deviceExternalId=Firewall-8 node 1 dvc=10.112.193.215 dvchost=10.112.193.215 src=172.18.253.223 suser=alice deviceFacility=Endpoint Context Agent rt=Jan 17 2048 08:56:26",
+        "severity": 0
+      },
+      "message": "ECA_Metadata_system_metadata_received",
+      "observer": {
+        "hostname": "10.112.193.215",
+        "ip": "10.112.193.215",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "unknown"
+      },
+      "source": {
+        "ip": "172.18.253.223",
+        "user": {
+          "name": "alice"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "cef": {
+        "device": {
+          "event_class_id": "78002",
+          "product": "Firewall",
+          "vendor": "FORCEPOINT",
+          "version": "6.6.1"
+        },
+        "extensions": {
+          "deviceAddress": "10.79.255.86",
+          "deviceExternalId": "Master FW node 1",
+          "deviceFacility": "Management",
+          "deviceHostName": "10.79.255.86",
+          "deviceReceiptTime": "2048-01-17T08:52:09.000Z",
+          "message": "TLS: Couldn't establish TLS connection (11, N/A)"
+        },
+        "name": "TLS connection state",
+        "severity": "0",
+        "version": "0"
+      },
+      "event": {
+        "code": "78002",
+        "original": "CEF:0|FORCEPOINT|Firewall|6.6.1|78002|TLS connection state|0|deviceExternalId=Master FW node 1 dvc=10.79.255.86 dvchost=10.79.255.86 msg=TLS: Couldn't establish TLS connection (11, N/A) deviceFacility=Management rt=Jan 17 2048 08:52:09",
+        "severity": 0
+      },
+      "message": "TLS: Couldn't establish TLS connection (11, N/A)",
+      "observer": {
+        "hostname": "10.79.255.86",
+        "ip": "10.79.255.86",
+        "product": "Firewall",
+        "vendor": "FORCEPOINT",
+        "version": "6.6.1"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cef-log-default",
+    "event_count": 10,
+    "numeric_keyword_fields": [],
+    "package": "cef",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,538 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-04-03T09:58:51.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "download",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Wed Apr  3 09:58:51 2052\",\"tz\":\"GMT\",\"event_time\":\"Wed Apr  3 09:58:51 2052\",\"activity\":{\"type\":\"Download\",\"count\":\"1\"},\"is_admin\":\"0\",\"application\":{\"name\":\"ONEDRIVE\"},\"tenant\":\"example.onmicrosoft.com\",\"user_name\":\"eprde.rgwqnrr@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"File\",\"subtype\":\"Folder\",\"names\":\"[quarterly_report.pdf]\",\"subnames\":\"[Documents/Finance]\"},\"src_ip\":\"203.0.113.138\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "eprde.rgwqnrr@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "eprde.rgwqnrr@example.com",
+        "name": "eprde.rgwqnrr@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 1,
+            "type": "Download"
+          },
+          "application": {
+            "name": "ONEDRIVE"
+          },
+          "event_time": "2052-04-03T09:58:51.000Z",
+          "is_admin": false,
+          "object": {
+            "names": "[quarterly_report.pdf]",
+            "subnames": "[Documents/Finance]",
+            "subtype": "Folder",
+            "type": "File"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "example.onmicrosoft.com",
+          "version": "v1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-01-14T16:22:01.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "share",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Tue Jan 14 16:22:01 2054\",\"tz\":\"GMT\",\"event_time\":\"Tue Jan 14 16:22:01 2054\",\"activity\":{\"type\":\"Share\",\"count\":\"3\"},\"is_admin\":\"0\",\"application\":{\"name\":\"SALESFORCE\"},\"tenant\":\"example-corp.my.salesforce.com\",\"user_name\":\"drc.zsgwr@example.com\",\"external_owner\":\"gagsrcj@guest.example.net\",\"object\":{\"type\":\"Record\",\"subtype\":\"Account\",\"names\":\"[Acme-Corp-Account, Acme-Corp-Opportunity]\",\"subnames\":\"None\"},\"src_ip\":\"198.51.100.211\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "drc.zsgwr@example.com",
+          "gagsrcj@guest.example.net"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "drc.zsgwr@example.com",
+        "name": "drc.zsgwr@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 3,
+            "type": "Share"
+          },
+          "application": {
+            "name": "SALESFORCE"
+          },
+          "event_time": "2054-01-14T16:22:01.000Z",
+          "external_owner": "gagsrcj@guest.example.net",
+          "is_admin": false,
+          "object": {
+            "names": "[Acme-Corp-Account, Acme-Corp-Opportunity]",
+            "subtype": "Account",
+            "type": "Record"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "example-corp.my.salesforce.com",
+          "version": "v1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-01-14T09:15:44.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "delete",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Tue Jan 14 09:15:44 2054\",\"tz\":\"GMT\",\"event_time\":\"Tue Jan 14 09:15:44 2054\",\"activity\":{\"type\":\"Delete\",\"count\":\"1\"},\"is_admin\":\"1\",\"application\":{\"name\":\"GITHUB_ENTERPRISE\"},\"tenant\":\"example-corp\",\"user_name\":\"ahfqj.ddhpr@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"Repository\",\"subtype\":\"Branch\",\"names\":\"[example-corp/payment-svc]\",\"subnames\":\"[release/2026-q1]\"},\"src_ip\":\"192.0.2.87\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "deletion"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "ahfqj.ddhpr@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "ahfqj.ddhpr@example.com",
+        "name": "ahfqj.ddhpr@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 1,
+            "type": "Delete"
+          },
+          "application": {
+            "name": "GITHUB_ENTERPRISE"
+          },
+          "event_time": "2054-01-14T09:15:44.000Z",
+          "is_admin": true,
+          "object": {
+            "names": "[example-corp/payment-svc]",
+            "subnames": "[release/2026-q1]",
+            "subtype": "Branch",
+            "type": "Repository"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "example-corp",
+          "version": "v1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-10-14T22:55:48.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "rename",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Mon Oct 14 22:55:48 2052\",\"tz\":\"GMT\",\"event_time\":\"Mon Oct 14 22:55:48 2052\",\"activity\":{\"type\":\"Rename\",\"count\":\"55\"},\"is_admin\":\"1\",\"application\":{\"name\":\"SERVICENOW\"},\"tenant\":\"fnekswccmqo.ibjisbb-swk.com\",\"user_name\":\"baqyq.wo@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"Incident\",\"subtype\":\"None\",\"names\":\"[INC-1001, INC-1002, INC-1003]\",\"subnames\":\"None\"},\"src_ip\":\"192.0.2.218\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.218"
+        ],
+        "user": [
+          "baqyq.wo@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.218"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "baqyq.wo@example.com",
+        "name": "baqyq.wo@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 55,
+            "type": "Rename"
+          },
+          "application": {
+            "name": "SERVICENOW"
+          },
+          "event_time": "2052-10-14T22:55:48.000Z",
+          "is_admin": true,
+          "object": {
+            "names": "[INC-1001, INC-1002, INC-1003]",
+            "type": "Incident"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "fnekswccmqo.ibjisbb-swk.com",
+          "version": "v1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-03-15T11:30:00.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "upload",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Fri Mar 15 11:30:00 2052\",\"tz\":\"GMT\",\"event_time\":\"Fri Mar 15 11:30:00 2052\",\"activity\":{\"type\":\"Upload\",\"count\":\"1\"},\"is_admin\":\"0\",\"application\":{\"name\":\"GOOGLE_DRIVE\"},\"tenant\":\"example.com\",\"user_name\":\"dnqcsea.hkfoj@example.com\",\"external_owner\":\"ncobqm@partner.example.org\",\"object\":{\"type\":\"File\",\"subtype\":\"Folder\",\"names\":\"[invoice-2024-Q1.xlsx]\",\"subnames\":\"[Shared with Vendors]\"},\"src_ip\":\"203.0.113.248\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.248"
+        ],
+        "user": [
+          "dnqcsea.hkfoj@example.com",
+          "ncobqm@partner.example.org"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "dnqcsea.hkfoj@example.com",
+        "name": "dnqcsea.hkfoj@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 1,
+            "type": "Upload"
+          },
+          "application": {
+            "name": "GOOGLE_DRIVE"
+          },
+          "event_time": "2052-03-15T11:30:00.000Z",
+          "external_owner": "ncobqm@partner.example.org",
+          "is_admin": false,
+          "object": {
+            "names": "[invoice-2024-Q1.xlsx]",
+            "subnames": "[Shared with Vendors]",
+            "subtype": "Folder",
+            "type": "File"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "example.com",
+          "version": "v1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-05-04T13:45:21.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "create",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Sat May 04 13:45:21 2052\",\"tz\":\"GMT\",\"event_time\":\"Sat May 04 13:45:21 2052\",\"activity\":{\"type\":\"Create\",\"count\":\"1\"},\"is_admin\":\"0\",\"application\":{\"name\":\"BOX\"},\"tenant\":\"bzcsqsa-algj.fky.com\",\"user_name\":\"qeotxic@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"Folder\",\"subtype\":\"None\",\"names\":\"[Onboarding-2024]\",\"subnames\":\"None\"},\"src_ip\":\"203.0.113.138\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "creation"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.138"
+        ],
+        "user": [
+          "qeotxic@example.com"
+        ]
+      },
+      "source": {
+        "ip": "203.0.113.138"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "qeotxic@example.com",
+        "name": "qeotxic@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 1,
+            "type": "Create"
+          },
+          "application": {
+            "name": "BOX"
+          },
+          "event_time": "2052-05-04T13:45:21.000Z",
+          "is_admin": false,
+          "object": {
+            "names": "[Onboarding-2024]",
+            "type": "Folder"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "bzcsqsa-algj.fky.com",
+          "version": "v1"
+        }
+      }
+    },
+    {
+      "@timestamp": "2054-05-09T10:30:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Fri May  9 10:30:15 2054\",\"tz\":\"GMT\",\"event_time\":\"Fri May  9 10:30:15 2054\",\"activity\":{\"type\":\"Login\",\"count\":\"1\"},\"is_admin\":\"1\",\"application\":{\"name\":\"OFFICE365\"},\"tenant\":\"example.onmicrosoft.com\",\"user_name\":\"dudpl.cmv@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"User\",\"subtype\":\"None\",\"names\":\"[dudpl.cmv@example.com]\",\"subnames\":\"None\"},\"src_ip\":\"192.0.2.87\"}",
+        "provider": "Zscaler",
+        "timezone": "GMT",
+        "type": [
+          "info"
+        ]
+      },
+      "observer": {
+        "product": "Zscaler ZIA",
+        "vendor": "Zscaler"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "dudpl.cmv@example.com"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.87"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "example.com",
+        "email": "dudpl.cmv@example.com",
+        "name": "dudpl.cmv@example.com"
+      },
+      "zscaler_zia": {
+        "saas_security_activity": {
+          "activity": {
+            "count": 1,
+            "type": "Login"
+          },
+          "application": {
+            "name": "OFFICE365"
+          },
+          "event_time": "2054-05-09T10:30:15.000Z",
+          "is_admin": true,
+          "object": {
+            "names": "[dudpl.cmv@example.com]",
+            "type": "User"
+          },
+          "sourcetype": "zscalernss-saas_security_activity",
+          "tenant": "example.onmicrosoft.com",
+          "version": "v1"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Wed Apr  3 09:58:51 2052\",\"tz\":\"GMT\",\"event_time\":\"Wed Apr  3 09:58:51 2052\",\"activity\":{\"type\":\"Download\",\"count\":\"1\"},\"is_admin\":\"0\",\"application\":{\"name\":\"ONEDRIVE\"},\"tenant\":\"example.onmicrosoft.com\",\"user_name\":\"eprde.rgwqnrr@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"File\",\"subtype\":\"Folder\",\"names\":\"[quarterly_report.pdf]\",\"subnames\":\"[Documents/Finance]\"},\"src_ip\":\"203.0.113.138\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Tue Jan 14 16:22:01 2054\",\"tz\":\"GMT\",\"event_time\":\"Tue Jan 14 16:22:01 2054\",\"activity\":{\"type\":\"Share\",\"count\":\"3\"},\"is_admin\":\"0\",\"application\":{\"name\":\"SALESFORCE\"},\"tenant\":\"example-corp.my.salesforce.com\",\"user_name\":\"drc.zsgwr@example.com\",\"external_owner\":\"gagsrcj@guest.example.net\",\"object\":{\"type\":\"Record\",\"subtype\":\"Account\",\"names\":\"[Acme-Corp-Account, Acme-Corp-Opportunity]\",\"subnames\":\"None\"},\"src_ip\":\"198.51.100.211\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Tue Jan 14 09:15:44 2054\",\"tz\":\"GMT\",\"event_time\":\"Tue Jan 14 09:15:44 2054\",\"activity\":{\"type\":\"Delete\",\"count\":\"1\"},\"is_admin\":\"1\",\"application\":{\"name\":\"GITHUB_ENTERPRISE\"},\"tenant\":\"example-corp\",\"user_name\":\"ahfqj.ddhpr@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"Repository\",\"subtype\":\"Branch\",\"names\":\"[example-corp/payment-svc]\",\"subnames\":\"[release/2026-q1]\"},\"src_ip\":\"192.0.2.87\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Mon Oct 14 22:55:48 2052\",\"tz\":\"GMT\",\"event_time\":\"Mon Oct 14 22:55:48 2052\",\"activity\":{\"type\":\"Rename\",\"count\":\"55\"},\"is_admin\":\"1\",\"application\":{\"name\":\"SERVICENOW\"},\"tenant\":\"fnekswccmqo.ibjisbb-swk.com\",\"user_name\":\"baqyq.wo@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"Incident\",\"subtype\":\"None\",\"names\":\"[INC-1001, INC-1002, INC-1003]\",\"subnames\":\"None\"},\"src_ip\":\"192.0.2.218\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Fri Mar 15 11:30:00 2052\",\"tz\":\"GMT\",\"event_time\":\"Fri Mar 15 11:30:00 2052\",\"activity\":{\"type\":\"Upload\",\"count\":\"1\"},\"is_admin\":\"0\",\"application\":{\"name\":\"GOOGLE_DRIVE\"},\"tenant\":\"example.com\",\"user_name\":\"dnqcsea.hkfoj@example.com\",\"external_owner\":\"ncobqm@partner.example.org\",\"object\":{\"type\":\"File\",\"subtype\":\"Folder\",\"names\":\"[invoice-2024-Q1.xlsx]\",\"subnames\":\"[Shared with Vendors]\"},\"src_ip\":\"203.0.113.248\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Sat May 04 13:45:21 2052\",\"tz\":\"GMT\",\"event_time\":\"Sat May 04 13:45:21 2052\",\"activity\":{\"type\":\"Create\",\"count\":\"1\"},\"is_admin\":\"0\",\"application\":{\"name\":\"BOX\"},\"tenant\":\"bzcsqsa-algj.fky.com\",\"user_name\":\"qeotxic@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"Folder\",\"subtype\":\"None\",\"names\":\"[Onboarding-2024]\",\"subnames\":\"None\"},\"src_ip\":\"203.0.113.138\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "strict_fields": false
+      },
+      "message": "{\"version\":\"v1\",\"sourcetype\":\"zscalernss-saas_security_activity\",\"time\":\"Fri May  9 10:30:15 2054\",\"tz\":\"GMT\",\"event_time\":\"Fri May  9 10:30:15 2054\",\"activity\":{\"type\":\"Login\",\"count\":\"1\"},\"is_admin\":\"1\",\"application\":{\"name\":\"OFFICE365\"},\"tenant\":\"example.onmicrosoft.com\",\"user_name\":\"dudpl.cmv@example.com\",\"external_owner\":\"None\",\"object\":{\"type\":\"User\",\"subtype\":\"None\",\"names\":\"[dudpl.cmv@example.com]\",\"subnames\":\"None\"},\"src_ip\":\"192.0.2.87\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "saas_security_activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zscaler_zia-saas_security_activity-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "zscaler_zia",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

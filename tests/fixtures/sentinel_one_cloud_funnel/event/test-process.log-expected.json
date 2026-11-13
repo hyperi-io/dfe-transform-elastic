@@ -1,0 +1,524 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-10-03T15:32:29.470Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": [
+          "start"
+        ],
+        "category": [
+          "process"
+        ],
+        "id": "01GEF7NPDYKJDP1X0XSQ9K7J2N_41",
+        "kind": "event",
+        "original": "{\"timestamp\":\"18:32:29.470\",\"tgt.process.displayName\":\"jl-gzuvll.etc\",\"src.process.parent.isStorylineRoot\":false,\"event.category\":\"process\",\"src.process.parent.image.sha1\":\"2cf1754fcfa680426b3050476b1f6204e92da5f6\",\"site.id\":\"123456789123456789\",\"src.process.parent.displayName\":\"Test123\",\"src.process.image.binaryIsExecutable\":true,\"tgt.process.storyline.id\":\"F8C44B7A0C80D2E7\",\"tgt.process.isNative64Bit\":false,\"src.process.parent.subsystem\":\"SYS_WIN32\",\"src.process.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"src.process.indicatorRansomwareCount\":0,\"src.process.crossProcessDupRemoteProcessHandleCount\":0,\"src.process.tgtFileCreationCount\":5621,\"src.process.indicatorInjectionCount\":0,\"src.process.moduleCount\":216402,\"src.process.parent.name\":\"newrelic-infra-service.exe\",\"i.version\":\"preprocess-lib-1.0\",\"sca:atlantisIngestTime\":1664811195133,\"src.process.image.md5\":\"3d86c084f5545b5cfa692f2de9c487f8\",\"src.process.indicatorReconnaissanceCount\":4179,\"src.process.storyline.id\":\"F8C44B7A0C80D2E7\",\"src.process.childProcCount\":67359,\"mgmt.url\":\"ayfe-939.ifkswpfhtkd.org\",\"tgt.process.subsystem\":\"SYS_WIN32\",\"src.process.crossProcessOpenProcessCount\":0,\"tgt.process.image.binaryIsExecutable\":true,\"tgt.process.image.sha256\":\"f51c9e7d9b822f6afe2fd3819efd5719a746703e19f0e32cf65d86746915a31a\",\"src.process.subsystem\":\"SYS_WIN32\",\"meta.event.name\":\"PROCESSCREATION\",\"src.process.parent.integrityLevel\":\"SYSTEM\",\"tgt.process.publisher\":\"NEWRELIC,INC.\",\"src.process.indicatorExploitationCount\":0,\"src.process.parent.storyline.id\":\"F8C44B7A0C80D2E7\",\"tgt.process.verifiedStatus\":\"verified\",\"tgt.process.image.path\":\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\newrelic-integrations\\\\jl-gzuvll.etc\",\"src.process.integrityLevel\":\"SYSTEM\",\"i.scheme\":\"edr\",\"tgt.process.integrityLevel\":\"SYSTEM\",\"site.name\":\"ASDF\",\"src.process.netConnInCount\":1,\"tgt.process.image.md5\":\"52b6998fb2e8a868fe78ead5eed714fe\",\"event.time\":2548423949470,\"account.id\":\"123456789123456789\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"asdf1\",\"src.process.image.sha1\":\"9c3683a3ae4d034854602351e90d8a616109af4e\",\"src.process.isStorylineRoot\":false,\"src.process.parent.image.path\":\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\newrelic-infra-service.exe\",\"src.process.pid\":3596,\"tgt.file.isSigned\":\"signed\",\"src.process.cmdline\":\"C:\\\\ProgramFiles(x86)\\\\Microsoft\\\\important_stuff\\\\stuff.EXE\\\\\",\"src.process.publisher\":\"NEWRELIC,INC.\",\"sca:ingestTime\":1664811195,\"dataSource.category\":\"security\",\"src.process.crossProcessThreadCreateCount\":0,\"src.process.parent.isNative64Bit\":false,\"src.process.parent.isRedirectCmdProcessor\":false,\"tgt.process.image.sha1\":\"b7f4ae5a82e17803c0dff04fcb39ddb1db937723\",\"src.process.crossProcessCount\":0,\"src.process.signedStatus\":\"signed\",\"event.id\":\"01GEF7NPDYKJDP1X0XSQ9K7J2N_41\",\"src.process.parent.cmdline\":\"\\\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\newrelic-infra-service.exe\\\"\",\"src.process.image.path\":\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\wdtkbyxd-zmcyf.etc\",\"src.process.tgtFileModificationCount\":516119,\"src.process.indicatorEvasionCount\":2100,\"src.process.netConnOutCount\":7330,\"tgt.process.pid\":4720,\"src.process.crossProcessDupThreadHandleCount\":0,\"tgt.process.name\":\"jl-gzuvll.etc\",\"endpoint.os\":\"windows\",\"src.process.tgtFileDeletionCount\":5621,\"tgt.process.signedStatus\":\"signed\",\"src.process.startTime\":2546397406181,\"mgmt.id\":\"1337\",\"os.name\":\"WindowsServer2019Datacenter\",\"tgt.process.cmdline\":\"./nr-winpkg\",\"src.process.displayName\":\"wdtkbyxd-zmcyf.etc\",\"src.process.parent.sessionId\":0,\"src.process.isNative64Bit\":false,\"src.process.uid\":\"F59445BAF5BC03DA\",\"src.process.parent.image.md5\":\"2c6ca6160f8afd69cb68e99a1398cdc3\",\"src.process.indicatorBootConfigurationUpdateCount\":0,\"src.process.indicatorInfostealerCount\":0,\"process.unique.key\":\"D0046CBAF5BC03DA\",\"tgt.process.uid\":\"D0046CBAF5BC03DA\",\"tgt.process.isStorylineRoot\":false,\"src.process.parent.uid\":\"C19445BAF5BC03DA\",\"agent.version\":\"192.0.2.25\",\"src.process.parent.image.sha256\":\"b33f3f5b6b8502a37b1f4fca7b0f217630ad4f2060384c975385f25abf1f244a\",\"src.process.sessionId\":0,\"src.process.netConnCount\":7331,\"mgmt.osRevision\":\"17763\",\"group.id\":\"asdf\",\"tgt.process.startTime\":2548423949464,\"src.process.parent.publisher\":\"NEWRELIC,INC.\",\"src.process.isRedirectCmdProcessor\":false,\"src.process.verifiedStatus\":\"verified\",\"src.process.parent.startTime\":2546397405701,\"src.process.dnsCount\":565,\"endpoint.type\":\"server\",\"trace.id\":\"01GEF7NPDYKJDP1X0XSQ9K7J2N\",\"src.process.name\":\"wdtkbyxd-zmcyf.etc\",\"agent.uuid\":\"asdf356783457dfds4456d65\",\"src.process.image.sha256\":\"738924c6a2d65a22dde2811a9c1b057a91f195fc7ebceddbd8c2ddfc688c74e8\",\"tgt.process.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"src.process.indicatorGeneralCount\":4180,\"src.process.crossProcessOutOfStorylineCount\":0,\"src.process.registryChangeCount\":146,\"packet.id\":\"50E4743246884A13F5502CA40BF9F2D9\",\"tgt.process.sessionId\":0,\"src.process.indicatorPersistenceCount\":0,\"src.process.parent.signedStatus\":\"signed\",\"src.process.parent.user\":\"bvbf\\\\SYSTEM\",\"tgt.process.isRedirectCmdProcessor\":false,\"event.type\":\"ProcessCreation\",\"src.process.indicatorPostExploitationCount\":0,\"src.process.parent.pid\":3132}",
+        "type": [
+          "start"
+        ]
+      },
+      "group": {
+        "id": "asdf"
+      },
+      "host": {
+        "hostname": "asdf1",
+        "id": "asdf356783457dfds4456d65",
+        "os": {
+          "name": "WindowsServer2019Datacenter",
+          "platform": "windows",
+          "type": "windows"
+        },
+        "type": "server"
+      },
+      "process": {
+        "args": [
+          "./nr-winpkg"
+        ],
+        "args_count": 1,
+        "command_line": "./nr-winpkg",
+        "entity_id": "D0046CBAF5BC03DA",
+        "executable": "C:\\ProgramFiles\\NewRelic\\newrelic-infra\\newrelic-integrations\\jl-gzuvll.etc",
+        "hash": {
+          "md5": "52b6998fb2e8a868fe78ead5eed714fe",
+          "sha1": "b7f4ae5a82e17803c0dff04fcb39ddb1db937723",
+          "sha256": "f51c9e7d9b822f6afe2fd3819efd5719a746703e19f0e32cf65d86746915a31a"
+        },
+        "name": "jl-gzuvll.etc",
+        "parent": {
+          "args": [
+            "C:\\ProgramFiles(x86)\\Microsoft\\important_stuff\\stuff.EXE\\"
+          ],
+          "args_count": 1,
+          "code_signature": {
+            "exists": true,
+            "subject_name": "NEWRELIC,INC.",
+            "trusted": true
+          },
+          "command_line": "C:\\ProgramFiles(x86)\\Microsoft\\important_stuff\\stuff.EXE\\",
+          "entity_id": "F59445BAF5BC03DA",
+          "executable": "C:\\ProgramFiles\\NewRelic\\newrelic-infra\\wdtkbyxd-zmcyf.etc",
+          "hash": {
+            "md5": "3d86c084f5545b5cfa692f2de9c487f8",
+            "sha1": "9c3683a3ae4d034854602351e90d8a616109af4e",
+            "sha256": "738924c6a2d65a22dde2811a9c1b057a91f195fc7ebceddbd8c2ddfc688c74e8"
+          },
+          "name": "wdtkbyxd-zmcyf.etc",
+          "pid": 3596,
+          "start": "2050-09-10T04:36:46.181Z",
+          "title": "wdtkbyxd-zmcyf.etc",
+          "user": {
+            "name": "JYESNPJIUYN\\SYSTEM"
+          }
+        },
+        "pid": 4720,
+        "start": "2050-10-03T15:32:29.464Z",
+        "title": "jl-gzuvll.etc",
+        "user": {
+          "name": "JYESNPJIUYN\\SYSTEM"
+        }
+      },
+      "related": {
+        "hash": [
+          "3d86c084f5545b5cfa692f2de9c487f8",
+          "9c3683a3ae4d034854602351e90d8a616109af4e",
+          "738924c6a2d65a22dde2811a9c1b057a91f195fc7ebceddbd8c2ddfc688c74e8",
+          "2cf1754fcfa680426b3050476b1f6204e92da5f6",
+          "b33f3f5b6b8502a37b1f4fca7b0f217630ad4f2060384c975385f25abf1f244a",
+          "2c6ca6160f8afd69cb68e99a1398cdc3",
+          "52b6998fb2e8a868fe78ead5eed714fe",
+          "b7f4ae5a82e17803c0dff04fcb39ddb1db937723",
+          "f51c9e7d9b822f6afe2fd3819efd5719a746703e19f0e32cf65d86746915a31a"
+        ],
+        "hosts": [
+          "asdf1",
+          "windows",
+          "server"
+        ],
+        "user": [
+          "bvbf\\SYSTEM",
+          "JYESNPJIUYN\\SYSTEM"
+        ]
+      },
+      "sentinel_one_cloud_funnel": {
+        "event": {
+          "account_id": "123456789123456789",
+          "agent": {
+            "uuid": "asdf356783457dfds4456d65",
+            "version": "192.0.2.25"
+          },
+          "category": "process",
+          "data_source": {
+            "category": "security",
+            "name": "SentinelOne"
+          },
+          "endpoint": {
+            "name": "asdf1",
+            "os": "windows",
+            "type": "server"
+          },
+          "group": {
+            "id": "asdf"
+          },
+          "i": {
+            "scheme": "edr",
+            "version": "preprocess-lib-1.0"
+          },
+          "id": "01GEF7NPDYKJDP1X0XSQ9K7J2N_41",
+          "meta_event_name": "PROCESSCREATION",
+          "mgmt": {
+            "id": "1337",
+            "os_revision": "17763",
+            "url": "ayfe-939.ifkswpfhtkd.org"
+          },
+          "os_name": "WindowsServer2019Datacenter",
+          "packet_id": "50E4743246884A13F5502CA40BF9F2D9",
+          "process_unique_key": "D0046CBAF5BC03DA",
+          "sca": {
+            "atlantis_ingest_time": "2022-10-03T15:33:15.133Z",
+            "ingest_time": "1970-01-20T06:26:51.195Z"
+          },
+          "site": {
+            "id": "123456789123456789",
+            "name": "ASDF"
+          },
+          "src": {
+            "process": {
+              "child_proc_count": 67359,
+              "cmd_line": "C:\\ProgramFiles(x86)\\Microsoft\\important_stuff\\stuff.EXE\\",
+              "cross_process": {
+                "count": 0,
+                "dup": {
+                  "remote_process_handle_count": 0,
+                  "thread_handle_count": 0
+                },
+                "open_process_count": 0,
+                "out_of_storyline_count": 0,
+                "thread_create_count": 0
+              },
+              "display_name": "wdtkbyxd-zmcyf.etc",
+              "dns_count": 565,
+              "image": {
+                "binary_is_executable": true,
+                "md5": "3d86c084f5545b5cfa692f2de9c487f8",
+                "path": "C:\\ProgramFiles\\NewRelic\\newrelic-infra\\wdtkbyxd-zmcyf.etc",
+                "sha1": "9c3683a3ae4d034854602351e90d8a616109af4e",
+                "sha256": "738924c6a2d65a22dde2811a9c1b057a91f195fc7ebceddbd8c2ddfc688c74e8"
+              },
+              "indicator": {
+                "boot_configuration_update_count": 0,
+                "evasion_count": 2100,
+                "exploitation_count": 0,
+                "general_count": 4180,
+                "info_stealer_count": 0,
+                "injection_count": 0,
+                "persistence_count": 0,
+                "post_exploitation_count": 0,
+                "ransomware_count": 0,
+                "reconnaissance_count": 4179
+              },
+              "integrity_level": "SYSTEM",
+              "is_native_64_bit": false,
+              "is_redirect_cmd_processor": false,
+              "is_storyline_root": false,
+              "module_count": 216402,
+              "name": "wdtkbyxd-zmcyf.etc",
+              "net_conn": {
+                "count": 7331,
+                "in_count": 1,
+                "out_count": 7330
+              },
+              "parent": {
+                "cmd_line": "C:\\ProgramFiles\\NewRelic\\newrelic-infra\\newrelic-infra-service.exe",
+                "display_name": "Test123",
+                "image": {
+                  "md5": "2c6ca6160f8afd69cb68e99a1398cdc3",
+                  "path": "C:\\ProgramFiles\\NewRelic\\newrelic-infra\\newrelic-infra-service.exe",
+                  "sha1": "2cf1754fcfa680426b3050476b1f6204e92da5f6",
+                  "sha256": "b33f3f5b6b8502a37b1f4fca7b0f217630ad4f2060384c975385f25abf1f244a"
+                },
+                "integrity_level": "SYSTEM",
+                "is_native_64_bit": false,
+                "is_redirect_cmd_processor": false,
+                "is_storyline_root": false,
+                "name": "newrelic-infra-service.exe",
+                "pid": 3132,
+                "publisher": "NEWRELIC,INC.",
+                "session_id": "0",
+                "signed_status": "signed",
+                "start_time": "2050-09-10T04:36:45.701Z",
+                "storyline_id": "F8C44B7A0C80D2E7",
+                "subsystem": "SYS_WIN32",
+                "uid": "C19445BAF5BC03DA",
+                "user": {
+                  "name": "bvbf\\SYSTEM"
+                }
+              },
+              "pid": 3596,
+              "publisher": "NEWRELIC,INC.",
+              "registry_change_count": 146,
+              "session_id": "0",
+              "signed_status": "signed",
+              "start_time": "2050-09-10T04:36:46.181Z",
+              "storyline_id": "F8C44B7A0C80D2E7",
+              "subsystem": "SYS_WIN32",
+              "tgt_file": {
+                "creation_count": 5621,
+                "deletion_count": 5621,
+                "modification_count": 516119
+              },
+              "uid": "F59445BAF5BC03DA",
+              "user": {
+                "name": "JYESNPJIUYN\\SYSTEM"
+              },
+              "verified_status": "verified"
+            }
+          },
+          "tgt": {
+            "file": {
+              "is_signed": "signed"
+            },
+            "process": {
+              "cmd_line": "./nr-winpkg",
+              "display_name": "jl-gzuvll.etc",
+              "image": {
+                "binary_is_executable": true,
+                "md5": "52b6998fb2e8a868fe78ead5eed714fe",
+                "path": "C:\\ProgramFiles\\NewRelic\\newrelic-infra\\newrelic-integrations\\jl-gzuvll.etc",
+                "sha1": "b7f4ae5a82e17803c0dff04fcb39ddb1db937723",
+                "sha256": "f51c9e7d9b822f6afe2fd3819efd5719a746703e19f0e32cf65d86746915a31a"
+              },
+              "integrity_level": "SYSTEM",
+              "is_native_64_bit": false,
+              "is_redirect_cmd_processor": false,
+              "is_storyline_root": false,
+              "name": "jl-gzuvll.etc",
+              "pid": "4720",
+              "publisher": "NEWRELIC,INC.",
+              "session_id": "0",
+              "signed_status": "signed",
+              "start_time": "2050-10-03T15:32:29.464Z",
+              "storyline_id": "F8C44B7A0C80D2E7",
+              "subsystem": "SYS_WIN32",
+              "uid": "D0046CBAF5BC03DA",
+              "user": {
+                "name": "JYESNPJIUYN\\SYSTEM"
+              },
+              "verified_status": "verified"
+            }
+          },
+          "time": "2050-10-03T15:32:29.470Z",
+          "timestamp": "2026-01-01T18:32:29.470Z",
+          "trace_id": "01GEF7NPDYKJDP1X0XSQ9K7J2N",
+          "type": "ProcessCreation"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "JYESNPJIUYN",
+        "name": "SYSTEM"
+      }
+    },
+    {
+      "@timestamp": "2053-04-16T00:32:18.265Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": [
+          "start"
+        ],
+        "category": [
+          "process"
+        ],
+        "id": "06EBE9B5-957D-4620-9A17-EB40B2D3D91D_415",
+        "kind": "event",
+        "original": "{\"src.process.image.path\":\"/sbin/yetmapa\",\"tgt.process.displayName\":\"ewuze\",\"event.category\":\"process\",\"site.id\":\"2153930400268683161\",\"tgt.process.pid\":61536,\"endpoint.os\":\"osx\",\"tgt.process.name\":\"ewuze\",\"src.process.image.binaryIsExecutable\":true,\"tgt.process.storyline.id\":\"B7328458-02A2-4D35-8A2F-E8A844E8ACB5\",\"tgt.process.signedStatus\":\"signed\",\"src.process.startTime\":2625983007425,\"tgt.process.isNative64Bit\":false,\"mgmt.id\":\"104301\",\"os.name\":\"macOS\",\"src.process.user\":\"root\",\"tgt.process.cmdline\":\"/usr/sbin/ewuze -l\",\"src.process.displayName\":\"yetmapa\",\"src.process.isNative64Bit\":false,\"src.process.uid\":\"682F5034-CAF9-45AF-AA58-C3D1FF3CB14A\",\"i.version\":\"preprocess-lib-1.0\",\"process.unique.key\":\"8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE\",\"src.process.storyline.id\":\"B7328458-02A2-4D35-8A2F-E8A844E8ACB5\",\"tgt.process.uid\":\"8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE\",\"tgt.process.isStorylineRoot\":false,\"mgmt.url\":\"qubb4-193.ifkswpfhtkd.net\",\"agent.version\":\"24.4.1.7830\",\"tgt.process.subsystem\":\"SUBSYSTEM_UNKNOWN\",\"tgt.process.image.binaryIsExecutable\":true,\"src.process.sessionId\":0,\"tgt.process.image.sha256\":\"084d12f63650a56a20e61cfe5ee48fdbb8d73e7cdb705817f81e7c6168cb1b73\",\"mgmt.osRevision\":\"15.3.2 (24D81)\",\"src.process.subsystem\":\"SUBSYSTEM_UNKNOWN\",\"meta.event.name\":\"PROCESSCREATION\",\"group.id\":\"B7328458-02A2-4D35-8A2F-E8A844E8ACB5\",\"tgt.process.publisher\":\"<Type=Apple/ID=com.apple.cupsd>\",\"src.process.isRedirectCmdProcessor\":false,\"src.process.verifiedStatus\":\"verified\",\"tgt.process.startTime\":2628376338265,\"tgt.process.verifiedStatus\":\"verified\",\"endpoint.type\":\"laptop\",\"src.process.integrityLevel\":\"INTEGRITY_LEVEL_UNKNOWN\",\"tgt.process.image.path\":\"/usr/sbin/ewuze\",\"i.scheme\":\"edr\",\"trace.id\":\"06EBE9B5-957D-4620-9A17-EB40B2D3D91D\",\"tgt.process.integrityLevel\":\"INTEGRITY_LEVEL_UNKNOWN\",\"site.name\":\"Default site\",\"src.process.name\":\"yetmapa\",\"agent.uuid\":\"7165390D-444B-5ABF-8826-03C69E4D7E33\",\"tgt.process.image.md5\":\"3d4a55ec4b0ea838f07110f8d000c1bd\",\"event.time\":2628376338265,\"tgt.process.user\":\"root\",\"timestamp\":\"2053-04-16T00:32:18.265Z\",\"account.id\":\"2153930398339303196\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"first_last\\u2019s MacBook Pro\",\"src.process.isStorylineRoot\":false,\"packet.id\":\"8F71664B-8D0B-43E4-AED1-71ACDBDEF3D6\",\"tgt.process.sessionId\":0,\"dataSource.vendor\":\"SentinelOne\",\"src.process.pid\":1,\"sca:RetentionType\":\"EDR\",\"src.process.cmdline\":\"/sbin/yetmapa\",\"src.process.publisher\":\"<Type=Apple/ID=com.apple.xpc.launchd>\",\"dataSource.category\":\"security\",\"tgt.process.isRedirectCmdProcessor\":false,\"tgt.process.image.sha1\":\"c3e3ac94285a36f53b01d56414a6d344e3df2ea1\",\"account.name\":\"Company, Inc.\",\"event.type\":\"Process Creation\",\"src.process.signedStatus\":\"signed\",\"event.id\":\"06EBE9B5-957D-4620-9A17-EB40B2D3D91D_415\"}",
+        "type": [
+          "start"
+        ]
+      },
+      "group": {
+        "id": "B7328458-02A2-4D35-8A2F-E8A844E8ACB5"
+      },
+      "host": {
+        "hostname": "first_last’s MacBook Pro",
+        "id": "7165390D-444B-5ABF-8826-03C69E4D7E33",
+        "os": {
+          "name": "macOS",
+          "platform": "osx"
+        },
+        "type": "laptop"
+      },
+      "process": {
+        "args": [
+          "/usr/sbin/ewuze",
+          "-l"
+        ],
+        "args_count": 2,
+        "command_line": "/usr/sbin/ewuze -l",
+        "entity_id": "8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE",
+        "executable": "/usr/sbin/ewuze",
+        "hash": {
+          "md5": "3d4a55ec4b0ea838f07110f8d000c1bd",
+          "sha1": "c3e3ac94285a36f53b01d56414a6d344e3df2ea1",
+          "sha256": "084d12f63650a56a20e61cfe5ee48fdbb8d73e7cdb705817f81e7c6168cb1b73"
+        },
+        "name": "ewuze",
+        "parent": {
+          "args": [
+            "/sbin/yetmapa"
+          ],
+          "args_count": 1,
+          "code_signature": {
+            "exists": true,
+            "subject_name": "<Type=Apple/ID=com.apple.cupsd>",
+            "trusted": true
+          },
+          "command_line": "/sbin/yetmapa",
+          "entity_id": "682F5034-CAF9-45AF-AA58-C3D1FF3CB14A",
+          "executable": "/sbin/yetmapa",
+          "name": "yetmapa",
+          "pid": 1,
+          "start": "2053-03-19T07:43:27.425Z",
+          "title": "yetmapa",
+          "user": {
+            "name": "root"
+          }
+        },
+        "pid": 61536,
+        "start": "2053-04-16T00:32:18.265Z",
+        "title": "ewuze",
+        "user": {
+          "name": "root"
+        }
+      },
+      "related": {
+        "hash": [
+          "3d4a55ec4b0ea838f07110f8d000c1bd",
+          "c3e3ac94285a36f53b01d56414a6d344e3df2ea1",
+          "084d12f63650a56a20e61cfe5ee48fdbb8d73e7cdb705817f81e7c6168cb1b73"
+        ],
+        "hosts": [
+          "first_last’s MacBook Pro",
+          "osx",
+          "laptop"
+        ],
+        "user": [
+          "root"
+        ]
+      },
+      "sentinel_one_cloud_funnel": {
+        "event": {
+          "account_id": "2153930398339303196",
+          "agent": {
+            "uuid": "7165390D-444B-5ABF-8826-03C69E4D7E33",
+            "version": "24.4.1.7830"
+          },
+          "category": "process",
+          "data_source": {
+            "category": "security",
+            "name": "SentinelOne"
+          },
+          "endpoint": {
+            "name": "first_last’s MacBook Pro",
+            "os": "osx",
+            "type": "laptop"
+          },
+          "group": {
+            "id": "B7328458-02A2-4D35-8A2F-E8A844E8ACB5"
+          },
+          "i": {
+            "scheme": "edr",
+            "version": "preprocess-lib-1.0"
+          },
+          "id": "06EBE9B5-957D-4620-9A17-EB40B2D3D91D_415",
+          "meta_event_name": "PROCESSCREATION",
+          "mgmt": {
+            "id": "104301",
+            "os_revision": "15.3.2 (24D81)",
+            "url": "qubb4-193.ifkswpfhtkd.net"
+          },
+          "os_name": "macOS",
+          "packet_id": "8F71664B-8D0B-43E4-AED1-71ACDBDEF3D6",
+          "process_unique_key": "8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE",
+          "site": {
+            "id": "2153930400268683161",
+            "name": "Default site"
+          },
+          "src": {
+            "process": {
+              "cmd_line": "/sbin/yetmapa",
+              "display_name": "yetmapa",
+              "image": {
+                "binary_is_executable": true,
+                "path": "/sbin/yetmapa"
+              },
+              "integrity_level": "INTEGRITY_LEVEL_UNKNOWN",
+              "is_native_64_bit": false,
+              "is_redirect_cmd_processor": false,
+              "is_storyline_root": false,
+              "name": "yetmapa",
+              "pid": 1,
+              "publisher": "<Type=Apple/ID=com.apple.xpc.launchd>",
+              "session_id": "0",
+              "signed_status": "signed",
+              "start_time": "2053-03-19T07:43:27.425Z",
+              "storyline_id": "B7328458-02A2-4D35-8A2F-E8A844E8ACB5",
+              "subsystem": "SUBSYSTEM_UNKNOWN",
+              "uid": "682F5034-CAF9-45AF-AA58-C3D1FF3CB14A",
+              "user": {
+                "name": "root"
+              },
+              "verified_status": "verified"
+            }
+          },
+          "tgt": {
+            "process": {
+              "cmd_line": "/usr/sbin/ewuze -l",
+              "display_name": "ewuze",
+              "image": {
+                "binary_is_executable": true,
+                "md5": "3d4a55ec4b0ea838f07110f8d000c1bd",
+                "path": "/usr/sbin/ewuze",
+                "sha1": "c3e3ac94285a36f53b01d56414a6d344e3df2ea1",
+                "sha256": "084d12f63650a56a20e61cfe5ee48fdbb8d73e7cdb705817f81e7c6168cb1b73"
+              },
+              "integrity_level": "INTEGRITY_LEVEL_UNKNOWN",
+              "is_native_64_bit": false,
+              "is_redirect_cmd_processor": false,
+              "is_storyline_root": false,
+              "name": "ewuze",
+              "pid": "61536",
+              "publisher": "<Type=Apple/ID=com.apple.cupsd>",
+              "session_id": "0",
+              "signed_status": "signed",
+              "start_time": "2053-04-16T00:32:18.265Z",
+              "storyline_id": "B7328458-02A2-4D35-8A2F-E8A844E8ACB5",
+              "subsystem": "SUBSYSTEM_UNKNOWN",
+              "uid": "8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE",
+              "user": {
+                "name": "root"
+              },
+              "verified_status": "verified"
+            }
+          },
+          "time": "2053-04-16T00:32:18.265Z",
+          "timestamp": "2053-04-16T00:32:18.265Z",
+          "trace_id": "06EBE9B5-957D-4620-9A17-EB40B2D3D91D",
+          "type": "Process Creation"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "root",
+        "name": "root"
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "reroute": [
+          "dns"
+        ]
+      },
+      "message": "{\"timestamp\":\"18:32:29.470\",\"tgt.process.displayName\":\"jl-gzuvll.etc\",\"src.process.parent.isStorylineRoot\":false,\"event.category\":\"process\",\"src.process.parent.image.sha1\":\"2cf1754fcfa680426b3050476b1f6204e92da5f6\",\"site.id\":\"123456789123456789\",\"src.process.parent.displayName\":\"Test123\",\"src.process.image.binaryIsExecutable\":true,\"tgt.process.storyline.id\":\"F8C44B7A0C80D2E7\",\"tgt.process.isNative64Bit\":false,\"src.process.parent.subsystem\":\"SYS_WIN32\",\"src.process.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"src.process.indicatorRansomwareCount\":0,\"src.process.crossProcessDupRemoteProcessHandleCount\":0,\"src.process.tgtFileCreationCount\":5621,\"src.process.indicatorInjectionCount\":0,\"src.process.moduleCount\":216402,\"src.process.parent.name\":\"newrelic-infra-service.exe\",\"i.version\":\"preprocess-lib-1.0\",\"sca:atlantisIngestTime\":1664811195133,\"src.process.image.md5\":\"3d86c084f5545b5cfa692f2de9c487f8\",\"src.process.indicatorReconnaissanceCount\":4179,\"src.process.storyline.id\":\"F8C44B7A0C80D2E7\",\"src.process.childProcCount\":67359,\"mgmt.url\":\"ayfe-939.ifkswpfhtkd.org\",\"tgt.process.subsystem\":\"SYS_WIN32\",\"src.process.crossProcessOpenProcessCount\":0,\"tgt.process.image.binaryIsExecutable\":true,\"tgt.process.image.sha256\":\"f51c9e7d9b822f6afe2fd3819efd5719a746703e19f0e32cf65d86746915a31a\",\"src.process.subsystem\":\"SYS_WIN32\",\"meta.event.name\":\"PROCESSCREATION\",\"src.process.parent.integrityLevel\":\"SYSTEM\",\"tgt.process.publisher\":\"NEWRELIC,INC.\",\"src.process.indicatorExploitationCount\":0,\"src.process.parent.storyline.id\":\"F8C44B7A0C80D2E7\",\"tgt.process.verifiedStatus\":\"verified\",\"tgt.process.image.path\":\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\newrelic-integrations\\\\jl-gzuvll.etc\",\"src.process.integrityLevel\":\"SYSTEM\",\"i.scheme\":\"edr\",\"tgt.process.integrityLevel\":\"SYSTEM\",\"site.name\":\"ASDF\",\"src.process.netConnInCount\":1,\"tgt.process.image.md5\":\"52b6998fb2e8a868fe78ead5eed714fe\",\"event.time\":2548423949470,\"account.id\":\"123456789123456789\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"asdf1\",\"src.process.image.sha1\":\"9c3683a3ae4d034854602351e90d8a616109af4e\",\"src.process.isStorylineRoot\":false,\"src.process.parent.image.path\":\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\newrelic-infra-service.exe\",\"src.process.pid\":3596,\"tgt.file.isSigned\":\"signed\",\"src.process.cmdline\":\"C:\\\\ProgramFiles(x86)\\\\Microsoft\\\\important_stuff\\\\stuff.EXE\\\\\",\"src.process.publisher\":\"NEWRELIC,INC.\",\"sca:ingestTime\":1664811195,\"dataSource.category\":\"security\",\"src.process.crossProcessThreadCreateCount\":0,\"src.process.parent.isNative64Bit\":false,\"src.process.parent.isRedirectCmdProcessor\":false,\"tgt.process.image.sha1\":\"b7f4ae5a82e17803c0dff04fcb39ddb1db937723\",\"src.process.crossProcessCount\":0,\"src.process.signedStatus\":\"signed\",\"event.id\":\"01GEF7NPDYKJDP1X0XSQ9K7J2N_41\",\"src.process.parent.cmdline\":\"\\\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\newrelic-infra-service.exe\\\"\",\"src.process.image.path\":\"C:\\\\ProgramFiles\\\\NewRelic\\\\newrelic-infra\\\\wdtkbyxd-zmcyf.etc\",\"src.process.tgtFileModificationCount\":516119,\"src.process.indicatorEvasionCount\":2100,\"src.process.netConnOutCount\":7330,\"tgt.process.pid\":4720,\"src.process.crossProcessDupThreadHandleCount\":0,\"tgt.process.name\":\"jl-gzuvll.etc\",\"endpoint.os\":\"windows\",\"src.process.tgtFileDeletionCount\":5621,\"tgt.process.signedStatus\":\"signed\",\"src.process.startTime\":2546397406181,\"mgmt.id\":\"1337\",\"os.name\":\"WindowsServer2019Datacenter\",\"tgt.process.cmdline\":\"./nr-winpkg\",\"src.process.displayName\":\"wdtkbyxd-zmcyf.etc\",\"src.process.parent.sessionId\":0,\"src.process.isNative64Bit\":false,\"src.process.uid\":\"F59445BAF5BC03DA\",\"src.process.parent.image.md5\":\"2c6ca6160f8afd69cb68e99a1398cdc3\",\"src.process.indicatorBootConfigurationUpdateCount\":0,\"src.process.indicatorInfostealerCount\":0,\"process.unique.key\":\"D0046CBAF5BC03DA\",\"tgt.process.uid\":\"D0046CBAF5BC03DA\",\"tgt.process.isStorylineRoot\":false,\"src.process.parent.uid\":\"C19445BAF5BC03DA\",\"agent.version\":\"192.0.2.25\",\"src.process.parent.image.sha256\":\"b33f3f5b6b8502a37b1f4fca7b0f217630ad4f2060384c975385f25abf1f244a\",\"src.process.sessionId\":0,\"src.process.netConnCount\":7331,\"mgmt.osRevision\":\"17763\",\"group.id\":\"asdf\",\"tgt.process.startTime\":2548423949464,\"src.process.parent.publisher\":\"NEWRELIC,INC.\",\"src.process.isRedirectCmdProcessor\":false,\"src.process.verifiedStatus\":\"verified\",\"src.process.parent.startTime\":2546397405701,\"src.process.dnsCount\":565,\"endpoint.type\":\"server\",\"trace.id\":\"01GEF7NPDYKJDP1X0XSQ9K7J2N\",\"src.process.name\":\"wdtkbyxd-zmcyf.etc\",\"agent.uuid\":\"asdf356783457dfds4456d65\",\"src.process.image.sha256\":\"738924c6a2d65a22dde2811a9c1b057a91f195fc7ebceddbd8c2ddfc688c74e8\",\"tgt.process.user\":\"JYESNPJIUYN\\\\SYSTEM\",\"src.process.indicatorGeneralCount\":4180,\"src.process.crossProcessOutOfStorylineCount\":0,\"src.process.registryChangeCount\":146,\"packet.id\":\"50E4743246884A13F5502CA40BF9F2D9\",\"tgt.process.sessionId\":0,\"src.process.indicatorPersistenceCount\":0,\"src.process.parent.signedStatus\":\"signed\",\"src.process.parent.user\":\"bvbf\\\\SYSTEM\",\"tgt.process.isRedirectCmdProcessor\":false,\"event.type\":\"ProcessCreation\",\"src.process.indicatorPostExploitationCount\":0,\"src.process.parent.pid\":3132}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_conf": {
+        "reroute": [
+          "dns"
+        ]
+      },
+      "message": "{\"src.process.image.path\":\"/sbin/yetmapa\",\"tgt.process.displayName\":\"ewuze\",\"event.category\":\"process\",\"site.id\":\"2153930400268683161\",\"tgt.process.pid\":61536,\"endpoint.os\":\"osx\",\"tgt.process.name\":\"ewuze\",\"src.process.image.binaryIsExecutable\":true,\"tgt.process.storyline.id\":\"B7328458-02A2-4D35-8A2F-E8A844E8ACB5\",\"tgt.process.signedStatus\":\"signed\",\"src.process.startTime\":2625983007425,\"tgt.process.isNative64Bit\":false,\"mgmt.id\":\"104301\",\"os.name\":\"macOS\",\"src.process.user\":\"root\",\"tgt.process.cmdline\":\"/usr/sbin/ewuze -l\",\"src.process.displayName\":\"yetmapa\",\"src.process.isNative64Bit\":false,\"src.process.uid\":\"682F5034-CAF9-45AF-AA58-C3D1FF3CB14A\",\"i.version\":\"preprocess-lib-1.0\",\"process.unique.key\":\"8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE\",\"src.process.storyline.id\":\"B7328458-02A2-4D35-8A2F-E8A844E8ACB5\",\"tgt.process.uid\":\"8BA7059A-4B7C-41B3-BB6F-EA3AB9D1F6DE\",\"tgt.process.isStorylineRoot\":false,\"mgmt.url\":\"qubb4-193.ifkswpfhtkd.net\",\"agent.version\":\"24.4.1.7830\",\"tgt.process.subsystem\":\"SUBSYSTEM_UNKNOWN\",\"tgt.process.image.binaryIsExecutable\":true,\"src.process.sessionId\":0,\"tgt.process.image.sha256\":\"084d12f63650a56a20e61cfe5ee48fdbb8d73e7cdb705817f81e7c6168cb1b73\",\"mgmt.osRevision\":\"15.3.2 (24D81)\",\"src.process.subsystem\":\"SUBSYSTEM_UNKNOWN\",\"meta.event.name\":\"PROCESSCREATION\",\"group.id\":\"B7328458-02A2-4D35-8A2F-E8A844E8ACB5\",\"tgt.process.publisher\":\"<Type=Apple/ID=com.apple.cupsd>\",\"src.process.isRedirectCmdProcessor\":false,\"src.process.verifiedStatus\":\"verified\",\"tgt.process.startTime\":2628376338265,\"tgt.process.verifiedStatus\":\"verified\",\"endpoint.type\":\"laptop\",\"src.process.integrityLevel\":\"INTEGRITY_LEVEL_UNKNOWN\",\"tgt.process.image.path\":\"/usr/sbin/ewuze\",\"i.scheme\":\"edr\",\"trace.id\":\"06EBE9B5-957D-4620-9A17-EB40B2D3D91D\",\"tgt.process.integrityLevel\":\"INTEGRITY_LEVEL_UNKNOWN\",\"site.name\":\"Default site\",\"src.process.name\":\"yetmapa\",\"agent.uuid\":\"7165390D-444B-5ABF-8826-03C69E4D7E33\",\"tgt.process.image.md5\":\"3d4a55ec4b0ea838f07110f8d000c1bd\",\"event.time\":2628376338265,\"tgt.process.user\":\"root\",\"timestamp\":\"2053-04-16T00:32:18.265Z\",\"account.id\":\"2153930398339303196\",\"dataSource.name\":\"SentinelOne\",\"endpoint.name\":\"first_last\\u2019s MacBook Pro\",\"src.process.isStorylineRoot\":false,\"packet.id\":\"8F71664B-8D0B-43E4-AED1-71ACDBDEF3D6\",\"tgt.process.sessionId\":0,\"dataSource.vendor\":\"SentinelOne\",\"src.process.pid\":1,\"sca:RetentionType\":\"EDR\",\"src.process.cmdline\":\"/sbin/yetmapa\",\"src.process.publisher\":\"<Type=Apple/ID=com.apple.xpc.launchd>\",\"dataSource.category\":\"security\",\"tgt.process.isRedirectCmdProcessor\":false,\"tgt.process.image.sha1\":\"c3e3ac94285a36f53b01d56414a6d344e3df2ea1\",\"account.name\":\"Company, Inc.\",\"event.type\":\"Process Creation\",\"src.process.signedStatus\":\"signed\",\"event.id\":\"06EBE9B5-957D-4620-9A17-EB40B2D3D91D_415\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "sentinel_one_cloud_funnel.event.timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sentinel_one_cloud_funnel-event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "sentinel_one_cloud_funnel",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "kind": "metric",
+        "type": [
+          "info"
+        ]
+      },
+      "hadoop": {
+        "node_manager": {
+          "allocated_containers": 0,
+          "container_launch_duration_avg_time": 72,
+          "container_launch_duration_num_ops": 43,
+          "containers": {
+            "completed": 39,
+            "failed": 4,
+            "initing": 0,
+            "killed": 0,
+            "launched": 43,
+            "running": 0
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2044-10-25T12:49:34.000Z",
+      "http": {
+        "node_manager": {
+          "beans": [
+            {
+              "AllocatedContainers": 0,
+              "AllocatedGB": 0,
+              "AllocatedOpportunisticGB": 0,
+              "AllocatedOpportunisticVCores": 0,
+              "AllocatedVCores": 0,
+              "ApplicationsRunning": 0,
+              "AvailableGB": 8,
+              "AvailableVCores": 8,
+              "BadLocalDirs": 0,
+              "BadLogDirs": 0,
+              "CacheSizeBeforeClean": 0,
+              "ContainerCpuUtilization": 0,
+              "ContainerLaunchDurationAvgTime": 72,
+              "ContainerLaunchDurationNumOps": 43,
+              "ContainerUsedMemGB": 0,
+              "ContainerUsedVMemGB": 0,
+              "ContainersCompleted": 39,
+              "ContainersFailed": 4,
+              "ContainersGuaranteedQueued": 0,
+              "ContainersIniting": 0,
+              "ContainersKilled": 0,
+              "ContainersLaunched": 43,
+              "ContainersOpportunisticQueued": 0,
+              "ContainersPaused": 0,
+              "ContainersReIniting": 0,
+              "ContainersRolledBackOnFailure": 0,
+              "ContainersRunning": 0,
+              "GoodLocalDirsDiskUtilizationPerc": 67,
+              "GoodLogDirsDiskUtilizationPerc": 67,
+              "LocalizationDurationMillisAvgTime": 5,
+              "LocalizationDurationMillisNumOps": 43,
+              "LocalizedCacheHitBytes": 6676546,
+              "LocalizedCacheHitBytesRatio": 65,
+              "LocalizedCacheHitFiles": 60,
+              "LocalizedCacheHitFilesRatio": 50,
+              "LocalizedCacheMissBytes": 3578518,
+              "LocalizedCacheMissFiles": 60,
+              "NodeCpuUtilization": 0.34655112,
+              "NodeGpuUtilization": 0,
+              "NodeUsedMemGB": 9,
+              "NodeUsedVMemGB": 9,
+              "PrivateBytesDeleted": 0,
+              "PublicBytesDeleted": 0,
+              "RunningOpportunisticContainers": 0,
+              "TotalBytesDeleted": 0,
+              "modelerType": "NodeManagerMetrics",
+              "name": "Hadoop:service=NodeManager,name=NodeManagerMetrics",
+              "tag.Context": "yarn",
+              "tag.Hostname": "localhost.localdomain"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "node_manager",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-hadoop-node_manager-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "hadoop",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

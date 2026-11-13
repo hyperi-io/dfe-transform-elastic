@@ -1,0 +1,2177 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "b54f39c8-38f6-461c-bf4b-b83fe7c757fe",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "severity": 2,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+        "name": "Customers Financial Data.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:20:15",
+          "Id": "b54f39c8-38f6-461c-bf4b-b83fe7c757fe",
+          "IncidentId": "2895f2a5-ea35-da20-b415-35e3ed793dbe",
+          "ObjectId": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected U.S. Financial",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T15:22:49",
+            "ItemLastModifiedTime": "2048-02-25T16:19:43",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "TESTSIEM2.ONMICROSOFT.COM"
+        ],
+        "user": [
+          "CML",
+          "Dqei Orqsufe",
+          "CML@TESTSIEM2.ONMICROSOFT.COM"
+        ]
+      },
+      "rule": {
+        "id": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+        "name": "Low volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "ca1163d1-c3d1-415e-bd78-5d4f836ef402",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "failure",
+        "provider": "OneDrive",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+        "name": "Customers Financial Data Copy.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1559
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:23:39",
+          "Id": "ca1163d1-c3d1-415e-bd78-5d4f836ef402",
+          "IncidentId": "eedb7e39-ea37-c04f-b751-57c1db258dad",
+          "ObjectId": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:SiteAdmin"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 12,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "7443d70f-90a7-433e-8b60-41ac7f328714",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected U.S. Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data Copy.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T16:21:50",
+            "ItemLastModifiedTime": "2048-02-25T16:21:44",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "848789e2-f8bc-45a1-b50f-ef15cc996b68"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "TESTSIEM2.ONMICROSOFT.COM"
+        ],
+        "user": [
+          "CML",
+          "Dqei Orqsufe",
+          "CML@TESTSIEM2.ONMICROSOFT.COM"
+        ]
+      },
+      "rule": {
+        "id": "7443d70f-90a7-433e-8b60-41ac7f328714",
+        "name": "High volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "24e08f17-5d01-4831-8062-e3fa90814d81",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "severity": 2,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+        "name": "Customers Financial Data Copy.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3297
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:23:39",
+          "Id": "24e08f17-5d01-4831-8062-e3fa90814d81",
+          "IncidentId": "eedb7e39-ea37-c04f-b751-57c1db258dad",
+          "ObjectId": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 12,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected U.S. Financial",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data Copy.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T16:21:50",
+            "ItemLastModifiedTime": "2048-02-25T16:21:44",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "848789e2-f8bc-45a1-b50f-ef15cc996b68"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "TESTSIEM2.ONMICROSOFT.COM"
+        ],
+        "user": [
+          "CML",
+          "Dqei Orqsufe",
+          "CML@TESTSIEM2.ONMICROSOFT.COM"
+        ]
+      },
+      "rule": {
+        "id": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+        "name": "Low volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "16354a8d-337c-4b00-b59f-b301abd25673",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "failure",
+        "provider": "OneDrive",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+        "name": "Customers Financial Data.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4958
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:22:22",
+          "Id": "16354a8d-337c-4b00-b59f-b301abd25673",
+          "IncidentId": "2895f2a5-ea35-da20-b415-35e3ed793dbe",
+          "ObjectId": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:SiteAdmin"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 12,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "7443d70f-90a7-433e-8b60-41ac7f328714",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected U.S. Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T15:22:49",
+            "ItemLastModifiedTime": "2048-02-25T16:21:44",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "TESTSIEM2.ONMICROSOFT.COM"
+        ],
+        "user": [
+          "CML",
+          "Dqei Orqsufe",
+          "CML@TESTSIEM2.ONMICROSOFT.COM"
+        ]
+      },
+      "rule": {
+        "id": "7443d70f-90a7-433e-8b60-41ac7f328714",
+        "name": "High volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "f58c5825-f832-46ea-bae9-579eead8c1ea",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "failure",
+        "provider": "OneDrive",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "f367286b-640b-4d17-98a8-34979102b88c",
+        "name": "INTERNAL CREDIT CARD NUMBERS.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 6684
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-26T10:13:48",
+          "Id": "f58c5825-f832-46ea-bae9-579eead8c1ea",
+          "IncidentId": "f2855762-d640-f2a2-8875-39c8efc55c6b",
+          "ObjectId": "f367286b-640b-4d17-98a8-34979102b88c",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "92108e38-3f32-43ac-98a8-1871dc1eface",
+              "PolicyName": "Financial Data Detection",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:SiteAdmin"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 42,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 85,
+                        "Count": 23,
+                        "SensitiveType": "0b9a7338-1443-49cd-a630-24215fb99c45"
+                      }
+                    ]
+                  },
+                  "RuleId": "da8a050a-c014-4242-9311-301f65b864fa",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected France Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "INTERNAL CREDIT CARD NUMBERS.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/INTERNAL%20CREDIT%20CARD%20NUMBERS.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-26T09:44:40",
+            "ItemLastModifiedTime": "2048-02-26T09:46:23",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "f367286b-640b-4d17-98a8-34979102b88c"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "TESTSIEM2.ONMICROSOFT.COM"
+        ],
+        "user": [
+          "CML",
+          "Dqei Orqsufe",
+          "CML@TESTSIEM2.ONMICROSOFT.COM"
+        ]
+      },
+      "rule": {
+        "id": "da8a050a-c014-4242-9311-301f65b864fa",
+        "name": "High volume of content detected France Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/INTERNAL%20CREDIT%20CARD%20NUMBERS.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SharePoint",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "9aae340e-9816-4235-9ee0-5be40302cfe9",
+        "name": "Document.docx",
+        "owner": "fnvfc@testsiem2.onmicrosoft.com"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "testsiem2.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 8428
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-26T12:39:40",
+          "Id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+          "IncidentId": "7fd37bb2-d288-ad65-d244-30f8ade1ee33",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "92108e38-3f32-43ac-98a8-1871dc1eface",
+              "PolicyName": "Financial Data Detection",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateAlert:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "NotifyUser",
+                    "GenerateAlert"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 42,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 85,
+                        "Count": 2,
+                        "SensitiveType": "0b9a7338-1443-49cd-a630-24215fb99c45"
+                      }
+                    ]
+                  },
+                  "RuleId": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected France Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Document.docx",
+            "FileOwner": "fnvfc@testsiem2.onmicrosoft.com",
+            "FilePathUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx",
+            "FileSize": 35920,
+            "From": "fnvfc@testsiem2.onmicrosoft.com",
+            "IsViewableByExternalUsers": false,
+            "ItemCreationTime": "2048-02-26T09:55:38",
+            "ItemLastModifiedTime": "2048-02-26T09:56:12",
+            "SiteCollectionGuid": "8fac2971-ce24-4fb0-a593-80ad320cdc22",
+            "SiteCollectionUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications",
+            "UniqueID": "9aae340e-9816-4235-9ee0-5be40302cfe9"
+          },
+          "UserId": "DLPAgent",
+          "UserKey": "DLPAgent",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SharePoint"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "testsiem2.onmicrosoft.com"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "rule": {
+        "id": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+        "name": "Low volume of content detected France Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx"
+      },
+      "user": {
+        "domain": "testsiem2.onmicrosoft.com",
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "fnvfc@testsiem2.onmicrosoft.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": [
+          "file",
+          "web",
+          "file"
+        ],
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+        "kind": "alert",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "SharePoint",
+        "severity": 4,
+        "type": [
+          "access",
+          "info",
+          "access"
+        ]
+      },
+      "file": {
+        "inode": "9aae340e-9816-4235-9ee0-5be40302cfe9",
+        "name": "Document.docx",
+        "owner": "fnvfc@testsiem2.onmicrosoft.com"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "testsiem2.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 10042
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-26T12:39:40",
+          "Id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+          "IncidentId": "7fd37bb2-d288-ad65-d244-30f8ade1ee33",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "92108e38-3f32-43ac-98a8-1871dc1eface",
+              "PolicyName": "Financial Data Detection",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateAlert:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "NotifyUser",
+                    "GenerateAlert"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 42,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 85,
+                        "Count": 2,
+                        "SensitiveType": "0b9a7338-1443-49cd-a630-24215fb99c45"
+                      }
+                    ]
+                  },
+                  "RuleId": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected France Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Document.docx",
+            "FileOwner": "fnvfc@testsiem2.onmicrosoft.com",
+            "FilePathUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx",
+            "FileSize": 35920,
+            "From": "fnvfc@testsiem2.onmicrosoft.com",
+            "IsViewableByExternalUsers": false,
+            "ItemCreationTime": "2048-02-26T09:55:38",
+            "ItemLastModifiedTime": "2048-02-26T09:56:12",
+            "SiteCollectionGuid": "8fac2971-ce24-4fb0-a593-80ad320cdc22",
+            "SiteCollectionUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications",
+            "UniqueID": "9aae340e-9816-4235-9ee0-5be40302cfe9"
+          },
+          "UserId": "DLPAgent",
+          "UserKey": "DLPAgent",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SharePoint"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "hosts": [
+          "testsiem2.onmicrosoft.com"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "rule": {
+        "id": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+        "name": "Low volume of content detected France Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "original": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx"
+      },
+      "user": {
+        "domain": "testsiem2.onmicrosoft.com",
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "fnvfc@testsiem2.onmicrosoft.com",
+        "name": "fnvfc"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "b54f39c8-38f6-461c-bf4b-b83fe7c757fe",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "severity": 2,
+        "type": "access"
+      },
+      "file": {
+        "inode": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+        "name": "Customers Financial Data.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:20:15",
+          "Id": "b54f39c8-38f6-461c-bf4b-b83fe7c757fe",
+          "IncidentId": "2895f2a5-ea35-da20-b415-35e3ed793dbe",
+          "ObjectId": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "ActionParameters": [],
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected U.S. Financial",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T15:22:49",
+            "ItemLastModifiedTime": "2048-02-25T16:19:43",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "CML",
+          "Dqei Orqsufe"
+        ]
+      },
+      "rule": {
+        "id": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+        "name": "Low volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "ca1163d1-c3d1-415e-bd78-5d4f836ef402",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "failure",
+        "provider": "OneDrive",
+        "severity": 4,
+        "type": "access"
+      },
+      "file": {
+        "inode": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+        "name": "Customers Financial Data Copy.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1559
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:23:39",
+          "Id": "ca1163d1-c3d1-415e-bd78-5d4f836ef402",
+          "IncidentId": "eedb7e39-ea37-c04f-b751-57c1db258dad",
+          "ObjectId": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:SiteAdmin"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 12,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "7443d70f-90a7-433e-8b60-41ac7f328714",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected U.S. Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data Copy.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T16:21:50",
+            "ItemLastModifiedTime": "2048-02-25T16:21:44",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "848789e2-f8bc-45a1-b50f-ef15cc996b68"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "CML",
+          "Dqei Orqsufe"
+        ]
+      },
+      "rule": {
+        "id": "7443d70f-90a7-433e-8b60-41ac7f328714",
+        "name": "High volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "24e08f17-5d01-4831-8062-e3fa90814d81",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "OneDrive",
+        "severity": 2,
+        "type": "access"
+      },
+      "file": {
+        "inode": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+        "name": "Customers Financial Data Copy.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 3297
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:23:39",
+          "Id": "24e08f17-5d01-4831-8062-e3fa90814d81",
+          "IncidentId": "eedb7e39-ea37-c04f-b751-57c1db258dad",
+          "ObjectId": "848789e2-f8bc-45a1-b50f-ef15cc996b68",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "ActionParameters": [],
+                  "Actions": [
+                    "NotifyUser"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 12,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected U.S. Financial",
+                  "Severity": "Low"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data Copy.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T16:21:50",
+            "ItemLastModifiedTime": "2048-02-25T16:21:44",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "848789e2-f8bc-45a1-b50f-ef15cc996b68"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "CML",
+          "Dqei Orqsufe"
+        ]
+      },
+      "rule": {
+        "id": "c7434885-4b9e-4348-a4eb-9baba9f43062",
+        "name": "Low volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data%20Copy.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "16354a8d-337c-4b00-b59f-b301abd25673",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "failure",
+        "provider": "OneDrive",
+        "severity": 4,
+        "type": "access"
+      },
+      "file": {
+        "inode": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+        "name": "Customers Financial Data.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 4958
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-25T16:22:22",
+          "Id": "16354a8d-337c-4b00-b59f-b301abd25673",
+          "IncidentId": "2895f2a5-ea35-da20-b415-35e3ed793dbe",
+          "ObjectId": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "b83a6256-039e-47b7-98ec-732a40fdacdb",
+              "PolicyName": "U.S. Financial Data",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:SiteAdmin"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 12,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 75,
+                        "Count": 1,
+                        "SensitiveType": "ac440f81-5d51-4b5e-8554-50ced0a50bcc"
+                      }
+                    ]
+                  },
+                  "RuleId": "7443d70f-90a7-433e-8b60-41ac7f328714",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected U.S. Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Customers Financial Data.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-25T15:22:49",
+            "ItemLastModifiedTime": "2048-02-25T16:21:44",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "7da1bf8b-cd7b-4224-b9cd-571ba6a56b17"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "CML",
+          "Dqei Orqsufe"
+        ]
+      },
+      "rule": {
+        "id": "7443d70f-90a7-433e-8b60-41ac7f328714",
+        "name": "High volume of content detected U.S. Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/Customers%20Financial%20Data.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "f58c5825-f832-46ea-bae9-579eead8c1ea",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "failure",
+        "provider": "OneDrive",
+        "severity": 4,
+        "type": "access"
+      },
+      "file": {
+        "inode": "f367286b-640b-4d17-98a8-34979102b88c",
+        "name": "INTERNAL CREDIT CARD NUMBERS.docx",
+        "owner": "Dqei Orqsufe"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "TESTSIEM2.ONMICROSOFT.COM"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 6684
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-26T10:13:48",
+          "Id": "f58c5825-f832-46ea-bae9-579eead8c1ea",
+          "IncidentId": "f2855762-d640-f2a2-8875-39c8efc55c6b",
+          "ObjectId": "f367286b-640b-4d17-98a8-34979102b88c",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "92108e38-3f32-43ac-98a8-1871dc1eface",
+              "PolicyName": "Financial Data Detection",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateIncidentReport:SiteAdmin"
+                  ],
+                  "Actions": [
+                    "BlockAccess",
+                    "NotifyUser",
+                    "GenerateIncidentReport"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 42,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 85,
+                        "Count": 23,
+                        "SensitiveType": "0b9a7338-1443-49cd-a630-24215fb99c45"
+                      }
+                    ]
+                  },
+                  "RuleId": "da8a050a-c014-4242-9311-301f65b864fa",
+                  "RuleMode": "Enable",
+                  "RuleName": "High volume of content detected France Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "INTERNAL CREDIT CARD NUMBERS.docx",
+            "FileOwner": "Dqei Orqsufe",
+            "FilePathUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/INTERNAL%20CREDIT%20CARD%20NUMBERS.docx",
+            "From": "CML@TESTSIEM2.ONMICROSOFT.COM",
+            "ItemCreationTime": "2048-02-26T09:44:40",
+            "ItemLastModifiedTime": "2048-02-26T09:46:23",
+            "SiteCollectionGuid": "ade7baae-c531-43a2-b109-25f6fd5f3387",
+            "SiteCollectionUrl": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com",
+            "UniqueID": "f367286b-640b-4d17-98a8-34979102b88c"
+          },
+          "UserId": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserKey": "DlpPolicyEventBasedAssistantOneDriveForBusiness",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "OneDrive"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "CML",
+          "Dqei Orqsufe"
+        ]
+      },
+      "rule": {
+        "id": "da8a050a-c014-4242-9311-301f65b864fa",
+        "name": "High volume of content detected France Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2-my.sharepoint.com/personal/asr_testsiem2_onmicrosoft_com/Documents/INTERNAL%20CREDIT%20CARD%20NUMBERS.docx"
+      },
+      "user": {
+        "domain": "TESTSIEM2.ONMICROSOFT.COM",
+        "email": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "id": "CML@TESTSIEM2.ONMICROSOFT.COM",
+        "name": "CML"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SharePoint",
+        "severity": 4,
+        "type": "access"
+      },
+      "file": {
+        "inode": "9aae340e-9816-4235-9ee0-5be40302cfe9",
+        "name": "Document.docx",
+        "owner": "fnvfc@testsiem2.onmicrosoft.com"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "testsiem2.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 8428
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-26T12:39:40",
+          "Id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+          "IncidentId": "7fd37bb2-d288-ad65-d244-30f8ade1ee33",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "92108e38-3f32-43ac-98a8-1871dc1eface",
+              "PolicyName": "Financial Data Detection",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateAlert:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "NotifyUser",
+                    "GenerateAlert"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 42,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 85,
+                        "Count": 2,
+                        "SensitiveType": "0b9a7338-1443-49cd-a630-24215fb99c45"
+                      }
+                    ]
+                  },
+                  "RuleId": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected France Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Document.docx",
+            "FileOwner": "fnvfc@testsiem2.onmicrosoft.com",
+            "FilePathUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx",
+            "FileSize": 35920,
+            "From": "fnvfc@testsiem2.onmicrosoft.com",
+            "IsViewableByExternalUsers": false,
+            "ItemCreationTime": "2048-02-26T09:55:38",
+            "ItemLastModifiedTime": "2048-02-26T09:56:12",
+            "SiteCollectionGuid": "8fac2971-ce24-4fb0-a593-80ad320cdc22",
+            "SiteCollectionUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications",
+            "UniqueID": "9aae340e-9816-4235-9ee0-5be40302cfe9"
+          },
+          "UserId": "DLPAgent",
+          "UserKey": "DLPAgent",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SharePoint"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "fnvfc",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "rule": {
+        "id": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+        "name": "Low volume of content detected France Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx"
+      },
+      "user": {
+        "domain": "testsiem2.onmicrosoft.com",
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "fnvfc@testsiem2.onmicrosoft.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "71a2709c-9caa-4352-882b-1882c71cb7a5",
+        "id": "c0a6b47a-d52e-4e00-8fb6-70554fc86ac6",
+        "name": "b596d748039d",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "DLPRuleMatch",
+        "category": "file",
+        "code": "ComplianceDLPSharePoint",
+        "dataset": "o365.audit",
+        "id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+        "kind": "alert",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "SharePoint",
+        "severity": 4,
+        "type": "access"
+      },
+      "file": {
+        "inode": "9aae340e-9816-4235-9ee0-5be40302cfe9",
+        "name": "Document.docx",
+        "owner": "fnvfc@testsiem2.onmicrosoft.com"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+        "name": "testsiem2.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 10042
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-26T12:39:40",
+          "Id": "99936cfd-14de-4ed3-faf9-44e4aad4c2ca",
+          "IncidentId": "7fd37bb2-d288-ad65-d244-30f8ade1ee33",
+          "Operation": "DLPRuleMatch",
+          "OrganizationId": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254",
+          "PolicyDetails": [
+            {
+              "PolicyId": "92108e38-3f32-43ac-98a8-1871dc1eface",
+              "PolicyName": "Financial Data Detection",
+              "Rules": [
+                {
+                  "ActionParameters": [
+                    "GenerateAlert:apq@testsiem2.onmicrosoft.com"
+                  ],
+                  "Actions": [
+                    "NotifyUser",
+                    "GenerateAlert"
+                  ],
+                  "ConditionsMatched": {
+                    "SensitiveInformation": [
+                      {
+                        "Confidence": 85,
+                        "Count": 42,
+                        "SensitiveType": "35883bc8-efe6-4736-88dd-1c7a6d7ec080"
+                      },
+                      {
+                        "Confidence": 85,
+                        "Count": 2,
+                        "SensitiveType": "0b9a7338-1443-49cd-a630-24215fb99c45"
+                      }
+                    ]
+                  },
+                  "RuleId": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+                  "RuleMode": "Enable",
+                  "RuleName": "Low volume of content detected France Financial",
+                  "Severity": "High"
+                }
+              ]
+            }
+          ],
+          "RecordType": 11,
+          "SensitiveInfoDetectionIsIncluded": false,
+          "SharePointMetaData": {
+            "FileName": "Document.docx",
+            "FileOwner": "fnvfc@testsiem2.onmicrosoft.com",
+            "FilePathUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx",
+            "FileSize": 35920,
+            "From": "fnvfc@testsiem2.onmicrosoft.com",
+            "IsViewableByExternalUsers": false,
+            "ItemCreationTime": "2048-02-26T09:55:38",
+            "ItemLastModifiedTime": "2048-02-26T09:56:12",
+            "SiteCollectionGuid": "8fac2971-ce24-4fb0-a593-80ad320cdc22",
+            "SiteCollectionUrl": "https://testsiem2.sharepoint.com/sites/Internalcommunications",
+            "UniqueID": "9aae340e-9816-4235-9ee0-5be40302cfe9"
+          },
+          "UserId": "DLPAgent",
+          "UserKey": "DLPAgent",
+          "UserType": 4,
+          "Version": 1,
+          "Workload": "SharePoint"
+        }
+      },
+      "organization": {
+        "id": "5f4adcdc-958d-4e4b-9a84-92fa25fd3254"
+      },
+      "related": {
+        "user": [
+          "fnvfc",
+          "fnvfc@testsiem2.onmicrosoft.com"
+        ]
+      },
+      "rule": {
+        "id": "268e11e8-f6c2-4a0a-aa00-c7c3cf5f20bf",
+        "name": "Low volume of content detected France Financial"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "url": {
+        "original": "https://testsiem2.sharepoint.com/sites/Internalcommunications/Shared%20Documents/Document.docx"
+      },
+      "user": {
+        "domain": "testsiem2.onmicrosoft.com",
+        "email": "fnvfc@testsiem2.onmicrosoft.com",
+        "id": "fnvfc@testsiem2.onmicrosoft.com",
+        "name": "fnvfc"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

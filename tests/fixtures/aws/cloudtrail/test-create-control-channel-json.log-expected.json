@@ -1,0 +1,160 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-11-01T14:10:37.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "error_code": "AccessDenied",
+          "error_message": "User: arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957 is not authorized to perform: ssmmessages:CreateControlChannel on resource: arn:aws:ec2:us-east-2:00000000000:instance/i-05e14c76fdb335957 because no identity-based policy allows the ssmmessages:CreateControlChannel action",
+          "event_category": "Data",
+          "event_type": "AwsApiCall",
+          "event_version": "1.10",
+          "read_only": false,
+          "recipient_account_id": "00000000000",
+          "request_id": "a0705dee-65ce-47a3-bb59-24a374a860a3",
+          "resources": [
+            {
+              "account_id": "00000000000",
+              "arn": "arn:aws:ssmmessages:us-east-2:00000000000:control-channel/i-05e14c76fdb335957",
+              "type": "AWS::SSMMessages::ControlChannel"
+            }
+          ],
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957",
+            "session_context": {
+              "creation_date": "2052-11-01T13:35:39.000Z",
+              "mfa_authenticated": "false",
+              "session_issuer": {
+                "account_id": "00000000000",
+                "arn": "arn:aws:iam::00000000000:role/bcfhier_dc6_mmia",
+                "principal_id": "PRINCIPALID",
+                "type": "Role"
+              }
+            },
+            "type": "AssumedRole"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "00000000000"
+        },
+        "region": "us-east-2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entity": {
+        "target": {
+          "id": [
+            "arn:aws:ssmmessages:us-east-2:00000000000:control-channel/i-05e14c76fdb335957"
+          ]
+        }
+      },
+      "event": {
+        "action": "CreateControlChannel",
+        "category": [
+          "session"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "04710ff2-2687-4053-a1b0-8bc505d9c1f3",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.10\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"PRINCIPALID:i-05e14c76fdb335957\",\"arn\":\"arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957\",\"accountId\":\"00000000000\",\"accessKeyId\":\"ACCESSKEYID\",\"sessionContext\":{\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"PRINCIPALID\",\"arn\":\"arn:aws:iam::00000000000:role/bcfhier_dc6_mmia\",\"accountId\":\"00000000000\",\"userName\":\"bcfhier_dc6_mmia\"},\"attributes\":{\"creationDate\":\"2052-11-01T13:35:39Z\",\"mfaAuthenticated\":\"false\"},\"ec2RoleDelivery\":\"2.0\"}},\"eventTime\":\"2052-11-01T14:10:37Z\",\"eventSource\":\"ssm.amazonaws.com\",\"eventName\":\"CreateControlChannel\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"Go-http-client/1.1\",\"errorCode\":\"AccessDenied\",\"errorMessage\":\"User: arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957 is not authorized to perform: ssmmessages:CreateControlChannel on resource: arn:aws:ec2:us-east-2:00000000000:instance/i-05e14c76fdb335957 because no identity-based policy allows the ssmmessages:CreateControlChannel action\",\"requestParameters\":null,\"responseElements\":null,\"requestID\":\"a0705dee-65ce-47a3-bb59-24a374a860a3\",\"eventID\":\"04710ff2-2687-4053-a1b0-8bc505d9c1f3\",\"readOnly\":false,\"resources\":[{\"accountId\":\"00000000000\",\"type\":\"AWS::SSMMessages::ControlChannel\",\"ARN\":\"arn:aws:ssmmessages:us-east-2:00000000000:control-channel/i-05e14c76fdb335957\"}],\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"00000000000\",\"eventCategory\":\"Data\",\"tlsDetails\":{\"tlsVersion\":\"TLSv1.2\",\"cipherSuite\":\"ECDHE-RSA-AES128-GCM-SHA256\",\"clientProvidedHostHeader\":\"ssmmessages.us-east-2.amazonaws.com\"}}",
+        "outcome": "failure",
+        "provider": "ssm.amazonaws.com",
+        "type": [
+          "start"
+        ]
+      },
+      "related": {
+        "entity": [
+          "arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957",
+          "bcfhier_dc6_mmia",
+          "arn:aws:iam::00000000000:role/bcfhier_dc6_mmia",
+          "ACCESSKEYID",
+          "arn:aws:ssmmessages:us-east-2:00000000000:control-channel/i-05e14c76fdb335957"
+        ],
+        "user": [
+          "i-05e14c76fdb335957",
+          "PRINCIPALID:i-05e14c76fdb335957",
+          "bcfhier_dc6_mmia"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "arn:aws:ssmmessages:us-east-2:00000000000:control-channel/i-05e14c76fdb335957"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "ECDHE-RSA-AES128-GCM-SHA256",
+        "client": {
+          "server_name": "ssmmessages.us-east-2.amazonaws.com"
+        },
+        "version": "1.2",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957"
+          ]
+        },
+        "id": "PRINCIPALID:i-05e14c76fdb335957",
+        "name": "bcfhier_dc6_mmia"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/1.1",
+        "version": "1.1"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.10\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"PRINCIPALID:i-05e14c76fdb335957\",\"arn\":\"arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957\",\"accountId\":\"00000000000\",\"accessKeyId\":\"ACCESSKEYID\",\"sessionContext\":{\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"PRINCIPALID\",\"arn\":\"arn:aws:iam::00000000000:role/bcfhier_dc6_mmia\",\"accountId\":\"00000000000\",\"userName\":\"bcfhier_dc6_mmia\"},\"attributes\":{\"creationDate\":\"2052-11-01T13:35:39Z\",\"mfaAuthenticated\":\"false\"},\"ec2RoleDelivery\":\"2.0\"}},\"eventTime\":\"2052-11-01T14:10:37Z\",\"eventSource\":\"ssm.amazonaws.com\",\"eventName\":\"CreateControlChannel\",\"awsRegion\":\"us-east-2\",\"sourceIPAddress\":\"198.51.100.124\",\"userAgent\":\"Go-http-client/1.1\",\"errorCode\":\"AccessDenied\",\"errorMessage\":\"User: arn:aws:sts::00000000000:assumed-role/bcfhier_dc6_mmia/i-05e14c76fdb335957 is not authorized to perform: ssmmessages:CreateControlChannel on resource: arn:aws:ec2:us-east-2:00000000000:instance/i-05e14c76fdb335957 because no identity-based policy allows the ssmmessages:CreateControlChannel action\",\"requestParameters\":null,\"responseElements\":null,\"requestID\":\"a0705dee-65ce-47a3-bb59-24a374a860a3\",\"eventID\":\"04710ff2-2687-4053-a1b0-8bc505d9c1f3\",\"readOnly\":false,\"resources\":[{\"accountId\":\"00000000000\",\"type\":\"AWS::SSMMessages::ControlChannel\",\"ARN\":\"arn:aws:ssmmessages:us-east-2:00000000000:control-channel/i-05e14c76fdb335957\"}],\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"00000000000\",\"eventCategory\":\"Data\",\"tlsDetails\":{\"tlsVersion\":\"TLSv1.2\",\"cipherSuite\":\"ECDHE-RSA-AES128-GCM-SHA256\",\"clientProvidedHostHeader\":\"ssmmessages.us-east-2.amazonaws.com\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

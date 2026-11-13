@@ -1,0 +1,971 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-05-31T04:32:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412144420Z",
+        "original": "[2932] 31 May 04:32:08 * Server started, Redis version 2.4.6"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "Server started, Redis version 2.4.6",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412153270Z",
+        "original": "[2932] 31 May 04:32:08 # Open data file dump.rdb: No such file or directory"
+      },
+      "log": {
+        "level": "warning"
+      },
+      "message": "Open data file dump.rdb: No such file or directory",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412154560Z",
+        "original": "[2932] 31 May 04:32:08 * The server is now ready to accept connections on port 6379"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "message": "The server is now ready to accept connections on port 6379",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412157350Z",
+        "original": "[2932] 31 May 04:32:08 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:13.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412158240Z",
+        "original": "[2932] 31 May 04:32:13 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:19.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412159040Z",
+        "original": "[2932] 31 May 04:32:19 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:24.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412159720Z",
+        "original": "[2932] 31 May 04:32:24 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412160340Z",
+        "original": "[2932] 31 May 04:32:30 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:35.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412181221Z",
+        "original": "[2932] 31 May 04:32:35 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412182211Z",
+        "original": "[2932] 31 May 04:32:41 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:46.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412183551Z",
+        "original": "[2932] 31 May 04:32:46 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412184361Z",
+        "original": "[2932] 31 May 04:32:52 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:32:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412185161Z",
+        "original": "[2932] 31 May 04:32:57 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:03.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412185871Z",
+        "original": "[2932] 31 May 04:33:03 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412186701Z",
+        "original": "[2932] 31 May 04:33:08 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:13.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412187521Z",
+        "original": "[2932] 31 May 04:33:13 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:19.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412188741Z",
+        "original": "[2932] 31 May 04:33:19 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:24.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412189611Z",
+        "original": "[2932] 31 May 04:33:24 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412190361Z",
+        "original": "[2932] 31 May 04:33:30 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:35.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412190981Z",
+        "original": "[2932] 31 May 04:33:35 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412191591Z",
+        "original": "[2932] 31 May 04:33:41 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:46.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412192581Z",
+        "original": "[2932] 31 May 04:33:46 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412193361Z",
+        "original": "[2932] 31 May 04:33:52 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:33:57.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412194341Z",
+        "original": "[2932] 31 May 04:33:57 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:03.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412195301Z",
+        "original": "[2932] 31 May 04:34:03 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:08.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412196141Z",
+        "original": "[2932] 31 May 04:34:08 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:14.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412196821Z",
+        "original": "[2932] 31 May 04:34:14 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:19.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412197601Z",
+        "original": "[2932] 31 May 04:34:19 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:25.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412198451Z",
+        "original": "[2932] 31 May 04:34:25 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412199151Z",
+        "original": "[2932] 31 May 04:34:30 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412199921Z",
+        "original": "[2932] 31 May 04:34:36 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412200901Z",
+        "original": "[2932] 31 May 04:34:41 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:46.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412201531Z",
+        "original": "[2932] 31 May 04:34:46 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2026-05-31T04:34:52.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "created": "2048-04-28T11:07:58.223Z",
+        "ingested": "2026-11-13T23:02:52.412202311Z",
+        "original": "[2932] 31 May 04:34:52 - 0 clients connected (0 slaves), 1179968 bytes in use"
+      },
+      "log": {
+        "level": "verbose"
+      },
+      "message": "0 clients connected (0 slaves), 1179968 bytes in use",
+      "redis": {
+        "log": {}
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:08 * Server started, Redis version 2.4.6",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:08 # Open data file dump.rdb: No such file or directory",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:08 * The server is now ready to accept connections on port 6379",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:08 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:13 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:19 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:24 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:30 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:35 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:41 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:46 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:52 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:32:57 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:03 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:08 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:13 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:19 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:24 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:30 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:35 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:41 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:46 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:52 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:33:57 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:03 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:08 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:14 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:19 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:25 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:30 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:36 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:41 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:46 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "[2932] 31 May 04:34:52 - 0 clients connected (0 slaves), 1179968 bytes in use",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-redis-log-default",
+    "event_count": 34,
+    "numeric_keyword_fields": [],
+    "package": "redis",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

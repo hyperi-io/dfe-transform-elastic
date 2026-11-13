@@ -1,0 +1,436 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-01-09T02:23:11.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "groupName": "TEST-GROUP",
+              "newGroupName": "TEST-GROUP2"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "APCUZLE-f40c-3ede-a58c-AQAMJXB",
+          "request_parameters": "{groupName=TEST-GROUP, newGroupName=TEST-GROUP2}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UpdateGroup",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-c3aa-487b-b05e-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"0123456789012\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\"},\"eventTime\":\"2048-01-09T02:23:11Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP2\",\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"APCUZLE-f40c-3ede-a58c-AQAMJXB\",\"eventID\":\"EXAMPLE-c3aa-487b-b05e-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "success",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "group": {
+        "name": "TEST-GROUP"
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY",
+          "Ekkcf",
+          "arn:aws:iam::0123456789012:user/Ekkcf"
+        ],
+        "user": [
+          "0123456789012",
+          "Ekkcf"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "0123456789012",
+        "name": "Ekkcf"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46",
+        "version": "1.16.310"
+      }
+    },
+    {
+      "@timestamp": "2048-01-09T02:24:35.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "error_code": "EntityAlreadyExistsException",
+          "error_message": "Group with name TEST-GROUP already exists.",
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "groupName": "TEST-GROUP2",
+              "newGroupName": "TEST-GROUP"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "BYEHPOD-d335-9dd1-9085-BNAWSKC",
+          "request_parameters": "{groupName=TEST-GROUP2, newGroupName=TEST-GROUP}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UpdateGroup",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-6a0b-475c-b5db-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"0123456789012\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\"},\"eventTime\":\"2048-01-09T02:24:35Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"errorCode\":\"EntityAlreadyExistsException\",\"errorMessage\":\"Group with name TEST-GROUP already exists.\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP\",\"groupName\":\"TEST-GROUP2\"},\"responseElements\":null,\"requestID\":\"BYEHPOD-d335-9dd1-9085-BNAWSKC\",\"eventID\":\"EXAMPLE-6a0b-475c-b5db-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "failure",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "group": {
+        "name": "TEST-GROUP2"
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY",
+          "Ekkcf",
+          "arn:aws:iam::0123456789012:user/Ekkcf"
+        ],
+        "user": [
+          "0123456789012",
+          "Ekkcf"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "0123456789012",
+        "name": "Ekkcf"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46",
+        "version": "1.16.310"
+      }
+    },
+    {
+      "@timestamp": "2048-01-09T02:23:11.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "groupName": "TEST-GROUP",
+              "newGroupName": "TEST-GROUP2"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "APCUZLE-f40c-3ede-a58c-AQAMJXB",
+          "request_parameters": "{groupName=TEST-GROUP, newGroupName=TEST-GROUP2}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "type": "IdentityCenterUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UpdateGroup",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-c3aa-487b-b05e-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IdentityCenterUser\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\"},\"eventTime\":\"2048-01-09T02:23:11Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP2\",\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"APCUZLE-f40c-3ede-a58c-AQAMJXB\",\"eventID\":\"EXAMPLE-c3aa-487b-b05e-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "success",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "group": {
+        "name": "TEST-GROUP"
+      },
+      "related": {
+        "entity": [
+          "arn:aws:iam::0123456789012:user/Ekkcf",
+          "EXAMPLE_KEY"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46",
+        "version": "1.16.310"
+      }
+    },
+    {
+      "@timestamp": "2048-01-09T02:24:35.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "error_code": "EntityAlreadyExistsException",
+          "error_message": "Group with name TEST-GROUP already exists.",
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "groupName": "TEST-GROUP2",
+              "newGroupName": "TEST-GROUP"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "BYEHPOD-d335-9dd1-9085-BNAWSKC",
+          "request_parameters": "{groupName=TEST-GROUP2, newGroupName=TEST-GROUP}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "type": "IdentityCenterUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UpdateGroup",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-6a0b-475c-b5db-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IdentityCenterUser\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\"},\"eventTime\":\"2048-01-09T02:24:35Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"errorCode\":\"EntityAlreadyExistsException\",\"errorMessage\":\"Group with name TEST-GROUP already exists.\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP\",\"groupName\":\"TEST-GROUP2\"},\"responseElements\":null,\"requestID\":\"BYEHPOD-d335-9dd1-9085-BNAWSKC\",\"eventID\":\"EXAMPLE-6a0b-475c-b5db-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "failure",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "group",
+          "change"
+        ]
+      },
+      "group": {
+        "name": "TEST-GROUP2"
+      },
+      "related": {
+        "entity": [
+          "arn:aws:iam::0123456789012:user/Ekkcf",
+          "EXAMPLE_KEY"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46",
+        "version": "1.16.310"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"0123456789012\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\"},\"eventTime\":\"2048-01-09T02:23:11Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP2\",\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"APCUZLE-f40c-3ede-a58c-AQAMJXB\",\"eventID\":\"EXAMPLE-c3aa-487b-b05e-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"0123456789012\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\"},\"eventTime\":\"2048-01-09T02:24:35Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"errorCode\":\"EntityAlreadyExistsException\",\"errorMessage\":\"Group with name TEST-GROUP already exists.\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP\",\"groupName\":\"TEST-GROUP2\"},\"responseElements\":null,\"requestID\":\"BYEHPOD-d335-9dd1-9085-BNAWSKC\",\"eventID\":\"EXAMPLE-6a0b-475c-b5db-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IdentityCenterUser\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\"},\"eventTime\":\"2048-01-09T02:23:11Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP2\",\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"APCUZLE-f40c-3ede-a58c-AQAMJXB\",\"eventID\":\"EXAMPLE-c3aa-487b-b05e-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IdentityCenterUser\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\"},\"eventTime\":\"2048-01-09T02:24:35Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"UpdateGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"errorCode\":\"EntityAlreadyExistsException\",\"errorMessage\":\"Group with name TEST-GROUP already exists.\",\"requestParameters\":{\"newGroupName\":\"TEST-GROUP\",\"groupName\":\"TEST-GROUP2\"},\"responseElements\":null,\"requestID\":\"BYEHPOD-d335-9dd1-9085-BNAWSKC\",\"eventID\":\"EXAMPLE-6a0b-475c-b5db-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

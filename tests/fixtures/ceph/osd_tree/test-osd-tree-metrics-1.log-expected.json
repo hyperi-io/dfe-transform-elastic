@@ -1,0 +1,54 @@
+{
+  "expected": [
+    {
+      "ceph": {
+        "osd_tree": {
+          "children": [
+            "-5",
+            "-9",
+            "-7",
+            "-3"
+          ],
+          "node_osd_id": -1,
+          "node_osd_name": "default",
+          "type": {
+            "id": 11,
+            "name": "root"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "kind": "metric",
+        "module": "ceph",
+        "original": "{\"id\":-1,\"name\":\"default\",\"type\":\"root\",\"type_id\":11,\"children\":[-5,-9,-7,-3]}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\":-1,\"name\":\"default\",\"type\":\"root\",\"type_id\":11,\"children\":[-5,-9,-7,-3]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "osd_tree",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ceph-osd_tree-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ceph",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

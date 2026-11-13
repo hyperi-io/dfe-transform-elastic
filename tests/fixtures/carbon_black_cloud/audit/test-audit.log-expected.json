@@ -1,0 +1,335 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-02-10T16:04:12.477Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": false,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "id": "WIIGMU0BOT"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "16xxxxxxxxxx8ac7bd",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121852477,\"eventId\":\"16xxxxxxxxxx8ac7bd\",\"loginName\":\"WIIGMU0BOT\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Downloaded policy configurations for all policies\"}",
+        "outcome": "success",
+        "reason": "Downloaded policy configurations for all policies"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "WIIGMU0BOT"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T16:04:30.263Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": false,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "id": "TNIIOQ1EWW"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "21xxxxxxxxxx93ff7c",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121870263,\"eventId\":\"21xxxxxxxxxx93ff7c\",\"loginName\":\"TNIIOQ1EWW\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Logged in successfully\"}",
+        "outcome": "success",
+        "reason": "Logged in successfully"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "TNIIOQ1EWW"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T16:04:42.441Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": true,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "id": "WIIGMU0BOT"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "28xxxxxxxxxx8ac7bd",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121882441,\"eventId\":\"28xxxxxxxxxx8ac7bd\",\"loginName\":\"WIIGMU0BOT\",\"flagged\":true,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Login failed\"}",
+        "outcome": "failure",
+        "reason": "Login failed"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "WIIGMU0BOT"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T16:05:03.393Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": false,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "id": "7NUTKLGOC"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "34xxxxxxxxxxd9ccf9",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121903393,\"eventId\":\"34xxxxxxxxxxd9ccf9\",\"loginName\":\"7NUTKLGOC\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Updated report 1d5d5f91-3ba3-4209-91e4-1b2006c05250 in feed 5HuUSkCtTp23yrEFJG8Xxw\"}",
+        "outcome": "success",
+        "reason": "Updated report 1d5d5f91-3ba3-4209-91e4-1b2006c05250 in feed 5HuUSkCtTp23yrEFJG8Xxw"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "7NUTKLGOC"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T16:05:12.257Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": false,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "id": "WIIGMU0BOT"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "3axxxxxxxxxx2e5035",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121912257,\"eventId\":\"3axxxxxxxxxx2e5035\",\"loginName\":\"WIIGMU0BOT\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Downloaded policy configurations for all policies\"}",
+        "outcome": "success",
+        "reason": "Downloaded policy configurations for all policies"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "WIIGMU0BOT"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T16:12:08.295Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": false,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "id": "GNWJNT9USW"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "32xxxxxxxxxx189c6d",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528122328295,\"eventId\":\"32xxxxxxxxxx189c6d\",\"loginName\":\"GNWJNT9USW\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"User acf.sjn@xcyx.com retrieved secret for API ID P3KEDZJRI8 in org 1105\"}",
+        "outcome": "success",
+        "reason": "User acf.sjn@xcyx.com retrieved secret for API ID P3KEDZJRI8 in org 1105"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "GNWJNT9USW"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-02-10T16:15:28.556Z",
+      "carbon_black_cloud": {
+        "audit": {
+          "flagged": false,
+          "verbose": false
+        }
+      },
+      "client": {
+        "ip": "192.0.2.87",
+        "user": {
+          "domain": "dwofop.com",
+          "email": "sbgq@dwofop.com",
+          "id": "sbgq@dwofop.com",
+          "name": "sbgq"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "a9xxxxxxxxxx4b3d2c",
+        "kind": "event",
+        "original": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528122528556,\"eventId\":\"a9xxxxxxxxxx4b3d2c\",\"loginName\":\"sbgq@dwofop.com\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Connector 1XXXXXM logged in successfully\"}",
+        "outcome": "success",
+        "reason": "Connector 1XXXXXM logged in successfully"
+      },
+      "organization": {
+        "name": "dc-ztus-linrh.com"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87"
+        ],
+        "user": [
+          "sbgq@dwofop.com",
+          "sbgq"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121852477,\"eventId\":\"16xxxxxxxxxx8ac7bd\",\"loginName\":\"WIIGMU0BOT\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Downloaded policy configurations for all policies\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121870263,\"eventId\":\"21xxxxxxxxxx93ff7c\",\"loginName\":\"TNIIOQ1EWW\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Logged in successfully\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121882441,\"eventId\":\"28xxxxxxxxxx8ac7bd\",\"loginName\":\"WIIGMU0BOT\",\"flagged\":true,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Login failed\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121903393,\"eventId\":\"34xxxxxxxxxxd9ccf9\",\"loginName\":\"7NUTKLGOC\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Updated report 1d5d5f91-3ba3-4209-91e4-1b2006c05250 in feed 5HuUSkCtTp23yrEFJG8Xxw\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528121912257,\"eventId\":\"3axxxxxxxxxx2e5035\",\"loginName\":\"WIIGMU0BOT\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Downloaded policy configurations for all policies\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528122328295,\"eventId\":\"32xxxxxxxxxx189c6d\",\"loginName\":\"GNWJNT9USW\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"User acf.sjn@xcyx.com retrieved secret for API ID P3KEDZJRI8 in org 1105\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"orgName\":\"dc-ztus-linrh.com\",\"requestUrl\":null,\"eventTime\":2528122528556,\"eventId\":\"a9xxxxxxxxxx4b3d2c\",\"loginName\":\"sbgq@dwofop.com\",\"flagged\":false,\"clientIp\":\"192.0.2.87\",\"verbose\":false,\"description\":\"Connector 1XXXXXM logged in successfully\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-carbon_black_cloud-audit-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "carbon_black_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,8 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  - preserve_duplicate_custom_fields
+dynamic_fields:
+  url.extension: ^.*$
+  user_agent.version: ^\d+\.\d+(\.|\..*)?$

@@ -1,0 +1,50 @@
+{
+  "expected": [
+    {
+      "cursor": {
+        "last_collected": "2053-10-23T11:25:00.000Z",
+        "request_count": 42
+      },
+      "ecs": {
+        "version": "9.1.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "response": {
+          "status_code": 200
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "cursor": {
+        "last_collected": "2053-10-23T11:25:00.000Z",
+        "request_count": 42
+      },
+      "http": {
+        "response": {
+          "status_code": 200
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "generic",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-agentless_hello_world-generic-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "agentless_hello_world",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

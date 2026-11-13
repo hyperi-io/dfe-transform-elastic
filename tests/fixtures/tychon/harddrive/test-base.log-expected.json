@@ -1,0 +1,140 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "kind": "state",
+        "module": "tychon",
+        "original": "{\"disk.adapter.serial_number\":\"\",\"disk.boot_from\":\"true\",\"disk.bus_type\":\"SAS\",\"disk.clustered\":\"false\",\"disk.firmware.version\":\"2.0 \",\"disk.health_status\":\"Healthy\",\"disk.highly_available\":\"false\",\"disk.id\":\"{1}\\\\\\\\FJWBXTCANES8\\\\root/Microsoft/Windows/Storage/Providers_v2\\\\WSP_Disk.ObjectId=\\\"{b7bb1e5f-6f9c-12ed-95c7-261f4f0a1486}:DI:\\\\\\\\?\\\\scsi#disk&ven_vmware&prod_virtual_disk#5&1ec51bf7&0&000000#{79f90707-e3dd-15f1-93c9-25a2e44cab8a}\\\"\",\"disk.is_boot\":\"true\",\"disk.location.adapter\":\"0\",\"disk.location.bus\":\"3\",\"disk.location.device\":\"0\",\"disk.location.function\":\"0\",\"disk.location.pci_slot\":\"160\",\"disk.manufacturer\":\"VMware  \",\"disk.model\":\"Virtual disk    \",\"disk.name\":\"VMware Virtual disk\",\"disk.number\":\"0\",\"disk.number_of_partitions\":\"3\",\"disk.offline\":\"false\",\"disk.operational_status\":\"Online\",\"disk.partition_style\":\"MBR\",\"disk.serial_number\":\"\",\"disk.size\":\"42949672960\",\"disk.system\":\"true\",\"host.biossn\":\"851E0A70-4517-9604-3D22-128BF0452AC8\",\"host.cloud.hosted\":\"false\",\"host.domain\":\"\",\"host.hardware.bios.name\":\"Phoenix Technologies LTD\",\"host.hardware.bios.version\":\"6.00\",\"host.hardware.cpu.caption\":\"Intel64 Family 6 Model 45 Stepping 7\",\"host.hardware.manufacturer\":\"VMware, Inc.\",\"host.hardware.owner\":\"admin\",\"host.hardware.serial_number\":\"VMware-56 4d 7c 73 14 57 15 94-3b 54 35 2b a8 93 6a f3\",\"host.hostname\":\"FJWBXTCANES8\",\"host.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\",\"host.ip\":\"10.164.185.43\",\"host.ipv4\":\"10.164.185.43\",\"host.ipv6\":\"\",\"host.mac\":\"55:8A:60:88:9E:F2\",\"host.oem.manufacturer\":\"\",\"host.oem.model\":\"\",\"host.os.build\":\"19045\",\"host.os.description\":\"\",\"host.os.family\":\"Windows\",\"host.os.name\":\"Microsoft Windows 10 Pro\",\"host.os.organization\":\"\",\"host.os.version\":\"2009\",\"host.type\":\"Workstation\",\"host.uptime\":\"52023.2234378\",\"host.workgroup\":\"WORKGROUP\",\"id\":\"cf05e7a1cb1a0b1323c0785e090ee332acccb06a\",\"script.current_duration\":\"15963.40\",\"script.current_time\":\"2051-11-15T16:05:14Z\",\"script.name\":\"Get-TychonHardDriveInfo.ps1\",\"script.start\":\"2051-11-15T16:04:58Z\",\"script.type\":\"powershell\",\"script.version\":\"198.51.100.254\",\"tychon.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "hostname": "FJWBXTCANES8",
+        "id": "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP",
+        "ip": [
+          "10.164.185.43"
+        ],
+        "mac": [
+          "55-8A-60-88-9E-F2"
+        ],
+        "os": {
+          "family": "Windows",
+          "name": "Microsoft Windows 10 Pro",
+          "type": "windows",
+          "version": "2009"
+        },
+        "type": "Workstation",
+        "uptime": 52023
+      },
+      "related": {
+        "hosts": [
+          "FJWBXTCANES8",
+          "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP"
+        ],
+        "ip": [
+          "10.164.185.43"
+        ]
+      },
+      "tychon": {
+        "disk": {
+          "boot_from": "true",
+          "bus_type": "SAS",
+          "clustered": "false",
+          "firmware": {
+            "version": "2.0 "
+          },
+          "health_status": "Healthy",
+          "highly_available": "false",
+          "id": "{1}\\\\FJWBXTCANES8\\root/Microsoft/Windows/Storage/Providers_v2\\WSP_Disk.ObjectId=\"{b7bb1e5f-6f9c-12ed-95c7-261f4f0a1486}:DI:\\\\?\\scsi#disk&ven_vmware&prod_virtual_disk#5&1ec51bf7&0&000000#{79f90707-e3dd-15f1-93c9-25a2e44cab8a}\"",
+          "is_boot": "true",
+          "location": {
+            "adapter": "0",
+            "bus": "3",
+            "device": "0",
+            "function": "0",
+            "pci_slot": "160"
+          },
+          "manufacturer": "VMware  ",
+          "model": "Virtual disk    ",
+          "name": "VMware Virtual disk",
+          "number": "0",
+          "number_of_partitions": "3",
+          "offline": "false",
+          "operational_status": "Online",
+          "partition_style": "MBR",
+          "size": 42949672960,
+          "system": "true"
+        },
+        "host": {
+          "biossn": "851E0A70-4517-9604-3D22-128BF0452AC8",
+          "hardware": {
+            "bios": {
+              "name": "Phoenix Technologies LTD",
+              "version": "6.00"
+            },
+            "cpu": {
+              "caption": "Intel64 Family 6 Model 45 Stepping 7"
+            },
+            "manufacturer": "VMware, Inc.",
+            "owner": "admin",
+            "serial_number": "VMware-56 4d 7c 73 14 57 15 94-3b 54 35 2b a8 93 6a f3"
+          },
+          "hostname": "FJWBXTCANES8",
+          "id": "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP",
+          "ip": [
+            "10.164.185.43"
+          ],
+          "ipv4": [
+            "10.164.185.43"
+          ],
+          "mac": [
+            "55-8A-60-88-9E-F2"
+          ],
+          "os": {
+            "build": "19045",
+            "family": "Windows",
+            "name": "Microsoft Windows 10 Pro",
+            "version": "2009"
+          },
+          "type": "Workstation",
+          "uptime": 52023,
+          "workgroup": "WORKGROUP"
+        },
+        "id": "cf05e7a1cb1a0b1323c0785e090ee332acccb06a",
+        "script": {
+          "current_duration": 15963,
+          "current_time": "2051-11-15T16:05:14Z",
+          "name": "Get-TychonHardDriveInfo.ps1",
+          "start": "2051-11-15T16:04:58Z",
+          "type": "powershell",
+          "version": "198.51.100.254"
+        },
+        "tychon": {
+          "id": "b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"disk.adapter.serial_number\":\"\",\"disk.boot_from\":\"true\",\"disk.bus_type\":\"SAS\",\"disk.clustered\":\"false\",\"disk.firmware.version\":\"2.0 \",\"disk.health_status\":\"Healthy\",\"disk.highly_available\":\"false\",\"disk.id\":\"{1}\\\\\\\\FJWBXTCANES8\\\\root/Microsoft/Windows/Storage/Providers_v2\\\\WSP_Disk.ObjectId=\\\"{b7bb1e5f-6f9c-12ed-95c7-261f4f0a1486}:DI:\\\\\\\\?\\\\scsi#disk&ven_vmware&prod_virtual_disk#5&1ec51bf7&0&000000#{79f90707-e3dd-15f1-93c9-25a2e44cab8a}\\\"\",\"disk.is_boot\":\"true\",\"disk.location.adapter\":\"0\",\"disk.location.bus\":\"3\",\"disk.location.device\":\"0\",\"disk.location.function\":\"0\",\"disk.location.pci_slot\":\"160\",\"disk.manufacturer\":\"VMware  \",\"disk.model\":\"Virtual disk    \",\"disk.name\":\"VMware Virtual disk\",\"disk.number\":\"0\",\"disk.number_of_partitions\":\"3\",\"disk.offline\":\"false\",\"disk.operational_status\":\"Online\",\"disk.partition_style\":\"MBR\",\"disk.serial_number\":\"\",\"disk.size\":\"42949672960\",\"disk.system\":\"true\",\"host.biossn\":\"851E0A70-4517-9604-3D22-128BF0452AC8\",\"host.cloud.hosted\":\"false\",\"host.domain\":\"\",\"host.hardware.bios.name\":\"Phoenix Technologies LTD\",\"host.hardware.bios.version\":\"6.00\",\"host.hardware.cpu.caption\":\"Intel64 Family 6 Model 45 Stepping 7\",\"host.hardware.manufacturer\":\"VMware, Inc.\",\"host.hardware.owner\":\"admin\",\"host.hardware.serial_number\":\"VMware-56 4d 7c 73 14 57 15 94-3b 54 35 2b a8 93 6a f3\",\"host.hostname\":\"FJWBXTCANES8\",\"host.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\",\"host.ip\":\"10.164.185.43\",\"host.ipv4\":\"10.164.185.43\",\"host.ipv6\":\"\",\"host.mac\":\"55:8A:60:88:9E:F2\",\"host.oem.manufacturer\":\"\",\"host.oem.model\":\"\",\"host.os.build\":\"19045\",\"host.os.description\":\"\",\"host.os.family\":\"Windows\",\"host.os.name\":\"Microsoft Windows 10 Pro\",\"host.os.organization\":\"\",\"host.os.version\":\"2009\",\"host.type\":\"Workstation\",\"host.uptime\":\"52023.2234378\",\"host.workgroup\":\"WORKGROUP\",\"id\":\"cf05e7a1cb1a0b1323c0785e090ee332acccb06a\",\"script.current_duration\":\"15963.40\",\"script.current_time\":\"2051-11-15T16:05:14Z\",\"script.name\":\"Get-TychonHardDriveInfo.ps1\",\"script.start\":\"2051-11-15T16:04:58Z\",\"script.type\":\"powershell\",\"script.version\":\"198.51.100.254\",\"tychon.id\":\"b172e06ca8758ce45c1f0782b0a3e13b_851E0A70-4517-9604-3D22-128BF0452AC8_BOTANYBAYEP1_WORKGROUP\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "harddrive",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tychon-harddrive-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "tychon",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

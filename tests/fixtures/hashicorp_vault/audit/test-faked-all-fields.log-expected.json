@@ -1,0 +1,446 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-04-09T21:04:29.640Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "authentication"
+        ],
+        "id": "c5f98464-6ffb-1ffb-831e-15a8630e61b2",
+        "kind": "event",
+        "original": "{\"time\":\"2046-04-09T21:04:29.6406536Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"display_name\":\"token\",\"policies\":[\"default\",\"sudo\",\"surf-admin\"],\"metadata\":{\"loglevel\":\"raw\",\"remote\":\"false\",\"surf\":\"moderate\"},\"entity_id\":\"\"},\"request\":{\"id\":\"c5f98464-6ffb-1ffb-831e-15a8630e61b2\",\"operation\":\"read\",\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"client_token_accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"path\":\"auth/token/lookup-self\",\"data\":null,\"policy_override\":false,\"remote_address\":\"172.22.234.160\",\"wrap_ttl\":0,\"headers\":{}},\"error\":\"\"}",
+        "outcome": "failure",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d",
+            "client_token": "hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc",
+            "display_name": "token",
+            "entity_id": "",
+            "metadata": {
+              "loglevel": "raw",
+              "remote": "false",
+              "surf": "moderate"
+            },
+            "policies": [
+              "default",
+              "sudo",
+              "surf-admin"
+            ]
+          },
+          "error": "",
+          "request": {
+            "client_token": "hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc",
+            "client_token_accessor": "hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d",
+            "data": null,
+            "headers": {},
+            "id": "c5f98464-6ffb-1ffb-831e-15a8630e61b2",
+            "operation": "read",
+            "path": "auth/token/lookup-self",
+            "policy_override": false,
+            "remote_address": "172.22.234.160",
+            "wrap_ttl": 0
+          },
+          "type": "request"
+        }
+      },
+      "message": "",
+      "related": {
+        "ip": [
+          "172.22.234.160"
+        ]
+      },
+      "source": {
+        "ip": "172.22.234.160"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2046-04-09T21:04:29.642Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "authentication"
+        ],
+        "id": "c5f98464-6ffb-1ffb-831e-15a8630e61b2",
+        "kind": "event",
+        "original": "{\"time\":\"2046-04-09T21:04:29.6420203Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"display_name\":\"token\",\"policies\":[\"default\",\"sudo\",\"surf-admin\"],\"metadata\":{\"loglevel\":\"raw\",\"remote\":\"false\",\"surf\":\"moderate\"},\"entity_id\":\"\"},\"request\":{\"id\":\"c5f98464-6ffb-1ffb-831e-15a8630e61b2\",\"operation\":\"read\",\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"client_token_accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"path\":\"auth/token/lookup-self\",\"data\":null,\"policy_override\":false,\"remote_address\":\"172.22.234.160\",\"wrap_ttl\":0,\"headers\":{}},\"response\":{\"data\":{\"accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"creation_time\":2406920482,\"creation_ttl\":180000000,\"display_name\":\"hmac-sha256:b23900f343c1521c3906ef8331fb77503254be1b301dfc8e83e26881197d68c0\",\"entity_id\":\"hmac-sha256:8aaac3f5e68889e0235c273baf96de9b5673c4222453bc5d1e7063611dd8a132\",\"expire_time\":\"2051-12-23T05:01:22.8929692Z\",\"explicit_max_ttl\":0,\"id\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"issue_time\":\"2046-04-09T21:01:22.8929624Z\",\"meta\":{\"loglevel\":\"hmac-sha256:add7d9abc7ea15457ae83fd23f8cbac31e77da54be1bc51fd8cf5683689318e5\",\"remote\":\"hmac-sha256:fa7c7dd23c4511eeb0f8d4dc131aabee6580d1a65d4e54a452067455129bae76\",\"surf\":\"hmac-sha256:7f56bc0576db24c63db6c8f925aeecb096d650aa9486759e1d9620c6a1b69675\"},\"num_uses\":0,\"orphan\":false,\"path\":\"hmac-sha256:80fc557e035e8c3cecb169a11f69999517d363358a9e4243ec8a8c4b7095d181\",\"policies\":[\"hmac-sha256:938491bcfe96ae8d6f1b829beb1e4d64673717c05f778429f8f1dff28d55a05c\",\"hmac-sha256:7f07c289d538610b8d2cc3a2dcfcca1412c8548719d87e3da082a3e836c005e1\",\"hmac-sha256:0669b394cfd219e67cff4bc104c9b903f2041a039f76c7266019ab97506d6df3\"],\"renewable\":true,\"ttl\":179999812}},\"error\":\"\"}",
+        "outcome": "failure",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d",
+            "client_token": "hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc",
+            "display_name": "token",
+            "entity_id": "",
+            "metadata": {
+              "loglevel": "raw",
+              "remote": "false",
+              "surf": "moderate"
+            },
+            "policies": [
+              "default",
+              "sudo",
+              "surf-admin"
+            ]
+          },
+          "error": "",
+          "request": {
+            "client_token": "hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc",
+            "client_token_accessor": "hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d",
+            "data": null,
+            "headers": {},
+            "id": "c5f98464-6ffb-1ffb-831e-15a8630e61b2",
+            "operation": "read",
+            "path": "auth/token/lookup-self",
+            "policy_override": false,
+            "remote_address": "172.22.234.160",
+            "wrap_ttl": 0
+          },
+          "response": {
+            "data": {
+              "accessor": "hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d",
+              "creation_time": 2406920482,
+              "creation_ttl": 180000000,
+              "display_name": "hmac-sha256:b23900f343c1521c3906ef8331fb77503254be1b301dfc8e83e26881197d68c0",
+              "entity_id": "hmac-sha256:8aaac3f5e68889e0235c273baf96de9b5673c4222453bc5d1e7063611dd8a132",
+              "expire_time": "2051-12-23T05:01:22.8929692Z",
+              "explicit_max_ttl": 0,
+              "id": "hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc",
+              "issue_time": "2046-04-09T21:01:22.8929624Z",
+              "meta": {
+                "loglevel": "hmac-sha256:add7d9abc7ea15457ae83fd23f8cbac31e77da54be1bc51fd8cf5683689318e5",
+                "remote": "hmac-sha256:fa7c7dd23c4511eeb0f8d4dc131aabee6580d1a65d4e54a452067455129bae76",
+                "surf": "hmac-sha256:7f56bc0576db24c63db6c8f925aeecb096d650aa9486759e1d9620c6a1b69675"
+              },
+              "num_uses": 0,
+              "orphan": false,
+              "path": "hmac-sha256:80fc557e035e8c3cecb169a11f69999517d363358a9e4243ec8a8c4b7095d181",
+              "policies": [
+                "hmac-sha256:938491bcfe96ae8d6f1b829beb1e4d64673717c05f778429f8f1dff28d55a05c",
+                "hmac-sha256:7f07c289d538610b8d2cc3a2dcfcca1412c8548719d87e3da082a3e836c005e1",
+                "hmac-sha256:0669b394cfd219e67cff4bc104c9b903f2041a039f76c7266019ab97506d6df3"
+              ],
+              "renewable": true,
+              "ttl": 179999812
+            }
+          },
+          "type": "response"
+        }
+      },
+      "message": "",
+      "related": {
+        "ip": [
+          "172.22.234.160"
+        ]
+      },
+      "source": {
+        "ip": "172.22.234.160"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-21T12:37:50.936Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "authentication"
+        ],
+        "id": "558b0395-c231-49f9-9aca-789b2312acb1",
+        "kind": "event",
+        "original": "{\"time\":\"2049-07-21T12:37:50.93608Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e\",\"accessor\":\"bar\",\"display_name\":\"ifkpnliaq\",\"policies\":[\"root\"],\"token_policies\":[\"web\"],\"identity_policies\":[\"ident1\",\"ident2\"],\"external_namespace_policies\":{\"ns1\":[\"baz\"]},\"no_default_policy\":true,\"metadata\":{\"id\":\"007\"},\"remaining_uses\":5,\"entity_id\":\"foobarentity\",\"token_type\":\"service\",\"token_ttl\":14400,\"token_issue_time\":\"2048-05-28T13:40:18-05:00\"},\"request\":{\"id\":\"558b0395-c231-49f9-9aca-789b2312acb1\",\"operation\":\"update\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:f552e19d8fb65b08cbe9e6e9ce349bd422b0c2f14c3db4e2970b5a81087d646d\",\"client_token_accessor\":\"97f6b077-7bc2-4ddc-9140-5a568668c6c7\",\"namespace\":{\"id\":\"root\"},\"path\":\"secrets/foo\",\"data\":{\"data\":\"hmac-sha256:48b0ee3827c56ea360634840bf5ef8319ce12ee8f0e2982c1b2565d8234b34bf\"},\"policy_override\":true,\"remote_address\":\"127.0.0.1\",\"wrap_ttl\":3600,\"headers\":{\"foo\":[\"bar\"],\"user-agent\":[\"Go-http-client/2.0\"]}},\"error\":\"this is an error\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "bar",
+            "client_token": "hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e",
+            "display_name": "ifkpnliaq",
+            "entity_id": "foobarentity",
+            "external_namespace_policies": {
+              "ns1": [
+                "baz"
+              ]
+            },
+            "identity_policies": [
+              "ident1",
+              "ident2"
+            ],
+            "metadata": {
+              "id": "007"
+            },
+            "no_default_policy": true,
+            "policies": [
+              "root"
+            ],
+            "remaining_uses": 5,
+            "token_issue_time": "2048-05-28T13:40:18-05:00",
+            "token_policies": [
+              "web"
+            ],
+            "token_ttl": 14400,
+            "token_type": "service"
+          },
+          "error": "this is an error",
+          "request": {
+            "client_token": "hmac-sha256:f552e19d8fb65b08cbe9e6e9ce349bd422b0c2f14c3db4e2970b5a81087d646d",
+            "client_token_accessor": "97f6b077-7bc2-4ddc-9140-5a568668c6c7",
+            "data": {
+              "data": "hmac-sha256:48b0ee3827c56ea360634840bf5ef8319ce12ee8f0e2982c1b2565d8234b34bf"
+            },
+            "headers": {
+              "foo": [
+                "bar"
+              ],
+              "user-agent": [
+                "Go-http-client/2.0"
+              ]
+            },
+            "id": "558b0395-c231-49f9-9aca-789b2312acb1",
+            "mount_type": "kv",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "update",
+            "path": "secrets/foo",
+            "policy_override": true,
+            "remote_address": "127.0.0.1",
+            "wrap_ttl": 3600
+          },
+          "type": "request"
+        }
+      },
+      "message": "this is an error",
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Go-http-client",
+        "original": "Go-http-client/2.0",
+        "version": "2.0"
+      }
+    },
+    {
+      "@timestamp": "2049-07-21T12:37:50.936Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "authentication"
+        ],
+        "id": "558b0395-c231-49f9-9aca-789b2312acb1",
+        "kind": "event",
+        "original": "{\"time\":\"2049-07-21T12:37:50.936443Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e\",\"accessor\":\"bar\",\"display_name\":\"ifkpnliaq\",\"policies\":[\"root\"],\"token_policies\":[\"web\"],\"identity_policies\":[\"ident1\",\"ident2\"],\"external_namespace_policies\":{\"ns1\":[\"baz\"]},\"no_default_policy\":true,\"metadata\":{\"id\":\"007\"},\"remaining_uses\":5,\"entity_id\":\"foobarentity\",\"token_type\":\"service\",\"token_ttl\":14400,\"token_issue_time\":\"2048-05-28T13:40:18-05:00\"},\"request\":{\"id\":\"558b0395-c231-49f9-9aca-789b2312acb1\",\"operation\":\"update\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:f552e19d8fb65b08cbe9e6e9ce349bd422b0c2f14c3db4e2970b5a81087d646d\",\"client_token_accessor\":\"97f6b077-7bc2-4ddc-9140-5a568668c6c7\",\"namespace\":{\"id\":\"root\"},\"path\":\"secrets/foo\",\"data\":{\"data\":\"hmac-sha256:48b0ee3827c56ea360634840bf5ef8319ce12ee8f0e2982c1b2565d8234b34bf\"},\"policy_override\":true,\"remote_address\":\"127.0.0.1\",\"wrap_ttl\":3600,\"headers\":{\"foo\":[\"bar\"],\"user-agent\":[\"hmac-sha256:7b1e4f7e7e8a2c7c4a0f5c3e2c0d9e1d3f15619496b8d9e8c2a9c1d9d1b8b3c1\"]}},\"response\":{\"auth\":{\"client_token\":\"hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e\",\"accessor\":\"bar\",\"display_name\":\"ifkpnliaq\",\"policies\":[\"root\"],\"token_policies\":[\"web\"],\"identity_policies\":[\"ident1\",\"ident2\"],\"external_namespace_policies\":{\"ns1\":[\"baz\"]},\"no_default_policy\":true,\"metadata\":{\"id\":\"007\"},\"entity_id\":\"foobarentity\",\"token_type\":\"service\",\"token_ttl\":14400,\"token_issue_time\":\"2048-05-28T13:40:18-05:00\"},\"mount_type\":\"kv\",\"data\":{\"certificate\":\"hmac-sha256:be114b9784f8022b2b47a80c4ea0bfc23c5c8bd06fe1ea3f739c9f64d7dfbb16\"},\"redirect\":\"redirect\",\"wrap_info\":{\"ttl\":3600,\"token\":\"hmac-sha256:41efb8cef1da55511032b8b3150cafa24bcc616ae2bbe8c55dea196dfd758041\",\"accessor\":\"xzW2I9CMqcALsllhYvqtlsvq\",\"creation_time\":\"2048-05-28T18:40:18Z\",\"creation_path\":\"auth/token/create\",\"wrapped_accessor\":\"Bh57rT8zuhspG9APjXpGpiAJ\"},\"headers\":{\"Extra-Extra\":[\"read\"]}},\"error\":\"this is an error\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "bar",
+            "client_token": "hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e",
+            "display_name": "ifkpnliaq",
+            "entity_id": "foobarentity",
+            "external_namespace_policies": {
+              "ns1": [
+                "baz"
+              ]
+            },
+            "identity_policies": [
+              "ident1",
+              "ident2"
+            ],
+            "metadata": {
+              "id": "007"
+            },
+            "no_default_policy": true,
+            "policies": [
+              "root"
+            ],
+            "remaining_uses": 5,
+            "token_issue_time": "2048-05-28T13:40:18-05:00",
+            "token_policies": [
+              "web"
+            ],
+            "token_ttl": 14400,
+            "token_type": "service"
+          },
+          "error": "this is an error",
+          "request": {
+            "client_token": "hmac-sha256:f552e19d8fb65b08cbe9e6e9ce349bd422b0c2f14c3db4e2970b5a81087d646d",
+            "client_token_accessor": "97f6b077-7bc2-4ddc-9140-5a568668c6c7",
+            "data": {
+              "data": "hmac-sha256:48b0ee3827c56ea360634840bf5ef8319ce12ee8f0e2982c1b2565d8234b34bf"
+            },
+            "headers": {
+              "foo": [
+                "bar"
+              ],
+              "user-agent": [
+                "hmac-sha256:7b1e4f7e7e8a2c7c4a0f5c3e2c0d9e1d3f15619496b8d9e8c2a9c1d9d1b8b3c1"
+              ]
+            },
+            "id": "558b0395-c231-49f9-9aca-789b2312acb1",
+            "mount_type": "kv",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "update",
+            "path": "secrets/foo",
+            "policy_override": true,
+            "remote_address": "127.0.0.1",
+            "wrap_ttl": 3600
+          },
+          "response": {
+            "auth": {
+              "accessor": "bar",
+              "client_token": "hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e",
+              "display_name": "ifkpnliaq",
+              "entity_id": "foobarentity",
+              "external_namespace_policies": {
+                "ns1": [
+                  "baz"
+                ]
+              },
+              "identity_policies": [
+                "ident1",
+                "ident2"
+              ],
+              "metadata": {
+                "id": "007"
+              },
+              "no_default_policy": true,
+              "policies": [
+                "root"
+              ],
+              "token_issue_time": "2048-05-28T13:40:18-05:00",
+              "token_policies": [
+                "web"
+              ],
+              "token_ttl": 14400,
+              "token_type": "service"
+            },
+            "data": {
+              "certificate": "hmac-sha256:be114b9784f8022b2b47a80c4ea0bfc23c5c8bd06fe1ea3f739c9f64d7dfbb16"
+            },
+            "headers": {
+              "Extra-Extra": [
+                "read"
+              ]
+            },
+            "mount_type": "kv",
+            "redirect": "redirect",
+            "wrap_info": {
+              "accessor": "xzW2I9CMqcALsllhYvqtlsvq",
+              "creation_path": "auth/token/create",
+              "creation_time": "2048-05-28T18:40:18Z",
+              "token": "hmac-sha256:41efb8cef1da55511032b8b3150cafa24bcc616ae2bbe8c55dea196dfd758041",
+              "ttl": 3600,
+              "wrapped_accessor": "Bh57rT8zuhspG9APjXpGpiAJ"
+            }
+          },
+          "type": "response"
+        }
+      },
+      "message": "this is an error",
+      "related": {
+        "ip": [
+          "127.0.0.1"
+        ]
+      },
+      "source": {
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2046-04-09T21:04:29.6406536Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"display_name\":\"token\",\"policies\":[\"default\",\"sudo\",\"surf-admin\"],\"metadata\":{\"loglevel\":\"raw\",\"remote\":\"false\",\"surf\":\"moderate\"},\"entity_id\":\"\"},\"request\":{\"id\":\"c5f98464-6ffb-1ffb-831e-15a8630e61b2\",\"operation\":\"read\",\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"client_token_accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"path\":\"auth/token/lookup-self\",\"data\":null,\"policy_override\":false,\"remote_address\":\"172.22.234.160\",\"wrap_ttl\":0,\"headers\":{}},\"error\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2046-04-09T21:04:29.6420203Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"display_name\":\"token\",\"policies\":[\"default\",\"sudo\",\"surf-admin\"],\"metadata\":{\"loglevel\":\"raw\",\"remote\":\"false\",\"surf\":\"moderate\"},\"entity_id\":\"\"},\"request\":{\"id\":\"c5f98464-6ffb-1ffb-831e-15a8630e61b2\",\"operation\":\"read\",\"client_token\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"client_token_accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"path\":\"auth/token/lookup-self\",\"data\":null,\"policy_override\":false,\"remote_address\":\"172.22.234.160\",\"wrap_ttl\":0,\"headers\":{}},\"response\":{\"data\":{\"accessor\":\"hmac-sha256:f4c2084686ad26b2336fca9fae3ba2075c9f5acbf32ad59c830814b9570fcf8d\",\"creation_time\":2406920482,\"creation_ttl\":180000000,\"display_name\":\"hmac-sha256:b23900f343c1521c3906ef8331fb77503254be1b301dfc8e83e26881197d68c0\",\"entity_id\":\"hmac-sha256:8aaac3f5e68889e0235c273baf96de9b5673c4222453bc5d1e7063611dd8a132\",\"expire_time\":\"2051-12-23T05:01:22.8929692Z\",\"explicit_max_ttl\":0,\"id\":\"hmac-sha256:de2ba832d0bf2f6f6203373a8efb520e90e5ecae3f2a8920891062615cf211cc\",\"issue_time\":\"2046-04-09T21:01:22.8929624Z\",\"meta\":{\"loglevel\":\"hmac-sha256:add7d9abc7ea15457ae83fd23f8cbac31e77da54be1bc51fd8cf5683689318e5\",\"remote\":\"hmac-sha256:fa7c7dd23c4511eeb0f8d4dc131aabee6580d1a65d4e54a452067455129bae76\",\"surf\":\"hmac-sha256:7f56bc0576db24c63db6c8f925aeecb096d650aa9486759e1d9620c6a1b69675\"},\"num_uses\":0,\"orphan\":false,\"path\":\"hmac-sha256:80fc557e035e8c3cecb169a11f69999517d363358a9e4243ec8a8c4b7095d181\",\"policies\":[\"hmac-sha256:938491bcfe96ae8d6f1b829beb1e4d64673717c05f778429f8f1dff28d55a05c\",\"hmac-sha256:7f07c289d538610b8d2cc3a2dcfcca1412c8548719d87e3da082a3e836c005e1\",\"hmac-sha256:0669b394cfd219e67cff4bc104c9b903f2041a039f76c7266019ab97506d6df3\"],\"renewable\":true,\"ttl\":179999812}},\"error\":\"\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-07-21T12:37:50.93608Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e\",\"accessor\":\"bar\",\"display_name\":\"ifkpnliaq\",\"policies\":[\"root\"],\"token_policies\":[\"web\"],\"identity_policies\":[\"ident1\",\"ident2\"],\"external_namespace_policies\":{\"ns1\":[\"baz\"]},\"no_default_policy\":true,\"metadata\":{\"id\":\"007\"},\"remaining_uses\":5,\"entity_id\":\"foobarentity\",\"token_type\":\"service\",\"token_ttl\":14400,\"token_issue_time\":\"2048-05-28T13:40:18-05:00\"},\"request\":{\"id\":\"558b0395-c231-49f9-9aca-789b2312acb1\",\"operation\":\"update\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:f552e19d8fb65b08cbe9e6e9ce349bd422b0c2f14c3db4e2970b5a81087d646d\",\"client_token_accessor\":\"97f6b077-7bc2-4ddc-9140-5a568668c6c7\",\"namespace\":{\"id\":\"root\"},\"path\":\"secrets/foo\",\"data\":{\"data\":\"hmac-sha256:48b0ee3827c56ea360634840bf5ef8319ce12ee8f0e2982c1b2565d8234b34bf\"},\"policy_override\":true,\"remote_address\":\"127.0.0.1\",\"wrap_ttl\":3600,\"headers\":{\"foo\":[\"bar\"],\"user-agent\":[\"Go-http-client/2.0\"]}},\"error\":\"this is an error\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-07-21T12:37:50.936443Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e\",\"accessor\":\"bar\",\"display_name\":\"ifkpnliaq\",\"policies\":[\"root\"],\"token_policies\":[\"web\"],\"identity_policies\":[\"ident1\",\"ident2\"],\"external_namespace_policies\":{\"ns1\":[\"baz\"]},\"no_default_policy\":true,\"metadata\":{\"id\":\"007\"},\"remaining_uses\":5,\"entity_id\":\"foobarentity\",\"token_type\":\"service\",\"token_ttl\":14400,\"token_issue_time\":\"2048-05-28T13:40:18-05:00\"},\"request\":{\"id\":\"558b0395-c231-49f9-9aca-789b2312acb1\",\"operation\":\"update\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:f552e19d8fb65b08cbe9e6e9ce349bd422b0c2f14c3db4e2970b5a81087d646d\",\"client_token_accessor\":\"97f6b077-7bc2-4ddc-9140-5a568668c6c7\",\"namespace\":{\"id\":\"root\"},\"path\":\"secrets/foo\",\"data\":{\"data\":\"hmac-sha256:48b0ee3827c56ea360634840bf5ef8319ce12ee8f0e2982c1b2565d8234b34bf\"},\"policy_override\":true,\"remote_address\":\"127.0.0.1\",\"wrap_ttl\":3600,\"headers\":{\"foo\":[\"bar\"],\"user-agent\":[\"hmac-sha256:7b1e4f7e7e8a2c7c4a0f5c3e2c0d9e1d3f15619496b8d9e8c2a9c1d9d1b8b3c1\"]}},\"response\":{\"auth\":{\"client_token\":\"hmac-sha256:4edf204a3104426ac259ff0e58a18da033668d139b8972b3cff0ec88153b582e\",\"accessor\":\"bar\",\"display_name\":\"ifkpnliaq\",\"policies\":[\"root\"],\"token_policies\":[\"web\"],\"identity_policies\":[\"ident1\",\"ident2\"],\"external_namespace_policies\":{\"ns1\":[\"baz\"]},\"no_default_policy\":true,\"metadata\":{\"id\":\"007\"},\"entity_id\":\"foobarentity\",\"token_type\":\"service\",\"token_ttl\":14400,\"token_issue_time\":\"2048-05-28T13:40:18-05:00\"},\"mount_type\":\"kv\",\"data\":{\"certificate\":\"hmac-sha256:be114b9784f8022b2b47a80c4ea0bfc23c5c8bd06fe1ea3f739c9f64d7dfbb16\"},\"redirect\":\"redirect\",\"wrap_info\":{\"ttl\":3600,\"token\":\"hmac-sha256:41efb8cef1da55511032b8b3150cafa24bcc616ae2bbe8c55dea196dfd758041\",\"accessor\":\"xzW2I9CMqcALsllhYvqtlsvq\",\"creation_time\":\"2048-05-28T18:40:18Z\",\"creation_path\":\"auth/token/create\",\"wrapped_accessor\":\"Bh57rT8zuhspG9APjXpGpiAJ\"},\"headers\":{\"Extra-Extra\":[\"read\"]}},\"error\":\"this is an error\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-hashicorp_vault-audit-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "hashicorp_vault",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

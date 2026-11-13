@@ -1,0 +1,391 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2049-05-26T16:27:07.000Z",
+      "agent": {
+        "ephemeral_id": "ff5f7e7b-9fe8-4ded-85b1-1af84773bc9c",
+        "id": "31647ebe-7889-4ef1-b2dc-ce2dc7805917",
+        "name": "a51fb9d783e7",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "bytes": "1696",
+        "ip": "127.0.0.0",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": "35834"
+        },
+        "packets": "14",
+        "port": "35834"
+      },
+      "destination": {
+        "address": "127.0.0.1",
+        "bytes": 5595,
+        "geo": {
+          "name": "SG"
+        },
+        "ip": "127.0.0.1",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 20077
+        },
+        "packets": 7,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "flow_terminated",
+        "category": [
+          "network"
+        ],
+        "created": "2049-05-26T16:27:07.000000Z",
+        "dataset": "panw.panos",
+        "duration": 1000000000,
+        "end": "2049-05-26T16:26:31.000Z",
+        "kind": "event",
+        "module": "panw",
+        "original": "Oct 30 09:46:42 1,2049-05-26T16:27:07.000000Z,no-serial,TRAFFIC,end,9.1,2049-05-26T16:26:47.000000Z,127.0.0.0,127.0.0.1,0.0.0.0,0.0.0.0,intrazone-default,,,web-browsing,vsys1,untrust,untrust,ethernet1/1,ethernet1/1,Cortex Data Lake,,688290,1,35834,443,35834,20077,0x1400070,tcp,allow,7291,1696,5595,21,2049-05-26T16:26:30.000000Z,1,medium-risk,,620386,0x8800000000000000,US,SG,,14,7,tcp-fin,22,18,0,0,,GP cloud service,from-policy,,,0,,0,1970-01-01T00:00:00.000000Z,N/A,0,0,0,0,0c8c3165-10b5-4bdb-8ca3-465fb8822b26,0,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+        "outcome": "success",
+        "start": "2049-05-26T16:26:30.000Z",
+        "timezone": "+00:00",
+        "type": [
+          "allowed",
+          "end",
+          "connection"
+        ]
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "labels": {
+        "nat_translated": true,
+        "ssl_decrypted": true
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "network": {
+        "application": "web-browsing",
+        "bytes": 7291,
+        "community_id": [
+          "1:q5HHCKGDtoHfI//AqHbOlmLMsRQ=",
+          "1:lME0D6scndGsx6dABDTbtWkIb3E="
+        ],
+        "direction": "external",
+        "packets": 21,
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "ethernet1/1"
+          },
+          "zone": "untrust"
+        },
+        "hostname": "GP cloud service",
+        "ingress": {
+          "interface": {
+            "name": "ethernet1/1"
+          },
+          "zone": "untrust"
+        },
+        "product": "PAN-OS",
+        "serial_number": "no-serial",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action": "allow",
+          "action_flags": "0x8800000000000000",
+          "action_source": "from-policy",
+          "destination": {
+            "interface": "ethernet1/1"
+          },
+          "device_group_hierarchy1": "22",
+          "device_group_hierarchy2": "18",
+          "device_group_hierarchy3": "0",
+          "device_group_hierarchy4": "0",
+          "endreason": "tcp-fin",
+          "flow_id": "688290",
+          "generated_time": "2049-05-26T16:26:47.000Z",
+          "http2_connection": "0",
+          "imsi": "0",
+          "link": {
+            "change_count": 0
+          },
+          "log_profile": "Cortex Data Lake",
+          "network": {
+            "nat": {
+              "community_id": "1:lME0D6scndGsx6dABDTbtWkIb3E="
+            }
+          },
+          "parent_session": {
+            "id": "0",
+            "start_time": "1970-01-01T00:00:00.000Z"
+          },
+          "received_time": "2049-05-26T16:27:07.000Z",
+          "repeat_count": 1,
+          "ruleset": "intrazone-default",
+          "sctp": {
+            "assoc_id": "0",
+            "chunks": 0,
+            "chunks_received": 0,
+            "chunks_sent": 0
+          },
+          "sequence_number": "620386",
+          "source": {
+            "interface": "ethernet1/1"
+          },
+          "sub_type": "end",
+          "tunnel_type": "N/A",
+          "type": "TRAFFIC",
+          "url": {
+            "category": "medium-risk"
+          },
+          "virtual_sys": "vsys1"
+        }
+      },
+      "related": {
+        "hosts": [
+          "GP cloud service"
+        ],
+        "ip": [
+          "127.0.0.0",
+          "127.0.0.1",
+          "0.0.0.0"
+        ]
+      },
+      "rule": {
+        "name": "intrazone-default",
+        "uuid": "0c8c3165-10b5-4bdb-8ca3-465fb8822b26"
+      },
+      "server": {
+        "bytes": "5595",
+        "ip": "127.0.0.1",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": "20077"
+        },
+        "packets": "7",
+        "port": "443"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "session": {
+        "start_time": "1970-01-01T00:00:00.000Z"
+      },
+      "source": {
+        "address": "127.0.0.0",
+        "bytes": 1696,
+        "geo": {
+          "name": "US"
+        },
+        "ip": "127.0.0.0",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": 35834
+        },
+        "packets": 14,
+        "port": 35834
+      },
+      "tags": [
+        "pan-os",
+        "forwarded",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-panw-panos-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2052-05-29T08:50:35.386Z",
+      "_temp_": {
+        "external_zones": [
+          "untrust"
+        ],
+        "generated_time": "2049-05-26T16:26:47.000000Z",
+        "ietf_header": "Oct 30 09:46:42 1",
+        "internal_zones": [
+          "trust"
+        ],
+        "labels": "0x1400070"
+      },
+      "agent": {
+        "ephemeral_id": "ff5f7e7b-9fe8-4ded-85b1-1af84773bc9c",
+        "id": "31647ebe-7889-4ef1-b2dc-ce2dc7805917",
+        "name": "a51fb9d783e7",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "bytes": "1696",
+        "ip": "127.0.0.0",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": "35834"
+        },
+        "packets": "14",
+        "port": "35834"
+      },
+      "destination": {
+        "address": "127.0.0.1",
+        "bytes": "5595",
+        "ip": "127.0.0.1",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": "20077"
+        },
+        "packets": "7",
+        "port": "443"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "created": "2049-05-26T16:27:07.000000Z",
+        "dataset": "panw.panos",
+        "duration": "1",
+        "module": "panw",
+        "start": "2049-05-26T16:26:30.000000Z",
+        "timezone": "+00:00"
+      },
+      "fileset": {
+        "name": "panos"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "message": "Oct 30 09:46:42 1,2049-05-26T16:27:07.000000Z,no-serial,TRAFFIC,end,9.1,2049-05-26T16:26:47.000000Z,127.0.0.0,127.0.0.1,0.0.0.0,0.0.0.0,intrazone-default,,,web-browsing,vsys1,untrust,untrust,ethernet1/1,ethernet1/1,Cortex Data Lake,,688290,1,35834,443,35834,20077,0x1400070,tcp,allow,7291,1696,5595,21,2049-05-26T16:26:30.000000Z,1,medium-risk,,620386,0x8800000000000000,US,SG,,14,7,tcp-fin,22,18,0,0,,GP cloud service,from-policy,,,0,,0,1970-01-01T00:00:00.000000Z,N/A,0,0,0,0,0c8c3165-10b5-4bdb-8ca3-465fb8822b26,0,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+      "network": {
+        "application": "web-browsing",
+        "bytes": "7291",
+        "packets": "21",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "ethernet1/1"
+          },
+          "zone": "untrust"
+        },
+        "hostname": "GP cloud service",
+        "ingress": {
+          "interface": {
+            "name": "ethernet1/1"
+          },
+          "zone": "untrust"
+        },
+        "product": "PAN-OS",
+        "serial_number": "no-serial",
+        "type": "firewall",
+        "vendor": "Palo Alto Networks"
+      },
+      "panw": {
+        "panos": {
+          "action": "allow",
+          "destination": {
+            "interface": "ethernet1/1",
+            "nat": {
+              "ip": "0.0.0.0",
+              "port": 20077
+            },
+            "zone": "untrust"
+          },
+          "endreason": "tcp-fin",
+          "flow_id": "688290",
+          "ruleset": "intrazone-default",
+          "sequence_number": "620386",
+          "source": {
+            "interface": "ethernet1/1",
+            "nat": {
+              "ip": "0.0.0.0",
+              "port": 35834
+            },
+            "zone": "untrust"
+          },
+          "sub_type": "end",
+          "type": "TRAFFIC",
+          "url": {
+            "category": "medium-risk"
+          },
+          "virtual_sys": "vsys1"
+        }
+      },
+      "server": {
+        "bytes": "5595",
+        "ip": "127.0.0.1",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": "20077"
+        },
+        "packets": "7",
+        "port": "443"
+      },
+      "service": {
+        "type": "panw"
+      },
+      "source": {
+        "address": "127.0.0.0",
+        "bytes": "1696",
+        "ip": "127.0.0.0",
+        "nat": {
+          "ip": "0.0.0.0",
+          "port": "35834"
+        },
+        "packets": "14",
+        "port": "35834"
+      },
+      "tags": [
+        "pan-os",
+        "forwarded"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "panos",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-panw-panos-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "panw",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

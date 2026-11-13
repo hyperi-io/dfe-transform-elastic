@@ -1,0 +1,287 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-02-16T21:00:00.000Z",
+      "event": {
+        "dataset": "grafana.metrics",
+        "ingested": "2026-11-13T23:05:43.452739579Z",
+        "kind": "metric",
+        "module": "grafana"
+      },
+      "grafana": {
+        "alerting": {
+          "active_alerts": 0,
+          "active_configurations": 1,
+          "schedule": {
+            "alert_rules": 0
+          },
+          "scheduler": {
+            "behind_seconds": 0.000998556
+          },
+          "ticker": {
+            "interval_seconds": 10
+          }
+        },
+        "api": {
+          "dashboard": {
+            "get": {
+              "count": 16,
+              "sum": 823
+            },
+            "save": {
+              "count": 178,
+              "sum": 25914
+            },
+            "search": {
+              "count": 28,
+              "sum": 318
+            }
+          },
+          "login": {
+            "oauth": {
+              "total": 0
+            },
+            "post": {
+              "total": 1
+            }
+          }
+        },
+        "authentication": {
+          "attempts": 850
+        },
+        "build_info": {
+          "_value": 1
+        },
+        "database": {
+          "connections": {
+            "idle": 2,
+            "in_use": 0,
+            "max_idle_closed": 183,
+            "max_idle_closed_seconds": 0,
+            "max_lifetime_closed": 0,
+            "max_open": 0,
+            "open": 2,
+            "wait_count": 0,
+            "wait_duration_seconds": 0
+          }
+        },
+        "emails": {
+          "sent": {
+            "failed": 0,
+            "total": 0
+          }
+        },
+        "environment_info": {
+          "_value": 1
+        },
+        "go": {
+          "gc": {
+            "duration": {
+              "count": 180,
+              "seconds": 0.025293074
+            }
+          },
+          "goroutines": 388,
+          "memstats": {
+            "alloc_bytes": 58324944,
+            "heap_alloc_bytes": 58324944,
+            "heap_idle_bytes": 45629440,
+            "heap_inuse_bytes": 77316096,
+            "heap_objects": 378368,
+            "heap_released_bytes": 39976960,
+            "heap_sys_bytes": 122945536,
+            "next_gc_bytes": 106835570,
+            "stack_inuse_bytes": 2883584,
+            "sys_bytes": 138340632
+          },
+          "threads": 17
+        },
+        "process": {
+          "cpu": {
+            "seconds": {
+              "total": 94.98
+            }
+          },
+          "max_fds": 10000,
+          "memory": {
+            "resident_bytes": 282255360,
+            "virtual_bytes": 1800351744
+          },
+          "open_fds": 19,
+          "start_time_seconds": 2654872689.66
+        },
+        "stat": {
+          "active_admins": {
+            "total": 1
+          },
+          "active_editors": {
+            "total": 1
+          },
+          "active_viewers": {
+            "total": 0
+          },
+          "admins": {
+            "total": 1
+          },
+          "alert_rules": {
+            "total": 0
+          },
+          "annotations": {
+            "total": 0
+          },
+          "correlations": {
+            "total": 0
+          },
+          "dashboard_versions": {
+            "total": 705
+          },
+          "dashboards": {
+            "total": 35
+          },
+          "datasources": {
+            "total": 5
+          },
+          "editors": {
+            "total": 1
+          },
+          "folders": {
+            "total": 8
+          },
+          "library_panels": {
+            "total": 0
+          },
+          "orgs": {
+            "total": 1
+          },
+          "playlists": {
+            "total": 0
+          },
+          "public_dashboards": {
+            "total": 0
+          },
+          "repositories": {
+            "total": 0
+          },
+          "rule_groups": {
+            "total": 0
+          },
+          "service_accounts": {
+            "total": 1
+          },
+          "teams": {
+            "total": 0
+          },
+          "users": {
+            "active": 1,
+            "total": 1
+          },
+          "viewers": {
+            "total": 0
+          }
+        }
+      },
+      "prometheus": {
+        "labels": {}
+      },
+      "service": {
+        "address": "grafana:3000",
+        "name": "grafana"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-02-16T21:00:00.000Z",
+      "prometheus": {
+        "labels": {
+          "instance": "grafana:3000",
+          "job": "grafana"
+        },
+        "metrics": {
+          "go_gc_duration_seconds_count": 180,
+          "go_gc_duration_seconds_sum": 0.025293074,
+          "go_goroutines": 388,
+          "go_memstats_alloc_bytes": 58324944,
+          "go_memstats_heap_alloc_bytes": 58324944,
+          "go_memstats_heap_idle_bytes": 45629440,
+          "go_memstats_heap_inuse_bytes": 77316096,
+          "go_memstats_heap_objects": 378368,
+          "go_memstats_heap_released_bytes": 39976960,
+          "go_memstats_heap_sys_bytes": 122945536,
+          "go_memstats_next_gc_bytes": 106835570,
+          "go_memstats_stack_inuse_bytes": 2883584,
+          "go_memstats_sys_bytes": 138340632,
+          "go_threads": 17,
+          "grafana_alerting_active_alerts": 0,
+          "grafana_alerting_active_configurations": 1,
+          "grafana_alerting_schedule_alert_rules": 0,
+          "grafana_alerting_scheduler_behind_seconds": 0.000998556,
+          "grafana_alerting_ticker_interval_seconds": 10,
+          "grafana_api_dashboard_get_milliseconds_count": 16,
+          "grafana_api_dashboard_get_milliseconds_sum": 823,
+          "grafana_api_dashboard_save_milliseconds_count": 178,
+          "grafana_api_dashboard_save_milliseconds_sum": 25914,
+          "grafana_api_dashboard_search_milliseconds_count": 28,
+          "grafana_api_dashboard_search_milliseconds_sum": 318,
+          "grafana_api_login_oauth_total": 0,
+          "grafana_api_login_post_total": 1,
+          "grafana_authentication_attempts": 850,
+          "grafana_build_info": 1,
+          "grafana_database_conn_idle": 2,
+          "grafana_database_conn_in_use": 0,
+          "grafana_database_conn_max_idle_closed_seconds": 0,
+          "grafana_database_conn_max_idle_closed_total": 183,
+          "grafana_database_conn_max_lifetime_closed_total": 0,
+          "grafana_database_conn_max_open": 0,
+          "grafana_database_conn_open": 2,
+          "grafana_database_conn_wait_count_total": 0,
+          "grafana_database_conn_wait_duration_seconds": 0,
+          "grafana_emails_sent_failed": 0,
+          "grafana_emails_sent_total": 0,
+          "grafana_environment_info": 1,
+          "grafana_stat_active_users": 1,
+          "grafana_stat_total_orgs": 1,
+          "grafana_stat_total_playlists": 0,
+          "grafana_stat_total_service_accounts": 1,
+          "grafana_stat_total_teams": 0,
+          "grafana_stat_total_users": 1,
+          "grafana_stat_totals_active_admins": 1,
+          "grafana_stat_totals_active_editors": 1,
+          "grafana_stat_totals_active_viewers": 0,
+          "grafana_stat_totals_admins": 1,
+          "grafana_stat_totals_alert_rules": 0,
+          "grafana_stat_totals_annotations": 0,
+          "grafana_stat_totals_correlations": 0,
+          "grafana_stat_totals_dashboard": 35,
+          "grafana_stat_totals_dashboard_versions": 705,
+          "grafana_stat_totals_datasource": 5,
+          "grafana_stat_totals_editors": 1,
+          "grafana_stat_totals_folder": 8,
+          "grafana_stat_totals_library_panels": 0,
+          "grafana_stat_totals_public_dashboard": 0,
+          "grafana_stat_totals_repositories": 0,
+          "grafana_stat_totals_rule_groups": 0,
+          "grafana_stat_totals_viewers": 0,
+          "process_cpu_seconds_total": 94.98,
+          "process_max_fds": 10000,
+          "process_open_fds": 19,
+          "process_resident_memory_bytes": 282255360,
+          "process_start_time_seconds": 2654872689.66,
+          "process_virtual_memory_bytes": 1800351744
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "metrics",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-grafana-metrics-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "grafana",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

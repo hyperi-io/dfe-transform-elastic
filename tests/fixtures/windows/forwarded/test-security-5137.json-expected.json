@@ -1,0 +1,131 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2043-08-28T18:36:26.048Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "directory-service-object-created",
+        "category": [
+          "iam",
+          "configuration"
+        ],
+        "code": "5137",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "admin",
+          "creation"
+        ]
+      },
+      "host": {
+        "name": "CF43.egmukjj.local",
+        "os": {
+          "family": "windows",
+          "type": "windows"
+        }
+      },
+      "log": {
+        "level": "information"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "DSName": "egmukjj.local",
+          "DSType": "%%14676",
+          "ObjectClass": "computer",
+          "ObjectDN": "cn=Win2000,CN=Users,DC=contoso,DC=local",
+          "ObjectGUID": "{70A0F0BD-55C8-4039-9B6E-08AFBBB6FEF3}",
+          "OpCorrelationID": "{6BED11AC-6414-43E1-8A68-BEB40919287E}",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x32004",
+          "SubjectUserName": "fddrio",
+          "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104"
+        },
+        "event_id": "5137",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x32004"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 3156
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "410737",
+        "time_created": "2043-08-28T18:36:26.048167500Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "5137",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CF43.egmukjj.local"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CF43.egmukjj.local",
+        "event_data": {
+          "AppCorrelationID": "-",
+          "DSName": "egmukjj.local",
+          "DSType": "%%14676",
+          "ObjectClass": "computer",
+          "ObjectDN": "cn=Win2000,CN=Users,DC=contoso,DC=local",
+          "ObjectGUID": "{70A0F0BD-55C8-4039-9B6E-08AFBBB6FEF3}",
+          "OpCorrelationID": "{6BED11AC-6414-43E1-8A68-BEB40919287E}",
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x32004",
+          "SubjectUserName": "fddrio",
+          "SubjectUserSid": "S-1-5-21-3457937927-2839227994-823803824-1104"
+        },
+        "event_id": "5137",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 516,
+          "thread": {
+            "id": 3156
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 410737,
+        "time_created": "2043-08-28T18:36:26.048167500Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "forwarded",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-windows-forwarded-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "windows",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

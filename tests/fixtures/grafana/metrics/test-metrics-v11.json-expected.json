@@ -1,0 +1,199 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-02-16T11:00:00.000Z",
+      "event": {
+        "dataset": "grafana.metrics",
+        "ingested": "2026-11-13T23:05:43.447226362Z",
+        "kind": "metric",
+        "module": "grafana"
+      },
+      "grafana": {
+        "alerting": {
+          "active_alerts": 3,
+          "active_configurations": 1,
+          "notification": {
+            "failed": {
+              "total": 2
+            },
+            "sent": {
+              "total": 45
+            }
+          },
+          "result": {
+            "total": 156
+          },
+          "ticker": {
+            "interval_seconds": 10
+          }
+        },
+        "api": {
+          "dashboard": {
+            "get": {
+              "count": 12,
+              "sum": 456
+            }
+          },
+          "login": {
+            "post": {
+              "total": 5
+            }
+          },
+          "response": {
+            "status": {
+              "total": 98765
+            }
+          }
+        },
+        "authentication": {
+          "attempts": 320
+        },
+        "build_info": {
+          "_value": 1
+        },
+        "database": {
+          "connections": {
+            "idle": 10,
+            "in_use": 5,
+            "open": 15
+          }
+        },
+        "datasource": {
+          "request": {
+            "total": 12450
+          }
+        },
+        "go": {
+          "gc": {
+            "duration": {
+              "count": 520,
+              "seconds": 0.145
+            }
+          },
+          "goroutines": 287,
+          "memstats": {
+            "alloc_bytes": 134217728,
+            "heap_alloc_bytes": 134217728,
+            "sys_bytes": 201326592
+          },
+          "threads": 14
+        },
+        "process": {
+          "cpu": {
+            "seconds": {
+              "total": 1234.56
+            }
+          },
+          "max_fds": 10000,
+          "memory": {
+            "resident_bytes": 268435456
+          },
+          "open_fds": 48
+        },
+        "stat": {
+          "admins": {
+            "total": 2
+          },
+          "alert_rules": {
+            "total": 12
+          },
+          "dashboards": {
+            "total": 42
+          },
+          "datasources": {
+            "total": 5
+          },
+          "editors": {
+            "total": 3
+          },
+          "folders": {
+            "total": 4
+          },
+          "orgs": {
+            "total": 1
+          },
+          "teams": {
+            "total": 2
+          },
+          "users": {
+            "active": 7,
+            "total": 10
+          },
+          "viewers": {
+            "total": 5
+          }
+        }
+      },
+      "prometheus": {
+        "labels": {}
+      },
+      "service": {
+        "address": "grafana:3000",
+        "name": "grafana"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-02-16T11:00:00.000Z",
+      "prometheus": {
+        "labels": {
+          "instance": "grafana:3000",
+          "job": "grafana"
+        },
+        "metrics": {
+          "go_gc_duration_seconds_count": 520,
+          "go_gc_duration_seconds_sum": 0.145,
+          "go_goroutines": 287,
+          "go_memstats_alloc_bytes": 134217728,
+          "go_memstats_heap_alloc_bytes": 134217728,
+          "go_memstats_sys_bytes": 201326592,
+          "go_threads": 14,
+          "grafana_alerting_active_alerts": 3,
+          "grafana_alerting_active_configurations": 1,
+          "grafana_alerting_notification_failed_total": 2,
+          "grafana_alerting_notification_sent_total": 45,
+          "grafana_alerting_result_total": 156,
+          "grafana_alerting_ticker_interval_seconds": 10,
+          "grafana_api_dashboard_get_milliseconds_count": 12,
+          "grafana_api_dashboard_get_milliseconds_sum": 456,
+          "grafana_api_login_post_total": 5,
+          "grafana_api_response_status_total": 98765,
+          "grafana_authentication_attempts": 320,
+          "grafana_build_info": 1,
+          "grafana_database_conn_idle": 10,
+          "grafana_database_conn_in_use": 5,
+          "grafana_database_conn_open": 15,
+          "grafana_datasource_request_total": 12450,
+          "grafana_stat_active_users": 7,
+          "grafana_stat_total_orgs": 1,
+          "grafana_stat_total_teams": 2,
+          "grafana_stat_total_users": 10,
+          "grafana_stat_totals_admins": 2,
+          "grafana_stat_totals_alert_rules": 12,
+          "grafana_stat_totals_dashboard": 42,
+          "grafana_stat_totals_datasource": 5,
+          "grafana_stat_totals_editors": 3,
+          "grafana_stat_totals_folder": 4,
+          "grafana_stat_totals_viewers": 5,
+          "process_cpu_seconds_total": 1234.56,
+          "process_max_fds": 10000,
+          "process_open_fds": 48,
+          "process_resident_memory_bytes": 268435456
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "metrics",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-grafana-metrics-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "grafana",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,1024 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2019-10-15T09:46:45.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024019683Z",
+        "kind": "event",
+        "original": "191015  9:46:45\t    13 Query\tSHOW /*!50002 GLOBAL */ STATUS",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Query\tSHOW /*!50002 GLOBAL */ STATUS",
+      "mysql": {
+        "thread_id": 13
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024027633Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Using Linux native AIO",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Using Linux native AIO",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024028513Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024029153Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Uses event mutexes",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Uses event mutexes",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024029753Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Compressed tables use zlib 1.2.7",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Compressed tables use zlib 1.2.7",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024031053Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Number of pools: 1",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Number of pools: 1",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024031823Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Using SSE2 crc32 instructions",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Using SSE2 crc32 instructions",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024032413Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024033143Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Completed initialization of buffer pool",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Completed initialization of buffer pool",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024034333Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: If the mysqld execution user is authorized, page cleaner thread priority can be changed. See the man page of setpriority().",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: If the mysqld execution user is authorized, page cleaner thread priority can be changed. See the man page of setpriority().",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024035083Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: 128 out of 128 rollback segments are active.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: 128 out of 128 rollback segments are active.",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024035773Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Creating shared tablespace for temporary tables",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Creating shared tablespace for temporary tables",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024036383Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Setting file './ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Setting file './ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024037173Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: File './ibtmp1' size is now 12 MB.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: File './ibtmp1' size is now 12 MB.",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024038723Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Waiting for purge to start",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Waiting for purge to start",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024039723Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: 10.4.8 started; log sequence number 1631101; transaction id 791",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: 10.4.8 started; log sequence number 1631101; transaction id 791",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024040393Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Loading buffer pool(s) from /data/mysqldata/mysql/ib_buffer_pool",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Loading buffer pool(s) from /data/mysqldata/mysql/ib_buffer_pool",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024040993Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] Plugin 'FEEDBACK' is disabled.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Plugin 'FEEDBACK' is disabled.",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024042233Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] InnoDB: Buffer pool(s) load completed at 191016 17:24:15",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "InnoDB: Buffer pool(s) load completed at 191016 17:24:15",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024042993Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] Server socket created on IP: '::'.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Server socket created on IP: '::'.",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024043593Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] Reading of all Master_info entries succeeded",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Reading of all Master_info entries succeeded",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024044303Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] Added new Master_info '' to hash table",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Added new Master_info '' to hash table",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:24:15.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024044883Z",
+        "kind": "event",
+        "original": "2047-10-16 17:24:15 0 [Note] /usr/sbin/mysqld: ready for connections.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "/usr/sbin/mysqld: ready for connections.",
+      "mysql": {
+        "thread_id": 0
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024046103Z",
+        "kind": "event",
+        "original": "Version: '10.4.8-MariaDB-log'  socket: '/data/mysqldata/mysql.sock'  port: 3306  MariaDB Server",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Version: '10.4.8-MariaDB-log'  socket: '/data/mysqldata/mysql.sock'  port: 3306  MariaDB Server",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:25:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024046813Z",
+        "kind": "event",
+        "original": "2047-10-16 17:25:43 11 [Note] Event Scheduler: scheduler thread started with id 11",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: scheduler thread started with id 11",
+      "mysql": {
+        "thread_id": 11
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:25:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024047413Z",
+        "kind": "event",
+        "original": "2047-10-16 17:25:43 11 [Note] Event Scheduler: Last execution of test.test_error_log. Dropping.",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Last execution of test.test_error_log. Dropping.",
+      "mysql": {
+        "thread_id": 11
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:25:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024048123Z",
+        "kind": "event",
+        "original": "2047-10-16 17:25:43 12 [Note] Event Scheduler: Dropping test.test_error_log",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: Dropping test.test_error_log",
+      "mysql": {
+        "thread_id": 12
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:25:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024048733Z",
+        "kind": "event",
+        "original": "2047-10-16 17:25:43 12 [ERROR] Event Scheduler: [root@localhost][test.test_error_log] hi from the error log",
+        "type": [
+          "info",
+          "error"
+        ]
+      },
+      "log": {
+        "level": "ERROR"
+      },
+      "message": "Event Scheduler: [root@localhost][test.test_error_log] hi from the error log",
+      "mysql": {
+        "thread_id": 12
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2047-10-16T17:25:43.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2049-06-17T15:20:05.914488060Z",
+        "ingested": "2026-11-13T23:03:49.024050473Z",
+        "kind": "event",
+        "original": "2047-10-16 17:25:43 12 [Note] Event Scheduler: [root@localhost][test.test_error_log] At line 1 in test.test_error_log",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "Note"
+      },
+      "message": "Event Scheduler: [root@localhost][test.test_error_log] At line 1 in test.test_error_log",
+      "mysql": {
+        "thread_id": 12
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "191015  9:46:45\t    13 Query\tSHOW /*!50002 GLOBAL */ STATUS",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Using Linux native AIO",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Uses event mutexes",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Compressed tables use zlib 1.2.7",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Number of pools: 1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Using SSE2 crc32 instructions",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Completed initialization of buffer pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: If the mysqld execution user is authorized, page cleaner thread priority can be changed. See the man page of setpriority().",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: 128 out of 128 rollback segments are active.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Creating shared tablespace for temporary tables",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Setting file './ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: File './ibtmp1' size is now 12 MB.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Waiting for purge to start",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: 10.4.8 started; log sequence number 1631101; transaction id 791",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Loading buffer pool(s) from /data/mysqldata/mysql/ib_buffer_pool",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] Plugin 'FEEDBACK' is disabled.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] InnoDB: Buffer pool(s) load completed at 191016 17:24:15",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] Server socket created on IP: '::'.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] Reading of all Master_info entries succeeded",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] Added new Master_info '' to hash table",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:24:15 0 [Note] /usr/sbin/mysqld: ready for connections.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "Version: '10.4.8-MariaDB-log'  socket: '/data/mysqldata/mysql.sock'  port: 3306  MariaDB Server",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:25:43 11 [Note] Event Scheduler: scheduler thread started with id 11",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:25:43 11 [Note] Event Scheduler: Last execution of test.test_error_log. Dropping.",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:25:43 12 [Note] Event Scheduler: Dropping test.test_error_log",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:25:43 12 [ERROR] Event Scheduler: [root@localhost][test.test_error_log] hi from the error log",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-17T15:20:05.914488060Z",
+      "message": "2047-10-16 17:25:43 12 [Note] Event Scheduler: [root@localhost][test.test_error_log] At line 1 in test.test_error_log",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "error",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-mysql-error-default",
+    "event_count": 29,
+    "numeric_keyword_fields": [],
+    "package": "mysql",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

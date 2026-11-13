@@ -1,0 +1,301 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "state",
+        "original": "{\"ip\":\"198.51.100.144\",\"uuid\":\"7cfa22a3-59eb-452d-96dc-8f248d50f37f\",\"score\":\"307\",\"total\":\"150\",\"severityInfo\":\"131\",\"severityLow\":\"0\",\"severityMedium\":\"9\",\"severityHigh\":\"4\",\"severityCritical\":\"6\",\"macAddress\":\"18:23:72:91:04:4a\",\"policyName\":\"Basic Agent Scan\",\"pluginSet\":\"201901281542\",\"netbiosName\":\"UNKNOWN\\\\RNKMIGAUV2L8ZEYF.EXAMPLE\",\"dnsName\":\"rnkmigauv2l8zeyf.example\",\"osCPE\":\"cpe:/o:microsoft:windows_10:::x64-home\",\"biosGUID\":\"4a9d0b64-661b-4374-a61f-d37e4c0cb917\",\"tpmID\":\"\",\"mcafeeGUID\":\"\",\"lastAuthRun\":\"\",\"lastUnauthRun\":\"\",\"hostUniqueness\":\"repositoryID,ip,dnsName\",\"uniqueness\":\"repositoryID,ip,dnsName\",\"repository\":{\"id\":\"2\",\"name\":\"Staged-Large\",\"description\":\"\",\"sciID\":\"1\",\"dataFormat\":\"IPv4\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "domain": "example",
+        "hostname": "rnkmigauv2l8zeyf.example",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "mac": [
+          "18-23-72-91-04-4A"
+        ],
+        "name": "rnkmigauv2l8zeyf"
+      },
+      "related": {
+        "hosts": [
+          "rnkmigauv2l8zeyf.example",
+          "rnkmigauv2l8zeyf",
+          "UNKNOWN\\RNKMIGAUV2L8ZEYF.EXAMPLE"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "tenable_sc": {
+        "asset": {
+          "bios": {
+            "guid": "4a9d0b64-661b-4374-a61f-d37e4c0cb917"
+          },
+          "custom_hash": "qx6yIaWKdHJSZEOnIZHzpJ3iube05zbHxESph+xFREk=",
+          "dns": {
+            "name": "rnkmigauv2l8zeyf.example"
+          },
+          "host_uniqueness": "repositoryID,ip,dnsName",
+          "ip": "198.51.100.144",
+          "mac": "18-23-72-91-04-4A",
+          "netbios": {
+            "name": "UNKNOWN\\RNKMIGAUV2L8ZEYF.EXAMPLE"
+          },
+          "os_cpe": "cpe:/o:microsoft:windows_10:::x64-home",
+          "plugin_set": "201901281542",
+          "policy": {
+            "name": "Basic Agent Scan"
+          },
+          "repository": {
+            "data_format": "IPv4",
+            "id": "2",
+            "name": "Staged-Large",
+            "sci": {
+              "id": "1"
+            }
+          },
+          "score": 307,
+          "severity": {
+            "critical": 6,
+            "high": 4,
+            "info": 131,
+            "low": 0,
+            "medium": 9
+          },
+          "total": 150,
+          "uniqueness": "repositoryID,ip,dnsName",
+          "uuid": "7cfa22a3-59eb-452d-96dc-8f248d50f37f"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "state",
+        "original": "{\"ip\":\"198.51.100.144\",\"uuid\":\"e06f8be2-0a88-4f83-9922-37c0d54c61ac\",\"score\":\"307\",\"total\":\"150\",\"severityInfo\":\"131\",\"severityLow\":\"0\",\"severityMedium\":\"9\",\"severityHigh\":\"4\",\"severityCritical\":\"6\",\"macAddress\":\"69:13:21:1b:27:29\",\"policyName\":\"Basic Agent Scan\",\"pluginSet\":\"201901281542\",\"netbiosName\":\"UNKNOWN\\\\ZDER1KTDPSO1P0RO.EXAMPLE\",\"dnsName\":\"zder1ktdpso1p0ro.example.com\",\"osCPE\":\"cpe:/o:microsoft:windows_10:::x64-home\",\"biosGUID\":\"2c6ad636-d857-4d1f-8a73-21dfb1a5dee4\",\"tpmID\":\"\",\"mcafeeGUID\":\"\",\"lastAuthRun\":\"\",\"lastUnauthRun\":\"\",\"hostUniqueness\":\"repositoryID,ip,dnsName\",\"uniqueness\":\"repositoryID,ip,dnsName\",\"repository\":{\"id\":\"2\",\"name\":\"Staged-Large\",\"description\":\"\",\"sciID\":\"1\",\"dataFormat\":\"IPv4\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "domain": "example.com",
+        "hostname": "zder1ktdpso1p0ro.example.com",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "mac": [
+          "69-13-21-1B-27-29"
+        ],
+        "name": "zder1ktdpso1p0ro"
+      },
+      "related": {
+        "hosts": [
+          "zder1ktdpso1p0ro.example.com",
+          "zder1ktdpso1p0ro",
+          "UNKNOWN\\ZDER1KTDPSO1P0RO.EXAMPLE"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "tenable_sc": {
+        "asset": {
+          "bios": {
+            "guid": "2c6ad636-d857-4d1f-8a73-21dfb1a5dee4"
+          },
+          "custom_hash": "RA1L+7ZkdhJOB3VzBTvoLDpgzYJuPysdDx3D1TvTP+c=",
+          "dns": {
+            "name": "zder1ktdpso1p0ro.example.com"
+          },
+          "host_uniqueness": "repositoryID,ip,dnsName",
+          "ip": "198.51.100.144",
+          "mac": "69-13-21-1B-27-29",
+          "netbios": {
+            "name": "UNKNOWN\\ZDER1KTDPSO1P0RO.EXAMPLE"
+          },
+          "os_cpe": "cpe:/o:microsoft:windows_10:::x64-home",
+          "plugin_set": "201901281542",
+          "policy": {
+            "name": "Basic Agent Scan"
+          },
+          "repository": {
+            "data_format": "IPv4",
+            "id": "2",
+            "name": "Staged-Large",
+            "sci": {
+              "id": "1"
+            }
+          },
+          "score": 307,
+          "severity": {
+            "critical": 6,
+            "high": 4,
+            "info": 131,
+            "low": 0,
+            "medium": 9
+          },
+          "total": 150,
+          "uniqueness": "repositoryID,ip,dnsName",
+          "uuid": "e06f8be2-0a88-4f83-9922-37c0d54c61ac"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "state",
+        "original": "{\"ip\":\"198.51.100.144\",\"uuid\":\"5603d6af-f35d-4ae4-bd7a-c624b9256660\",\"score\":\"307\",\"total\":\"150\",\"severityInfo\":\"131\",\"severityLow\":\"0\",\"severityMedium\":\"9\",\"severityHigh\":\"4\",\"severityCritical\":\"6\",\"macAddress\":\"19:03:18:0b:2d:7c\",\"policyName\":\"Basic Agent Scan\",\"pluginSet\":\"201901281542\",\"netbiosName\":\"UNKNOWN\\\\G2OUNZT879FE2DJT.EXAMPLE\",\"dnsName\":\"g2ounzt879fe2djt.example.co.in\",\"osCPE\":\"cpe:/o:microsoft:windows_10:::x64-home\",\"biosGUID\":\"0a0e0a2e-f7e6-4571-a292-35efc4ad0e1d\",\"tpmID\":\"\",\"mcafeeGUID\":\"\",\"lastAuthRun\":\"\",\"lastUnauthRun\":\"\",\"hostUniqueness\":\"repositoryID,ip,dnsName\",\"uniqueness\":\"repositoryID,ip,dnsName\",\"repository\":{\"id\":\"2\",\"name\":\"Staged-Large\",\"description\":\"\",\"sciID\":\"1\",\"dataFormat\":\"IPv4\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "domain": "example.co.in",
+        "hostname": "g2ounzt879fe2djt.example.co.in",
+        "ip": [
+          "198.51.100.144"
+        ],
+        "mac": [
+          "19-03-18-0B-2D-7C"
+        ],
+        "name": "g2ounzt879fe2djt"
+      },
+      "related": {
+        "hosts": [
+          "g2ounzt879fe2djt.example.co.in",
+          "g2ounzt879fe2djt",
+          "UNKNOWN\\G2OUNZT879FE2DJT.EXAMPLE"
+        ],
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "tenable_sc": {
+        "asset": {
+          "bios": {
+            "guid": "0a0e0a2e-f7e6-4571-a292-35efc4ad0e1d"
+          },
+          "custom_hash": "FhySNYlhzig5JU2AuRuYOsMn81Xo2GCqcHRlJEUqTaU=",
+          "dns": {
+            "name": "g2ounzt879fe2djt.example.co.in"
+          },
+          "host_uniqueness": "repositoryID,ip,dnsName",
+          "ip": "198.51.100.144",
+          "mac": "19-03-18-0B-2D-7C",
+          "netbios": {
+            "name": "UNKNOWN\\G2OUNZT879FE2DJT.EXAMPLE"
+          },
+          "os_cpe": "cpe:/o:microsoft:windows_10:::x64-home",
+          "plugin_set": "201901281542",
+          "policy": {
+            "name": "Basic Agent Scan"
+          },
+          "repository": {
+            "data_format": "IPv4",
+            "id": "2",
+            "name": "Staged-Large",
+            "sci": {
+              "id": "1"
+            }
+          },
+          "score": 307,
+          "severity": {
+            "critical": 6,
+            "high": 4,
+            "info": 131,
+            "low": 0,
+            "medium": 9
+          },
+          "total": 150,
+          "uniqueness": "repositoryID,ip,dnsName",
+          "uuid": "5603d6af-f35d-4ae4-bd7a-c624b9256660"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-11-15T09:28:32.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "state",
+        "original": "{\"error_code\":0,\"error_msg\":\"\",\"response\":{\"endOffset\":\"1000\",\"matchingDataElementCount\":\"0:0:0:0:0:0:0\",\"results\":[],\"returnedRecords\":0,\"startOffset\":\"0\",\"totalRecords\":\"0\"},\"timestamp\":2552117312,\"type\":\"regular\",\"warnings\":[]}",
+        "type": [
+          "info"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"ip\":\"198.51.100.144\",\"uuid\":\"7cfa22a3-59eb-452d-96dc-8f248d50f37f\",\"score\":\"307\",\"total\":\"150\",\"severityInfo\":\"131\",\"severityLow\":\"0\",\"severityMedium\":\"9\",\"severityHigh\":\"4\",\"severityCritical\":\"6\",\"macAddress\":\"18:23:72:91:04:4a\",\"policyName\":\"Basic Agent Scan\",\"pluginSet\":\"201901281542\",\"netbiosName\":\"UNKNOWN\\\\RNKMIGAUV2L8ZEYF.EXAMPLE\",\"dnsName\":\"rnkmigauv2l8zeyf.example\",\"osCPE\":\"cpe:/o:microsoft:windows_10:::x64-home\",\"biosGUID\":\"4a9d0b64-661b-4374-a61f-d37e4c0cb917\",\"tpmID\":\"\",\"mcafeeGUID\":\"\",\"lastAuthRun\":\"\",\"lastUnauthRun\":\"\",\"hostUniqueness\":\"repositoryID,ip,dnsName\",\"uniqueness\":\"repositoryID,ip,dnsName\",\"repository\":{\"id\":\"2\",\"name\":\"Staged-Large\",\"description\":\"\",\"sciID\":\"1\",\"dataFormat\":\"IPv4\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip\":\"198.51.100.144\",\"uuid\":\"e06f8be2-0a88-4f83-9922-37c0d54c61ac\",\"score\":\"307\",\"total\":\"150\",\"severityInfo\":\"131\",\"severityLow\":\"0\",\"severityMedium\":\"9\",\"severityHigh\":\"4\",\"severityCritical\":\"6\",\"macAddress\":\"69:13:21:1b:27:29\",\"policyName\":\"Basic Agent Scan\",\"pluginSet\":\"201901281542\",\"netbiosName\":\"UNKNOWN\\\\ZDER1KTDPSO1P0RO.EXAMPLE\",\"dnsName\":\"zder1ktdpso1p0ro.example.com\",\"osCPE\":\"cpe:/o:microsoft:windows_10:::x64-home\",\"biosGUID\":\"2c6ad636-d857-4d1f-8a73-21dfb1a5dee4\",\"tpmID\":\"\",\"mcafeeGUID\":\"\",\"lastAuthRun\":\"\",\"lastUnauthRun\":\"\",\"hostUniqueness\":\"repositoryID,ip,dnsName\",\"uniqueness\":\"repositoryID,ip,dnsName\",\"repository\":{\"id\":\"2\",\"name\":\"Staged-Large\",\"description\":\"\",\"sciID\":\"1\",\"dataFormat\":\"IPv4\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"ip\":\"198.51.100.144\",\"uuid\":\"5603d6af-f35d-4ae4-bd7a-c624b9256660\",\"score\":\"307\",\"total\":\"150\",\"severityInfo\":\"131\",\"severityLow\":\"0\",\"severityMedium\":\"9\",\"severityHigh\":\"4\",\"severityCritical\":\"6\",\"macAddress\":\"19:03:18:0b:2d:7c\",\"policyName\":\"Basic Agent Scan\",\"pluginSet\":\"201901281542\",\"netbiosName\":\"UNKNOWN\\\\G2OUNZT879FE2DJT.EXAMPLE\",\"dnsName\":\"g2ounzt879fe2djt.example.co.in\",\"osCPE\":\"cpe:/o:microsoft:windows_10:::x64-home\",\"biosGUID\":\"0a0e0a2e-f7e6-4571-a292-35efc4ad0e1d\",\"tpmID\":\"\",\"mcafeeGUID\":\"\",\"lastAuthRun\":\"\",\"lastUnauthRun\":\"\",\"hostUniqueness\":\"repositoryID,ip,dnsName\",\"uniqueness\":\"repositoryID,ip,dnsName\",\"repository\":{\"id\":\"2\",\"name\":\"Staged-Large\",\"description\":\"\",\"sciID\":\"1\",\"dataFormat\":\"IPv4\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"error_code\":0,\"error_msg\":\"\",\"response\":{\"endOffset\":\"1000\",\"matchingDataElementCount\":\"0:0:0:0:0:0:0\",\"results\":[],\"returnedRecords\":0,\"startOffset\":\"0\",\"totalRecords\":\"0\"},\"timestamp\":2552117312,\"type\":\"regular\",\"warnings\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "asset",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-tenable_sc-asset-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "tenable_sc",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

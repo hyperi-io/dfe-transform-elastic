@@ -1,0 +1,7 @@
+{
+    "events": [
+        {
+            "mailbox_usage_detail": "{\"Created Date\":\"2052-10-22\",\"Deleted Date\":\"\",\"Deleted Item Count\":\"0\",\"Deleted Item Quota (Byte)\":\"32212254720\",\"Deleted Item Size (Byte)\":\"0\",\"Display Name\":\"2839E7BF81CEE8242C3BF0161E7BA113\",\"Has Archive\":\"False\",\"Is Deleted\":\"False\",\"Issue Warning Quota (Byte)\":\"105226698752\",\"Item Count\":\"71\",\"Last Activity Date\":\"\",\"Prohibit Send Quota (Byte)\":\"106300440576\",\"Prohibit Send/Receive Quota (Byte)\":\"107374182400\",\"Report Period\":\"7\",\"Storage Used (Byte)\":\"7571826\",\"User Principal Name\":\"6A5D5023AFB0811B8DF883717FED1BE6\",\"Report Refresh Date\":\"2052-12-15\"}"
+        }
+    ]
+}

@@ -1,0 +1,448 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-07-02T06:31:31.446Z",
+      "azure": {
+        "open_ai": {
+          "category": "GatewayLogs",
+          "correlation_id": "98575315-49d0-404d-8168-a9d8a395c5d6",
+          "deployment_version": "0.44.18652.0",
+          "is_request_success": true,
+          "location": "East US",
+          "operation_name": "Microsoft.ApiManagement/GatewayLogs",
+          "properties": {
+            "api_id": "azure-openai-service-api",
+            "api_revision": "1",
+            "backend_method": "POST",
+            "backend_protocol": "HTTP/1.1",
+            "backend_request_body": {
+              "messages": [
+                {
+                  "content": "capital of tamilnadu?",
+                  "role": "user"
+                }
+              ],
+              "model": "gpt-chat-pilot"
+            },
+            "backend_response_body": {
+              "choices": [
+                {
+                  "content_filter_results": {
+                    "hate": {
+                      "filtered": true,
+                      "severity": "low"
+                    },
+                    "profanity": {
+                      "detected": false,
+                      "filtered": false
+                    },
+                    "self_harm": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "sexual": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "violence": {
+                      "filtered": false,
+                      "severity": "safe"
+                    }
+                  },
+                  "finish_reason": "stop",
+                  "index": 0,
+                  "message": {
+                    "content": "The capital of Tamil Nadu is Chennai.",
+                    "role": "assistant"
+                  }
+                }
+              ],
+              "content_filtered_categories": [
+                {
+                  "category_name": "hate",
+                  "severity": "low"
+                }
+              ],
+              "created": 2603514691,
+              "id": "chatcmpl-9gRL14hGa8nQstOJKvLjh7EyulsnT",
+              "model": "gpt-35-turbo",
+              "object": "chat.completion",
+              "prompt_filter_results": [
+                {
+                  "content_filter_results": {
+                    "hate": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "profanity": {
+                      "detected": false,
+                      "filtered": false
+                    },
+                    "self_harm": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "sexual": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "violence": {
+                      "filtered": false,
+                      "severity": "safe"
+                    }
+                  },
+                  "prompt_index": 0
+                }
+              ],
+              "usage": {
+                "input_tokens": 14,
+                "output_tokens": 8,
+                "total_tokens": 22
+              }
+            },
+            "backend_response_code": 200,
+            "backend_time": 176,
+            "backend_url": "https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview",
+            "cache": "none",
+            "client_protocol": "HTTP/1.1",
+            "client_tls_version": "1.3",
+            "operation_id": "ChatCompletions_Create",
+            "request_length": 536,
+            "response_length": 1604
+          },
+          "sku": "Basic",
+          "truncated": 0
+        },
+        "resource": {
+          "group": "obs-openai-apim-test",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/obs-openai-apim-test/providers/microsoft.apimanagement/service/azure-openai-apm",
+          "name": "azure-openai-apm",
+          "provider": "microsoft.apimanagement/service"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+      },
+      "cloud": {
+        "account": {
+          "id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+        },
+        "provider": "azure"
+      },
+      "event": {
+        "duration": 176000000,
+        "original": "{\"DeploymentVersion\":\"0.44.18652.0\",\"Level\":4,\"Sku\":\"Basic\",\"callerIpAddress\":\"198.51.100.144\",\"category\":\"GatewayLogs\",\"correlationId\":\"98575315-49d0-404d-8168-a9d8a395c5d6\",\"durationMs\":176,\"isRequestSuccess\":true,\"location\":\"East US\",\"operationName\":\"Microsoft.ApiManagement/GatewayLogs\",\"properties\":{\"apiId\":\"azure-openai-service-api\",\"apiRevision\":\"1\",\"backendMethod\":\"POST\",\"backendProtocol\":\"HTTP/1.1\",\"backendRequestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"capital of tamilnadu?\\\"}]}\",\"backendResponseBody\":\"{\\\"choices\\\":[{\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":true,\\\"severity\\\":\\\"low\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}},\\\"finish_reason\\\":\\\"stop\\\",\\\"index\\\":0,\\\"logprobs\\\":null,\\\"message\\\":{\\\"content\\\":\\\"The capital of Tamil Nadu is Chennai.\\\",\\\"role\\\":\\\"assistant\\\"}}],\\\"created\\\":2603514691,\\\"id\\\":\\\"chatcmpl-9gRL14hGa8nQstOJKvLjh7EyulsnT\\\",\\\"model\\\":\\\"gpt-35-turbo\\\",\\\"object\\\":\\\"chat.completion\\\",\\\"prompt_filter_results\\\":[{\\\"prompt_index\\\":0,\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}],\\\"system_fingerprint\\\":null,\\\"usage\\\":{\\\"completion_tokens\\\":8,\\\"prompt_tokens\\\":14,\\\"total_tokens\\\":22}}\\n\",\"backendResponseCode\":200,\"backendTime\":176,\"backendUrl\":\"https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\",\"cache\":\"none\",\"clientProtocol\":\"HTTP/1.1\",\"clientTlsVersion\":\"1.3\",\"method\":\"POST\",\"operationId\":\"ChatCompletions_Create\",\"requestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"capital of tamilnadu?\\\"}]}\",\"requestSize\":536,\"responseBody\":\"{\\\"choices\\\":[{\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}},\\\"finish_reason\\\":\\\"stop\\\",\\\"index\\\":0,\\\"logprobs\\\":null,\\\"message\\\":{\\\"content\\\":\\\"The capital of Tamil Nadu is Chennai.\\\",\\\"role\\\":\\\"assistant\\\"}}],\\\"created\\\":2603514691,\\\"id\\\":\\\"chatcmpl-9gRL14hGa8nQstOJKvLjh7EyulsnT\\\",\\\"model\\\":\\\"gpt-35-turbo\\\",\\\"object\\\":\\\"chat.completion\\\",\\\"prompt_filter_results\\\":[{\\\"prompt_index\\\":0,\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}],\\\"system_fingerprint\\\":null,\\\"usage\\\":{\\\"completion_tokens\\\":8,\\\"prompt_tokens\\\":14,\\\"total_tokens\\\":22}}\\n\",\"responseCode\":200,\"responseSize\":1604,\"url\":\"https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-OPENAI-APIM-TEST/PROVIDERS/MICROSOFT.APIMANAGEMENT/SERVICE/AZURE-OPENAI-APM\",\"resultType\":\"Succeeded\",\"time\":\"2052-07-02T06:31:31.4465902Z\",\"truncated\":0}",
+        "outcome": "success"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "log": {
+        "level": "4"
+      },
+      "source": {
+        "ip": "198.51.100.144"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "azure-openai-apm.azure-api.net",
+        "original": "https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview",
+        "path": "/deployments/gpt-chat-pilot/chat/completions",
+        "query": "api-version=2024-02-15-preview",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2052-07-02T06:14:56.237Z",
+      "azure": {
+        "open_ai": {
+          "category": "GatewayLogs",
+          "correlation_id": "1ec336fb-2c38-45fa-8645-21cd89cdf23b",
+          "deployment_version": "0.44.18652.0",
+          "is_request_success": false,
+          "location": "East US",
+          "operation_name": "Microsoft.ApiManagement/GatewayLogs",
+          "properties": {
+            "api_id": "azure-openai-service-api",
+            "api_revision": "1",
+            "backend_method": "POST",
+            "backend_protocol": "HTTP/1.1",
+            "backend_request_body": {
+              "messages": [
+                {
+                  "content": "test",
+                  "role": "user"
+                }
+              ],
+              "model": "gpt-chat-pilot"
+            },
+            "backend_response_body": {
+              "error": {
+                "code": "content_filter",
+                "innererror": {
+                  "code": "ResponsibleAIPolicyViolation",
+                  "content_filter_result": {
+                    "custom_blocklists": [
+                      {
+                        "filtered": true,
+                        "id": "CustomBlockList601"
+                      }
+                    ],
+                    "hate": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "profanity": {
+                      "detected": false,
+                      "filtered": false
+                    },
+                    "self_harm": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "sexual": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "violence": {
+                      "filtered": false,
+                      "severity": "safe"
+                    }
+                  }
+                },
+                "message": "The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766",
+                "param": "prompt",
+                "status": 400
+              }
+            },
+            "backend_response_code": 400,
+            "backend_time": 452,
+            "backend_url": "https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview",
+            "cache": "none",
+            "client_protocol": "HTTP/1.1",
+            "client_tls_version": "1.3",
+            "operation_id": "ChatCompletions_Create",
+            "request_length": 519,
+            "response_length": 1360
+          },
+          "sku": "Basic",
+          "truncated": 0
+        },
+        "resource": {
+          "group": "obs-openai-apim-test",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/obs-openai-apim-test/providers/microsoft.apimanagement/service/azure-openai-apm",
+          "name": "azure-openai-apm",
+          "provider": "microsoft.apimanagement/service"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+      },
+      "cloud": {
+        "account": {
+          "id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+        },
+        "provider": "azure"
+      },
+      "event": {
+        "duration": 453000000,
+        "original": "{\"DeploymentVersion\":\"0.44.18652.0\",\"Level\":4,\"Sku\":\"Basic\",\"callerIpAddress\":\"198.51.100.211\",\"category\":\"GatewayLogs\",\"correlationId\":\"1ec336fb-2c38-45fa-8645-21cd89cdf23b\",\"durationMs\":453,\"isRequestSuccess\":false,\"location\":\"East US\",\"operationName\":\"Microsoft.ApiManagement/GatewayLogs\",\"properties\":{\"apiId\":\"azure-openai-service-api\",\"apiRevision\":\"1\",\"backendMethod\":\"POST\",\"backendProtocol\":\"HTTP/1.1\",\"backendRequestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"test\\\"}]}\",\"backendResponseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}}}\",\"backendResponseCode\":400,\"backendTime\":452,\"backendUrl\":\"https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\",\"cache\":\"none\",\"clientProtocol\":\"HTTP/1.1\",\"clientTlsVersion\":\"1.3\",\"method\":\"POST\",\"operationId\":\"ChatCompletions_Create\",\"requestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"test\\\"}]}\",\"requestSize\":519,\"responseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}}}\",\"responseCode\":400,\"responseSize\":1360,\"url\":\"https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-OPENAI-APIM-TEST/PROVIDERS/MICROSOFT.APIMANAGEMENT/SERVICE/AZURE-OPENAI-APM\",\"resultType\":\"Failed\",\"time\":\"2052-07-02T06:14:56.2371877Z\",\"truncated\":0}",
+        "outcome": "failure"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 400
+        }
+      },
+      "log": {
+        "level": "4"
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "azure-openai-apm.azure-api.net",
+        "original": "https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview",
+        "path": "/deployments/gpt-chat-pilot/chat/completions",
+        "query": "api-version=2024-02-15-preview",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2053-03-05T10:39:40.226Z",
+      "azure": {
+        "open_ai": {
+          "category": "GatewayLogs",
+          "correlation_id": "277d695e-2b6c-44c0-a8ee-ee44fd06a567",
+          "deployment_version": "0.47.21405.0",
+          "is_request_success": false,
+          "location": "East US",
+          "operation_name": "Microsoft.ApiManagement/GatewayLogs",
+          "properties": {
+            "api_id": "azure-openai-service-api",
+            "api_revision": "1",
+            "backend_method": "POST",
+            "backend_protocol": "HTTP/1.1",
+            "backend_request_body": {
+              "messages": [
+                {
+                  "content": "virus",
+                  "role": "user"
+                }
+              ],
+              "model": "gpt-chat-pilot"
+            },
+            "backend_response_body": {
+              "error": {
+                "code": "content_filter",
+                "innererror": {
+                  "code": "ResponsibleAIPolicyViolation",
+                  "content_filter_result": {
+                    "custom_blocklists": [
+                      {
+                        "filtered": true,
+                        "id": "CustomBlockList601"
+                      }
+                    ],
+                    "hate": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "jailbreak": {
+                      "detected": false,
+                      "filtered": false
+                    },
+                    "profanity": {
+                      "detected": false,
+                      "filtered": false
+                    },
+                    "self_harm": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "sexual": {
+                      "filtered": false,
+                      "severity": "safe"
+                    },
+                    "violence": {
+                      "filtered": true,
+                      "severity": "medium"
+                    }
+                  },
+                  "content_filtered_categories": [
+                    {
+                      "category_name": "violence",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "message": "The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766",
+                "param": "prompt",
+                "status": 400
+              }
+            },
+            "backend_response_code": 400,
+            "backend_time": 810,
+            "backend_url": "https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview",
+            "cache": "none",
+            "client_protocol": "HTTP/1.1",
+            "client_tls_cipher_suite": "TLS_UNK0_WITH_AES_256_GCM_SHA384",
+            "client_tls_version": "1.3",
+            "operation_id": "ChatCompletions_Create",
+            "request_length": 496,
+            "response_length": 1471
+          },
+          "sku": "Basic",
+          "truncated": 0
+        },
+        "resource": {
+          "group": "obs-openai-apim-test",
+          "id": "/subscriptions/58fbcbb3-64a1-440f-a5b0-8bd3413c41bb/resourcegroups/obs-openai-apim-test/providers/microsoft.apimanagement/service/azure-openai-apm",
+          "name": "azure-openai-apm",
+          "provider": "microsoft.apimanagement/service"
+        },
+        "subscription_id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+      },
+      "cloud": {
+        "account": {
+          "id": "58fbcbb3-64a1-440f-a5b0-8bd3413c41bb"
+        },
+        "provider": "azure"
+      },
+      "event": {
+        "duration": 811000000,
+        "original": "{\"DeploymentVersion\":\"0.47.21405.0\",\"Level\":4,\"Sku\":\"Basic\",\"callerIpAddress\":\"198.51.100.211\",\"category\":\"GatewayLogs\",\"correlationId\":\"277d695e-2b6c-44c0-a8ee-ee44fd06a567\",\"durationMs\":811,\"isRequestSuccess\":false,\"location\":\"East US\",\"operationName\":\"Microsoft.ApiManagement/GatewayLogs\",\"properties\":{\"apiId\":\"azure-openai-service-api\",\"apiRevision\":\"1\",\"backendMethod\":\"POST\",\"backendProtocol\":\"HTTP/1.1\",\"backendRequestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"virus\\\"}]}\",\"backendResponseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"jailbreak\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":true,\\\"severity\\\":\\\"medium\\\"}}}}}\",\"backendResponseCode\":400,\"backendTime\":810,\"backendUrl\":\"https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\",\"cache\":\"none\",\"clientProtocol\":\"HTTP/1.1\",\"clientTlsCipherSuite\":\"TLS_UNK0_WITH_AES_256_GCM_SHA384\",\"clientTlsVersion\":\"1.3\",\"method\":\"POST\",\"operationId\":\"ChatCompletions_Create\",\"requestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"virus\\\"}]}\",\"requestSize\":496,\"responseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"jailbreak\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}}}\",\"responseCode\":400,\"responseSize\":1471,\"url\":\"https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-OPENAI-APIM-TEST/PROVIDERS/MICROSOFT.APIMANAGEMENT/SERVICE/AZURE-OPENAI-APM\",\"resultType\":\"Failed\",\"time\":\"2053-03-05T10:39:40.2260356Z\",\"truncated\":0}",
+        "outcome": "failure"
+      },
+      "http": {
+        "request": {
+          "method": "POST"
+        },
+        "response": {
+          "status_code": 400
+        }
+      },
+      "log": {
+        "level": "4"
+      },
+      "source": {
+        "ip": "198.51.100.211"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "azure-openai-apm.azure-api.net",
+        "original": "https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview",
+        "path": "/deployments/gpt-chat-pilot/chat/completions",
+        "query": "api-version=2024-02-15-preview",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"DeploymentVersion\":\"0.44.18652.0\",\"Level\":4,\"Sku\":\"Basic\",\"callerIpAddress\":\"198.51.100.144\",\"category\":\"GatewayLogs\",\"correlationId\":\"98575315-49d0-404d-8168-a9d8a395c5d6\",\"durationMs\":176,\"isRequestSuccess\":true,\"location\":\"East US\",\"operationName\":\"Microsoft.ApiManagement/GatewayLogs\",\"properties\":{\"apiId\":\"azure-openai-service-api\",\"apiRevision\":\"1\",\"backendMethod\":\"POST\",\"backendProtocol\":\"HTTP/1.1\",\"backendRequestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"capital of tamilnadu?\\\"}]}\",\"backendResponseBody\":\"{\\\"choices\\\":[{\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":true,\\\"severity\\\":\\\"low\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}},\\\"finish_reason\\\":\\\"stop\\\",\\\"index\\\":0,\\\"logprobs\\\":null,\\\"message\\\":{\\\"content\\\":\\\"The capital of Tamil Nadu is Chennai.\\\",\\\"role\\\":\\\"assistant\\\"}}],\\\"created\\\":2603514691,\\\"id\\\":\\\"chatcmpl-9gRL14hGa8nQstOJKvLjh7EyulsnT\\\",\\\"model\\\":\\\"gpt-35-turbo\\\",\\\"object\\\":\\\"chat.completion\\\",\\\"prompt_filter_results\\\":[{\\\"prompt_index\\\":0,\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}],\\\"system_fingerprint\\\":null,\\\"usage\\\":{\\\"completion_tokens\\\":8,\\\"prompt_tokens\\\":14,\\\"total_tokens\\\":22}}\\n\",\"backendResponseCode\":200,\"backendTime\":176,\"backendUrl\":\"https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\",\"cache\":\"none\",\"clientProtocol\":\"HTTP/1.1\",\"clientTlsVersion\":\"1.3\",\"method\":\"POST\",\"operationId\":\"ChatCompletions_Create\",\"requestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"capital of tamilnadu?\\\"}]}\",\"requestSize\":536,\"responseBody\":\"{\\\"choices\\\":[{\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}},\\\"finish_reason\\\":\\\"stop\\\",\\\"index\\\":0,\\\"logprobs\\\":null,\\\"message\\\":{\\\"content\\\":\\\"The capital of Tamil Nadu is Chennai.\\\",\\\"role\\\":\\\"assistant\\\"}}],\\\"created\\\":2603514691,\\\"id\\\":\\\"chatcmpl-9gRL14hGa8nQstOJKvLjh7EyulsnT\\\",\\\"model\\\":\\\"gpt-35-turbo\\\",\\\"object\\\":\\\"chat.completion\\\",\\\"prompt_filter_results\\\":[{\\\"prompt_index\\\":0,\\\"content_filter_results\\\":{\\\"custom_blocklists\\\":[],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}],\\\"system_fingerprint\\\":null,\\\"usage\\\":{\\\"completion_tokens\\\":8,\\\"prompt_tokens\\\":14,\\\"total_tokens\\\":22}}\\n\",\"responseCode\":200,\"responseSize\":1604,\"url\":\"https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-OPENAI-APIM-TEST/PROVIDERS/MICROSOFT.APIMANAGEMENT/SERVICE/AZURE-OPENAI-APM\",\"resultType\":\"Succeeded\",\"time\":\"2052-07-02T06:31:31.4465902Z\",\"truncated\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"DeploymentVersion\":\"0.44.18652.0\",\"Level\":4,\"Sku\":\"Basic\",\"callerIpAddress\":\"198.51.100.211\",\"category\":\"GatewayLogs\",\"correlationId\":\"1ec336fb-2c38-45fa-8645-21cd89cdf23b\",\"durationMs\":453,\"isRequestSuccess\":false,\"location\":\"East US\",\"operationName\":\"Microsoft.ApiManagement/GatewayLogs\",\"properties\":{\"apiId\":\"azure-openai-service-api\",\"apiRevision\":\"1\",\"backendMethod\":\"POST\",\"backendProtocol\":\"HTTP/1.1\",\"backendRequestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"test\\\"}]}\",\"backendResponseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}}}\",\"backendResponseCode\":400,\"backendTime\":452,\"backendUrl\":\"https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\",\"cache\":\"none\",\"clientProtocol\":\"HTTP/1.1\",\"clientTlsVersion\":\"1.3\",\"method\":\"POST\",\"operationId\":\"ChatCompletions_Create\",\"requestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"test\\\"}]}\",\"requestSize\":519,\"responseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}}}\",\"responseCode\":400,\"responseSize\":1360,\"url\":\"https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-OPENAI-APIM-TEST/PROVIDERS/MICROSOFT.APIMANAGEMENT/SERVICE/AZURE-OPENAI-APM\",\"resultType\":\"Failed\",\"time\":\"2052-07-02T06:14:56.2371877Z\",\"truncated\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"DeploymentVersion\":\"0.47.21405.0\",\"Level\":4,\"Sku\":\"Basic\",\"callerIpAddress\":\"198.51.100.211\",\"category\":\"GatewayLogs\",\"correlationId\":\"277d695e-2b6c-44c0-a8ee-ee44fd06a567\",\"durationMs\":811,\"isRequestSuccess\":false,\"location\":\"East US\",\"operationName\":\"Microsoft.ApiManagement/GatewayLogs\",\"properties\":{\"apiId\":\"azure-openai-service-api\",\"apiRevision\":\"1\",\"backendMethod\":\"POST\",\"backendProtocol\":\"HTTP/1.1\",\"backendRequestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"virus\\\"}]}\",\"backendResponseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"jailbreak\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":true,\\\"severity\\\":\\\"medium\\\"}}}}}\",\"backendResponseCode\":400,\"backendTime\":810,\"backendUrl\":\"https://obs-openai-test-01.openai.azure.com/openai/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\",\"cache\":\"none\",\"clientProtocol\":\"HTTP/1.1\",\"clientTlsCipherSuite\":\"TLS_UNK0_WITH_AES_256_GCM_SHA384\",\"clientTlsVersion\":\"1.3\",\"method\":\"POST\",\"operationId\":\"ChatCompletions_Create\",\"requestBody\":\"{\\\"model\\\": \\\"gpt-chat-pilot\\\", \\\"messages\\\": [{\\\"role\\\": \\\"user\\\", \\\"content\\\": \\\"virus\\\"}]}\",\"requestSize\":496,\"responseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"The response was filtered due to the prompt triggering Azure OpenAI's content management policy. Please modify your prompt and retry. To learn more about our content filtering policies please read our documentation: https://go.microsoft.com/fwlink/?linkid=2198766\\\",\\\"type\\\":null,\\\"param\\\":\\\"prompt\\\",\\\"code\\\":\\\"content_filter\\\",\\\"status\\\":400,\\\"innererror\\\":{\\\"code\\\":\\\"ResponsibleAIPolicyViolation\\\",\\\"content_filter_result\\\":{\\\"custom_blocklists\\\":[{\\\"filtered\\\":true,\\\"id\\\":\\\"CustomBlockList601\\\"}],\\\"hate\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"jailbreak\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"profanity\\\":{\\\"filtered\\\":false,\\\"detected\\\":false},\\\"self_harm\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"sexual\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"},\\\"violence\\\":{\\\"filtered\\\":false,\\\"severity\\\":\\\"safe\\\"}}}}}\",\"responseCode\":400,\"responseSize\":1471,\"url\":\"https://azure-openai-apm.azure-api.net/deployments/gpt-chat-pilot/chat/completions?api-version=2024-02-15-preview\"},\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/OBS-OPENAI-APIM-TEST/PROVIDERS/MICROSOFT.APIMANAGEMENT/SERVICE/AZURE-OPENAI-APM\",\"resultType\":\"Failed\",\"time\":\"2053-03-05T10:39:40.2260356Z\",\"truncated\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "logs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_openai-logs-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "azure_openai",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

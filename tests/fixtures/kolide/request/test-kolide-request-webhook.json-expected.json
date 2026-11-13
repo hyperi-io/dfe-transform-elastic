@@ -1,0 +1,169 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-03-13T14:15:00.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "requests.issue_exemption",
+        "category": [
+          "configuration",
+          "iam"
+        ],
+        "id": "webhook-exemption-001",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "creation"
+        ]
+      },
+      "host": {
+        "hostname": "cvbkygb-huoahhh-ic",
+        "id": "200003",
+        "name": "cvbkygb-huoahhh-ic"
+      },
+      "kolide": {
+        "request": {
+          "id": "webhook-exemption-001",
+          "issues": [
+            {
+              "issue_id": "8888",
+              "issue_url": "https://api.example.com/issues/8888"
+            }
+          ],
+          "message": "Travel exception requested",
+          "state": "pending",
+          "type": "exemption"
+        }
+      },
+      "message": "Travel exception requested",
+      "related": {
+        "hosts": [
+          "cvbkygb-huoahhh-ic",
+          "200003"
+        ],
+        "user": [
+          "femml.gxxjeg@example.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "femml.gxxjeg@example.com",
+        "name": "femml.gxxjeg@example.com"
+      }
+    },
+    {
+      "@timestamp": "2052-03-13T15:00:00.000Z",
+      "ecs": {
+        "version": "9.4.0"
+      },
+      "event": {
+        "action": "requests.registration",
+        "category": [
+          "configuration",
+          "iam"
+        ],
+        "id": "webhook-registration-001",
+        "kind": "event",
+        "outcome": "unknown",
+        "type": [
+          "creation"
+        ]
+      },
+      "host": {
+        "hostname": "example-linux-workstation",
+        "id": "200004",
+        "name": "example-linux-workstation"
+      },
+      "kolide": {
+        "request": {
+          "device": {
+            "url": "https://api.example.com/devices/200004"
+          },
+          "id": "webhook-registration-001",
+          "message": "Please approve this device",
+          "requester": {
+            "url": "https://api.example.com/people/100004"
+          },
+          "state": "pending",
+          "type": "registration"
+        }
+      },
+      "message": "Please approve this device",
+      "related": {
+        "hosts": [
+          "example-linux-workstation",
+          "200004"
+        ],
+        "user": [
+          "cbrd.yff@example.com",
+          "100004"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "cbrd.yff@example.com",
+        "id": "100004",
+        "name": "cbrd.yff@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "data": {
+        "device_id": "200003",
+        "device_name": "cvbkygb-huoahhh-ic",
+        "issues": [
+          {
+            "issue_id": "8888",
+            "issue_url": "https://api.example.com/issues/8888"
+          }
+        ],
+        "message": "Travel exception requested",
+        "person_email": "femml.gxxjeg@example.com"
+      },
+      "event": "requests.issue_exemption",
+      "id": "webhook-exemption-001",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2052-03-13T14:15:00Z"
+    },
+    {
+      "data": {
+        "device": {
+          "id": "200004",
+          "name": "example-linux-workstation",
+          "url": "https://api.example.com/devices/200004"
+        },
+        "message": "Please approve this device",
+        "requester": {
+          "email": "cbrd.yff@example.com",
+          "id": "100004",
+          "url": "https://api.example.com/people/100004"
+        }
+      },
+      "event": "requests.registration",
+      "id": "webhook-registration-001",
+      "tags": [
+        "preserve_original_event"
+      ],
+      "timestamp": "2052-03-13T15:00:00Z"
+    }
+  ],
+  "meta": {
+    "data_stream": "request",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-kolide-request-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "kolide",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

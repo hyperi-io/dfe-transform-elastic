@@ -1,0 +1,75 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-06-16T04:18:34.000Z",
+      "crowdstrike": {
+        "event": {
+          "Highlights": [
+            "Some highlighed text &lt;cs-highlight&gt;test&lt;/cs-highlight&gt; &lt;cs-highlight&gt;gdsfgasd&lt;/cs-highlight&gt;.\n\nAs an Some more text"
+          ],
+          "ItemPostedTimestamp": 2570486709000,
+          "ItemType": "post",
+          "NotificationId": "oifgdjgpoidfsjhpoihio",
+          "RulePriority": "high"
+        },
+        "metadata": {
+          "customerIDString": "1231231231231",
+          "eventType": "ReconNotificationSummaryEvent",
+          "offset": 2664218,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "recon-notification-post",
+        "category": [
+          "threat"
+        ],
+        "created": "2051-06-16T00:05:09.000Z",
+        "id": "oigjfdsiughsiopudhfoiusadhfiouhipou==",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"1231231231231\",\"offset\":2664218,\"eventType\":\"ReconNotificationSummaryEvent\",\"eventCreationTime\":2570501914000,\"version\":\"1.0\"},\"event\":{\"NotificationId\":\"oifgdjgpoidfsjhpoihio\",\"Highlights\":[\"Some highlighed text &lt;cs-highlight&gt;test&lt;/cs-highlight&gt; &lt;cs-highlight&gt;gdsfgasd&lt;/cs-highlight&gt;.\\n\\nAs an Some more text\"],\"MatchedTimestamp\":2570501914000,\"RuleId\":\"123543-0cb1-4806-9ccd-a543123\",\"RuleName\":\"TestRuleName\",\"RuleTopic\":\"TestRuleTopic\",\"RulePriority\":\"high\",\"ItemId\":\"oigjfdsiughsiopudhfoiusadhfiouhipou==\",\"ItemType\":\"post\",\"ItemPostedTimestamp\":2570486709000}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "rule": {
+        "description": "TestRuleTopic",
+        "id": "123543-0cb1-4806-9ccd-a543123",
+        "name": "TestRuleName",
+        "ruleset": "TestRuleTopic"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"1231231231231\",\"offset\":2664218,\"eventType\":\"ReconNotificationSummaryEvent\",\"eventCreationTime\":2570501914000,\"version\":\"1.0\"},\"event\":{\"NotificationId\":\"oifgdjgpoidfsjhpoihio\",\"Highlights\":[\"Some highlighed text &lt;cs-highlight&gt;test&lt;/cs-highlight&gt; &lt;cs-highlight&gt;gdsfgasd&lt;/cs-highlight&gt;.\\n\\nAs an Some more text\"],\"MatchedTimestamp\":2570501914000,\"RuleId\":\"123543-0cb1-4806-9ccd-a543123\",\"RuleName\":\"TestRuleName\",\"RuleTopic\":\"TestRuleTopic\",\"RulePriority\":\"high\",\"ItemId\":\"oigjfdsiughsiopudhfoiusadhfiouhipou==\",\"ItemType\":\"post\",\"ItemPostedTimestamp\":2570486709000}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

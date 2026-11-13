@@ -1,0 +1,154 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-10-09T16:13:19.590Z",
+      "client": {
+        "address": "192.168.33.187"
+      },
+      "destination": {
+        "address": "192.168.107.23",
+        "ip": "192.168.107.23",
+        "port": 88
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "TGS",
+        "category": [
+          "network",
+          "authentication"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C56Flhb4WQBNkfMOl",
+        "kind": "event",
+        "original": "{\"ts\":2391178399.590346,\"uid\":\"C56Flhb4WQBNkfMOl\",\"id.orig_h\":\"192.168.33.187\",\"id.orig_p\":49242,\"id.resp_h\":\"192.168.107.23\",\"id.resp_p\":88,\"request_type\":\"TGS\",\"client\":\"RonHD/CONTOSO.LOCAL\",\"service\":\"HOST/admin-pc\",\"success\":true,\"till\":2136422885.0,\"cipher\":\"aes256-cts-hmac-sha1-96\",\"forwardable\":true,\"renewable\":true,\"cert.client_subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"cert.server_subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\"}",
+        "outcome": "success",
+        "type": [
+          "connection",
+          "protocol",
+          "access"
+        ]
+      },
+      "network": {
+        "community_id": "1:ggEb5TWS7TjV4aNw/j9MnNHkNWI=",
+        "protocol": "kerberos",
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "192.168.33.187",
+          "192.168.107.23"
+        ],
+        "user": [
+          "RonHD"
+        ]
+      },
+      "server": {
+        "address": "192.168.107.23"
+      },
+      "source": {
+        "address": "192.168.33.187",
+        "ip": "192.168.33.187",
+        "port": 49242
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "tls": {
+        "client": {
+          "x509": {
+            "subject": {
+              "common_name": [
+                "*.gcp.cloud.es.io"
+              ],
+              "country": [
+                "US"
+              ],
+              "locality": [
+                "Mountain View"
+              ],
+              "organization": [
+                "Elasticsearch Inc."
+              ],
+              "state_or_province": [
+                "California"
+              ]
+            }
+          }
+        },
+        "server": {
+          "x509": {
+            "subject": {
+              "common_name": [
+                "*.gcp.cloud.es.io"
+              ],
+              "country": [
+                "US"
+              ],
+              "locality": [
+                "Mountain View"
+              ],
+              "organization": [
+                "Elasticsearch Inc."
+              ],
+              "state_or_province": [
+                "California"
+              ]
+            }
+          }
+        }
+      },
+      "user": {
+        "domain": "CONTOSO.LOCAL",
+        "name": "RonHD"
+      },
+      "zeek": {
+        "kerberos": {
+          "cert": {
+            "client": {
+              "subject": "CN=*.gcp.cloud.es.io,O=Elasticsearch Inc.,L=Mountain View,ST=California,C=US"
+            },
+            "server": {
+              "subject": "CN=*.gcp.cloud.es.io,O=Elasticsearch Inc.,L=Mountain View,ST=California,C=US"
+            }
+          },
+          "cipher": "aes256-cts-hmac-sha1-96",
+          "client": "RonHD/CONTOSO.LOCAL",
+          "forwardable": true,
+          "renewable": true,
+          "request_type": "TGS",
+          "service": "HOST/admin-pc",
+          "success": true,
+          "valid": {
+            "until": "2037-09-13T02:48:05.000Z"
+          }
+        },
+        "session_id": "C56Flhb4WQBNkfMOl"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2391178399.590346,\"uid\":\"C56Flhb4WQBNkfMOl\",\"id.orig_h\":\"192.168.33.187\",\"id.orig_p\":49242,\"id.resp_h\":\"192.168.107.23\",\"id.resp_p\":88,\"request_type\":\"TGS\",\"client\":\"RonHD/CONTOSO.LOCAL\",\"service\":\"HOST/admin-pc\",\"success\":true,\"till\":2136422885.0,\"cipher\":\"aes256-cts-hmac-sha1-96\",\"forwardable\":true,\"renewable\":true,\"cert.client_subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\",\"cert.server_subject\":\"CN=*.gcp.cloud.es.io,O=Elasticsearch\\u005c, Inc.,L=Mountain View,ST=California,C=US\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "kerberos",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-kerberos-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

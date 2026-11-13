@@ -1,0 +1,3 @@
+<114>Dec 31 12:01:04 [192.0.2.87] ZscalerNSS: Zscaler cloud configuration connection to  192.0.2.87:443 lost and unavailable for the past 2325.00 minutes
+<114>Dec 31 13:02:05 [198.51.100.74] ZscalerNSS: SIEM Feed connection "DNS Logs Feed" to 198.51.100.74:9012 lost and unavailable for the past 2440.00 minutes
+<114>Dec 31 14:03:06 [198.51.100.74] Hey, that's a new type of alert. Isn't it?

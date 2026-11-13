@@ -1,0 +1,500 @@
+{
+  "expected": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "c28e605d-5f39-4325-ac07-da188a7e5656",
+        "id": "875a1343-cc4c-4a0d-9d8d-fa54c30ab93f",
+        "name": "e52b521fa615",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Set-Mailbox",
+        "category": [
+          "web",
+          "web"
+        ],
+        "code": "ExchangeAdmin",
+        "dataset": "o365.audit",
+        "id": "0c0946c5-974f-44dc-3c10-34d2cd3d05ba",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "Exchange",
+        "type": [
+          "info",
+          "info"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "CreationTime": "2048-02-07T20:49:49",
+          "ExternalAccess": true,
+          "Id": "0c0946c5-974f-44dc-3c10-34d2cd3d05ba",
+          "ObjectId": "EURPR01A002.prod.outlook.com/Microsoft Exchange Hosted Organizations/testsiem.onmicrosoft.com/DiscoverySearchMailbox{C911AD75-06B6-420d-82CF-3C29808ED905}",
+          "Operation": "Set-Mailbox",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "OrganizationName": "testsiem.onmicrosoft.com",
+          "OriginatingServer": "HE1PR0102MB3228 (15.20.2707.017)",
+          "Parameters": {
+            "_raw": "-StartReceivedDate \"4/25/2021 7:00:00 AM\" -EndReceivedDate \"5/27/2021 7:00:00 AM\" -StartExpiresDate \"5/26/2021 7:00:00 AM\" -EndExpiresDate \"6/26/2021 7:00:00 AM\" -PageSize \"100\" -Page \"1\" -MyItems \"True\" -QuarantineTypes (\"Bulk\",\"Spam\",\"Phish\")"
+          },
+          "RecordType": 1,
+          "ResultStatus": "True",
+          "UserId": "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)",
+          "UserKey": "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)",
+          "UserType": 3,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "mytenant.onmicrosoft.com"
+      },
+      "related": {
+        "hosts": [
+          "testsiem.onmicrosoft.com"
+        ],
+        "user": [
+          "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)"
+        ]
+      },
+      "server": {
+        "address": "HE1PR0102MB3228 (15.20.2707.017)"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "id": "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "agent": {
+        "ephemeral_id": "c28e605d-5f39-4325-ac07-da188a7e5656",
+        "id": "875a1343-cc4c-4a0d-9d8d-fa54c30ab93f",
+        "name": "e52b521fa615",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UserLoggedIn",
+        "category": [
+          "authentication",
+          "web",
+          "authentication"
+        ],
+        "code": "AzureActiveDirectoryStsLogon",
+        "dataset": "o365.audit",
+        "id": "520cf6a2-15ca-4ecf-9ec6-05daf5192622",
+        "kind": "event",
+        "module": "o365",
+        "original": "null",
+        "outcome": "success",
+        "provider": "AzureActiveDirectory",
+        "type": [
+          "start",
+          "authentication_success",
+          "info",
+          "start",
+          "access"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "82166b4c-63c8-445f-b3b3-738a8628031a",
+        "name": "testsiem4.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1014
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "Actor": [
+            {
+              "ID": "71467513-8157-45b6-8052-f303adfac534",
+              "Type": 0
+            },
+            {
+              "ID": "root@testsiem4.onmicrosoft.com",
+              "Type": 5
+            }
+          ],
+          "ActorContextId": "82166b4c-63c8-445f-b3b3-738a8628031a",
+          "ActorIpAddress": "203.0.113.248",
+          "ApplicationId": "70eea3a6-0f5b-4c1d-9c0f-edc791253fc3",
+          "AzureActiveDirectoryEventType": 1,
+          "ClientIP": "203.0.113.248",
+          "CreationTime": "2049-02-05T09:06:07",
+          "ErrorNumber": "0",
+          "ExtendedProperties": {
+            "_raw": "-Name \"foo\" -Description \"\" -HoldNames () -PublicFolderLocation () -ExchangeLocationExclusion () -IncludeUserAppContent \"True\" -SharePointLocationExclusion () -Force \"True\" -Language \"\" -SharePointLocation () -ExchangeLocation (\"All\") -ContentMatchQuery \"(c:c)(senderauthor=dfb@fxz.com)\""
+          },
+          "Id": "520cf6a2-15ca-4ecf-9ec6-05daf5192622",
+          "InterSystemsId": "bd5b4d6b-5429-4e1c-8981-69856fbaaa99",
+          "IntraSystemId": "520cf6a2-15ca-4ecf-9ec6-05daf5192622",
+          "ObjectId": "Unknown",
+          "Operation": "UserLoggedIn",
+          "OrganizationId": "82166b4c-63c8-445f-b3b3-738a8628031a",
+          "RecordType": 15,
+          "ResultStatus": "Success",
+          "Target": [
+            {
+              "ID": "Unknown",
+              "Type": 0
+            }
+          ],
+          "TargetContextId": "82166b4c-63c8-445f-b3b3-738a8628031a",
+          "UserId": "root@testsiem4.onmicrosoft.com",
+          "UserKey": "71467513-8157-45b6-8052-f303adfac534",
+          "UserType": 0,
+          "Version": 1,
+          "Workload": "AzureActiveDirectory"
+        }
+      },
+      "organization": {
+        "id": "82166b4c-63c8-445f-b3b3-738a8628031a"
+      },
+      "related": {
+        "hosts": [
+          "testsiem4.onmicrosoft.com"
+        ],
+        "ip": "203.0.113.248",
+        "user": [
+          "root",
+          "root@testsiem4.onmicrosoft.com"
+        ]
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "testsiem4.onmicrosoft.com",
+        "email": "root@testsiem4.onmicrosoft.com",
+        "id": "root@testsiem4.onmicrosoft.com",
+        "name": "root"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "c28e605d-5f39-4325-ac07-da188a7e5656",
+        "id": "875a1343-cc4c-4a0d-9d8d-fa54c30ab93f",
+        "name": "e52b521fa615",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "Set-Mailbox",
+        "category": "web",
+        "code": "ExchangeAdmin",
+        "dataset": "o365.audit",
+        "id": "0c0946c5-974f-44dc-3c10-34d2cd3d05ba",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "Exchange",
+        "type": "info"
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 0
+      },
+      "o365": {
+        "audit": {
+          "AppId": "",
+          "ClientAppId": "",
+          "CreationTime": "2048-02-07T20:49:49",
+          "ExternalAccess": true,
+          "Id": "0c0946c5-974f-44dc-3c10-34d2cd3d05ba",
+          "ObjectId": "EURPR01A002.prod.outlook.com/Microsoft Exchange Hosted Organizations/testsiem.onmicrosoft.com/DiscoverySearchMailbox{C911AD75-06B6-420d-82CF-3C29808ED905}",
+          "Operation": "Set-Mailbox",
+          "OrganizationId": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+          "OrganizationName": "testsiem.onmicrosoft.com",
+          "OriginatingServer": "HE1PR0102MB3228 (15.20.2707.017)",
+          "Parameters": {
+            "_raw": "-StartReceivedDate \"4/25/2021 7:00:00 AM\" -EndReceivedDate \"5/27/2021 7:00:00 AM\" -StartExpiresDate \"5/26/2021 7:00:00 AM\" -EndExpiresDate \"6/26/2021 7:00:00 AM\" -PageSize \"100\" -Page \"1\" -MyItems \"True\" -QuarantineTypes (\"Bulk\",\"Spam\",\"Phish\")"
+          },
+          "RecordType": 1,
+          "ResultStatus": "True",
+          "UserId": "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)",
+          "UserKey": "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)",
+          "UserType": 3,
+          "Version": 1,
+          "Workload": "Exchange"
+        }
+      },
+      "organization": {
+        "id": "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf",
+        "name": "testsiem.onmicrosoft.com"
+      },
+      "server": {
+        "address": "HE1PR0102MB3228 (15.20.2707.017)"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "id": "NT AUTHORITY\\SYSTEM (Microsoft.Exchange.ServiceHost)"
+      }
+    },
+    {
+      "@metadata": {
+        "beat": "filebeat",
+        "pipeline": "filebeat-8.13.2-o365-audit-pipeline",
+        "type": "_doc",
+        "version": "8.13.2"
+      },
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_conf": {
+        "tenants": {
+          "d75ec5f7-eba9-4c30-8b33-4f7d74a77ecf": "mytenant.onmicrosoft.com"
+        }
+      },
+      "agent": {
+        "ephemeral_id": "c28e605d-5f39-4325-ac07-da188a7e5656",
+        "id": "875a1343-cc4c-4a0d-9d8d-fa54c30ab93f",
+        "name": "e52b521fa615",
+        "type": "filebeat",
+        "version": "8.13.2"
+      },
+      "client": {
+        "address": "203.0.113.248",
+        "ip": "203.0.113.248"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "action": "UserLoggedIn",
+        "category": "authentication",
+        "code": "AzureActiveDirectoryStsLogon",
+        "dataset": "o365.audit",
+        "id": "520cf6a2-15ca-4ecf-9ec6-05daf5192622",
+        "kind": "event",
+        "module": "o365",
+        "outcome": "success",
+        "provider": "AzureActiveDirectory",
+        "type": [
+          "start",
+          "authentication_success"
+        ]
+      },
+      "fileset": {
+        "name": "audit"
+      },
+      "host": {
+        "id": "82166b4c-63c8-445f-b3b3-738a8628031a",
+        "name": "testsiem4.onmicrosoft.com"
+      },
+      "input": {
+        "type": "log"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/test.log"
+        },
+        "offset": 1014
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "o365": {
+        "audit": {
+          "Actor": [
+            {
+              "ID": "71467513-8157-45b6-8052-f303adfac534",
+              "Type": 0
+            },
+            {
+              "ID": "root@testsiem4.onmicrosoft.com",
+              "Type": 5
+            }
+          ],
+          "ActorContextId": "82166b4c-63c8-445f-b3b3-738a8628031a",
+          "ActorIpAddress": "203.0.113.248",
+          "ApplicationId": "70eea3a6-0f5b-4c1d-9c0f-edc791253fc3",
+          "AzureActiveDirectoryEventType": 1,
+          "ClientIP": "203.0.113.248",
+          "CreationTime": "2049-02-05T09:06:07",
+          "ErrorNumber": "0",
+          "ExtendedProperties": {
+            "_raw": "-Name \"foo\" -Description \"\" -HoldNames () -PublicFolderLocation () -ExchangeLocationExclusion () -IncludeUserAppContent \"True\" -SharePointLocationExclusion () -Force \"True\" -Language \"\" -SharePointLocation () -ExchangeLocation (\"All\") -ContentMatchQuery \"(c:c)(senderauthor=dfb@fxz.com)\""
+          },
+          "Id": "520cf6a2-15ca-4ecf-9ec6-05daf5192622",
+          "InterSystemsId": "bd5b4d6b-5429-4e1c-8981-69856fbaaa99",
+          "IntraSystemId": "520cf6a2-15ca-4ecf-9ec6-05daf5192622",
+          "ModifiedProperties": {},
+          "ObjectId": "Unknown",
+          "Operation": "UserLoggedIn",
+          "OrganizationId": "82166b4c-63c8-445f-b3b3-738a8628031a",
+          "RecordType": 15,
+          "ResultStatus": "Success",
+          "SupportTicketId": "",
+          "Target": [
+            {
+              "ID": "Unknown",
+              "Type": 0
+            }
+          ],
+          "TargetContextId": "82166b4c-63c8-445f-b3b3-738a8628031a",
+          "UserId": "root@testsiem4.onmicrosoft.com",
+          "UserKey": "71467513-8157-45b6-8052-f303adfac534",
+          "UserType": 0,
+          "Version": 1,
+          "Workload": "AzureActiveDirectory"
+        }
+      },
+      "organization": {
+        "id": "82166b4c-63c8-445f-b3b3-738a8628031a"
+      },
+      "related": {
+        "ip": "203.0.113.248",
+        "user": "root"
+      },
+      "service": {
+        "type": "o365"
+      },
+      "source": {
+        "ip": "203.0.113.248"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "testsiem4.onmicrosoft.com",
+        "email": "root@testsiem4.onmicrosoft.com",
+        "id": "root@testsiem4.onmicrosoft.com",
+        "name": "root"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365-audit-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [
+      "event.id",
+      "host.id",
+      "o365.audit.ExceptionInfo.FalsePositive",
+      "o365.audit.ExchangeMetaData.CC",
+      "o365.audit.ExchangeMetaData.MessageID",
+      "o365.audit.ExchangeMetaData.Sent",
+      "o365.audit.ExchangeMetaData.To",
+      "o365.audit.ExchangeMetaData.UniqueID",
+      "o365.audit.FileSize",
+      "o365.audit.Item.IsRecord",
+      "o365.audit.Item.SizeInBytes",
+      "o365.audit.OperationId",
+      "o365.audit.RequestId",
+      "o365.audit.SharePointMetaData.FileSize",
+      "o365.audit.SharePointMetaData.IsViewableByExternalUsers",
+      "o365.audit.UserId",
+      "o365.audit.WorkspaceId",
+      "organization.id"
+    ],
+    "package": "o365",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

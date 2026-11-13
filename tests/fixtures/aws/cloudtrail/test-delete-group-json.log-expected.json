@@ -1,0 +1,236 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-01-09T02:25:44.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "groupName": "TEST-GROUP"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "FIFGOKF-26db-1460-c143-CUEYNJD",
+          "request_parameters": "{groupName=TEST-GROUP}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "invoked_by": "signin.amazonaws.com",
+            "session_context": {
+              "creation_date": "2048-01-08T15:12:16.000Z",
+              "mfa_authenticated": "true"
+            },
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DeleteGroup",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-cbc2-4cc3-8bbc-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"0123456789012\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-08T15:12:16Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-09T02:25:44Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"FIFGOKF-26db-1460-c143-CUEYNJD\",\"eventID\":\"EXAMPLE-cbc2-4cc3-8bbc-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "success",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "group",
+          "deletion"
+        ]
+      },
+      "group": {
+        "name": "TEST-GROUP"
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY",
+          "Ekkcf",
+          "arn:aws:iam::0123456789012:user/Ekkcf"
+        ],
+        "user": [
+          "0123456789012",
+          "Ekkcf"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "0123456789012",
+        "name": "Ekkcf"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "signin.amazonaws.com"
+      }
+    },
+    {
+      "@timestamp": "2048-01-09T02:25:11.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "error_code": "DeleteConflictException",
+          "error_message": "Cannot delete entity, must detach all policies first.",
+          "event_type": "AwsApiCall",
+          "event_version": "1.05",
+          "flattened": {
+            "request_parameters": {
+              "groupName": "TEST-GROUP"
+            }
+          },
+          "recipient_account_id": "0123456789012",
+          "request_id": "BSEKPKE-1d4e-3d50-c56f-BZBGMTC",
+          "request_parameters": "{groupName=TEST-GROUP}",
+          "user_identity": {
+            "access_key_id": "EXAMPLE_KEY_ID",
+            "arn": "arn:aws:iam::0123456789012:user/Ekkcf",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "0123456789012"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "DeleteGroup",
+        "category": [
+          "iam"
+        ],
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "EXAMPLE-5aa2-4b5f-a52a-EXAMPLE",
+        "kind": "event",
+        "original": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_PRINCIPLE\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY_ID\",\"userName\":\"Ekkcf\"},\"eventTime\":\"2048-01-09T02:25:11Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"errorCode\":\"DeleteConflictException\",\"errorMessage\":\"Cannot delete entity, must detach all policies first.\",\"requestParameters\":{\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"BSEKPKE-1d4e-3d50-c56f-BZBGMTC\",\"eventID\":\"EXAMPLE-5aa2-4b5f-a52a-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+        "outcome": "failure",
+        "provider": "iam.amazonaws.com",
+        "type": [
+          "group",
+          "deletion"
+        ]
+      },
+      "group": {
+        "name": "TEST-GROUP"
+      },
+      "related": {
+        "entity": [
+          "EXAMPLE_KEY_ID",
+          "Ekkcf",
+          "arn:aws:iam::0123456789012:user/Ekkcf"
+        ],
+        "user": [
+          "EXAMPLE_PRINCIPLE",
+          "Ekkcf"
+        ]
+      },
+      "source": {
+        "address": "127.0.0.1",
+        "ip": "127.0.0.1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::0123456789012:user/Ekkcf"
+          ]
+        },
+        "id": "EXAMPLE_PRINCIPLE",
+        "name": "Ekkcf"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Spider"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46",
+        "version": "1.16.310"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"0123456789012\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY\",\"userName\":\"Ekkcf\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"true\",\"creationDate\":\"2048-01-08T15:12:16Z\"}},\"invokedBy\":\"signin.amazonaws.com\"},\"eventTime\":\"2048-01-09T02:25:44Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"signin.amazonaws.com\",\"requestParameters\":{\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"FIFGOKF-26db-1460-c143-CUEYNJD\",\"eventID\":\"EXAMPLE-cbc2-4cc3-8bbc-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"IAMUser\",\"principalId\":\"EXAMPLE_PRINCIPLE\",\"arn\":\"arn:aws:iam::0123456789012:user/Ekkcf\",\"accountId\":\"0123456789012\",\"accessKeyId\":\"EXAMPLE_KEY_ID\",\"userName\":\"Ekkcf\"},\"eventTime\":\"2048-01-09T02:25:11Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteGroup\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"127.0.0.1\",\"userAgent\":\"aws-cli/1.16.310 Python/3.8.1 Darwin/18.7.0 botocore/1.13.46\",\"errorCode\":\"DeleteConflictException\",\"errorMessage\":\"Cannot delete entity, must detach all policies first.\",\"requestParameters\":{\"groupName\":\"TEST-GROUP\"},\"responseElements\":null,\"requestID\":\"BSEKPKE-1d4e-3d50-c56f-BZBGMTC\",\"eventID\":\"EXAMPLE-5aa2-4b5f-a52a-EXAMPLE\",\"eventType\":\"AwsApiCall\",\"recipientAccountId\":\"0123456789012\"}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

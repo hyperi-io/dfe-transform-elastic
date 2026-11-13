@@ -1,0 +1,740 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-09-04T21:45:37.536-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:45:37.536335 ,1,1000006,0,\"TCP connection\",TCP,10.68.25.100,57263,10.221.181.49,22,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0x72,***AP***,0x688F0DFC,0xBC763516,,0x80C,127,0,55665,100,102400,,,,",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:Z8yBW4uPpqTkU0oEJuNHtLO4Nvs=",
+        "direction": "internal",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.68.25.100",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "TCP connection",
+        "id": "1000006",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 100
+        },
+        "eth": {
+          "length": 114
+        },
+        "gid": 1,
+        "ip": {
+          "id": 55665,
+          "length": 102400,
+          "tos": 0,
+          "ttl": 127
+        },
+        "tcp": {
+          "ack": 3161863446,
+          "flags": "AP",
+          "seq": 1754205692,
+          "window": 2060
+        }
+      },
+      "source": {
+        "address": "10.68.25.100",
+        "ip": "10.68.25.100",
+        "mac": "47-60-69-8E-10-17",
+        "port": 57263
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:45:37.553-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB",
+        "port": 22
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:45:37.553882 ,1,1000006,0,\"TCP connection\",TCP,10.68.25.100,57263,10.221.181.49,22,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0x72,***AP***,0x688F0E38,0xBC763552,,0x80C,127,0,55666,100,102400,,,,",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:Z8yBW4uPpqTkU0oEJuNHtLO4Nvs=",
+        "direction": "internal",
+        "iana_number": "6",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.68.25.100",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "TCP connection",
+        "id": "1000006",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 100
+        },
+        "eth": {
+          "length": 114
+        },
+        "gid": 1,
+        "ip": {
+          "id": 55666,
+          "length": 102400,
+          "tos": 0,
+          "ttl": 127
+        },
+        "tcp": {
+          "ack": 3161863506,
+          "flags": "AP",
+          "seq": 1754205752,
+          "window": 2060
+        }
+      },
+      "source": {
+        "address": "10.68.25.100",
+        "ip": "10.68.25.100",
+        "mac": "47-60-69-8E-10-17",
+        "port": 57263
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:50:40.017-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB",
+        "port": 55475
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:50:40.017935 ,1,1000005,0,\"UDP Connection\",UDP,10.105.0.235,53,10.221.181.49,55475,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0xC1,,,,,,64,0,56094,179,183296,,,,",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:BxzMmtELuBYo25+Yu//VXqHBlag=",
+        "direction": "internal",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.105.0.235",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "UDP Connection",
+        "id": "1000005",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 179
+        },
+        "eth": {
+          "length": 193
+        },
+        "gid": 1,
+        "ip": {
+          "id": 56094,
+          "length": 183296,
+          "tos": 0,
+          "ttl": 64
+        },
+        "tcp": {
+          "flags": ""
+        }
+      },
+      "source": {
+        "address": "10.105.0.235",
+        "ip": "10.105.0.235",
+        "mac": "47-60-69-8E-10-17",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:50:39.947-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB",
+        "port": 55333
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:50:39.947383 ,1,1000005,0,\"UDP Connection\",UDP,10.105.0.235,53,10.221.181.49,55333,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0xB1,,,,,,64,0,26112,163,166912,,,,",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:g7wf4+nC5amEzcMe02qYyaWfJ60=",
+        "direction": "internal",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.105.0.235",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "UDP Connection",
+        "id": "1000005",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 163
+        },
+        "eth": {
+          "length": 177
+        },
+        "gid": 1,
+        "ip": {
+          "id": 26112,
+          "length": 166912,
+          "tos": 0,
+          "ttl": 64
+        },
+        "tcp": {
+          "flags": ""
+        }
+      },
+      "source": {
+        "address": "10.105.0.235",
+        "ip": "10.105.0.235",
+        "mac": "47-60-69-8E-10-17",
+        "port": 53
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:50:40.666-05:00",
+      "destination": {
+        "address": "10.167.152.4",
+        "ip": "10.167.152.4",
+        "mac": "FF-FF-FF-FF-FF-FF",
+        "port": 32414
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:50:40.666095 ,1,1000005,0,\"UDP Connection\",UDP,10.246.16.221,55776,10.167.152.4,32414,65:2E:56:E6:25:CD,FF:FF:FF:FF:FF:FF,0x3F,,,,,,64,0,37712,49,50176,,,,",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:6/M+6SjMKfSgilYB65VpZkQ0E6w=",
+        "direction": "internal",
+        "iana_number": "17",
+        "transport": "udp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.246.16.221",
+          "10.167.152.4"
+        ]
+      },
+      "rule": {
+        "description": "UDP Connection",
+        "id": "1000005",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 49
+        },
+        "eth": {
+          "length": 63
+        },
+        "gid": 1,
+        "ip": {
+          "id": 37712,
+          "length": 50176,
+          "tos": 0,
+          "ttl": 64
+        },
+        "tcp": {
+          "flags": ""
+        }
+      },
+      "source": {
+        "address": "10.246.16.221",
+        "ip": "10.246.16.221",
+        "mac": "65-2E-56-E6-25-CD",
+        "port": 55776
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:49:55.900-05:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "mac": "47-60-69-8E-10-17"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:49:55.900215 ,1,1000004,0,\"Pinging...\",ICMP,10.221.181.49,,192.0.2.87,,29:63:26:8D:A0:CB,47:60:69:8E:10:17,0x62,,,,,,64,0,37607,84,86016,8,0,83,1",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:2z0Ts1CGSxprKGaH/VeP6mmht8o=",
+        "direction": "outbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.221.181.49",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "description": "Pinging...",
+        "id": "1000004",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 84
+        },
+        "eth": {
+          "length": 98
+        },
+        "gid": 1,
+        "icmp": {
+          "code": 0,
+          "id": 83,
+          "seq": 1,
+          "type": 8
+        },
+        "ip": {
+          "id": 37607,
+          "length": 86016,
+          "tos": 0,
+          "ttl": 64
+        },
+        "tcp": {
+          "flags": ""
+        }
+      },
+      "source": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:49:55.911-05:00",
+      "destination": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:49:55.911592 ,1,1000004,0,\"Pinging...\",ICMP,192.0.2.87,,10.221.181.49,,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0x62,,,,,,54,0,23522,84,86016,0,0,83,1",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:tnmpPnGbZzD9dAST6YOF+nalglA=",
+        "direction": "inbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.87",
+          "10.221.181.49"
+        ]
+      },
+      "rule": {
+        "description": "Pinging...",
+        "id": "1000004",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 84
+        },
+        "eth": {
+          "length": 98
+        },
+        "gid": 1,
+        "icmp": {
+          "code": 0,
+          "id": 83,
+          "seq": 1,
+          "type": 0
+        },
+        "ip": {
+          "id": 23522,
+          "length": 86016,
+          "tos": 0,
+          "ttl": 54
+        },
+        "tcp": {
+          "flags": ""
+        }
+      },
+      "source": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "mac": "47-60-69-8E-10-17"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2026-09-04T21:49:56.900-05:00",
+      "destination": {
+        "address": "192.0.2.87",
+        "ip": "192.0.2.87",
+        "mac": "47-60-69-8E-10-17"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "alert",
+        "original": "09/04-21:49:56.900997 ,1,1000004,0,\"Pinging...\",ICMP,10.221.181.49,,192.0.2.87,,29:63:26:8D:A0:CB,47:60:69:8E:10:17,0x62,,,,,,64,0,37636,84,86016,8,0,83,2",
+        "timezone": "America/Chicago"
+      },
+      "network": {
+        "community_id": "1:2z0Ts1CGSxprKGaH/VeP6mmht8o=",
+        "direction": "outbound",
+        "iana_number": "1",
+        "transport": "icmp",
+        "type": "ipv4"
+      },
+      "observer": {
+        "product": "ids",
+        "type": "ids",
+        "vendor": "snort"
+      },
+      "related": {
+        "ip": [
+          "10.221.181.49",
+          "192.0.2.87"
+        ]
+      },
+      "rule": {
+        "description": "Pinging...",
+        "id": "1000004",
+        "version": "0"
+      },
+      "snort": {
+        "dgm": {
+          "length": 84
+        },
+        "eth": {
+          "length": 98
+        },
+        "gid": 1,
+        "icmp": {
+          "code": 0,
+          "id": 83,
+          "seq": 2,
+          "type": 8
+        },
+        "ip": {
+          "id": 37636,
+          "length": 86016,
+          "tos": 0,
+          "ttl": 64
+        },
+        "tcp": {
+          "flags": ""
+        }
+      },
+      "source": {
+        "address": "10.221.181.49",
+        "ip": "10.221.181.49",
+        "mac": "29-63-26-8D-A0-CB"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:45:37.536335 ,1,1000006,0,\"TCP connection\",TCP,10.68.25.100,57263,10.221.181.49,22,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0x72,***AP***,0x688F0DFC,0xBC763516,,0x80C,127,0,55665,100,102400,,,,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:45:37.553882 ,1,1000006,0,\"TCP connection\",TCP,10.68.25.100,57263,10.221.181.49,22,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0x72,***AP***,0x688F0E38,0xBC763552,,0x80C,127,0,55666,100,102400,,,,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:50:40.017935 ,1,1000005,0,\"UDP Connection\",UDP,10.105.0.235,53,10.221.181.49,55475,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0xC1,,,,,,64,0,56094,179,183296,,,,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:50:39.947383 ,1,1000005,0,\"UDP Connection\",UDP,10.105.0.235,53,10.221.181.49,55333,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0xB1,,,,,,64,0,26112,163,166912,,,,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:50:40.666095 ,1,1000005,0,\"UDP Connection\",UDP,10.246.16.221,55776,10.167.152.4,32414,65:2E:56:E6:25:CD,FF:FF:FF:FF:FF:FF,0x3F,,,,,,64,0,37712,49,50176,,,,",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:49:55.900215 ,1,1000004,0,\"Pinging...\",ICMP,10.221.181.49,,192.0.2.87,,29:63:26:8D:A0:CB,47:60:69:8E:10:17,0x62,,,,,,64,0,37607,84,86016,8,0,83,1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:49:55.911592 ,1,1000004,0,\"Pinging...\",ICMP,192.0.2.87,,10.221.181.49,,47:60:69:8E:10:17,29:63:26:8D:A0:CB,0x62,,,,,,54,0,23522,84,86016,0,0,83,1",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "_tmp": {
+        "internal_networks": [
+          "private"
+        ],
+        "tz_offset": "America/Chicago"
+      },
+      "message": "09/04-21:49:56.900997 ,1,1000004,0,\"Pinging...\",ICMP,10.221.181.49,,192.0.2.87,,29:63:26:8D:A0:CB,47:60:69:8E:10:17,0x62,,,,,,64,0,37636,84,86016,8,0,83,2",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}-[0-9]{2}:[0-9]{2}$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-snort-log-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "snort",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

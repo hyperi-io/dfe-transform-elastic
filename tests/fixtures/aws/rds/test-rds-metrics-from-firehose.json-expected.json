@@ -1,0 +1,73 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-08-01T16:05:00.000Z",
+      "agent": {
+        "type": "firehose"
+      },
+      "aws": {
+        "cloudwatch": {
+          "namespace": "AWS/RDS"
+        },
+        "dimensions": {
+          "DBInstanceIdentifier": "metricbeat-test-1839fabd"
+        },
+        "rds": {
+          "cpu": {
+            "total": {
+              "pct": 0.0123
+            }
+          },
+          "metrics": {
+            "CPUUtilization": {}
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "627286350134"
+        },
+        "provider": "aws",
+        "region": "us-east-1"
+      },
+      "data_stream": {
+        "dataset": "aws.rds",
+        "namespace": "default",
+        "type": "metrics"
+      },
+      "event": {
+        "agent_id_status": "missing",
+        "ingested": "2052-08-01T16:06:32Z",
+        "module": "aws"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2052-08-01T16:05:00.000Z",
+      "agent.type": "firehose",
+      "aws.cloudwatch.namespace": "AWS/RDS",
+      "aws.dimensions.DBInstanceIdentifier": "metricbeat-test-1839fabd",
+      "aws.rds.metrics.CPUUtilization.avg": 1.23,
+      "cloud.account.id": "627286350134",
+      "cloud.provider": "aws",
+      "cloud.region": "us-east-1",
+      "data_stream.dataset": "aws.rds",
+      "data_stream.namespace": "default",
+      "data_stream.type": "metrics",
+      "event.agent_id_status": "missing",
+      "event.ingested": "2052-08-01T16:06:32Z",
+      "event.module": "aws"
+    }
+  ],
+  "meta": {
+    "data_stream": "rds",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-rds-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

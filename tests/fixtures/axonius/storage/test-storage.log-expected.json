@@ -1,0 +1,205 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2025-12-04T12:02:21.000Z",
+      "axonius": {
+        "storage": {
+          "accurate_for_datetime": "2025-12-04T12:02:21.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "aws_adapter"
+          ],
+          "application_and_account_name": "aws/aws-demo",
+          "asset_type": "object_storages",
+          "data_asset_type": "AWS S3",
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ab731ccb57309230fc",
+            "initial_plugin_unique_name": "aws_adapter_0",
+            "plugin_name": "aws_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "aws_adapter_0",
+            "quick_id": "aws_adapter_0!cda46c83bf39105ee904",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-12-04T12:02:20.000Z",
+          "first_fetch_time": "2025-04-14T13:27:03.000Z",
+          "from_last_fetch": true,
+          "id": "cda46c83bf39105ee904",
+          "id_raw": "06f0b5a5-7bf3-4945-b3dc-7815fd9b9a84",
+          "internal_axon_id": "290ec7c7bfd13b6237e8ddf64305f13f",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ab731ccb57309230fc",
+          "last_fetch_connection_label": "aws-demo",
+          "name": "dacFdDeed650092F-core-dev",
+          "not_fetched_count": 0,
+          "source_application": "AWS",
+          "tenant_number": [
+            3
+          ],
+          "transform_unique_id": "Cq/Pn3kLoidtNQ4st74dl0l4sck=",
+          "type": "ObjectStorage",
+          "urls": [
+            "https://dacFdDeed650092F-core-dev.s3.amazonaws.com"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "file",
+          "host"
+        ],
+        "created": "2024-12-25T22:16:51.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"290ec7c7bfd13b6237e8ddf64305f13f\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"object_storages\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:21 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:21 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"AWS S3\",\"creation_date\":\"Wed, 25 Dec 2024 22:16:51 GMT\",\"fetch_time\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:03 GMT\",\"from_last_fetch\":true,\"id\":\"cda46c83bf39105ee904\",\"id_raw\":\"06f0b5a5-7bf3-4945-b3dc-7815fd9b9a84\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"dacFdDeed650092F-core-dev\",\"not_fetched_count\":0,\"software_cves\":[],\"source_application\":\"AWS\",\"tenant_number\":[\"3\"],\"type\":\"ObjectStorage\",\"urls\":[\"https:\\/\\/dacFdDeed650092F-core-dev.s3.amazonaws.com\"]},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!cda46c83bf39105ee904\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-12-04T12:02:20.000Z",
+      "axonius": {
+        "storage": {
+          "accurate_for_datetime": "2025-12-04T12:02:20.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "aws_adapter"
+          ],
+          "application_and_account_name": "aws/aws-demo",
+          "asset_type": "disks",
+          "data_asset_type": "EBS Volume",
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ab731ccb57309230fc",
+            "initial_plugin_unique_name": "aws_adapter_0",
+            "plugin_name": "aws_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "aws_adapter_0",
+            "quick_id": "aws_adapter_0!140649f1bb9614f2254f",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-12-04T12:02:20.000Z",
+          "first_fetch_time": "2025-04-14T13:27:02.000Z",
+          "from_last_fetch": true,
+          "id": "140649f1bb9614f2254f",
+          "id_raw": "98d0b275-28ec-4610-aa96-1297e616b7fd",
+          "internal_axon_id": "2d0f3b0bc9f2ee31b4a22f509c3286ab",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ab731ccb57309230fc",
+          "last_fetch_connection_label": "aws-demo",
+          "not_fetched_count": 0,
+          "size": 40.0,
+          "source_application": "AWS",
+          "tenant_number": [
+            1
+          ],
+          "transform_unique_id": "GZhvHm4Y+kLGo5K5hb/VP6KNq6c=",
+          "type": "Disk"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "file",
+          "host"
+        ],
+        "created": "2024-12-13T02:59:39.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"2d0f3b0bc9f2ee31b4a22f509c3286ab\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"disks\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"EBS Volume\",\"create_time\":\"Fri, 13 Dec 2024 02:59:39 GMT\",\"fetch_time\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:02 GMT\",\"from_last_fetch\":true,\"id\":\"140649f1bb9614f2254f\",\"id_raw\":\"98d0b275-28ec-4610-aa96-1297e616b7fd\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"not_fetched_count\":0,\"size\":40,\"source_application\":\"AWS\",\"tenant_number\":[\"1\"],\"type\":\"Disk\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!140649f1bb9614f2254f\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-12-04T12:02:20.000Z",
+      "axonius": {
+        "storage": {
+          "accurate_for_datetime": "2025-12-04T12:02:20.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "aws_adapter"
+          ],
+          "application_and_account_name": "aws/aws-demo",
+          "asset_type": "disks",
+          "data_asset_type": "EBS Volume",
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ab731ccb57309230fc",
+            "initial_plugin_unique_name": "aws_adapter_0",
+            "plugin_name": "aws_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "aws_adapter_0",
+            "quick_id": "aws_adapter_0!3937fc610509e1a16984",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-12-04T12:02:20.000Z",
+          "first_fetch_time": "2025-04-14T13:27:02.000Z",
+          "from_last_fetch": true,
+          "id": "3937fc610509e1a16984",
+          "id_raw": "ea409224-6fd8-4e9a-aa2d-5d65387c7789",
+          "internal_axon_id": "f896fa4804052fa760d1698bb89fe98b",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ab731ccb57309230fc",
+          "last_fetch_connection_label": "aws-demo",
+          "not_fetched_count": 0,
+          "size": 23.0,
+          "source_application": "AWS",
+          "tenant_number": [
+            1
+          ],
+          "transform_unique_id": "ubiS9flNANqDu8Z8dPMGoSxKMjI=",
+          "type": "Disk"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "file",
+          "host"
+        ],
+        "created": "2025-01-02T04:24:20.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"f896fa4804052fa760d1698bb89fe98b\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"disks\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"EBS Volume\",\"create_time\":\"Thu, 02 Jan 2025 04:24:20 GMT\",\"fetch_time\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:02 GMT\",\"from_last_fetch\":true,\"id\":\"3937fc610509e1a16984\",\"id_raw\":\"ea409224-6fd8-4e9a-aa2d-5d65387c7789\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"not_fetched_count\":0,\"size\":23,\"source_application\":\"AWS\",\"tenant_number\":[\"1\"],\"type\":\"Disk\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!3937fc610509e1a16984\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"internal_axon_id\":\"290ec7c7bfd13b6237e8ddf64305f13f\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"object_storages\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:21 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:21 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"AWS S3\",\"creation_date\":\"Wed, 25 Dec 2024 22:16:51 GMT\",\"fetch_time\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:03 GMT\",\"from_last_fetch\":true,\"id\":\"cda46c83bf39105ee904\",\"id_raw\":\"06f0b5a5-7bf3-4945-b3dc-7815fd9b9a84\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"dacFdDeed650092F-core-dev\",\"not_fetched_count\":0,\"software_cves\":[],\"source_application\":\"AWS\",\"tenant_number\":[\"3\"],\"type\":\"ObjectStorage\",\"urls\":[\"https:\\/\\/dacFdDeed650092F-core-dev.s3.amazonaws.com\"]},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!cda46c83bf39105ee904\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"2d0f3b0bc9f2ee31b4a22f509c3286ab\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"disks\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"EBS Volume\",\"create_time\":\"Fri, 13 Dec 2024 02:59:39 GMT\",\"fetch_time\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:02 GMT\",\"from_last_fetch\":true,\"id\":\"140649f1bb9614f2254f\",\"id_raw\":\"98d0b275-28ec-4610-aa96-1297e616b7fd\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"not_fetched_count\":0,\"size\":40,\"source_application\":\"AWS\",\"tenant_number\":[\"1\"],\"type\":\"Disk\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!140649f1bb9614f2254f\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"f896fa4804052fa760d1698bb89fe98b\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"disks\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"EBS Volume\",\"create_time\":\"Thu, 02 Jan 2025 04:24:20 GMT\",\"fetch_time\":\"Thu, 04 Dec 2025 12:02:20 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:27:02 GMT\",\"from_last_fetch\":true,\"id\":\"3937fc610509e1a16984\",\"id_raw\":\"ea409224-6fd8-4e9a-aa2d-5d65387c7789\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"not_fetched_count\":0,\"size\":23,\"source_application\":\"AWS\",\"tenant_number\":[\"1\"],\"type\":\"Disk\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!3937fc610509e1a16984\",\"type\":\"entitydata\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "storage",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-storage-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

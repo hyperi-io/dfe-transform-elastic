@@ -1,0 +1,928 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-02-27T19:12:14.000Z",
+      "crowdstrike": {
+        "event": {
+          "SessionId": "6289739c-7469-4e08-974d-3647b14020ce"
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "RemoteResponseSessionStartEvent",
+          "offset": 1045,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "remote_response_session_start_event"
+        ],
+        "category": [
+          "network",
+          "session"
+        ],
+        "created": "2048-02-27T19:12:14.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 1045,\n        \"eventType\": \"RemoteResponseSessionStartEvent\",\n        \"eventCreationTime\": 2466443534000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"6289739c-7469-4e08-974d-3647b14020ce\",\n        \"HostnameField\": \"hostnameofmachine\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"StartTimestamp\": 2466443534\n    }\n}",
+        "start": "2048-02-27T19:12:14.000Z",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "hostnameofmachine"
+      },
+      "message": "Remote response session started.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "hostnameofmachine"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    },
+    {
+      "@timestamp": "2048-02-27T19:12:52.000Z",
+      "crowdstrike": {
+        "event": {
+          "SessionId": "6289739c-7469-4e08-974d-3647b14020ce"
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "RemoteResponseSessionEndEvent",
+          "offset": 1046,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "remote_response_session_end_event"
+        ],
+        "category": [
+          "network",
+          "session"
+        ],
+        "created": "2048-02-27T19:12:52.000Z",
+        "end": "2048-02-27T19:12:52.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 1046,\n        \"eventType\": \"RemoteResponseSessionEndEvent\",\n        \"eventCreationTime\": 2466443572000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"6289739c-7469-4e08-974d-3647b14020ce\",\n        \"HostnameField\": \"hostnameofmachine\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"EndTimestamp\": 2466443572\n    }\n}",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "hostnameofmachine"
+      },
+      "message": "Remote response session ended.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "hostnameofmachine"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    },
+    {
+      "@timestamp": "2048-02-12T21:29:10.000Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "APIClientID",
+              "ValueString": "1234567890abcdefghijklmnopqr"
+            },
+            {
+              "Key": "partition",
+              "ValueString": "0"
+            },
+            {
+              "Key": "offset",
+              "ValueString": "-1"
+            },
+            {
+              "Key": "appId",
+              "ValueString": "siem-connector-v2.0.0"
+            },
+            {
+              "Key": "eventType",
+              "ValueString": "[UserActivityAuditEvent HashSpreadingEvent RemoteResponseSessionStartEvent RemoteResponseSessionEndEvent DetectionSummaryEvent AuthActivityAuditEvent]"
+            }
+          ],
+          "OperationName": "streamStarted",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 0,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "streamStarted"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2048-02-12T21:29:10.710Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 0,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465155750710,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"api-client-id:1234567890abcdefghijklmnopqrstuvwxyz\",\n        \"UserIp\": \"10.15.40.40\",\n        \"OperationName\": \"streamStarted\",\n        \"ServiceName\": \"Crowdstrike Streaming API\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465155750,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"APIClientID\",\n                \"ValueString\": \"1234567890abcdefghijklmnopqr\"\n            },\n            {\n                \"Key\": \"partition\",\n                \"ValueString\": \"0\"\n            },\n            {\n                \"Key\": \"offset\",\n                \"ValueString\": \"-1\"\n            },\n            {\n                \"Key\": \"appId\",\n                \"ValueString\": \"siem-connector-v2.0.0\"\n            },\n            {\n                \"Key\": \"eventType\",\n                \"ValueString\": \"[UserActivityAuditEvent HashSpreadingEvent RemoteResponseSessionStartEvent RemoteResponseSessionEndEvent DetectionSummaryEvent AuthActivityAuditEvent]\"\n            }\n        ]\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "Crowdstrike Streaming API",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "10.15.40.40"
+        ],
+        "user": [
+          "api-client-id:1234567890abcdefghijklmnopqrstuvwxyz"
+        ]
+      },
+      "source": {
+        "ip": "10.15.40.40"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "name": "api-client-id:1234567890abcdefghijklmnopqrstuvwxyz"
+      }
+    },
+    {
+      "@timestamp": "2048-02-12T21:39:37.147Z",
+      "crowdstrike": {
+        "event": {
+          "OperationName": "twoFactorAuthenticate",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 1,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "twoFactorAuthenticate"
+        ],
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-02-12T21:39:37.147Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 1,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465156377147,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465156377147\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-12T22:14:37.554Z",
+      "crowdstrike": {
+        "event": {
+          "OperationName": "twoFactorAuthenticate",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 2,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "twoFactorAuthenticate"
+        ],
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-02-12T22:14:37.554Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 2,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465158477554,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fpf@djxlbxr.com\",\n        \"UserIp\": \"192.168.101.230\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465158477554\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.101.230"
+        ],
+        "user": [
+          "fpf",
+          "fpf@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.101.230"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fpf@djxlbxr.com",
+        "name": "fpf"
+      }
+    },
+    {
+      "@timestamp": "2048-02-12T22:24:08.000Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "group_id",
+              "ValueString": "8a58da87d8583be5ed00edef4a569f46"
+            },
+            {
+              "Key": "action_name",
+              "ValueString": "add_group_member"
+            }
+          ],
+          "ServiceName": "groups"
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "UserActivityAuditEvent",
+          "offset": 3,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "user_activity_audit_event",
+        "category": [
+          "iam"
+        ],
+        "created": "2048-02-12T22:24:08.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 3,\n        \"eventType\": \"UserActivityAuditEvent\",\n        \"eventCreationTime\": 2465159048000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"arvzz@djxlbxr.com\",\n        \"UserIp\": \"192.168.83.119\",\n        \"OperationName\": \"update_group\",\n        \"ServiceName\": \"groups\",\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"group_id\",\n                \"ValueString\": \"8a58da87d8583be5ed00edef4a569f46\"\n            },\n            {\n                \"Key\": \"action_name\",\n                \"ValueString\": \"add_group_member\"\n            }\n        ],\n        \"UTCTimestamp\": 2465159048\n    }\n}",
+        "type": [
+          "change"
+        ]
+      },
+      "message": "update_group",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.83.119"
+        ],
+        "user": [
+          "arvzz",
+          "arvzz@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.83.119"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "arvzz@djxlbxr.com",
+        "name": "arvzz"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T13:41:52.140Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "target_name",
+              "ValueString": "fnvfc@djxlbxr.com"
+            }
+          ],
+          "OperationName": "requestResetPassword",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 4,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "requestResetPassword"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2048-02-13T13:41:52.140Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 4,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214112140,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"requestResetPassword\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214112140,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"target_name\",\n                \"ValueString\": \"fnvfc@djxlbxr.com\"\n            }\n        ]\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T13:42:21.730Z",
+      "crowdstrike": {
+        "event": {
+          "OperationName": "twoFactorAuthenticate",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 5,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "twoFactorAuthenticate"
+        ],
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-02-13T13:42:21.730Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 5,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214141730,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214141730\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T13:45:20.236Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "target_name",
+              "ValueString": "awnhx.sfis@djxlbxr.com"
+            }
+          ],
+          "OperationName": "changePassword",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 6,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "changePassword"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2048-02-13T13:45:20.236Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 6,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214320236,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"changePassword\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214320236,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"target_name\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            }\n        ]\n    }\n}",
+        "outcome": "success",
+        "type": [
+          "user",
+          "change"
+        ]
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T13:46:12.362Z",
+      "crowdstrike": {
+        "event": {
+          "OperationName": "userAuthenticate",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 7,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "userAuthenticate"
+        ],
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-02-13T13:46:12.362Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 7,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214372362,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"userAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214372362\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T13:50:14.754Z",
+      "crowdstrike": {
+        "event": {
+          "OperationName": "twoFactorAuthenticate",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 8,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "twoFactorAuthenticate"
+        ],
+        "category": [
+          "authentication"
+        ],
+        "created": "2048-02-13T13:50:14.754Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 8,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214614754,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214614754\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T13:50:20.289Z",
+      "crowdstrike": {
+        "event": {
+          "OperationName": "selfAcceptEula",
+          "Success": true
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "AuthActivityAuditEvent",
+          "offset": 9,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "selfAcceptEula"
+        ],
+        "category": [
+          "iam"
+        ],
+        "created": "2048-02-13T13:50:20.289Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 9,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214620289,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"selfAcceptEula\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214620289\n    }\n}",
+        "outcome": "success"
+      },
+      "message": "CrowdStrike Authentication",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    },
+    {
+      "@timestamp": "2048-02-13T14:14:22.000Z",
+      "crowdstrike": {
+        "event": {
+          "AuditKeyValues": [
+            {
+              "Key": "detection_id",
+              "ValueString": "ldt:9a0bb4d6933976eb67ef25490f7eed67:17180539745"
+            },
+            {
+              "Key": "new_state",
+              "ValueString": "in_progress"
+            },
+            {
+              "Key": "assigned_to",
+              "ValueString": "First Last"
+            },
+            {
+              "Key": "assigned_to_uid",
+              "ValueString": "awnhx.sfis@djxlbxr.com"
+            }
+          ],
+          "ServiceName": "detections"
+        },
+        "metadata": {
+          "customerIDString": "4b52ce5c-a197-4424-93ec-68b2caa54c4d",
+          "eventType": "UserActivityAuditEvent",
+          "offset": 10,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "user_activity_audit_event",
+        "category": [
+          "iam"
+        ],
+        "created": "2048-02-13T14:14:22.000Z",
+        "kind": "event",
+        "original": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 10,\n        \"eventType\": \"UserActivityAuditEvent\",\n        \"eventCreationTime\": 2465216062000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"detection_update\",\n        \"ServiceName\": \"detections\",\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"detection_id\",\n                \"ValueString\": \"ldt:9a0bb4d6933976eb67ef25490f7eed67:17180539745\"\n            },\n            {\n                \"Key\": \"new_state\",\n                \"ValueString\": \"in_progress\"\n            },\n            {\n                \"Key\": \"assigned_to\",\n                \"ValueString\": \"First Last\"\n            },\n            {\n                \"Key\": \"assigned_to_uid\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            }\n        ],\n        \"UTCTimestamp\": 2465216062\n    }\n}",
+        "type": [
+          "change"
+        ]
+      },
+      "message": "detection_update",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "ip": [
+          "192.168.246.94"
+        ],
+        "user": [
+          "fnvfc",
+          "fnvfc@djxlbxr.com"
+        ]
+      },
+      "source": {
+        "ip": "192.168.246.94"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "fnvfc@djxlbxr.com",
+        "name": "fnvfc"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 1045,\n        \"eventType\": \"RemoteResponseSessionStartEvent\",\n        \"eventCreationTime\": 2466443534000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"6289739c-7469-4e08-974d-3647b14020ce\",\n        \"HostnameField\": \"hostnameofmachine\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"StartTimestamp\": 2466443534\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 1046,\n        \"eventType\": \"RemoteResponseSessionEndEvent\",\n        \"eventCreationTime\": 2466443572000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"SessionId\": \"6289739c-7469-4e08-974d-3647b14020ce\",\n        \"HostnameField\": \"hostnameofmachine\",\n        \"UserName\": \"awnhx.sfis@djxlbxr.com\",\n        \"EndTimestamp\": 2466443572\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 0,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465155750710,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"api-client-id:1234567890abcdefghijklmnopqrstuvwxyz\",\n        \"UserIp\": \"10.15.40.40\",\n        \"OperationName\": \"streamStarted\",\n        \"ServiceName\": \"Crowdstrike Streaming API\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465155750,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"APIClientID\",\n                \"ValueString\": \"1234567890abcdefghijklmnopqr\"\n            },\n            {\n                \"Key\": \"partition\",\n                \"ValueString\": \"0\"\n            },\n            {\n                \"Key\": \"offset\",\n                \"ValueString\": \"-1\"\n            },\n            {\n                \"Key\": \"appId\",\n                \"ValueString\": \"siem-connector-v2.0.0\"\n            },\n            {\n                \"Key\": \"eventType\",\n                \"ValueString\": \"[UserActivityAuditEvent HashSpreadingEvent RemoteResponseSessionStartEvent RemoteResponseSessionEndEvent DetectionSummaryEvent AuthActivityAuditEvent]\"\n            }\n        ]\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 1,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465156377147,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465156377147\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 2,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465158477554,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fpf@djxlbxr.com\",\n        \"UserIp\": \"192.168.101.230\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465158477554\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 3,\n        \"eventType\": \"UserActivityAuditEvent\",\n        \"eventCreationTime\": 2465159048000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"arvzz@djxlbxr.com\",\n        \"UserIp\": \"192.168.83.119\",\n        \"OperationName\": \"update_group\",\n        \"ServiceName\": \"groups\",\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"group_id\",\n                \"ValueString\": \"8a58da87d8583be5ed00edef4a569f46\"\n            },\n            {\n                \"Key\": \"action_name\",\n                \"ValueString\": \"add_group_member\"\n            }\n        ],\n        \"UTCTimestamp\": 2465159048\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 4,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214112140,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"requestResetPassword\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214112140,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"target_name\",\n                \"ValueString\": \"fnvfc@djxlbxr.com\"\n            }\n        ]\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 5,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214141730,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214141730\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 6,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214320236,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"changePassword\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214320236,\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"target_name\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            }\n        ]\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 7,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214372362,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"userAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214372362\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 8,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214614754,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"twoFactorAuthenticate\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214614754\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 9,\n        \"eventType\": \"AuthActivityAuditEvent\",\n        \"eventCreationTime\": 2465214620289,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"selfAcceptEula\",\n        \"ServiceName\": \"CrowdStrike Authentication\",\n        \"Success\": true,\n        \"UTCTimestamp\": 2465214620289\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\n    \"metadata\": {\n        \"customerIDString\": \"4b52ce5c-a197-4424-93ec-68b2caa54c4d\",\n        \"offset\": 10,\n        \"eventType\": \"UserActivityAuditEvent\",\n        \"eventCreationTime\": 2465216062000,\n        \"version\": \"1.0\"\n    },\n    \"event\": {\n        \"UserId\": \"fnvfc@djxlbxr.com\",\n        \"UserIp\": \"192.168.246.94\",\n        \"OperationName\": \"detection_update\",\n        \"ServiceName\": \"detections\",\n        \"AuditKeyValues\": [\n            {\n                \"Key\": \"detection_id\",\n                \"ValueString\": \"ldt:9a0bb4d6933976eb67ef25490f7eed67:17180539745\"\n            },\n            {\n                \"Key\": \"new_state\",\n                \"ValueString\": \"in_progress\"\n            },\n            {\n                \"Key\": \"assigned_to\",\n                \"ValueString\": \"First Last\"\n            },\n            {\n                \"Key\": \"assigned_to_uid\",\n                \"ValueString\": \"awnhx.sfis@djxlbxr.com\"\n            }\n        ],\n        \"UTCTimestamp\": 2465216062\n    }\n}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 13,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

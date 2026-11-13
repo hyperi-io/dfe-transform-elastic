@@ -1,0 +1,135 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:46.967939709Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": -1,
+          "deletion_scheduled_at": "2027-02-06T23:07:46.967939709Z",
+          "expiration_ts": "9999-12-31T00:00:00.000Z",
+          "feed_id": 0,
+          "id": "235549247",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": true,
+          "itype": "apt_ip",
+          "meta": {
+            "severity": "very-high"
+          },
+          "owner_organization_id": 70,
+          "retina_confidence": -1,
+          "source_reported_confidence": -1,
+          "status": "active",
+          "threat_type": "apt",
+          "type": "ip",
+          "update_id": "467409119",
+          "uuid": "904d18f5-7977-4cfa-a8fa-ce7ba2997e97",
+          "value": "192.0.2.65"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2049-04-29T16:02:17.558Z",
+        "kind": "enrichment",
+        "severity": 99,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "ip": [
+          "192.0.2.65"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "None",
+          "ip": "192.0.2.65",
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2049-04-29T16:02:17.558Z",
+          "name": "192.0.2.65",
+          "provider": "Analyst",
+          "type": "ipv4-addr"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": -1,
+        "created_by": null,
+        "created_ts": "2049-04-29T16:02:17.558Z",
+        "description": null,
+        "expiration_ts": "9999-12-31T00:00:00.000Z",
+        "feed_id": 0,
+        "id": 235549247,
+        "ip": "192.0.2.65",
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": true,
+        "itype": "apt_ip",
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 142",
+          "severity": "very-high"
+        },
+        "modified_ts": "2049-04-29T16:02:17.558Z",
+        "org": "",
+        "owner_organization_id": 70,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/235549247/",
+        "retina_confidence": -1,
+        "sort": [
+          467409119
+        ],
+        "source": "Analyst",
+        "source_locations": [],
+        "source_reported_confidence": -1,
+        "status": "active",
+        "subtype": null,
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "apt",
+        "threatscore": 0,
+        "tlp": null,
+        "trusted_circle_ids": null,
+        "type": "ip",
+        "update_id": 467409119,
+        "uuid": "904d18f5-7977-4cfa-a8fa-ce7ba2997e97",
+        "value": "192.0.2.65",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,378 @@
+{
+  "expected": [
+    {
+      "axonius": {
+        "compute": {
+          "adapter_list_length": 1,
+          "adapters": [
+            "axonius_findings_adapter"
+          ],
+          "asset_type": "compute_images",
+          "aws_organization": {
+            "arn": "arn:aws:organizations::123456789012:organization/o-example123",
+            "available_policy_types": [
+              {
+                "status": "ENABLED",
+                "type": "SERVICE_CONTROL_POLICY"
+              },
+              {
+                "status": "ENABLED",
+                "type": "TAG_POLICY"
+              }
+            ],
+            "feature_set": "ALL",
+            "master_account_arn": "arn:aws:iam::123456789012:root",
+            "master_account_email": "admin@example.com",
+            "master_account_id": "123456789012"
+          },
+          "aws_region": "us-east-1",
+          "ebs_volumes": [
+            {
+              "create_time": "2024-10-02T08:06:39.000Z",
+              "encrypted": true,
+              "iops": 3000,
+              "name": "vol-0abc123456def7890",
+              "size": 100.0,
+              "snapshot_id": "snap-01abc234def567890",
+              "volume_type": "gp3"
+            },
+            {
+              "create_time": "2024-10-02T08:06:39.000Z",
+              "encrypted": false,
+              "iops": 1500,
+              "name": "vol-0123abcd4567ef890",
+              "size": 250.0,
+              "snapshot_id": "snap-0abcd1234ef567890",
+              "volume_type": "io2"
+            }
+          ],
+          "encrypted": false,
+          "internal_axon_id": "161123c1974e19e60d0b32bcc4c401af",
+          "size": 40.0,
+          "state": "Unattached",
+          "tags": {
+            "tag_source": "aws"
+          },
+          "transform_unique_id": "LjjKrFJZbikzbGIJgVMDP4uR318="
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "o-example123"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host",
+          "vulnerability"
+        ],
+        "created": "2018-12-06T19:11:27.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"compute_images\",\"adapter_list_length\":1,\"adapters\":[\"axonius_findings_adapter\"],\"internal_axon_id\":\"161123c1974e19e60d0b32bcc4c401af\",\"event\":{\"data\":{\"architecture\":\"x64\",\"aws_organization\":{\"arn\":\"arn:aws:organizations::123456789012:organization\\/o-example123\",\"available_policy_types\":[{\"status\":\"ENABLED\",\"type\":\"SERVICE_CONTROL_POLICY\"},{\"status\":\"ENABLED\",\"type\":\"TAG_POLICY\"}],\"feature_set\":\"ALL\",\"id\":\"o-example123\",\"master_account_arn\":\"arn:aws:iam::123456789012:root\",\"master_account_email\":\"admin@example.com\",\"master_account_id\":\"123456789012\"},\"aws_region\":\"us-east-1\",\"create_time\":\"Mon, 06 Dec 2018 19:11:27 GMT\",\"description\":\"Zoom is a software company that offers a communications platform that connects people through video, voice, chat, and content sharing.\",\"ebs_volumes\":[{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":true,\"iops\":3000,\"name\":\"vol-0abc123456def7890\",\"size\":100,\"snapshot_id\":\"snap-01abc234def567890\",\"volume_type\":\"gp3\"},{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":false,\"iops\":1500,\"name\":\"vol-0123abcd4567ef890\",\"size\":250,\"snapshot_id\":\"snap-0abcd1234ef567890\",\"volume_type\":\"io2\"}],\"encrypted\":false,\"size\":40,\"state\":\"Unattached\",\"tags\":{\"tag_source\":\"aws\"}}}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x64"
+      },
+      "message": "Zoom is a software company that offers a communications platform that connects people through video, voice, chat, and content sharing.",
+      "related": {
+        "user": [
+          "admin@example.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-11-28T12:02:21.000Z",
+      "axonius": {
+        "compute": {
+          "accurate_for_datetime": "2025-11-28T12:02:21.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "aws_adapter"
+          ],
+          "application_and_account_name": "aws/aws-demo",
+          "asset_type": "compute_images",
+          "aws_organization": {
+            "arn": "arn:aws:organizations::843489161480:organization/o-xgh2jhj29",
+            "available_policy_types": [
+              {
+                "status": "ENABLED",
+                "type": "SERVICE_CONTROL_POLICY"
+              }
+            ],
+            "feature_set": "ALL",
+            "master_account_arn": "arn:aws:organizations::843489161480:account/o-xghe2jhj29/843489161480",
+            "master_account_email": "fun-rznc-mpsu@abui.com",
+            "master_account_id": "843489161480"
+          },
+          "aws_region": "us-east-2",
+          "connected_assets": [
+            "ec2_id::e62affd3-8640-476e-9d68-664b68c2afa0",
+            "ec2_id::5013c328-5625-43c2-8c1b-6551d5c55e3c",
+            "ec2_id::1521a097-afbf-4551-8b1f-9a9fed052f0d",
+            "ec2_id::6156d497-3655-4ddc-92ca-06935316c263",
+            "ec2_id::503a4116-8640-45f3-b068-85154491311d",
+            "ec2_id::aae78105-bb23-46b7-9905-44c5de55ce75"
+          ],
+          "data_asset_type": "AWS AMI",
+          "ebs_volumes": [
+            {
+              "create_time": "2024-10-02T08:06:39.000Z",
+              "encrypted": false,
+              "iops": 3000,
+              "name": "/dev/sda1",
+              "size": 14.0,
+              "snapshot_id": "snap-FfbFae2062A8310eB7",
+              "volume_type": "gp3"
+            },
+            {
+              "create_time": "2024-10-02T08:06:39.000Z",
+              "encrypted": false,
+              "iops": 3000,
+              "name": "/dev/sdb",
+              "size": 86.0,
+              "snapshot_id": "snap-E5cA25d0A2ec7cbB52",
+              "volume_type": "gp3"
+            }
+          ],
+          "encrypted": false,
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ab731ccb57309230fc",
+            "initial_plugin_unique_name": "aws_adapter_0",
+            "plugin_name": "aws_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "aws_adapter_0",
+            "quick_id": "aws_adapter_0!a7c70e4fad879d23da3a",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-11-28T12:02:16.000Z",
+          "first_fetch_time": "2025-04-14T13:26:50.000Z",
+          "from_last_fetch": true,
+          "id": "a7c70e4fad879d23da3a",
+          "id_raw": "30878375-6fef-4b10-b60f-7e269181c992",
+          "internal_axon_id": "3472495fe9b3f06294d6dd88053a1e65",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ab731ccb57309230fc",
+          "last_fetch_connection_label": "aws-demo",
+          "name": "legacy-ci-i-D6BDdcD13d495A6e40",
+          "not_fetched_count": 0,
+          "os": {
+            "type": "Linux"
+          },
+          "owner": "amazon",
+          "relatable_ids": [
+            "image_id::30878375-6fef-4b10-b60f-7e269181c992"
+          ],
+          "size": 100.0,
+          "source_application": "AWS",
+          "tags": [
+            {
+              "tag_key": "Description",
+              "tag_source": "AWS AMI",
+              "tag_value": "Axonius Export certificate-expiry-fed-v6-unencrypted."
+            },
+            {
+              "tag_key": "Name",
+              "tag_source": "AWS AMI",
+              "tag_value": "legacy-ci-i-D6BDdcD13d495A6e40"
+            }
+          ],
+          "tenant_number": [
+            4
+          ],
+          "transform_unique_id": "bkQsW+Fz9RtIKL4HwQ1jzZ9RGas=",
+          "type": "ComputeImage"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "o-xghe2jhj29"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host",
+          "vulnerability"
+        ],
+        "created": "2024-10-02T08:06:39.000Z",
+        "kind": "event",
+        "original": "{\"asset_type\":\"compute_images\",\"internal_axon_id\":\"3472495fe9b3f06294d6dd88053a1e65\",\"adapters\":[\"aws_adapter\"],\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Fri, 28 Nov 2025 12:02:21 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Fri, 28 Nov 2025 12:02:21 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"architecture\":\"x86_64\",\"asset_type\":\"AWS AMI\",\"aws_organization\":{\"arn\":\"arn:aws:organizations::843489161480:organization\\/o-xgh2jhj29\",\"available_policy_types\":[{\"status\":\"ENABLED\",\"type\":\"SERVICE_CONTROL_POLICY\"}],\"feature_set\":\"ALL\",\"id\":\"o-xghe2jhj29\",\"master_account_arn\":\"arn:aws:organizations::843489161480:account\\/o-xghe2jhj29\\/843489161480\",\"master_account_email\":\"fun-rznc-mpsu@abui.com\",\"master_account_id\":\"843489161480\"},\"aws_region\":\"us-east-2\",\"connected_assets\":[\"ec2_id::e62affd3-8640-476e-9d68-664b68c2afa0\",\"ec2_id::5013c328-5625-43c2-8c1b-6551d5c55e3c\",\"ec2_id::1521a097-afbf-4551-8b1f-9a9fed052f0d\",\"ec2_id::6156d497-3655-4ddc-92ca-06935316c263\",\"ec2_id::503a4116-8640-45f3-b068-85154491311d\",\"ec2_id::aae78105-bb23-46b7-9905-44c5de55ce75\"],\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"description\":\"[Copied ami-C6C64B078eDB7F4Ced from us-east-2] ci-base-test-image-v8\",\"ebs_volumes\":[{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":false,\"iops\":3000,\"name\":\"\\/dev\\/sda1\",\"size\":\"14\",\"snapshot_id\":\"snap-FfbFae2062A8310eB7\",\"volume_type\":\"gp3\"},{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":false,\"iops\":3000,\"name\":\"\\/dev\\/sdb\",\"size\":\"86.0\",\"snapshot_id\":\"snap-E5cA25d0A2ec7cbB52\",\"volume_type\":\"gp3\"}],\"encrypted\":false,\"fetch_time\":\"Fri, 28 Nov 2025 12:02:16 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:26:50 GMT\",\"from_last_fetch\":true,\"id\":\"a7c70e4fad879d23da3a\",\"id_raw\":\"30878375-6fef-4b10-b60f-7e269181c992\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"legacy-ci-i-D6BDdcD13d495A6e40\",\"not_fetched_count\":0,\"os\":{\"type\":\"Linux\"},\"owner\":\"amazon\",\"relatable_ids\":[\"image_id::30878375-6fef-4b10-b60f-7e269181c992\"],\"size\":100,\"software_cves\":[],\"source_application\":\"AWS\",\"tags\":[{\"tag_key\":\"Description\",\"tag_source\":\"AWS AMI\",\"tag_value\":\"Axonius Export certificate-expiry-fed-v6-unencrypted.\"},{\"tag_key\":\"Name\",\"tag_source\":\"AWS AMI\",\"tag_value\":\"legacy-ci-i-D6BDdcD13d495A6e40\"}],\"tenant_number\":[\"4\"],\"type\":\"ComputeImage\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!a7c70e4fad879d23da3a\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "architecture": "x86_64",
+        "os": {
+          "type": "linux"
+        }
+      },
+      "message": "[Copied ami-C6C64B078eDB7F4Ced from us-east-2] ci-base-test-image-v8",
+      "related": {
+        "user": [
+          "amazon",
+          "fun-rznc-mpsu@abui.com"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2025-11-13T00:02:31.000Z",
+      "axonius": {
+        "compute": {
+          "accurate_for_datetime": "2025-11-13T00:02:31.000Z",
+          "adapter_list_length": 1,
+          "adapters": [
+            "aws_adapter"
+          ],
+          "application_and_account_name": "aws/aws-demo",
+          "asset_type": "compute_images",
+          "aws_organization": {
+            "arn": "arn:aws:organizations::843489161480:organization/o-xgh2jhj29",
+            "available_policy_types": [
+              {
+                "status": "ENABLED",
+                "type": "SERVICE_CONTROL_POLICY"
+              }
+            ],
+            "feature_set": "ALL",
+            "master_account_arn": "arn:aws:organizations::843489161480:account/o-xghe2jhj29/843489161480",
+            "master_account_email": "fun-rznc-mpsu@abui.com",
+            "master_account_id": "843489161480"
+          },
+          "aws_region": "us-east-2",
+          "connected_assets": [
+            "ec2_id::41909211-8965-44a6-b534-0d3b280c814f",
+            "ec2_id::8b8e6753-5188-4c95-a194-fe8d980dac0c",
+            "ec2_id::b102b381-e6b1-4be0-ab97-90f891b2e5e9",
+            "ec2_id::5487bdab-2e68-4e27-a01b-fda988dc9d7e",
+            "ec2_id::cdc02eb3-4307-4862-8412-a32cf51effb8",
+            "ec2_id::50310a85-e4ec-483e-a1ed-4280606b7802",
+            "ec2_id::b72ff229-a297-4161-a15d-599587211f6f",
+            "ec2_id::b59713f0-cf5c-44ef-8373-9c9d3d00707b",
+            "ec2_id::3f66c7a6-38d2-4096-9dca-281d7e9961b3",
+            "ec2_id::dffb055f-a35e-4ab0-ba82-4eed77780c75",
+            "ec2_id::75612bc1-d346-49a8-a9cd-115d67ae5f72",
+            "ec2_id::44c01f4d-d07f-4140-8579-ccbd7a35b14b",
+            "ec2_id::3f71599c-6246-47bd-8273-036d75966780"
+          ],
+          "data_asset_type": "AWS Snapshot",
+          "encrypted": false,
+          "event": {
+            "adapter_categories": [
+              "Cloud Infra"
+            ],
+            "client_used": "67fd09ab731ccb57309230fc",
+            "initial_plugin_unique_name": "aws_adapter_0",
+            "plugin_name": "aws_adapter",
+            "plugin_type": "Adapter",
+            "plugin_unique_name": "aws_adapter_0",
+            "quick_id": "aws_adapter_0!b48a331a259e2fb4c0eb",
+            "type": "entitydata"
+          },
+          "fetch_time": "2025-11-13T00:02:25.000Z",
+          "first_fetch_time": "2025-04-14T13:26:50.000Z",
+          "from_last_fetch": true,
+          "id": "b48a331a259e2fb4c0eb",
+          "id_raw": "eac27c2c-7a0b-40bb-865d-8efa9e691a31",
+          "internal_axon_id": "5a5a9717b2c8ff25a89abd8c603a4cf8",
+          "is_fetched_from_adapter": true,
+          "last_fetch_connection_id": "67fd09ab731ccb57309230fc",
+          "last_fetch_connection_label": "aws-demo",
+          "name": "snap-98eb0cc7CE6f64a019",
+          "not_fetched_count": 0,
+          "os": {
+            "type": "Linux"
+          },
+          "owner": "amazon",
+          "relatable_ids": [
+            "image_id::eac27c2c-7a0b-40bb-865d-8efa9e691a31"
+          ],
+          "size": 50.0,
+          "source_application": "AWS",
+          "state": "available",
+          "tags": [
+            {
+              "tag_key": "aws:backup:source-resource",
+              "tag_source": "AWS Snapshot",
+              "tag_value": "719B3C0B-547F-467B-9255-CD4EA286EE95"
+            },
+            {
+              "tag_key": "TeamciTy Disk",
+              "tag_source": "AWS Snapshot",
+              "tag_value": "Main"
+            }
+          ],
+          "tenant_number": [
+            3
+          ],
+          "transform_unique_id": "d6BqmxqLxc4XrFsgS91OB/ZVKos=",
+          "type": "ComputeImage"
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "o-xghe2jhj29"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "host",
+          "vulnerability"
+        ],
+        "created": "2024-07-24T11:41:50.000Z",
+        "kind": "event",
+        "original": "{\"internal_axon_id\":\"5a5a9717b2c8ff25a89abd8c603a4cf8\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"compute_images\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:31 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:31 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"AWS Snapshot\",\"aws_organization\":{\"arn\":\"arn:aws:organizations::843489161480:organization\\/o-xgh2jhj29\",\"available_policy_types\":[{\"status\":\"ENABLED\",\"type\":\"SERVICE_CONTROL_POLICY\"}],\"feature_set\":\"ALL\",\"id\":\"o-xghe2jhj29\",\"master_account_arn\":\"arn:aws:organizations::843489161480:account\\/o-xghe2jhj29\\/843489161480\",\"master_account_email\":\"fun-rznc-mpsu@abui.com\",\"master_account_id\":\"843489161480\"},\"aws_region\":\"us-east-2\",\"connected_assets\":[\"ec2_id::41909211-8965-44a6-b534-0d3b280c814f\",\"ec2_id::8b8e6753-5188-4c95-a194-fe8d980dac0c\",\"ec2_id::b102b381-e6b1-4be0-ab97-90f891b2e5e9\",\"ec2_id::5487bdab-2e68-4e27-a01b-fda988dc9d7e\",\"ec2_id::cdc02eb3-4307-4862-8412-a32cf51effb8\",\"ec2_id::50310a85-e4ec-483e-a1ed-4280606b7802\",\"ec2_id::b72ff229-a297-4161-a15d-599587211f6f\",\"ec2_id::b59713f0-cf5c-44ef-8373-9c9d3d00707b\",\"ec2_id::3f66c7a6-38d2-4096-9dca-281d7e9961b3\",\"ec2_id::dffb055f-a35e-4ab0-ba82-4eed77780c75\",\"ec2_id::75612bc1-d346-49a8-a9cd-115d67ae5f72\",\"ec2_id::44c01f4d-d07f-4140-8579-ccbd7a35b14b\",\"ec2_id::3f71599c-6246-47bd-8273-036d75966780\"],\"create_time\":\"Wed, 24 Jul 2024 11:41:50 GMT\",\"description\":\"Created by CreateImage(i-9b717D84cB8ad6f4DF) for ami-91133beabcbFE39e2E\",\"encrypted\":false,\"fetch_time\":\"Thu, 13 Nov 2025 00:02:25 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:26:50 GMT\",\"from_last_fetch\":true,\"id\":\"b48a331a259e2fb4c0eb\",\"id_raw\":\"eac27c2c-7a0b-40bb-865d-8efa9e691a31\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"snap-98eb0cc7CE6f64a019\",\"not_fetched_count\":0,\"os\":{\"type\":\"Linux\"},\"owner\":\"amazon\",\"relatable_ids\":[\"image_id::eac27c2c-7a0b-40bb-865d-8efa9e691a31\"],\"size\":50,\"software_cves\":[],\"source_application\":\"AWS\",\"state\":\"available\",\"tags\":[{\"tag_key\":\"aws:backup:source-resource\",\"tag_source\":\"AWS Snapshot\",\"tag_value\":\"719B3C0B-547F-467B-9255-CD4EA286EE95\"},{\"tag_key\":\"TeamciTy Disk\",\"tag_source\":\"AWS Snapshot\",\"tag_value\":\"Main\"}],\"tenant_number\":[\"3\"],\"type\":\"ComputeImage\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!b48a331a259e2fb4c0eb\",\"type\":\"entitydata\"}}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "os": {
+          "type": "linux"
+        }
+      },
+      "message": "Created by CreateImage(i-9b717D84cB8ad6f4DF) for ami-91133beabcbFE39e2E",
+      "related": {
+        "user": [
+          "amazon",
+          "fun-rznc-mpsu@abui.com"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"asset_type\":\"compute_images\",\"adapter_list_length\":1,\"adapters\":[\"axonius_findings_adapter\"],\"internal_axon_id\":\"161123c1974e19e60d0b32bcc4c401af\",\"event\":{\"data\":{\"architecture\":\"x64\",\"aws_organization\":{\"arn\":\"arn:aws:organizations::123456789012:organization\\/o-example123\",\"available_policy_types\":[{\"status\":\"ENABLED\",\"type\":\"SERVICE_CONTROL_POLICY\"},{\"status\":\"ENABLED\",\"type\":\"TAG_POLICY\"}],\"feature_set\":\"ALL\",\"id\":\"o-example123\",\"master_account_arn\":\"arn:aws:iam::123456789012:root\",\"master_account_email\":\"admin@example.com\",\"master_account_id\":\"123456789012\"},\"aws_region\":\"us-east-1\",\"create_time\":\"Mon, 06 Dec 2018 19:11:27 GMT\",\"description\":\"Zoom is a software company that offers a communications platform that connects people through video, voice, chat, and content sharing.\",\"ebs_volumes\":[{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":true,\"iops\":3000,\"name\":\"vol-0abc123456def7890\",\"size\":100,\"snapshot_id\":\"snap-01abc234def567890\",\"volume_type\":\"gp3\"},{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":false,\"iops\":1500,\"name\":\"vol-0123abcd4567ef890\",\"size\":250,\"snapshot_id\":\"snap-0abcd1234ef567890\",\"volume_type\":\"io2\"}],\"encrypted\":false,\"size\":40,\"state\":\"Unattached\",\"tags\":{\"tag_source\":\"aws\"}}}}"
+    },
+    {
+      "message": "{\"asset_type\":\"compute_images\",\"internal_axon_id\":\"3472495fe9b3f06294d6dd88053a1e65\",\"adapters\":[\"aws_adapter\"],\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Fri, 28 Nov 2025 12:02:21 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Fri, 28 Nov 2025 12:02:21 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"architecture\":\"x86_64\",\"asset_type\":\"AWS AMI\",\"aws_organization\":{\"arn\":\"arn:aws:organizations::843489161480:organization\\/o-xgh2jhj29\",\"available_policy_types\":[{\"status\":\"ENABLED\",\"type\":\"SERVICE_CONTROL_POLICY\"}],\"feature_set\":\"ALL\",\"id\":\"o-xghe2jhj29\",\"master_account_arn\":\"arn:aws:organizations::843489161480:account\\/o-xghe2jhj29\\/843489161480\",\"master_account_email\":\"fun-rznc-mpsu@abui.com\",\"master_account_id\":\"843489161480\"},\"aws_region\":\"us-east-2\",\"connected_assets\":[\"ec2_id::e62affd3-8640-476e-9d68-664b68c2afa0\",\"ec2_id::5013c328-5625-43c2-8c1b-6551d5c55e3c\",\"ec2_id::1521a097-afbf-4551-8b1f-9a9fed052f0d\",\"ec2_id::6156d497-3655-4ddc-92ca-06935316c263\",\"ec2_id::503a4116-8640-45f3-b068-85154491311d\",\"ec2_id::aae78105-bb23-46b7-9905-44c5de55ce75\"],\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"description\":\"[Copied ami-C6C64B078eDB7F4Ced from us-east-2] ci-base-test-image-v8\",\"ebs_volumes\":[{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":false,\"iops\":3000,\"name\":\"\\/dev\\/sda1\",\"size\":\"14\",\"snapshot_id\":\"snap-FfbFae2062A8310eB7\",\"volume_type\":\"gp3\"},{\"create_time\":\"Wed, 02 Oct 2024 08:06:39 GMT\",\"encrypted\":false,\"iops\":3000,\"name\":\"\\/dev\\/sdb\",\"size\":\"86.0\",\"snapshot_id\":\"snap-E5cA25d0A2ec7cbB52\",\"volume_type\":\"gp3\"}],\"encrypted\":false,\"fetch_time\":\"Fri, 28 Nov 2025 12:02:16 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:26:50 GMT\",\"from_last_fetch\":true,\"id\":\"a7c70e4fad879d23da3a\",\"id_raw\":\"30878375-6fef-4b10-b60f-7e269181c992\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"legacy-ci-i-D6BDdcD13d495A6e40\",\"not_fetched_count\":0,\"os\":{\"type\":\"Linux\"},\"owner\":\"amazon\",\"relatable_ids\":[\"image_id::30878375-6fef-4b10-b60f-7e269181c992\"],\"size\":100,\"software_cves\":[],\"source_application\":\"AWS\",\"tags\":[{\"tag_key\":\"Description\",\"tag_source\":\"AWS AMI\",\"tag_value\":\"Axonius Export certificate-expiry-fed-v6-unencrypted.\"},{\"tag_key\":\"Name\",\"tag_source\":\"AWS AMI\",\"tag_value\":\"legacy-ci-i-D6BDdcD13d495A6e40\"}],\"tenant_number\":[\"4\"],\"type\":\"ComputeImage\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!a7c70e4fad879d23da3a\",\"type\":\"entitydata\"}}"
+    },
+    {
+      "message": "{\"internal_axon_id\":\"5a5a9717b2c8ff25a89abd8c603a4cf8\",\"adapters\":[\"aws_adapter\"],\"asset_type\":\"compute_images\",\"adapter_list_length\":1,\"event\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:31 GMT\",\"adapter_categories\":[\"Cloud Infra\"],\"client_used\":\"67fd09ab731ccb57309230fc\",\"data\":{\"accurate_for_datetime\":\"Thu, 13 Nov 2025 00:02:31 GMT\",\"application_and_account_name\":\"aws\\/aws-demo\",\"asset_type\":\"AWS Snapshot\",\"aws_organization\":{\"arn\":\"arn:aws:organizations::843489161480:organization\\/o-xgh2jhj29\",\"available_policy_types\":[{\"status\":\"ENABLED\",\"type\":\"SERVICE_CONTROL_POLICY\"}],\"feature_set\":\"ALL\",\"id\":\"o-xghe2jhj29\",\"master_account_arn\":\"arn:aws:organizations::843489161480:account\\/o-xghe2jhj29\\/843489161480\",\"master_account_email\":\"fun-rznc-mpsu@abui.com\",\"master_account_id\":\"843489161480\"},\"aws_region\":\"us-east-2\",\"connected_assets\":[\"ec2_id::41909211-8965-44a6-b534-0d3b280c814f\",\"ec2_id::8b8e6753-5188-4c95-a194-fe8d980dac0c\",\"ec2_id::b102b381-e6b1-4be0-ab97-90f891b2e5e9\",\"ec2_id::5487bdab-2e68-4e27-a01b-fda988dc9d7e\",\"ec2_id::cdc02eb3-4307-4862-8412-a32cf51effb8\",\"ec2_id::50310a85-e4ec-483e-a1ed-4280606b7802\",\"ec2_id::b72ff229-a297-4161-a15d-599587211f6f\",\"ec2_id::b59713f0-cf5c-44ef-8373-9c9d3d00707b\",\"ec2_id::3f66c7a6-38d2-4096-9dca-281d7e9961b3\",\"ec2_id::dffb055f-a35e-4ab0-ba82-4eed77780c75\",\"ec2_id::75612bc1-d346-49a8-a9cd-115d67ae5f72\",\"ec2_id::44c01f4d-d07f-4140-8579-ccbd7a35b14b\",\"ec2_id::3f71599c-6246-47bd-8273-036d75966780\"],\"create_time\":\"Wed, 24 Jul 2024 11:41:50 GMT\",\"description\":\"Created by CreateImage(i-9b717D84cB8ad6f4DF) for ami-91133beabcbFE39e2E\",\"encrypted\":false,\"fetch_time\":\"Thu, 13 Nov 2025 00:02:25 GMT\",\"first_fetch_time\":\"Mon, 14 Apr 2025 13:26:50 GMT\",\"from_last_fetch\":true,\"id\":\"b48a331a259e2fb4c0eb\",\"id_raw\":\"eac27c2c-7a0b-40bb-865d-8efa9e691a31\",\"is_fetched_from_adapter\":true,\"last_fetch_connection_id\":\"67fd09ab731ccb57309230fc\",\"last_fetch_connection_label\":\"aws-demo\",\"name\":\"snap-98eb0cc7CE6f64a019\",\"not_fetched_count\":0,\"os\":{\"type\":\"Linux\"},\"owner\":\"amazon\",\"relatable_ids\":[\"image_id::eac27c2c-7a0b-40bb-865d-8efa9e691a31\"],\"size\":50,\"software_cves\":[],\"source_application\":\"AWS\",\"state\":\"available\",\"tags\":[{\"tag_key\":\"aws:backup:source-resource\",\"tag_source\":\"AWS Snapshot\",\"tag_value\":\"719B3C0B-547F-467B-9255-CD4EA286EE95\"},{\"tag_key\":\"TeamciTy Disk\",\"tag_source\":\"AWS Snapshot\",\"tag_value\":\"Main\"}],\"tenant_number\":[\"3\"],\"type\":\"ComputeImage\"},\"initial_plugin_unique_name\":\"aws_adapter_0\",\"plugin_name\":\"aws_adapter\",\"plugin_type\":\"Adapter\",\"plugin_unique_name\":\"aws_adapter_0\",\"quick_id\":\"aws_adapter_0!b48a331a259e2fb4c0eb\",\"type\":\"entitydata\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "compute",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-axonius-compute-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "axonius",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

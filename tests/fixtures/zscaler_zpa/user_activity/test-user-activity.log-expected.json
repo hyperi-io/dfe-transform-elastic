@@ -1,0 +1,307 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-05-31T17:35:42.000Z",
+      "client": {
+        "geo": {
+          "country_iso_code": "US",
+          "location": {
+            "lat": 45.0,
+            "lon": -119.0
+          }
+        },
+        "ip": "198.51.100.74"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"LogTimestamp\": \"Fri May 31 17:35:42 2047\",\"Customer\": \"Customer XYZ\",\"SessionID\": \"IRTavixQDc85udjAtvuA\",\"ConnectionID\": \"SqyZIMkg0JTj7EABsvwA,Q+EjXGdrvbF2lPiBbedm\",\"InternalReason\": \"\",\"ConnectionStatus\": \"active\",\"IPProtocol\": 6,\"DoubleEncryption\": 0,\"Username\": \"GSC SXU Chmbyg\",\"ServicePort\": 10011,\"ClientPublicIP\": \"198.51.100.74\",\"ClientPrivateIP\": \"198.51.100.74\",\"ClientLatitude\": 45.000000,\"ClientLongitude\": -119.000000,\"ClientCountryCode\": \"US\",\"ClientZEN\": \"broker2b.pdx\",\"Policy\": \"ABC Lab Apps\",\"Connector\": \"ZDEMO ABC\",\"ConnectorZEN\": \"broker2b.pdx\",\"ConnectorIP\": \"192.0.2.22\",\"ConnectorPort\": 60266,\"Host\": \"192.0.2.87\",\"Application\": \"ABC Lab Apps\",\"AppGroup\": \"ABC Lab Apps\",\"Server\": \"0\",\"ServerIP\": \"192.0.2.87\",\"ServerPort\": 10011,\"PolicyProcessingTime\": 28,\"CAProcessingTime\": 1330,\"ConnectorZENSetupTime\": 191017,\"ConnectionSetupTime\": 192397,\"ServerSetupTime\": 465,\"AppLearnTime\": 0,\"TimestampConnectionStart\": \"2047-05-30T08:20:42.230Z\",\"TimestampConnectionEnd\": \"\",\"TimestampCATx\": \"2047-05-30T08:20:42.230Z\",\"TimestampCARx\": \"2047-05-30T08:20:42.231Z\",\"TimestampAppLearnStart\": \"\",\"TimestampZENFirstRxClient\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENFirstTxClient\": \"\",\"TimestampZENLastRxClient\": \"2047-05-31T17:34:27.348Z\",\"TimestampZENLastTxClient\": \"\",\"TimestampConnectorZENSetupComplete\": \"2047-05-30T08:20:42.422Z\",\"TimestampZENFirstRxConnector\": \"\",\"TimestampZENFirstTxConnector\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENLastRxConnector\": \"\",\"TimestampZENLastTxConnector\": \"2047-05-31T17:34:27.348Z\",\"ZENTotalBytesRxClient\": 2406926,\"ZENBytesRxClient\": 7115,\"ZENTotalBytesTxClient\": 0,\"ZENBytesTxClient\": 0,\"ZENTotalBytesRxConnector\": 0,\"ZENBytesRxConnector\": 0,\"ZENTotalBytesTxConnector\": 2406926,\"ZENBytesTxConnector\": 7115,\"Idp\": \"Example IDP Config\",\"ClientToClient\": \"0\"}",
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "organization": {
+        "name": "Customer XYZ"
+      },
+      "related": {
+        "hosts": [
+          "broker2b.pdx"
+        ],
+        "ip": [
+          "198.51.100.74",
+          "192.0.2.87",
+          "192.0.2.22"
+        ],
+        "user": [
+          "GSC SXU Chmbyg"
+        ]
+      },
+      "server": {
+        "ip": "192.0.2.87",
+        "port": 10011
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "GSC SXU Chmbyg"
+      },
+      "zscaler_zpa": {
+        "user_activity": {
+          "app_group": "ABC Lab Apps",
+          "app_learn_time": 0,
+          "application": "ABC Lab Apps",
+          "ca_processing_time": 1330,
+          "client_private_ip": "198.51.100.74",
+          "client_to_client": "0",
+          "connection": {
+            "id": "SqyZIMkg0JTj7EABsvwA,Q+EjXGdrvbF2lPiBbedm",
+            "setup_time": 192397,
+            "status": "active"
+          },
+          "connector": {
+            "ip": "192.0.2.22",
+            "name": "ZDEMO ABC",
+            "port": 60266
+          },
+          "connector_zen_setup_time": 191017,
+          "double_encryption": 0,
+          "idp": "Example IDP Config",
+          "policy": {
+            "name": "ABC Lab Apps",
+            "processing_time": 28
+          },
+          "server": "0",
+          "server_setup_time": 465,
+          "service_port": 10011,
+          "session_id": "IRTavixQDc85udjAtvuA",
+          "timestamp": {
+            "ca": {
+              "rx": "2047-05-30T08:20:42.231Z",
+              "tx": "2047-05-30T08:20:42.230Z"
+            },
+            "connection": {
+              "start": "2047-05-30T08:20:42.230Z"
+            },
+            "connector_zen": {
+              "setup_complete": "2047-05-30T08:20:42.422Z"
+            },
+            "zen": {
+              "client": {
+                "rx": {
+                  "first": "2047-05-30T08:20:42.424Z",
+                  "last": "2047-05-31T17:34:27.348Z"
+                }
+              },
+              "connector": {
+                "tx": {
+                  "first": "2047-05-30T08:20:42.424Z",
+                  "last": "2047-05-31T17:34:27.348Z"
+                }
+              }
+            }
+          },
+          "zen": {
+            "client": {
+              "bytes_rx": 7115,
+              "bytes_tx": 0,
+              "domain": "broker2b.pdx",
+              "total": {
+                "bytes_rx": 2406926,
+                "bytes_tx": 0
+              }
+            },
+            "connector": {
+              "bytes_rx": 0,
+              "bytes_tx": 7115,
+              "domain": "broker2b.pdx",
+              "total": {
+                "bytes_rx": 0,
+                "bytes_tx": 2406926
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "@timestamp": "2047-05-31T17:35:42.000Z",
+      "client": {
+        "geo": {
+          "country_iso_code": "US",
+          "location": {
+            "lat": 45.0,
+            "lon": -119.0
+          }
+        },
+        "ip": "198.51.100.74"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"LogTimestamp\": \"Fri May 31 17:35:42 2047\",\"Customer\": \"Customer XYZ\",\"SessionID\": \"IRTavixQDc85udjAtvuA\",\"ConnectionID\": \"SqyZIMkg0JTj7EABsvwA,Q+EjXGdrvbF2lPiBbedm\",\"InternalReason\": \"\",\"ConnectionStatus\": \"active\",\"IPProtocol\": 6,\"DoubleEncryption\": 0,\"Username\": \"hshg.fqb@ppscjllcuj.cz\",\"ServicePort\": 10011,\"ClientPublicIP\": \"198.51.100.74\",\"ClientPrivateIP\": \"198.51.100.74\",\"ClientLatitude\": 45.000000,\"ClientLongitude\": -119.000000,\"ClientCountryCode\": \"US\",\"ClientZEN\": \"broker2b.pdx\",\"Policy\": \"ABC Lab Apps\",\"Connector\": \"ZDEMO ABC\",\"ConnectorZEN\": \"broker2b.pdx\",\"ConnectorIP\": \"192.0.2.22\",\"ConnectorPort\": 60266,\"Host\": \"192.0.2.87\",\"Application\": \"ABC Lab Apps\",\"AppGroup\": \"ABC Lab Apps\",\"Server\": \"0\",\"ServerIP\": \"192.0.2.87\",\"ServerPort\": 10011,\"PolicyProcessingTime\": 28,\"CAProcessingTime\": 1330,\"ConnectorZENSetupTime\": 191017,\"ConnectionSetupTime\": 192397,\"ServerSetupTime\": 465,\"AppLearnTime\": 0,\"TimestampConnectionStart\": \"2047-05-30T08:20:42.230Z\",\"TimestampConnectionEnd\": \"\",\"TimestampCATx\": \"2047-05-30T08:20:42.230Z\",\"TimestampCARx\": \"2047-05-30T08:20:42.231Z\",\"TimestampAppLearnStart\": \"\",\"TimestampZENFirstRxClient\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENFirstTxClient\": \"\",\"TimestampZENLastRxClient\": \"2047-05-31T17:34:27.348Z\",\"TimestampZENLastTxClient\": \"\",\"TimestampConnectorZENSetupComplete\": \"2047-05-30T08:20:42.422Z\",\"TimestampZENFirstRxConnector\": \"\",\"TimestampZENFirstTxConnector\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENLastRxConnector\": \"\",\"TimestampZENLastTxConnector\": \"2047-05-31T17:34:27.348Z\",\"ZENTotalBytesRxClient\": 2406926,\"ZENBytesRxClient\": 7115,\"ZENTotalBytesTxClient\": 0,\"ZENBytesTxClient\": 0,\"ZENTotalBytesRxConnector\": 0,\"ZENBytesRxConnector\": 0,\"ZENTotalBytesTxConnector\": 2406926,\"ZENBytesTxConnector\": 7115,\"Idp\": \"Example IDP Config\",\"ClientToClient\": \"0\"}",
+        "type": [
+          "info",
+          "user"
+        ]
+      },
+      "host": {
+        "ip": [
+          "192.0.2.87"
+        ]
+      },
+      "network": {
+        "transport": "tcp"
+      },
+      "organization": {
+        "name": "Customer XYZ"
+      },
+      "related": {
+        "hosts": [
+          "broker2b.pdx"
+        ],
+        "ip": [
+          "198.51.100.74",
+          "192.0.2.87",
+          "192.0.2.22"
+        ],
+        "user": [
+          "hshg.fqb",
+          "hshg.fqb@ppscjllcuj.cz"
+        ]
+      },
+      "server": {
+        "ip": "192.0.2.87",
+        "port": 10011
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "ppscjllcuj.cz",
+        "email": "hshg.fqb@ppscjllcuj.cz",
+        "name": "hshg.fqb"
+      },
+      "zscaler_zpa": {
+        "user_activity": {
+          "app_group": "ABC Lab Apps",
+          "app_learn_time": 0,
+          "application": "ABC Lab Apps",
+          "ca_processing_time": 1330,
+          "client_private_ip": "198.51.100.74",
+          "client_to_client": "0",
+          "connection": {
+            "id": "SqyZIMkg0JTj7EABsvwA,Q+EjXGdrvbF2lPiBbedm",
+            "setup_time": 192397,
+            "status": "active"
+          },
+          "connector": {
+            "ip": "192.0.2.22",
+            "name": "ZDEMO ABC",
+            "port": 60266
+          },
+          "connector_zen_setup_time": 191017,
+          "double_encryption": 0,
+          "idp": "Example IDP Config",
+          "policy": {
+            "name": "ABC Lab Apps",
+            "processing_time": 28
+          },
+          "server": "0",
+          "server_setup_time": 465,
+          "service_port": 10011,
+          "session_id": "IRTavixQDc85udjAtvuA",
+          "timestamp": {
+            "ca": {
+              "rx": "2047-05-30T08:20:42.231Z",
+              "tx": "2047-05-30T08:20:42.230Z"
+            },
+            "connection": {
+              "start": "2047-05-30T08:20:42.230Z"
+            },
+            "connector_zen": {
+              "setup_complete": "2047-05-30T08:20:42.422Z"
+            },
+            "zen": {
+              "client": {
+                "rx": {
+                  "first": "2047-05-30T08:20:42.424Z",
+                  "last": "2047-05-31T17:34:27.348Z"
+                }
+              },
+              "connector": {
+                "tx": {
+                  "first": "2047-05-30T08:20:42.424Z",
+                  "last": "2047-05-31T17:34:27.348Z"
+                }
+              }
+            }
+          },
+          "zen": {
+            "client": {
+              "bytes_rx": 7115,
+              "bytes_tx": 0,
+              "domain": "broker2b.pdx",
+              "total": {
+                "bytes_rx": 2406926,
+                "bytes_tx": 0
+              }
+            },
+            "connector": {
+              "bytes_rx": 0,
+              "bytes_tx": 7115,
+              "domain": "broker2b.pdx",
+              "total": {
+                "bytes_rx": 0,
+                "bytes_tx": 2406926
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"LogTimestamp\": \"Fri May 31 17:35:42 2047\",\"Customer\": \"Customer XYZ\",\"SessionID\": \"IRTavixQDc85udjAtvuA\",\"ConnectionID\": \"SqyZIMkg0JTj7EABsvwA,Q+EjXGdrvbF2lPiBbedm\",\"InternalReason\": \"\",\"ConnectionStatus\": \"active\",\"IPProtocol\": 6,\"DoubleEncryption\": 0,\"Username\": \"GSC SXU Chmbyg\",\"ServicePort\": 10011,\"ClientPublicIP\": \"198.51.100.74\",\"ClientPrivateIP\": \"198.51.100.74\",\"ClientLatitude\": 45.000000,\"ClientLongitude\": -119.000000,\"ClientCountryCode\": \"US\",\"ClientZEN\": \"broker2b.pdx\",\"Policy\": \"ABC Lab Apps\",\"Connector\": \"ZDEMO ABC\",\"ConnectorZEN\": \"broker2b.pdx\",\"ConnectorIP\": \"192.0.2.22\",\"ConnectorPort\": 60266,\"Host\": \"192.0.2.87\",\"Application\": \"ABC Lab Apps\",\"AppGroup\": \"ABC Lab Apps\",\"Server\": \"0\",\"ServerIP\": \"192.0.2.87\",\"ServerPort\": 10011,\"PolicyProcessingTime\": 28,\"CAProcessingTime\": 1330,\"ConnectorZENSetupTime\": 191017,\"ConnectionSetupTime\": 192397,\"ServerSetupTime\": 465,\"AppLearnTime\": 0,\"TimestampConnectionStart\": \"2047-05-30T08:20:42.230Z\",\"TimestampConnectionEnd\": \"\",\"TimestampCATx\": \"2047-05-30T08:20:42.230Z\",\"TimestampCARx\": \"2047-05-30T08:20:42.231Z\",\"TimestampAppLearnStart\": \"\",\"TimestampZENFirstRxClient\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENFirstTxClient\": \"\",\"TimestampZENLastRxClient\": \"2047-05-31T17:34:27.348Z\",\"TimestampZENLastTxClient\": \"\",\"TimestampConnectorZENSetupComplete\": \"2047-05-30T08:20:42.422Z\",\"TimestampZENFirstRxConnector\": \"\",\"TimestampZENFirstTxConnector\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENLastRxConnector\": \"\",\"TimestampZENLastTxConnector\": \"2047-05-31T17:34:27.348Z\",\"ZENTotalBytesRxClient\": 2406926,\"ZENBytesRxClient\": 7115,\"ZENTotalBytesTxClient\": 0,\"ZENBytesTxClient\": 0,\"ZENTotalBytesRxConnector\": 0,\"ZENBytesRxConnector\": 0,\"ZENTotalBytesTxConnector\": 2406926,\"ZENBytesTxConnector\": 7115,\"Idp\": \"Example IDP Config\",\"ClientToClient\": \"0\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"LogTimestamp\": \"Fri May 31 17:35:42 2047\",\"Customer\": \"Customer XYZ\",\"SessionID\": \"IRTavixQDc85udjAtvuA\",\"ConnectionID\": \"SqyZIMkg0JTj7EABsvwA,Q+EjXGdrvbF2lPiBbedm\",\"InternalReason\": \"\",\"ConnectionStatus\": \"active\",\"IPProtocol\": 6,\"DoubleEncryption\": 0,\"Username\": \"hshg.fqb@ppscjllcuj.cz\",\"ServicePort\": 10011,\"ClientPublicIP\": \"198.51.100.74\",\"ClientPrivateIP\": \"198.51.100.74\",\"ClientLatitude\": 45.000000,\"ClientLongitude\": -119.000000,\"ClientCountryCode\": \"US\",\"ClientZEN\": \"broker2b.pdx\",\"Policy\": \"ABC Lab Apps\",\"Connector\": \"ZDEMO ABC\",\"ConnectorZEN\": \"broker2b.pdx\",\"ConnectorIP\": \"192.0.2.22\",\"ConnectorPort\": 60266,\"Host\": \"192.0.2.87\",\"Application\": \"ABC Lab Apps\",\"AppGroup\": \"ABC Lab Apps\",\"Server\": \"0\",\"ServerIP\": \"192.0.2.87\",\"ServerPort\": 10011,\"PolicyProcessingTime\": 28,\"CAProcessingTime\": 1330,\"ConnectorZENSetupTime\": 191017,\"ConnectionSetupTime\": 192397,\"ServerSetupTime\": 465,\"AppLearnTime\": 0,\"TimestampConnectionStart\": \"2047-05-30T08:20:42.230Z\",\"TimestampConnectionEnd\": \"\",\"TimestampCATx\": \"2047-05-30T08:20:42.230Z\",\"TimestampCARx\": \"2047-05-30T08:20:42.231Z\",\"TimestampAppLearnStart\": \"\",\"TimestampZENFirstRxClient\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENFirstTxClient\": \"\",\"TimestampZENLastRxClient\": \"2047-05-31T17:34:27.348Z\",\"TimestampZENLastTxClient\": \"\",\"TimestampConnectorZENSetupComplete\": \"2047-05-30T08:20:42.422Z\",\"TimestampZENFirstRxConnector\": \"\",\"TimestampZENFirstTxConnector\": \"2047-05-30T08:20:42.424Z\",\"TimestampZENLastRxConnector\": \"\",\"TimestampZENLastTxConnector\": \"2047-05-31T17:34:27.348Z\",\"ZENTotalBytesRxClient\": 2406926,\"ZENBytesRxClient\": 7115,\"ZENTotalBytesTxClient\": 0,\"ZENBytesTxClient\": 0,\"ZENTotalBytesRxConnector\": 0,\"ZENBytesRxConnector\": 0,\"ZENTotalBytesTxConnector\": 2406926,\"ZENBytesTxConnector\": 7115,\"Idp\": \"Example IDP Config\",\"ClientToClient\": \"0\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "user_activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zscaler_zpa-user_activity-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "zscaler_zpa",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

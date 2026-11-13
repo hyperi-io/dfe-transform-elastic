@@ -1,0 +1,132 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:47.082559986Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": -1,
+          "deletion_scheduled_at": "2027-02-06T23:07:47.082559986Z",
+          "expiration_ts": "2049-07-28T16:01:13.161Z",
+          "feed_id": 0,
+          "id": "235548933",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": true,
+          "itype": "torrent_tracker_url",
+          "meta": {
+            "severity": "high"
+          },
+          "owner_organization_id": 70,
+          "retina_confidence": -1,
+          "source_reported_confidence": -1,
+          "status": "inactive",
+          "threat_type": "p2p",
+          "type": "url",
+          "update_id": "528280269",
+          "uuid": "59844804-6c6a-4110-bd12-5955fae1ea50",
+          "value": "http://www.bnmv2.com/"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2049-04-29T16:01:13.246Z",
+        "kind": "enrichment",
+        "severity": 73,
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "None",
+          "marking": {
+            "tlp": "WHITE"
+          },
+          "modified_at": "2049-07-28T16:10:01.563Z",
+          "name": "http://www.bnmv2.com/",
+          "provider": "Analyst",
+          "type": "url",
+          "url": {
+            "domain": "www.bnmv2.com",
+            "full": "http://www.bnmv2.com/",
+            "original": "http://www.bnmv2.com/",
+            "path": "/",
+            "scheme": "http"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": -1,
+        "created_by": null,
+        "created_ts": "2049-04-29T16:01:13.246Z",
+        "description": null,
+        "expiration_ts": "2049-07-28T16:01:13.161Z",
+        "feed_id": 0,
+        "id": 235548933,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": true,
+        "itype": "torrent_tracker_url",
+        "locations": [],
+        "meta": {
+          "detail2": "bifocals_deactivated_on_2049-07-28_16:10:00.097108",
+          "severity": "high"
+        },
+        "modified_ts": "2049-07-28T16:10:01.563Z",
+        "org": "",
+        "owner_organization_id": 70,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/235548933/",
+        "retina_confidence": -1,
+        "sort": [
+          528280269
+        ],
+        "source": "Analyst",
+        "source_locations": [],
+        "source_reported_confidence": -1,
+        "status": "inactive",
+        "subtype": null,
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "p2p",
+        "threatscore": 0,
+        "tlp": null,
+        "trusted_circle_ids": null,
+        "type": "url",
+        "update_id": 528280269,
+        "uuid": "59844804-6c6a-4110-bd12-5955fae1ea50",
+        "value": "http://www.bnmv2.com/",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,428 @@
+{
+  "expected": [
+    {
+      "destination": {
+        "address": "ip",
+        "domain": "host",
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Detected",
+        "category": [
+          "host"
+        ],
+        "id": "506d41f5-9b91-4aa7-936e-d45274ae8f09",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Sideloaded App",
+        "severity": 6,
+        "start": "2048-01-30T17:47:41.767Z",
+        "url": "https://radar.wandera.com/security/events/detail/506d41f5-9b91-4aa7-936e-d45274ae8f09.SIDE_LOADED_APP_IN_INVENTORY?createdUtcMs=2464019261767"
+      },
+      "file": {
+        "hash": {
+          "sha1": "16336078972773bc6c8cef69d722c8c093ba727ddc5bb31eb2",
+          "sha256": "16336078978a306dc23b67dae9df18bc2a0205e3ff0cbf97c46e76fd670f93fd142d7042"
+        },
+        "name": "Books"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "gb"
+        },
+        "hostname": "Apple iPhone 11",
+        "id": "71f96654-ec49-437c-a670-2802688f168d",
+        "os": {
+          "full": "IOS 11.2.5"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "af7732b6-5ec7-3b6e-adf6-8d61ec383e91"
+      },
+      "rule": {
+        "description": "Sideloaded App",
+        "name": "SIDE_LOADED_APP_IN_INVENTORY"
+      },
+      "source": {
+        "port": 3025
+      },
+      "user": {
+        "email": "user@mail.com",
+        "name": "John Doe"
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Detected",
+        "category": [
+          "host"
+        ],
+        "id": "e554bbc4-048b-4ee4-8857-aa189fb5d55a",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Vulnerable O/S",
+        "severity": 10,
+        "start": "2051-11-24T05:46:08.934Z",
+        "url": "https://radar.wandera.com/security/events/detail/e554bbc4-048b-4ee4-8857-aa189fb5d55a.OUTDATED_OS?createdUtcMs=2584417568934"
+      },
+      "host": {
+        "hostname": "ryan’s MacBook Pro",
+        "id": "80fee049-7d83-482c-b89d-867b9decf1df",
+        "os": {
+          "full": "MAC_OS 13.5.1"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "9608556b-0c3a-4a9c-9b4a-d714d8a0233aa8a1"
+      },
+      "rule": {
+        "description": "Vulnerable O/S",
+        "name": "OUTDATED_OS"
+      },
+      "user": {
+        "email": "hshg.fqb@rcnc.com",
+        "name": "testinguser"
+      }
+    },
+    {
+      "destination": {
+        "address": "192.0.2.51",
+        "domain": "vdrzfob.pnwdbqslz.co.uk"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Blocked",
+        "category": [
+          "host"
+        ],
+        "id": "1ecf2d72-e2af-47d6-9ba6-db29f3bdf114",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Risky Host/Domain - Malware",
+        "severity": 8,
+        "start": "2052-01-10T12:20:37.059Z",
+        "url": "https://radar.wandera.com/security/events/detail/1ecf2d72-e2af-47d6-9ba6-db29f3bdf114.ACCESS_BAD_HOST?createdUtcMs=2588502037059"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "GB"
+        },
+        "hostname": "VMAC-HKDV5R2L6",
+        "id": "23cc85b8-d7a9-476e-b9ed-c562777d92b8",
+        "os": {
+          "full": "UNKNOWN 14.0.0"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "f39a6082-dc67-4412-bb1d-70f65f6991d8"
+      },
+      "rule": {
+        "description": "Risky Host/Domain - Malware",
+        "name": "ACCESS_BAD_HOST"
+      },
+      "user": {
+        "email": "a8d582b4-42f3-43ff-aa04-7e40ace19417@f39a6082-dc67-4412-bb1d-70f65f6991d8.wnd",
+        "name": "88724881-86b1-5d1d-b8ba-27c7adaf809c"
+      }
+    },
+    {
+      "destination": {
+        "address": "203.0.113.40",
+        "domain": "ejdai.org"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Blocked",
+        "category": [
+          "host"
+        ],
+        "id": "7502d59e-a7af-4b33-a226-00a167b0ab23",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Risky Host/Domain - Malware",
+        "severity": 8,
+        "start": "2052-01-10T12:20:28.506Z",
+        "url": "https://radar.wandera.com/security/events/detail/7502d59e-a7af-4b33-a226-00a167b0ab23.ACCESS_BAD_HOST?createdUtcMs=2588502028506"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "GB"
+        },
+        "hostname": "VMAC-HKDV5R2L6",
+        "id": "23cc85b8-d7a9-476e-b9ed-c562777d92b8",
+        "os": {
+          "full": "UNKNOWN 14.0.0"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "f39a6082-dc67-4412-bb1d-70f65f6991d8"
+      },
+      "rule": {
+        "description": "Risky Host/Domain - Malware",
+        "name": "ACCESS_BAD_HOST"
+      },
+      "user": {
+        "email": "a8d582b4-42f3-43ff-aa04-7e40ace19417@f39a6082-dc67-4412-bb1d-70f65f6991d8.wnd",
+        "name": "88724881-86b1-5d1d-b8ba-27c7adaf809c"
+      }
+    },
+    {
+      "destination": {
+        "address": "2001:db8:a0ae:18ad:52ee:2979:58a1:be15",
+        "domain": "ledsze.ejdai.org"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Blocked",
+        "category": [
+          "host"
+        ],
+        "id": "fdfa3a8a-0ef5-486f-985a-52b26c91aeed",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Risky Host/Domain - Malware",
+        "severity": 8,
+        "start": "2051-02-21T13:10:40.410Z",
+        "url": "https://radar.wandera.com/security/events/detail/fdfa3a8a-0ef5-486f-985a-52b26c91aeed.ACCESS_BAD_HOST?createdUtcMs=2560597840410"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "GB"
+        },
+        "hostname": "darrow",
+        "id": "e1684301-1bbd-4c91-a6c0-e875ec705c3f",
+        "os": {
+          "full": "UNKNOWN 13.2.1"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "680b0e43-a2af-4af4-ae7f-20202abb3e61"
+      },
+      "rule": {
+        "description": "Risky Host/Domain - Malware",
+        "name": "ACCESS_BAD_HOST"
+      },
+      "user": {
+        "email": "cqtct.gmpeos@kfweuf.io",
+        "name": "Allen Golbig"
+      }
+    },
+    {
+      "destination": {
+        "address": "203.0.113.8",
+        "domain": "twr.bjdfsg.com"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Blocked",
+        "category": [
+          "host"
+        ],
+        "id": "1b991881-eddd-463c-88f7-3e39a209b58f",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Risky Host/Domain - Malware",
+        "severity": 8,
+        "start": "2051-12-28T13:36:52.187Z",
+        "url": "https://radar.wandera.com/security/events/detail/1b991881-eddd-463c-88f7-3e39a209b58f.ACCESS_BAD_HOST?createdUtcMs=2587383412187"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "US"
+        },
+        "hostname": "e179cf08-2ec1-4f55-97b6-2b2f4c4c51bc",
+        "id": "3444aa09-5e3b-4a84-9da3-c74b18edf67f",
+        "os": {
+          "full": "IOS 17.2.1"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "8814245d-6c0b-4e8b-9a3e-d033e8f959b2"
+      },
+      "rule": {
+        "description": "Risky Host/Domain - Malware",
+        "name": "ACCESS_BAD_HOST"
+      },
+      "user": {
+        "email": "ywglxgjp@icloud.com",
+        "name": "74c9b4da-29dd-4581-815c-4ee3b3e7ace7"
+      }
+    },
+    {
+      "destination": {
+        "address": "198.51.100.138",
+        "domain": "tezpbadn.bohf-ffrbyycl.com"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Blocked",
+        "category": [
+          "host"
+        ],
+        "id": "a5a929c3-2868-460d-b257-e291c4ded512",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Risky Host/Domain - Malware",
+        "severity": 8,
+        "start": "2051-12-25T12:16:37.261Z",
+        "url": "https://radar.wandera.com/security/events/detail/a5a929c3-2868-460d-b257-e291c4ded512.ACCESS_BAD_HOST?createdUtcMs=2587119397261"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "US"
+        },
+        "hostname": "74c9b4da-29dd-4581-815c-4ee3b3e7ace7",
+        "id": "ee471f9b-81eb-441a-8da9-a57524b70ad0",
+        "os": {
+          "full": "IOS 17.2"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "8814245d-6c0b-4e8b-9a3e-d033e8f959b2"
+      },
+      "rule": {
+        "description": "Risky Host/Domain - Malware",
+        "name": "ACCESS_BAD_HOST"
+      },
+      "user": {
+        "email": "ywglxgjp@icloud.com",
+        "name": "74c9b4da-29dd-4581-815c-4ee3b3e7ace7"
+      }
+    },
+    {
+      "destination": {
+        "address": "203.0.113.13",
+        "domain": "xjdewlx.com"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Blocked",
+        "category": [
+          "host"
+        ],
+        "id": "cfb1d495-6608-4e99-bc90-604d6bf175fc",
+        "kind": "alert",
+        "provider": "Jamf Protect",
+        "reason": "Risky Host/Domain - Cryptojacking",
+        "severity": 6,
+        "start": "2051-12-11T21:50:47.929Z",
+        "url": "https://radar.wandera.com/security/events/detail/cfb1d495-6608-4e99-bc90-604d6bf175fc.ACCESS_CRYPTOJACKING_HOST?createdUtcMs=2585944247929"
+      },
+      "host": {
+        "geo": {
+          "country_iso_code": "GB"
+        },
+        "hostname": "C02RR5V5G8WN",
+        "id": "3ed9c0d3-7fca-48b0-95c8-3ebe1f753358",
+        "os": {
+          "full": "MAC_OS 12.7.1"
+        }
+      },
+      "observer": {
+        "product": "Jamf Protect",
+        "type": "Endpoint Security",
+        "vendor": "Jamf"
+      },
+      "organization": {
+        "id": "8814245d-6c0b-4e8b-9a3e-d033e8f959b2"
+      },
+      "rule": {
+        "description": "Risky Host/Domain - Cryptojacking",
+        "name": "ACCESS_CRYPTOJACKING_HOST"
+      },
+      "user": {
+        "email": "fa0aafd1-86fd-4b83-a0f9-7dbc9d5f4f6a@8814245d-6c0b-4e8b-9a3e-d033e8f959b2.wnd",
+        "name": "00718218-ff90-50a7-9fef-9ecde9469243"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"event\":{\"metadata\":{\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\",\"product\":\"Threat Events Stream\"},\"timestamp\":\"2048-01-30T17:47:41.767Z\",\"alertId\":\"506d41f5-9b91-4aa7-936e-d45274ae8f09\",\"account\":{\"customerId\":\"af7732b6-5ec7-3b6e-adf6-8d61ec383e91\",\"parentId\":\"2c096225-0de8-4532-8bfe-90d98ccf2722\",\"name\":\"Customer\"},\"device\":{\"deviceId\":\"71f96654-ec49-437c-a670-2802688f168d\",\"os\":\"IOS 11.2.5\",\"deviceName\":\"Apxld uVtpjb 10 (81.2.5)\",\"userDeviceName\":\"Apple iPhone 11\",\"externalId\":\"7438fa9b-098f-4b1e-98cf-7f992269d1d0\"},\"eventType\":{\"id\":213,\"description\":\"Sideloaded App\",\"name\":\"SIDE_LOADED_APP_IN_INVENTORY\"},\"app\":{\"id\":\"com.apple.iBooks\",\"name\":\"Books\",\"version\":\"1.1\",\"sha1\":\"16336078972773bc6c8cef69d722c8c093ba727ddc5bb31eb2\",\"sha256\":\"16336078978a306dc23b67dae9df18bc2a0205e3ff0cbf97c46e76fd670f93fd142d7042\"},\"destination\":{\"name\":\"host\",\"ip\":\"ip\",\"port\":80},\"source\":{\"ip\":\"192.0.2.197\",\"port\":3025},\"location\":\"gb\",\"accessPoint\":\"AccessPoint\",\"accessPointBssid\":\"a9:6d:dd:f5:10:1b\",\"severity\":6,\"user\":{\"email\":\"user@mail.com\",\"name\":\"John Doe\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/506d41f5-9b91-4aa7-936e-d45274ae8f09.SIDE_LOADED_APP_IN_INVENTORY?createdUtcMs=2464019261767\",\"action\":\"Detected\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"product\":\"Threat Events Stream\",\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\"},\"timestamp\":\"2051-11-24T05:46:08.934Z\",\"alertId\":\"e554bbc4-048b-4ee4-8857-aa189fb5d55a\",\"account\":{\"customerId\":\"9608556b-0c3a-4a9c-9b4a-d714d8a0233aa8a1\",\"parentId\":\"c00asdfs8916-5bad-406e-8ee7-b125460fffecaf3\",\"name\":\"Jamf Internal Test Tenant\"},\"device\":{\"deviceId\":\"80fee049-7d83-482c-b89d-867b9decf1df\",\"os\":\"MAC_OS 13.5.1\",\"deviceName\":\"Vee (97.5.1)\",\"userDeviceName\":\"ryan’s MacBook Pro\",\"externalId\":\"86757a1b-aa05-5220-8466-72d448646b5d\"},\"eventType\":{\"id\":\"204\",\"description\":\"Vulnerable O/S\",\"name\":\"OUTDATED_OS\"},\"app\":{},\"destination\":{},\"source\":{},\"severity\":10,\"user\":{\"email\":\"hshg.fqb@rcnc.com\",\"name\":\"testinguser\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/e554bbc4-048b-4ee4-8857-aa189fb5d55a.OUTDATED_OS?createdUtcMs=2584417568934\",\"action\":\"Detected\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"product\":\"Threat Events Stream\",\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\"},\"timestamp\":\"2052-01-10T12:20:37.059Z\",\"alertId\":\"1ecf2d72-e2af-47d6-9ba6-db29f3bdf114\",\"account\":{\"customerId\":\"f39a6082-dc67-4412-bb1d-70f65f6991d8\",\"parentId\":\"e50f0005-6fbc-413e-8cd2-a399030acaa1\",\"name\":\"Jamf Internal Test Portal - Thijs Xhaflaire\"},\"device\":{\"deviceId\":\"23cc85b8-d7a9-476e-b9ed-c562777d92b8\",\"os\":\"UNKNOWN 14.0.0\",\"deviceName\":\"Hcf (20.0.0)\",\"userDeviceName\":\"VMAC-HKDV5R2L6\",\"externalId\":\"88724881-86b1-5d1d-b8ba-27c7adaf809c\"},\"eventType\":{\"id\":\"303\",\"description\":\"Risky Host/Domain - Malware\",\"name\":\"ACCESS_BAD_HOST\"},\"app\":{},\"destination\":{\"ip\":\"192.0.2.51\",\"name\":\"vdrzfob.pnwdbqslz.co.uk\"},\"source\":{},\"location\":\"GB\",\"severity\":8,\"user\":{\"email\":\"a8d582b4-42f3-43ff-aa04-7e40ace19417@f39a6082-dc67-4412-bb1d-70f65f6991d8.wnd\",\"name\":\"88724881-86b1-5d1d-b8ba-27c7adaf809c\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/1ecf2d72-e2af-47d6-9ba6-db29f3bdf114.ACCESS_BAD_HOST?createdUtcMs=2588502037059\",\"action\":\"Blocked\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"product\":\"Threat Events Stream\",\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\"},\"timestamp\":\"2052-01-10T12:20:28.506Z\",\"alertId\":\"7502d59e-a7af-4b33-a226-00a167b0ab23\",\"account\":{\"customerId\":\"f39a6082-dc67-4412-bb1d-70f65f6991d8\",\"parentId\":\"e50f0005-6fbc-413e-8cd2-a399030acaa1\",\"name\":\"Jamf Internal Test Portal - Thijs Xhaflaire\"},\"device\":{\"deviceId\":\"23cc85b8-d7a9-476e-b9ed-c562777d92b8\",\"os\":\"UNKNOWN 14.0.0\",\"deviceName\":\"Hcf (20.0.0)\",\"userDeviceName\":\"VMAC-HKDV5R2L6\",\"externalId\":\"88724881-86b1-5d1d-b8ba-27c7adaf809c\"},\"eventType\":{\"id\":\"303\",\"description\":\"Risky Host/Domain - Malware\",\"name\":\"ACCESS_BAD_HOST\"},\"app\":{},\"destination\":{\"ip\":\"203.0.113.40\",\"name\":\"ejdai.org\"},\"source\":{},\"location\":\"GB\",\"severity\":8,\"user\":{\"email\":\"a8d582b4-42f3-43ff-aa04-7e40ace19417@f39a6082-dc67-4412-bb1d-70f65f6991d8.wnd\",\"name\":\"88724881-86b1-5d1d-b8ba-27c7adaf809c\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/7502d59e-a7af-4b33-a226-00a167b0ab23.ACCESS_BAD_HOST?createdUtcMs=2588502028506\",\"action\":\"Blocked\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\",\"product\":\"Threat Events Stream\"},\"timestamp\":\"2051-02-21T13:10:40.410Z\",\"alertId\":\"fdfa3a8a-0ef5-486f-985a-52b26c91aeed\",\"account\":{\"customerId\":\"680b0e43-a2af-4af4-ae7f-20202abb3e61\",\"parentId\":\"e50f0005-6fbc-413e-8cd2-a399030acaa1\",\"name\":\"Jamf Internal Test Accounts (root) - Jamf - CE Security Team\"},\"device\":{\"deviceId\":\"e1684301-1bbd-4c91-a6c0-e875ec705c3f\",\"os\":\"UNKNOWN 13.2.1\",\"deviceName\":\"Vee (97.2.1)\",\"userDeviceName\":\"darrow\",\"externalId\":\"7f553da3-37ee-5a72-8507-7591bf66bb1e\"},\"eventType\":{\"id\":\"303\",\"description\":\"Risky Host/Domain - Malware\",\"name\":\"ACCESS_BAD_HOST\"},\"app\":{\"id\":null,\"name\":null,\"version\":null,\"sha1\":null,\"sha256\":null},\"destination\":{\"name\":\"ledsze.ejdai.org\",\"ip\":\"2001:db8:a0ae:18ad:52ee:2979:58a1:be15\",\"port\":null},\"source\":{\"ip\":null,\"port\":null},\"location\":\"GB\",\"accessPoint\":null,\"accessPointBssid\":null,\"severity\":8,\"user\":{\"email\":\"cqtct.gmpeos@kfweuf.io\",\"name\":\"Allen Golbig\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/fdfa3a8a-0ef5-486f-985a-52b26c91aeed.ACCESS_BAD_HOST?createdUtcMs=2560597840410\",\"action\":\"Blocked\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"product\":\"Threat Events Stream\",\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\"},\"timestamp\":\"2051-12-28T13:36:52.187Z\",\"alertId\":\"1b991881-eddd-463c-88f7-3e39a209b58f\",\"account\":{\"customerId\":\"8814245d-6c0b-4e8b-9a3e-d033e8f959b2\",\"parentId\":\"e50f0005-6fbc-413e-8cd2-a399030acaa1\",\"name\":\"Jamf Internal Test Accounts (root) - Jamf Internal Test Portal - Ryan Legg\"},\"device\":{\"deviceId\":\"3444aa09-5e3b-4a84-9da3-c74b18edf67f\",\"os\":\"IOS 17.2.1\",\"deviceName\":\"Egplc hIsnqf (43.2.1)\",\"userDeviceName\":\"e179cf08-2ec1-4f55-97b6-2b2f4c4c51bc\"},\"eventType\":{\"id\":\"303\",\"description\":\"Risky Host/Domain - Malware\",\"name\":\"ACCESS_BAD_HOST\"},\"app\":{},\"destination\":{\"ip\":\"203.0.113.8\",\"name\":\"twr.bjdfsg.com\"},\"source\":{\"ip\":\"203.0.113.5\"},\"location\":\"US\",\"severity\":8,\"user\":{\"email\":\"ywglxgjp@icloud.com\",\"name\":\"74c9b4da-29dd-4581-815c-4ee3b3e7ace7\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/1b991881-eddd-463c-88f7-3e39a209b58f.ACCESS_BAD_HOST?createdUtcMs=2587383412187\",\"action\":\"Blocked\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"product\":\"Threat Events Stream\",\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\"},\"timestamp\":\"2051-12-25T12:16:37.261Z\",\"alertId\":\"a5a929c3-2868-460d-b257-e291c4ded512\",\"account\":{\"customerId\":\"8814245d-6c0b-4e8b-9a3e-d033e8f959b2\",\"parentId\":\"e50f0005-6fbc-413e-8cd2-a399030acaa1\",\"name\":\"Jamf Internal Test Accounts (root) - Jamf Internal Test Portal - Ryan Legg\"},\"device\":{\"deviceId\":\"ee471f9b-81eb-441a-8da9-a57524b70ad0\",\"os\":\"IOS 17.2\",\"deviceName\":\"Cpttc gNbe (00.2)\",\"userDeviceName\":\"74c9b4da-29dd-4581-815c-4ee3b3e7ace7\"},\"eventType\":{\"id\":\"303\",\"description\":\"Risky Host/Domain - Malware\",\"name\":\"ACCESS_BAD_HOST\"},\"app\":{},\"destination\":{\"ip\":\"198.51.100.138\",\"name\":\"tezpbadn.bohf-ffrbyycl.com\"},\"source\":{\"ip\":\"203.0.113.5\"},\"location\":\"US\",\"severity\":8,\"user\":{\"email\":\"ywglxgjp@icloud.com\",\"name\":\"74c9b4da-29dd-4581-815c-4ee3b3e7ace7\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/a5a929c3-2868-460d-b257-e291c4ded512.ACCESS_BAD_HOST?createdUtcMs=2587119397261\",\"action\":\"Blocked\"}}"
+    },
+    {
+      "message": "{\"event\":{\"metadata\":{\"product\":\"Threat Events Stream\",\"schemaVersion\":\"1.0\",\"vendor\":\"Jamf\"},\"timestamp\":\"2051-12-11T21:50:47.929Z\",\"alertId\":\"cfb1d495-6608-4e99-bc90-604d6bf175fc\",\"account\":{\"customerId\":\"8814245d-6c0b-4e8b-9a3e-d033e8f959b2\",\"parentId\":\"e50f0005-6fbc-413e-8cd2-a399030acaa1\",\"name\":\"Jamf Internal Test Accounts (root) - Jamf Internal Test Portal - Ryan Legg\"},\"device\":{\"deviceId\":\"3ed9c0d3-7fca-48b0-95c8-3ebe1f753358\",\"os\":\"MAC_OS 12.7.1\",\"deviceName\":\"Hac (79.7.1)\",\"userDeviceName\":\"C02RR5V5G8WN\",\"externalId\":\"00718218-ff90-50a7-9fef-9ecde9469243\"},\"eventType\":{\"id\":\"305\",\"description\":\"Risky Host/Domain - Cryptojacking\",\"name\":\"ACCESS_CRYPTOJACKING_HOST\"},\"app\":{},\"destination\":{\"ip\":\"203.0.113.13\",\"name\":\"xjdewlx.com\"},\"source\":{},\"location\":\"GB\",\"severity\":6,\"user\":{\"email\":\"fa0aafd1-86fd-4b83-a0f9-7dbc9d5f4f6a@8814245d-6c0b-4e8b-9a3e-d033e8f959b2.wnd\",\"name\":\"00718218-ff90-50a7-9fef-9ecde9469243\"},\"eventUrl\":\"https://radar.wandera.com/security/events/detail/cfb1d495-6608-4e99-bc90-604d6bf175fc.ACCESS_CRYPTOJACKING_HOST?createdUtcMs=2585944247929\",\"action\":\"Blocked\"}}"
+    }
+  ],
+  "meta": {
+    "data_stream": "web_threat_events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_protect-web_threat_events-default",
+    "event_count": 8,
+    "numeric_keyword_fields": [],
+    "package": "jamf_protect",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

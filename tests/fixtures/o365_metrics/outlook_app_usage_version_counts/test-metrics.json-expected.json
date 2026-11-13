@@ -1,0 +1,77 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-12-22",
+      "ecs": {
+        "version": "8.16.0"
+      },
+      "event": {
+        "original": "{\"Outlook 2007\":\"1\",\"Outlook 2010\":\"2\",\"Outlook 2013\":\"3\",\"Outlook 2016\":\"4\",\"Outlook 2019\":\"5\",\"Outlook M365\":\"6\",\"Report Period\":\"7\",\"Undetermined\":\"7\",\"Report Refresh Date\":\"2052-12-22\"}"
+      },
+      "o365": {
+        "metrics": {
+          "outlook": {
+            "app": {
+              "usage": {
+                "version": {
+                  "counts": {
+                    "outlook_2007": {
+                      "count": 1
+                    },
+                    "outlook_2010": {
+                      "count": 2
+                    },
+                    "outlook_2013": {
+                      "count": 3
+                    },
+                    "outlook_2016": {
+                      "count": 4
+                    },
+                    "outlook_2019": {
+                      "count": 5
+                    },
+                    "outlook_m365": {
+                      "count": 6
+                    },
+                    "report": {
+                      "period": {
+                        "day": "7"
+                      },
+                      "refresh_date": "2052-12-22"
+                    },
+                    "undetermined": {
+                      "count": 7
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Outlook 2007\":\"1\",\"Outlook 2010\":\"2\",\"Outlook 2013\":\"3\",\"Outlook 2016\":\"4\",\"Outlook 2019\":\"5\",\"Outlook M365\":\"6\",\"Report Period\":\"7\",\"Undetermined\":\"7\",\"Report Refresh Date\":\"2052-12-22\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "outlook_app_usage_version_counts",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-o365_metrics-outlook_app_usage_version_counts-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "o365_metrics",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

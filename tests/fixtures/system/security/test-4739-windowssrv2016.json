@@ -1,0 +1,68 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:03:12.598Z",
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4739_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+            },
+            "agent": {
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "dc12d69f-fcf2-4327-9d96-8fe9e0d00dd2"
+            },
+            "winlog": {
+                "opcode": "Info",
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+                "event_data": {
+                    "DomainBehaviorVersion": "-",
+                    "DomainName": "TEST",
+                    "SubjectUserSid": "S-1-5-18",
+                    "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+                    "MixedDomainMode": "-",
+                    "DomainPolicyChanged": "Password Policy",
+                    "DomainSid": "S-1-5-21-2024912787-2692429404-2351956786",
+                    "SubjectLogonId": "0x3e7",
+                    "PrivilegeList": "-",
+                    "OemInformation": "-",
+                    "SubjectDomainName": "TEST",
+                    "PasswordHistoryLength": "-",
+                    "MachineAccountQuota": "-"
+                },
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "event_id": 4739,
+                "record_id": 3532,
+                "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+                "keywords": [
+                    "Audit Success"
+                ],
+                "time_created": "2048-07-27T09:34:50.157Z",
+                "outcome": "success",
+                "level": "information",
+                "channel": "Security",
+                "process": {
+                    "pid": 776,
+                    "thread": {
+                        "id": 812
+                    }
+                }
+            },
+            "event": {
+                "kind": "event",
+                "code": 4739,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            }
+        }
+    ]
+}

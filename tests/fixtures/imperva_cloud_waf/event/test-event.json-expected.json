@@ -1,0 +1,1000 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-12-14T05:38:35.570Z",
+      "destination": {
+        "ip": "10.66.16.176",
+        "port": 80,
+        "process": {
+          "name": "Browser"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "req-challenge-captcha",
+        "category": [
+          "web"
+        ],
+        "code": "1",
+        "end": "2047-08-20T11:31:10.892Z",
+        "kind": "alert",
+        "original": "CEF:0|Incapsula|SIEMintegration|1|1|Illegal Resource Access|3| fileid=3412341160002518171 sourceServiceName=site123.abcd.info sip=10.66.16.176 spt=80 siteid=1509732 suid=50005477 requestClientApplication=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0 deviceFacility=mia cs2=true cs2Label=Javascript Support cs3=true cs3Label=CO Support ccode=IL tag=www.fzhzk.com cn1=200 in=54 xff=192.0.2.134 cs1=NOT_SUPPORTED cs1Label=Cap Support cs4=d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8 cs4Label=VID cs5=de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4 cs5Label=clappsig dproc=Browser cs6=Firefox cs6Label=clapp ccode=IL cicode=Rehovot cs7=31.8969 cs7Label=latitude cs8=34.8186 cs8Label=longitude Customer=CEFcustomer123 siteTag=my-site-tag start=2336902921336 request=site123.abcd.info/ requestmethod=GET qstr=p\\=%2fetc%2fpasswd app=HTTP act=REQ_CHALLENGE_CAPTCHA deviceExternalID=33411452762204224 cpt=443 src=203.0.113.75 ver=TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 end=2449913470892 additionalReqHeaders=[{\"Accept\":\"*/*\"},{\"x-v\":\"1\"},{\"x-fapi-interaction-id\":\"10.182.2.165\"}] additionalResHeaders=[{\"Content-Type\":\"text/html; charset\\=UTF-8\"}] filetype=30037,1001, filepermission=2,1, cs9=Block Malicious User,High Risk Resources, cs9Label=Rule name cs11=[{\"api_specification_violation_type\":\"INVALID_PARAM_NAME\",\"parameter_name\":\"somename\"}] cs11Label=Rule Additional Info",
+        "severity": 3,
+        "start": "2044-01-20T11:42:01.336Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "group": "2,1,",
+        "inode": "3412341160002518171",
+        "type": "30037,1001,"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "imperva_cloud_waf": {
+        "event": {
+          "device": {
+            "event_class_id": "1",
+            "product": "SIEMintegration",
+            "vendor": "Incapsula",
+            "version": "1"
+          },
+          "extensions": {
+            "action": "REQ_CHALLENGE_CAPTCHA",
+            "additional": {
+              "req_headers": [
+                {
+                  "Accept": "*/*"
+                },
+                {
+                  "x-v": "1"
+                },
+                {
+                  "x-fapi-interaction-id": "10.182.2.165"
+                }
+              ],
+              "res_headers": [
+                {
+                  "Content-Type": "text/html; charset=UTF-8"
+                }
+              ]
+            },
+            "application_protocol": "HTTP",
+            "bytes_in": 54,
+            "ccode": "IL",
+            "cicode": "Rehovot",
+            "cpt": 443,
+            "cs11": [
+              {
+                "api_specification_violation_type": "INVALID_PARAM_NAME",
+                "parameter_name": "somename"
+              }
+            ],
+            "cs11Label": "Rule Additional Info",
+            "cs7": 31.8969,
+            "cs7Label": "latitude",
+            "cs8": 34.8186,
+            "cs8Label": "longitude",
+            "cs9": "Block Malicious User,High Risk Resources,",
+            "cs9Label": "Rule name",
+            "customer": "CEFcustomer123",
+            "destination_process_name": "Browser",
+            "device": {
+              "custom_number1": 200,
+              "custom_string1": "NOT_SUPPORTED",
+              "custom_string1_label": "Cap Support",
+              "custom_string2": true,
+              "custom_string2_label": "Javascript Support",
+              "custom_string3": true,
+              "custom_string3_label": "CO Support",
+              "custom_string4": "d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8",
+              "custom_string4_label": "VID",
+              "custom_string5": "de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4",
+              "custom_string5_label": "clappsig",
+              "custom_string6": "Firefox",
+              "custom_string6_label": "clapp",
+              "externalId": "33411452762204224",
+              "facility": "mia"
+            },
+            "end_time": "2047-08-20T11:31:10.892Z",
+            "file": {
+              "permission": "2,1,",
+              "type": "30037,1001,"
+            },
+            "file_id": "3412341160002518171",
+            "qstr": "p=%2fetc%2fpasswd",
+            "request": {
+              "client_application": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+              "method": "GET",
+              "url": "site123.abcd.info/"
+            },
+            "sip": "10.66.16.176",
+            "site": {
+              "id": "1509732",
+              "tag": "my-site-tag"
+            },
+            "source": {
+              "address": "203.0.113.75",
+              "port": 80,
+              "service_name": "site123.abcd.info",
+              "user_id": "50005477"
+            },
+            "start_time": "2044-01-20T11:42:01.336Z",
+            "tag": "www.fzhzk.com",
+            "ver": "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256",
+            "xff": [
+              "192.0.2.134"
+            ]
+          },
+          "name": "Illegal Resource Access",
+          "severity": 3,
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "offset": 0
+      },
+      "message": "Illegal Resource Access",
+      "network": {
+        "application": "http",
+        "forwarded_ip": [
+          "192.0.2.134"
+        ]
+      },
+      "observer": {
+        "product": "SIEMintegration",
+        "vendor": "Incapsula",
+        "version": "1"
+      },
+      "related": {
+        "ip": [
+          "10.66.16.176",
+          "203.0.113.75",
+          "192.0.2.134"
+        ],
+        "user": [
+          "50005477"
+        ]
+      },
+      "rule": {
+        "name": "Block Malicious User,High Risk Resources,"
+      },
+      "source": {
+        "bytes": 54,
+        "geo": {
+          "country_iso_code": "IL",
+          "location": {
+            "lat": 31.8969,
+            "lon": 34.8186
+          }
+        },
+        "ip": "203.0.113.75",
+        "port": 443,
+        "service": {
+          "name": "site123.abcd.info"
+        },
+        "user": {
+          "id": "50005477"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "ECDHE-RSA-AES128-GCM-SHA256",
+        "version": "1.2"
+      },
+      "url": {
+        "domain": "site123.abcd.info",
+        "original": "http://site123.abcd.info/",
+        "path": "/",
+        "query": "p=%2fetc%2fpasswd",
+        "scheme": "http"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "40.0"
+      }
+    },
+    {
+      "@timestamp": "2051-12-15T05:38:35.570Z",
+      "destination": {
+        "ip": "10.66.16.176",
+        "port": 80,
+        "process": {
+          "name": "Browser"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "req-challenge-captcha",
+        "category": [
+          "web"
+        ],
+        "code": "1",
+        "end": "2047-08-20T11:31:10.892Z",
+        "kind": "event",
+        "original": "CEF:0|Incapsula|SIEMintegration|1|1|Normal|3| fileid=3412341160002518171 sourceServiceName=site123.abcd.info sip=10.66.16.176 spt=80 siteid=1509732 suid=50005477 requestClientApplication=Mozilla/6.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0 deviceFacility=mia cs2=true cs2Label=Javascript Support cs3=true cs3Label=CO Support ccode=IL tag=www.fzhzk.com cn1=200 in=54 xff=192.0.2.134, 198.51.100.211 cs1=NOT_SUPPORTED cs1Label=Cap Support cs4=d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8 cs4Label=VID cs5=de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4 cs5Label=clappsig dproc=Browser cs6=Firefox cs6Label=clapp ccode=IL cicode=Rehovot cs7=31.8969 cs7Label=latitude cs8=34.8186 cs8Label=longitude Customer=CEFcustomer123 siteTag=my-site-tag start=2336902921336 request=site123.abcd.info/ requestmethod=GET qstr=p\\=%2fetc%2fpasswd app=HTTP act=REQ_CHALLENGE_CAPTCHA deviceExternalID=33411452762204224 cpt=443 src=203.0.113.75 ver=TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 end=2449913470892 additionalReqHeaders=[{\"Accept\":\"*/*\"},{\"x-v\":\"1\"},{\"x-fapi-interaction-id\":\"10.182.2.165\"}] additionalResHeaders=[{\"Content-Type\":\"text/html; charset\\=UTF-8\"}] filetype=30037,1001, filepermission=2,1, cs9=Block Malicious User,High Risk Resources, cs9Label=Rule name cs11=[{\"api_specification_violation_type\":\"INVALID_PARAM_NAME\",\"parameter_name\":\"somename\"}] cs11Label=Rule Additional Info",
+        "severity": 3,
+        "start": "2044-01-20T11:42:01.336Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "group": "2,1,",
+        "inode": "3412341160002518171",
+        "type": "30037,1001,"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "imperva_cloud_waf": {
+        "event": {
+          "device": {
+            "event_class_id": "1",
+            "product": "SIEMintegration",
+            "vendor": "Incapsula",
+            "version": "1"
+          },
+          "extensions": {
+            "action": "REQ_CHALLENGE_CAPTCHA",
+            "additional": {
+              "req_headers": [
+                {
+                  "Accept": "*/*"
+                },
+                {
+                  "x-v": "1"
+                },
+                {
+                  "x-fapi-interaction-id": "10.182.2.165"
+                }
+              ],
+              "res_headers": [
+                {
+                  "Content-Type": "text/html; charset=UTF-8"
+                }
+              ]
+            },
+            "application_protocol": "HTTP",
+            "bytes_in": 54,
+            "ccode": "IL",
+            "cicode": "Rehovot",
+            "cpt": 443,
+            "cs11": [
+              {
+                "api_specification_violation_type": "INVALID_PARAM_NAME",
+                "parameter_name": "somename"
+              }
+            ],
+            "cs11Label": "Rule Additional Info",
+            "cs7": 31.8969,
+            "cs7Label": "latitude",
+            "cs8": 34.8186,
+            "cs8Label": "longitude",
+            "cs9": "Block Malicious User,High Risk Resources,",
+            "cs9Label": "Rule name",
+            "customer": "CEFcustomer123",
+            "destination_process_name": "Browser",
+            "device": {
+              "custom_number1": 200,
+              "custom_string1": "NOT_SUPPORTED",
+              "custom_string1_label": "Cap Support",
+              "custom_string2": true,
+              "custom_string2_label": "Javascript Support",
+              "custom_string3": true,
+              "custom_string3_label": "CO Support",
+              "custom_string4": "d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8",
+              "custom_string4_label": "VID",
+              "custom_string5": "de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4",
+              "custom_string5_label": "clappsig",
+              "custom_string6": "Firefox",
+              "custom_string6_label": "clapp",
+              "externalId": "33411452762204224",
+              "facility": "mia"
+            },
+            "end_time": "2047-08-20T11:31:10.892Z",
+            "file": {
+              "permission": "2,1,",
+              "type": "30037,1001,"
+            },
+            "file_id": "3412341160002518171",
+            "qstr": "p=%2fetc%2fpasswd",
+            "request": {
+              "client_application": "Mozilla/6.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+              "method": "GET",
+              "url": "site123.abcd.info/"
+            },
+            "sip": "10.66.16.176",
+            "site": {
+              "id": "1509732",
+              "tag": "my-site-tag"
+            },
+            "source": {
+              "address": "203.0.113.75",
+              "port": 80,
+              "service_name": "site123.abcd.info",
+              "user_id": "50005477"
+            },
+            "start_time": "2044-01-20T11:42:01.336Z",
+            "tag": "www.fzhzk.com",
+            "ver": "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256",
+            "xff": [
+              "192.0.2.134",
+              "198.51.100.211"
+            ]
+          },
+          "name": "Normal",
+          "severity": 3,
+          "version": "0"
+        }
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "offset": 0
+      },
+      "message": "Illegal Resource Access",
+      "network": {
+        "application": "http",
+        "forwarded_ip": [
+          "192.0.2.134",
+          "198.51.100.211"
+        ]
+      },
+      "observer": {
+        "product": "SIEMintegration",
+        "vendor": "Incapsula",
+        "version": "1"
+      },
+      "related": {
+        "ip": [
+          "10.66.16.176",
+          "203.0.113.75",
+          "192.0.2.134",
+          "198.51.100.211"
+        ],
+        "user": [
+          "50005477"
+        ]
+      },
+      "rule": {
+        "name": "Block Malicious User,High Risk Resources,"
+      },
+      "source": {
+        "bytes": 54,
+        "geo": {
+          "country_iso_code": "IL",
+          "location": {
+            "lat": 31.8969,
+            "lon": 34.8186
+          }
+        },
+        "ip": "203.0.113.75",
+        "port": 443,
+        "service": {
+          "name": "site123.abcd.info"
+        },
+        "user": {
+          "id": "50005477"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "ECDHE-RSA-AES128-GCM-SHA256",
+        "version": "1.2"
+      },
+      "url": {
+        "domain": "site123.abcd.info",
+        "original": "http://site123.abcd.info/",
+        "path": "/",
+        "query": "p=%2fetc%2fpasswd",
+        "scheme": "http"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/6.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+        "os": {
+          "full": "Windows 7",
+          "name": "Windows",
+          "version": "7"
+        },
+        "version": "40.0"
+      }
+    },
+    {
+      "@timestamp": "2053-06-13T10:34:17.248Z",
+      "destination": {
+        "ip": "10.66.16.176",
+        "port": 80,
+        "process": {
+          "name": "Feed Fetcher"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "req-passed",
+        "category": [
+          "web"
+        ],
+        "code": "1",
+        "end": "2053-06-02T18:32:01.581Z",
+        "kind": "alert",
+        "original": "CEF:0|Incapsula|SIEMintegration|1|1|IncapRules(BehaviourBasedRule_20.07.2023)|11| fileId=699000350104269425 sourceServiceName=www.dwofop.com siteid=1509732 suid=50005477 deviceFacility=chi cs2=false cs2Label=Javascript Support cs3=false cs3Label=CO Support cs1=NA cs1Label=Cap Support cs4=9d2aae1a-e5f8-4a1c-97cd-2924e454bb6c cs4Label=VID cs5=b53e95fd593e4ea9b302363a638b83bb447ac421b8df7e81e054463ecde6bd084c035017bf9a6a7802bb898226378938 cs5Label=clappsig dproc=Feed Fetcher cs6=.NET WebClient cs6Label=clapp ccode=US cicode=Des Moines cs7=41.6015 cs7Label=latitude cs8=-93.6127 cs8Label=longitude Customer=CoA-CTM start=2632501921479 request=www.dwofop.com/sites/default/files/files/Health/B- Standard Solicitation Provisions and Instructions.pdf requestMethod=HEAD cn1=200 app=HTTPS act=REQ_PASSED deviceExternalId=198860692407388368 sip=10.66.16.176 spt=80 in=0 xff=192.0.2.134, 198.51.100.211 cpt=56014 src=203.0.113.75 ver=TLSv1.3 TLS_AES_128_GCM_SHA256 end=2632501921581 fileType=2549120 filePermission=0 cs9= cs9Label=Rule name",
+        "severity": 11,
+        "start": "2053-06-02T18:32:01.479Z",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "group": "0",
+        "inode": "3412341160002518171",
+        "type": "2549120"
+      },
+      "http": {
+        "request": {
+          "method": "HEAD"
+        },
+        "response": {
+          "status_code": 200
+        }
+      },
+      "imperva_cloud_waf": {
+        "event": {
+          "device": {
+            "event_class_id": "1",
+            "product": "SIEMintegration",
+            "vendor": "Incapsula",
+            "version": "1"
+          },
+          "extensions": {
+            "action": "REQ_PASSED",
+            "application_protocol": "HTTPS",
+            "bytes_in": 0,
+            "ccode": "US",
+            "cicode": "Des Moines",
+            "cpt": 56014,
+            "cs7": 41.6015,
+            "cs7Label": "latitude",
+            "cs8": -93.6127,
+            "cs8Label": "longitude",
+            "cs9Label": "Rule name",
+            "customer": "CoA-CTM",
+            "destination_process_name": "Feed Fetcher",
+            "device": {
+              "custom_number1": 200,
+              "custom_string1": "NA",
+              "custom_string1_label": "Cap Support",
+              "custom_string2": false,
+              "custom_string2_label": "Javascript Support",
+              "custom_string3": false,
+              "custom_string3_label": "CO Support",
+              "custom_string4": "9d2aae1a-e5f8-4a1c-97cd-2924e454bb6c",
+              "custom_string4_label": "VID",
+              "custom_string5": "b53e95fd593e4ea9b302363a638b83bb447ac421b8df7e81e054463ecde6bd084c035017bf9a6a7802bb898226378938",
+              "custom_string5_label": "clappsig",
+              "custom_string6": ".NET WebClient",
+              "custom_string6_label": "clapp",
+              "externalId": "198860692407388368",
+              "facility": "chi"
+            },
+            "end_time": "2053-06-02T18:32:01.581Z",
+            "file": {
+              "permission": "0",
+              "type": "2549120"
+            },
+            "file_id": "3412341160002518171",
+            "request": {
+              "method": "HEAD",
+              "url": "www.dwofop.com/sites/default/files/files/Health/B- Standard Solicitation Provisions and Instructions.pdf"
+            },
+            "sip": "10.66.16.176",
+            "site": {
+              "id": "1509732"
+            },
+            "source": {
+              "address": "203.0.113.75",
+              "port": 80,
+              "service_name": "www.dwofop.com",
+              "user_id": "50005477"
+            },
+            "start_time": "2053-06-02T18:32:01.479Z",
+            "ver": "TLSv1.3 TLS_AES_128_GCM_SHA256",
+            "xff": [
+              "192.0.2.134",
+              "198.51.100.211"
+            ]
+          },
+          "name": "IncapRules(BehaviourBasedRule_20.07.2023)",
+          "severity": 11,
+          "version": "0"
+        }
+      },
+      "message": "IncapRules(BehaviourBasedRule_20.07.2023)",
+      "network": {
+        "application": "https",
+        "forwarded_ip": [
+          "192.0.2.134",
+          "198.51.100.211"
+        ]
+      },
+      "observer": {
+        "product": "SIEMintegration",
+        "vendor": "Incapsula",
+        "version": "1"
+      },
+      "related": {
+        "ip": [
+          "10.66.16.176",
+          "203.0.113.75",
+          "192.0.2.134",
+          "198.51.100.211"
+        ],
+        "user": [
+          "50005477"
+        ]
+      },
+      "source": {
+        "bytes": 0,
+        "geo": {
+          "country_iso_code": "US",
+          "location": {
+            "lat": 41.6015,
+            "lon": -93.6127
+          }
+        },
+        "ip": "203.0.113.75",
+        "port": 56014,
+        "service": {
+          "name": "site123.abcd.info"
+        },
+        "user": {
+          "id": "50005477"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "version": "1.3"
+      },
+      "url": {
+        "domain": "www.dwofop.com",
+        "extension": "pdf",
+        "original": "https://www.dwofop.com/sites/default/files/files/Health/B-%20Standard%20Solicitation%20Provisions%20and%20Instructions.pdf",
+        "path": "/sites/default/files/files/Health/B- Standard Solicitation Provisions and Instructions.pdf",
+        "scheme": "https"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-12-14T05:38:35.570Z",
+      "cef": {
+        "device": {
+          "event_class_id": "1",
+          "product": "SIEMintegration",
+          "vendor": "Incapsula",
+          "version": "1"
+        },
+        "extensions": {
+          "Customer": "CEFcustomer123",
+          "additionalReqHeaders": "[{\"Accept\":\"*/*\"},{\"x-v\":\"1\"},{\"x-fapi-interaction-id\":\"10.182.2.165\"}]",
+          "additionalResHeaders": "[{\"Content-Type\":\"text/html; charset=UTF-8\"}]",
+          "applicationProtocol": "HTTP",
+          "bytesIn": 54,
+          "ccode": "IL",
+          "cicode": "Rehovot",
+          "cpt": "443",
+          "cs11": "[{\"api_specification_violation_type\":\"INVALID_PARAM_NAME\",\"parameter_name\":\"somename\"}]",
+          "cs11Label": "Rule Additional Info",
+          "cs7": "31.8969",
+          "cs7Label": "latitude",
+          "cs8": "34.8186",
+          "cs8Label": "longitude",
+          "cs9": "Block Malicious User,High Risk Resources,",
+          "cs9Label": "Rule name",
+          "destinationProcessName": "Browser",
+          "deviceAction": "REQ_CHALLENGE_CAPTCHA",
+          "deviceCustomNumber1": 200,
+          "deviceCustomString1": "NOT_SUPPORTED",
+          "deviceCustomString1Label": "Cap Support",
+          "deviceCustomString2": "true",
+          "deviceCustomString2Label": "Javascript Support",
+          "deviceCustomString3": "true",
+          "deviceCustomString3Label": "CO Support",
+          "deviceCustomString4": "d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8",
+          "deviceCustomString4Label": "VID",
+          "deviceCustomString5": "de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4",
+          "deviceCustomString5Label": "clappsig",
+          "deviceCustomString6": "Firefox",
+          "deviceCustomString6Label": "clapp",
+          "deviceExternalId": "33411452762204224",
+          "deviceFacility": "mia",
+          "endTime": "2047-08-20T11:31:10.892Z",
+          "fileId": "3412341160002518171",
+          "filePermission": "2,1,",
+          "fileType": "30037,1001,",
+          "qstr": "p=%2fetc%2fpasswd",
+          "requestClientApplication": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+          "requestMethod": "GET",
+          "requestUrl": "site123.abcd.info/",
+          "sip": "10.66.16.176",
+          "siteTag": "my-site-tag",
+          "siteid": "1509732",
+          "sourceAddress": "203.0.113.75",
+          "sourcePort": 80,
+          "sourceServiceName": "site123.abcd.info",
+          "sourceUserId": "50005477",
+          "startTime": "2044-01-20T11:42:01.336Z",
+          "tag": "www.fzhzk.com",
+          "ver": "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256",
+          "xff": "192.0.2.134"
+        },
+        "name": "Illegal Resource Access",
+        "severity": "3",
+        "version": "0"
+      },
+      "destination": {
+        "process": {
+          "name": "Browser"
+        }
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "action": "REQ_CHALLENGE_CAPTCHA",
+        "code": "1",
+        "end": "2047-08-20T11:31:10.892Z",
+        "original": "CEF:0|Incapsula|SIEMintegration|1|1|Illegal Resource Access|3| fileid=3412341160002518171 sourceServiceName=site123.abcd.info sip=10.66.16.176 spt=80 siteid=1509732 suid=50005477 requestClientApplication=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0 deviceFacility=mia cs2=true cs2Label=Javascript Support cs3=true cs3Label=CO Support ccode=IL tag=www.fzhzk.com cn1=200 in=54 xff=192.0.2.134 cs1=NOT_SUPPORTED cs1Label=Cap Support cs4=d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8 cs4Label=VID cs5=de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4 cs5Label=clappsig dproc=Browser cs6=Firefox cs6Label=clapp ccode=IL cicode=Rehovot cs7=31.8969 cs7Label=latitude cs8=34.8186 cs8Label=longitude Customer=CEFcustomer123 siteTag=my-site-tag start=2336902921336 request=site123.abcd.info/ requestmethod=GET qstr=p\\=%2fetc%2fpasswd app=HTTP act=REQ_CHALLENGE_CAPTCHA deviceExternalID=33411452762204224 cpt=443 src=203.0.113.75 ver=TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 end=2449913470892 additionalReqHeaders=[{\"Accept\":\"*/*\"},{\"x-v\":\"1\"},{\"x-fapi-interaction-id\":\"10.182.2.165\"}] additionalResHeaders=[{\"Content-Type\":\"text/html; charset\\=UTF-8\"}] filetype=30037,1001, filepermission=2,1, cs9=Block Malicious User,High Risk Resources, cs9Label=Rule name cs11=[{\"api_specification_violation_type\":\"INVALID_PARAM_NAME\",\"parameter_name\":\"somename\"}] cs11Label=Rule Additional Info",
+        "severity": 3,
+        "start": "2044-01-20T11:42:01.336Z"
+      },
+      "file": {
+        "group": "2,1,",
+        "inode": "3412341160002518171",
+        "type": "30037,1001,"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "offset": 0
+      },
+      "message": "Illegal Resource Access",
+      "network": {
+        "application": "HTTP"
+      },
+      "observer": {
+        "product": "SIEMintegration",
+        "vendor": "Incapsula",
+        "version": "1"
+      },
+      "source": {
+        "bytes": 54,
+        "ip": "203.0.113.75",
+        "port": 80,
+        "service": {
+          "name": "site123.abcd.info"
+        },
+        "user": {
+          "id": "50005477"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "original": "site123.abcd.info/"
+      },
+      "user_agent": {
+        "original": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0"
+      }
+    },
+    {
+      "@timestamp": "2051-12-15T05:38:35.570Z",
+      "cef": {
+        "device": {
+          "event_class_id": "1",
+          "product": "SIEMintegration",
+          "vendor": "Incapsula",
+          "version": "1"
+        },
+        "extensions": {
+          "Customer": "CEFcustomer123",
+          "additionalReqHeaders": "[{\"Accept\":\"*/*\"},{\"x-v\":\"1\"},{\"x-fapi-interaction-id\":\"10.182.2.165\"}]",
+          "additionalResHeaders": "[{\"Content-Type\":\"text/html; charset=UTF-8\"}]",
+          "applicationProtocol": "HTTP",
+          "bytesIn": 54,
+          "ccode": "IL",
+          "cicode": "Rehovot",
+          "cpt": "443",
+          "cs11": "[{\"api_specification_violation_type\":\"INVALID_PARAM_NAME\",\"parameter_name\":\"somename\"}]",
+          "cs11Label": "Rule Additional Info",
+          "cs7": "31.8969",
+          "cs7Label": "latitude",
+          "cs8": "34.8186",
+          "cs8Label": "longitude",
+          "cs9": "Block Malicious User,High Risk Resources,",
+          "cs9Label": "Rule name",
+          "destinationProcessName": "Browser",
+          "deviceAction": "REQ_CHALLENGE_CAPTCHA",
+          "deviceCustomNumber1": 200,
+          "deviceCustomString1": "NOT_SUPPORTED",
+          "deviceCustomString1Label": "Cap Support",
+          "deviceCustomString2": "true",
+          "deviceCustomString2Label": "Javascript Support",
+          "deviceCustomString3": "true",
+          "deviceCustomString3Label": "CO Support",
+          "deviceCustomString4": "d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8",
+          "deviceCustomString4Label": "VID",
+          "deviceCustomString5": "de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4",
+          "deviceCustomString5Label": "clappsig",
+          "deviceCustomString6": "Firefox",
+          "deviceCustomString6Label": "clapp",
+          "deviceExternalId": "33411452762204224",
+          "deviceFacility": "mia",
+          "endTime": "2047-08-20T11:31:10.892Z",
+          "fileId": "3412341160002518171",
+          "filePermission": "2,1,",
+          "fileType": "30037,1001,",
+          "qstr": "p=%2fetc%2fpasswd",
+          "requestClientApplication": "Mozilla/6.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+          "requestMethod": "GET",
+          "requestUrl": "site123.abcd.info/",
+          "sip": "10.66.16.176",
+          "siteTag": "my-site-tag",
+          "siteid": "1509732",
+          "sourceAddress": "203.0.113.75",
+          "sourcePort": 80,
+          "sourceServiceName": "site123.abcd.info",
+          "sourceUserId": "50005477",
+          "startTime": "2044-01-20T11:42:01.336Z",
+          "tag": "www.fzhzk.com",
+          "ver": "TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256",
+          "xff": "192.0.2.134, 198.51.100.211"
+        },
+        "name": "Normal",
+        "severity": "3",
+        "version": "0"
+      },
+      "destination": {
+        "process": {
+          "name": "Browser"
+        }
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "action": "REQ_CHALLENGE_CAPTCHA",
+        "code": "1",
+        "end": "2047-08-20T11:31:10.892Z",
+        "original": "CEF:0|Incapsula|SIEMintegration|1|1|Normal|3| fileid=3412341160002518171 sourceServiceName=site123.abcd.info sip=10.66.16.176 spt=80 siteid=1509732 suid=50005477 requestClientApplication=Mozilla/6.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0 deviceFacility=mia cs2=true cs2Label=Javascript Support cs3=true cs3Label=CO Support ccode=IL tag=www.fzhzk.com cn1=200 in=54 xff=192.0.2.134, 198.51.100.211 cs1=NOT_SUPPORTED cs1Label=Cap Support cs4=d6e41939-6e9f-4fd7-b66b-7fe205dd6ca8 cs4Label=VID cs5=de3c633ac428e0678f3aac20cf7f239431e54cbb8a17e8302f53653923305e1835a9cd871db32aa4fc7b8a9463366cc4 cs5Label=clappsig dproc=Browser cs6=Firefox cs6Label=clapp ccode=IL cicode=Rehovot cs7=31.8969 cs7Label=latitude cs8=34.8186 cs8Label=longitude Customer=CEFcustomer123 siteTag=my-site-tag start=2336902921336 request=site123.abcd.info/ requestmethod=GET qstr=p\\=%2fetc%2fpasswd app=HTTP act=REQ_CHALLENGE_CAPTCHA deviceExternalID=33411452762204224 cpt=443 src=203.0.113.75 ver=TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 end=2449913470892 additionalReqHeaders=[{\"Accept\":\"*/*\"},{\"x-v\":\"1\"},{\"x-fapi-interaction-id\":\"10.182.2.165\"}] additionalResHeaders=[{\"Content-Type\":\"text/html; charset\\=UTF-8\"}] filetype=30037,1001, filepermission=2,1, cs9=Block Malicious User,High Risk Resources, cs9Label=Rule name cs11=[{\"api_specification_violation_type\":\"INVALID_PARAM_NAME\",\"parameter_name\":\"somename\"}] cs11Label=Rule Additional Info",
+        "severity": 3,
+        "start": "2044-01-20T11:42:01.336Z"
+      },
+      "file": {
+        "group": "2,1,",
+        "inode": "3412341160002518171",
+        "type": "30037,1001,"
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        }
+      },
+      "input": {
+        "type": "filestream"
+      },
+      "log": {
+        "offset": 0
+      },
+      "message": "Illegal Resource Access",
+      "network": {
+        "application": "HTTP"
+      },
+      "observer": {
+        "product": "SIEMintegration",
+        "vendor": "Incapsula",
+        "version": "1"
+      },
+      "source": {
+        "bytes": 54,
+        "ip": "203.0.113.75",
+        "port": 80,
+        "service": {
+          "name": "site123.abcd.info"
+        },
+        "user": {
+          "id": "50005477"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "original": "site123.abcd.info/"
+      },
+      "user_agent": {
+        "original": "Mozilla/6.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0"
+      }
+    },
+    {
+      "@timestamp": "2053-06-13T10:34:17.248Z",
+      "cef": {
+        "device": {
+          "event_class_id": "1",
+          "product": "SIEMintegration",
+          "vendor": "Incapsula",
+          "version": "1"
+        },
+        "extensions": {
+          "Customer": "CoA-CTM",
+          "applicationProtocol": "HTTPS",
+          "bytesIn": 0,
+          "ccode": "US",
+          "cicode": "Des Moines",
+          "cpt": "56014",
+          "cs7": "41.6015",
+          "cs7Label": "latitude",
+          "cs8": "-93.6127",
+          "cs8Label": "longitude",
+          "cs9": "",
+          "cs9Label": "Rule name",
+          "destinationProcessName": "Feed Fetcher",
+          "deviceAction": "REQ_PASSED",
+          "deviceCustomNumber1": 200,
+          "deviceCustomString1": "NA",
+          "deviceCustomString1Label": "Cap Support",
+          "deviceCustomString2": "false",
+          "deviceCustomString2Label": "Javascript Support",
+          "deviceCustomString3": "false",
+          "deviceCustomString3Label": "CO Support",
+          "deviceCustomString4": "9d2aae1a-e5f8-4a1c-97cd-2924e454bb6c",
+          "deviceCustomString4Label": "VID",
+          "deviceCustomString5": "b53e95fd593e4ea9b302363a638b83bb447ac421b8df7e81e054463ecde6bd084c035017bf9a6a7802bb898226378938",
+          "deviceCustomString5Label": "clappsig",
+          "deviceCustomString6": ".NET WebClient",
+          "deviceCustomString6Label": "clapp",
+          "deviceExternalId": "198860692407388368",
+          "deviceFacility": "chi",
+          "endTime": "2053-06-02T18:32:01.581Z",
+          "fileId": "3412341160002518171",
+          "filePermission": "0",
+          "fileType": "2549120",
+          "requestMethod": "HEAD",
+          "requestUrl": "www.dwofop.com/sites/default/files/files/Health/B- Standard Solicitation Provisions and Instructions.pdf",
+          "sip": "10.66.16.176",
+          "siteid": "1509732",
+          "sourceAddress": "203.0.113.75",
+          "sourcePort": 80,
+          "sourceServiceName": "www.dwofop.com",
+          "sourceUserId": "50005477",
+          "startTime": "2053-06-02T18:32:01.479Z",
+          "ver": "TLSv1.3 TLS_AES_128_GCM_SHA256",
+          "xff": "192.0.2.134, 198.51.100.211"
+        },
+        "name": "IncapRules(BehaviourBasedRule_20.07.2023)",
+        "severity": "11",
+        "version": "0"
+      },
+      "destination": {
+        "process": {
+          "name": "Feed Fetcher"
+        }
+      },
+      "ecs": {
+        "version": "8.0.0"
+      },
+      "event": {
+        "action": "REQ_PASSED",
+        "code": "1",
+        "end": "2053-06-02T18:32:01.581Z",
+        "original": "CEF:0|Incapsula|SIEMintegration|1|1|IncapRules(BehaviourBasedRule_20.07.2023)|11| fileId=699000350104269425 sourceServiceName=www.dwofop.com siteid=1509732 suid=50005477 deviceFacility=chi cs2=false cs2Label=Javascript Support cs3=false cs3Label=CO Support cs1=NA cs1Label=Cap Support cs4=9d2aae1a-e5f8-4a1c-97cd-2924e454bb6c cs4Label=VID cs5=b53e95fd593e4ea9b302363a638b83bb447ac421b8df7e81e054463ecde6bd084c035017bf9a6a7802bb898226378938 cs5Label=clappsig dproc=Feed Fetcher cs6=.NET WebClient cs6Label=clapp ccode=US cicode=Des Moines cs7=41.6015 cs7Label=latitude cs8=-93.6127 cs8Label=longitude Customer=CoA-CTM start=2632501921479 request=www.dwofop.com/sites/default/files/files/Health/B- Standard Solicitation Provisions and Instructions.pdf requestMethod=HEAD cn1=200 app=HTTPS act=REQ_PASSED deviceExternalId=198860692407388368 sip=10.66.16.176 spt=80 in=0 xff=192.0.2.134, 198.51.100.211 cpt=56014 src=203.0.113.75 ver=TLSv1.3 TLS_AES_128_GCM_SHA256 end=2632501921581 fileType=2549120 filePermission=0 cs9= cs9Label=Rule name",
+        "severity": 11,
+        "start": "2053-06-02T18:32:01.479Z"
+      },
+      "file": {
+        "group": "0",
+        "inode": "3412341160002518171",
+        "type": "2549120"
+      },
+      "http": {
+        "request": {
+          "method": "HEAD"
+        }
+      },
+      "message": "IncapRules(BehaviourBasedRule_20.07.2023)",
+      "network": {
+        "application": "HTTPS"
+      },
+      "observer": {
+        "product": "SIEMintegration",
+        "vendor": "Incapsula",
+        "version": "1"
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "203.0.113.75",
+        "port": 80,
+        "service": {
+          "name": "site123.abcd.info"
+        },
+        "user": {
+          "id": "50005477"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "url": {
+        "original": "www.dwofop.com/sites/default/files/files/Health/B- Standard Solicitation Provisions and Instructions.pdf"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "url.extension": "^.*$",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-imperva_cloud_waf-event-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "imperva_cloud_waf",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

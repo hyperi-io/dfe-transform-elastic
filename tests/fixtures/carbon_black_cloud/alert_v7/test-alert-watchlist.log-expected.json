@@ -1,0 +1,373 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-03-13T08:02:36.578Z",
+      "carbon_black_cloud": {
+        "alert": {
+          "alert_notes_present": false,
+          "backend_timestamp": "2052-03-13T08:03:29.540Z",
+          "backend_update_timestamp": "2052-03-13T08:03:29.540Z",
+          "category": "THREAT",
+          "determination": {
+            "change_timestamp": "2052-03-13T08:03:29.540Z",
+            "changed_by": "ALERT_CREATION",
+            "changed_by_type": "SYSTEM",
+            "value": "NONE"
+          },
+          "device": {
+            "external_ip": "192.0.2.127",
+            "internal_ip": "172.27.23.182",
+            "location": "UNKNOWN",
+            "os": "WINDOWS",
+            "policy": "default",
+            "policy_id": 6525,
+            "target_value": "MEDIUM"
+          },
+          "ioc": {
+            "hit": "(fileless_scriptload_cmdline:Register-ScheduledTask OR fileless_scriptload_cmdline:New-ScheduledTask OR scriptload_content:Register-ScheduledTask OR scriptload_content:New-ScheduledTask) AND NOT (process_cmdline:windows\\\\ccm\\\\systemtemp OR crossproc_name:windows\\\\ccm\\\\ccmexec.exe OR (process_publisher:\"VMware, Inc.\" AND process_publisher_state:FILE_SIGNATURE_STATE_TRUSTED))",
+            "id": "b1177290-c477-4c08-90a2-0c254d01c64d"
+          },
+          "is_updated": false,
+          "mdr": {
+            "alert": false,
+            "alert_notes_present": false,
+            "threat_notes_present": false
+          },
+          "ml_classification_final_verdict": "NOT_ANOMALOUS",
+          "ml_classification_global_prevalence": "LOW",
+          "ml_classification_org_prevalence": "LOW",
+          "organization_key": "7DESJ9GN",
+          "parent": {
+            "cmdline": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Schedule",
+            "effective_reputation": "TRUSTED_WHITE_LIST",
+            "guid": "7DESJ9GN-0064e5a7-0000077c-00000000-1da5ed7ec07b275",
+            "hash": {
+              "md5": "915acf6694aefe3b896155fc46265b87",
+              "sha256": "c65ab96093894f712bde433a321a1d498fa3c5921bce39d52c284f8f8e1d35a4"
+            },
+            "name": "c:\\windows\\system32\\svchost.exe",
+            "pid": 1916,
+            "reputation": "TRUSTED_WHITE_LIST",
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "policy_applied": "NOT_APPLIED",
+          "primary_event_id": "re9M9hp8TbGLqyk6QXqQqA-0",
+          "process": {
+            "cmdline": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -EP Bypass \\\\eip.demo\\sysvol\\EIP.DEMO\\scripts\\Luminol.ps1",
+            "effective_reputation": "TRUSTED_WHITE_LIST",
+            "guid": "7DESJ9GN-0064e5a7-00001434-00000000-1da751c7354ebfe",
+            "hash": {
+              "md5": "0e4d8473fb7241244fa94db6ba3d54b0",
+              "sha256": "2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9"
+            },
+            "issuer": [
+              "Microsoft Windows Production PCA 2011"
+            ],
+            "name": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+            "pid": 5172,
+            "publisher": [
+              "Microsoft Windows"
+            ],
+            "reputation": "TRUSTED_WHITE_LIST",
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "reason_code": "a94bc920-217d-3a90-8a7b-51e6811fce0f:2567f55c-23a5-3b91-81a2-a7d1d652d30b",
+          "report": {
+            "description": "Newer Powershell versions introduced built-in cmdlets to manage scheduled tasks natively without calling out to typical scheduled task processes like at.exe or schtasks.exe. This detection looks for behaviors related to the fileless execution of scheduled tasks. If you are responding to this alert, be sure to correlate the fileless scriptload events with events typically found in your environment Generally, attackers will create scheduled tasks with binaries that are located in user writable directories like AppData, Temp, or public folders.",
+            "id": "LrKOC7DtQbm4g8w0UFruQg-d1080521-e617-4e45-94e0-7a145c62c90a",
+            "link": "https://attack.mitre.org/techniques/T1053/",
+            "name": "Execution - AMSI - New Fileless Scheduled Task Behavior Detected",
+            "tags": [
+              "execution",
+              "privesc",
+              "persistence",
+              "t1053",
+              "windows",
+              "amsi",
+              "attack",
+              "attackframework"
+            ]
+          },
+          "run_state": "RAN",
+          "sensor_action": "ALLOW",
+          "threat_id": "E19FF779779C2E934D2D25C0052CFC1B",
+          "threat_notes_present": false,
+          "type": "WATCHLIST",
+          "url": "cdcfzuf.bnoaayadgqzi.net/alerts?s[c][query_string]=id:5b2ecf21-50bb-40f8-ac1d-1f277d476e42&orgKey=7DESJ9GN",
+          "watchlists": [
+            {
+              "id": "Ci7w5B4URg6HN60hatQMQ",
+              "name": "AMSI Threat Intelligence"
+            }
+          ],
+          "workflow": {
+            "change_timestamp": "2052-03-13T08:03:29.540Z",
+            "changed_by": "ALERT_CREATION",
+            "changed_by_type": "SYSTEM",
+            "closure_reason": "NO_REASON",
+            "status": "OPEN"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "end": "2052-03-13T08:00:09.894Z",
+        "id": "5b2ecf21-50bb-40f8-ac1d-1f277d476e42",
+        "kind": "alert",
+        "original": "{\"org_key\":\"7DESJ9GN\",\"alert_url\":\"cdcfzuf.bnoaayadgqzi.net/alerts?s[c][query_string]=id:5b2ecf21-50bb-40f8-ac1d-1f277d476e42&orgKey=7DESJ9GN\",\"id\":\"5b2ecf21-50bb-40f8-ac1d-1f277d476e42\",\"type\":\"WATCHLIST\",\"backend_timestamp\":\"2052-03-13T08:03:29.540Z\",\"user_update_timestamp\":null,\"backend_update_timestamp\":\"2052-03-13T08:03:29.540Z\",\"detection_timestamp\":\"2052-03-13T08:02:36.578Z\",\"first_event_timestamp\":\"2052-03-13T08:00:09.894Z\",\"last_event_timestamp\":\"2052-03-13T08:00:09.894Z\",\"severity\":5,\"reason\":\"Process powershell.exe was detected by the report \\\"Execution - AMSI - New Fileless Scheduled Task Behavior Detected\\\" in watchlist \\\"AMSI Threat Intelligence\\\"\",\"reason_code\":\"a94bc920-217d-3a90-8a7b-51e6811fce0f:2567f55c-23a5-3b91-81a2-a7d1d652d30b\",\"threat_id\":\"E19FF779779C2E934D2D25C0052CFC1B\",\"primary_event_id\":\"re9M9hp8TbGLqyk6QXqQqA-0\",\"policy_applied\":\"NOT_APPLIED\",\"run_state\":\"RAN\",\"sensor_action\":\"ALLOW\",\"workflow\":{\"change_timestamp\":\"2052-03-13T08:03:29.540Z\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\",\"closure_reason\":\"NO_REASON\",\"status\":\"OPEN\"},\"determination\":{\"change_timestamp\":\"2052-03-13T08:03:29.540Z\",\"value\":\"NONE\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\"},\"tags\":null,\"alert_notes_present\":false,\"threat_notes_present\":false,\"is_updated\":false,\"device_id\":6612391,\"device_name\":\"EIP\\\\WW-20002\",\"device_uem_id\":\"\",\"device_target_value\":\"MEDIUM\",\"device_policy\":\"default\",\"device_policy_id\":6525,\"device_os\":\"WINDOWS\",\"device_os_version\":\"Windows 10 x64\",\"device_username\":\"EIP\\\\Administrator\",\"device_location\":\"UNKNOWN\",\"device_external_ip\":\"192.0.2.127\",\"device_internal_ip\":\"172.27.23.182\",\"asset_group\":[],\"mdr_alert\":false,\"mdr_alert_notes_present\":false,\"mdr_threat_notes_present\":false,\"report_id\":\"LrKOC7DtQbm4g8w0UFruQg-d1080521-e617-4e45-94e0-7a145c62c90a\",\"report_name\":\"Execution - AMSI - New Fileless Scheduled Task Behavior Detected\",\"report_description\":\"Newer Powershell versions introduced built-in cmdlets to manage scheduled tasks natively without calling out to typical scheduled task processes like at.exe or schtasks.exe. This detection looks for behaviors related to the fileless execution of scheduled tasks. If you are responding to this alert, be sure to correlate the fileless scriptload events with events typically found in your environment Generally, attackers will create scheduled tasks with binaries that are located in user writable directories like AppData, Temp, or public folders.\",\"report_tags\":[\"execution\",\"privesc\",\"persistence\",\"t1053\",\"windows\",\"amsi\",\"attack\",\"attackframework\"],\"report_link\":\"https://attack.mitre.org/techniques/T1053/\",\"ioc_id\":\"b1177290-c477-4c08-90a2-0c254d01c64d\",\"ioc_hit\":\"(fileless_scriptload_cmdline:Register-ScheduledTask OR fileless_scriptload_cmdline:New-ScheduledTask OR scriptload_content:Register-ScheduledTask OR scriptload_content:New-ScheduledTask) AND NOT (process_cmdline:windows\\\\\\\\ccm\\\\\\\\systemtemp OR crossproc_name:windows\\\\\\\\ccm\\\\\\\\ccmexec.exe OR (process_publisher:\\\"VMware, Inc.\\\" AND process_publisher_state:FILE_SIGNATURE_STATE_TRUSTED))\",\"watchlists\":[{\"id\":\"Ci7w5B4URg6HN60hatQMQ\",\"name\":\"AMSI Threat Intelligence\"}],\"process_guid\":\"7DESJ9GN-0064e5a7-00001434-00000000-1da751c7354ebfe\",\"process_pid\":5172,\"process_name\":\"c:\\\\windows\\\\system32\\\\windowspowershell\\\\v1.0\\\\powershell.exe\",\"process_sha256\":\"2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9\",\"process_md5\":\"0e4d8473fb7241244fa94db6ba3d54b0\",\"process_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"process_reputation\":\"TRUSTED_WHITE_LIST\",\"process_cmdline\":\"\\\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\\\" -EP Bypass \\\\\\\\eip.demo\\\\sysvol\\\\EIP.DEMO\\\\scripts\\\\Luminol.ps1\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"process_issuer\":[\"Microsoft Windows Production PCA 2011\"],\"process_publisher\":[\"Microsoft Windows\"],\"parent_guid\":\"7DESJ9GN-0064e5a7-0000077c-00000000-1da5ed7ec07b275\",\"parent_pid\":1916,\"parent_name\":\"c:\\\\windows\\\\system32\\\\svchost.exe\",\"parent_sha256\":\"c65ab96093894f712bde433a321a1d498fa3c5921bce39d52c284f8f8e1d35a4\",\"parent_md5\":\"915acf6694aefe3b896155fc46265b87\",\"parent_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_cmdline\":\"C:\\\\Windows\\\\system32\\\\svchost.exe -k netsvcs -p -s Schedule\",\"parent_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_guid\":\"\",\"childproc_username\":\"\",\"childproc_cmdline\":\"\",\"ml_classification_final_verdict\":\"NOT_ANOMALOUS\",\"ml_classification_global_prevalence\":\"LOW\",\"ml_classification_org_prevalence\":\"LOW\",\"ml_classification_anomalies\":[]}",
+        "reason": "Process powershell.exe was detected by the report \"Execution - AMSI - New Fileless Scheduled Task Behavior Detected\" in watchlist \"AMSI Threat Intelligence\"",
+        "severity": 5,
+        "start": "2052-03-13T08:00:09.894Z"
+      },
+      "host": {
+        "hostname": "WW-20002",
+        "id": "6612391",
+        "name": "WW-20002",
+        "os": {
+          "type": "windows",
+          "version": "Windows 10 x64"
+        }
+      },
+      "process": {
+        "command_line": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -EP Bypass \\\\eip.demo\\sysvol\\EIP.DEMO\\scripts\\Luminol.ps1",
+        "entity_id": "7DESJ9GN-0064e5a7-00001434-00000000-1da751c7354ebfe",
+        "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+        "hash": {
+          "md5": "0e4d8473fb7241244fa94db6ba3d54b0",
+          "sha256": "2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9"
+        },
+        "name": "powershell.exe",
+        "parent": {
+          "command_line": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Schedule",
+          "entity_id": "7DESJ9GN-0064e5a7-0000077c-00000000-1da5ed7ec07b275",
+          "executable": "c:\\windows\\system32\\svchost.exe",
+          "hash": {
+            "md5": "915acf6694aefe3b896155fc46265b87",
+            "sha256": "c65ab96093894f712bde433a321a1d498fa3c5921bce39d52c284f8f8e1d35a4"
+          },
+          "name": "svchost.exe",
+          "pid": 1916
+        },
+        "pid": 5172
+      },
+      "related": {
+        "hash": [
+          "c65ab96093894f712bde433a321a1d498fa3c5921bce39d52c284f8f8e1d35a4",
+          "915acf6694aefe3b896155fc46265b87",
+          "2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9",
+          "0e4d8473fb7241244fa94db6ba3d54b0"
+        ],
+        "hosts": [
+          "WW-20002",
+          "EIP"
+        ],
+        "user": [
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "domain": "EIP",
+        "name": "Administrator"
+      }
+    },
+    {
+      "@timestamp": "2051-07-17T17:21:13.483Z",
+      "carbon_black_cloud": {
+        "alert": {
+          "alert_notes_present": false,
+          "backend_timestamp": "2051-07-17T17:21:34.063Z",
+          "backend_update_timestamp": "2051-07-17T17:21:34.063Z",
+          "category": "THREAT",
+          "determination": {
+            "change_timestamp": "2051-07-17T17:21:34.063Z",
+            "value": "NONE"
+          },
+          "device": {
+            "external_ip": "192.0.2.197",
+            "internal_ip": "203.0.113.239",
+            "location": "UNKNOWN",
+            "os": "WINDOWS",
+            "policy": "default",
+            "policy_id": 6525,
+            "target_value": "MEDIUM",
+            "uem_id": "108E0F0BF74BBB8BE3347890BADD6F26"
+          },
+          "ioc": {
+            "hit": "fileless_scriptload_cmdline:\"System.IdentityModel.Tokens.KerberosRequestorSecurityToken\" OR scriptload_content:\"System.IdentityModel.Tokens.KerberosRequestorSecurityToken\"",
+            "id": "e3d7df45-d61f-4fd4-a474-334f072d9945"
+          },
+          "is_updated": false,
+          "mdr": {
+            "alert": false,
+            "alert_notes_present": false,
+            "threat_notes_present": false
+          },
+          "ml_classification_final_verdict": "ANOMALOUS",
+          "ml_classification_global_prevalence": "MEDIUM",
+          "ml_classification_org_prevalence": "LOW",
+          "organization_key": "ABCD1234",
+          "parent": {
+            "cmdline": "\"C:\\Program Files\\demo\\sample\\myscript.exe\" ",
+            "effective_reputation": "NOT_LISTED",
+            "guid": "ABCD1234-0059e1e0-00002890-00000000-1d9a898aa24acc9",
+            "hash": {
+              "md5": "d2a860070f8888b9a9c76dcc28b8964f",
+              "sha256": "8ba8d3684a52cb8413aa6daa5fee0e77c4c538b07cf78193cf76a31b560e9094"
+            },
+            "name": "c:\\program files\\demo\\sample\\myscript.exe",
+            "pid": 10384,
+            "reputation": "NOT_LISTED",
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "policy_applied": "NOT_APPLIED",
+          "primary_event_id": "VUX7Bu7vTrWwnU8-uSVh1A-0",
+          "process": {
+            "cmdline": "powershell.exe -NoLogo -InputFormat Text -NoExit -ExecutionPolicy Unrestricted -Command -",
+            "effective_reputation": "TRUSTED_WHITE_LIST",
+            "guid": "ABCD1234-0059e1e0-00003544-00000000-1d9b8db27a4d423",
+            "hash": {
+              "md5": "6969672c7e0284088765235d609d7431",
+              "sha256": "c049a69a1f837111f3f85955608ca914633da7748a9460e0e87bef9e1efe67fe"
+            },
+            "issuer": [
+              "Microsoft Windows Production PCA 2011"
+            ],
+            "name": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+            "pid": 13636,
+            "publisher": [
+              "Microsoft Windows"
+            ],
+            "reputation": "TRUSTED_WHITE_LIST",
+            "username": "NT AUTHORITY\\SYSTEM"
+          },
+          "reason_code": "da6e3cf9-1cc1-3524-8977-5c07fdff604e:b40a823a-e554-3543-801a-a022ce0e39fe",
+          "report": {
+            "description": "Service accounts in Windows Active Directory environments have the ability to register under an AD security principle (user or computer) as a (SPN) Service Principal Name. The SPN registration allows for kerberos clients to request a kerberos service ticket associated with the service account SPN. This kerberos TGS is encrypted using the service accounts password. If a weak password is assigned to this service account an attacker can make an out of band request for one of these kerberos service tickets and crack it offline with tools like Jack the Ripper. This detection looks for fileless behaviors related to the out of band kerberos ticket request. If you are responding to this alert you should take immediate action and look at the process that alerted on this behavior as well as the other fileless script loads events.",
+            "id": "LrKOC7DtQbm4g8w0UFruQg-b1c1ae83-f66b-4aa3-a496-363e296f4018",
+            "link": "https://attack.mitre.org/techniques/T1558/003/",
+            "name": "Credential Access - AMSI - Suspect Kerberos Ticket Request Behavior",
+            "tags": [
+              "credentialaccess",
+              "t1558",
+              "windows",
+              "amsi",
+              "attack",
+              "attackframework"
+            ]
+          },
+          "run_state": "RAN",
+          "sensor_action": "ALLOW",
+          "threat_id": "DE0B6EB22EB8B582C4281F71DFBD591E",
+          "threat_notes_present": false,
+          "type": "WATCHLIST",
+          "url": "cdcfzuf.bnoaayadgqzi.net/alerts?s[c][query_string]=id:4d48fa7a-0235-40e6-8e4d-2083ba48a21b&orgKey=ABCD1234",
+          "watchlists": [
+            {
+              "id": "Ci7w5B4URg6HN60hatQMQ",
+              "name": "AMSI Threat Intelligence"
+            }
+          ],
+          "workflow": {
+            "change_timestamp": "2051-07-17T17:21:34.063Z",
+            "changed_by": "ALERT_CREATION",
+            "changed_by_type": "SYSTEM",
+            "closure_reason": "NO_REASON",
+            "status": "OPEN"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "end": "2051-07-17T17:19:00.412Z",
+        "id": "4d48fa7a-0235-40e6-8e4d-2083ba48a21b",
+        "kind": "alert",
+        "original": "{\"org_key\":\"ABCD1234\",\"alert_url\":\"cdcfzuf.bnoaayadgqzi.net/alerts?s[c][query_string]=id:4d48fa7a-0235-40e6-8e4d-2083ba48a21b&orgKey=ABCD1234\",\"id\":\"4d48fa7a-0235-40e6-8e4d-2083ba48a21b\",\"type\":\"WATCHLIST\",\"backend_timestamp\":\"2051-07-17T17:21:34.063Z\",\"user_update_timestamp\":null,\"backend_update_timestamp\":\"2051-07-17T17:21:34.063Z\",\"detection_timestamp\":\"2051-07-17T17:21:13.483Z\",\"first_event_timestamp\":\"2051-07-17T17:19:00.412Z\",\"last_event_timestamp\":\"2051-07-17T17:19:00.412Z\",\"severity\":10,\"reason\":\"Process powershell.exe was detected by the report \\\"Credential Access - AMSI - Suspect Kerberos Ticket Request Behavior\\\" in watchlist \\\"AMSI Threat Intelligence\\\"\",\"reason_code\":\"da6e3cf9-1cc1-3524-8977-5c07fdff604e:b40a823a-e554-3543-801a-a022ce0e39fe\",\"threat_id\":\"DE0B6EB22EB8B582C4281F71DFBD591E\",\"primary_event_id\":\"VUX7Bu7vTrWwnU8-uSVh1A-0\",\"policy_applied\":\"NOT_APPLIED\",\"run_state\":\"RAN\",\"sensor_action\":\"ALLOW\",\"workflow\":{\"change_timestamp\":\"2051-07-17T17:21:34.063Z\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\",\"closure_reason\":\"NO_REASON\",\"status\":\"OPEN\"},\"determination\":{\"change_timestamp\":\"2051-07-17T17:21:34.063Z\",\"value\":\"NONE\",\"changed_by_type\":null,\"changed_by\":null},\"tags\":null,\"alert_notes_present\":false,\"threat_notes_present\":false,\"is_updated\":false,\"device_id\":5890528,\"device_name\":\"adirffppae\",\"device_uem_id\":\"108E0F0BF74BBB8BE3347890BADD6F26\",\"device_target_value\":\"MEDIUM\",\"device_policy\":\"default\",\"device_policy_id\":6525,\"device_os\":\"WINDOWS\",\"device_os_version\":\"Windows 11 x64\",\"device_username\":\"Test-Win11\",\"device_location\":\"UNKNOWN\",\"device_external_ip\":\"192.0.2.197\",\"device_internal_ip\":\"203.0.113.239\",\"mdr_alert\":false,\"mdr_alert_notes_present\":false,\"mdr_threat_notes_present\":false,\"report_id\":\"LrKOC7DtQbm4g8w0UFruQg-b1c1ae83-f66b-4aa3-a496-363e296f4018\",\"report_name\":\"Credential Access - AMSI - Suspect Kerberos Ticket Request Behavior\",\"report_description\":\"Service accounts in Windows Active Directory environments have the ability to register under an AD security principle (user or computer) as a (SPN) Service Principal Name. The SPN registration allows for kerberos clients to request a kerberos service ticket associated with the service account SPN. This kerberos TGS is encrypted using the service accounts password. If a weak password is assigned to this service account an attacker can make an out of band request for one of these kerberos service tickets and crack it offline with tools like Jack the Ripper. This detection looks for fileless behaviors related to the out of band kerberos ticket request. If you are responding to this alert you should take immediate action and look at the process that alerted on this behavior as well as the other fileless script loads events.\",\"report_tags\":[\"credentialaccess\",\"t1558\",\"windows\",\"amsi\",\"attack\",\"attackframework\"],\"report_link\":\"https://attack.mitre.org/techniques/T1558/003/\",\"ioc_id\":\"e3d7df45-d61f-4fd4-a474-334f072d9945\",\"ioc_hit\":\"fileless_scriptload_cmdline:\\\"System.IdentityModel.Tokens.KerberosRequestorSecurityToken\\\" OR scriptload_content:\\\"System.IdentityModel.Tokens.KerberosRequestorSecurityToken\\\"\",\"watchlists\":[{\"id\":\"Ci7w5B4URg6HN60hatQMQ\",\"name\":\"AMSI Threat Intelligence\"}],\"process_guid\":\"ABCD1234-0059e1e0-00003544-00000000-1d9b8db27a4d423\",\"process_pid\":13636,\"process_name\":\"c:\\\\windows\\\\system32\\\\windowspowershell\\\\v1.0\\\\powershell.exe\",\"process_sha256\":\"c049a69a1f837111f3f85955608ca914633da7748a9460e0e87bef9e1efe67fe\",\"process_md5\":\"6969672c7e0284088765235d609d7431\",\"process_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"process_reputation\":\"TRUSTED_WHITE_LIST\",\"process_cmdline\":\"powershell.exe -NoLogo -InputFormat Text -NoExit -ExecutionPolicy Unrestricted -Command -\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"process_issuer\":[\"Microsoft Windows Production PCA 2011\"],\"process_publisher\":[\"Microsoft Windows\"],\"parent_guid\":\"ABCD1234-0059e1e0-00002890-00000000-1d9a898aa24acc9\",\"parent_pid\":10384,\"parent_name\":\"c:\\\\program files\\\\demo\\\\sample\\\\myscript.exe\",\"parent_sha256\":\"8ba8d3684a52cb8413aa6daa5fee0e77c4c538b07cf78193cf76a31b560e9094\",\"parent_md5\":\"d2a860070f8888b9a9c76dcc28b8964f\",\"parent_effective_reputation\":\"NOT_LISTED\",\"parent_reputation\":\"NOT_LISTED\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\demo\\\\sample\\\\myscript.exe\\\" \",\"parent_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_guid\":\"\",\"childproc_username\":\"\",\"childproc_cmdline\":\"\",\"ml_classification_final_verdict\":\"ANOMALOUS\",\"ml_classification_global_prevalence\":\"MEDIUM\",\"ml_classification_org_prevalence\":\"LOW\"}",
+        "reason": "Process powershell.exe was detected by the report \"Credential Access - AMSI - Suspect Kerberos Ticket Request Behavior\" in watchlist \"AMSI Threat Intelligence\"",
+        "severity": 10,
+        "start": "2051-07-17T17:19:00.412Z"
+      },
+      "host": {
+        "hostname": "adirffppae",
+        "id": "5890528",
+        "name": "adirffppae",
+        "os": {
+          "type": "windows",
+          "version": "Windows 11 x64"
+        }
+      },
+      "process": {
+        "command_line": "powershell.exe -NoLogo -InputFormat Text -NoExit -ExecutionPolicy Unrestricted -Command -",
+        "entity_id": "ABCD1234-0059e1e0-00003544-00000000-1d9b8db27a4d423",
+        "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+        "hash": {
+          "md5": "6969672c7e0284088765235d609d7431",
+          "sha256": "c049a69a1f837111f3f85955608ca914633da7748a9460e0e87bef9e1efe67fe"
+        },
+        "name": "powershell.exe",
+        "parent": {
+          "command_line": "\"C:\\Program Files\\demo\\sample\\myscript.exe\" ",
+          "entity_id": "ABCD1234-0059e1e0-00002890-00000000-1d9a898aa24acc9",
+          "executable": "c:\\program files\\demo\\sample\\myscript.exe",
+          "hash": {
+            "md5": "d2a860070f8888b9a9c76dcc28b8964f",
+            "sha256": "8ba8d3684a52cb8413aa6daa5fee0e77c4c538b07cf78193cf76a31b560e9094"
+          },
+          "name": "myscript.exe",
+          "pid": 10384
+        },
+        "pid": 13636
+      },
+      "related": {
+        "hash": [
+          "8ba8d3684a52cb8413aa6daa5fee0e77c4c538b07cf78193cf76a31b560e9094",
+          "d2a860070f8888b9a9c76dcc28b8964f",
+          "c049a69a1f837111f3f85955608ca914633da7748a9460e0e87bef9e1efe67fe",
+          "6969672c7e0284088765235d609d7431"
+        ],
+        "hosts": [
+          "adirffppae"
+        ],
+        "user": [
+          "Test-Win11"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "Test-Win11"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"org_key\":\"7DESJ9GN\",\"alert_url\":\"cdcfzuf.bnoaayadgqzi.net/alerts?s[c][query_string]=id:5b2ecf21-50bb-40f8-ac1d-1f277d476e42&orgKey=7DESJ9GN\",\"id\":\"5b2ecf21-50bb-40f8-ac1d-1f277d476e42\",\"type\":\"WATCHLIST\",\"backend_timestamp\":\"2052-03-13T08:03:29.540Z\",\"user_update_timestamp\":null,\"backend_update_timestamp\":\"2052-03-13T08:03:29.540Z\",\"detection_timestamp\":\"2052-03-13T08:02:36.578Z\",\"first_event_timestamp\":\"2052-03-13T08:00:09.894Z\",\"last_event_timestamp\":\"2052-03-13T08:00:09.894Z\",\"severity\":5,\"reason\":\"Process powershell.exe was detected by the report \\\"Execution - AMSI - New Fileless Scheduled Task Behavior Detected\\\" in watchlist \\\"AMSI Threat Intelligence\\\"\",\"reason_code\":\"a94bc920-217d-3a90-8a7b-51e6811fce0f:2567f55c-23a5-3b91-81a2-a7d1d652d30b\",\"threat_id\":\"E19FF779779C2E934D2D25C0052CFC1B\",\"primary_event_id\":\"re9M9hp8TbGLqyk6QXqQqA-0\",\"policy_applied\":\"NOT_APPLIED\",\"run_state\":\"RAN\",\"sensor_action\":\"ALLOW\",\"workflow\":{\"change_timestamp\":\"2052-03-13T08:03:29.540Z\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\",\"closure_reason\":\"NO_REASON\",\"status\":\"OPEN\"},\"determination\":{\"change_timestamp\":\"2052-03-13T08:03:29.540Z\",\"value\":\"NONE\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\"},\"tags\":null,\"alert_notes_present\":false,\"threat_notes_present\":false,\"is_updated\":false,\"device_id\":6612391,\"device_name\":\"EIP\\\\WW-20002\",\"device_uem_id\":\"\",\"device_target_value\":\"MEDIUM\",\"device_policy\":\"default\",\"device_policy_id\":6525,\"device_os\":\"WINDOWS\",\"device_os_version\":\"Windows 10 x64\",\"device_username\":\"EIP\\\\Administrator\",\"device_location\":\"UNKNOWN\",\"device_external_ip\":\"192.0.2.127\",\"device_internal_ip\":\"172.27.23.182\",\"asset_group\":[],\"mdr_alert\":false,\"mdr_alert_notes_present\":false,\"mdr_threat_notes_present\":false,\"report_id\":\"LrKOC7DtQbm4g8w0UFruQg-d1080521-e617-4e45-94e0-7a145c62c90a\",\"report_name\":\"Execution - AMSI - New Fileless Scheduled Task Behavior Detected\",\"report_description\":\"Newer Powershell versions introduced built-in cmdlets to manage scheduled tasks natively without calling out to typical scheduled task processes like at.exe or schtasks.exe. This detection looks for behaviors related to the fileless execution of scheduled tasks. If you are responding to this alert, be sure to correlate the fileless scriptload events with events typically found in your environment Generally, attackers will create scheduled tasks with binaries that are located in user writable directories like AppData, Temp, or public folders.\",\"report_tags\":[\"execution\",\"privesc\",\"persistence\",\"t1053\",\"windows\",\"amsi\",\"attack\",\"attackframework\"],\"report_link\":\"https://attack.mitre.org/techniques/T1053/\",\"ioc_id\":\"b1177290-c477-4c08-90a2-0c254d01c64d\",\"ioc_hit\":\"(fileless_scriptload_cmdline:Register-ScheduledTask OR fileless_scriptload_cmdline:New-ScheduledTask OR scriptload_content:Register-ScheduledTask OR scriptload_content:New-ScheduledTask) AND NOT (process_cmdline:windows\\\\\\\\ccm\\\\\\\\systemtemp OR crossproc_name:windows\\\\\\\\ccm\\\\\\\\ccmexec.exe OR (process_publisher:\\\"VMware, Inc.\\\" AND process_publisher_state:FILE_SIGNATURE_STATE_TRUSTED))\",\"watchlists\":[{\"id\":\"Ci7w5B4URg6HN60hatQMQ\",\"name\":\"AMSI Threat Intelligence\"}],\"process_guid\":\"7DESJ9GN-0064e5a7-00001434-00000000-1da751c7354ebfe\",\"process_pid\":5172,\"process_name\":\"c:\\\\windows\\\\system32\\\\windowspowershell\\\\v1.0\\\\powershell.exe\",\"process_sha256\":\"2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9\",\"process_md5\":\"0e4d8473fb7241244fa94db6ba3d54b0\",\"process_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"process_reputation\":\"TRUSTED_WHITE_LIST\",\"process_cmdline\":\"\\\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\\\" -EP Bypass \\\\\\\\eip.demo\\\\sysvol\\\\EIP.DEMO\\\\scripts\\\\Luminol.ps1\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"process_issuer\":[\"Microsoft Windows Production PCA 2011\"],\"process_publisher\":[\"Microsoft Windows\"],\"parent_guid\":\"7DESJ9GN-0064e5a7-0000077c-00000000-1da5ed7ec07b275\",\"parent_pid\":1916,\"parent_name\":\"c:\\\\windows\\\\system32\\\\svchost.exe\",\"parent_sha256\":\"c65ab96093894f712bde433a321a1d498fa3c5921bce39d52c284f8f8e1d35a4\",\"parent_md5\":\"915acf6694aefe3b896155fc46265b87\",\"parent_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_cmdline\":\"C:\\\\Windows\\\\system32\\\\svchost.exe -k netsvcs -p -s Schedule\",\"parent_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_guid\":\"\",\"childproc_username\":\"\",\"childproc_cmdline\":\"\",\"ml_classification_final_verdict\":\"NOT_ANOMALOUS\",\"ml_classification_global_prevalence\":\"LOW\",\"ml_classification_org_prevalence\":\"LOW\",\"ml_classification_anomalies\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"org_key\":\"ABCD1234\",\"alert_url\":\"cdcfzuf.bnoaayadgqzi.net/alerts?s[c][query_string]=id:4d48fa7a-0235-40e6-8e4d-2083ba48a21b&orgKey=ABCD1234\",\"id\":\"4d48fa7a-0235-40e6-8e4d-2083ba48a21b\",\"type\":\"WATCHLIST\",\"backend_timestamp\":\"2051-07-17T17:21:34.063Z\",\"user_update_timestamp\":null,\"backend_update_timestamp\":\"2051-07-17T17:21:34.063Z\",\"detection_timestamp\":\"2051-07-17T17:21:13.483Z\",\"first_event_timestamp\":\"2051-07-17T17:19:00.412Z\",\"last_event_timestamp\":\"2051-07-17T17:19:00.412Z\",\"severity\":10,\"reason\":\"Process powershell.exe was detected by the report \\\"Credential Access - AMSI - Suspect Kerberos Ticket Request Behavior\\\" in watchlist \\\"AMSI Threat Intelligence\\\"\",\"reason_code\":\"da6e3cf9-1cc1-3524-8977-5c07fdff604e:b40a823a-e554-3543-801a-a022ce0e39fe\",\"threat_id\":\"DE0B6EB22EB8B582C4281F71DFBD591E\",\"primary_event_id\":\"VUX7Bu7vTrWwnU8-uSVh1A-0\",\"policy_applied\":\"NOT_APPLIED\",\"run_state\":\"RAN\",\"sensor_action\":\"ALLOW\",\"workflow\":{\"change_timestamp\":\"2051-07-17T17:21:34.063Z\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\",\"closure_reason\":\"NO_REASON\",\"status\":\"OPEN\"},\"determination\":{\"change_timestamp\":\"2051-07-17T17:21:34.063Z\",\"value\":\"NONE\",\"changed_by_type\":null,\"changed_by\":null},\"tags\":null,\"alert_notes_present\":false,\"threat_notes_present\":false,\"is_updated\":false,\"device_id\":5890528,\"device_name\":\"adirffppae\",\"device_uem_id\":\"108E0F0BF74BBB8BE3347890BADD6F26\",\"device_target_value\":\"MEDIUM\",\"device_policy\":\"default\",\"device_policy_id\":6525,\"device_os\":\"WINDOWS\",\"device_os_version\":\"Windows 11 x64\",\"device_username\":\"Test-Win11\",\"device_location\":\"UNKNOWN\",\"device_external_ip\":\"192.0.2.197\",\"device_internal_ip\":\"203.0.113.239\",\"mdr_alert\":false,\"mdr_alert_notes_present\":false,\"mdr_threat_notes_present\":false,\"report_id\":\"LrKOC7DtQbm4g8w0UFruQg-b1c1ae83-f66b-4aa3-a496-363e296f4018\",\"report_name\":\"Credential Access - AMSI - Suspect Kerberos Ticket Request Behavior\",\"report_description\":\"Service accounts in Windows Active Directory environments have the ability to register under an AD security principle (user or computer) as a (SPN) Service Principal Name. The SPN registration allows for kerberos clients to request a kerberos service ticket associated with the service account SPN. This kerberos TGS is encrypted using the service accounts password. If a weak password is assigned to this service account an attacker can make an out of band request for one of these kerberos service tickets and crack it offline with tools like Jack the Ripper. This detection looks for fileless behaviors related to the out of band kerberos ticket request. If you are responding to this alert you should take immediate action and look at the process that alerted on this behavior as well as the other fileless script loads events.\",\"report_tags\":[\"credentialaccess\",\"t1558\",\"windows\",\"amsi\",\"attack\",\"attackframework\"],\"report_link\":\"https://attack.mitre.org/techniques/T1558/003/\",\"ioc_id\":\"e3d7df45-d61f-4fd4-a474-334f072d9945\",\"ioc_hit\":\"fileless_scriptload_cmdline:\\\"System.IdentityModel.Tokens.KerberosRequestorSecurityToken\\\" OR scriptload_content:\\\"System.IdentityModel.Tokens.KerberosRequestorSecurityToken\\\"\",\"watchlists\":[{\"id\":\"Ci7w5B4URg6HN60hatQMQ\",\"name\":\"AMSI Threat Intelligence\"}],\"process_guid\":\"ABCD1234-0059e1e0-00003544-00000000-1d9b8db27a4d423\",\"process_pid\":13636,\"process_name\":\"c:\\\\windows\\\\system32\\\\windowspowershell\\\\v1.0\\\\powershell.exe\",\"process_sha256\":\"c049a69a1f837111f3f85955608ca914633da7748a9460e0e87bef9e1efe67fe\",\"process_md5\":\"6969672c7e0284088765235d609d7431\",\"process_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"process_reputation\":\"TRUSTED_WHITE_LIST\",\"process_cmdline\":\"powershell.exe -NoLogo -InputFormat Text -NoExit -ExecutionPolicy Unrestricted -Command -\",\"process_username\":\"NT AUTHORITY\\\\SYSTEM\",\"process_issuer\":[\"Microsoft Windows Production PCA 2011\"],\"process_publisher\":[\"Microsoft Windows\"],\"parent_guid\":\"ABCD1234-0059e1e0-00002890-00000000-1d9a898aa24acc9\",\"parent_pid\":10384,\"parent_name\":\"c:\\\\program files\\\\demo\\\\sample\\\\myscript.exe\",\"parent_sha256\":\"8ba8d3684a52cb8413aa6daa5fee0e77c4c538b07cf78193cf76a31b560e9094\",\"parent_md5\":\"d2a860070f8888b9a9c76dcc28b8964f\",\"parent_effective_reputation\":\"NOT_LISTED\",\"parent_reputation\":\"NOT_LISTED\",\"parent_cmdline\":\"\\\"C:\\\\Program Files\\\\demo\\\\sample\\\\myscript.exe\\\" \",\"parent_username\":\"NT AUTHORITY\\\\SYSTEM\",\"childproc_guid\":\"\",\"childproc_username\":\"\",\"childproc_cmdline\":\"\",\"ml_classification_final_verdict\":\"ANOMALOUS\",\"ml_classification_global_prevalence\":\"MEDIUM\",\"ml_classification_org_prevalence\":\"LOW\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alert_v7",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-carbon_black_cloud-alert_v7-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "carbon_black_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

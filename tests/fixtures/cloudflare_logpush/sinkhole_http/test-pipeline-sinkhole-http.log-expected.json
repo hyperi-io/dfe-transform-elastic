@@ -1,0 +1,356 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-09-19T12:00:00.000Z",
+      "cloudflare_logpush": {
+        "sinkhole_http": {
+          "account_id": "AC123456",
+          "destination": {
+            "ip": "203.0.113.88"
+          },
+          "host": {
+            "name": "example.com"
+          },
+          "request": {
+            "body": {
+              "bytes": 39,
+              "content": "{\"action\": \"login\", \"user\": \"snnm_ana\"}"
+            },
+            "headers": [
+              "Host: example.com",
+              "User-Agent: Mozilla/5.0",
+              "Accept: */*",
+              "Connection: keep-alive"
+            ],
+            "method": "POST",
+            "password": "password123",
+            "referrer": "https://searchengine.com/",
+            "uri": "/api/v1/login",
+            "url": "https://example.com/api/v1/login"
+          },
+          "sinkhole_id": "SH001",
+          "source": {
+            "ip": "192.0.2.127"
+          },
+          "timestamp": "2051-09-19T12:00:00.000Z",
+          "user": {
+            "name": "snnm_ana"
+          },
+          "user_agent": "Mozilla/5.0"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"AC123456\",\"Body\":\"{\\\"action\\\": \\\"login\\\", \\\"user\\\": \\\"snnm_ana\\\"}\",\"BodyLength\":39,\"DestAddr\":\"203.0.113.88\",\"Headers\":\"Host: example.com\\nUser-Agent: Mozilla/5.0\\nAccept: */*\\nConnection: keep-alive\",\"Host\":\"example.com\",\"Method\":\"POST\",\"Password\":\"password123\",\"R2Path\":\"\",\"Referrer\":\"https://searchengine.com/\",\"SinkholeID\":\"SH001\",\"SrcAddr\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:00:00Z\",\"URI\":\"/api/v1/login\",\"URL\":\"https://example.com/api/v1/login\",\"UserAgent\":\"Mozilla/5.0\",\"Username\":\"snnm_ana\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "example.com"
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 39,
+            "content": "{\"action\": \"login\", \"user\": \"snnm_ana\"}"
+          },
+          "method": "POST",
+          "referrer": "https://searchengine.com/"
+        }
+      },
+      "related": {
+        "hosts": [
+          "example.com"
+        ],
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.127"
+        ],
+        "user": [
+          "snnm_ana"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/api/v1/login",
+        "path": "/api/v1/login",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "snnm_ana"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2051-09-19T12:05:00.000Z",
+      "cloudflare_logpush": {
+        "sinkhole_http": {
+          "account_id": "AC123456",
+          "destination": {
+            "ip": "203.0.113.88"
+          },
+          "host": {
+            "name": "example.com"
+          },
+          "request": {
+            "body": {
+              "bytes": 0
+            },
+            "headers": [
+              "Host: example.com",
+              "User-Agent: Mozilla/5.0",
+              "Accept: text/html,application/xhtml+xml,application/xml",
+              "Connection: keep-alive"
+            ],
+            "method": "GET",
+            "referrer": "https://anotherwebsite.com/",
+            "uri": "/products/12345",
+            "url": "https://example.com/products/12345"
+          },
+          "sinkhole_id": "SH001",
+          "source": {
+            "ip": "192.0.2.127"
+          },
+          "timestamp": "2051-09-19T12:05:00.000Z",
+          "user_agent": "Mozilla/5.0"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"AC123456\",\"Body\":\"\",\"BodyLength\":0,\"DestAddr\":\"203.0.113.88\",\"Headers\":\"Host: example.com\\nUser-Agent: Mozilla/5.0\\nAccept: text/html,application/xhtml+xml,application/xml\\nConnection: keep-alive\",\"Host\":\"example.com\",\"Method\":\"GET\",\"Password\":\"\",\"R2Path\":\"\",\"Referrer\":\"https://anotherwebsite.com/\",\"SinkholeID\":\"SH001\",\"SrcAddr\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:05:00Z\",\"URI\":\"/products/12345\",\"URL\":\"https://example.com/products/12345\",\"UserAgent\":\"Mozilla/5.0\",\"Username\":\"\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "example.com"
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 0
+          },
+          "method": "GET",
+          "referrer": "https://anotherwebsite.com/"
+        }
+      },
+      "related": {
+        "hosts": [
+          "example.com"
+        ],
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.127"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "original": "https://example.com/products/12345",
+        "path": "/products/12345",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0"
+      }
+    },
+    {
+      "@timestamp": "2051-09-19T12:15:00.000Z",
+      "cloudflare_logpush": {
+        "sinkhole_http": {
+          "account_id": "AC789012",
+          "destination": {
+            "ip": "203.0.113.88"
+          },
+          "host": {
+            "name": "cjqhhsxf.com"
+          },
+          "r2path": "/sinkhole/r2-bucket/20230919/overflow-data-56789",
+          "request": {
+            "body": {
+              "bytes": 40,
+              "content": "{\"query\": \"Find all books by author XYZ\"}"
+            },
+            "headers": [
+              "Host: cjqhhsxf.com",
+              "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+              "Accept: application/json",
+              "Connection: keep-alive",
+              "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            ],
+            "method": "POST",
+            "password": "secretPass",
+            "referrer": "https://searchengine.com/search?q=books+by+XYZ",
+            "uri": "/api/v2/booksearch",
+            "url": "https://booksite.com/api/v2/booksearch"
+          },
+          "sinkhole_id": "SH002",
+          "source": {
+            "ip": "192.0.2.127"
+          },
+          "timestamp": "2051-09-19T12:15:00.000Z",
+          "user": {
+            "name": "snnm_ana"
+          },
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+      },
+      "destination": {
+        "ip": "203.0.113.88"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"AccountID\":\"AC789012\",\"Body\":\"{\\\"query\\\": \\\"Find all books by author XYZ\\\"}\",\"BodyLength\":40,\"DestAddr\":\"203.0.113.88\",\"Headers\":\"Host: cjqhhsxf.com\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\\nAccept: application/json\\nConnection: keep-alive\\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\",\"Host\":\"cjqhhsxf.com\",\"Method\":\"POST\",\"Password\":\"secretPass\",\"R2Path\":\"/sinkhole/r2-bucket/20230919/overflow-data-56789\",\"Referrer\":\"https://searchengine.com/search?q=books+by+XYZ\",\"SinkholeID\":\"SH002\",\"SrcAddr\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:15:00Z\",\"URI\":\"/api/v2/booksearch\",\"URL\":\"https://booksite.com/api/v2/booksearch\",\"UserAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\",\"Username\":\"snnm_ana\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "name": "cjqhhsxf.com"
+      },
+      "http": {
+        "request": {
+          "body": {
+            "bytes": 40,
+            "content": "{\"query\": \"Find all books by author XYZ\"}"
+          },
+          "method": "POST",
+          "referrer": "https://searchengine.com/search?q=books+by+XYZ"
+        }
+      },
+      "related": {
+        "hosts": [
+          "cjqhhsxf.com"
+        ],
+        "ip": [
+          "203.0.113.88",
+          "192.0.2.127"
+        ],
+        "user": [
+          "snnm_ana"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.127"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "booksite.com",
+        "original": "https://booksite.com/api/v2/booksearch",
+        "path": "/api/v2/booksearch",
+        "scheme": "https"
+      },
+      "user": {
+        "name": "snnm_ana"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"AccountID\":\"AC123456\",\"Body\":\"{\\\"action\\\": \\\"login\\\", \\\"user\\\": \\\"snnm_ana\\\"}\",\"BodyLength\":39,\"DestAddr\":\"203.0.113.88\",\"Headers\":\"Host: example.com\\nUser-Agent: Mozilla/5.0\\nAccept: */*\\nConnection: keep-alive\",\"Host\":\"example.com\",\"Method\":\"POST\",\"Password\":\"password123\",\"R2Path\":\"\",\"Referrer\":\"https://searchengine.com/\",\"SinkholeID\":\"SH001\",\"SrcAddr\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:00:00Z\",\"URI\":\"/api/v1/login\",\"URL\":\"https://example.com/api/v1/login\",\"UserAgent\":\"Mozilla/5.0\",\"Username\":\"snnm_ana\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"AC123456\",\"Body\":\"\",\"BodyLength\":0,\"DestAddr\":\"203.0.113.88\",\"Headers\":\"Host: example.com\\nUser-Agent: Mozilla/5.0\\nAccept: text/html,application/xhtml+xml,application/xml\\nConnection: keep-alive\",\"Host\":\"example.com\",\"Method\":\"GET\",\"Password\":\"\",\"R2Path\":\"\",\"Referrer\":\"https://anotherwebsite.com/\",\"SinkholeID\":\"SH001\",\"SrcAddr\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:05:00Z\",\"URI\":\"/products/12345\",\"URL\":\"https://example.com/products/12345\",\"UserAgent\":\"Mozilla/5.0\",\"Username\":\"\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"AccountID\":\"AC789012\",\"Body\":\"{\\\"query\\\": \\\"Find all books by author XYZ\\\"}\",\"BodyLength\":40,\"DestAddr\":\"203.0.113.88\",\"Headers\":\"Host: cjqhhsxf.com\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\\nAccept: application/json\\nConnection: keep-alive\\nAuthorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\",\"Host\":\"cjqhhsxf.com\",\"Method\":\"POST\",\"Password\":\"secretPass\",\"R2Path\":\"/sinkhole/r2-bucket/20230919/overflow-data-56789\",\"Referrer\":\"https://searchengine.com/search?q=books+by+XYZ\",\"SinkholeID\":\"SH002\",\"SrcAddr\":\"192.0.2.127\",\"Timestamp\":\"2051-09-19T12:15:00Z\",\"URI\":\"/api/v2/booksearch\",\"URL\":\"https://booksite.com/api/v2/booksearch\",\"UserAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\",\"Username\":\"snnm_ana\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "sinkhole_http",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cloudflare_logpush-sinkhole_http-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cloudflare_logpush",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

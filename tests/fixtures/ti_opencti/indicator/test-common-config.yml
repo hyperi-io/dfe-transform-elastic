@@ -1,0 +1,7 @@
+# Test inputs for this directory's fixtures.
+fields:
+  _conf:
+    url: https://demo.opencti.io
+  tags:
+  - forwarded
+  - opencti-indicator

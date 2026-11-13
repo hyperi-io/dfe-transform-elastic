@@ -1,0 +1,106 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-03-21T22:34:49.466Z",
+      "cisco_duo": {
+        "telephony_v2": {
+          "credits": 1,
+          "event_type": "enrollment",
+          "id": "690e49cf-dbe4-4529-b3af-e8406622ba54",
+          "phone_number": "+12125556707",
+          "txid": "9b8d54f6-878a-471b-9ad9-40f0d74609c8",
+          "type": "sms"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "690e49cf-dbe4-4529-b3af-e8406622ba54",
+        "kind": "event",
+        "original": "{\"context\":\"enrollment\",\"credits\":1,\"phone\":\"+12125556707\",\"telephony_id\":\"690e49cf-dbe4-4529-b3af-e8406622ba54\",\"ts\":\"2051-03-21T22:34:49.466370+00:00\",\"txid\":\"9b8d54f6-878a-471b-9ad9-40f0d74609c8\",\"type\":\"sms\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2051-01-26T20:54:12.573Z",
+      "cisco_duo": {
+        "telephony_v2": {
+          "credits": 2,
+          "event_type": "authentication",
+          "id": "42111bec-d16b-4fb1-979e-6b58d7205d3f",
+          "phone_number": "+17345551311",
+          "txid": "142bd3b2-1f24-4d6b-afab-b32ce738acc3",
+          "type": "phone"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "42111bec-d16b-4fb1-979e-6b58d7205d3f",
+        "kind": "event",
+        "original": "{\"context\":\"authentication\",\"credits\":2,\"phone\":\"+17345551311\",\"telephony_id\":\"42111bec-d16b-4fb1-979e-6b58d7205d3f\",\"ts\":\"2051-01-26T20:54:12.573580+00:00\",\"txid\":\"142bd3b2-1f24-4d6b-afab-b32ce738acc3\",\"type\":\"phone\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2050-10-25T16:07:45.304Z",
+      "cisco_duo": {
+        "telephony_v2": {
+          "credits": 0,
+          "event_type": "administrator login",
+          "id": "3cb9d725-da96-45f4-bc28-353611903e29",
+          "phone_number": "+13135559542",
+          "txid": "ee6c287b-e483-4e6f-998f-c0c596765fe2",
+          "type": "sms"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "3cb9d725-da96-45f4-bc28-353611903e29",
+        "kind": "event",
+        "original": "{\"context\":\"administrator login\",\"credits\":0,\"phone\":\"+13135559542\",\"telephony_id\":\"3cb9d725-da96-45f4-bc28-353611903e29\",\"ts\":\"2050-10-25T16:07:45.304526+00:00\",\"txid\":\"ee6c287b-e483-4e6f-998f-c0c596765fe2\",\"type\":\"sms\"}"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"context\":\"enrollment\",\"credits\":1,\"phone\":\"+12125556707\",\"telephony_id\":\"690e49cf-dbe4-4529-b3af-e8406622ba54\",\"ts\":\"2051-03-21T22:34:49.466370+00:00\",\"txid\":\"9b8d54f6-878a-471b-9ad9-40f0d74609c8\",\"type\":\"sms\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"context\":\"authentication\",\"credits\":2,\"phone\":\"+17345551311\",\"telephony_id\":\"42111bec-d16b-4fb1-979e-6b58d7205d3f\",\"ts\":\"2051-01-26T20:54:12.573580+00:00\",\"txid\":\"142bd3b2-1f24-4d6b-afab-b32ce738acc3\",\"type\":\"phone\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"context\":\"administrator login\",\"credits\":0,\"phone\":\"+13135559542\",\"telephony_id\":\"3cb9d725-da96-45f4-bc28-353611903e29\",\"ts\":\"2050-10-25T16:07:45.304526+00:00\",\"txid\":\"ee6c287b-e483-4e6f-998f-c0c596765fe2\",\"type\":\"sms\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "telephony_v2",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_duo-telephony_v2-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cisco_duo",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

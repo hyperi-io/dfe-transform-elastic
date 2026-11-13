@@ -1,0 +1,133 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:47.005261579Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 100,
+          "deletion_scheduled_at": "2027-02-06T23:07:47.005261579Z",
+          "expiration_ts": "2318-07-09T20:41:16.995Z",
+          "feed_id": 0,
+          "id": "184983854",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": false,
+          "itype": "mal_file_name",
+          "meta": {
+            "severity": "very-high"
+          },
+          "owner_organization_id": 1,
+          "retina_confidence": -1,
+          "source_reported_confidence": 100,
+          "status": "active",
+          "threat_type": "malware",
+          "trusted_circle_ids": [
+            "10015"
+          ],
+          "type": "string",
+          "update_id": "376544856",
+          "uuid": "c97fae7d-81d2-4f95-8ceb-5af4d0b97eed",
+          "value": "Users\\Administrator\\AppData\\Local\\Temp\\Cab3795.tmp"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-10-09T18:30:22.833Z",
+        "kind": "enrichment",
+        "severity": 99,
+        "type": [
+          "indicator"
+        ]
+      },
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "file": {
+            "path": "Users\\Administrator\\AppData\\Local\\Temp\\Cab3795.tmp"
+          },
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "modified_at": "2048-10-09T18:30:22.833Z",
+          "name": "Users\\Administrator\\AppData\\Local\\Temp\\Cab3795.tmp",
+          "provider": "Default Organization",
+          "type": "file"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 100,
+        "created_by": null,
+        "created_ts": "2048-10-09T18:30:22.833Z",
+        "description": null,
+        "expiration_ts": "2318-07-09T20:41:16.995Z",
+        "feed_id": 0,
+        "id": 184983854,
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": false,
+        "itype": "mal_file_name",
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 1",
+          "severity": "very-high"
+        },
+        "modified_ts": "2048-10-09T18:30:22.833Z",
+        "org": "",
+        "owner_organization_id": 1,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/184983854/",
+        "retina_confidence": -1,
+        "sort": [
+          376544856
+        ],
+        "source": "Default Organization",
+        "source_locations": [],
+        "source_reported_confidence": 100,
+        "status": "active",
+        "subtype": null,
+        "tags": null,
+        "target_industry": [],
+        "threat_type": "malware",
+        "threatscore": 80,
+        "tlp": null,
+        "trusted_circle_ids": [
+          10015
+        ],
+        "type": "string",
+        "update_id": 376544856,
+        "uuid": "c97fae7d-81d2-4f95-8ceb-5af4d0b97eed",
+        "value": "Users\\Administrator\\AppData\\Local\\Temp\\Cab3795.tmp",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

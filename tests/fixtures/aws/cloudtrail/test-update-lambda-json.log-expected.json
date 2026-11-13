@@ -1,0 +1,59 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "UpdateFunctionCode20150331v2",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "kind": "event",
+        "original": "{\"eventSource\":\"lambda.amazonaws.com\",\"eventName\":\"UpdateFunctionCode20150331v2\",\"responseElements\":{\"vpcConfig\":{\"subnetIds\":[\"subnet-test1\",\"subnet-test2\"],\"securityGroupIds\":[\"sg-test\"]}}}",
+        "outcome": "success",
+        "provider": "lambda.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "subnet-test1",
+          "sg-test",
+          "subnet-test2"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"eventSource\":\"lambda.amazonaws.com\",\"eventName\":\"UpdateFunctionCode20150331v2\",\"responseElements\":{\"vpcConfig\":{\"subnetIds\":[\"subnet-test1\",\"subnet-test2\"],\"securityGroupIds\":[\"sg-test\"]}}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

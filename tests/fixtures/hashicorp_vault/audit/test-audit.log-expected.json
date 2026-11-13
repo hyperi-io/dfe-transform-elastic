@@ -1,0 +1,839 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-12-01T20:29:04.356Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "authentication"
+        ],
+        "id": "ed98137c-85da-2110-637e-fde513ed6d20",
+        "kind": "event",
+        "original": "{\"time\":\"2048-12-01T20:29:04.356625452Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"display_name\":\"oidc-12349999999999999999\",\"policies\":[\"default\",\"group-admin\"],\"token_policies\":[\"default\",\"group-admin\"],\"metadata\":{\"account_id\":\"12349999999999999999\",\"email\":\"dsbxpsf@gmail.com\",\"role\":\"gmail\"},\"entity_id\":\"c8e2f40e-4a7c-758d-af95-e8fd6ed08835\",\"token_type\":\"service\",\"token_ttl\":3600,\"token_issue_time\":\"2048-12-01T20:28:40Z\"},\"request\":{\"id\":\"ed98137c-85da-2110-637e-fde513ed6d20\",\"operation\":\"update\",\"mount_type\":\"system\",\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"client_token_accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"namespace\":{\"id\":\"root\"},\"path\":\"sys/capabilities-self\",\"data\":{\"paths\":[\"hmac-sha256:df12c05343cb48e513a0cabf557d145e322e5ef39ad324b768b1892602043a77\"]},\"remote_address\":\"192.0.2.97\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675",
+            "client_token": "hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693",
+            "display_name": "oidc-12349999999999999999",
+            "entity_id": "c8e2f40e-4a7c-758d-af95-e8fd6ed08835",
+            "metadata": {
+              "account_id": "12349999999999999999",
+              "email": "dsbxpsf@gmail.com",
+              "role": "gmail"
+            },
+            "policies": [
+              "default",
+              "group-admin"
+            ],
+            "token_issue_time": "2048-12-01T20:28:40Z",
+            "token_policies": [
+              "default",
+              "group-admin"
+            ],
+            "token_ttl": 3600,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693",
+            "client_token_accessor": "hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675",
+            "data": {
+              "paths": [
+                "hmac-sha256:df12c05343cb48e513a0cabf557d145e322e5ef39ad324b768b1892602043a77"
+              ]
+            },
+            "id": "ed98137c-85da-2110-637e-fde513ed6d20",
+            "mount_type": "system",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "update",
+            "path": "sys/capabilities-self",
+            "remote_address": "192.0.2.97"
+          },
+          "type": "request"
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "dsbxpsf@gmail.com",
+        "id": "12349999999999999999"
+      }
+    },
+    {
+      "@timestamp": "2048-12-01T20:29:04.360Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "authentication"
+        ],
+        "id": "ed98137c-85da-2110-637e-fde513ed6d20",
+        "kind": "event",
+        "original": "{\"time\":\"2048-12-01T20:29:04.36089379Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"display_name\":\"oidc-12349999999999999999\",\"policies\":[\"default\",\"group-admin\"],\"token_policies\":[\"default\",\"group-admin\"],\"metadata\":{\"account_id\":\"12349999999999999999\",\"email\":\"dsbxpsf@gmail.com\",\"role\":\"gmail\"},\"entity_id\":\"c8e2f40e-4a7c-758d-af95-e8fd6ed08835\",\"token_type\":\"service\",\"token_ttl\":3600,\"token_issue_time\":\"2048-12-01T20:28:40Z\"},\"request\":{\"id\":\"ed98137c-85da-2110-637e-fde513ed6d20\",\"operation\":\"update\",\"mount_type\":\"system\",\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"client_token_accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"namespace\":{\"id\":\"root\"},\"path\":\"sys/capabilities-self\",\"data\":{\"paths\":[\"hmac-sha256:df12c05343cb48e513a0cabf557d145e322e5ef39ad324b768b1892602043a77\"]},\"remote_address\":\"192.0.2.97\"},\"response\":{\"mount_type\":\"system\",\"data\":{\"capabilities\":[\"hmac-sha256:b48b27086a5dee0393a6db11755948ec88cbd500d9ef647dc4f5929efd3ff832\",\"hmac-sha256:7c7ee00d72e727237494437e7927307a09b3d1f66c9379efd86bf68567149e2c\",\"hmac-sha256:c4032634d1886465231e80594e51381b01e81a830a6f8b27f5877922f27f6136\",\"hmac-sha256:6f755e3e61dcc2919ffd1796551ee46bd33514c1c8398fded4b8250fafcde4e5\",\"hmac-sha256:4843d3c7dfae79c7475d6b822c10a55e3413180651be0af6778acdbad4bf69ce\"],\"secret/metadata/apps/github-runner/ca-cert\":[\"hmac-sha256:b48b27086a5dee0393a6db11755948ec88cbd500d9ef647dc4f5929efd3ff832\",\"hmac-sha256:7c7ee00d72e727237494437e7927307a09b3d1f66c9379efd86bf68567149e2c\",\"hmac-sha256:c4032634d1886465231e80594e51381b01e81a830a6f8b27f5877922f27f6136\",\"hmac-sha256:6f755e3e61dcc2919ffd1796551ee46bd33514c1c8398fded4b8250fafcde4e5\",\"hmac-sha256:4843d3c7dfae79c7475d6b822c10a55e3413180651be0af6778acdbad4bf69ce\"]}}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675",
+            "client_token": "hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693",
+            "display_name": "oidc-12349999999999999999",
+            "entity_id": "c8e2f40e-4a7c-758d-af95-e8fd6ed08835",
+            "metadata": {
+              "account_id": "12349999999999999999",
+              "email": "dsbxpsf@gmail.com",
+              "role": "gmail"
+            },
+            "policies": [
+              "default",
+              "group-admin"
+            ],
+            "token_issue_time": "2048-12-01T20:28:40Z",
+            "token_policies": [
+              "default",
+              "group-admin"
+            ],
+            "token_ttl": 3600,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693",
+            "client_token_accessor": "hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675",
+            "data": {
+              "paths": [
+                "hmac-sha256:df12c05343cb48e513a0cabf557d145e322e5ef39ad324b768b1892602043a77"
+              ]
+            },
+            "id": "ed98137c-85da-2110-637e-fde513ed6d20",
+            "mount_type": "system",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "update",
+            "path": "sys/capabilities-self",
+            "remote_address": "192.0.2.97"
+          },
+          "response": {
+            "data": {
+              "capabilities": [
+                "hmac-sha256:b48b27086a5dee0393a6db11755948ec88cbd500d9ef647dc4f5929efd3ff832",
+                "hmac-sha256:7c7ee00d72e727237494437e7927307a09b3d1f66c9379efd86bf68567149e2c",
+                "hmac-sha256:c4032634d1886465231e80594e51381b01e81a830a6f8b27f5877922f27f6136",
+                "hmac-sha256:6f755e3e61dcc2919ffd1796551ee46bd33514c1c8398fded4b8250fafcde4e5",
+                "hmac-sha256:4843d3c7dfae79c7475d6b822c10a55e3413180651be0af6778acdbad4bf69ce"
+              ],
+              "secret/metadata/apps/github-runner/ca-cert": [
+                "hmac-sha256:b48b27086a5dee0393a6db11755948ec88cbd500d9ef647dc4f5929efd3ff832",
+                "hmac-sha256:7c7ee00d72e727237494437e7927307a09b3d1f66c9379efd86bf68567149e2c",
+                "hmac-sha256:c4032634d1886465231e80594e51381b01e81a830a6f8b27f5877922f27f6136",
+                "hmac-sha256:6f755e3e61dcc2919ffd1796551ee46bd33514c1c8398fded4b8250fafcde4e5",
+                "hmac-sha256:4843d3c7dfae79c7475d6b822c10a55e3413180651be0af6778acdbad4bf69ce"
+              ]
+            },
+            "mount_type": "system"
+          },
+          "type": "response"
+        }
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ]
+      },
+      "source": {
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "dsbxpsf@gmail.com",
+        "id": "12349999999999999999"
+      }
+    },
+    {
+      "@timestamp": "2049-07-19T17:19:00.673Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "authentication"
+        ],
+        "id": "00ea502d-782d-d9bb-4f0a-2568558b4d82",
+        "kind": "event",
+        "original": "{\"time\":\"2049-07-19T17:19:00.673898225Z\",\"type\":\"request\",\"auth\":{\"token_type\":\"default\"},\"request\":{\"id\":\"00ea502d-782d-d9bb-4f0a-2568558b4d82\",\"operation\":\"update\",\"mount_type\":\"pki\",\"client_token\":\"hmac-sha256:eb555634c748a76baa5c19d5eee46710ae82204526528c6f87cedb3b03715d49\",\"namespace\":{\"id\":\"root\"},\"path\":\"internal-ca/issue/internal-server\",\"data\":{\"alt_names\":\"hmac-sha256:3454a577cbcf5bb15fd6a742032c47c58495338fbbacb8d25490dc4fc9192cfd\",\"common_name\":\"hmac-sha256:fb170c293b8c9dc6431454dd0a605db845080b6f594f604300ee5b89651c5f3e\",\"ip_sans\":\"hmac-sha256:c0a045cb2d30cfa4aac4d4340b066043f624f8513e362c975fc522293ad0c8b5\"},\"remote_address\":\"10.163.215.125\"},\"error\":\"permission denied\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "token_type": "default"
+          },
+          "error": "permission denied",
+          "request": {
+            "client_token": "hmac-sha256:eb555634c748a76baa5c19d5eee46710ae82204526528c6f87cedb3b03715d49",
+            "data": {
+              "alt_names": "hmac-sha256:3454a577cbcf5bb15fd6a742032c47c58495338fbbacb8d25490dc4fc9192cfd",
+              "common_name": "hmac-sha256:fb170c293b8c9dc6431454dd0a605db845080b6f594f604300ee5b89651c5f3e",
+              "ip_sans": "hmac-sha256:c0a045cb2d30cfa4aac4d4340b066043f624f8513e362c975fc522293ad0c8b5"
+            },
+            "id": "00ea502d-782d-d9bb-4f0a-2568558b4d82",
+            "mount_type": "pki",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "update",
+            "path": "internal-ca/issue/internal-server",
+            "remote_address": "10.163.215.125"
+          },
+          "type": "request"
+        }
+      },
+      "message": "permission denied",
+      "related": {
+        "ip": [
+          "10.163.215.125"
+        ]
+      },
+      "source": {
+        "ip": "10.163.215.125"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-07-19T17:19:00.674Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "update",
+        "category": [
+          "authentication"
+        ],
+        "id": "00ea502d-782d-d9bb-4f0a-2568558b4d82",
+        "kind": "event",
+        "original": "{\"time\":\"2049-07-19T17:19:00.674663552Z\",\"type\":\"response\",\"auth\":{\"token_type\":\"default\"},\"request\":{\"id\":\"00ea502d-782d-d9bb-4f0a-2568558b4d82\",\"operation\":\"update\",\"mount_type\":\"pki\",\"client_token\":\"hmac-sha256:eb555634c748a76baa5c19d5eee46710ae82204526528c6f87cedb3b03715d49\",\"namespace\":{\"id\":\"root\"},\"path\":\"internal-ca/issue/internal-server\",\"data\":{\"alt_names\":\"hmac-sha256:3454a577cbcf5bb15fd6a742032c47c58495338fbbacb8d25490dc4fc9192cfd\",\"common_name\":\"hmac-sha256:fb170c293b8c9dc6431454dd0a605db845080b6f594f604300ee5b89651c5f3e\",\"ip_sans\":\"hmac-sha256:c0a045cb2d30cfa4aac4d4340b066043f624f8513e362c975fc522293ad0c8b5\"},\"remote_address\":\"10.163.215.125\"},\"response\":{\"mount_type\":\"pki\",\"data\":{\"error\":\"hmac-sha256:903ae3193fecbb5f02ed7417168b4cbb6b65b440a8d790a911ea10f0962155cf\"}},\"error\":\"1 error occurred:\\n\\t* permission denied\\n\\n\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "token_type": "default"
+          },
+          "error": "1 error occurred:\n\t* permission denied\n\n",
+          "request": {
+            "client_token": "hmac-sha256:eb555634c748a76baa5c19d5eee46710ae82204526528c6f87cedb3b03715d49",
+            "data": {
+              "alt_names": "hmac-sha256:3454a577cbcf5bb15fd6a742032c47c58495338fbbacb8d25490dc4fc9192cfd",
+              "common_name": "hmac-sha256:fb170c293b8c9dc6431454dd0a605db845080b6f594f604300ee5b89651c5f3e",
+              "ip_sans": "hmac-sha256:c0a045cb2d30cfa4aac4d4340b066043f624f8513e362c975fc522293ad0c8b5"
+            },
+            "id": "00ea502d-782d-d9bb-4f0a-2568558b4d82",
+            "mount_type": "pki",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "update",
+            "path": "internal-ca/issue/internal-server",
+            "remote_address": "10.163.215.125"
+          },
+          "response": {
+            "data": {
+              "error": "hmac-sha256:903ae3193fecbb5f02ed7417168b4cbb6b65b440a8d790a911ea10f0962155cf"
+            },
+            "mount_type": "pki"
+          },
+          "type": "response"
+        }
+      },
+      "message": "1 error occurred:\n\t* permission denied\n\n",
+      "related": {
+        "ip": [
+          "10.163.215.125"
+        ]
+      },
+      "source": {
+        "ip": "10.163.215.125"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-29T17:26:11.402Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "authentication"
+        ],
+        "id": "1394dd5f-8962-7de4-5d39-8dfa938c2358",
+        "kind": "event",
+        "original": "{\"time\":\"2049-06-29T17:26:11.402530449Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"display_name\":\"token-375f9cb3-4355-42c7-eab5-029f8a310ca7-runner\",\"policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"token_policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"metadata\":{\"AllocationID\":\"288e7cf4-0346-48a3-ecc6-123d5d222ce5\",\"Namespace\":\"\",\"NodeID\":\"e92472af-530f-924f-ecc0-d4e1db519ce3\",\"Task\":\"runner\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-04-29T21:53:46Z\"},\"request\":{\"id\":\"1394dd5f-8962-7de4-5d39-8dfa938c2358\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"client_token_accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/continuous-delivery/aws-bucket-sse-c\",\"remote_address\":\"10.51.2.30\"}}",
+        "outcome": "success",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b",
+            "client_token": "hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec",
+            "display_name": "token-375f9cb3-4355-42c7-eab5-029f8a310ca7-runner",
+            "metadata": {
+              "AllocationID": "288e7cf4-0346-48a3-ecc6-123d5d222ce5",
+              "Namespace": "",
+              "NodeID": "e92472af-530f-924f-ecc0-d4e1db519ce3",
+              "Task": "runner"
+            },
+            "policies": [
+              "app-continuous-delivery",
+              "app-github-runner",
+              "default"
+            ],
+            "token_issue_time": "2049-04-29T21:53:46Z",
+            "token_policies": [
+              "app-continuous-delivery",
+              "app-github-runner",
+              "default"
+            ],
+            "token_ttl": 259200,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec",
+            "client_token_accessor": "hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b",
+            "id": "1394dd5f-8962-7de4-5d39-8dfa938c2358",
+            "mount_type": "kv",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "read",
+            "path": "secret/data/apps/continuous-delivery/aws-bucket-sse-c",
+            "remote_address": "10.51.2.30"
+          },
+          "type": "request"
+        }
+      },
+      "nomad": {
+        "allocation": {
+          "id": "288e7cf4-0346-48a3-ecc6-123d5d222ce5"
+        },
+        "namespace": "",
+        "node": {
+          "id": "e92472af-530f-924f-ecc0-d4e1db519ce3"
+        },
+        "task": {
+          "name": "runner"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.51.2.30"
+        ]
+      },
+      "source": {
+        "ip": "10.51.2.30"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-29T17:26:11.409Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "authentication"
+        ],
+        "id": "1394dd5f-8962-7de4-5d39-8dfa938c2358",
+        "kind": "event",
+        "original": "{\"time\":\"2049-06-29T17:26:11.409840527Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"display_name\":\"token-375f9cb3-4355-42c7-eab5-029f8a310ca7-runner\",\"policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"token_policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"metadata\":{\"AllocationID\":\"288e7cf4-0346-48a3-ecc6-123d5d222ce5\",\"Namespace\":\"\",\"NodeID\":\"e92472af-530f-924f-ecc0-d4e1db519ce3\",\"Task\":\"runner\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-04-29T21:53:46Z\"},\"request\":{\"id\":\"1394dd5f-8962-7de4-5d39-8dfa938c2358\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"client_token_accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/continuous-delivery/aws-bucket-sse-c\",\"remote_address\":\"10.51.2.30\"},\"response\":{\"mount_type\":\"kv\",\"data\":{\"data\":{\"customer_key\":\"hmac-sha256:55a0c5d405ca93a63522c03cb9138f00c90a7475c9c98ecb5db75dff18fb7bb7\"},\"metadata\":{\"created_time\":\"hmac-sha256:9d670964f4342448be017b3055a060fba705329512d844e339e6ab7e04d23ec2\",\"deletion_time\":\"hmac-sha256:92a25ef0a6e5cc904ae4974652db9ae9e743666270336dd18ac6c2306ef908db\",\"destroyed\":false,\"version\":1}}}}",
+        "outcome": "success",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b",
+            "client_token": "hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec",
+            "display_name": "token-375f9cb3-4355-42c7-eab5-029f8a310ca7-runner",
+            "metadata": {
+              "AllocationID": "288e7cf4-0346-48a3-ecc6-123d5d222ce5",
+              "Namespace": "",
+              "NodeID": "e92472af-530f-924f-ecc0-d4e1db519ce3",
+              "Task": "runner"
+            },
+            "policies": [
+              "app-continuous-delivery",
+              "app-github-runner",
+              "default"
+            ],
+            "token_issue_time": "2049-04-29T21:53:46Z",
+            "token_policies": [
+              "app-continuous-delivery",
+              "app-github-runner",
+              "default"
+            ],
+            "token_ttl": 259200,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec",
+            "client_token_accessor": "hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b",
+            "id": "1394dd5f-8962-7de4-5d39-8dfa938c2358",
+            "mount_type": "kv",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "read",
+            "path": "secret/data/apps/continuous-delivery/aws-bucket-sse-c",
+            "remote_address": "10.51.2.30"
+          },
+          "response": {
+            "data": {
+              "data": {
+                "customer_key": "hmac-sha256:55a0c5d405ca93a63522c03cb9138f00c90a7475c9c98ecb5db75dff18fb7bb7"
+              },
+              "metadata": {
+                "created_time": "hmac-sha256:9d670964f4342448be017b3055a060fba705329512d844e339e6ab7e04d23ec2",
+                "deletion_time": "hmac-sha256:92a25ef0a6e5cc904ae4974652db9ae9e743666270336dd18ac6c2306ef908db",
+                "destroyed": false,
+                "version": 1
+              }
+            },
+            "mount_type": "kv"
+          },
+          "type": "response"
+        }
+      },
+      "nomad": {
+        "allocation": {
+          "id": "288e7cf4-0346-48a3-ecc6-123d5d222ce5"
+        },
+        "namespace": "",
+        "node": {
+          "id": "e92472af-530f-924f-ecc0-d4e1db519ce3"
+        },
+        "task": {
+          "name": "runner"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.51.2.30"
+        ]
+      },
+      "source": {
+        "ip": "10.51.2.30"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-29T18:01:29.545Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "authentication"
+        ],
+        "id": "0fa5c806-d16d-56e3-a155-fc3142d67849",
+        "kind": "event",
+        "original": "{\"time\":\"2049-06-29T18:01:29.545476939Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"display_name\":\"token-c1d6c089-2f46-ff11-5988-38636bddf8d9-homeassistant\",\"policies\":[\"app-home-assistant\",\"default\"],\"token_policies\":[\"app-home-assistant\",\"default\"],\"metadata\":{\"AllocationID\":\"f9f7d244-0e66-fb29-5285-30652eabd3e2\",\"Namespace\":\"\",\"NodeID\":\"c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82\",\"Task\":\"homeassistant\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-06-24T21:22:03Z\"},\"request\":{\"id\":\"0fa5c806-d16d-56e3-a155-fc3142d67849\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"client_token_accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/home-assistant/secrets_yaml\",\"remote_address\":\"10.163.215.125\"}}",
+        "outcome": "success",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209",
+            "client_token": "hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf",
+            "display_name": "token-c1d6c089-2f46-ff11-5988-38636bddf8d9-homeassistant",
+            "metadata": {
+              "AllocationID": "f9f7d244-0e66-fb29-5285-30652eabd3e2",
+              "Namespace": "",
+              "NodeID": "c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82",
+              "Task": "homeassistant"
+            },
+            "policies": [
+              "app-home-assistant",
+              "default"
+            ],
+            "token_issue_time": "2049-06-24T21:22:03Z",
+            "token_policies": [
+              "app-home-assistant",
+              "default"
+            ],
+            "token_ttl": 259200,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf",
+            "client_token_accessor": "hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209",
+            "id": "0fa5c806-d16d-56e3-a155-fc3142d67849",
+            "mount_type": "kv",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "read",
+            "path": "secret/data/apps/home-assistant/secrets_yaml",
+            "remote_address": "10.163.215.125"
+          },
+          "type": "request"
+        }
+      },
+      "nomad": {
+        "allocation": {
+          "id": "f9f7d244-0e66-fb29-5285-30652eabd3e2"
+        },
+        "namespace": "",
+        "node": {
+          "id": "c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82"
+        },
+        "task": {
+          "name": "homeassistant"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.163.215.125"
+        ]
+      },
+      "source": {
+        "ip": "10.163.215.125"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-06-29T18:01:29.547Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "read",
+        "category": [
+          "authentication"
+        ],
+        "id": "0fa5c806-d16d-56e3-a155-fc3142d67849",
+        "kind": "event",
+        "original": "{\"time\":\"2049-06-29T18:01:29.547355273Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"display_name\":\"token-c1d6c089-2f46-ff11-5988-38636bddf8d9-homeassistant\",\"policies\":[\"app-home-assistant\",\"default\"],\"token_policies\":[\"app-home-assistant\",\"default\"],\"metadata\":{\"AllocationID\":\"f9f7d244-0e66-fb29-5285-30652eabd3e2\",\"Namespace\":\"\",\"NodeID\":\"c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82\",\"Task\":\"homeassistant\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-06-24T21:22:03Z\"},\"request\":{\"id\":\"0fa5c806-d16d-56e3-a155-fc3142d67849\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"client_token_accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/home-assistant/secrets_yaml\",\"remote_address\":\"10.163.215.125\"},\"response\":{\"mount_type\":\"kv\",\"data\":{\"data\":{\"aladdin_connect_password\":\"hmac-sha256:d6e97a21157ef132824c096792e29016fffcaf3c84e9f3da44531c3eb8ab0a23\",\"aladdin_connect_username\":\"hmac-sha256:c0c596f04a43483389c5ed6a0837b860a1ac607419fd7e6bebc3e29cc59ef705\",\"elasticsearch_password\":\"hmac-sha256:6d9019a4c18376652160b5a79d4897f4320ea1eb9f86c5c23b1b1e96ab2b3fa6\",\"elasticsearch_url\":\"hmac-sha256:d56be6c6f08120ba1cc71ff7b9b6302f02e17f7df092201c6b069d2bdc48092b\",\"elasticsearch_username\":\"hmac-sha256:ce3feccd81722aeb38fbb3eb7960e33ab8eea9974fa9352762ed6cb29d425577\",\"rest_notify_cisco_phone_csrc_token\":\"hmac-sha256:f2837a9f756d79967db303679c5b0be12337499eb9c18acb77ffdf262458aecf\",\"rest_notify_cisco_phone_password\":\"hmac-sha256:a0e8165fd38c65357980a0f24ffec3bae5841146db9291b005383575623b2c3e\",\"rest_notify_cisco_phone_username\":\"hmac-sha256:4965436eceda3aaf7427aced48ecba683e3e046c4ddeb3740fd0eecee3517fa8\",\"smtp_host\":\"hmac-sha256:ce2f1e1b1e0ab4acd038604089c0d2ff93fe8f571ee1921480bf1b28323466b1\",\"smtp_password\":\"hmac-sha256:0e0f724b90601a5b6cad832d4a743fb5a034a5a75d05c9fd505da2e00343884b\",\"smtp_port\":587,\"smtp_username\":\"hmac-sha256:d91cf846b86c59b3df81a97104c1837864f51a05a85cb31a960c0b92096181c2\",\"twilio_account_sid\":\"hmac-sha256:834695fede6601d885c32df893fa0261c015e109e7549059bdb4e3f383a3bfc2\",\"twilio_auth_token\":\"hmac-sha256:59bd3ddb037e3d0584c8fbbc049d144c2d58d6af825a919fbcc14d50ab2e799a\",\"cam_backyard_rtsp_url\":\"hmac-sha256:badd22b15cbc159cd5db8b2c8c09181024d8c823370cc3bb53ae9c56fc38cbb4\",\"cam_backyard_url\":\"hmac-sha256:5c7694b919e0927c2171a283c6077533e90a87030a45ad5e62ea798125c29f95\",\"cam_basement_door_rtsp_url\":\"hmac-sha256:daa4c909aa5527b417a342af7f027212a1f1d55ebd98c8dcc86f7407c127b721\",\"cam_basement_door_url\":\"hmac-sha256:842c62520901832b8b42e4d4424655ee12df9ff85821f31882638e871007346a\",\"cam_driveway_rtsp_url\":\"hmac-sha256:3b570b77d252ca8e1085ec8b885353dd4a9c872094c1cb07318bb52a2454eb1c\",\"cam_driveway_url\":\"hmac-sha256:ebd42d1fe4c023b3ed49b2003bbe0a31c3c4a0e4f327758744448a34dcb15eac\",\"cam_front_door_rtsp_url\":\"hmac-sha256:ee8ad7d120d0f07dbe247facf80c7528ffc0d952204074cc3ca81e363139b688\",\"cam_front_door_url\":\"hmac-sha256:4d9015cdcd3f28a9ff0ca04f6f3f69d13d46b6862c38cf75fbae12a2f48ba313\",\"cam_garage_rtsp_url\":\"hmac-sha256:51ff489ca97aeca2f9d189edf124b863515d1c0fe6528f7887822d8f803d87c5\",\"cam_garage_url\":\"hmac-sha256:14d9e3e7558e61ae0404436eac330d0df8b98e06894fa62180e39c58e2986dcb\",\"cam_mechanical_room_rtsp_url\":\"hmac-sha256:c687c134444fea9689a0511cb52d2c4c9a9b40d4aebce5d22affd6ed278c5347\",\"cam_mechanical_room_url\":\"hmac-sha256:da6e4d141fcab37521b475934fd0a63bef04f74a566e1d1777f4ce66b64ccb2e\",\"cam_os_password\":\"hmac-sha256:f031e8bdab69527f0146539140ded4cc0e504820f22bd14f2385db6c74f3967e\",\"cam_os_username\":\"hmac-sha256:dc64e3c3848580b3c47e6bb8e51c73ec872739c2aebfb195076a1f0447ca4501\",\"yale_lock_code_andrew\":\"hmac-sha256:731cbe44b4667b5d36199982d7a61efd2c7b5f18a7b0d77dd91a43681a990901\",\"yale_lock_code_neva\":\"hmac-sha256:259919de0d25bcbddcce10fd93e87ef95d0f88223f3e378d449192fa0a57411b\",\"zwave_network_key\":\"hmac-sha256:645fb37517d9b84ca65463e2bc03937c64120586b3a37c71b4f7670dc28c4709\"},\"metadata\":{\"created_time\":\"hmac-sha256:ce77d20a7794189976cd755ce24af09082e60432cf573cbcad1f00b13cf5c413\",\"deletion_time\":\"hmac-sha256:92a25ef0a6e5cc904ae4974652db9ae9e743666270336dd18ac6c2306ef908db\",\"destroyed\":false,\"version\":6}}}}",
+        "outcome": "success",
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209",
+            "client_token": "hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf",
+            "display_name": "token-c1d6c089-2f46-ff11-5988-38636bddf8d9-homeassistant",
+            "metadata": {
+              "AllocationID": "f9f7d244-0e66-fb29-5285-30652eabd3e2",
+              "Namespace": "",
+              "NodeID": "c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82",
+              "Task": "homeassistant"
+            },
+            "policies": [
+              "app-home-assistant",
+              "default"
+            ],
+            "token_issue_time": "2049-06-24T21:22:03Z",
+            "token_policies": [
+              "app-home-assistant",
+              "default"
+            ],
+            "token_ttl": 259200,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf",
+            "client_token_accessor": "hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209",
+            "id": "0fa5c806-d16d-56e3-a155-fc3142d67849",
+            "mount_type": "kv",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "read",
+            "path": "secret/data/apps/home-assistant/secrets_yaml",
+            "remote_address": "10.163.215.125"
+          },
+          "response": {
+            "data": {
+              "data": {
+                "aladdin_connect_password": "hmac-sha256:d6e97a21157ef132824c096792e29016fffcaf3c84e9f3da44531c3eb8ab0a23",
+                "aladdin_connect_username": "hmac-sha256:c0c596f04a43483389c5ed6a0837b860a1ac607419fd7e6bebc3e29cc59ef705",
+                "cam_backyard_rtsp_url": "hmac-sha256:badd22b15cbc159cd5db8b2c8c09181024d8c823370cc3bb53ae9c56fc38cbb4",
+                "cam_backyard_url": "hmac-sha256:5c7694b919e0927c2171a283c6077533e90a87030a45ad5e62ea798125c29f95",
+                "cam_basement_door_rtsp_url": "hmac-sha256:daa4c909aa5527b417a342af7f027212a1f1d55ebd98c8dcc86f7407c127b721",
+                "cam_basement_door_url": "hmac-sha256:842c62520901832b8b42e4d4424655ee12df9ff85821f31882638e871007346a",
+                "cam_driveway_rtsp_url": "hmac-sha256:3b570b77d252ca8e1085ec8b885353dd4a9c872094c1cb07318bb52a2454eb1c",
+                "cam_driveway_url": "hmac-sha256:ebd42d1fe4c023b3ed49b2003bbe0a31c3c4a0e4f327758744448a34dcb15eac",
+                "cam_front_door_rtsp_url": "hmac-sha256:ee8ad7d120d0f07dbe247facf80c7528ffc0d952204074cc3ca81e363139b688",
+                "cam_front_door_url": "hmac-sha256:4d9015cdcd3f28a9ff0ca04f6f3f69d13d46b6862c38cf75fbae12a2f48ba313",
+                "cam_garage_rtsp_url": "hmac-sha256:51ff489ca97aeca2f9d189edf124b863515d1c0fe6528f7887822d8f803d87c5",
+                "cam_garage_url": "hmac-sha256:14d9e3e7558e61ae0404436eac330d0df8b98e06894fa62180e39c58e2986dcb",
+                "cam_mechanical_room_rtsp_url": "hmac-sha256:c687c134444fea9689a0511cb52d2c4c9a9b40d4aebce5d22affd6ed278c5347",
+                "cam_mechanical_room_url": "hmac-sha256:da6e4d141fcab37521b475934fd0a63bef04f74a566e1d1777f4ce66b64ccb2e",
+                "cam_os_password": "hmac-sha256:f031e8bdab69527f0146539140ded4cc0e504820f22bd14f2385db6c74f3967e",
+                "cam_os_username": "hmac-sha256:dc64e3c3848580b3c47e6bb8e51c73ec872739c2aebfb195076a1f0447ca4501",
+                "elasticsearch_password": "hmac-sha256:6d9019a4c18376652160b5a79d4897f4320ea1eb9f86c5c23b1b1e96ab2b3fa6",
+                "elasticsearch_url": "hmac-sha256:d56be6c6f08120ba1cc71ff7b9b6302f02e17f7df092201c6b069d2bdc48092b",
+                "elasticsearch_username": "hmac-sha256:ce3feccd81722aeb38fbb3eb7960e33ab8eea9974fa9352762ed6cb29d425577",
+                "rest_notify_cisco_phone_csrc_token": "hmac-sha256:f2837a9f756d79967db303679c5b0be12337499eb9c18acb77ffdf262458aecf",
+                "rest_notify_cisco_phone_password": "hmac-sha256:a0e8165fd38c65357980a0f24ffec3bae5841146db9291b005383575623b2c3e",
+                "rest_notify_cisco_phone_username": "hmac-sha256:4965436eceda3aaf7427aced48ecba683e3e046c4ddeb3740fd0eecee3517fa8",
+                "smtp_host": "hmac-sha256:ce2f1e1b1e0ab4acd038604089c0d2ff93fe8f571ee1921480bf1b28323466b1",
+                "smtp_password": "hmac-sha256:0e0f724b90601a5b6cad832d4a743fb5a034a5a75d05c9fd505da2e00343884b",
+                "smtp_port": 587,
+                "smtp_username": "hmac-sha256:d91cf846b86c59b3df81a97104c1837864f51a05a85cb31a960c0b92096181c2",
+                "twilio_account_sid": "hmac-sha256:834695fede6601d885c32df893fa0261c015e109e7549059bdb4e3f383a3bfc2",
+                "twilio_auth_token": "hmac-sha256:59bd3ddb037e3d0584c8fbbc049d144c2d58d6af825a919fbcc14d50ab2e799a",
+                "yale_lock_code_andrew": "hmac-sha256:731cbe44b4667b5d36199982d7a61efd2c7b5f18a7b0d77dd91a43681a990901",
+                "yale_lock_code_neva": "hmac-sha256:259919de0d25bcbddcce10fd93e87ef95d0f88223f3e378d449192fa0a57411b",
+                "zwave_network_key": "hmac-sha256:645fb37517d9b84ca65463e2bc03937c64120586b3a37c71b4f7670dc28c4709"
+              },
+              "metadata": {
+                "created_time": "hmac-sha256:ce77d20a7794189976cd755ce24af09082e60432cf573cbcad1f00b13cf5c413",
+                "deletion_time": "hmac-sha256:92a25ef0a6e5cc904ae4974652db9ae9e743666270336dd18ac6c2306ef908db",
+                "destroyed": false,
+                "version": 6
+              }
+            },
+            "mount_type": "kv"
+          },
+          "type": "response"
+        }
+      },
+      "nomad": {
+        "allocation": {
+          "id": "f9f7d244-0e66-fb29-5285-30652eabd3e2"
+        },
+        "namespace": "",
+        "node": {
+          "id": "c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82"
+        },
+        "task": {
+          "name": "homeassistant"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.163.215.125"
+        ]
+      },
+      "source": {
+        "ip": "10.163.215.125"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-12-30T17:11:12.468Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "help",
+        "category": [
+          "authentication"
+        ],
+        "kind": "event",
+        "original": "{\"time\":\"2049-12-30T17:11:12.468537924Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:b36a0d7bcf7da602e440f94cf936a4f6547d2bcef12b855cda1687471faf1dbb\",\"accessor\":\"hmac-sha256:b24965a6c399ee1a3c354315a43386d320f2cc8eb223432976817c1d15624fd6\",\"display_name\":\"oidc-12349999999999999999\",\"policies\":[\"default\",\"group-admin\"],\"token_policies\":[\"default\",\"group-admin\"],\"metadata\":{\"account_id\":\"12349999999999999999\",\"email\":\"dsbxpsf@gmail.com\",\"role\":\"gmail\"},\"entity_id\":\"c8e2f40e-4a7c-758d-af95-e8fd6ed08835\",\"token_type\":\"service\",\"token_ttl\":3600,\"token_issue_time\":\"2049-12-30T17:11:09Z\"},\"request\":{\"operation\":\"help\",\"mount_type\":\"pki\",\"client_token\":\"hmac-sha256:b36a0d7bcf7da602e440f94cf936a4f6547d2bcef12b855cda1687471faf1dbb\",\"client_token_accessor\":\"hmac-sha256:b24965a6c399ee1a3c354315a43386d320f2cc8eb223432976817c1d15624fd6\",\"namespace\":{\"id\":\"root\"},\"path\":\"ca/roles/example\",\"remote_address\":\"10.163.215.125\"}}",
+        "outcome": "success"
+      },
+      "hashicorp_vault": {
+        "audit": {
+          "auth": {
+            "accessor": "hmac-sha256:b24965a6c399ee1a3c354315a43386d320f2cc8eb223432976817c1d15624fd6",
+            "client_token": "hmac-sha256:b36a0d7bcf7da602e440f94cf936a4f6547d2bcef12b855cda1687471faf1dbb",
+            "display_name": "oidc-12349999999999999999",
+            "entity_id": "c8e2f40e-4a7c-758d-af95-e8fd6ed08835",
+            "metadata": {
+              "account_id": "12349999999999999999",
+              "email": "dsbxpsf@gmail.com",
+              "role": "gmail"
+            },
+            "policies": [
+              "default",
+              "group-admin"
+            ],
+            "token_issue_time": "2049-12-30T17:11:09Z",
+            "token_policies": [
+              "default",
+              "group-admin"
+            ],
+            "token_ttl": 3600,
+            "token_type": "service"
+          },
+          "request": {
+            "client_token": "hmac-sha256:b36a0d7bcf7da602e440f94cf936a4f6547d2bcef12b855cda1687471faf1dbb",
+            "client_token_accessor": "hmac-sha256:b24965a6c399ee1a3c354315a43386d320f2cc8eb223432976817c1d15624fd6",
+            "mount_type": "pki",
+            "namespace": {
+              "id": "root"
+            },
+            "operation": "help",
+            "path": "ca/roles/example",
+            "remote_address": "10.163.215.125"
+          },
+          "type": "request"
+        }
+      },
+      "related": {
+        "ip": [
+          "10.163.215.125"
+        ]
+      },
+      "source": {
+        "ip": "10.163.215.125"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "dsbxpsf@gmail.com",
+        "id": "12349999999999999999"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2048-12-01T20:29:04.356625452Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"display_name\":\"oidc-12349999999999999999\",\"policies\":[\"default\",\"group-admin\"],\"token_policies\":[\"default\",\"group-admin\"],\"metadata\":{\"account_id\":\"12349999999999999999\",\"email\":\"dsbxpsf@gmail.com\",\"role\":\"gmail\"},\"entity_id\":\"c8e2f40e-4a7c-758d-af95-e8fd6ed08835\",\"token_type\":\"service\",\"token_ttl\":3600,\"token_issue_time\":\"2048-12-01T20:28:40Z\"},\"request\":{\"id\":\"ed98137c-85da-2110-637e-fde513ed6d20\",\"operation\":\"update\",\"mount_type\":\"system\",\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"client_token_accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"namespace\":{\"id\":\"root\"},\"path\":\"sys/capabilities-self\",\"data\":{\"paths\":[\"hmac-sha256:df12c05343cb48e513a0cabf557d145e322e5ef39ad324b768b1892602043a77\"]},\"remote_address\":\"192.0.2.97\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2048-12-01T20:29:04.36089379Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"display_name\":\"oidc-12349999999999999999\",\"policies\":[\"default\",\"group-admin\"],\"token_policies\":[\"default\",\"group-admin\"],\"metadata\":{\"account_id\":\"12349999999999999999\",\"email\":\"dsbxpsf@gmail.com\",\"role\":\"gmail\"},\"entity_id\":\"c8e2f40e-4a7c-758d-af95-e8fd6ed08835\",\"token_type\":\"service\",\"token_ttl\":3600,\"token_issue_time\":\"2048-12-01T20:28:40Z\"},\"request\":{\"id\":\"ed98137c-85da-2110-637e-fde513ed6d20\",\"operation\":\"update\",\"mount_type\":\"system\",\"client_token\":\"hmac-sha256:9fc3acd4f0ed8d8a465bb0edbb65dd91b9d0e9e14fccd05a4336199a716ae693\",\"client_token_accessor\":\"hmac-sha256:ab535dd0b0b8cce240e3dc66ebf3a9f3a78b590fb5f8a62e04f051e39ddce675\",\"namespace\":{\"id\":\"root\"},\"path\":\"sys/capabilities-self\",\"data\":{\"paths\":[\"hmac-sha256:df12c05343cb48e513a0cabf557d145e322e5ef39ad324b768b1892602043a77\"]},\"remote_address\":\"192.0.2.97\"},\"response\":{\"mount_type\":\"system\",\"data\":{\"capabilities\":[\"hmac-sha256:b48b27086a5dee0393a6db11755948ec88cbd500d9ef647dc4f5929efd3ff832\",\"hmac-sha256:7c7ee00d72e727237494437e7927307a09b3d1f66c9379efd86bf68567149e2c\",\"hmac-sha256:c4032634d1886465231e80594e51381b01e81a830a6f8b27f5877922f27f6136\",\"hmac-sha256:6f755e3e61dcc2919ffd1796551ee46bd33514c1c8398fded4b8250fafcde4e5\",\"hmac-sha256:4843d3c7dfae79c7475d6b822c10a55e3413180651be0af6778acdbad4bf69ce\"],\"secret/metadata/apps/github-runner/ca-cert\":[\"hmac-sha256:b48b27086a5dee0393a6db11755948ec88cbd500d9ef647dc4f5929efd3ff832\",\"hmac-sha256:7c7ee00d72e727237494437e7927307a09b3d1f66c9379efd86bf68567149e2c\",\"hmac-sha256:c4032634d1886465231e80594e51381b01e81a830a6f8b27f5877922f27f6136\",\"hmac-sha256:6f755e3e61dcc2919ffd1796551ee46bd33514c1c8398fded4b8250fafcde4e5\",\"hmac-sha256:4843d3c7dfae79c7475d6b822c10a55e3413180651be0af6778acdbad4bf69ce\"]}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-07-19T17:19:00.673898225Z\",\"type\":\"request\",\"auth\":{\"token_type\":\"default\"},\"request\":{\"id\":\"00ea502d-782d-d9bb-4f0a-2568558b4d82\",\"operation\":\"update\",\"mount_type\":\"pki\",\"client_token\":\"hmac-sha256:eb555634c748a76baa5c19d5eee46710ae82204526528c6f87cedb3b03715d49\",\"namespace\":{\"id\":\"root\"},\"path\":\"internal-ca/issue/internal-server\",\"data\":{\"alt_names\":\"hmac-sha256:3454a577cbcf5bb15fd6a742032c47c58495338fbbacb8d25490dc4fc9192cfd\",\"common_name\":\"hmac-sha256:fb170c293b8c9dc6431454dd0a605db845080b6f594f604300ee5b89651c5f3e\",\"ip_sans\":\"hmac-sha256:c0a045cb2d30cfa4aac4d4340b066043f624f8513e362c975fc522293ad0c8b5\"},\"remote_address\":\"10.163.215.125\"},\"error\":\"permission denied\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-07-19T17:19:00.674663552Z\",\"type\":\"response\",\"auth\":{\"token_type\":\"default\"},\"request\":{\"id\":\"00ea502d-782d-d9bb-4f0a-2568558b4d82\",\"operation\":\"update\",\"mount_type\":\"pki\",\"client_token\":\"hmac-sha256:eb555634c748a76baa5c19d5eee46710ae82204526528c6f87cedb3b03715d49\",\"namespace\":{\"id\":\"root\"},\"path\":\"internal-ca/issue/internal-server\",\"data\":{\"alt_names\":\"hmac-sha256:3454a577cbcf5bb15fd6a742032c47c58495338fbbacb8d25490dc4fc9192cfd\",\"common_name\":\"hmac-sha256:fb170c293b8c9dc6431454dd0a605db845080b6f594f604300ee5b89651c5f3e\",\"ip_sans\":\"hmac-sha256:c0a045cb2d30cfa4aac4d4340b066043f624f8513e362c975fc522293ad0c8b5\"},\"remote_address\":\"10.163.215.125\"},\"response\":{\"mount_type\":\"pki\",\"data\":{\"error\":\"hmac-sha256:903ae3193fecbb5f02ed7417168b4cbb6b65b440a8d790a911ea10f0962155cf\"}},\"error\":\"1 error occurred:\\n\\t* permission denied\\n\\n\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-06-29T17:26:11.402530449Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"display_name\":\"token-375f9cb3-4355-42c7-eab5-029f8a310ca7-runner\",\"policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"token_policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"metadata\":{\"AllocationID\":\"288e7cf4-0346-48a3-ecc6-123d5d222ce5\",\"Namespace\":\"\",\"NodeID\":\"e92472af-530f-924f-ecc0-d4e1db519ce3\",\"Task\":\"runner\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-04-29T21:53:46Z\"},\"request\":{\"id\":\"1394dd5f-8962-7de4-5d39-8dfa938c2358\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"client_token_accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/continuous-delivery/aws-bucket-sse-c\",\"remote_address\":\"10.51.2.30\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-06-29T17:26:11.409840527Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"display_name\":\"token-375f9cb3-4355-42c7-eab5-029f8a310ca7-runner\",\"policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"token_policies\":[\"app-continuous-delivery\",\"app-github-runner\",\"default\"],\"metadata\":{\"AllocationID\":\"288e7cf4-0346-48a3-ecc6-123d5d222ce5\",\"Namespace\":\"\",\"NodeID\":\"e92472af-530f-924f-ecc0-d4e1db519ce3\",\"Task\":\"runner\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-04-29T21:53:46Z\"},\"request\":{\"id\":\"1394dd5f-8962-7de4-5d39-8dfa938c2358\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:63f490368ea8ff24e8154cd84c6ae9f0e585a75688e136a52c9c0a419f7069ec\",\"client_token_accessor\":\"hmac-sha256:6bc7f1a0a1df676255301492ddc5a0635468b4ab6603543650c1cdb9d0a0b54b\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/continuous-delivery/aws-bucket-sse-c\",\"remote_address\":\"10.51.2.30\"},\"response\":{\"mount_type\":\"kv\",\"data\":{\"data\":{\"customer_key\":\"hmac-sha256:55a0c5d405ca93a63522c03cb9138f00c90a7475c9c98ecb5db75dff18fb7bb7\"},\"metadata\":{\"created_time\":\"hmac-sha256:9d670964f4342448be017b3055a060fba705329512d844e339e6ab7e04d23ec2\",\"deletion_time\":\"hmac-sha256:92a25ef0a6e5cc904ae4974652db9ae9e743666270336dd18ac6c2306ef908db\",\"destroyed\":false,\"version\":1}}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-06-29T18:01:29.545476939Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"display_name\":\"token-c1d6c089-2f46-ff11-5988-38636bddf8d9-homeassistant\",\"policies\":[\"app-home-assistant\",\"default\"],\"token_policies\":[\"app-home-assistant\",\"default\"],\"metadata\":{\"AllocationID\":\"f9f7d244-0e66-fb29-5285-30652eabd3e2\",\"Namespace\":\"\",\"NodeID\":\"c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82\",\"Task\":\"homeassistant\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-06-24T21:22:03Z\"},\"request\":{\"id\":\"0fa5c806-d16d-56e3-a155-fc3142d67849\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"client_token_accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/home-assistant/secrets_yaml\",\"remote_address\":\"10.163.215.125\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-06-29T18:01:29.547355273Z\",\"type\":\"response\",\"auth\":{\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"display_name\":\"token-c1d6c089-2f46-ff11-5988-38636bddf8d9-homeassistant\",\"policies\":[\"app-home-assistant\",\"default\"],\"token_policies\":[\"app-home-assistant\",\"default\"],\"metadata\":{\"AllocationID\":\"f9f7d244-0e66-fb29-5285-30652eabd3e2\",\"Namespace\":\"\",\"NodeID\":\"c79cfb5b-e4b3-aa5b-bc4a-0f8cd47fdb82\",\"Task\":\"homeassistant\"},\"token_type\":\"service\",\"token_ttl\":259200,\"token_issue_time\":\"2049-06-24T21:22:03Z\"},\"request\":{\"id\":\"0fa5c806-d16d-56e3-a155-fc3142d67849\",\"operation\":\"read\",\"mount_type\":\"kv\",\"client_token\":\"hmac-sha256:a55c36fff8123ce8f9bd3e002f8189711fd183f5b1f256f659419a5bed3d4baf\",\"client_token_accessor\":\"hmac-sha256:2cb271a65b250c69bb36a8e53cfb389b2ad1e7b78c58f8dd6d2c0a116da14209\",\"namespace\":{\"id\":\"root\"},\"path\":\"secret/data/apps/home-assistant/secrets_yaml\",\"remote_address\":\"10.163.215.125\"},\"response\":{\"mount_type\":\"kv\",\"data\":{\"data\":{\"aladdin_connect_password\":\"hmac-sha256:d6e97a21157ef132824c096792e29016fffcaf3c84e9f3da44531c3eb8ab0a23\",\"aladdin_connect_username\":\"hmac-sha256:c0c596f04a43483389c5ed6a0837b860a1ac607419fd7e6bebc3e29cc59ef705\",\"elasticsearch_password\":\"hmac-sha256:6d9019a4c18376652160b5a79d4897f4320ea1eb9f86c5c23b1b1e96ab2b3fa6\",\"elasticsearch_url\":\"hmac-sha256:d56be6c6f08120ba1cc71ff7b9b6302f02e17f7df092201c6b069d2bdc48092b\",\"elasticsearch_username\":\"hmac-sha256:ce3feccd81722aeb38fbb3eb7960e33ab8eea9974fa9352762ed6cb29d425577\",\"rest_notify_cisco_phone_csrc_token\":\"hmac-sha256:f2837a9f756d79967db303679c5b0be12337499eb9c18acb77ffdf262458aecf\",\"rest_notify_cisco_phone_password\":\"hmac-sha256:a0e8165fd38c65357980a0f24ffec3bae5841146db9291b005383575623b2c3e\",\"rest_notify_cisco_phone_username\":\"hmac-sha256:4965436eceda3aaf7427aced48ecba683e3e046c4ddeb3740fd0eecee3517fa8\",\"smtp_host\":\"hmac-sha256:ce2f1e1b1e0ab4acd038604089c0d2ff93fe8f571ee1921480bf1b28323466b1\",\"smtp_password\":\"hmac-sha256:0e0f724b90601a5b6cad832d4a743fb5a034a5a75d05c9fd505da2e00343884b\",\"smtp_port\":587,\"smtp_username\":\"hmac-sha256:d91cf846b86c59b3df81a97104c1837864f51a05a85cb31a960c0b92096181c2\",\"twilio_account_sid\":\"hmac-sha256:834695fede6601d885c32df893fa0261c015e109e7549059bdb4e3f383a3bfc2\",\"twilio_auth_token\":\"hmac-sha256:59bd3ddb037e3d0584c8fbbc049d144c2d58d6af825a919fbcc14d50ab2e799a\",\"cam_backyard_rtsp_url\":\"hmac-sha256:badd22b15cbc159cd5db8b2c8c09181024d8c823370cc3bb53ae9c56fc38cbb4\",\"cam_backyard_url\":\"hmac-sha256:5c7694b919e0927c2171a283c6077533e90a87030a45ad5e62ea798125c29f95\",\"cam_basement_door_rtsp_url\":\"hmac-sha256:daa4c909aa5527b417a342af7f027212a1f1d55ebd98c8dcc86f7407c127b721\",\"cam_basement_door_url\":\"hmac-sha256:842c62520901832b8b42e4d4424655ee12df9ff85821f31882638e871007346a\",\"cam_driveway_rtsp_url\":\"hmac-sha256:3b570b77d252ca8e1085ec8b885353dd4a9c872094c1cb07318bb52a2454eb1c\",\"cam_driveway_url\":\"hmac-sha256:ebd42d1fe4c023b3ed49b2003bbe0a31c3c4a0e4f327758744448a34dcb15eac\",\"cam_front_door_rtsp_url\":\"hmac-sha256:ee8ad7d120d0f07dbe247facf80c7528ffc0d952204074cc3ca81e363139b688\",\"cam_front_door_url\":\"hmac-sha256:4d9015cdcd3f28a9ff0ca04f6f3f69d13d46b6862c38cf75fbae12a2f48ba313\",\"cam_garage_rtsp_url\":\"hmac-sha256:51ff489ca97aeca2f9d189edf124b863515d1c0fe6528f7887822d8f803d87c5\",\"cam_garage_url\":\"hmac-sha256:14d9e3e7558e61ae0404436eac330d0df8b98e06894fa62180e39c58e2986dcb\",\"cam_mechanical_room_rtsp_url\":\"hmac-sha256:c687c134444fea9689a0511cb52d2c4c9a9b40d4aebce5d22affd6ed278c5347\",\"cam_mechanical_room_url\":\"hmac-sha256:da6e4d141fcab37521b475934fd0a63bef04f74a566e1d1777f4ce66b64ccb2e\",\"cam_os_password\":\"hmac-sha256:f031e8bdab69527f0146539140ded4cc0e504820f22bd14f2385db6c74f3967e\",\"cam_os_username\":\"hmac-sha256:dc64e3c3848580b3c47e6bb8e51c73ec872739c2aebfb195076a1f0447ca4501\",\"yale_lock_code_andrew\":\"hmac-sha256:731cbe44b4667b5d36199982d7a61efd2c7b5f18a7b0d77dd91a43681a990901\",\"yale_lock_code_neva\":\"hmac-sha256:259919de0d25bcbddcce10fd93e87ef95d0f88223f3e378d449192fa0a57411b\",\"zwave_network_key\":\"hmac-sha256:645fb37517d9b84ca65463e2bc03937c64120586b3a37c71b4f7670dc28c4709\"},\"metadata\":{\"created_time\":\"hmac-sha256:ce77d20a7794189976cd755ce24af09082e60432cf573cbcad1f00b13cf5c413\",\"deletion_time\":\"hmac-sha256:92a25ef0a6e5cc904ae4974652db9ae9e743666270336dd18ac6c2306ef908db\",\"destroyed\":false,\"version\":6}}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2049-12-30T17:11:12.468537924Z\",\"type\":\"request\",\"auth\":{\"client_token\":\"hmac-sha256:b36a0d7bcf7da602e440f94cf936a4f6547d2bcef12b855cda1687471faf1dbb\",\"accessor\":\"hmac-sha256:b24965a6c399ee1a3c354315a43386d320f2cc8eb223432976817c1d15624fd6\",\"display_name\":\"oidc-12349999999999999999\",\"policies\":[\"default\",\"group-admin\"],\"token_policies\":[\"default\",\"group-admin\"],\"metadata\":{\"account_id\":\"12349999999999999999\",\"email\":\"dsbxpsf@gmail.com\",\"role\":\"gmail\"},\"entity_id\":\"c8e2f40e-4a7c-758d-af95-e8fd6ed08835\",\"token_type\":\"service\",\"token_ttl\":3600,\"token_issue_time\":\"2049-12-30T17:11:09Z\"},\"request\":{\"operation\":\"help\",\"mount_type\":\"pki\",\"client_token\":\"hmac-sha256:b36a0d7bcf7da602e440f94cf936a4f6547d2bcef12b855cda1687471faf1dbb\",\"client_token_accessor\":\"hmac-sha256:b24965a6c399ee1a3c354315a43386d320f2cc8eb223432976817c1d15624fd6\",\"namespace\":{\"id\":\"root\"},\"path\":\"ca/roles/example\",\"remote_address\":\"10.163.215.125\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-hashicorp_vault-audit-default",
+    "event_count": 9,
+    "numeric_keyword_fields": [],
+    "package": "hashicorp_vault",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

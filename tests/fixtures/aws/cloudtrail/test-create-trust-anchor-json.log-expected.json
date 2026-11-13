@@ -1,0 +1,185 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2052-10-10T12:55:43.000Z",
+      "actor": {
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        }
+      },
+      "aws": {
+        "cloudtrail": {
+          "event_category": "Management",
+          "event_type": "AwsApiCall",
+          "event_version": "1.10",
+          "flattened": {
+            "request_parameters": {
+              "enabled": false,
+              "name": "cloudtrail-test",
+              "source": {
+                "sourceData": {
+                  "acmPcaArn": "arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1"
+                },
+                "sourceType": "AWS_ACM_PCA"
+              }
+            },
+            "response_elements": {
+              "trustAnchor": {
+                "createdAt": "2052-10-10T12:55:43.023139433Z",
+                "enabled": false,
+                "name": "cloudtrail-test",
+                "notificationSettings": [
+                  {
+                    "channel": "ALL",
+                    "configuredBy": "rolesanywhere.amazonaws.com",
+                    "enabled": true,
+                    "event": "CA_CERTIFICATE_EXPIRY",
+                    "threshold": 45
+                  },
+                  {
+                    "channel": "ALL",
+                    "configuredBy": "rolesanywhere.amazonaws.com",
+                    "enabled": true,
+                    "event": "END_ENTITY_CERTIFICATE_EXPIRY",
+                    "threshold": 45
+                  }
+                ],
+                "source": {
+                  "sourceData": {
+                    "acmPcaArn": "arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1"
+                  },
+                  "sourceType": "AWS_ACM_PCA"
+                },
+                "trustAnchorArn": "arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08",
+                "trustAnchorId": "5a111514-ddfd-4824-a680-396537e23f08",
+                "updatedAt": "2052-10-10T12:55:43.023139433Z"
+              }
+            }
+          },
+          "read_only": false,
+          "recipient_account_id": "000000000",
+          "request_id": "dae9331a-f35f-4427-9bdc-d8e4241fdb0c",
+          "request_parameters": "{name=cloudtrail-test, source={sourceType=AWS_ACM_PCA, sourceData={acmPcaArn=arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1}}, enabled=false}",
+          "response_elements": "{trustAnchor={createdAt=2052-10-10T12:55:43.023139433Z, name=cloudtrail-test, source={sourceType=AWS_ACM_PCA, sourceData={acmPcaArn=arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1}}, enabled=false, notificationSettings=[{channel=ALL, threshold=45, configuredBy=rolesanywhere.amazonaws.com, event=CA_CERTIFICATE_EXPIRY, enabled=true}, {channel=ALL, threshold=45, configuredBy=rolesanywhere.amazonaws.com, event=END_ENTITY_CERTIFICATE_EXPIRY, enabled=true}], trustAnchorArn=arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08, trustAnchorId=5a111514-ddfd-4824-a680-396537e23f08, updatedAt=2052-10-10T12:55:43.023139433Z}}",
+          "user_identity": {
+            "access_key_id": "ACCESSKEYID",
+            "arn": "arn:aws:iam::000000000:user/sbgq@apejtlc.co",
+            "type": "IAMUser"
+          }
+        }
+      },
+      "cloud": {
+        "account": {
+          "id": "000000000"
+        },
+        "region": "us-east-1"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "CreateTrustAnchor",
+        "created": "2049-11-11T01:02:03.123456789Z",
+        "id": "3162392c-47ba-44be-a4f7-100997c85af0",
+        "kind": "event",
+        "original": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"3162392c-47ba-44be-a4f7-100997c85af0\",\"eventName\":\"CreateTrustAnchor\",\"eventSource\":\"rolesanywhere.amazonaws.com\",\"eventTime\":\"2052-10-10T12:55:43Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"dae9331a-f35f-4427-9bdc-d8e4241fdb0c\",\"requestParameters\":{\"enabled\":false,\"name\":\"cloudtrail-test\",\"source\":{\"sourceData\":{\"acmPcaArn\":\"arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1\"},\"sourceType\":\"AWS_ACM_PCA\"}},\"responseElements\":{\"trustAnchor\":{\"createdAt\":\"2052-10-10T12:55:43.023139433Z\",\"enabled\":false,\"name\":\"cloudtrail-test\",\"notificationSettings\":[{\"channel\":\"ALL\",\"configuredBy\":\"rolesanywhere.amazonaws.com\",\"enabled\":true,\"event\":\"CA_CERTIFICATE_EXPIRY\",\"threshold\":45},{\"channel\":\"ALL\",\"configuredBy\":\"rolesanywhere.amazonaws.com\",\"enabled\":true,\"event\":\"END_ENTITY_CERTIFICATE_EXPIRY\",\"threshold\":45}],\"source\":{\"sourceData\":{\"acmPcaArn\":\"arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1\"},\"sourceType\":\"AWS_ACM_PCA\"},\"trustAnchorArn\":\"arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08\",\"trustAnchorId\":\"5a111514-ddfd-4824-a680-396537e23f08\",\"updatedAt\":\"2052-10-10T12:55:43.023139433Z\"}},\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"rolesanywhere.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_0ca8ae59-7f7c-462d-a6c3-e841347d0b5a cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#rolesanywhere.create-trust-anchor\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+        "outcome": "success",
+        "provider": "rolesanywhere.amazonaws.com",
+        "type": [
+          "info"
+        ]
+      },
+      "related": {
+        "entity": [
+          "ACCESSKEYID",
+          "arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08",
+          "sbgq@apejtlc.co",
+          "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+        ],
+        "user": [
+          "PRINCIPALID",
+          "sbgq@apejtlc.co"
+        ]
+      },
+      "service": {
+        "target": {
+          "entity": {
+            "id": [
+              "arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08"
+            ]
+          }
+        }
+      },
+      "source": {
+        "address": "198.51.100.124",
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "target": {
+        "entity": {
+          "id": [
+            "arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08"
+          ]
+        }
+      },
+      "tls": {
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "client": {
+          "server_name": "rolesanywhere.us-east-1.amazonaws.com"
+        },
+        "version": "1.3",
+        "version_protocol": "tls"
+      },
+      "user": {
+        "email": "sbgq@apejtlc.co",
+        "entity": {
+          "id": [
+            "arn:aws:iam::000000000:user/sbgq@apejtlc.co"
+          ]
+        },
+        "id": "PRINCIPALID",
+        "name": "sbgq@apejtlc.co"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "aws-cli",
+        "original": "aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_0ca8ae59-7f7c-462d-a6c3-e841347d0b5a cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#rolesanywhere.create-trust-anchor",
+        "version": "2.17.60"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-11-11T01:02:03.123456789Z",
+      "_conf": {
+        "retain": "all"
+      },
+      "message": "{\"awsRegion\":\"us-east-1\",\"eventCategory\":\"Management\",\"eventID\":\"3162392c-47ba-44be-a4f7-100997c85af0\",\"eventName\":\"CreateTrustAnchor\",\"eventSource\":\"rolesanywhere.amazonaws.com\",\"eventTime\":\"2052-10-10T12:55:43Z\",\"eventType\":\"AwsApiCall\",\"eventVersion\":\"1.10\",\"readOnly\":false,\"recipientAccountId\":\"000000000\",\"requestID\":\"dae9331a-f35f-4427-9bdc-d8e4241fdb0c\",\"requestParameters\":{\"enabled\":false,\"name\":\"cloudtrail-test\",\"source\":{\"sourceData\":{\"acmPcaArn\":\"arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1\"},\"sourceType\":\"AWS_ACM_PCA\"}},\"responseElements\":{\"trustAnchor\":{\"createdAt\":\"2052-10-10T12:55:43.023139433Z\",\"enabled\":false,\"name\":\"cloudtrail-test\",\"notificationSettings\":[{\"channel\":\"ALL\",\"configuredBy\":\"rolesanywhere.amazonaws.com\",\"enabled\":true,\"event\":\"CA_CERTIFICATE_EXPIRY\",\"threshold\":45},{\"channel\":\"ALL\",\"configuredBy\":\"rolesanywhere.amazonaws.com\",\"enabled\":true,\"event\":\"END_ENTITY_CERTIFICATE_EXPIRY\",\"threshold\":45}],\"source\":{\"sourceData\":{\"acmPcaArn\":\"arn:aws:acm-pca:us-east-1:000000000:certificate-authority/52bfc1d1-6825-4876-bacf-69f465bbcda1\"},\"sourceType\":\"AWS_ACM_PCA\"},\"trustAnchorArn\":\"arn:aws:rolesanywhere:us-east-1:000000000:trust-anchor/5a111514-ddfd-4824-a680-396537e23f08\",\"trustAnchorId\":\"5a111514-ddfd-4824-a680-396537e23f08\",\"updatedAt\":\"2052-10-10T12:55:43.023139433Z\"}},\"sourceIPAddress\":\"198.51.100.124\",\"tlsDetails\":{\"cipherSuite\":\"TLS_AES_128_GCM_SHA256\",\"clientProvidedHostHeader\":\"rolesanywhere.us-east-1.amazonaws.com\",\"tlsVersion\":\"TLSv1.3\"},\"userAgent\":\"aws-cli/2.17.60 md/awscrt#0.21.2 ua/2.0 os/macos#23.6.0 md/arch#x86_64 lang/python#3.12.6 md/pyimpl#CPython exec-env/grimoire_0ca8ae59-7f7c-462d-a6c3-e841347d0b5a cfg/retry-mode#standard md/installer#exe md/prompt#off md/command#rolesanywhere.create-trust-anchor\",\"userIdentity\":{\"accessKeyId\":\"ACCESSKEYID\",\"accountId\":\"000000000\",\"arn\":\"arn:aws:iam::000000000:user/sbgq@apejtlc.co\",\"principalId\":\"PRINCIPALID\",\"type\":\"IAMUser\",\"userName\":\"sbgq@apejtlc.co\"}}",
+      "tags": [
+        "preserve_original_event",
+        "actor_target_mapping"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "cloudtrail",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-aws-cloudtrail-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "aws",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

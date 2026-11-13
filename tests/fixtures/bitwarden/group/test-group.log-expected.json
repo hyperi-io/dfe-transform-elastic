@@ -1,0 +1,73 @@
+{
+  "expected": [
+    {
+      "bitwarden": {
+        "group": {
+          "access_all": true,
+          "collection": [
+            {
+              "id": "defb3249-e745-4ff9-b2d8-487a1ccb8d05",
+              "read_only": true
+            }
+          ],
+          "external": {
+            "id": "external_id_123456"
+          },
+          "id": "585c48d6-d7a5-4be5-929e-62ebc9de5576",
+          "name": "Development Team"
+        },
+        "object": "group"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"name\":\"Development Team\",\"accessAll\":true,\"externalId\":\"external_id_123456\",\"object\":\"group\",\"id\":\"585c48d6-d7a5-4be5-929e-62ebc9de5576\",\"collections\":[{\"id\":\"defb3249-e745-4ff9-b2d8-487a1ccb8d05\",\"readOnly\":true}]}",
+        "type": [
+          "group"
+        ]
+      },
+      "group": {
+        "id": "585c48d6-d7a5-4be5-929e-62ebc9de5576",
+        "name": "Development Team"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"name\":\"Development Team\",\"accessAll\":true,\"externalId\":\"external_id_123456\",\"object\":\"group\",\"id\":\"585c48d6-d7a5-4be5-929e-62ebc9de5576\",\"collections\":[{\"id\":\"defb3249-e745-4ff9-b2d8-487a1ccb8d05\",\"readOnly\":true}]}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"object\":\"list\",\"data\":[],\"continuationToken\":null}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "group",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-bitwarden-group-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "bitwarden",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

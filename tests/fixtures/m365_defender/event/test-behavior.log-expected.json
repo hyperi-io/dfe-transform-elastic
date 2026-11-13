@@ -1,0 +1,281 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-02-16T08:21:43.512Z",
+      "cloud": {
+        "instance": {
+          "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710"
+        }
+      },
+      "device": {
+        "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "id": "behavior-abc123-def456",
+        "kind": "event",
+        "original": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-BehaviorInfo\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2054-02-16T08:21:43.512Z\",\"BehaviorId\":\"behavior-abc123-def456\",\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Title\":\"SuspiciousPowerShellCommand\",\"DetectionSource\":\"\",\"ActionType\":\"SuspiciousPowerShellCommand\",\"Categories\":[\"Execution\"],\"AttackTechniques\":\"\",\"Description\":\"PowerShell executed with encoded command.\",\"Severity\":\"High\",\"DeviceId\":\"18d9c6dfbfa32b9b8a314ffea25a360309622710\",\"DeviceName\":\"XeilUadttze3\",\"AccountObjectId\":null,\"AccountUpn\":null,\"StartTime\":\"2054-02-16T08:20:58.000Z\",\"EndTime\":\"2054-02-16T08:21:42.000Z\",\"DataSources\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2054-02-16T08:21:43.512Z\"}",
+        "provider": "Microsoft Defender for Endpoint",
+        "severity": 73,
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710",
+        "name": "xeiluadttze3"
+      },
+      "m365_defender": {
+        "event": {
+          "action": {
+            "type": "SuspiciousPowerShellCommand"
+          },
+          "alert": {
+            "categories": [
+              "Execution"
+            ]
+          },
+          "behavior_id": "behavior-abc123-def456",
+          "category": "AdvancedHunting-BehaviorInfo",
+          "description": "PowerShell executed with encoded command.",
+          "device": {
+            "id": "18d9c6dfbfa32b9b8a314ffea25a360309622710",
+            "name": "XeilUadttze3"
+          },
+          "end_time": "2054-02-16T08:21:42.000Z",
+          "operation_name": "Publish",
+          "service_source": "Microsoft Defender for Endpoint",
+          "severity": "high",
+          "start_time": "2054-02-16T08:20:58.000Z",
+          "tenant": {
+            "id": "61684dd7-ec2c-4d00-b86e-97096b240117",
+            "name": "DefaultTenant"
+          },
+          "time": "2054-02-16T08:21:43.512Z",
+          "timestamp": "2054-02-16T08:21:43.512Z",
+          "title": "SuspiciousPowerShellCommand"
+        }
+      },
+      "message": "SuspiciousPowerShellCommand",
+      "related": {
+        "hosts": [
+          "xeiluadttze3",
+          "18d9c6dfbfa32b9b8a314ffea25a360309622710"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2054-02-19T12:34:56.789Z",
+      "application": {
+        "name": "cmd.exe"
+      },
+      "cloud": {
+        "instance": {
+          "id": "device-abcdef"
+        },
+        "provider": "Azure"
+      },
+      "destination": {
+        "ip": "198.51.100.124"
+      },
+      "device": {
+        "id": "device-abcdef"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "email": {
+        "message_id": "msg-98765",
+        "subject": "Suspicious Activity"
+      },
+      "event": {
+        "category": [
+          "process"
+        ],
+        "id": "behavior-1234-abcd-5678-efgh",
+        "kind": "event",
+        "original": "{\"time\":\"2054-02-19T12:34:56.789Z\",\"category\":\"AdvancedHunting-BehaviorEntities\",\"operationName\":\"Publish\",\"tenantId\":\"00000000-0000-0000-0000-000000000000\",\"properties\":{\"Timestamp\":\"2054-02-19T12:34:56.789Z\",\"BehaviorId\":\"behavior-1234-abcd-5678-efgh\",\"Categories\":[\"Execution\"],\"ServiceSource\":\"Defender for Cloud Apps\",\"DetectionSource\":\"UEBA\",\"DataSources\":\"CloudApps, UEBA\",\"EntityType\":\"Process\",\"EntityRole\":\"Impacted\",\"DetailedEntityRole\":\"ChildProcess\",\"FileName\":\"malicious.exe\",\"FolderPath\":\"C:\\\\Windows\\\\Temp\",\"SHA1\":\"ea97a1dd9a7b1f3b2997affd78726203dac70601\",\"SHA256\":\"b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441\",\"FileSize\":123456,\"ThreatFamily\":\"ExampleMalware\",\"RemoteIP\":\"198.51.100.124\",\"RemoteUrl\":\"http://malicious.example.com\",\"AccountName\":\"user\",\"AccountDomain\":\"CORP\",\"AccountSid\":\"S-1-5-21-0000000000-000000000-000000000-1001\",\"AccountObjectId\":\"60763458-7366-3513-4028-632370982420\",\"CloudPlatform\":\"Azure\",\"CloudResourceType\":\"VM\",\"CloudResourceId\":\"vm-12345\",\"CloudSubscriptionId\":\"sub-67890\",\"AccountUpn\":\"user@dobjr.com\",\"DeviceId\":\"device-abcdef\",\"DeviceName\":\"WSMM08.dobjr.com\",\"LocalIP\":\"198.51.100.124\",\"NetworkMessageId\":\"msg-98765\",\"EmailSubject\":\"Suspicious Activity\",\"EmailClusterId\":\"cluster-54321\",\"Application\":\"cmd.exe\",\"ApplicationId\":123,\"OAuthApplicationId\":\"oauth-7890\",\"ProcessCommandLine\":\"cmd.exe /c start malicious.exe\",\"RegistryKey\":\"HKEY_LOCAL_MACHINE\\\\Software\\\\BadKey\",\"RegistryValueName\":\"BadValue\",\"RegistryValueData\":\"1\",\"ActionType\":\"ProcessCreation\"}}",
+        "provider": "Defender for Cloud Apps",
+        "reference": "http://malicious.example.com",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "directory": "C:\\Windows\\Temp",
+        "hash": {
+          "sha1": "ea97a1dd9a7b1f3b2997affd78726203dac70601",
+          "sha256": "b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441"
+        },
+        "name": "malicious.exe",
+        "size": 123456
+      },
+      "host": {
+        "id": "device-abcdef",
+        "name": "wsmm08.dobjr.com"
+      },
+      "m365_defender": {
+        "event": {
+          "account": {
+            "domain": "CORP",
+            "name": "user",
+            "object_id": "60763458-7366-3513-4028-632370982420",
+            "sid": "S-1-5-21-0000000000-000000000-000000000-1001",
+            "upn": "user@dobjr.com"
+          },
+          "action": {
+            "type": "ProcessCreation"
+          },
+          "alert": {
+            "categories": [
+              "Execution"
+            ]
+          },
+          "application": "cmd.exe",
+          "application_id": "123",
+          "behavior_id": "behavior-1234-abcd-5678-efgh",
+          "category": "AdvancedHunting-BehaviorEntities",
+          "cloud_platform": "Azure",
+          "cloud_resource_id": "vm-12345",
+          "cloud_resource_type": "VM",
+          "cloud_subscription_id": "sub-67890",
+          "data_sources": "CloudApps, UEBA",
+          "detailed_entity_role": "ChildProcess",
+          "detection": {
+            "source": "UEBA"
+          },
+          "device": {
+            "id": "device-abcdef",
+            "name": "WSMM08.dobjr.com"
+          },
+          "email": {
+            "cluster_id": "cluster-54321",
+            "subject": "Suspicious Activity"
+          },
+          "entity_role": "Impacted",
+          "entity_type": "Process",
+          "file": {
+            "name": "malicious.exe",
+            "size": 123456
+          },
+          "folder_path": "C:\\Windows\\Temp",
+          "local": {
+            "ip": "198.51.100.124"
+          },
+          "network": {
+            "message_id": "msg-98765"
+          },
+          "oauth_application_id": "oauth-7890",
+          "operation_name": "Publish",
+          "process": {
+            "command_line": "cmd.exe /c start malicious.exe"
+          },
+          "registry": {
+            "key": "HKEY_LOCAL_MACHINE\\Software\\BadKey",
+            "value_data": "1",
+            "value_name": "BadValue"
+          },
+          "remote": {
+            "ip": "198.51.100.124",
+            "url": "http://malicious.example.com"
+          },
+          "service_source": "Defender for Cloud Apps",
+          "sha1": "ea97a1dd9a7b1f3b2997affd78726203dac70601",
+          "sha256": "b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441",
+          "tenant": {
+            "id": "00000000-0000-0000-0000-000000000000"
+          },
+          "threat": {
+            "family": "ExampleMalware"
+          },
+          "time": "2054-02-19T12:34:56.789Z",
+          "timestamp": "2054-02-19T12:34:56.789Z"
+        }
+      },
+      "process": {
+        "args": [
+          "cmd.exe",
+          "/c",
+          "start",
+          "malicious.exe"
+        ],
+        "args_count": 4,
+        "command_line": "cmd.exe /c start malicious.exe",
+        "executable": "cmd.exe",
+        "name": "cmd.exe"
+      },
+      "registry": {
+        "data": {
+          "strings": [
+            "1"
+          ]
+        },
+        "key": "HKEY_LOCAL_MACHINE\\Software\\BadKey"
+      },
+      "related": {
+        "hash": [
+          "b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441",
+          "ea97a1dd9a7b1f3b2997affd78726203dac70601"
+        ],
+        "hosts": [
+          "wsmm08.dobjr.com",
+          "CORP",
+          "device-abcdef"
+        ],
+        "ip": [
+          "198.51.100.124"
+        ],
+        "user": [
+          "60763458-7366-3513-4028-632370982420",
+          "user"
+        ]
+      },
+      "source": {
+        "ip": "198.51.100.124"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "domain": "CORP",
+        "id": "S-1-5-21-0000000000-000000000-000000000-1001",
+        "name": "user"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Tenant\":\"DefaultTenant\",\"category\":\"AdvancedHunting-BehaviorInfo\",\"operationName\":\"Publish\",\"properties\":{\"Timestamp\":\"2054-02-16T08:21:43.512Z\",\"BehaviorId\":\"behavior-abc123-def456\",\"ServiceSource\":\"Microsoft Defender for Endpoint\",\"Title\":\"SuspiciousPowerShellCommand\",\"DetectionSource\":\"\",\"ActionType\":\"SuspiciousPowerShellCommand\",\"Categories\":[\"Execution\"],\"AttackTechniques\":\"\",\"Description\":\"PowerShell executed with encoded command.\",\"Severity\":\"High\",\"DeviceId\":\"18d9c6dfbfa32b9b8a314ffea25a360309622710\",\"DeviceName\":\"XeilUadttze3\",\"AccountObjectId\":null,\"AccountUpn\":null,\"StartTime\":\"2054-02-16T08:20:58.000Z\",\"EndTime\":\"2054-02-16T08:21:42.000Z\",\"DataSources\":\"\"},\"tenantId\":\"61684dd7-ec2c-4d00-b86e-97096b240117\",\"time\":\"2054-02-16T08:21:43.512Z\"}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "message": "{\"time\":\"2054-02-19T12:34:56.789Z\",\"category\":\"AdvancedHunting-BehaviorEntities\",\"operationName\":\"Publish\",\"tenantId\":\"00000000-0000-0000-0000-000000000000\",\"properties\":{\"Timestamp\":\"2054-02-19T12:34:56.789Z\",\"BehaviorId\":\"behavior-1234-abcd-5678-efgh\",\"Categories\":[\"Execution\"],\"ServiceSource\":\"Defender for Cloud Apps\",\"DetectionSource\":\"UEBA\",\"DataSources\":\"CloudApps, UEBA\",\"EntityType\":\"Process\",\"EntityRole\":\"Impacted\",\"DetailedEntityRole\":\"ChildProcess\",\"FileName\":\"malicious.exe\",\"FolderPath\":\"C:\\\\Windows\\\\Temp\",\"SHA1\":\"ea97a1dd9a7b1f3b2997affd78726203dac70601\",\"SHA256\":\"b2c2b90097ae9c649beaa1a3909ee30018bd89c4010d188ef381820e4047c441\",\"FileSize\":123456,\"ThreatFamily\":\"ExampleMalware\",\"RemoteIP\":\"198.51.100.124\",\"RemoteUrl\":\"http://malicious.example.com\",\"AccountName\":\"user\",\"AccountDomain\":\"CORP\",\"AccountSid\":\"S-1-5-21-0000000000-000000000-000000000-1001\",\"AccountObjectId\":\"60763458-7366-3513-4028-632370982420\",\"CloudPlatform\":\"Azure\",\"CloudResourceType\":\"VM\",\"CloudResourceId\":\"vm-12345\",\"CloudSubscriptionId\":\"sub-67890\",\"AccountUpn\":\"user@dobjr.com\",\"DeviceId\":\"device-abcdef\",\"DeviceName\":\"WSMM08.dobjr.com\",\"LocalIP\":\"198.51.100.124\",\"NetworkMessageId\":\"msg-98765\",\"EmailSubject\":\"Suspicious Activity\",\"EmailClusterId\":\"cluster-54321\",\"Application\":\"cmd.exe\",\"ApplicationId\":123,\"OAuthApplicationId\":\"oauth-7890\",\"ProcessCommandLine\":\"cmd.exe /c start malicious.exe\",\"RegistryKey\":\"HKEY_LOCAL_MACHINE\\\\Software\\\\BadKey\",\"RegistryValueName\":\"BadValue\",\"RegistryValueData\":\"1\",\"ActionType\":\"ProcessCreation\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "url.extension": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-m365_defender-event-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "m365_defender",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

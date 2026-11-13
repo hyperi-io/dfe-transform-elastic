@@ -1,0 +1,173 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-06-30T02:43:31.836681529Z",
+      "claude_cowork": {
+        "events": {
+          "claude": {
+            "deployment_mode": "1p"
+          },
+          "decision": "accept",
+          "event": {
+            "name": "tool_decision",
+            "sequence": 4,
+            "timestamp": "2054-06-30T02:43:31.836Z"
+          },
+          "host": {
+            "arch": "arm64"
+          },
+          "os": {
+            "type": "darwin",
+            "version": "26.5.1"
+          },
+          "prompt": {
+            "id": "60763458-7366-3513-4028-632370982420"
+          },
+          "service": {
+            "name": "cowork",
+            "version": "1.15962.1"
+          },
+          "session": {
+            "id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd"
+          },
+          "source": "config",
+          "terminal": {
+            "type": "non-interactive"
+          },
+          "user": {
+            "account_id": "user_01ExampleAccountId",
+            "account_uuid": "93713061-9622-2531-3758-372154648850"
+          }
+        }
+      },
+      "data_stream": {
+        "dataset": "claude_cowork.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "action": "tool_decision",
+        "category": [
+          "iam"
+        ],
+        "kind": "event",
+        "original": "{\"observed_timestamp\":\"2054-06-30T02:43:31.836690337Z\",\"@timestamp\":\"2054-06-30T02:43:31.836681529Z\",\"resource\":{\"attributes\":{\"service.name\":\"cowork\",\"service.version\":\"1.15962.1\",\"claude.deployment_mode\":\"1p\",\"host.arch\":\"arm64\",\"os.type\":\"darwin\",\"os.version\":\"26.5.1\"}},\"data_stream\":{\"namespace\":\"default\",\"type\":\"logs\",\"dataset\":\"claude_cowork.events.otel\"},\"scope\":{\"name\":\"com.anthropic.claude_code.events\",\"version\":\"2.1.187\"},\"event_name\":\"tool_decision\",\"attributes\":{\"tool_name\":\"ToolSearch\",\"decision\":\"accept\",\"service.name\":\"cowork\",\"user.id\":\"c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4\",\"claude.deployment_mode\":\"1p\",\"tool_use_id\":\"toolu_01RAwyexAPRJ5UNCmLKK8Z96\",\"terminal.type\":\"non-interactive\",\"user.account_uuid\":\"93713061-9622-2531-3758-372154648850\",\"event.name\":\"tool_decision\",\"os.type\":\"darwin\",\"source\":\"config\",\"event.timestamp\":\"2054-06-30T02:43:31.836Z\",\"os.version\":\"26.5.1\",\"prompt.id\":\"60763458-7366-3513-4028-632370982420\",\"event.sequence\":4,\"service.version\":\"1.15962.1\",\"user.email\":\"user@example.com\",\"host.arch\":\"arm64\",\"organization.id\":\"60763458-7366-3513-4028-632370982420\",\"user.account_id\":\"user_01ExampleAccountId\",\"session.id\":\"cdaccfff-efcf-cacc-dbaa-ddacecbebfcd\"},\"body\":{\"text\":\"claude_code.tool_decision\"},\"event\":{},\"tags\":[\"preserve_original_event\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "outcome": "success",
+        "provider": "claude-cowork",
+        "type": [
+          "info"
+        ]
+      },
+      "gen_ai": {
+        "provider": {
+          "name": "anthropic"
+        },
+        "tool": {
+          "call": {
+            "id": "toolu_01RAwyexAPRJ5UNCmLKK8Z96"
+          },
+          "name": "ToolSearch"
+        }
+      },
+      "observed_timestamp": "2054-06-30T02:43:31.836690337Z",
+      "organization": {
+        "id": "60763458-7366-3513-4028-632370982420"
+      },
+      "related": {
+        "user": [
+          "user@example.com",
+          "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+        ]
+      },
+      "resource": {
+        "attributes": {
+          "claude.deployment_mode": "1p",
+          "host.arch": "arm64",
+          "os.type": "darwin",
+          "os.version": "26.5.1",
+          "service.name": "cowork",
+          "service.version": "1.15962.1"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.187"
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2054-06-30T02:43:31.836681529Z",
+      "attributes": {
+        "claude.deployment_mode": "1p",
+        "decision": "accept",
+        "event.name": "tool_decision",
+        "event.sequence": 4,
+        "event.timestamp": "2054-06-30T02:43:31.836Z",
+        "host.arch": "arm64",
+        "organization.id": "60763458-7366-3513-4028-632370982420",
+        "os.type": "darwin",
+        "os.version": "26.5.1",
+        "prompt.id": "60763458-7366-3513-4028-632370982420",
+        "service.name": "cowork",
+        "service.version": "1.15962.1",
+        "session.id": "cdaccfff-efcf-cacc-dbaa-ddacecbebfcd",
+        "source": "config",
+        "terminal.type": "non-interactive",
+        "tool_name": "ToolSearch",
+        "tool_use_id": "toolu_01RAwyexAPRJ5UNCmLKK8Z96",
+        "user.account_id": "user_01ExampleAccountId",
+        "user.account_uuid": "93713061-9622-2531-3758-372154648850",
+        "user.email": "user@example.com",
+        "user.id": "c9e8a4e5d6e0f7e1c4b0e5f2b2c4b1a4d6c7d7a4f3e6d3c5f7e4f1a3b4e2a0b4"
+      },
+      "body": {
+        "text": "claude_code.tool_decision"
+      },
+      "data_stream": {
+        "dataset": "claude_cowork.events.otel",
+        "namespace": "default",
+        "type": "logs"
+      },
+      "event_name": "tool_decision",
+      "observed_timestamp": "2054-06-30T02:43:31.836690337Z",
+      "resource": {
+        "attributes": {
+          "claude.deployment_mode": "1p",
+          "host.arch": "arm64",
+          "os.type": "darwin",
+          "os.version": "26.5.1",
+          "service.name": "cowork",
+          "service.version": "1.15962.1"
+        }
+      },
+      "scope": {
+        "name": "com.anthropic.claude_code.events",
+        "version": "2.1.187"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-claude_cowork-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "claude_cowork",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

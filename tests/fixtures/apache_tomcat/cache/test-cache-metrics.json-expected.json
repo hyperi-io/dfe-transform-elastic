@@ -1,0 +1,81 @@
+{
+  "expected": [
+    {
+      "apache_tomcat": {
+        "cache": {
+          "application_name": "/sample",
+          "hit": {
+            "count": 5
+          },
+          "lookup": {
+            "count": 14
+          },
+          "object": {
+            "size": {
+              "max": {
+                "kb": 512
+              }
+            }
+          },
+          "size": {
+            "current": {
+              "kb": 5
+            },
+            "max": {
+              "kb": 10240
+            }
+          },
+          "ttl": {
+            "ms": 5000
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "web"
+        ],
+        "kind": "metric",
+        "module": "apache_tomcat",
+        "type": [
+          "info"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "prometheus": {
+        "labels": {
+          "context": "/sample",
+          "host": "localhost",
+          "instance": "127.0.0.1:9090",
+          "job": "prometheus",
+          "name": "Cache"
+        },
+        "metrics": {
+          "Catalina_WebResourceRoot_hitCount": 5,
+          "Catalina_WebResourceRoot_lookupCount": 14,
+          "Catalina_WebResourceRoot_maxSize": 10240,
+          "Catalina_WebResourceRoot_objectMaxSize": 512,
+          "Catalina_WebResourceRoot_size": 5,
+          "Catalina_WebResourceRoot_ttl": 5000
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "cache",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-apache_tomcat-cache-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "apache_tomcat",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,903 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.created",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "creation"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "abcD3ojfdbjfg"
+        ]
+      },
+      "user": {
+        "email": "fnbyduoqclkdy@dobjr.com",
+        "target": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "full_name": "Ndijt Rncp",
+          "id": "abcD3ojfdbjfg"
+        }
+      },
+      "zoom": {
+        "account_id": "AAAAAA",
+        "creation_type": "create",
+        "operator": "fnbyduoqclkdy@dobjr.com",
+        "user": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "first_name": "Ndijt",
+          "id": "abcD3ojfdbjfg",
+          "last_name": "Rncp",
+          "type": "3"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.invitation_accepted",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "sbyjt3ODg"
+        ]
+      },
+      "user": {
+        "email": "zdzsf@nakle.dejarnybn.dfgfdgf",
+        "full_name": "Zdjva DipvQfxvkr",
+        "id": "sbyjt3ODg"
+      },
+      "zoom": {
+        "account_id": "EPjyjVYxHMA",
+        "user": {
+          "email": "zdzsf@nakle.dejarnybn.dfgfdgf",
+          "first_name": "Zdjva",
+          "id": "sbyjt3ODg",
+          "last_name": "DipvQfxvkr",
+          "type": 1
+        }
+      }
+    },
+    {
+      "@timestamp": "2047-07-19T18:10:54.861Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.updated",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "uLobbbbbbbb_qQsQ",
+          "uLobbbbbbbb_qQsQ"
+        ]
+      },
+      "user": {
+        "email": "trjjnf1065+eei_vf@gmail.com",
+        "id": "uLobbbbbbbb_qQsQ",
+        "target": {
+          "id": "uLobbbbbbbb_qQsQ"
+        }
+      },
+      "zoom": {
+        "account_id": "lAA_EBBBBBBB",
+        "old_values": {
+          "company": "NotZoom",
+          "id": "uLobbbbbbbb_qQsQ"
+        },
+        "operator": "trjjnf1065+eei_vf@gmail.com",
+        "operator_id": "uLobbbbbbbb_qQsQ",
+        "user": {
+          "company": "Zoom",
+          "id": "uLobbbbbbbb_qQsQ"
+        }
+      }
+    },
+    {
+      "@timestamp": "2047-07-19T21:47:06.929Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.settings_updated",
+        "category": [
+          "configuration",
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "uLoRgfbbTayCX6r2Q_qQsQ",
+          "uL34AAbbbbAAAAAAQsQ"
+        ]
+      },
+      "user": {
+        "email": "ycsgjalmeyapun@gmail.com",
+        "id": "uLoRgfbbTayCX6r2Q_qQsQ",
+        "target": {
+          "id": "uL34AAbbbbAAAAAAQsQ"
+        }
+      },
+      "zoom": {
+        "account_id": "CAl6ByEyAq8KK_CCCCCC",
+        "old_values": {
+          "id": "uL34AAbbbbAAAAAAQsQ",
+          "settings": {
+            "in_meeting": {
+              "private_chat": true
+            }
+          }
+        },
+        "operator": "ycsgjalmeyapun@gmail.com",
+        "operator_id": "uLoRgfbbTayCX6r2Q_qQsQ",
+        "settings": {
+          "in_meeting": {
+            "private_chat": false
+          }
+        },
+        "user": {
+          "id": "uL34AAbbbbAAAAAAQsQ"
+        }
+      }
+    },
+    {
+      "@timestamp": "2048-06-29T17:32:19.427Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.settings_updated",
+        "category": [
+          "configuration",
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "fdhjfdhsj536274gfd",
+          "fdhjfdhsj536274gfd"
+        ]
+      },
+      "user": {
+        "email": "nnybtfsfpo@ldxeogscmoau72.com",
+        "id": "fdhjfdhsj536274gfd",
+        "target": {
+          "id": "fdhjfdhsj536274gfd"
+        }
+      },
+      "zoom": {
+        "account_id": "EPbbbbb@@@@@2sfdfdA",
+        "old_values": {
+          "id": "fdhjfdhsj536274gfd",
+          "settings": {
+            "meeting_authentication": true
+          }
+        },
+        "operator": "nnybtfsfpo@ldxeogscmoau72.com",
+        "operator_id": "fdhjfdhsj536274gfd",
+        "settings": {
+          "meeting_authentication": false
+        },
+        "user": {
+          "id": "fdhjfdhsj536274gfd"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.deactivated",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "z8yCxjabcdEFGHfp8uQ",
+          "abcD3ojfdbjfg"
+        ]
+      },
+      "user": {
+        "email": "fnbyduoqclkdy@dobjr.com",
+        "id": "z8yCxjabcdEFGHfp8uQ",
+        "target": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "full_name": "Ndijt Rncp",
+          "id": "abcD3ojfdbjfg"
+        }
+      },
+      "zoom": {
+        "account_id": "AAAAAABBBB",
+        "operator": "fnbyduoqclkdy@dobjr.com",
+        "operator_id": "z8yCxjabcdEFGHfp8uQ",
+        "user": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "first_name": "Ndijt",
+          "id": "abcD3ojfdbjfg",
+          "last_name": "Rncp",
+          "type": 1
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.activated",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "z8yCxjabcdEFGHfp8uQ",
+          "abcD3ojfdbjfg"
+        ]
+      },
+      "user": {
+        "email": "fnbyduoqclkdy@dobjr.com",
+        "id": "z8yCxjabcdEFGHfp8uQ",
+        "target": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "full_name": "Ndijt Rncp",
+          "id": "abcD3ojfdbjfg"
+        }
+      },
+      "zoom": {
+        "account_id": "AAAAAABBBB",
+        "operator": "fnbyduoqclkdy@dobjr.com",
+        "operator_id": "z8yCxjabcdEFGHfp8uQ",
+        "user": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "first_name": "Ndijt",
+          "id": "abcD3ojfdbjfg",
+          "last_name": "Rncp",
+          "type": 3
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.disassociated",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "z8yCxjabcdEFGHfp8uQ",
+          "abcD3ojfdbjfg"
+        ]
+      },
+      "user": {
+        "email": "fnbyduoqclkdy@dobjr.com",
+        "id": "z8yCxjabcdEFGHfp8uQ",
+        "target": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "full_name": "Ndijt Rncp",
+          "id": "abcD3ojfdbjfg"
+        }
+      },
+      "zoom": {
+        "account_id": "AAAAAABBBB",
+        "operator": "fnbyduoqclkdy@dobjr.com",
+        "operator_id": "z8yCxjabcdEFGHfp8uQ",
+        "user": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "first_name": "Ndijt",
+          "id": "abcD3ojfdbjfg",
+          "last_name": "Rncp",
+          "type": 3
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.deleted",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "deletion"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "z8yCxjabcdEFGHfp8uQ",
+          "abcD3ojfdbjfg"
+        ]
+      },
+      "user": {
+        "email": "fnbyduoqclkdy@dobjr.com",
+        "id": "z8yCxjabcdEFGHfp8uQ",
+        "target": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "full_name": "Ndijt Rncp",
+          "id": "abcD3ojfdbjfg"
+        }
+      },
+      "zoom": {
+        "account_id": "AAAAAABBBB",
+        "operator": "fnbyduoqclkdy@dobjr.com",
+        "operator_id": "z8yCxjabcdEFGHfp8uQ",
+        "user": {
+          "email": "jfvpqkcwfmt@dobjr.com",
+          "first_name": "Ndijt",
+          "id": "abcD3ojfdbjfg",
+          "last_name": "Rncp",
+          "type": "3"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.presence_status_updated",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "z8ycx1223fq"
+        ]
+      },
+      "user": {
+        "email": "sfbjawxdyo@ejkcdc.com",
+        "id": "z8ycx1223fq"
+      },
+      "zoom": {
+        "account_id": "EPjfyjxHMA",
+        "user": {
+          "email": "sfbjawxdyo@ejkcdc.com",
+          "id": "z8ycx1223fq",
+          "presence_status": "Available"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.personal_notes_updated",
+        "category": [
+          "iam"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "change"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "z8aggp8uq"
+        ]
+      },
+      "user": {
+        "email": "kafnhcci@fsnpl.ghm",
+        "id": "z8aggp8uq",
+        "target": {
+          "email": "kafnhcci@fsnpl.ghm",
+          "id": "z8aggp8uq"
+        }
+      },
+      "zoom": {
+        "account_id": "EPfhhdrYxHMA",
+        "old_values": {
+          "personal_notes": "this is the old note"
+        },
+        "user": {
+          "email": "kafnhcci@fsnpl.ghm",
+          "id": "z8aggp8uq",
+          "personal_notes": "Out of Office until February 31"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.signed_in",
+        "category": [
+          "authentication"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "start"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "djkglfdgkjdflghfdpe"
+        ]
+      },
+      "user": {
+        "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+        "id": "djkglfdgkjdflghfdpe"
+      },
+      "zoom": {
+        "account_id": "dsjfosdfpdosgifdjg",
+        "user": {
+          "client_type": "android",
+          "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+          "id": "djkglfdgkjdflghfdpe",
+          "version": "4.5.3308.0902"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.signed_out",
+        "category": [
+          "authentication"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "end"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "djkglfdgkjdflghfdpe"
+        ]
+      },
+      "user": {
+        "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+        "id": "djkglfdgkjdflghfdpe"
+      },
+      "zoom": {
+        "account_id": "dsjfosdfpdosgifdjg",
+        "user": {
+          "client_type": "android",
+          "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+          "id": "djkglfdgkjdflghfdpe",
+          "version": "4.5.3308.0902"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user.signed_in",
+        "category": [
+          "authentication"
+        ],
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "start"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "related": {
+        "user": [
+          "WYVlJyXXXXXXXXXXXXX"
+        ]
+      },
+      "user": {
+        "email": "username@elastic",
+        "id": "WYVlJyXXXXXXXXXXXXX"
+      },
+      "zoom": {
+        "account_id": "HzozXXXXXXXX",
+        "user": {
+          "client_type": "iphone",
+          "email": "username@elastic",
+          "id": "WYVlJyXXXXXXXXXXXXX",
+          "login_type": 101,
+          "version": "6.5.1.25747"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "zoom": {
+        "event": "user.created",
+        "payload": {
+          "account_id": "AAAAAA",
+          "creation_type": "create",
+          "object": {
+            "email": "jfvpqkcwfmt@dobjr.com",
+            "first_name": "Ndijt",
+            "id": "abcD3ojfdbjfg",
+            "last_name": "Rncp",
+            "type": "3"
+          },
+          "operator": "fnbyduoqclkdy@dobjr.com"
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.invitation_accepted",
+        "payload": {
+          "account_id": "EPjyjVYxHMA",
+          "object": {
+            "email": "zdzsf@nakle.dejarnybn.dfgfdgf",
+            "first_name": "Zdjva",
+            "id": "sbyjt3ODg",
+            "last_name": "DipvQfxvkr",
+            "type": 1
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.updated",
+        "payload": {
+          "account_id": "lAA_EBBBBBBB",
+          "object": {
+            "company": "Zoom",
+            "id": "uLobbbbbbbb_qQsQ"
+          },
+          "old_object": {
+            "company": "NotZoom",
+            "id": "uLobbbbbbbb_qQsQ"
+          },
+          "operator": "trjjnf1065+eei_vf@gmail.com",
+          "operator_id": "uLobbbbbbbb_qQsQ",
+          "time_stamp": 2447172654861
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.settings_updated",
+        "payload": {
+          "account_id": "CAl6ByEyAq8KK_CCCCCC",
+          "object": {
+            "id": "uL34AAbbbbAAAAAAQsQ",
+            "settings": {
+              "in_meeting": {
+                "private_chat": false
+              }
+            }
+          },
+          "old_object": {
+            "id": "uL34AAbbbbAAAAAAQsQ",
+            "settings": {
+              "in_meeting": {
+                "private_chat": true
+              }
+            }
+          },
+          "operator": "ycsgjalmeyapun@gmail.com",
+          "operator_id": "uLoRgfbbTayCX6r2Q_qQsQ",
+          "time_stamp": 2447185626929
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.settings_updated",
+        "payload": {
+          "account_id": "EPbbbbb@@@@@2sfdfdA",
+          "object": {
+            "id": "fdhjfdhsj536274gfd",
+            "settings": {
+              "meeting_authentication": false
+            }
+          },
+          "old_object": {
+            "id": "fdhjfdhsj536274gfd",
+            "settings": {
+              "meeting_authentication": true
+            }
+          },
+          "operator": "nnybtfsfpo@ldxeogscmoau72.com",
+          "operator_id": "fdhjfdhsj536274gfd",
+          "time_stamp": 2477064739427
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.deactivated",
+        "payload": {
+          "account_id": "AAAAAABBBB",
+          "object": {
+            "email": "jfvpqkcwfmt@dobjr.com",
+            "first_name": "Ndijt",
+            "id": "abcD3ojfdbjfg",
+            "last_name": "Rncp",
+            "type": 1
+          },
+          "operator": "fnbyduoqclkdy@dobjr.com",
+          "operator_id": "z8yCxjabcdEFGHfp8uQ"
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.activated",
+        "payload": {
+          "account_id": "AAAAAABBBB",
+          "object": {
+            "email": "jfvpqkcwfmt@dobjr.com",
+            "first_name": "Ndijt",
+            "id": "abcD3ojfdbjfg",
+            "last_name": "Rncp",
+            "type": 3
+          },
+          "operator": "fnbyduoqclkdy@dobjr.com",
+          "operator_id": "z8yCxjabcdEFGHfp8uQ"
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.disassociated",
+        "payload": {
+          "account_id": "AAAAAABBBB",
+          "object": {
+            "email": "jfvpqkcwfmt@dobjr.com",
+            "first_name": "Ndijt",
+            "id": "abcD3ojfdbjfg",
+            "last_name": "Rncp",
+            "type": 3
+          },
+          "operator": "fnbyduoqclkdy@dobjr.com",
+          "operator_id": "z8yCxjabcdEFGHfp8uQ"
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.deleted",
+        "payload": {
+          "account_id": "AAAAAABBBB",
+          "object": {
+            "email": "jfvpqkcwfmt@dobjr.com",
+            "first_name": "Ndijt",
+            "id": "abcD3ojfdbjfg",
+            "last_name": "Rncp",
+            "type": "3"
+          },
+          "operator": "fnbyduoqclkdy@dobjr.com",
+          "operator_id": "z8yCxjabcdEFGHfp8uQ"
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.presence_status_updated",
+        "payload": {
+          "account_id": "EPjfyjxHMA",
+          "object": {
+            "date_time": "2047-11-26T20:13:57Z",
+            "email": "sfbjawxdyo@ejkcdc.com",
+            "id": "z8ycx1223fq",
+            "presence_status": "Available"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.personal_notes_updated",
+        "payload": {
+          "account_id": "EPfhhdrYxHMA",
+          "object": {
+            "date_time": "2047-11-26T21:29:08Z",
+            "email": "kafnhcci@fsnpl.ghm",
+            "id": "z8aggp8uq",
+            "personal_notes": "Out of Office until February 31"
+          },
+          "old_object": {
+            "personal_notes": "this is the old note"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.signed_in",
+        "payload": {
+          "account_id": "dsjfosdfpdosgifdjg",
+          "object": {
+            "client_type": "android",
+            "date_time": "2047-09-10T14:36:10Z",
+            "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+            "id": "djkglfdgkjdflghfdpe",
+            "version": "4.5.3308.0902"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.signed_out",
+        "payload": {
+          "account_id": "dsjfosdfpdosgifdjg",
+          "object": {
+            "client_type": "android",
+            "date_time": "2047-09-10T14:36:10Z",
+            "email": "cjamxtcxrcm@fycrjnaiadmn.ghkgf",
+            "id": "djkglfdgkjdflghfdpe",
+            "version": "4.5.3308.0902"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "user.signed_in",
+        "event_ts": 2635741513153,
+        "payload": {
+          "account_id": "HzozXXXXXXXX",
+          "object": {
+            "client_type": "iphone",
+            "date_time": "2053-07-10T06:25:13Z",
+            "email": "username@elastic",
+            "id": "WYVlJyXXXXXXXXXXXXX",
+            "login_type": 101,
+            "version": "6.5.1.25747"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "webhook",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zoom-webhook-default",
+    "event_count": 14,
+    "numeric_keyword_fields": [
+      "zoom.user.type",
+      "zoom.user.login_type"
+    ],
+    "package": "zoom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

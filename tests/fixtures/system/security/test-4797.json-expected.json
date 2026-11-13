@@ -1,0 +1,618 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-01-17T22:10:41.555Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "query-existence-of-blank-password",
+        "category": [
+          "iam"
+        ],
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7",
+          "Guest"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7",
+        "target": {
+          "domain": "PUOWTDIB",
+          "name": "Guest"
+        }
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "Guest",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x61ccd940"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "39956816",
+        "time_created": "2051-01-17T22:10:41.5550438Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:10:41.532Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "query-existence-of-blank-password",
+        "category": [
+          "iam"
+        ],
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7",
+          "KFCOIvzwqxvAfeowil"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7",
+        "target": {
+          "domain": "PUOWTDIB",
+          "name": "KFCOIvzwqxvAfeowil"
+        }
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "KFCOIvzwqxvAfeowil",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x61ccd940"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "39956815",
+        "time_created": "2051-01-17T22:10:41.5328919Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:10:41.512Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "query-existence-of-blank-password",
+        "category": [
+          "iam"
+        ],
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7",
+          "EffdslqEdawywk"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7",
+        "target": {
+          "domain": "PUOWTDIB",
+          "name": "EffdslqEdawywk"
+        }
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "EffdslqEdawywk",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x61ccd940"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 65356
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "39956814",
+        "time_created": "2051-01-17T22:10:41.5127873Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:10:41.490Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "query-existence-of-blank-password",
+        "category": [
+          "iam"
+        ],
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7",
+          "antqojp"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7",
+        "target": {
+          "domain": "PUOWTDIB",
+          "name": "antqojp"
+        }
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "antqojp",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x61ccd940"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "39956813",
+        "time_created": "2051-01-17T22:10:41.4905578Z"
+      }
+    },
+    {
+      "@timestamp": "2051-01-17T22:10:41.468Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "query-existence-of-blank-password",
+        "category": [
+          "iam"
+        ],
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "related": {
+        "user": [
+          "zqay7",
+          "Administrator"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "CONTOSO",
+        "id": "S-1-5-21-000000000-000000000-000000000-00000",
+        "name": "zqay7",
+        "target": {
+          "domain": "PUOWTDIB",
+          "name": "Administrator"
+        }
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "Administrator",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "logon": {
+          "id": "0x61ccd940"
+        },
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "39956812",
+        "time_created": "2051-01-17T22:10:41.4680297Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "Guest",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 39956816,
+        "time_created": "2051-01-17T22:10:41.5550438Z"
+      }
+    },
+    {
+      "event": {
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "KFCOIvzwqxvAfeowil",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 39956815,
+        "time_created": "2051-01-17T22:10:41.5328919Z"
+      }
+    },
+    {
+      "event": {
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "EffdslqEdawywk",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 65356
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 39956814,
+        "time_created": "2051-01-17T22:10:41.5127873Z"
+      }
+    },
+    {
+      "event": {
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "antqojp",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 39956813,
+        "time_created": "2051-01-17T22:10:41.4905578Z"
+      }
+    },
+    {
+      "event": {
+        "code": "4797",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "PUOWTDIB.egmukjj.com"
+      },
+      "log": {
+        "level": "information"
+      },
+      "winlog": {
+        "activity_id": "{f617b895-5591-0944-2ef3-06d56444d816}",
+        "channel": "Security",
+        "computer_name": "PUOWTDIB.egmukjj.com",
+        "event_data": {
+          "SubjectDomainName": "CONTOSO",
+          "SubjectLogonId": "0x61ccd940",
+          "SubjectUserName": "zqay7",
+          "SubjectUserSid": "S-1-5-21-000000000-000000000-000000000-00000",
+          "TargetDomainName": "PUOWTDIB",
+          "TargetUserName": "Administrator",
+          "Workstation": "PUOWTDIB"
+        },
+        "event_id": "4797",
+        "keywords": [
+          "Audit Success"
+        ],
+        "opcode": "Info",
+        "process": {
+          "pid": 868,
+          "thread": {
+            "id": 12248
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 39956812,
+        "time_created": "2051-01-17T22:10:41.4680297Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

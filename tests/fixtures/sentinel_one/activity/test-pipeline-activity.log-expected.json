@@ -1,0 +1,2501 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-04-18T05:14:08.925Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":\"True\",\"createdAt\":\"2050-04-18T05:14:08.925421Z\",\"data\":{\"accountName\":\"Default\",\"byUser\":\"CLK\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"newValue\":true,\"role\":\"Level\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"CLK\"},\"description\":\"CLK\",\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user CLK enabled Two factor authentication on the user CLK.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:14:08.922553Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "The management user CLK enabled Two factor authentication on the user CLK.",
+      "related": {
+        "user": [
+          "CLK"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "comments": "True",
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "new": {
+              "value": "true"
+            },
+            "role": "Level",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "name": "CLK",
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user CLK enabled Two factor authentication on the user CLK."
+          },
+          "description_value": "CLK",
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-18T05:14:08.922Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "CLK",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-18T05:14:09.240Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-18T05:14:09.240427Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"ipAddress\":\"198.51.100.211\",\"reason\":null,\"role\":\"Level\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"source\":\"src\",\"userScope\":\"account\",\"username\":\"CLK\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user CLK logged in to the management console with IP Address 198.51.100.211\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:14:09.238430Z\",\"userId\":\"1234567890123456789\"}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.211"
+        ]
+      },
+      "message": "The management user CLK logged in to the management console with IP Address 198.51.100.211",
+      "related": {
+        "ip": [
+          "198.51.100.211"
+        ],
+        "user": [
+          "CLK"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "role": "Level",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "source": "src",
+            "user": {
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user CLK logged in to the management console with IP Address 198.51.100.211"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-18T05:14:09.238Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "CLK",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-05T16:11:05.469Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"User yczv Qldt added a recovery email user@example.com\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "creation"
+        ]
+      },
+      "message": "User yczv Qldt added a recovery email user@example.com",
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "role": "Admin",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "User yczv Qldt added a recovery email user@example.com"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-05T16:11:05.189Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:26:45.579Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:45.579474Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"externalIp\":\"198.51.100.74\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"system\":true,\"username\":null,\"uuid\":\"xxxxxxxxxxxx1d8e12b343e8e30\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211).\",\"secondaryDescription\":null,\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:45.579478Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "ip": [
+          "198.51.100.74"
+        ],
+        "name": "phdg-cjlyujbo-oega"
+      },
+      "message": "System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211).",
+      "related": {
+        "hosts": [
+          "phdg-cjlyujbo-oega"
+        ],
+        "ip": [
+          "198.51.100.74"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "test/default"
+            },
+            "group_name": "Default Group",
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            },
+            "system": true,
+            "uuid": "xxxxxxxxxxxx1d8e12b343e8e30"
+          },
+          "description": {
+            "primary": "System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211)."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:26:45.579Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:26:45.582Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:45.582620Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"group\":\"Default Group\",\"groupName\":\"Default Group\",\"optionalGroups\":[],\"siteName\":\"Default site\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"phdg-cjlyujbo-oega subscribed and joined the group Default Group of site Default site.\",\"secondaryDescription\":\"\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:45.531543Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "phdg-cjlyujbo-oega"
+      },
+      "message": "phdg-cjlyujbo-oega subscribed and joined the group Default Group of site Default site.",
+      "related": {
+        "hosts": [
+          "phdg-cjlyujbo-oega"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "test/default"
+            },
+            "group": "Default Group",
+            "group_name": "Default Group",
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "phdg-cjlyujbo-oega subscribed and joined the group Default Group of site Default site."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:26:45.531Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:26:52.843Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:52.843448Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"createdAt\":\"2050-04-06T08:26:52.838073Z\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"status\":\"started\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Agent phdg-cjlyujbo-oega started full disk scan at Wed, 06 Apr 2022, 08:26:52 UTC.\",\"secondaryDescription\":null,\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:52.839948Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "phdg-cjlyujbo-oega"
+      },
+      "message": "Agent phdg-cjlyujbo-oega started full disk scan at Wed, 06 Apr 2022, 08:26:52 UTC.",
+      "related": {
+        "hosts": [
+          "phdg-cjlyujbo-oega"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "created_at": "2050-04-06T08:26:52.838Z",
+            "flattened": {
+              "createdAt": "2050-04-06T08:26:52.838073Z"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "test/default"
+            },
+            "group_name": "Default Group",
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            },
+            "status": "started"
+          },
+          "description": {
+            "primary": "Agent phdg-cjlyujbo-oega started full disk scan at Wed, 06 Apr 2022, 08:26:52 UTC."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:26:52.839Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:45:43.122Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:43.122415Z\",\"data\":{\"accountName\":\"Default\",\"description\":null,\"fileContentHash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"fullScopeDetails\":\"Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"osFamily\":\"osname\",\"scopeLevel\":\"Site\",\"scopeName\":\"Default site\",\"siteName\":\"Default site\",\"username\":\"unknown\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"id\":\"1234567890123456789\",\"osFamily\":\"osname\",\"primaryDescription\":\"Cloud added or modified osname blacklist hash.\",\"secondaryDescription\":\"6a264eda96e766b41bc14a3c9e9xxxxxxxxxxx\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:45:43.112319Z\",\"userId\":null}",
+        "type": [
+          "creation",
+          "change"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        }
+      },
+      "host": {
+        "os": {
+          "family": "osname"
+        }
+      },
+      "message": "Cloud added or modified osname blacklist hash.",
+      "observer": {
+        "os": {
+          "family": "osname"
+        }
+      },
+      "process": {
+        "hash": {
+          "sha1": "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        }
+      },
+      "related": {
+        "hash": [
+          "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        ],
+        "user": [
+          "unknown"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Site Default site of Account Default",
+              "details_path": "test/default"
+            },
+            "scope": {
+              "level": "Site",
+              "name": "Default site"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Cloud added or modified osname blacklist hash.",
+            "secondary": "6a264eda96e766b41bc14a3c9e9xxxxxxxxxxx"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:45:43.112Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:45:54.532Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:54.532670Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"confidenceLevel\":\"level\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"\\\\test\\\\default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default / Default site / Default Group\",\"groupName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\",\"username\":null},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Threat with confidence level malicious detected: default.exe\",\"secondaryDescription\":\"6a264eda96e766b41bc14a3c9e99xxxxxxxxxx\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:54.527789Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        },
+        "name": "default.exe",
+        "path": "\\test\\default.exe"
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "phdg-cjlyujbo-oega"
+      },
+      "message": "Threat with confidence level malicious detected: default.exe",
+      "related": {
+        "hash": [
+          "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        ],
+        "hosts": [
+          "phdg-cjlyujbo-oega"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "confidence": {
+              "level": "level"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "test/default / Default site / Default Group"
+            },
+            "group_name": "Default Group",
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Threat with confidence level malicious detected: default.exe",
+            "secondary": "6a264eda96e766b41bc14a3c9e99xxxxxxxxxx"
+          },
+          "id": "1234567890123456789",
+          "threat": {
+            "id": "1234567890123456789"
+          },
+          "type": 1234,
+          "updated_at": "2050-04-06T08:45:54.527Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        },
+        "threat_classification": {
+          "name": "Trojan",
+          "source": "Cloud"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:45:55.309Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:55.309279Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"/test/path/default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"globalStatus\":\"success\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The agent phdg-cjlyujbo-oega successfully killed the threat: default.exe.\",\"secondaryDescription\":\"/test/path/default.exe\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:55.306443Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        },
+        "name": "default.exe",
+        "path": "/test/path/default.exe"
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "vwfv-zbvp"
+      },
+      "message": "The agent phdg-cjlyujbo-oega successfully killed the threat: default.exe.",
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "hosts": [
+          "vwfv-zbvp"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "/path/test"
+            },
+            "global": {
+              "status": "success"
+            },
+            "group_name": "Default Group",
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "The agent phdg-cjlyujbo-oega successfully killed the threat: default.exe.",
+            "secondary": "/test/path/default.exe"
+          },
+          "id": "1234567890123456789",
+          "threat": {
+            "id": "1234567890123456789"
+          },
+          "type": 1234,
+          "updated_at": "2050-04-06T08:45:55.306Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        },
+        "threat_classification": {
+          "name": "Trojan",
+          "source": "Cloud"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:45:56.634Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:56.634682Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"/test/path/default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":\"Default Group\",\"newStatus\":\"Mitigated\",\"originalStatus\":\"Not mitigated\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Status of threat default.exe on agent phdg-cjlyujbo-oega changed from Not mitigated to Mitigated.\",\"secondaryDescription\":\"/test/path/default.exe\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:56.632098Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        },
+        "name": "default.exe",
+        "path": "/test/path/default.exe"
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "vwfv-zbvp"
+      },
+      "message": "Status of threat default.exe on agent phdg-cjlyujbo-oega changed from Not mitigated to Mitigated.",
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "hosts": [
+          "vwfv-zbvp"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "/path/test"
+            },
+            "group_name": "Default Group",
+            "new": {
+              "status": "Mitigated"
+            },
+            "original": {
+              "status": "Not mitigated"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Status of threat default.exe on agent phdg-cjlyujbo-oega changed from Not mitigated to Mitigated.",
+            "secondary": "/test/path/default.exe"
+          },
+          "id": "1234567890123456789",
+          "threat": {
+            "id": "1234567890123456789"
+          },
+          "type": 1234,
+          "updated_at": "2050-04-06T08:45:56.632Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        },
+        "threat_classification": {
+          "name": "Trojan",
+          "source": "Cloud"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:45:56.641Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:56.641989Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"downloadUrl\":\"/test/path\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"/test/path/default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"globalStatus\":null,\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The agent phdg-cjlyujbo-oega successfully quarantined the threat: default.exe.\",\"secondaryDescription\":\"/test/path/default.exe\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:56.638698Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        },
+        "name": "default.exe",
+        "path": "/test/path/default.exe"
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "vwfv-zbvp"
+      },
+      "message": "The agent phdg-cjlyujbo-oega successfully quarantined the threat: default.exe.",
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "hosts": [
+          "vwfv-zbvp"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "downloaded": {
+              "url": "/test/path"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "/path/test"
+            },
+            "group_name": "Default Group",
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "The agent phdg-cjlyujbo-oega successfully quarantined the threat: default.exe.",
+            "secondary": "/test/path/default.exe"
+          },
+          "id": "1234567890123456789",
+          "threat": {
+            "id": "1234567890123456789"
+          },
+          "type": 1234,
+          "updated_at": "2050-04-06T08:45:56.638Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        },
+        "threat_classification": {
+          "name": "Trojan",
+          "source": "Cloud"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:46:08.135Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:46:08.135397Z\",\"data\":{\"accountName\":\"Default\",\"description\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fullScopeDetails\":\"Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test / Default site\",\"groupName\":null,\"osFamily\":\"linux\",\"scopeLevel\":\"Site\",\"scopeName\":\"Default site\",\"siteName\":\"Default site\",\"username\":\"unknown\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"id\":\"1234567890123456789\",\"osFamily\":\"linux\",\"primaryDescription\":\"Cloud added or modified linux blacklist hash.\",\"secondaryDescription\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:46:08.124972Z\",\"userId\":null}",
+        "type": [
+          "creation",
+          "change"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        }
+      },
+      "host": {
+        "os": {
+          "family": "linux",
+          "type": "linux"
+        }
+      },
+      "message": "Cloud added or modified linux blacklist hash.",
+      "observer": {
+        "os": {
+          "family": "linux"
+        }
+      },
+      "process": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        }
+      },
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "user": [
+          "unknown"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Site Default site of Account Default",
+              "details_path": "/path/test / Default site"
+            },
+            "scope": {
+              "level": "Site",
+              "name": "Default site"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Cloud added or modified linux blacklist hash.",
+            "secondary": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:46:08.124Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:51:09.416Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:51:09.416721Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"newValue\":\"not inherited\",\"policy\":{\"id\":\"1234567890123456789\"},\"policyName\":\"1234567890123456789\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt turned off policy inheritance for account Default.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-06T08:51:09.416724Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "The management user yczv Qldt turned off policy inheritance for account Default.",
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/path"
+            },
+            "new": {
+              "value": "not inherited"
+            },
+            "policy": {
+              "id": "1234567890123456789"
+            },
+            "policy_name": "1234567890123456789",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            }
+          },
+          "description": {
+            "primary": "The management user yczv Qldt turned off policy inheritance for account Default."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:51:09.416Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:51:09.416Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:51:09.416733Z\",\"data\":{\"accountName\":\"Default\",\"changedKeys\":[\"contactFreeText\",\"contactCompany\",\"contactEmail\",\"contactPhoneNumber\",\"contactDirectMessage\",\"contactSupportWebsite\",\"contactOther\"],\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":null,\"newValue\":true,\"policy\":{\"id\":\"1234567890123456789\"},\"policyName\":\"1234567890123456789\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Agent UI setting was changed for  all Sites .\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-06T08:51:09.416734Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "Agent UI setting was changed for  all Sites .",
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "changed_keys": [
+              "contactFreeText",
+              "contactCompany",
+              "contactEmail",
+              "contactPhoneNumber",
+              "contactDirectMessage",
+              "contactSupportWebsite",
+              "contactOther"
+            ],
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "/path/test"
+            },
+            "new": {
+              "value": "true"
+            },
+            "policy": {
+              "id": "1234567890123456789"
+            },
+            "policy_name": "1234567890123456789",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            }
+          },
+          "description": {
+            "primary": "Agent UI setting was changed for  all Sites ."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:51:09.416Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:57:37.680Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:57:37.680234Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"escapedMaliciousProcessArguments\":\"/path/test\",\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.txt\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test / Default site / Default Group\",\"groupName\":\"Default Group\",\"newConfidenceLevel\":\"malicious\",\"oldConfidenceLevel\":\"suspicious\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Malware\",\"threatClassificationSource\":\"Static\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Agent phdg-cjlyujbo-oega changed the Confidence Level of the threat from suspicious to malicious\",\"secondaryDescription\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:57:37.676697Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        },
+        "name": "default.txt"
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "vwfv-zbvp"
+      },
+      "message": "Agent phdg-cjlyujbo-oega changed the Confidence Level of the threat from suspicious to malicious",
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "hosts": [
+          "vwfv-zbvp"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "/path/test / Default site / Default Group"
+            },
+            "group_name": "Default Group",
+            "malicious": {
+              "process": {
+                "arguments": "/path/test"
+              }
+            },
+            "new": {
+              "confidence_level": "malicious"
+            },
+            "old": {
+              "confidence_level": "suspicious"
+            },
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Agent phdg-cjlyujbo-oega changed the Confidence Level of the threat from suspicious to malicious",
+            "secondary": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+          },
+          "id": "1234567890123456789",
+          "threat": {
+            "id": "1234567890123456789"
+          },
+          "type": 1234,
+          "updated_at": "2050-04-06T08:57:37.676Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        },
+        "threat_classification": {
+          "name": "Malware",
+          "source": "Static"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:59:41.758Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:59:41.758501Z\",\"data\":{\"accountName\":\"Default\",\"attr\":\"BEHAVIORAL_INDICATORS\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":null,\"newValue\":true,\"policy\":{\"id\":\"1234567890123456789\"},\"policyName\":\"1234567890123456789\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user tfkr uteg turned on Deep Visibility configuration \\\"BEHAVIORAL_INDICATORS\\\" for account Default.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-06T08:59:41.758503Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "The management user tfkr uteg turned on Deep Visibility configuration \"BEHAVIORAL_INDICATORS\" for account Default.",
+      "related": {
+        "user": [
+          "tfkr uteg"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "attr": "BEHAVIORAL_INDICATORS",
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "/path/test"
+            },
+            "new": {
+              "value": "true"
+            },
+            "policy": {
+              "id": "1234567890123456789"
+            },
+            "policy_name": "1234567890123456789",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            }
+          },
+          "description": {
+            "primary": "The management user tfkr uteg turned on Deep Visibility configuration \"BEHAVIORAL_INDICATORS\" for account Default."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:59:41.758Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "tfkr uteg",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:26:45.579Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:45.579474Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"ipAddress\":\"198.51.100.111\",\"externalIp\":null,\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"system\":true,\"username\":null,\"uuid\":\"fxxxxbx3x4x3xex8xex3x0xxxxx\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211).\",\"secondaryDescription\":null,\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:45.579478Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "ip": [
+          "198.51.100.111"
+        ],
+        "name": "vwfv-zbvp"
+      },
+      "message": "System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211).",
+      "related": {
+        "hosts": [
+          "vwfv-zbvp"
+        ],
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "/path/test"
+            },
+            "group_name": "Default Group",
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            },
+            "system": true,
+            "uuid": "fxxxxbx3x4x3xex8xex3x0xxxxx"
+          },
+          "description": {
+            "primary": "System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211)."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T08:26:45.579Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2050-04-05T16:01:56.995Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:01:56.995120Z\",\"data\":{\"accountId\":1234567890123456789,\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"created Default account.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:01:56.992136Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "creation"
+        ]
+      },
+      "message": "created Default account.",
+      "related": {
+        "user": [
+          "tfkr uteg"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "id": "1234567890123456789",
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/path"
+            },
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            }
+          },
+          "description": {
+            "primary": "created Default account."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-05T16:01:56.992Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "tfkr uteg",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T09:00:33.115Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T09:00:33.115424Z\",\"data\":{\"accountName\":\"Default\",\"description\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"osFamily\":\"linux\",\"scopeLevel\":\"Site\",\"scopeName\":\"Default site\",\"siteName\":\"Default site\",\"username\":\"unknown\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"id\":\"1234567890123456789\",\"osFamily\":\"linux\",\"primaryDescription\":\"Cloud added or modified linux blacklist hash.\",\"secondaryDescription\":\"d73552b5808ed0c2fc9220112ea3daad791e5c02\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T09:00:33.104735Z\",\"userId\":null}",
+        "type": [
+          "creation",
+          "change"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        }
+      },
+      "host": {
+        "os": {
+          "family": "linux",
+          "type": "linux"
+        }
+      },
+      "message": "Cloud added or modified linux blacklist hash.",
+      "observer": {
+        "os": {
+          "family": "linux"
+        }
+      },
+      "process": {
+        "hash": {
+          "sha1": "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        }
+      },
+      "related": {
+        "hash": [
+          "bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a"
+        ],
+        "user": [
+          "unknown"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/path"
+            },
+            "scope": {
+              "level": "Site",
+              "name": "Default site"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Cloud added or modified linux blacklist hash.",
+            "secondary": "d73552b5808ed0c2fc9220112ea3daad791e5c02"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-06T09:00:33.104Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "unknown"
+      }
+    },
+    {
+      "@timestamp": "2050-04-13T03:34:10.933Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-13T03:34:10.933835Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"ipAddress\":\"198.51.100.111\",\"reason\":null,\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"source\":\"src\",\"userScope\":\"account\",\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt logged in to the management console with IP Address 198.51.100.211\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-13T03:34:10.931846Z\",\"userId\":\"1234567890123456789\"}",
+        "outcome": "success",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "ip": [
+          "198.51.100.111"
+        ]
+      },
+      "message": "The management user yczv Qldt logged in to the management console with IP Address 198.51.100.211",
+      "related": {
+        "ip": [
+          "198.51.100.111"
+        ],
+        "user": [
+          "tfkr uteg"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/path"
+            },
+            "role": "Admin",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "source": "src",
+            "user": {
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user yczv Qldt logged in to the management console with IP Address 198.51.100.211"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-13T03:34:10.931Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "tfkr uteg",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-18T05:09:27.532Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-18T05:09:27.532131Z\",\"data\":{\"accountName\":\"Default\",\"byUser\":\"tfkr uteg\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"role\":\"Level\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"tfkr uteg\"},\"description\":\"<ManagementUser at 0x7f6e6xxc34 with id=1234567890123456789, email='user@example.com', user_scope='account'>\",\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt added user tfkr uteg as Level.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:09:27.520345Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "creation"
+        ]
+      },
+      "message": "The management user yczv Qldt added user tfkr uteg as Level.",
+      "related": {
+        "user": [
+          "tfkr uteg"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/path"
+            },
+            "role": "Level",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "name": "tfkr uteg",
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user yczv Qldt added user tfkr uteg as Level."
+          },
+          "description_value": "<ManagementUser at 0x7f6e6xxc34 with id=1234567890123456789, email='user@example.com', user_scope='account'>",
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-18T05:09:27.520Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "tfkr uteg",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-18T05:09:27.534Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-18T05:09:27.534319Z\",\"data\":{\"accountName\":\"Default\",\"byUser\":\"tfkr uteg\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"role\":\"Level\",\"roleName\":\"Level\",\"scopeLevel\":\"Account\",\"scopeLevelName\":\"Default\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt added user tfkr uteg to role Level in scope Default\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:09:27.531568Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "creation"
+        ]
+      },
+      "message": "The management user yczv Qldt added user tfkr uteg to role Level in scope Default",
+      "related": {
+        "user": [
+          "tfkr uteg"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/path"
+            },
+            "role": "Level",
+            "role_name": "Level",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "scope_level": {
+              "name": "Default"
+            },
+            "user": {
+              "name": "tfkr uteg",
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user yczv Qldt added user tfkr uteg to role Level in scope Default"
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-18T05:09:27.531Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "full_name": "tfkr uteg",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-05T16:11:05.469Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "email"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user test sent a Verification Email to the user test.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "The management user test sent a Verification Email to the user test.",
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "role": "Admin",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user test sent a Verification Email to the user test."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-05T16:11:05.189Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-05T16:11:05.469Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "authentication"
+        ],
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user Test failed to log in to the management console with IP Address x.x.x.x.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+        "outcome": "failure",
+        "type": [
+          "info"
+        ]
+      },
+      "message": "The management user Test failed to log in to the management console with IP Address x.x.x.x.",
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "role": "Admin",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "scope": "account"
+            }
+          },
+          "description": {
+            "primary": "The management user Test failed to log in to the management console with IP Address x.x.x.x."
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-05T16:11:05.189Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-05T16:11:05.469Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\": null,\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}"
+      },
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "role": "Admin",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "scope": "account"
+            }
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-05T16:11:05.189Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-05T16:11:05.469Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "1234567890123456789",
+        "kind": "event",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\": null,\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":\"\",\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}"
+      },
+      "related": {
+        "user": [
+          "yczv Qldt"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "fullscope": {
+              "details": "Account Default",
+              "details_path": "test/default"
+            },
+            "role": "Admin",
+            "scope": {
+              "level": "Account",
+              "name": "Default"
+            },
+            "user": {
+              "scope": "account"
+            }
+          },
+          "id": "1234567890123456789",
+          "type": 1234,
+          "updated_at": "2050-04-05T16:11:05.189Z"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "user@example.com",
+        "full_name": "yczv Qldt",
+        "id": "1234567890123456789"
+      }
+    },
+    {
+      "@timestamp": "2050-04-06T08:45:54.532Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "malware"
+        ],
+        "id": "1234567890123456789",
+        "kind": "alert",
+        "original": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:54.532670Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"confidenceLevel\":\"malicious\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"\\\\test\\\\default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default / Default site / Default Group\",\"groupName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\",\"username\":null},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Threat with confidence level malicious detected: default.exe\",\"secondaryDescription\":\"6a264eda96e766b41bc14a3c9e99xxxxxxxxxx\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:54.527789Z\",\"userId\":null}",
+        "type": [
+          "info"
+        ]
+      },
+      "file": {
+        "hash": {
+          "sha1": "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        },
+        "name": "default.exe",
+        "path": "\\test\\default.exe"
+      },
+      "group": {
+        "id": "1234567890123456789",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "1234567890123456789",
+        "name": "phdg-cjlyujbo-oega"
+      },
+      "message": "Threat with confidence level malicious detected: default.exe",
+      "related": {
+        "hash": [
+          "aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx"
+        ],
+        "hosts": [
+          "phdg-cjlyujbo-oega"
+        ]
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Default"
+        },
+        "activity": {
+          "account": {
+            "id": "1234567890123456789"
+          },
+          "agent": {
+            "id": "1234567890123456789"
+          },
+          "data": {
+            "account": {
+              "name": "Default"
+            },
+            "confidence": {
+              "level": "malicious"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Default",
+              "details_path": "test/default / Default site / Default Group"
+            },
+            "group_name": "Default Group",
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Threat with confidence level malicious detected: default.exe",
+            "secondary": "6a264eda96e766b41bc14a3c9e99xxxxxxxxxx"
+          },
+          "id": "1234567890123456789",
+          "threat": {
+            "id": "1234567890123456789"
+          },
+          "type": 1234,
+          "updated_at": "2050-04-06T08:45:54.527Z"
+        },
+        "site": {
+          "id": "1234567890123456789",
+          "name": "Default site"
+        },
+        "threat_classification": {
+          "name": "Trojan",
+          "source": "Cloud"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1234567890123456789",
+          "name": "Default Group"
+        }
+      }
+    },
+    {
+      "@timestamp": "2052-12-30T11:17:15.555Z",
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "id": "2116686010862214929",
+        "kind": "event",
+        "original": "{\"accountId\": \"1392053568574369789\", \"accountName\": \"Bycunpa\", \"activityType\": 3608, \"activityUuid\": \"7e3566b0-0357-449f-9df3-2c7dd6bad2d1\", \"agentId\": \"2088404432341170000\", \"createdAt\": \"2052-12-30T11:17:15.555932Z\", \"data\": {\"accountId\": \"1392053568574360000\", \"accountName\": \"Bycunpa\", \"actoralternateid\": \"\", \"agentipv4\": \"192.0.2.134\", \"alertid\": \"2116686009748290000\", \"commandCorrelationid\": \"66462c23-7772-480a-94d9-dde034203697\", \"commandTimestamp\": 2619170235486, \"datasourcename\": \"SentinelOne\", \"detectedat\": \"2052-12-30T11:17:15Z\", \"dstport\": 0, \"dveventid\": \"00AGBMGQGPM98ACRJBTZMNEPQP_335\", \"dveventtype\": \"BEHAVIORALINDICATORS\", \"eventcategory\": \"indicators\", \"eventdetails\": \"\", \"eventexternalid\": \"\", \"eventtime\": 2619170160726, \"externalServiceId\": null, \"externalip\": \"192.0.2.134\", \"externalthreatvalue\": \"\", \"fullScopeDetails\": \"Group Default Group in Site Default site of Account Bycunpa\", \"fullScopeDetailsPath\": \"Global / Bycunpa / Default site / Default Group\", \"groupName\": \"Default Group\", \"indicatorcategory\": \"General\", \"indicatordescription\": \"Process started from shortcut file MITRE: Execution {<a href=\\\"https://attack.mitre.org/techniques/T1204/\\\" target=\\\"_blank\\\">T1204</a>}\", \"indicatorname\": \"ProcessStartedFromLnk\", \"ipAddress\": null, \"k8sclustername\": \"\", \"k8scontainerid\": \"\", \"k8scontainerimage\": \"\", \"k8scontainerlabels\": \"\", \"k8scontainername\": \"\", \"k8scontrollerkind\": \"\", \"k8scontrollerlabels\": \"\", \"k8scontrollername\": \"\", \"k8snamespace\": \"\", \"k8snamespacelabels\": \"\", \"k8snode\": \"\", \"k8spod\": \"\", \"k8spodlabels\": \"\", \"loginaccountdomain\": \"\", \"loginaccountsid\": \"\", \"loginisadministratorequivalent\": \"\", \"loginissuccessful\": \"\", \"loginsusername\": \"\", \"logintype\": \"\", \"modulepath\": \"\", \"modulesha1\": \"\", \"neteventdirection\": \"\", \"origagentmachinetype\": \"desktop\", \"origagentname\": \"user-win10\", \"origagentosfamily\": \"windows\", \"origagentosname\": \"Windows 10 Pro\", \"origagentosrevision\": \"19045\", \"origagentsiteid\": \"1392053568582750000\", \"origagentuuid\": \"dd4026c9a0340916bca40f06601c2231\", \"origagentversion\": \"24.1.5.277\", \"physical\": \"69:56:44:e1:54:d9\", \"realUser\": null, \"registrykeypath\": \"\", \"registryoldvalue\": \"\", \"registryoldvaluetype\": \"\", \"registrypath\": \"\", \"registryvalue\": \"\", \"ruledescription\": \"test\", \"ruleid\": \"1412136126226508571\", \"rulename\": \"test5\", \"rulescopeid\": 1392053568582758390, \"rulescopelevel\": \"E_SITE\", \"scopeId\": 1392053568582758390, \"scopeLevel\": \"Group\", \"scopeName\": \"Default Group\", \"severity\": \"E_CRITICAL\", \"siteId\": \"1392053568582758390\", \"siteName\": \"Default site\", \"sourcename\": \"STAR\", \"sourceparentprocesscommandline\": \"C:\\\\Windows\\\\Explorer.EXE\", \"sourceparentprocessintegritylevel\": \"high\", \"sourceparentprocesskey\": \"B4A7F8AA88091D56\", \"sourceparentprocessmd5\": \"d2e2683d3165215008ba85d926e7d8ff\", \"sourceparentprocessname\": \"explorer.exe\", \"sourceparentprocesspath\": \"C:\\\\Windows\\\\explorer.exe\", \"sourceparentprocesspid\": 5772, \"sourceparentprocesssha1\": \"af98d4e84666d983a624471553716adfe053d514\", \"sourceparentprocesssha256\": \"103c0c1d05913fb48de62bf01ddc0969f2c41968101cdc9ed62474f2657d83be\", \"sourceparentprocesssigneridentity\": \"MICROSOFT WINDOWS\", \"sourceparentprocessstarttime\": 2619170033813, \"sourceparentprocessstoryline\": \"B5A7F8AA88091D56\", \"sourceparentprocesssubsystem\": \"win32\", \"sourceparentprocessusername\": \"raquel-win10\\\\win10-user\", \"sourceprocesscommandline\": \"\\\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\\\"\", \"sourceprocessfilepath\": \"C:\\\\Windows\\\\System32\\\\WINDOWSPOWERSHELL\\\\V1.0\\\\powershell.exe\", \"sourceprocessfilesigneridentity\": \"MICROSOFT WINDOWS\", \"sourceprocessintegritylevel\": \"high\", \"sourceprocesskey\": \"01ADF8AA88091D56\", \"sourceprocessmd5\": \"0e4d8473fb7241244fa94db6ba3d54b0\", \"sourceprocessname\": \"powershell.exe\", \"sourceprocesspid\": 2128, \"sourceprocesssha1\": \"264662b035bc2d3a409502986e291f64caa9843d\", \"sourceprocesssha256\": \"2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9\", \"sourceprocessstarttime\": 2619170160671, \"sourceprocessstoryline\": \"02ADF8AA88091D56\", \"sourceprocesssubsystem\": \"win32\", \"sourceprocessusername\": \"raquel-win10\\\\win10-user\", \"srcip\": \"\", \"srcmachineip\": \"\", \"srcport\": 0, \"systemUser\": 0, \"tgtfilecreatedat\": 0, \"tgtfilehashsha1\": \"\", \"tgtfilehashsha256\": \"\", \"tgtfileid\": \"\", \"tgtfileissigned\": \"\", \"tgtfilemodifiedat\": 0, \"tgtfileoldpath\": \"\", \"tgtfilepath\": \"\", \"tgtproccmdline\": \"\", \"tgtprocessstarttime\": 0, \"tgtprocimagepath\": \"\", \"tgtprocintegritylevel\": \"unknown\", \"tgtprocname\": \"\", \"tgtprocpid\": 0, \"tgtprocsignedstatus\": \"\", \"tgtprocstorylineid\": \"\", \"tgtprocuid\": \"\", \"tiindicatorcomparisonmethod\": \"\", \"tiindicatorsource\": \"\", \"tiindicatortype\": \"\", \"tiindicatorvalue\": \"\", \"userId\": 1392606454463278101, \"userName\": \"Hzyrx Cxcjuao\"}, \"description\": null, \"groupId\": \"1392053568591146999\", \"groupName\": \"Default Group\", \"hash\": null, \"id\": \"2116686010862214929\", \"osFamily\": null, \"primaryDescription\": \"Alert created for powershell.exe from Custom Rule: test5 in Group Default Group in Site Default site of Account Bycunpa, detected on raquel-win10.\", \"secondaryDescription\": \"264662b035bc2d3a409502986e291f64caa9843d\", \"siteId\": \"1392053568582758390\", \"siteName\": \"Default site\", \"threatId\": \"2116686023738728218\", \"updatedAt\": \"2052-12-30T11:17:15.554519Z\", \"userId\": \"1392606454463278101\"}"
+      },
+      "group": {
+        "id": "1392053568591146999",
+        "name": "Default Group"
+      },
+      "host": {
+        "id": "2088404432341170000"
+      },
+      "message": "Alert created for powershell.exe from Custom Rule: test5 in Group Default Group in Site Default site of Account Bycunpa, detected on raquel-win10.",
+      "rule": {
+        "description": "test",
+        "id": "1412136126226508571",
+        "name": "test5"
+      },
+      "sentinel_one": {
+        "account": {
+          "name": "Bycunpa"
+        },
+        "activity": {
+          "account": {
+            "id": "1392053568574369789"
+          },
+          "agent": {
+            "id": "2088404432341170000"
+          },
+          "data": {
+            "account": {
+              "id": "1392053568574360000",
+              "name": "Bycunpa"
+            },
+            "flattened": {
+              "agentipv4": "192.0.2.134",
+              "alertid": "2116686009748290000",
+              "commandCorrelationid": "66462c23-7772-480a-94d9-dde034203697",
+              "commandTimestamp": 2619170235486,
+              "datasourcename": "SentinelOne",
+              "detectedat": "2052-12-30T11:17:15Z",
+              "dstport": 0,
+              "dveventid": "00AGBMGQGPM98ACRJBTZMNEPQP_335",
+              "dveventtype": "BEHAVIORALINDICATORS",
+              "eventcategory": "indicators",
+              "eventtime": 2619170160726,
+              "externalip": "192.0.2.134",
+              "indicatorcategory": "General",
+              "indicatordescription": "Process started from shortcut file MITRE: Execution {<a href=\"https://attack.mitre.org/techniques/T1204/\" target=\"_blank\">T1204</a>}",
+              "indicatorname": "ProcessStartedFromLnk",
+              "origagentmachinetype": "desktop",
+              "origagentname": "user-win10",
+              "origagentosfamily": "windows",
+              "origagentosname": "Windows 10 Pro",
+              "origagentosrevision": "19045",
+              "origagentsiteid": "1392053568582750000",
+              "origagentuuid": "dd4026c9a0340916bca40f06601c2231",
+              "origagentversion": "24.1.5.277",
+              "physical": "69:56:44:e1:54:d9",
+              "rulescopeid": 1392053568582758390,
+              "rulescopelevel": "E_SITE",
+              "scopeId": 1392053568582758390,
+              "siteId": "1392053568582758390",
+              "sourcename": "STAR",
+              "sourceparentprocesscommandline": "C:\\Windows\\Explorer.EXE",
+              "sourceparentprocessintegritylevel": "high",
+              "sourceparentprocesskey": "B4A7F8AA88091D56",
+              "sourceparentprocessmd5": "d2e2683d3165215008ba85d926e7d8ff",
+              "sourceparentprocessname": "explorer.exe",
+              "sourceparentprocesspath": "C:\\Windows\\explorer.exe",
+              "sourceparentprocesspid": 5772,
+              "sourceparentprocesssha1": "af98d4e84666d983a624471553716adfe053d514",
+              "sourceparentprocesssha256": "103c0c1d05913fb48de62bf01ddc0969f2c41968101cdc9ed62474f2657d83be",
+              "sourceparentprocesssigneridentity": "MICROSOFT WINDOWS",
+              "sourceparentprocessstarttime": 2619170033813,
+              "sourceparentprocessstoryline": "B5A7F8AA88091D56",
+              "sourceparentprocesssubsystem": "win32",
+              "sourceparentprocessusername": "raquel-win10\\win10-user",
+              "sourceprocesscommandline": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\"",
+              "sourceprocessfilepath": "C:\\Windows\\System32\\WINDOWSPOWERSHELL\\V1.0\\powershell.exe",
+              "sourceprocessfilesigneridentity": "MICROSOFT WINDOWS",
+              "sourceprocessintegritylevel": "high",
+              "sourceprocesskey": "01ADF8AA88091D56",
+              "sourceprocessmd5": "0e4d8473fb7241244fa94db6ba3d54b0",
+              "sourceprocessname": "powershell.exe",
+              "sourceprocesspid": 2128,
+              "sourceprocesssha1": "264662b035bc2d3a409502986e291f64caa9843d",
+              "sourceprocesssha256": "2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9",
+              "sourceprocessstarttime": 2619170160671,
+              "sourceprocessstoryline": "02ADF8AA88091D56",
+              "sourceprocesssubsystem": "win32",
+              "sourceprocessusername": "raquel-win10\\win10-user",
+              "srcport": 0,
+              "systemUser": 0,
+              "tgtfilecreatedat": 0,
+              "tgtfilemodifiedat": 0,
+              "tgtprocessstarttime": 0,
+              "tgtprocintegritylevel": "unknown",
+              "tgtprocpid": 0,
+              "userId": 1392606454463278101,
+              "userName": "Hzyrx Cxcjuao"
+            },
+            "fullscope": {
+              "details": "Group Default Group in Site Default site of Account Bycunpa",
+              "details_path": "Global / Bycunpa / Default site / Default Group"
+            },
+            "group_name": "Default Group",
+            "scope": {
+              "level": "Group",
+              "name": "Default Group"
+            },
+            "site": {
+              "name": "Default site"
+            }
+          },
+          "description": {
+            "primary": "Alert created for powershell.exe from Custom Rule: test5 in Group Default Group in Site Default site of Account Bycunpa, detected on raquel-win10.",
+            "secondary": "264662b035bc2d3a409502986e291f64caa9843d"
+          },
+          "id": "2116686010862214929",
+          "rule_description": "test",
+          "rule_id": "1412136126226508571",
+          "rule_name": "test5",
+          "severity": "E_CRITICAL",
+          "threat": {
+            "id": "2116686023738728218"
+          },
+          "type": 3608,
+          "updated_at": "2052-12-30T11:17:15.554Z"
+        },
+        "site": {
+          "id": "1392053568582758390",
+          "name": "Default site"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "group": {
+          "id": "1392053568591146999",
+          "name": "Default Group"
+        },
+        "id": "1392606454463278101"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":\"True\",\"createdAt\":\"2050-04-18T05:14:08.925421Z\",\"data\":{\"accountName\":\"Default\",\"byUser\":\"CLK\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"newValue\":true,\"role\":\"Level\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"CLK\"},\"description\":\"CLK\",\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user CLK enabled Two factor authentication on the user CLK.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:14:08.922553Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-18T05:14:09.240427Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"ipAddress\":\"198.51.100.211\",\"reason\":null,\"role\":\"Level\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"source\":\"src\",\"userScope\":\"account\",\"username\":\"CLK\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user CLK logged in to the management console with IP Address 198.51.100.211\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:14:09.238430Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"User yczv Qldt added a recovery email user@example.com\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:45.579474Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"externalIp\":\"198.51.100.74\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"system\":true,\"username\":null,\"uuid\":\"xxxxxxxxxxxx1d8e12b343e8e30\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211).\",\"secondaryDescription\":null,\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:45.579478Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:45.582620Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"group\":\"Default Group\",\"groupName\":\"Default Group\",\"optionalGroups\":[],\"siteName\":\"Default site\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"phdg-cjlyujbo-oega subscribed and joined the group Default Group of site Default site.\",\"secondaryDescription\":\"\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:45.531543Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:52.843448Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"createdAt\":\"2050-04-06T08:26:52.838073Z\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"status\":\"started\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Agent phdg-cjlyujbo-oega started full disk scan at Wed, 06 Apr 2022, 08:26:52 UTC.\",\"secondaryDescription\":null,\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:52.839948Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:43.122415Z\",\"data\":{\"accountName\":\"Default\",\"description\":null,\"fileContentHash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"fullScopeDetails\":\"Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"osFamily\":\"osname\",\"scopeLevel\":\"Site\",\"scopeName\":\"Default site\",\"siteName\":\"Default site\",\"username\":\"unknown\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"id\":\"1234567890123456789\",\"osFamily\":\"osname\",\"primaryDescription\":\"Cloud added or modified osname blacklist hash.\",\"secondaryDescription\":\"6a264eda96e766b41bc14a3c9e9xxxxxxxxxxx\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:45:43.112319Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:54.532670Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"confidenceLevel\":\"level\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"\\\\test\\\\default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default / Default site / Default Group\",\"groupName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\",\"username\":null},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Threat with confidence level malicious detected: default.exe\",\"secondaryDescription\":\"6a264eda96e766b41bc14a3c9e99xxxxxxxxxx\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:54.527789Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:55.309279Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"/test/path/default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"globalStatus\":\"success\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The agent phdg-cjlyujbo-oega successfully killed the threat: default.exe.\",\"secondaryDescription\":\"/test/path/default.exe\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:55.306443Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:56.634682Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"/test/path/default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":\"Default Group\",\"newStatus\":\"Mitigated\",\"originalStatus\":\"Not mitigated\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Status of threat default.exe on agent phdg-cjlyujbo-oega changed from Not mitigated to Mitigated.\",\"secondaryDescription\":\"/test/path/default.exe\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:56.632098Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:56.641989Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"downloadUrl\":\"/test/path\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"/test/path/default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"globalStatus\":null,\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The agent phdg-cjlyujbo-oega successfully quarantined the threat: default.exe.\",\"secondaryDescription\":\"/test/path/default.exe\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:56.638698Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:46:08.135397Z\",\"data\":{\"accountName\":\"Default\",\"description\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fullScopeDetails\":\"Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test / Default site\",\"groupName\":null,\"osFamily\":\"linux\",\"scopeLevel\":\"Site\",\"scopeName\":\"Default site\",\"siteName\":\"Default site\",\"username\":\"unknown\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"id\":\"1234567890123456789\",\"osFamily\":\"linux\",\"primaryDescription\":\"Cloud added or modified linux blacklist hash.\",\"secondaryDescription\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:46:08.124972Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:51:09.416721Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"newValue\":\"not inherited\",\"policy\":{\"id\":\"1234567890123456789\"},\"policyName\":\"1234567890123456789\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt turned off policy inheritance for account Default.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-06T08:51:09.416724Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:51:09.416733Z\",\"data\":{\"accountName\":\"Default\",\"changedKeys\":[\"contactFreeText\",\"contactCompany\",\"contactEmail\",\"contactPhoneNumber\",\"contactDirectMessage\",\"contactSupportWebsite\",\"contactOther\"],\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":null,\"newValue\":true,\"policy\":{\"id\":\"1234567890123456789\"},\"policyName\":\"1234567890123456789\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Agent UI setting was changed for  all Sites .\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-06T08:51:09.416734Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:57:37.680234Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"escapedMaliciousProcessArguments\":\"/path/test\",\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fileDisplayName\":\"default.txt\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test / Default site / Default Group\",\"groupName\":\"Default Group\",\"newConfidenceLevel\":\"malicious\",\"oldConfidenceLevel\":\"suspicious\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Malware\",\"threatClassificationSource\":\"Static\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Agent phdg-cjlyujbo-oega changed the Confidence Level of the threat from suspicious to malicious\",\"secondaryDescription\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:57:37.676697Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:59:41.758501Z\",\"data\":{\"accountName\":\"Default\",\"attr\":\"BEHAVIORAL_INDICATORS\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":null,\"newValue\":true,\"policy\":{\"id\":\"1234567890123456789\"},\"policyName\":\"1234567890123456789\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user tfkr uteg turned on Deep Visibility configuration \\\"BEHAVIORAL_INDICATORS\\\" for account Default.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-06T08:59:41.758503Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:26:45.579474Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"vwfv-zbvp\",\"ipAddress\":\"198.51.100.111\",\"externalIp\":null,\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"/path/test\",\"groupName\":\"Default Group\",\"scopeLevel\":\"Group\",\"scopeName\":\"Default Group\",\"siteName\":\"Default site\",\"system\":true,\"username\":null,\"uuid\":\"fxxxxbx3x4x3xex8xex3x0xxxxx\"},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"System initiated a full disk scan to the agent: phdg-cjlyujbo-oega (198.51.100.211).\",\"secondaryDescription\":null,\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T08:26:45.579478Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:01:56.995120Z\",\"data\":{\"accountId\":1234567890123456789,\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"created Default account.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:01:56.992136Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T09:00:33.115424Z\",\"data\":{\"accountName\":\"Default\",\"description\":null,\"fileContentHash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"osFamily\":\"linux\",\"scopeLevel\":\"Site\",\"scopeName\":\"Default site\",\"siteName\":\"Default site\",\"username\":\"unknown\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":\"bfa9f82adcd1f6e0bebbff8e0d974ed7fea2836a\",\"id\":\"1234567890123456789\",\"osFamily\":\"linux\",\"primaryDescription\":\"Cloud added or modified linux blacklist hash.\",\"secondaryDescription\":\"d73552b5808ed0c2fc9220112ea3daad791e5c02\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":null,\"updatedAt\":\"2050-04-06T09:00:33.104735Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-13T03:34:10.933835Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"ipAddress\":\"198.51.100.111\",\"reason\":null,\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"source\":\"src\",\"userScope\":\"account\",\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt logged in to the management console with IP Address 198.51.100.211\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-13T03:34:10.931846Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-18T05:09:27.532131Z\",\"data\":{\"accountName\":\"Default\",\"byUser\":\"tfkr uteg\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"role\":\"Level\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"tfkr uteg\"},\"description\":\"<ManagementUser at 0x7f6e6xxc34 with id=1234567890123456789, email='user@example.com', user_scope='account'>\",\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt added user tfkr uteg as Level.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:09:27.520345Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-18T05:09:27.534319Z\",\"data\":{\"accountName\":\"Default\",\"byUser\":\"tfkr uteg\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/path\",\"groupName\":null,\"role\":\"Level\",\"roleName\":\"Level\",\"scopeLevel\":\"Account\",\"scopeLevelName\":\"Default\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"tfkr uteg\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user yczv Qldt added user tfkr uteg to role Level in scope Default\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-18T05:09:27.531568Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user test sent a Verification Email to the user test.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"The management user Test failed to log in to the management console with IP Address x.x.x.x.\",\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\": null,\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":null,\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":null,\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-05T16:11:05.469398Z\",\"data\":{\"accountName\":\"Default\",\"fullScopeDetails\":\"Account Default\",\"fullScopeDetailsPath\":\"test/default\",\"groupName\":null,\"recoveryEmail\":\"user@example.com\",\"role\":\"Admin\",\"scopeLevel\":\"Account\",\"scopeName\":\"Default\",\"siteName\":null,\"userScope\":\"account\",\"username\":\"yczv Qldt\"},\"description\":null,\"groupId\":null,\"groupName\":null,\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\": null,\"secondaryDescription\":null,\"siteId\":null,\"siteName\":null,\"threatId\":\"\",\"updatedAt\":\"2050-04-05T16:11:05.189394Z\",\"userId\":\"1234567890123456789\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\":\"1234567890123456789\",\"accountName\":\"Default\",\"activityType\":1234,\"agentId\":\"1234567890123456789\",\"agentUpdatedVersion\":null,\"comments\":null,\"createdAt\":\"2050-04-06T08:45:54.532670Z\",\"data\":{\"accountName\":\"Default\",\"computerName\":\"phdg-cjlyujbo-oega\",\"confidenceLevel\":\"malicious\",\"escapedMaliciousProcessArguments\":null,\"fileContentHash\":\"aaf4c61ddcc5e8a2dabede0f3b482cxxxxxxxxxx\",\"fileDisplayName\":\"default.exe\",\"filePath\":\"\\\\test\\\\default.exe\",\"fullScopeDetails\":\"Group Default Group in Site Default site of Account Default\",\"fullScopeDetailsPath\":\"test/default / Default site / Default Group\",\"groupName\":\"Default Group\",\"siteName\":\"Default site\",\"threatClassification\":\"Trojan\",\"threatClassificationSource\":\"Cloud\",\"username\":null},\"description\":null,\"groupId\":\"1234567890123456789\",\"groupName\":\"Default Group\",\"hash\":null,\"id\":\"1234567890123456789\",\"osFamily\":null,\"primaryDescription\":\"Threat with confidence level malicious detected: default.exe\",\"secondaryDescription\":\"6a264eda96e766b41bc14a3c9e99xxxxxxxxxx\",\"siteId\":\"1234567890123456789\",\"siteName\":\"Default site\",\"threatId\":\"1234567890123456789\",\"updatedAt\":\"2050-04-06T08:45:54.527789Z\",\"userId\":null}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"accountId\": \"1392053568574369789\", \"accountName\": \"Bycunpa\", \"activityType\": 3608, \"activityUuid\": \"7e3566b0-0357-449f-9df3-2c7dd6bad2d1\", \"agentId\": \"2088404432341170000\", \"createdAt\": \"2052-12-30T11:17:15.555932Z\", \"data\": {\"accountId\": \"1392053568574360000\", \"accountName\": \"Bycunpa\", \"actoralternateid\": \"\", \"agentipv4\": \"192.0.2.134\", \"alertid\": \"2116686009748290000\", \"commandCorrelationid\": \"66462c23-7772-480a-94d9-dde034203697\", \"commandTimestamp\": 2619170235486, \"datasourcename\": \"SentinelOne\", \"detectedat\": \"2052-12-30T11:17:15Z\", \"dstport\": 0, \"dveventid\": \"00AGBMGQGPM98ACRJBTZMNEPQP_335\", \"dveventtype\": \"BEHAVIORALINDICATORS\", \"eventcategory\": \"indicators\", \"eventdetails\": \"\", \"eventexternalid\": \"\", \"eventtime\": 2619170160726, \"externalServiceId\": null, \"externalip\": \"192.0.2.134\", \"externalthreatvalue\": \"\", \"fullScopeDetails\": \"Group Default Group in Site Default site of Account Bycunpa\", \"fullScopeDetailsPath\": \"Global / Bycunpa / Default site / Default Group\", \"groupName\": \"Default Group\", \"indicatorcategory\": \"General\", \"indicatordescription\": \"Process started from shortcut file MITRE: Execution {<a href=\\\"https://attack.mitre.org/techniques/T1204/\\\" target=\\\"_blank\\\">T1204</a>}\", \"indicatorname\": \"ProcessStartedFromLnk\", \"ipAddress\": null, \"k8sclustername\": \"\", \"k8scontainerid\": \"\", \"k8scontainerimage\": \"\", \"k8scontainerlabels\": \"\", \"k8scontainername\": \"\", \"k8scontrollerkind\": \"\", \"k8scontrollerlabels\": \"\", \"k8scontrollername\": \"\", \"k8snamespace\": \"\", \"k8snamespacelabels\": \"\", \"k8snode\": \"\", \"k8spod\": \"\", \"k8spodlabels\": \"\", \"loginaccountdomain\": \"\", \"loginaccountsid\": \"\", \"loginisadministratorequivalent\": \"\", \"loginissuccessful\": \"\", \"loginsusername\": \"\", \"logintype\": \"\", \"modulepath\": \"\", \"modulesha1\": \"\", \"neteventdirection\": \"\", \"origagentmachinetype\": \"desktop\", \"origagentname\": \"user-win10\", \"origagentosfamily\": \"windows\", \"origagentosname\": \"Windows 10 Pro\", \"origagentosrevision\": \"19045\", \"origagentsiteid\": \"1392053568582750000\", \"origagentuuid\": \"dd4026c9a0340916bca40f06601c2231\", \"origagentversion\": \"24.1.5.277\", \"physical\": \"69:56:44:e1:54:d9\", \"realUser\": null, \"registrykeypath\": \"\", \"registryoldvalue\": \"\", \"registryoldvaluetype\": \"\", \"registrypath\": \"\", \"registryvalue\": \"\", \"ruledescription\": \"test\", \"ruleid\": \"1412136126226508571\", \"rulename\": \"test5\", \"rulescopeid\": 1392053568582758390, \"rulescopelevel\": \"E_SITE\", \"scopeId\": 1392053568582758390, \"scopeLevel\": \"Group\", \"scopeName\": \"Default Group\", \"severity\": \"E_CRITICAL\", \"siteId\": \"1392053568582758390\", \"siteName\": \"Default site\", \"sourcename\": \"STAR\", \"sourceparentprocesscommandline\": \"C:\\\\Windows\\\\Explorer.EXE\", \"sourceparentprocessintegritylevel\": \"high\", \"sourceparentprocesskey\": \"B4A7F8AA88091D56\", \"sourceparentprocessmd5\": \"d2e2683d3165215008ba85d926e7d8ff\", \"sourceparentprocessname\": \"explorer.exe\", \"sourceparentprocesspath\": \"C:\\\\Windows\\\\explorer.exe\", \"sourceparentprocesspid\": 5772, \"sourceparentprocesssha1\": \"af98d4e84666d983a624471553716adfe053d514\", \"sourceparentprocesssha256\": \"103c0c1d05913fb48de62bf01ddc0969f2c41968101cdc9ed62474f2657d83be\", \"sourceparentprocesssigneridentity\": \"MICROSOFT WINDOWS\", \"sourceparentprocessstarttime\": 2619170033813, \"sourceparentprocessstoryline\": \"B5A7F8AA88091D56\", \"sourceparentprocesssubsystem\": \"win32\", \"sourceparentprocessusername\": \"raquel-win10\\\\win10-user\", \"sourceprocesscommandline\": \"\\\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\\\"\", \"sourceprocessfilepath\": \"C:\\\\Windows\\\\System32\\\\WINDOWSPOWERSHELL\\\\V1.0\\\\powershell.exe\", \"sourceprocessfilesigneridentity\": \"MICROSOFT WINDOWS\", \"sourceprocessintegritylevel\": \"high\", \"sourceprocesskey\": \"01ADF8AA88091D56\", \"sourceprocessmd5\": \"0e4d8473fb7241244fa94db6ba3d54b0\", \"sourceprocessname\": \"powershell.exe\", \"sourceprocesspid\": 2128, \"sourceprocesssha1\": \"264662b035bc2d3a409502986e291f64caa9843d\", \"sourceprocesssha256\": \"2752858f9bfb108ebcd3ab462b317a8e01a7995445a429f13b9a32e9a905f7d9\", \"sourceprocessstarttime\": 2619170160671, \"sourceprocessstoryline\": \"02ADF8AA88091D56\", \"sourceprocesssubsystem\": \"win32\", \"sourceprocessusername\": \"raquel-win10\\\\win10-user\", \"srcip\": \"\", \"srcmachineip\": \"\", \"srcport\": 0, \"systemUser\": 0, \"tgtfilecreatedat\": 0, \"tgtfilehashsha1\": \"\", \"tgtfilehashsha256\": \"\", \"tgtfileid\": \"\", \"tgtfileissigned\": \"\", \"tgtfilemodifiedat\": 0, \"tgtfileoldpath\": \"\", \"tgtfilepath\": \"\", \"tgtproccmdline\": \"\", \"tgtprocessstarttime\": 0, \"tgtprocimagepath\": \"\", \"tgtprocintegritylevel\": \"unknown\", \"tgtprocname\": \"\", \"tgtprocpid\": 0, \"tgtprocsignedstatus\": \"\", \"tgtprocstorylineid\": \"\", \"tgtprocuid\": \"\", \"tiindicatorcomparisonmethod\": \"\", \"tiindicatorsource\": \"\", \"tiindicatortype\": \"\", \"tiindicatorvalue\": \"\", \"userId\": 1392606454463278101, \"userName\": \"Hzyrx Cxcjuao\"}, \"description\": null, \"groupId\": \"1392053568591146999\", \"groupName\": \"Default Group\", \"hash\": null, \"id\": \"2116686010862214929\", \"osFamily\": null, \"primaryDescription\": \"Alert created for powershell.exe from Custom Rule: test5 in Group Default Group in Site Default site of Account Bycunpa, detected on raquel-win10.\", \"secondaryDescription\": \"264662b035bc2d3a409502986e291f64caa9843d\", \"siteId\": \"1392053568582758390\", \"siteName\": \"Default site\", \"threatId\": \"2116686023738728218\", \"updatedAt\": \"2052-12-30T11:17:15.554519Z\", \"userId\": \"1392606454463278101\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "activity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sentinel_one-activity-default",
+    "event_count": 28,
+    "numeric_keyword_fields": [],
+    "package": "sentinel_one",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

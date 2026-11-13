@@ -1,0 +1,113 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-24T08:54:21.442Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "user-login",
+        "category": [
+          "authentication"
+        ],
+        "id": "5f5cd9dd-cb76-4c24-95c3-c0059125543e",
+        "kind": "event",
+        "original": "{\"id\": \"5f5cd9dd-cb76-4c24-95c3-c0059125543e\",\"action\": \" user Login\",\"requestId\": \"5f5cd9dd-cb76-4c24-95c3-c0059125543e\",\"status\": \"SUCCESS\",\"timestamp\": \"2051-08-24T08:54:21.44203Z\",\"actionParameters\": {\"clientID\": \"kr7ngoiolk3d9i8ravmuutlb6\",\"groups\": null,\"name\": \"op-us\",\"products\": [\"*\"],\"role\": \"\",\"scopes\": [\"read:issues\",\"read:reports\",\"read:vulnerabilities\",\"read:cloud_configuration\",\"update:reports\",\"create:reports\"],\"userEmail\": \"\",\"userID\": \"mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg\",\"userpoolID\": \"us-east-2_GQ3gwvxsQ\"},\"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36\",\"sourceIP\": null,\"serviceAccount\": {\"id\": \"mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg\",\"name\": \"op-us\"},\"user\":{\"id\": \"123abc\", \"name\": \"ebprn40\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "http": {
+        "request": {
+          "id": "5f5cd9dd-cb76-4c24-95c3-c0059125543e"
+        }
+      },
+      "related": {
+        "user": [
+          "123abc",
+          "ebprn40",
+          "mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg",
+          "us-east-2_GQ3gwvxsQ"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "id": "123abc",
+        "name": "ebprn40"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Chrome",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0.0.0"
+      },
+      "wiz": {
+        "audit": {
+          "action": " user Login",
+          "action_parameters": {
+            "client_id": "kr7ngoiolk3d9i8ravmuutlb6",
+            "name": "op-us",
+            "products": [
+              "*"
+            ],
+            "scopes": [
+              "read:issues",
+              "read:reports",
+              "read:vulnerabilities",
+              "read:cloud_configuration",
+              "update:reports",
+              "create:reports"
+            ],
+            "user": {
+              "id": "mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg"
+            },
+            "userpool_id": "us-east-2_GQ3gwvxsQ"
+          },
+          "id": "5f5cd9dd-cb76-4c24-95c3-c0059125543e",
+          "request_id": "5f5cd9dd-cb76-4c24-95c3-c0059125543e",
+          "service_account": {
+            "id": "mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg",
+            "name": "op-us"
+          },
+          "status": "SUCCESS",
+          "timestamp": "2051-08-24T08:54:21.442Z",
+          "user": {
+            "id": "123abc",
+            "name": "ebprn40"
+          },
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"id\": \"5f5cd9dd-cb76-4c24-95c3-c0059125543e\",\"action\": \" user Login\",\"requestId\": \"5f5cd9dd-cb76-4c24-95c3-c0059125543e\",\"status\": \"SUCCESS\",\"timestamp\": \"2051-08-24T08:54:21.44203Z\",\"actionParameters\": {\"clientID\": \"kr7ngoiolk3d9i8ravmuutlb6\",\"groups\": null,\"name\": \"op-us\",\"products\": [\"*\"],\"role\": \"\",\"scopes\": [\"read:issues\",\"read:reports\",\"read:vulnerabilities\",\"read:cloud_configuration\",\"update:reports\",\"create:reports\"],\"userEmail\": \"\",\"userID\": \"mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg\",\"userpoolID\": \"us-east-2_GQ3gwvxsQ\"},\"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36\",\"sourceIP\": null,\"serviceAccount\": {\"id\": \"mlipebtwsndhxdmnzdwrxzmiojxkszrh6qzfufevkpmdguxfv4cxg\",\"name\": \"op-us\"},\"user\":{\"id\": \"123abc\", \"name\": \"ebprn40\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-wiz-audit-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "wiz",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-03-10T09:11:20.000Z",
+      "cyberarkpas": {
+        "audit": {
+          "action": "Action On Closed Safe",
+          "desc": "Action On Closed Safe",
+          "iso_timestamp": "2049-03-10T09:11:20Z",
+          "issuer": "Administrator",
+          "message": "Action On Closed Safe",
+          "rfc5424": true,
+          "safe": "PSMPConf",
+          "severity": "Error",
+          "station": "192.0.2.97",
+          "timestamp": "Mar 10 01:11:20"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "action on closed safe",
+        "code": "23",
+        "kind": "event",
+        "original": "<7>1 2049-03-10T09:11:20Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 10 01:11:20\",\"IsoTimestamp\":\"2049-03-10T09:11:20Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"23\",\"Desc\":\"Action On Closed Safe\",\"Severity\":\"Error\",\"Issuer\":\"Administrator\",\"Action\":\"Action On Closed Safe\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"PSMPConf\",\"File\":\"\",\"Station\":\"192.0.2.97\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Action On Closed Safe\",\"GatewayStation\":\"\"}}}",
+        "severity": 7,
+        "type": [
+          "error"
+        ]
+      },
+      "host": {
+        "name": "XASHY"
+      },
+      "log": {
+        "syslog": {
+          "priority": 7
+        }
+      },
+      "observer": {
+        "hostname": "XASHY",
+        "product": "Vault",
+        "vendor": "Cyber-Ark",
+        "version": "11.7.0000"
+      },
+      "related": {
+        "ip": [
+          "192.0.2.97"
+        ]
+      },
+      "source": {
+        "address": "192.0.2.97",
+        "ip": "192.0.2.97"
+      },
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-03-14T12:07:27.000Z",
+      "cyberarkpas": {
+        "audit": {
+          "action": "Action On Closed Safe",
+          "desc": "Action On Closed Safe",
+          "iso_timestamp": "2049-03-14T12:07:27Z",
+          "issuer": "PasswordManager",
+          "message": "Action On Closed Safe",
+          "raw": "<syslog>\n\n  <audit_record>\n    <Rfc5424>yes</Rfc5424>\n    <Timestamp>Mar 14 05:07:27</Timestamp>\n    <IsoTimestamp>2049-03-14T12:07:27Z</IsoTimestamp>\n    <Hostname>XASHY</Hostname>\n    <Vendor>Cyber-Ark</Vendor>\n    <Product>Vault</Product>\n    <Version>11.7.0000</Version>\n    <MessageID>23</MessageID>\n    <Desc>Action On Closed Safe</Desc>\n    <Severity>Error</Severity>\n    <Issuer>PasswordManager</Issuer>\n    <Action>Action On Closed Safe</Action>\n    <SourceUser></SourceUser>\n    <TargetUser></TargetUser>\n    <Safe>AccountsFeedADAccounts</Safe>\n    <File></File>\n    <Station>10.129.17.24</Station>\n    <Location></Location>\n    <Category></Category>\n    <RequestId></RequestId>\n    <Reason></Reason>\n    <ExtraDetails></ExtraDetails>\n    <Message>Action On Closed Safe</Message>\n    <GatewayStation></GatewayStation>\n  </audit_record>\n\n</syslog>",
+          "rfc5424": true,
+          "safe": "AccountsFeedADAccounts",
+          "severity": "Error",
+          "station": "10.129.17.24",
+          "timestamp": "Mar 14 05:07:27"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "action on closed safe",
+        "code": "23",
+        "kind": "event",
+        "original": "<7>1 2049-03-14T12:07:27Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"raw\":\"<syslog>\\n\\n  <audit_record>\\n    <Rfc5424>yes</Rfc5424>\\n    <Timestamp>Mar 14 05:07:27</Timestamp>\\n    <IsoTimestamp>2049-03-14T12:07:27Z</IsoTimestamp>\\n    <Hostname>XASHY</Hostname>\\n    <Vendor>Cyber-Ark</Vendor>\\n    <Product>Vault</Product>\\n    <Version>11.7.0000</Version>\\n    <MessageID>23</MessageID>\\n    <Desc>Action On Closed Safe</Desc>\\n    <Severity>Error</Severity>\\n    <Issuer>PasswordManager</Issuer>\\n    <Action>Action On Closed Safe</Action>\\n    <SourceUser></SourceUser>\\n    <TargetUser></TargetUser>\\n    <Safe>AccountsFeedADAccounts</Safe>\\n    <File></File>\\n    <Station>10.129.17.24</Station>\\n    <Location></Location>\\n    <Category></Category>\\n    <RequestId></RequestId>\\n    <Reason></Reason>\\n    <ExtraDetails></ExtraDetails>\\n    <Message>Action On Closed Safe</Message>\\n    <GatewayStation></GatewayStation>\\n  </audit_record>\\n\\n</syslog>\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 14 05:07:27\",\"IsoTimestamp\":\"2049-03-14T12:07:27Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"23\",\"Desc\":\"Action On Closed Safe\",\"Severity\":\"Error\",\"Issuer\":\"PasswordManager\",\"Action\":\"Action On Closed Safe\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"AccountsFeedADAccounts\",\"File\":\"\",\"Station\":\"10.129.17.24\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Action On Closed Safe\",\"GatewayStation\":\"\"}}}",
+        "severity": 7,
+        "type": [
+          "error"
+        ]
+      },
+      "host": {
+        "name": "XASHY"
+      },
+      "log": {
+        "syslog": {
+          "priority": 7
+        }
+      },
+      "observer": {
+        "hostname": "XASHY",
+        "product": "Vault",
+        "vendor": "Cyber-Ark",
+        "version": "11.7.0000"
+      },
+      "related": {
+        "ip": [
+          "10.129.17.24"
+        ]
+      },
+      "source": {
+        "address": "10.129.17.24",
+        "ip": "10.129.17.24"
+      },
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-03-14T12:57:16.000Z",
+      "cyberarkpas": {
+        "audit": {
+          "action": "Action On Closed Safe",
+          "desc": "Action On Closed Safe",
+          "iso_timestamp": "2049-03-14T12:57:16Z",
+          "issuer": "Administrator",
+          "message": "Action On Closed Safe",
+          "raw": "<syslog>\n\n  <audit_record>\n    <Rfc5424>yes</Rfc5424>\n    <Timestamp>Mar 14 05:57:16</Timestamp>\n    <IsoTimestamp>2049-03-14T12:57:16Z</IsoTimestamp>\n    <Hostname>XASHY</Hostname>\n    <Vendor>Cyber-Ark</Vendor>\n    <Product>Vault</Product>\n    <Version>11.7.0000</Version>\n    <MessageID>23</MessageID>\n    <Desc>Action On Closed Safe</Desc>\n    <Severity>Error</Severity>\n    <Issuer>Administrator</Issuer>\n    <Action>Action On Closed Safe</Action>\n    <SourceUser></SourceUser>\n    <TargetUser></TargetUser>\n    <Safe>PSMPConf</Safe>\n    <File></File>\n    <Station>203.0.113.53</Station>\n    <Location></Location>\n    <Category></Category>\n    <RequestId></RequestId>\n    <Reason></Reason>\n    <ExtraDetails></ExtraDetails>\n    <Message>Action On Closed Safe</Message>\n    <GatewayStation></GatewayStation>\n  </audit_record>\n\n</syslog>",
+          "rfc5424": true,
+          "safe": "PSMPConf",
+          "severity": "Error",
+          "station": "203.0.113.53",
+          "timestamp": "Mar 14 05:57:16"
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "action on closed safe",
+        "code": "23",
+        "kind": "event",
+        "original": "<7>1 2049-03-14T12:57:16Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"raw\":\"<syslog>\\n\\n  <audit_record>\\n    <Rfc5424>yes</Rfc5424>\\n    <Timestamp>Mar 14 05:57:16</Timestamp>\\n    <IsoTimestamp>2049-03-14T12:57:16Z</IsoTimestamp>\\n    <Hostname>XASHY</Hostname>\\n    <Vendor>Cyber-Ark</Vendor>\\n    <Product>Vault</Product>\\n    <Version>11.7.0000</Version>\\n    <MessageID>23</MessageID>\\n    <Desc>Action On Closed Safe</Desc>\\n    <Severity>Error</Severity>\\n    <Issuer>Administrator</Issuer>\\n    <Action>Action On Closed Safe</Action>\\n    <SourceUser></SourceUser>\\n    <TargetUser></TargetUser>\\n    <Safe>PSMPConf</Safe>\\n    <File></File>\\n    <Station>203.0.113.53</Station>\\n    <Location></Location>\\n    <Category></Category>\\n    <RequestId></RequestId>\\n    <Reason></Reason>\\n    <ExtraDetails></ExtraDetails>\\n    <Message>Action On Closed Safe</Message>\\n    <GatewayStation></GatewayStation>\\n  </audit_record>\\n\\n</syslog>\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 14 05:57:16\",\"IsoTimestamp\":\"2049-03-14T12:57:16Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"23\",\"Desc\":\"Action On Closed Safe\",\"Severity\":\"Error\",\"Issuer\":\"Administrator\",\"Action\":\"Action On Closed Safe\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"PSMPConf\",\"File\":\"\",\"Station\":\"203.0.113.53\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Action On Closed Safe\",\"GatewayStation\":\"\"}}}",
+        "severity": 7,
+        "type": [
+          "error"
+        ]
+      },
+      "host": {
+        "name": "XASHY"
+      },
+      "log": {
+        "syslog": {
+          "priority": 7
+        }
+      },
+      "observer": {
+        "hostname": "XASHY",
+        "product": "Vault",
+        "vendor": "Cyber-Ark",
+        "version": "11.7.0000"
+      },
+      "related": {
+        "ip": [
+          "203.0.113.53"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.53",
+        "ip": "203.0.113.53"
+      },
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "<7>1 2049-03-10T09:11:20Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 10 01:11:20\",\"IsoTimestamp\":\"2049-03-10T09:11:20Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"23\",\"Desc\":\"Action On Closed Safe\",\"Severity\":\"Error\",\"Issuer\":\"Administrator\",\"Action\":\"Action On Closed Safe\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"PSMPConf\",\"File\":\"\",\"Station\":\"192.0.2.97\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Action On Closed Safe\",\"GatewayStation\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit"
+      ]
+    },
+    {
+      "message": "<7>1 2049-03-14T12:07:27Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"raw\":\"<syslog>\\n\\n  <audit_record>\\n    <Rfc5424>yes</Rfc5424>\\n    <Timestamp>Mar 14 05:07:27</Timestamp>\\n    <IsoTimestamp>2049-03-14T12:07:27Z</IsoTimestamp>\\n    <Hostname>XASHY</Hostname>\\n    <Vendor>Cyber-Ark</Vendor>\\n    <Product>Vault</Product>\\n    <Version>11.7.0000</Version>\\n    <MessageID>23</MessageID>\\n    <Desc>Action On Closed Safe</Desc>\\n    <Severity>Error</Severity>\\n    <Issuer>PasswordManager</Issuer>\\n    <Action>Action On Closed Safe</Action>\\n    <SourceUser></SourceUser>\\n    <TargetUser></TargetUser>\\n    <Safe>AccountsFeedADAccounts</Safe>\\n    <File></File>\\n    <Station>10.129.17.24</Station>\\n    <Location></Location>\\n    <Category></Category>\\n    <RequestId></RequestId>\\n    <Reason></Reason>\\n    <ExtraDetails></ExtraDetails>\\n    <Message>Action On Closed Safe</Message>\\n    <GatewayStation></GatewayStation>\\n  </audit_record>\\n\\n</syslog>\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 14 05:07:27\",\"IsoTimestamp\":\"2049-03-14T12:07:27Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"23\",\"Desc\":\"Action On Closed Safe\",\"Severity\":\"Error\",\"Issuer\":\"PasswordManager\",\"Action\":\"Action On Closed Safe\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"AccountsFeedADAccounts\",\"File\":\"\",\"Station\":\"10.129.17.24\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Action On Closed Safe\",\"GatewayStation\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit"
+      ]
+    },
+    {
+      "message": "<7>1 2049-03-14T12:57:16Z XASHY {\"format\":\"elastic\",\"version\":\"1.0\",\"raw\":\"<syslog>\\n\\n  <audit_record>\\n    <Rfc5424>yes</Rfc5424>\\n    <Timestamp>Mar 14 05:57:16</Timestamp>\\n    <IsoTimestamp>2049-03-14T12:57:16Z</IsoTimestamp>\\n    <Hostname>XASHY</Hostname>\\n    <Vendor>Cyber-Ark</Vendor>\\n    <Product>Vault</Product>\\n    <Version>11.7.0000</Version>\\n    <MessageID>23</MessageID>\\n    <Desc>Action On Closed Safe</Desc>\\n    <Severity>Error</Severity>\\n    <Issuer>Administrator</Issuer>\\n    <Action>Action On Closed Safe</Action>\\n    <SourceUser></SourceUser>\\n    <TargetUser></TargetUser>\\n    <Safe>PSMPConf</Safe>\\n    <File></File>\\n    <Station>203.0.113.53</Station>\\n    <Location></Location>\\n    <Category></Category>\\n    <RequestId></RequestId>\\n    <Reason></Reason>\\n    <ExtraDetails></ExtraDetails>\\n    <Message>Action On Closed Safe</Message>\\n    <GatewayStation></GatewayStation>\\n  </audit_record>\\n\\n</syslog>\",\"syslog\":{\"audit_record\":{\"Rfc5424\":\"yes\",\"Timestamp\":\"Mar 14 05:57:16\",\"IsoTimestamp\":\"2049-03-14T12:57:16Z\",\"Hostname\":\"XASHY\",\"Vendor\":\"Cyber-Ark\",\"Product\":\"Vault\",\"Version\":\"11.7.0000\",\"MessageID\":\"23\",\"Desc\":\"Action On Closed Safe\",\"Severity\":\"Error\",\"Issuer\":\"Administrator\",\"Action\":\"Action On Closed Safe\",\"SourceUser\":\"\",\"TargetUser\":\"\",\"Safe\":\"PSMPConf\",\"File\":\"\",\"Station\":\"203.0.113.53\",\"Location\":\"\",\"Category\":\"\",\"RequestId\":\"\",\"Reason\":\"\",\"ExtraDetails\":\"\",\"Message\":\"Action On Closed Safe\",\"GatewayStation\":\"\"}}}",
+      "tags": [
+        "forwarded",
+        "cyberarkpas-audit"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "audit",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cyberarkpas-audit-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "cyberarkpas",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

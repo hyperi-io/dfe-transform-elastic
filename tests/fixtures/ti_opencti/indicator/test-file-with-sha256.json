@@ -1,0 +1,149 @@
+{
+    "events": [
+        {
+            "id": "78e07699-8e4c-4397-a15e-7beed8555490",
+            "standard_id": "indicator--f8a24f42-ab3b-5c6f-80f9-53ff9d4a124e",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 30,
+            "lang": "en",
+            "created": "2051-01-17T06:39:24.286Z",
+            "modified": "2051-01-17T06:53:07.602Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[file:hashes.'SHA-256' = '9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856']",
+            "name": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+            "description": "",
+            "valid_from": "2045-02-10T21:37:17.000Z",
+            "valid_until": "2046-02-10T21:37:17.000Z",
+            "x_opencti_score": 50,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "StixFile",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "AlienVault"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:GREEN"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "malware"
+                },
+                {
+                    "value": "unit42"
+                },
+                {
+                    "value": "steganography"
+                },
+                {
+                    "value": "stegbaus"
+                },
+                {
+                    "value": "runpe"
+                },
+                {
+                    "value": "loader"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "ca3bf54b-c909-4161-82ce-bb98938c4f3b",
+                            "standard_id": "file--e7703038-4939-53f5-887d-845e025468eb",
+                            "entity_type": "StixFile",
+                            "observable_value": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+                            "hashes": [
+                                {
+                                    "algorithm": "SHA-256",
+                                    "hash": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856"
+                                }
+                            ],
+                            "size": null,
+                            "name": null,
+                            "name_enc": null,
+                            "magic_number_hex": null,
+                            "mime_type": null,
+                            "ctime": null,
+                            "mtime": null,
+                            "atime": null,
+                            "x_opencti_additional_names": null,
+                            "obsContent": null
+                        }
+                    }
+                ],
+                "pageInfo": {
+                    "globalCount": 1
+                }
+            }
+        },
+        {
+            "id": "78e07699-8e4c-4397-a15e-7beed8555490",
+            "standard_id": "indicator--f8a24f42-ab3b-5c6f-80f9-53ff9d4a124e",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 30,
+            "lang": "en",
+            "created": "2051-01-17T06:39:24.286Z",
+            "modified": "2051-01-17T06:53:07.602Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[file:hashes.'SHA-256' = '9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856' OR file:hashes.SHA1 = '6cfb48c0e54f7372bfdd71a880b13d0b4931bdb7']",
+            "name": "9b1083feb0286fa22b12766efa4db759bf9d6a68dd41173fbc296d9fc31ff856",
+            "description": "",
+            "valid_from": "2045-02-10T21:37:17.000Z",
+            "valid_until": "2046-02-10T21:37:17.000Z",
+            "x_opencti_score": 50,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "StixFile",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "AlienVault"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:GREEN"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "malware"
+                },
+                {
+                    "value": "unit42"
+                },
+                {
+                    "value": "steganography"
+                },
+                {
+                    "value": "stegbaus"
+                },
+                {
+                    "value": "runpe"
+                },
+                {
+                    "value": "loader"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [],
+                "pageInfo": {
+                    "globalCount": 0
+                }
+            }
+        }
+    ]
+}

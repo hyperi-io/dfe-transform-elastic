@@ -1,0 +1,101 @@
+{
+    "events": [
+        {
+            "@timestamp": "2054-01-07T17:46:40.561Z",
+            "agent": {
+                "version": "6.24.0"
+            },
+            "ecs": {
+                "version": "9.1"
+            },
+            "error": {
+                "stack_trace": "com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java:-1)\norg.springframework.jdbc.core.JdbcTemplate$1ExecuteStatementCallback.doInStatement(JdbcTemplate.java:435)\norg.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:393)\ncom.contrast.dataservice.PaymentController.executeRawQuery(PaymentController.java:55)"
+            },
+            "event": {
+                "category": [
+                    "intrusion_detection"
+                ],
+                "dataset": "contrast_security.attack_event",
+                "id": "9e66e05c-fdad-4278-8c3d-884300198b97",
+                "kind": "event",
+                "module": "contrast_security",
+                "outcome": "success",
+                "provider": "Contrast Security",
+                "reason": "sql-injection",
+                "severity": 4,
+                "type": [
+                    "allowed"
+                ],
+                "url": "https://apptwo.contrastsecurity.com/Contrast/cs/index.html#/3b409466-1642-4c9b-891b-655c559af7a7/applications/91f97c31-ffb4-4e7b-9433-3e5b432d4c26/attacks/0d86b13b"
+            },
+            "host": {
+                "hostname": "brmysbgp-adnyu-dfru-ebhemawpubf-8cd8f7b3a8-grk7v",
+                "id": "92325",
+                "name": "contrast-cargo-cats-dataservice-agent",
+                "os": {
+                    "full": "Linux 6.12.54-linuxkit aarch64"
+                }
+            },
+            "http": {
+                "request": {
+                    "body": {
+                        "content": "9999999999999999 ' AND SLEEP(5) OR 'a'='a"
+                    },
+                    "method": "GET"
+                },
+                "version": "1.1"
+            },
+            "message": "sql-injection",
+            "network": {
+                "protocol": "http",
+                "transport": "tcp"
+            },
+            "observer": {
+                "product": "Contrast ADR",
+                "type": "adr",
+                "vendor": "Contrast Security"
+            },
+            "organization": {
+                "id": "691794ff-48cc-4530-b31f-65d752f3f2b0"
+            },
+            "rule": {
+                "category": "Application Attack",
+                "id": "sql-injection",
+                "name": "sql-injection",
+                "ruleset": "Contrast ADR"
+            },
+            "service": {
+                "environment": "production",
+                "id": "91f97c31-ffb4-4e7b-9433-3e5b432d4c26",
+                "name": "contrast-cargo-cats-dataservice",
+                "type": "java"
+            },
+            "source": {
+                "ip": "10.148.93.109"
+            },
+            "threat": {
+                "framework": "MITRE ATT&CK",
+                "tactic": {
+                    "id": [
+                        "TA0040",
+                        "TA0010",
+                        "TA0009"
+                    ],
+                    "name": [
+                        "Impact",
+                        "Exfiltration",
+                        "Collection"
+                    ],
+                    "reference": [
+                        "https://attack.mitre.org/tactics/TA0040/",
+                        "https://attack.mitre.org/tactics/TA0010/",
+                        "https://attack.mitre.org/tactics/TA0009/"
+                    ]
+                }
+            },
+            "url": {
+                "path": "/payments"
+            }
+        }
+    ]
+}

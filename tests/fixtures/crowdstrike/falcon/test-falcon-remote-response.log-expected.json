@@ -1,0 +1,152 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-02-27T19:12:14.000Z",
+      "crowdstrike": {
+        "event": {
+          "SessionId": "48965b6de0c87fjji02nv1074sjuq23g"
+        },
+        "metadata": {
+          "customerIDString": "48965b6de0c87fjji02nv1074sjuq23g",
+          "eventType": "RemoteResponseSessionStartEvent",
+          "offset": 1045,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "remote_response_session_start_event"
+        ],
+        "category": [
+          "network",
+          "session"
+        ],
+        "created": "2048-02-27T19:12:14.000Z",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"offset\":1045,\"eventType\":\"RemoteResponseSessionStartEvent\",\"eventCreationTime\":2466443534000,\"version\":\"1.0\"},\"event\":{\"SessionId\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"HostnameField\":\"hostnameofmachine\",\"UserName\":\"awnhx.sfis@djxlbxr.com\",\"StartTimestamp\":2466443534}}",
+        "start": "2048-02-27T19:12:14.000Z",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "hostnameofmachine"
+      },
+      "message": "Remote response session started.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "hostnameofmachine"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    },
+    {
+      "@timestamp": "2048-02-27T19:12:52.000Z",
+      "crowdstrike": {
+        "event": {
+          "SessionId": "48965b6de0c87fjji02nv1074sjuq23g"
+        },
+        "metadata": {
+          "customerIDString": "48965b6de0c87fjji02nv1074sjuq23g",
+          "eventType": "RemoteResponseSessionEndEvent",
+          "offset": 1046,
+          "version": "1.0"
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": [
+          "remote_response_session_end_event"
+        ],
+        "category": [
+          "network",
+          "session"
+        ],
+        "created": "2048-02-27T19:12:52.000Z",
+        "end": "2048-02-27T19:12:52.000Z",
+        "kind": "event",
+        "original": "{\"metadata\":{\"customerIDString\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"offset\":1046,\"eventType\":\"RemoteResponseSessionEndEvent\",\"eventCreationTime\":2466443572000,\"version\":\"1.0\"},\"event\":{\"SessionId\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"HostnameField\":\"hostnameofmachine\",\"UserName\":\"awnhx.sfis@djxlbxr.com\",\"EndTimestamp\":2466443572}}",
+        "type": [
+          "end"
+        ]
+      },
+      "host": {
+        "name": "hostnameofmachine"
+      },
+      "message": "Remote response session ended.",
+      "observer": {
+        "product": "Falcon",
+        "vendor": "Crowdstrike"
+      },
+      "related": {
+        "hosts": [
+          "hostnameofmachine"
+        ],
+        "user": [
+          "awnhx.sfis",
+          "awnhx.sfis@djxlbxr.com"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "djxlbxr.com",
+        "email": "awnhx.sfis@djxlbxr.com",
+        "name": "awnhx.sfis"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"offset\":1045,\"eventType\":\"RemoteResponseSessionStartEvent\",\"eventCreationTime\":2466443534000,\"version\":\"1.0\"},\"event\":{\"SessionId\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"HostnameField\":\"hostnameofmachine\",\"UserName\":\"awnhx.sfis@djxlbxr.com\",\"StartTimestamp\":2466443534}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"metadata\":{\"customerIDString\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"offset\":1046,\"eventType\":\"RemoteResponseSessionEndEvent\",\"eventCreationTime\":2466443572000,\"version\":\"1.0\"},\"event\":{\"SessionId\":\"48965b6de0c87fjji02nv1074sjuq23g\",\"HostnameField\":\"hostnameofmachine\",\"UserName\":\"awnhx.sfis@djxlbxr.com\",\"EndTimestamp\":2466443572}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "falcon",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-crowdstrike-falcon-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "crowdstrike",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

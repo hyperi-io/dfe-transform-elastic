@@ -1,0 +1,27 @@
+{
+  "expected": [
+    {
+      "_compat_error": "no result"
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"data\":[],\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?limit=100u0026offset=0u0026start_date=2050-11-09T11%3A09%3A35%2B00%3A00\"},\"results\":{\"current_item_count\":0,\"index\":0,\"items_per_page\":100,\"total\":0}},\"version\":\"v1.2.0\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_secure_endpoint-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cisco_secure_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

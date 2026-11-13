@@ -1,0 +1,153 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2026-11-13T23:07:46.981281089Z",
+      "anomali": {
+        "threatstream": {
+          "can_add_public_tags": true,
+          "confidence": 100,
+          "deletion_scheduled_at": "2027-02-06T23:07:46.981281089Z",
+          "expiration_ts": "2318-07-09T20:41:16.995Z",
+          "feed_id": 0,
+          "id": "184979083",
+          "is_anonymous": false,
+          "is_editable": false,
+          "is_public": false,
+          "itype": "c2_domain",
+          "meta": {
+            "severity": "high"
+          },
+          "owner_organization_id": 1,
+          "retina_confidence": -1,
+          "source_reported_confidence": 100,
+          "status": "active",
+          "threat_type": "c2",
+          "trusted_circle_ids": [
+            "10015"
+          ],
+          "type": "domain",
+          "update_id": "376540078",
+          "uuid": "585a1de0-05dd-4027-9bbd-9f39eb12224c",
+          "value": "www.ioxadaocdsrpsq.com"
+        }
+      },
+      "ecs": {
+        "version": "9.3.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "created": "2048-10-09T18:14:39.498Z",
+        "kind": "enrichment",
+        "severity": 73,
+        "type": [
+          "indicator"
+        ]
+      },
+      "related": {
+        "hosts": [
+          "www.ioxadaocdsrpsq.com"
+        ],
+        "ip": [
+          "192.0.2.197"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "MalSpam"
+      ],
+      "threat": {
+        "indicator": {
+          "confidence": "High",
+          "ip": "192.0.2.197",
+          "marking": {
+            "tlp": "AMBER"
+          },
+          "modified_at": "2048-10-09T18:14:39.498Z",
+          "name": "www.ioxadaocdsrpsq.com",
+          "provider": "Default Organization",
+          "type": "domain-name",
+          "url": {
+            "domain": "www.ioxadaocdsrpsq.com"
+          }
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "ioc_duration_before_deletion": "85d"
+      },
+      "json": {
+        "asn": "",
+        "can_add_public_tags": true,
+        "confidence": 100,
+        "created_by": null,
+        "created_ts": "2048-10-09T18:14:39.498Z",
+        "description": null,
+        "expiration_ts": "2318-07-09T20:41:16.995Z",
+        "feed_id": 0,
+        "id": 184979083,
+        "ip": "192.0.2.197",
+        "is_anonymous": false,
+        "is_editable": false,
+        "is_public": false,
+        "itype": "c2_domain",
+        "latitude": 43.1479,
+        "locations": [],
+        "meta": {
+          "detail2": "imported by user 1",
+          "severity": "high"
+        },
+        "modified_ts": "2048-10-09T18:14:39.498Z",
+        "org": "",
+        "owner_organization_id": 1,
+        "rdns": null,
+        "resource_uri": "/api/v2/intelligence/184979083/",
+        "retina_confidence": -1,
+        "sort": [
+          376540078
+        ],
+        "source": "Default Organization",
+        "source_locations": [],
+        "source_reported_confidence": 100,
+        "status": "active",
+        "subtype": null,
+        "tags": [
+          {
+            "id": "wg7",
+            "name": "MalSpam"
+          }
+        ],
+        "target_industry": [],
+        "threat_type": "c2",
+        "threatscore": 70,
+        "tlp": null,
+        "trusted_circle_ids": [
+          10015
+        ],
+        "type": "domain",
+        "update_id": 376540078,
+        "uuid": "585a1de0-05dd-4027-9bbd-9f39eb12224c",
+        "value": "www.ioxadaocdsrpsq.com",
+        "workgroups": []
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "intelligence",
+    "dynamic_fields": {
+      "@timestamp": ".*",
+      "anomali.threatstream.deletion_scheduled_at": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_anomali-intelligence-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "ti_anomali",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

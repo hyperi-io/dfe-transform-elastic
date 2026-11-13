@@ -1,0 +1,66 @@
+{
+  "events": [
+      {
+          "@timestamp": "2050-12-01T06:54:30.830Z",
+          "event": {
+            "code": 6144,
+            "action": "Other Policy Change Events",
+            "created": "2050-12-01T06:54:33.114Z",
+            "kind": "event"
+          },
+          "ecs": {
+            "version": "1.0.1"
+          },
+          "host": {
+            "name": "Newjbj7",
+            "hostname": "Newjbj7",
+            "architecture": "x86_64",
+            "os": {
+              "family": "windows",
+              "name": "Windows Server 2016 Standard Evaluation",
+              "kernel": "1Kernel",
+              "build": "14393.693",
+              "platform": "windows",
+              "version": "10.0"
+            },
+            "id": "53609417-2b27-4acc-9518-9f5ff7ba3aa3"
+          },
+          "agent": {
+            "type": "winlogbeat",
+            "ephemeral_id": "a95256a5-e51d-4345-a2ac-055236e8e023",
+            "hostname": "Newjbj7",
+            "id": "51e3dbc0-2ce5-4de7-92a8-7a4a8285f42b",
+            "version": "7.3.1"
+          },
+          "log": {
+            "level": "information"
+          },
+          "message": "Security policy in the group policy objects has been applied successfully. \n\nReturn Code:\t0\n\nGPO List:\n{00000000-0000-0000-0000-000000000000}\tDefault Domain Policy\n{00000000-0000-0000-0000-000000000000}\tGPO1\n{00000000-0000-0000-0000-000000000000}\tDefault Domain Controllers Policy",
+          "winlog": {
+            "record_id": 67036624,
+            "process": {
+              "pid": 648,
+              "thread": {
+                "id": 6708
+              }
+            },
+            "event_data": {
+              "ErrorCode": "0",
+              "GPOList": "{00000000-0000-0000-0000-000000000000}\tDefault Domain Policy\n{00000000-0000-0000-0000-000000000000}\tGPO1\n{00000000-0000-0000-0000-000000000000}\tDefault Domain Controllers Policy"
+            },
+            "channel": "Security",
+            "event_id": 6144,
+            "opcode": "Info",
+            "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}",
+            "api": "wineventlog",
+            "task": "Other Policy Change Events",
+            "computer_name": "Newjbj7.qt.local",
+            "activity_id": "{610AD0D1-DE9B-0230-D5E7-6C303CDDC992}",
+            "keywords": [
+              "Audit Success"
+            ],
+            "provider_name": "Microsoft-Windows-Security-Auditing"
+          }
+      }
+  ]
+}

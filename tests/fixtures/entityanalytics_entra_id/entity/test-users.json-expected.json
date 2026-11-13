@@ -1,0 +1,662 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "asset": {
+        "category": "entity",
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          },
+          {
+            "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+            "name": "Group 16739"
+          }
+        ],
+        "id": "ad057c97-fbeb-4336-8798-9efb08a000c5",
+        "type": "microsoft_entra_id_user"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "user": {
+          "account_enabled": true,
+          "business_phones": [
+            "55-692-8856",
+            "552-265-6614"
+          ],
+          "department": "Security",
+          "display_name": "First21480 Last11836",
+          "given_name": "First21480",
+          "group": [
+            {
+              "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+              "name": "Group 5202"
+            },
+            {
+              "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+              "name": "Group 16739"
+            }
+          ],
+          "id": "ad057c97-fbeb-4336-8798-9efb08a000c5",
+          "job_title": "Manager",
+          "mail": "Cmrtx39417_Vdxh37906@example.com",
+          "mobile_phone": "231-482-2649",
+          "office_location": "608 St N, Somewhere, ABC, XYZ",
+          "surname": "Last11836",
+          "user_principal_name": "Cwgsk51073.Sdtu96107@example.com"
+        }
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2051-03-06T10:07:13.883Z\",\"azure_ad\":{\"businessPhones\":[\"55-692-8856\",\"552-265-6614\"],\"mail\":\"Cmrtx39417_Vdxh37906@example.com\",\"mobilePhone\":\"231-482-2649\",\"officeLocation\":\"608 St N, Somewhere, ABC, XYZ\",\"displayName\":\"First21480 Last11836\",\"surname\":\"Last11836\",\"givenName\":\"First21480\",\"jobTitle\":\"Manager\",\"department\":\"Security\",\"userPrincipalName\":\"Cwgsk51073.Sdtu96107@example.com\",\"accountEnabled\":true},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user-discovered\"},\"user\":{\"id\":\"ad057c97-fbeb-4336-8798-9efb08a000c5\",\"group\":[{\"name\":\"Group 5202\",\"id\":\"a3558a5a-2e36-4d47-8950-6743ba55c5fc\"},{\"name\":\"Group 16739\",\"id\":\"239518ad-2408-4bc3-9e7b-e61564f50b43\"}]},\"labels\":{\"identity_source\":\"entra_id-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "related": {
+        "user": [
+          "Cmrtx39417_Vdxh37906@example.com",
+          "Cwgsk51073.Sdtu96107@example.com",
+          "First21480 Last11836",
+          "ad057c97-fbeb-4336-8798-9efb08a000c5"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "Cmrtx39417_Vdxh37906@example.com",
+        "enabled": true,
+        "first_name": "First21480",
+        "full_name": "First21480 Last11836",
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          },
+          {
+            "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+            "name": "Group 16739"
+          }
+        ],
+        "id": "ad057c97-fbeb-4336-8798-9efb08a000c5",
+        "job_title": "Manager",
+        "last_name": "Last11836",
+        "name": "Cwgsk51073.Sdtu96107@example.com",
+        "phone": [
+          "231-482-2649",
+          "55-692-8856",
+          "552-265-6614"
+        ],
+        "work": {
+          "location_name": "608 St N, Somewhere, ABC, XYZ"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "asset": {
+        "category": "entity",
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          },
+          {
+            "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+            "name": "Group 16739"
+          }
+        ],
+        "id": "ad057c97-fbeb-4336-8798-9efb08a000c5",
+        "type": "microsoft_entra_id_user"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "user": {
+          "account_enabled": true,
+          "business_phones": [
+            "55-692-8856",
+            "552-265-6614"
+          ],
+          "display_name": "First21480 Last11836",
+          "given_name": "First21480",
+          "group": [
+            {
+              "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+              "name": "Group 5202"
+            },
+            {
+              "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+              "name": "Group 16739"
+            }
+          ],
+          "id": "ad057c97-fbeb-4336-8798-9efb08a000c5",
+          "job_title": "Manager",
+          "mail": "Cmrtx39417_Vdxh37906@example.com",
+          "mobile_phone": "231-482-2649",
+          "office_location": "608 St N, Somewhere, ABC, XYZ",
+          "surname": "Last11836",
+          "user_principal_name": "Cwgsk51073.Sdtu96107@example.com"
+        }
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2051-03-06T10:07:13.883Z\",\"azure_ad\":{\"businessPhones\":[\"55-692-8856\",\"552-265-6614\"],\"mail\":\"Cmrtx39417_Vdxh37906@example.com\",\"mobilePhone\":\"231-482-2649\",\"officeLocation\":\"608 St N, Somewhere, ABC, XYZ\",\"displayName\":\"First21480 Last11836\",\"surname\":\"Last11836\",\"givenName\":\"First21480\",\"jobTitle\":\"Manager\",\"userPrincipalName\":\"Cwgsk51073.Sdtu96107@example.com\",\"accountEnabled\":true},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user-discovered\"},\"user\":{\"id\":\"ad057c97-fbeb-4336-8798-9efb08a000c5\",\"group\":[{\"name\":\"Group 5202\",\"id\":\"a3558a5a-2e36-4d47-8950-6743ba55c5fc\"},{\"name\":\"Group 16739\",\"id\":\"239518ad-2408-4bc3-9e7b-e61564f50b43\"}]},\"labels\":{\"identity_source\":\"entra_id-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "related": {
+        "user": [
+          "Cmrtx39417_Vdxh37906@example.com",
+          "Cwgsk51073.Sdtu96107@example.com",
+          "First21480 Last11836",
+          "ad057c97-fbeb-4336-8798-9efb08a000c5"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "Cmrtx39417_Vdxh37906@example.com",
+        "enabled": true,
+        "first_name": "First21480",
+        "full_name": "First21480 Last11836",
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          },
+          {
+            "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+            "name": "Group 16739"
+          }
+        ],
+        "id": "ad057c97-fbeb-4336-8798-9efb08a000c5",
+        "job_title": "Manager",
+        "last_name": "Last11836",
+        "name": "Cwgsk51073.Sdtu96107@example.com",
+        "phone": [
+          "231-482-2649",
+          "55-692-8856",
+          "552-265-6614"
+        ],
+        "work": {
+          "location_name": "608 St N, Somewhere, ABC, XYZ"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "asset": {
+        "category": "entity",
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          }
+        ],
+        "id": "dbb2e587-419d-4bd0-9a48-7cde09396a89",
+        "type": "microsoft_entra_id_user"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "user": {
+          "account_enabled": false,
+          "display_name": "First45375 Last58638",
+          "given_name": "First45375",
+          "group": [
+            {
+              "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+              "name": "Group 5202"
+            }
+          ],
+          "id": "dbb2e587-419d-4bd0-9a48-7cde09396a89",
+          "job_title": "Tech Writer",
+          "mail": "Fzlwx35893_Kbsr06929@example.com",
+          "mobile_phone": "385-169-3671",
+          "office_location": "682 St N, Somewhere, ABC, XYZ",
+          "surname": "Last58638",
+          "user_principal_name": "Emzuz99527.Gcjw47746@example.com"
+        }
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2051-03-06T10:07:13.883Z\",\"azure_ad\":{\"businessPhones\":null,\"mail\":\"Fzlwx35893_Kbsr06929@example.com\",\"mobilePhone\":\"385-169-3671\",\"officeLocation\":\"682 St N, Somewhere, ABC, XYZ\",\"displayName\":\"First45375 Last58638\",\"surname\":\"Last58638\",\"givenName\":\"First45375\",\"jobTitle\":\"Tech Writer\",\"userPrincipalName\":\"Emzuz99527.Gcjw47746@example.com\",\"accountEnabled\":false},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user-discovered\"},\"user\":{\"id\":\"dbb2e587-419d-4bd0-9a48-7cde09396a89\",\"group\":[{\"name\":\"Group 5202\",\"id\":\"a3558a5a-2e36-4d47-8950-6743ba55c5fc\"}]},\"labels\":{\"identity_source\":\"entra_id-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "related": {
+        "user": [
+          "Fzlwx35893_Kbsr06929@example.com",
+          "Emzuz99527.Gcjw47746@example.com",
+          "First45375 Last58638",
+          "dbb2e587-419d-4bd0-9a48-7cde09396a89"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "Fzlwx35893_Kbsr06929@example.com",
+        "first_name": "First45375",
+        "full_name": "First45375 Last58638",
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          }
+        ],
+        "id": "dbb2e587-419d-4bd0-9a48-7cde09396a89",
+        "job_title": "Tech Writer",
+        "last_name": "Last58638",
+        "name": "Emzuz99527.Gcjw47746@example.com",
+        "phone": [
+          "385-169-3671"
+        ],
+        "work": {
+          "location_name": "682 St N, Somewhere, ABC, XYZ"
+        }
+      }
+    },
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "asset": {
+        "category": "entity",
+        "id": "bd837658-0733-8434-abac-ebaccfbd9221",
+        "type": "microsoft_entra_id_user"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "user": {
+          "account_enabled": true,
+          "app_role_assignments": [
+            {
+              "app_role_display_name": "User.Read.All",
+              "app_role_id": "fb539549-dedb-4836-83ac-32d51af64443",
+              "created_date_time": "2051-01-10T12:00:00Z",
+              "id": "bcdf5146-9815-5883-7441-59bfaebedeae",
+              "principal_display_name": "First99001 Last99002",
+              "principal_id": "bd837658-0733-8434-abac-ebaccfbd9221",
+              "resource_display_name": "Microsoft Graph",
+              "resource_id": "7a6d2a38-6471-5938-aacb-bf0824209402"
+            },
+            {
+              "app_role_display_name": "Mail.Read",
+              "app_role_id": "6a4f2f02-cc80-4e39-a3ac-6f3e70c6d8d8",
+              "created_date_time": "2051-01-10T12:00:00Z",
+              "id": "bbcc5945-2841-6457-8850-bacffcecedbf",
+              "principal_display_name": "First99001 Last99002",
+              "principal_id": "bd837658-0733-8434-abac-ebaccfbd9221",
+              "resource_display_name": "Microsoft Graph",
+              "resource_id": "7a6d2a38-6471-5938-aacb-bf0824209402"
+            }
+          ],
+          "direct_reports": [
+            {
+              "display_name": "Vclvxy Hid",
+              "id": "bc305565-5998-aaed-cbde-bbab34368351",
+              "mail": "hblujl.wra@example.com",
+              "user_principal_name": "hblujl.wra@example.com"
+            },
+            {
+              "display_name": "Vclvxy Rjq",
+              "id": "eb089946-73eb-beeb-dfef-da6028514559",
+              "mail": "sfwujr.ouo@example.com",
+              "user_principal_name": "sfwujr.ouo@example.com"
+            }
+          ],
+          "display_name": "First99001 Last99002",
+          "given_name": "First99001",
+          "id": "bd837658-0733-8434-abac-ebaccfbd9221",
+          "job_title": "Engineer",
+          "mail": "Dvisz71477_Garv17723@example.com",
+          "manager": {
+            "display_name": "Idraufp Hid",
+            "id": "bb949765-0942-6834-8327-ddcdfaeabebd",
+            "mail": "hdkdidj.wte@example.com",
+            "user_principal_name": "hdkdidj.wte@example.com"
+          },
+          "mfa": {
+            "is_mfa_capable": true,
+            "is_mfa_registered": true,
+            "is_passwordless_capable": false,
+            "is_sspr_capable": false,
+            "is_sspr_enabled": false,
+            "is_sspr_registered": false,
+            "is_system_preferred_authentication_method_enabled": false,
+            "methods_registered": [
+              "microsoftAuthenticatorPush",
+              "softwareOneTimePasscode"
+            ],
+            "user_preferred_method_for_secondary_authentication": "push",
+            "user_type": "member"
+          },
+          "sign_in_activity": {
+            "last_non_interactive_sign_in_date_time": "2052-02-28T22:00:00Z",
+            "last_sign_in_date_time": "2052-03-01T09:00:00.000Z"
+          },
+          "surname": "Last99002",
+          "user_principal_name": "Dhunh58200.Wdgi52217@example.com"
+        }
+      },
+      "event": {
+        "category": [
+          "iam"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2051-03-06T10:07:13.883Z\",\"azure_ad\":{\"mail\":\"Dvisz71477_Garv17723@example.com\",\"directReports\":[{\"mail\":\"hblujl.wra@example.com\",\"displayName\":\"Vclvxy Hid\",\"id\":\"bc305565-5998-aaed-cbde-bbab34368351\",\"userPrincipalName\":\"hblujl.wra@example.com\"},{\"mail\":\"sfwujr.ouo@example.com\",\"displayName\":\"Vclvxy Rjq\",\"id\":\"eb089946-73eb-beeb-dfef-da6028514559\",\"userPrincipalName\":\"sfwujr.ouo@example.com\"}],\"manager\":{\"mail\":\"hdkdidj.wte@example.com\",\"displayName\":\"Idraufp Hid\",\"id\":\"bb949765-0942-6834-8327-ddcdfaeabebd\",\"userPrincipalName\":\"hdkdidj.wte@example.com\"},\"displayName\":\"First99001 Last99002\",\"surname\":\"Last99002\",\"givenName\":\"First99001\",\"jobTitle\":\"Engineer\",\"appRoleAssignments\":[{\"resourceDisplayName\":\"Microsoft Graph\",\"resourceId\":\"7a6d2a38-6471-5938-aacb-bf0824209402\",\"principalDisplayName\":\"First99001 Last99002\",\"appRoleId\":\"fb539549-dedb-4836-83ac-32d51af64443\",\"createdDateTime\":\"2051-01-10T12:00:00Z\",\"principalId\":\"bd837658-0733-8434-abac-ebaccfbd9221\",\"id\":\"bcdf5146-9815-5883-7441-59bfaebedeae\",\"appRoleDisplayName\":\"User.Read.All\"},{\"resourceDisplayName\":\"Microsoft Graph\",\"resourceId\":\"7a6d2a38-6471-5938-aacb-bf0824209402\",\"principalDisplayName\":\"First99001 Last99002\",\"appRoleId\":\"6a4f2f02-cc80-4e39-a3ac-6f3e70c6d8d8\",\"createdDateTime\":\"2051-01-10T12:00:00Z\",\"principalId\":\"bd837658-0733-8434-abac-ebaccfbd9221\",\"id\":\"bbcc5945-2841-6457-8850-bacffcecedbf\",\"appRoleDisplayName\":\"Mail.Read\"}],\"mfa\":{\"isSystemPreferredAuthenticationMethodEnabled\":false,\"userPreferredMethodForSecondaryAuthentication\":\"push\",\"isPasswordlessCapable\":false,\"isSsprCapable\":false,\"isMfaRegistered\":true,\"methodsRegistered\":[\"microsoftAuthenticatorPush\",\"softwareOneTimePasscode\"],\"isSsprEnabled\":false,\"isMfaCapable\":true,\"isSsprRegistered\":false,\"userType\":\"member\",\"systemPreferredAuthenticationMethods\":[]},\"signInActivity\":{\"lastNonInteractiveSignInDateTime\":\"2052-02-28T22:00:00Z\",\"lastSignInDateTime\":\"2052-03-01T09:00:00Z\"},\"userPrincipalName\":\"Dhunh58200.Wdgi52217@example.com\",\"accountEnabled\":true},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"user-discovered\"},\"user\":{\"id\":\"bd837658-0733-8434-abac-ebaccfbd9221\",\"group\":[]},\"labels\":{\"identity_source\":\"entra_id-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "user",
+          "info"
+        ]
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "related": {
+        "user": [
+          "Dvisz71477_Garv17723@example.com",
+          "Dhunh58200.Wdgi52217@example.com",
+          "First99001 Last99002",
+          "bd837658-0733-8434-abac-ebaccfbd9221"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "email": "Dvisz71477_Garv17723@example.com",
+        "enabled": true,
+        "entity": {
+          "attributes": {
+            "mfa_enabled": true,
+            "permissions": [
+              "User.Read.All",
+              "Mail.Read"
+            ]
+          },
+          "lifecycle": {
+            "last_activity": "2052-03-01T09:00:00.000Z"
+          },
+          "relationships": {
+            "supervises": {
+              "user": {
+                "email": [
+                  "hblujl.wra@example.com",
+                  "sfwujr.ouo@example.com"
+                ],
+                "id": [
+                  "bc305565-5998-aaed-cbde-bbab34368351",
+                  "eb089946-73eb-beeb-dfef-da6028514559"
+                ],
+                "name": [
+                  "hblujl.wra@example.com",
+                  "sfwujr.ouo@example.com"
+                ]
+              }
+            }
+          }
+        },
+        "first_name": "First99001",
+        "full_name": "First99001 Last99002",
+        "id": "bd837658-0733-8434-abac-ebaccfbd9221",
+        "job_title": "Engineer",
+        "last_name": "Last99002",
+        "name": "Dhunh58200.Wdgi52217@example.com"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "azure_ad": {
+        "accountEnabled": true,
+        "businessPhones": [
+          "55-692-8856",
+          "552-265-6614"
+        ],
+        "department": "Security",
+        "displayName": "First21480 Last11836",
+        "givenName": "First21480",
+        "jobTitle": "Manager",
+        "mail": "Cmrtx39417_Vdxh37906@example.com",
+        "mobilePhone": "231-482-2649",
+        "officeLocation": "608 St N, Somewhere, ABC, XYZ",
+        "surname": "Last11836",
+        "userPrincipalName": "Cwgsk51073.Sdtu96107@example.com"
+      },
+      "event": {
+        "action": "user-discovered"
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          },
+          {
+            "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+            "name": "Group 16739"
+          }
+        ],
+        "id": "ad057c97-fbeb-4336-8798-9efb08a000c5"
+      }
+    },
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "azure_ad": {
+        "accountEnabled": true,
+        "businessPhones": [
+          "55-692-8856",
+          "552-265-6614"
+        ],
+        "displayName": "First21480 Last11836",
+        "givenName": "First21480",
+        "jobTitle": "Manager",
+        "mail": "Cmrtx39417_Vdxh37906@example.com",
+        "mobilePhone": "231-482-2649",
+        "officeLocation": "608 St N, Somewhere, ABC, XYZ",
+        "surname": "Last11836",
+        "userPrincipalName": "Cwgsk51073.Sdtu96107@example.com"
+      },
+      "event": {
+        "action": "user-discovered"
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          },
+          {
+            "id": "239518ad-2408-4bc3-9e7b-e61564f50b43",
+            "name": "Group 16739"
+          }
+        ],
+        "id": "ad057c97-fbeb-4336-8798-9efb08a000c5"
+      }
+    },
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "azure_ad": {
+        "accountEnabled": false,
+        "businessPhones": null,
+        "displayName": "First45375 Last58638",
+        "givenName": "First45375",
+        "jobTitle": "Tech Writer",
+        "mail": "Fzlwx35893_Kbsr06929@example.com",
+        "mobilePhone": "385-169-3671",
+        "officeLocation": "682 St N, Somewhere, ABC, XYZ",
+        "surname": "Last58638",
+        "userPrincipalName": "Emzuz99527.Gcjw47746@example.com"
+      },
+      "event": {
+        "action": "user-discovered"
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "group": [
+          {
+            "id": "a3558a5a-2e36-4d47-8950-6743ba55c5fc",
+            "name": "Group 5202"
+          }
+        ],
+        "id": "dbb2e587-419d-4bd0-9a48-7cde09396a89"
+      }
+    },
+    {
+      "@timestamp": "2051-03-06T10:07:13.883Z",
+      "azure_ad": {
+        "accountEnabled": true,
+        "appRoleAssignments": [
+          {
+            "appRoleDisplayName": "User.Read.All",
+            "appRoleId": "fb539549-dedb-4836-83ac-32d51af64443",
+            "createdDateTime": "2051-01-10T12:00:00Z",
+            "id": "bcdf5146-9815-5883-7441-59bfaebedeae",
+            "principalDisplayName": "First99001 Last99002",
+            "principalId": "bd837658-0733-8434-abac-ebaccfbd9221",
+            "resourceDisplayName": "Microsoft Graph",
+            "resourceId": "7a6d2a38-6471-5938-aacb-bf0824209402"
+          },
+          {
+            "appRoleDisplayName": "Mail.Read",
+            "appRoleId": "6a4f2f02-cc80-4e39-a3ac-6f3e70c6d8d8",
+            "createdDateTime": "2051-01-10T12:00:00Z",
+            "id": "bbcc5945-2841-6457-8850-bacffcecedbf",
+            "principalDisplayName": "First99001 Last99002",
+            "principalId": "bd837658-0733-8434-abac-ebaccfbd9221",
+            "resourceDisplayName": "Microsoft Graph",
+            "resourceId": "7a6d2a38-6471-5938-aacb-bf0824209402"
+          }
+        ],
+        "directReports": [
+          {
+            "displayName": "Vclvxy Hid",
+            "id": "bc305565-5998-aaed-cbde-bbab34368351",
+            "mail": "hblujl.wra@example.com",
+            "userPrincipalName": "hblujl.wra@example.com"
+          },
+          {
+            "displayName": "Vclvxy Rjq",
+            "id": "eb089946-73eb-beeb-dfef-da6028514559",
+            "mail": "sfwujr.ouo@example.com",
+            "userPrincipalName": "sfwujr.ouo@example.com"
+          }
+        ],
+        "displayName": "First99001 Last99002",
+        "givenName": "First99001",
+        "jobTitle": "Engineer",
+        "mail": "Dvisz71477_Garv17723@example.com",
+        "manager": {
+          "displayName": "Idraufp Hid",
+          "id": "bb949765-0942-6834-8327-ddcdfaeabebd",
+          "mail": "hdkdidj.wte@example.com",
+          "userPrincipalName": "hdkdidj.wte@example.com"
+        },
+        "mfa": {
+          "isMfaCapable": true,
+          "isMfaRegistered": true,
+          "isPasswordlessCapable": false,
+          "isSsprCapable": false,
+          "isSsprEnabled": false,
+          "isSsprRegistered": false,
+          "isSystemPreferredAuthenticationMethodEnabled": false,
+          "methodsRegistered": [
+            "microsoftAuthenticatorPush",
+            "softwareOneTimePasscode"
+          ],
+          "systemPreferredAuthenticationMethods": [],
+          "userPreferredMethodForSecondaryAuthentication": "push",
+          "userType": "member"
+        },
+        "signInActivity": {
+          "lastNonInteractiveSignInDateTime": "2052-02-28T22:00:00Z",
+          "lastSignInDateTime": "2052-03-01T09:00:00Z"
+        },
+        "surname": "Last99002",
+        "userPrincipalName": "Dhunh58200.Wdgi52217@example.com"
+      },
+      "event": {
+        "action": "user-discovered"
+      },
+      "labels": {
+        "identity_source": "entra_id-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ],
+      "user": {
+        "group": [],
+        "id": "bd837658-0733-8434-abac-ebaccfbd9221"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "entity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-entityanalytics_entra_id-entity-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [],
+    "package": "entityanalytics_entra_id",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

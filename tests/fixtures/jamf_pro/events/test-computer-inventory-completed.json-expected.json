@@ -1,0 +1,126 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "ComputerInventoryCompleted",
+        "category": [
+          "host"
+        ],
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "address": [
+          "198.51.100.144"
+        ],
+        "entity": {
+          "lifecycle": {
+            "last_activity": "2052-09-04T09:57:52.001Z"
+          }
+        },
+        "ip": [
+          "198.51.100.144"
+        ],
+        "os": {
+          "version": "57.4997"
+        }
+      },
+      "jamf_pro": {
+        "events": {
+          "event": {
+            "alternate_mac_address": "ce:bb:a4:55:30:bc",
+            "building": "S51UI3",
+            "department": "7MDD88",
+            "device_name": "8OUCL",
+            "email_address": "pedmrp@dobjr.com",
+            "ip_address": "198.51.100.144",
+            "jss_id": 823,
+            "mac_address": "ce:bb:a4:55:30:bc",
+            "management_id": "3929754883",
+            "model": "BSIDFN",
+            "os_build": "16.9824",
+            "os_version": "57.4997",
+            "phone": "4810259",
+            "position": "LR4ARY",
+            "real_name": "UES54",
+            "reported_ip_address": "198.51.100.144",
+            "room": "CX4BQN",
+            "serial_number": "0425503",
+            "udid": "2137005975",
+            "user_directory_id": "0421460726",
+            "username": "Pnvw Eyd"
+          },
+          "webhook": {
+            "event_timestamp": "2052-09-04T09:57:52.001Z",
+            "id": 729,
+            "name": "4O4YG",
+            "webhook_event": "ComputerInventoryCompleted"
+          }
+        }
+      },
+      "related": {
+        "user": [
+          "Pnvw Eyd",
+          "pedmrp@dobjr.com"
+        ]
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "user": {
+        "email": "pedmrp@dobjr.com",
+        "name": "Pnvw Eyd"
+      }
+    }
+  ],
+  "input": [
+    {
+      "json": {
+        "event": {
+          "alternate_mac_address": "ce:bb:a4:55:30:bc",
+          "building": "S51UI3",
+          "department": "7MDD88",
+          "device_name": "8OUCL",
+          "email_address": "pedmrp@dobjr.com",
+          "ip_address": "198.51.100.144",
+          "jss_id": 823,
+          "mac_address": "ce:bb:a4:55:30:bc",
+          "management_id": "3929754883",
+          "model": "BSIDFN",
+          "os_build": "16.9824",
+          "os_version": "57.4997",
+          "phone": "4810259",
+          "position": "LR4ARY",
+          "real_name": "UES54",
+          "reported_ip_address": "198.51.100.144",
+          "room": "CX4BQN",
+          "serial_number": "0425503",
+          "udid": "2137005975",
+          "user_directory_id": "0421460726",
+          "username": "Pnvw Eyd"
+        },
+        "webhook": {
+          "event_timestamp": 2609056672001,
+          "id": 729,
+          "name": "4O4YG",
+          "webhook_event": "ComputerInventoryCompleted"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "events",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-jamf_pro-events-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "jamf_pro",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2041-02-26T22:02:38.650Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "ip": "198.51.100.144"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "kind": "event",
+        "original": "{\"ts\":2245528958.650605,\"src\":\"192.168.124.110\",\"dst\":\"198.51.100.144\",\"proto\":\"udp\"}",
+        "type": [
+          "info"
+        ]
+      },
+      "network": {
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.168.124.110",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "192.168.124.110",
+        "ip": "192.168.124.110"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {}
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2245528958.650605,\"src\":\"192.168.124.110\",\"dst\":\"198.51.100.144\",\"proto\":\"udp\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "traceroute",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-traceroute-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2054-01-01T00:00:00.000Z",
+      "ecs": {
+        "version": "1.2.0"
+      },
+      "event": {
+        "category": [
+          "database"
+        ],
+        "created": "2054-01-01T00:00:00.000Z",
+        "dataset": "elasticsearch.server",
+        "ingested": "2026-11-13T23:04:18.476122450Z",
+        "kind": "event",
+        "type": [
+          "info"
+        ]
+      },
+      "log": {
+        "level": "WARN",
+        "logger": "org.elasticsearch.xpack.ilm.IndexLifecycleService"
+      },
+      "message": "async action execution failed during policy trigger for index [REDACTED_INDEX] with policy [REDACTED_POLICY] in step [{\"phase\":\"hot\",\"action\":\"rollover\",\"name\":\"ERROR\"}]",
+      "process": {
+        "thread": {
+          "name": "elasticsearch[node1][generic][T#1]"
+        }
+      },
+      "service": {
+        "name": "ES_ECS",
+        "type": "elasticsearch"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"@timestamp\":\"2054-01-01T00:00:00.000Z\",\"log.level\":\"WARN\",\"message\":\"async action execution failed during policy trigger for index [REDACTED_INDEX] with policy [REDACTED_POLICY] in step [{\\\"phase\\\":\\\"hot\\\",\\\"action\\\":\\\"rollover\\\",\\\"name\\\":\\\"ERROR\\\"}]\",\"ecs.version\":\"1.2.0\",\"service.name\":\"ES_ECS\",\"event.dataset\":\"elasticsearch.server\",\"process.thread.name\":\"elasticsearch[node1][generic][T#1]\",\"log.logger\":\"org.elasticsearch.xpack.ilm.IndexLifecycleService\"}"
+    }
+  ],
+  "meta": {
+    "data_stream": "server",
+    "dynamic_fields": {
+      "event.created": ".*",
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-elasticsearch-server-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "elasticsearch",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

@@ -1,0 +1,61 @@
+{
+    "events": [
+        {
+            "@timestamp": "2051-08-04T21:26:32.7572144Z",
+            "event": {
+                "code": 8006,
+                "kind": "event",
+                "provider": "Microsoft-Windows-AppLocker"
+            },
+            "host": {
+                "name": "eg18s-c22k-5"
+            },
+            "log": {
+                "level": "Warning\u0000"
+            },
+            "message": "%OSDRIVE%\\USERS\\NICPE\\.VSCODE\\EXTENSIONS\\MS-VSCODE.POWERSHELL-2023.6.0\\MODULES\\PSSCRIPTANALYZER\\1.21.0\\PSSCRIPTANALYZER.PSM1 was allowed to run but would have been prevented from running if the AppLocker policy were enforced.\u0000",
+            "winlog": {
+                "channel": "Microsoft-Windows-AppLocker/MSI and Script",
+                "computer_name": "eg18s-c22k-5",
+                "user_data": {
+                    "PolicyNameLength": 6,
+                    "PolicyName": "SCRIPT",
+                    "RuleId": "00000000-0000-0000-0000-000000000000",
+                    "RuleNameLength": 1,
+                    "RuleName": "-",
+                    "RuleSddlLength": 1,
+                    "RuleSddl": "-",
+                    "TargetUser": "S-1-5-21-2707992022-4034939591-3454028951-1001",
+                    "TargetProcessId": 25192,
+                    "FilePathLength": 124,
+                    "FilePath": "%OSDRIVE%\\USERS\\NICPE\\.VSCODE\\EXTENSIONS\\MS-VSCODE.POWERSHELL-2023.6.0\\MODULES\\PSSCRIPTANALYZER\\1.21.0\\PSSCRIPTANALYZER.PSM1",
+                    "FileHashLength": 32,
+                    "FileHash": "C4E01CC110F7A341D1FAA4B0BA6CE769E47FCE1FC6AE63E14F48F767D4133E35",
+                    "FqbnLength": 65,
+                    "Fqbn": "O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US\\\\\\0.0.0.00",
+                    "TargetLogonId": "0x4C18F",
+                    "FullFilePathLength": 117,
+                    "FullFilePath": "C:\\Users\\rnfjf\\.vscode\\extensions\\ms-vscode.powershell-2023.6.0\\modules\\PSScriptAnalyzer\\1.21.0\\PSScriptAnalyzer.psm1"
+                },
+                "event_id": "8006",
+                "level": "Warning\u0000",
+                "opcode": "Info\u0000\u0000",
+                "process": {
+                    "pid": 25192,
+                    "thread": {
+                        "id": 7740
+                    }
+                },
+                "provider_guid": "bdab3bfe-2c0e-4a41-9880-fc98bb628a72",
+                "provider_name": "Microsoft-Windows-AppLocker",
+                "record_id": 239,
+                "time_created": "2051-08-04T21:26:32.7572144Z",
+                "user": {
+                    "identifier": "S-1-5-21-2707992022-4034939591-3454028951-1001",
+                    "name": "rnfjf"
+                },
+                "version": 0
+            }
+        }
+    ]
+}

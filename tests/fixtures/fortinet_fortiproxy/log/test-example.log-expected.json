@@ -1,0 +1,3110 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2045-11-15T18:44:16.000Z",
+      "client": {
+        "bytes": 1850,
+        "ip": "10.212.236.251",
+        "mac": "D3-C2-63-AB-41-60",
+        "nat": {
+          "ip": "172.23.52.3",
+          "port": 40772
+        },
+        "packets": 25,
+        "port": 40772
+      },
+      "destination": {
+        "address": "crqkiygeyb.com",
+        "bytes": 39898,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.180",
+        "packets": 37,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "close",
+        "category": [
+          "network"
+        ],
+        "code": "0000000013",
+        "duration": 2000000000,
+        "kind": "event",
+        "original": "date=2045-11-15 time=11:44:16 tz=\"-0700\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"vdom1\" eventtime=2394387856 srcip=10.212.236.251 srcname=\"pc1\" srcport=40772 srcintf=\"port12\" srcintfrole=\"undefined\" dstip=198.51.100.180 dstname=\"crqkiygeyb.com\" dstport=443 dstintf=\"port11\" dstintfrole=\"undefined\" poluuid=\"905c4f94-e246-50b2-bca8-6f940966010b\" sessionid=8058 proto=6 action=\"close\" policyid=1 policytype=\"policy\" policymode=\"learn\" service=\"HTTPS\" dstcountry=\"United States\" srccountry=\"Reserved\" trandisp=\"snat\" transip=172.23.52.3 transport=40772 appid=40568 app=\"HTTPS.BROWSER\" appcat=\"Web.Client\" apprisk=\"medium\" duration=2 sentbyte=1850 rcvdbyte=39898 sentpkt=25 rcvdpkt=37 utmaction=\"allow\" countapp=1 devtype=\"Linux PC\" osname=\"Linux\" mastersrcmac=\"d3:c2:63:ab:41:60\" srcmac=\"d3:c2:63:ab:41:60\" srcserver=0 utmref=0-220586",
+        "start": "2045-11-15T19:44:16.000Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "app": "HTTPS.BROWSER",
+          "appid": "40568",
+          "apprisk": "medium",
+          "countapp": 1,
+          "devtype": "Linux PC",
+          "dstintfrole": "undefined",
+          "mastersrcmac": "d3:c2:63:ab:41:60",
+          "osname": "Linux",
+          "policymode": "learn",
+          "sessionid": "8058",
+          "srcintfrole": "undefined",
+          "srcserver": 0,
+          "subtype": "forward",
+          "trandisp": "snat",
+          "type": "traffic",
+          "utmaction": "allow",
+          "utmref": "0-220586",
+          "vd": "vdom1"
+        }
+      },
+      "host": {
+        "name": "pc1"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "network": {
+        "bytes": 41748,
+        "iana_number": "6",
+        "packets": 62,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port11"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port12"
+          }
+        },
+        "product": "FortiProxy",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "Web-Client",
+        "id": "1",
+        "ruleset": "policy",
+        "uuid": "905c4f94-e246-50b2-bca8-6f940966010b"
+      },
+      "server": {
+        "address": "crqkiygeyb.com",
+        "bytes": 39898,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.180",
+        "packets": 37,
+        "port": 443
+      },
+      "source": {
+        "bytes": 1850,
+        "ip": "10.212.236.251",
+        "mac": "D3-C2-63-AB-41-60",
+        "nat": {
+          "ip": "172.23.52.3",
+          "port": 40772
+        },
+        "packets": 25,
+        "port": 40772
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2045-11-15T09:44:16.000Z",
+      "client": {
+        "bytes": 1850,
+        "ip": "10.212.236.251",
+        "mac": "D3-C2-63-AB-41-60",
+        "nat": {
+          "ip": "172.23.52.3",
+          "port": 40772
+        },
+        "packets": 25,
+        "port": 40772
+      },
+      "destination": {
+        "address": "crqkiygeyb.com",
+        "bytes": 39898,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.180",
+        "packets": 37,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "close",
+        "category": [
+          "network"
+        ],
+        "code": "0000000013",
+        "duration": 2000000000,
+        "kind": "event",
+        "original": "date=2045-11-15 time=11:44:16 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"vdom1\" eventtime=2394387856 srcip=10.212.236.251 srcname=\"pc1\" srcport=40772 srcintf=\"port12\" srcintfrole=\"undefined\" dstip=198.51.100.180 dstname=\"crqkiygeyb.com\" dstport=443 dstintf=\"port11\" dstintfrole=\"undefined\" poluuid=\"905c4f94-e246-50b2-bca8-6f940966010b\" sessionid=8058 proto=6 action=\"close\" policyid=1 policytype=\"policy\" policymode=\"learn\" service=\"HTTPS\" dstcountry=\"United States\" srccountry=\"Reserved\" trandisp=\"snat\" transip=172.23.52.3 transport=40772 appid=40568 app=\"HTTPS.BROWSER\" appcat=\"Web.Client\" apprisk=\"medium\" duration=2 sentbyte=1850 rcvdbyte=39898 sentpkt=25 rcvdpkt=37 utmaction=\"allow\" countapp=1 devtype=\"Linux PC\" osname=\"Linux\" mastersrcmac=\"d3:c2:63:ab:41:60\" srcmac=\"d3:c2:63:ab:41:60\" srcserver=0 utmref=0-220586",
+        "start": "2045-11-15T19:44:16.000Z",
+        "timezone": "+0200"
+      },
+      "fortinet": {
+        "proxy": {
+          "app": "HTTPS.BROWSER",
+          "appid": "40568",
+          "apprisk": "medium",
+          "countapp": 1,
+          "devtype": "Linux PC",
+          "dstintfrole": "undefined",
+          "mastersrcmac": "d3:c2:63:ab:41:60",
+          "osname": "Linux",
+          "policymode": "learn",
+          "sessionid": "8058",
+          "srcintfrole": "undefined",
+          "srcserver": 0,
+          "subtype": "forward",
+          "trandisp": "snat",
+          "type": "traffic",
+          "utmaction": "allow",
+          "utmref": "0-220586",
+          "vd": "vdom1"
+        }
+      },
+      "host": {
+        "name": "pc1"
+      },
+      "log": {
+        "level": "notice"
+      },
+      "network": {
+        "bytes": 41748,
+        "iana_number": "6",
+        "packets": 62,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port11"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port12"
+          }
+        },
+        "product": "FortiProxy",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "Web-Client",
+        "id": "1",
+        "ruleset": "policy",
+        "uuid": "905c4f94-e246-50b2-bca8-6f940966010b"
+      },
+      "server": {
+        "address": "crqkiygeyb.com",
+        "bytes": 39898,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.180",
+        "packets": 37,
+        "port": 443
+      },
+      "source": {
+        "bytes": 1850,
+        "ip": "10.212.236.251",
+        "mac": "D3-C2-63-AB-41-60",
+        "nat": {
+          "ip": "172.23.52.3",
+          "port": 40772
+        },
+        "packets": 25,
+        "port": 40772
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-06-07T15:16:30.000Z",
+      "client": {
+        "bytes": 3200,
+        "ip": "10.23.94.181",
+        "nat": {
+          "ip": "172.21.119.174",
+          "port": 7680
+        },
+        "port": 64924,
+        "user": {
+          "group": {
+            "name": "TEST-GROUP"
+          }
+        }
+      },
+      "destination": {
+        "bytes": 5500,
+        "geo": {
+          "country_name": "Canada"
+        },
+        "ip": "192.0.2.112",
+        "nat": {
+          "ip": "172.17.244.35",
+          "port": 5505
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "accept",
+        "category": [
+          "network"
+        ],
+        "code": "0000000010",
+        "duration": 3203000000000,
+        "kind": "event",
+        "original": "<189>date=2052-06-07 time=09:16:30 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2601382590749853000 tz=\"-0600\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.23.94.181 srcport=64924 srcintf=\"internal\" srcintfrole=\"lan\" dstcountry=\"Canada\" srccountry=\"Reserved\" dstip=192.0.2.112 dstport=443 dstintf=\"external\" dstintfrole=\"wan\" sessionid=888322846 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"43d2e152-6980-4cdd-817a-03f164e16d5b\" policyname=\"TEST-POLICY\" trandisp=\"snat+dnat\" tranip=172.17.244.35 tranport=5505 transip=172.21.119.174 transport=7680 clientip=10.23.94.181 duration=3203 user=\"HFTH-IUAH\" group=\"TEST-GROUP\" wanin=5500 rcvdbyte=5500 wanout=3200 lanin=3200 sentbyte=3200 lanout=5500 appid=34365 app=\"TEST-APP\" appcat=\"APP-CAT\" apprisk=\"medium\"",
+        "start": "2052-06-07T14:16:30.749Z",
+        "timezone": "-0600"
+      },
+      "fortinet": {
+        "proxy": {
+          "app": "TEST-APP",
+          "appid": "34365",
+          "apprisk": "medium",
+          "dstintfrole": "wan",
+          "lanin": 3200,
+          "lanout": 5500,
+          "proxyapptype": "web-proxy",
+          "sessionid": "888322846",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "snat+dnat",
+          "type": "traffic",
+          "user": "HFTH-IUAH",
+          "vd": "root",
+          "wanin": 5500,
+          "wanout": 3200
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 8700,
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "external"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "internal"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "APP-CAT",
+        "id": "1",
+        "name": "TEST-POLICY",
+        "ruleset": "proxy-policy",
+        "uuid": "43d2e152-6980-4cdd-817a-03f164e16d5b"
+      },
+      "server": {
+        "bytes": 5500,
+        "geo": {
+          "country_name": "Canada"
+        },
+        "ip": "192.0.2.112",
+        "nat": {
+          "ip": "172.17.244.35",
+          "port": 5505
+        },
+        "port": 443
+      },
+      "source": {
+        "bytes": 3200,
+        "ip": "10.23.94.181",
+        "nat": {
+          "ip": "172.21.119.174",
+          "port": 7680
+        },
+        "port": 64924,
+        "user": {
+          "group": {
+            "name": "TEST-GROUP"
+          }
+        }
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:08:38.000Z",
+      "client": {
+        "bytes": 843,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 13846
+        },
+        "port": 34750
+      },
+      "destination": {
+        "bytes": 4566,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.47",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "accept",
+        "category": [
+          "network"
+        ],
+        "code": "0000000010",
+        "duration": 122000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=09:08:38 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710918357817763 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=34750 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=198.51.100.47 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=4052505539 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=13846 clientip=10.108.194.78 duration=122 wanin=4566 rcvdbyte=4566 wanout=452 lanin=843 sentbyte=843 lanout=34487 appcat=\"unscanned\" utmaction=\"block\"",
+        "start": "2052-05-07T16:08:38.357Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "dstintfrole": "undefined",
+          "lanin": 843,
+          "lanout": 34487,
+          "proxyapptype": "web-proxy",
+          "sessionid": "4052505539",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "snat",
+          "type": "traffic",
+          "utmaction": "block",
+          "vd": "root",
+          "wanin": 4566,
+          "wanout": 452
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 5409,
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1",
+        "name": "test-proxy",
+        "ruleset": "proxy-policy",
+        "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244"
+      },
+      "server": {
+        "bytes": 4566,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.47",
+        "port": 443
+      },
+      "source": {
+        "bytes": 843,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 13846
+        },
+        "port": 34750
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:10:36.000Z",
+      "client": {
+        "bytes": 843,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 31298
+        },
+        "port": 60466
+      },
+      "destination": {
+        "bytes": 5386,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.47",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "accept",
+        "category": [
+          "network"
+        ],
+        "code": "0000000010",
+        "duration": 330000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=09:10:36 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711036741352145 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=60466 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=198.51.100.47 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=6216149638 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=31298 clientip=10.108.194.78 duration=330 wanin=5386 rcvdbyte=5386 wanout=675 lanin=843 sentbyte=843 lanout=5839 appcat=\"unscanned\" utmaction=\"allow\"",
+        "start": "2052-05-07T16:10:36.741Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "dstintfrole": "undefined",
+          "lanin": 843,
+          "lanout": 5839,
+          "proxyapptype": "web-proxy",
+          "sessionid": "6216149638",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "snat",
+          "type": "traffic",
+          "utmaction": "allow",
+          "vd": "root",
+          "wanin": 5386,
+          "wanout": 675
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 6229,
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1",
+        "name": "test-proxy",
+        "ruleset": "proxy-policy",
+        "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244"
+      },
+      "server": {
+        "bytes": 5386,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.47",
+        "port": 443
+      },
+      "source": {
+        "bytes": 843,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 31298
+        },
+        "port": 60466
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T15:53:21.000Z",
+      "client": {
+        "bytes": 0,
+        "ip": "10.108.194.78",
+        "packets": 0,
+        "port": 40946
+      },
+      "destination": {
+        "bytes": 0,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "192.0.2.136",
+        "packets": 0,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "deny",
+        "category": [
+          "network"
+        ],
+        "code": "0000000013",
+        "duration": 0,
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=08:53:21 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710001578825283 tz=\"-0700\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=40946 srcintf=\"port2\" srcintfrole=\"lan\" dstip=192.0.2.136 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=3353177719 proto=6 action=\"deny\" policyid=2 policytype=\"policy\" poluuid=\"256b619c-5cc1-58de-1515-2b646d88e4c5\" policyname=\"no-google\" service=\"HTTPS\" trandisp=\"noop\" url=\"https://google.com/\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\" crscore=30 craction=131072 crlevel=\"high\" msg=\"Traffic denied because of explicit proxy policy\"",
+        "start": "2052-05-07T15:53:21.578Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "craction": 131072,
+          "crlevel": "high",
+          "crscore": 30,
+          "dstintfrole": "undefined",
+          "sessionid": "3353177719",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "noop",
+          "type": "traffic",
+          "url": "https://google.com/",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "Traffic denied because of explicit proxy policy",
+      "network": {
+        "bytes": 0,
+        "iana_number": "6",
+        "packets": 0,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "2",
+        "name": "no-google",
+        "ruleset": "policy",
+        "uuid": "256b619c-5cc1-58de-1515-2b646d88e4c5"
+      },
+      "server": {
+        "bytes": 0,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "192.0.2.136",
+        "packets": 0,
+        "port": 443
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "10.108.194.78",
+        "packets": 0,
+        "port": 40946
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "google.com",
+        "full": "https://google.com/",
+        "original": "https://google.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-05-09T13:25:02.000Z",
+      "client": {
+        "bytes": 0,
+        "ip": "10.108.194.78",
+        "packets": 0,
+        "port": 57748
+      },
+      "destination": {
+        "bytes": 0,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "203.0.113.220",
+        "packets": 0,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "deny",
+        "category": [
+          "network"
+        ],
+        "code": "0000000013",
+        "duration": 0,
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:25:02 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873901829329792 tz=\"-0700\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=57748 srcintf=\"port2\" srcintfrole=\"lan\" dstip=203.0.113.220 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=4815585661 proto=6 action=\"deny\" policyid=2 policytype=\"policy\" poluuid=\"3d447c9b-9f43-53eb-9088-cc3f308ad6cb\" policyname=\"url-filter-test\" service=\"HTTPS\" trandisp=\"noop\" url=\"https://steampowered.com/\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\" crscore=30 craction=131072 crlevel=\"high\" msg=\"Traffic denied because of explicit proxy policy\"",
+        "start": "2052-05-09T13:25:01.829Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "craction": 131072,
+          "crlevel": "high",
+          "crscore": 30,
+          "dstintfrole": "undefined",
+          "sessionid": "4815585661",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "noop",
+          "type": "traffic",
+          "url": "https://steampowered.com/",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "Traffic denied because of explicit proxy policy",
+      "network": {
+        "bytes": 0,
+        "iana_number": "6",
+        "packets": 0,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "2",
+        "name": "url-filter-test",
+        "ruleset": "policy",
+        "uuid": "3d447c9b-9f43-53eb-9088-cc3f308ad6cb"
+      },
+      "server": {
+        "bytes": 0,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "203.0.113.220",
+        "packets": 0,
+        "port": 443
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "10.108.194.78",
+        "packets": 0,
+        "port": 57748
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "steampowered.com",
+        "full": "https://steampowered.com/",
+        "original": "https://steampowered.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-05-07T16:19:34.000Z",
+      "client": {
+        "bytes": 0,
+        "ip": "10.108.194.78",
+        "packets": 0,
+        "port": 36834
+      },
+      "destination": {
+        "bytes": 0,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.2",
+        "packets": 0,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "start",
+        "category": [
+          "network"
+        ],
+        "code": "0000000015",
+        "duration": 0,
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=09:19:34 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711573638113952 tz=\"-0700\" logid=\"0000000015\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=36834 srcintf=\"port2\" srcintfrole=\"lan\" dstip=198.51.100.2 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=6266840405 proto=6 action=\"start\" policyid=1 policytype=\"policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" service=\"HTTPS\" trandisp=\"noop\" url=\"https://github.com/\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\"",
+        "start": "2052-05-07T16:19:33.638Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "dstintfrole": "undefined",
+          "sessionid": "6266840405",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "noop",
+          "type": "traffic",
+          "url": "https://github.com/",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 0,
+        "iana_number": "6",
+        "packets": 0,
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1",
+        "name": "test-proxy",
+        "ruleset": "policy",
+        "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244"
+      },
+      "server": {
+        "bytes": 0,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.2",
+        "packets": 0,
+        "port": 443
+      },
+      "source": {
+        "bytes": 0,
+        "ip": "10.108.194.78",
+        "packets": 0,
+        "port": 36834
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "github.com",
+        "full": "https://github.com/",
+        "original": "https://github.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-06-07T15:33:38.000Z",
+      "client": {
+        "bytes": 250,
+        "ip": "10.23.94.181",
+        "port": 57783,
+        "user": {
+          "group": {
+            "name": "TEST-GROUP"
+          }
+        }
+      },
+      "destination": {
+        "bytes": 40,
+        "ip": "203.0.113.16",
+        "nat": {
+          "ip": "172.28.172.44",
+          "port": 5360
+        },
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0010000099",
+        "duration": 50000000000,
+        "kind": "event",
+        "original": "<189>date=2052-06-07 time=09:33:38 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2601383618783036000 tz=\"-0600\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.23.94.181 dstip=203.0.113.16 tranip=172.28.172.44 clientip=10.23.94.181 scheme=\"https\" srcport=57783 dstport=443 tranport=5360 hostname=\"google.com\" url=\"https://google.com/\" prefetch=0 policyid=1 sessionid=269026383 transid=139874926 reqlength=250 resplength=0 rcvdbyte=40 sentbyte=250 resptype=\"normal\" user=\"HFTH-IUAH\" group=\"TEST-GROUP\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36\" statuscode=\"200\" rawdata=\"Time=50ms|Header-Host=google.com:443\" reqtime=2601383618 resptime=2601383618 respfinishtime=2601383618 duration=50 appcat=\"APP-CAT\"",
+        "start": "2052-06-07T14:33:38.783Z",
+        "timezone": "-0600"
+      },
+      "fortinet": {
+        "proxy": {
+          "prefetch": 0,
+          "rawdata": "Time=50ms|Header-Host=google.com:443",
+          "reqtime": 2601383618,
+          "respfinishtime": 2601383618,
+          "resptime": 2601383618,
+          "resptype": "normal",
+          "sessionid": "269026383",
+          "subtype": "http-transaction",
+          "transid": "139874926",
+          "type": "traffic",
+          "url": "https://google.com/",
+          "user": "HFTH-IUAH",
+          "vd": "root"
+        }
+      },
+      "http": {
+        "request": {
+          "bytes": 250,
+          "method": "CONNECT"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 200
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 290
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "APP-CAT",
+        "id": "1"
+      },
+      "server": {
+        "bytes": 40,
+        "ip": "203.0.113.16",
+        "nat": {
+          "ip": "172.28.172.44",
+          "port": 5360
+        },
+        "port": 443
+      },
+      "source": {
+        "bytes": 250,
+        "ip": "10.23.94.181",
+        "port": 57783,
+        "user": {
+          "group": {
+            "name": "TEST-GROUP"
+          }
+        }
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "google.com",
+        "full": "https://google.com/",
+        "original": "https://google.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Generic Smartphone"
+        },
+        "name": "Chrome Mobile",
+        "original": "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "os": {
+          "full": "Android 10",
+          "name": "Android",
+          "version": "10"
+        },
+        "version": "99.0.4844.88"
+      }
+    },
+    {
+      "@timestamp": "2052-05-07T15:53:21.000Z",
+      "client": {
+        "bytes": 82,
+        "ip": "10.108.194.78",
+        "port": 40946
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.136",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0010000099",
+        "duration": 120000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=08:53:21 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710001578875219 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=192.0.2.136 clientip=10.108.194.78 scheme=\"https\" srcport=40946 dstport=443 hostname=\"google.com\" url=\"https://google.com/\" prefetch=0 policyid=2 sessionid=3353177719 transid=1 reqlength=82 resplength=0 rcvdbyte=0 sentbyte=82 resptype=\"generated\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"200\" rawdata=\"Time=120ms|Header-Host=google.com:443\" reqtime=2598710001 resptime=0 respfinishtime=2598710001 duration=120 appcat=\"unscanned\"",
+        "start": "2052-05-07T15:53:21.578Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "prefetch": 0,
+          "rawdata": "Time=120ms|Header-Host=google.com:443",
+          "reqtime": 2598710001,
+          "respfinishtime": 2598710001,
+          "resptime": 0,
+          "resptype": "generated",
+          "sessionid": "3353177719",
+          "subtype": "http-transaction",
+          "transid": "1",
+          "type": "traffic",
+          "url": "https://google.com/",
+          "vd": "root"
+        }
+      },
+      "http": {
+        "request": {
+          "bytes": 82,
+          "method": "CONNECT"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 200
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 82
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "2"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "192.0.2.136",
+        "port": 443
+      },
+      "source": {
+        "bytes": 82,
+        "ip": "10.108.194.78",
+        "port": 40946
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "google.com",
+        "full": "https://google.com/",
+        "original": "https://google.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-05-07T15:53:21.000Z",
+      "client": {
+        "bytes": 743,
+        "ip": "10.108.194.78",
+        "port": 40946
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.136",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0010000099",
+        "duration": 0,
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=08:53:21 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710001627718958 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=192.0.2.136 clientip=10.108.194.78 scheme=\"https\" srcport=40946 dstport=443 hostname=\"google.com\" url=\"https://google.com/\" prefetch=0 policyid=2 sessionid=3353177719 transid=1 reqlength=155 resplength=0 rcvdbyte=0 sentbyte=743 resptype=\"generated\" httpmethod=\"GET\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"403\" rawdata=\"Time=0ms|Header-Host=google.com\" reqtime=2598710001 resptime=0 respfinishtime=2598710001 duration=0 appcat=\"unscanned\"",
+        "start": "2052-05-07T15:53:21.627Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "prefetch": 0,
+          "rawdata": "Time=0ms|Header-Host=google.com",
+          "reqtime": 2598710001,
+          "respfinishtime": 2598710001,
+          "resptime": 0,
+          "resptype": "generated",
+          "sessionid": "3353177719",
+          "subtype": "http-transaction",
+          "transid": "1",
+          "type": "traffic",
+          "url": "https://google.com/",
+          "vd": "root"
+        }
+      },
+      "http": {
+        "request": {
+          "bytes": 155,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 403
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 743
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "2"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "192.0.2.136",
+        "port": 443
+      },
+      "source": {
+        "bytes": 743,
+        "ip": "10.108.194.78",
+        "port": 40946
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "google.com",
+        "full": "https://google.com/",
+        "original": "https://google.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-05-09T13:19:51.000Z",
+      "client": {
+        "bytes": 80,
+        "ip": "10.108.194.78",
+        "port": 41458
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "203.0.113.208",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0010000099",
+        "duration": 56000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:19:51 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873591218098006 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=203.0.113.208 clientip=10.108.194.78 scheme=\"https\" srcport=41458 dstport=443 hostname=\"ebyee.com\" url=\"https://adobe.com/\" prefetch=0 policyid=1 sessionid=7393709768 transid=16777245 reqlength=80 resplength=0 rcvdbyte=0 sentbyte=80 resptype=\"generated\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"200\" rawdata=\"Time=56ms|Header-Host=ebyee.com:443\" reqtime=2598873591 resptime=0 respfinishtime=2598873591 duration=56 appcat=\"unscanned\"",
+        "start": "2052-05-09T13:19:51.218Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "prefetch": 0,
+          "rawdata": "Time=56ms|Header-Host=ebyee.com:443",
+          "reqtime": 2598873591,
+          "respfinishtime": 2598873591,
+          "resptime": 0,
+          "resptype": "generated",
+          "sessionid": "7393709768",
+          "subtype": "http-transaction",
+          "transid": "16777245",
+          "type": "traffic",
+          "url": "https://adobe.com/",
+          "vd": "root"
+        }
+      },
+      "http": {
+        "request": {
+          "bytes": 80,
+          "method": "CONNECT"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 200
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 80
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "203.0.113.208",
+        "port": 443
+      },
+      "source": {
+        "bytes": 80,
+        "ip": "10.108.194.78",
+        "port": 41458
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "adobe.com",
+        "full": "https://adobe.com/",
+        "original": "https://adobe.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-05-09T13:19:51.000Z",
+      "client": {
+        "bytes": 88,
+        "ip": "10.108.194.78",
+        "port": 41460
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "192.0.2.4",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0010000099",
+        "duration": 55000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:19:51 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873591413817018 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=192.0.2.4 clientip=10.108.194.78 scheme=\"https\" srcport=41460 dstport=443 hostname=\"www.ebyee.com\" url=\"https://www.adobe.com/\" prefetch=0 policyid=1 sessionid=5753330008 transid=16777246 reqlength=88 resplength=0 rcvdbyte=0 sentbyte=88 resptype=\"generated\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"200\" rawdata=\"Time=55ms|Header-Host=www.ebyee.com:443\" reqtime=2598873591 resptime=0 respfinishtime=2598873591 duration=55 appcat=\"unscanned\"",
+        "start": "2052-05-09T13:19:51.413Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "prefetch": 0,
+          "rawdata": "Time=55ms|Header-Host=www.ebyee.com:443",
+          "reqtime": 2598873591,
+          "respfinishtime": 2598873591,
+          "resptime": 0,
+          "resptype": "generated",
+          "sessionid": "5753330008",
+          "subtype": "http-transaction",
+          "transid": "16777246",
+          "type": "traffic",
+          "url": "https://www.adobe.com/",
+          "vd": "root"
+        }
+      },
+      "http": {
+        "request": {
+          "bytes": 88,
+          "method": "CONNECT"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 200
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 88
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "192.0.2.4",
+        "port": 443
+      },
+      "source": {
+        "bytes": 88,
+        "ip": "10.108.194.78",
+        "port": 41460
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "www.adobe.com",
+        "full": "https://www.adobe.com/",
+        "original": "https://www.adobe.com/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Firefox",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "115.0"
+      }
+    },
+    {
+      "@timestamp": "2052-04-10T17:52:10.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "perf-stats",
+        "category": [
+          "network"
+        ],
+        "code": "0100040704",
+        "kind": "event",
+        "original": "<189>date=2052-04-10 time=19:52:10 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2596384330114683111 tz=\"+0200\" logid=\"0100040704\" type=\"event\" subtype=\"system\" level=\"notice\" vd=\"root\" logdesc=\"System performance statistics\" action=\"perf-stats\" cpu=0 mem=29 totalsession=119 disk=1 bandwidth=\"10/13\" setuprate=0 disklograte=0 fazlograte=0 freediskstorage=506835 sysuptime=461171 waninfo=\"N/A\" msg=\"Performance statistics: average CPU: 0, memory:  29, concurrent sessions:  119, setup-rate: 0\"",
+        "start": "2052-04-10T17:52:10.114Z",
+        "timezone": "+0200"
+      },
+      "fortinet": {
+        "proxy": {
+          "bandwidth": "10/13",
+          "cpu": 0,
+          "disk": 1,
+          "disklograte": 0,
+          "fazlograte": 0,
+          "freediskstorage": 506835,
+          "mem": 29,
+          "setuprate": 0,
+          "subtype": "system",
+          "sysuptime": 461171,
+          "totalsession": 119,
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "Performance statistics: average CPU: 0, memory:  29, concurrent sessions:  119, setup-rate: 0",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "System performance statistics"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:08:38.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0100022010",
+        "kind": "event",
+        "original": "<187>date=2052-05-07 time=09:08:38 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710918300824285 tz=\"-0700\" logid=\"0100022010\" type=\"event\" subtype=\"system\" level=\"error\" vd=\"root\" logdesc=\"URL filter packet send failure\" reason=\"No such file or directory\" msg=\"failed to send urlfilter packet\"",
+        "reason": "No such file or directory",
+        "start": "2052-05-07T16:08:38.300Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "subtype": "system",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "error",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 187,
+          "severity": {
+            "code": 3
+          }
+        }
+      },
+      "message": "failed to send urlfilter packet",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "URL filter packet send failure"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:11:20.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0100026004",
+        "kind": "event",
+        "original": "<190>date=2052-05-07 time=09:11:20 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711080109454696 tz=\"-0700\" logid=\"0100026004\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"DHCP client lease granted\" msg=\"interface port1 gets a DHCP lease, ip:10.8.184.146, mask:255.255.255.255, gateway:10.180.189.36, lease expires:Tue May  7 10:11:16 2052\"",
+        "start": "2052-05-07T16:11:20.109Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "subtype": "system",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "interface port1 gets a DHCP lease, ip:10.8.184.146, mask:255.255.255.255, gateway:10.180.189.36, lease expires:Tue May  7 10:11:16 2052",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "DHCP client lease granted"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-06T13:20:18.000Z",
+      "client": {
+        "ip": "198.51.100.106"
+      },
+      "destination": {
+        "ip": "10.8.184.146"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "login",
+        "category": [
+          "network"
+        ],
+        "code": "0100032002",
+        "kind": "event",
+        "original": "<185>date=2052-05-06 time=06:20:18 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598614418718129170 tz=\"-0700\" logid=\"0100032002\" type=\"event\" subtype=\"system\" level=\"alert\" vd=\"root\" logdesc=\"Admin login failed\" sn=\"0\" user=\"Admin\" ui=\"https(198.51.100.106)\" method=\"https\" srcip=198.51.100.106 dstip=10.8.184.146 action=\"login\" status=\"failed\" reason=\"name_invalid\" msg=\"Administrator Admin login failed from https(198.51.100.106) because of invalid user name\"",
+        "reason": "name_invalid",
+        "start": "2052-05-06T13:20:18.718Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "method": "https",
+          "sn": "0",
+          "status": "failed",
+          "subtype": "system",
+          "type": "event",
+          "ui": "https(198.51.100.106)",
+          "user": "Admin",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "alert",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 185,
+          "severity": {
+            "code": 1
+          }
+        }
+      },
+      "message": "Administrator Admin login failed from https(198.51.100.106) because of invalid user name",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Admin login failed"
+      },
+      "server": {
+        "ip": "10.8.184.146"
+      },
+      "source": {
+        "ip": "198.51.100.106"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:01:32.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0100041000",
+        "kind": "event",
+        "original": "<189>date=2052-05-07 time=09:01:32 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710491561506009 tz=\"-0700\" logid=\"0100041000\" type=\"event\" subtype=\"system\" level=\"notice\" vd=\"root\" logdesc=\"FortiProxy update succeeded\" status=\"update\" msg=\"Fortiproxyupdate now  fsci=yes from 175.16.199:443\"",
+        "start": "2052-05-07T16:01:31.561Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "status": "update",
+          "subtype": "system",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "Fortiproxyupdate now  fsci=yes from 175.16.199:443",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "FortiProxy update succeeded"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:08:31.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Edit",
+        "category": [
+          "network"
+        ],
+        "code": "0100044547",
+        "kind": "event",
+        "original": "<190>date=2052-05-07 time=09:08:31 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710911066601201 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Edit\" cfgtid=56623110 uuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" cfgpath=\"firewall.policy\" cfgobj=\"1\" cfgattr=\"ssl-ssh-profile[certificate-inspection->deep-inspection]\" msg=\"Edit firewall.policy 1\"",
+        "start": "2052-05-07T16:08:31.066Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "cfgattr": "ssl-ssh-profile[certificate-inspection->deep-inspection]",
+          "cfgobj": "1",
+          "cfgpath": "firewall.policy",
+          "cfgtid": "56623110",
+          "subtype": "system",
+          "type": "event",
+          "ui": "GUI(192.0.2.27)",
+          "user": "admin",
+          "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Edit firewall.policy 1",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Object attribute configured"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:10:46.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Delete",
+        "category": [
+          "network"
+        ],
+        "code": "0100044547",
+        "kind": "event",
+        "original": "<190>date=2052-05-07 time=09:10:46 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711046709559342 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Delete\" cfgtid=56623112 uuid=\"abb4c245-1a29-58bf-6f14-3310dfc92cd8\" cfgpath=\"firewall.policy\" cfgobj=\"3\" msg=\"Delete firewall.policy 3\"",
+        "start": "2052-05-07T16:10:46.709Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "cfgobj": "3",
+          "cfgpath": "firewall.policy",
+          "cfgtid": "56623112",
+          "subtype": "system",
+          "type": "event",
+          "ui": "GUI(192.0.2.27)",
+          "user": "admin",
+          "uuid": "abb4c245-1a29-58bf-6f14-3310dfc92cd8",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Delete firewall.policy 3",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Object attribute configured"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-06T16:11:54.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Add",
+        "category": [
+          "network"
+        ],
+        "code": "0100044547",
+        "kind": "event",
+        "original": "<190>date=2052-05-06 time=09:11:54 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624713961265256 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Add\" cfgtid=56688757 uuid=\"256b619c-5cc1-58de-1515-2b646d88e4c5\" cfgpath=\"firewall.policy\" cfgobj=\"2\" cfgattr=\"type[explicit-web]name[no-google]dstintf[port1]srcaddr[all]dstaddr[wildcard.google.com]srcaddr6[]dstaddr6[]schedule[always]service[webproxy]explicit-web-proxy[web-proxy]url-category[]logtraffic[disable]logtraffic-start[enable]log-http-transaction[all]extended-log[enable]poolname[]groups[]users[]custom-log-fields[]application[]app-category[]app-group[]ssl-ssh-profile[certificate-inspection]\" msg=\"Add firewall.policy 2\"",
+        "start": "2052-05-06T16:11:53.961Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "cfgattr": "type[explicit-web]name[no-google]dstintf[port1]srcaddr[all]dstaddr[wildcard.google.com]srcaddr6[]dstaddr6[]schedule[always]service[webproxy]explicit-web-proxy[web-proxy]url-category[]logtraffic[disable]logtraffic-start[enable]log-http-transaction[all]extended-log[enable]poolname[]groups[]users[]custom-log-fields[]application[]app-category[]app-group[]ssl-ssh-profile[certificate-inspection]",
+          "cfgobj": "2",
+          "cfgpath": "firewall.policy",
+          "cfgtid": "56688757",
+          "subtype": "system",
+          "type": "event",
+          "ui": "GUI(192.0.2.27)",
+          "user": "admin",
+          "uuid": "256b619c-5cc1-58de-1515-2b646d88e4c5",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Add firewall.policy 2",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Object attribute configured"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-06T16:11:58.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "Move",
+        "category": [
+          "network"
+        ],
+        "code": "0100044547",
+        "kind": "event",
+        "original": "<190>date=2052-05-06 time=09:11:58 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624717842918042 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Move\" cfgtid=56688758 uuid=\"256b619c-5cc1-58de-1515-2b646d88e4c5\" cfgpath=\"firewall.policy\" cfgobj=\"2\" msg=\"Move firewall.policy 2 to 1\"",
+        "start": "2052-05-06T16:11:57.842Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "cfgobj": "2",
+          "cfgpath": "firewall.policy",
+          "cfgtid": "56688758",
+          "subtype": "system",
+          "type": "event",
+          "ui": "GUI(192.0.2.27)",
+          "user": "admin",
+          "uuid": "256b619c-5cc1-58de-1515-2b646d88e4c5",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Move firewall.policy 2 to 1",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Object attribute configured"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-06T16:09:09.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0110052000",
+        "kind": "event",
+        "original": "<189>date=2052-05-06 time=09:09:09 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624548478368427 tz=\"-0700\" logid=\"0110052000\" type=\"event\" subtype=\"security-rating\" level=\"notice\" vd=\"root\" logdesc=\"Security Rating summary\" auditid=1715011747944 audittime=2598624548 auditscore=\"65.0\" auditreporttype=\"OptimizationReport\" criticalcount=0 highcount=0 mediumcount=0 lowcount=0 passedcount=4",
+        "start": "2052-05-06T16:09:08.478Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "auditid": "1715011747944",
+          "auditreporttype": "OptimizationReport",
+          "auditscore": "65.0",
+          "audittime": 2598624548,
+          "criticalcount": 0,
+          "highcount": 0,
+          "lowcount": 0,
+          "mediumcount": 0,
+          "passedcount": 4,
+          "subtype": "security-rating",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Security Rating summary"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-06T16:09:10.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0110052000",
+        "kind": "event",
+        "original": "<189>date=2052-05-06 time=09:09:10 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624550013344193 tz=\"-0700\" logid=\"0110052000\" type=\"event\" subtype=\"security-rating\" level=\"notice\" vd=\"root\" logdesc=\"Security Rating summary\" auditid=1715011747944 audittime=2598624550 auditscore=\"-160.0\" auditreporttype=\"PostureReport\" criticalcount=3 highcount=7 mediumcount=2 lowcount=0 passedcount=9",
+        "start": "2052-05-06T16:09:10.013Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "auditid": "1715011747944",
+          "auditreporttype": "PostureReport",
+          "auditscore": "-160.0",
+          "audittime": 2598624550,
+          "criticalcount": 3,
+          "highcount": 7,
+          "lowcount": 0,
+          "mediumcount": 2,
+          "passedcount": 9,
+          "subtype": "security-rating",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Security Rating summary"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-06T16:09:19.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0110052000",
+        "kind": "event",
+        "original": "<189>date=2052-05-06 time=09:09:19 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624558637051812 tz=\"-0700\" logid=\"0110052000\" type=\"event\" subtype=\"security-rating\" level=\"notice\" vd=\"root\" logdesc=\"Security Rating summary\" auditid=1715011747944 audittime=2598624558 auditscore=\"-20.0\" auditreporttype=\"CoverageReport\" criticalcount=3 highcount=1 mediumcount=0 lowcount=0 passedcount=12",
+        "start": "2052-05-06T16:09:18.637Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "auditid": "1715011747944",
+          "auditreporttype": "CoverageReport",
+          "auditscore": "-20.0",
+          "audittime": 2598624558,
+          "criticalcount": 3,
+          "highcount": 1,
+          "lowcount": 0,
+          "mediumcount": 0,
+          "passedcount": 12,
+          "subtype": "security-rating",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Security Rating summary"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-07T16:01:25.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0112053202",
+        "kind": "event",
+        "original": "<187>date=2052-05-07 time=09:01:25 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710484331635956 tz=\"-0700\" logid=\"0112053202\" type=\"event\" subtype=\"connector\" level=\"error\" vd=\"root\" logdesc=\"SDN Connector API failed\" addr=\"FCTEMS_ALL_FORTICLOUD_SERVERS\" msg=\"Attempt to add tag FCTEMS_ALL_FORTICLOUD_SERVERS failed. Code (-2147483646)\"",
+        "start": "2052-05-07T16:01:24.331Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "addr": "FCTEMS_ALL_FORTICLOUD_SERVERS",
+          "subtype": "connector",
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "error",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 187,
+          "severity": {
+            "code": 3
+          }
+        }
+      },
+      "message": "Attempt to add tag FCTEMS_ALL_FORTICLOUD_SERVERS failed. Code (-2147483646)",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "SDN Connector API failed"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-09T13:19:51.000Z",
+      "client": {
+        "ip": "10.108.194.78",
+        "port": 41460
+      },
+      "destination": {
+        "ip": "10.178.13.239",
+        "port": 8080
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "exempt",
+        "category": [
+          "network"
+        ],
+        "code": "1701062004",
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:19:51 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873591388347818 tz=\"-0700\" logid=\"1701062004\" type=\"utm\" subtype=\"ssl\" eventtype=\"ssl-exempt\" level=\"notice\" vd=\"root\" action=\"exempt\" policyid=1 poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policytype=\"policy\" sessionid=5753330008 service=\"HTTPS\" profile=\"Clone of deep-inspection\" srcip=10.108.194.78 srcport=41460 srccountry=\"Reserved\" dstip=10.178.13.239 dstport=8080 dstcountry=\"Reserved\" srcintf=\"port2\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"undefined\" proto=6 eventsubtype=\"address\" hostname=\"www.ebyee.com\" msg=\"SSL connection is exempted based on address.\"",
+        "start": "2052-05-09T13:19:51.388Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "dstintfrole": "undefined",
+          "eventsubtype": "address",
+          "eventtype": "ssl-exempt",
+          "profile": "Clone of deep-inspection",
+          "sessionid": "5753330008",
+          "srcintfrole": "lan",
+          "subtype": "ssl",
+          "type": "utm",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "SSL connection is exempted based on address.",
+      "network": {
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "id": "1",
+        "ruleset": "policy",
+        "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244"
+      },
+      "server": {
+        "ip": "10.178.13.239",
+        "port": 8080
+      },
+      "source": {
+        "ip": "10.108.194.78",
+        "port": 41460
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "www.ebyee.com"
+      }
+    },
+    {
+      "@timestamp": "2052-05-09T13:20:04.000Z",
+      "client": {
+        "bytes": 755,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 7242
+        },
+        "port": 41460
+      },
+      "destination": {
+        "bytes": 3665,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "192.0.2.4",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "accept",
+        "category": [
+          "network"
+        ],
+        "code": "0000000010",
+        "duration": 12536000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:20:04 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873603895122957 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=41460 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=192.0.2.4 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=5753330008 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=7242 clientip=10.108.194.78 duration=12536 wanin=3665 rcvdbyte=3665 wanout=667 lanin=755 sentbyte=755 lanout=3737 appcat=\"unscanned\" utmaction=\"allow\" countssl=1",
+        "start": "2052-05-09T13:20:03.895Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "countssl": 1,
+          "dstintfrole": "undefined",
+          "lanin": 755,
+          "lanout": 3737,
+          "proxyapptype": "web-proxy",
+          "sessionid": "5753330008",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "snat",
+          "type": "traffic",
+          "utmaction": "allow",
+          "vd": "root",
+          "wanin": 3665,
+          "wanout": 667
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 4420,
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1",
+        "name": "test-proxy",
+        "ruleset": "proxy-policy",
+        "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244"
+      },
+      "server": {
+        "bytes": 3665,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "192.0.2.4",
+        "port": 443
+      },
+      "source": {
+        "bytes": 755,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 7242
+        },
+        "port": 41460
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-09T13:21:14.000Z",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "perf-stats",
+        "category": [
+          "network"
+        ],
+        "code": "0100040704",
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:21:14 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873673739449705 tz=\"-0700\" logid=\"0100040704\" type=\"event\" subtype=\"system\" level=\"notice\" vd=\"root\" logdesc=\"System performance statistics\" action=\"perf-stats\" cpu=0 mem=29 totalsession=38 disk=0 bandwidth=\"20/20\" setuprate=1 disklograte=0 fazlograte=0 freediskstorage=0 sysuptime=166235 waninfo=\"N/A\" msg=\"Performance statistics: average CPU: 0, memory:  29, concurrent sessions:  38, setup-rate: 1\"",
+        "start": "2052-05-09T13:21:13.739Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "bandwidth": "20/20",
+          "cpu": 0,
+          "disk": 0,
+          "disklograte": 0,
+          "fazlograte": 0,
+          "freediskstorage": 0,
+          "mem": 29,
+          "setuprate": 1,
+          "subtype": "system",
+          "sysuptime": 166235,
+          "totalsession": 38,
+          "type": "event",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "Performance statistics: average CPU: 0, memory:  29, concurrent sessions:  38, setup-rate: 1",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "System performance statistics"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2052-05-09T13:19:39.000Z",
+      "client": {
+        "bytes": 798,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 53184
+        },
+        "port": 47886
+      },
+      "destination": {
+        "bytes": 125800732,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.96",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "accept",
+        "category": [
+          "network"
+        ],
+        "code": "0000000010",
+        "duration": 8089000000000,
+        "kind": "event",
+        "original": "<189>date=2052-05-09 time=06:19:39 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873578798356673 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=47886 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=198.51.100.96 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=2925190765 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=53184 clientip=10.108.194.78 duration=8089 wanin=125800732 rcvdbyte=125800732 wanout=632 lanin=798 sentbyte=798 lanout=125824455 appcat=\"unscanned\" utmaction=\"allow\"",
+        "start": "2052-05-09T13:19:38.798Z",
+        "timezone": "-0700"
+      },
+      "fortinet": {
+        "proxy": {
+          "dstintfrole": "undefined",
+          "lanin": 798,
+          "lanout": 125824455,
+          "proxyapptype": "web-proxy",
+          "sessionid": "2925190765",
+          "srcintfrole": "lan",
+          "subtype": "forward",
+          "trandisp": "snat",
+          "type": "traffic",
+          "utmaction": "allow",
+          "vd": "root",
+          "wanin": 125800732,
+          "wanout": 632
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 125801530,
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "unscanned",
+        "id": "1",
+        "name": "test-proxy",
+        "ruleset": "proxy-policy",
+        "uuid": "69e51389-001c-55fc-0b59-0a1698d6c244"
+      },
+      "server": {
+        "bytes": 125800732,
+        "geo": {
+          "country_name": "United States"
+        },
+        "ip": "198.51.100.96",
+        "port": 443
+      },
+      "source": {
+        "bytes": 798,
+        "ip": "10.108.194.78",
+        "nat": {
+          "ip": "10.8.184.146",
+          "port": 53184
+        },
+        "port": 47886
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2053-10-10T06:17:46.000Z",
+      "client": {
+        "ip": "10.172.26.244"
+      },
+      "destination": {
+        "ip": "10.205.163.19"
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "NTLM-auth",
+        "category": [
+          "network"
+        ],
+        "code": "0000000010",
+        "kind": "event",
+        "original": "<189>logver=704080649 timestamp=2643697066 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" vd=\"root\" date=2053-10-10 time=08:17:46 eventtime=2643689867153677744 tz=\"+0200\" logid=\"0000000010\" type=\"event\" subtype=\"user\" level=\"notice\" logdesc=\"Explicit proxy authentication failed\" srcip=10.172.26.244 dstip=10.205.163.19 authid=\"999-WGS-AUTH-DEFAULT\" user=\"\"http\" authproto=\"HTTP(10.172.26.244)\" action=\"NTLM-auth\" status=\"failure\" url=\"http://10.205.163.19/\" reason=\"Authentication failed\" msg=\"User \"http failed in authentication\"",
+        "reason": "Authentication failed",
+        "start": "2053-10-10T06:17:47.153Z",
+        "timezone": "+0200"
+      },
+      "fortinet": {
+        "proxy": {
+          "authid": "999-WGS-AUTH-DEFAULT",
+          "authproto": "HTTP(10.172.26.244)",
+          "logver": 704080649,
+          "status": "failure",
+          "subtype": "user",
+          "type": "event",
+          "url": "http://10.205.163.19/",
+          "user": "\"http",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "message": "User \"http failed in authentication",
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "description": "Explicit proxy authentication failed"
+      },
+      "server": {
+        "ip": "10.205.163.19"
+      },
+      "source": {
+        "ip": "10.172.26.244"
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "10.205.163.19",
+        "full": "http://10.205.163.19/",
+        "original": "http://10.205.163.19/",
+        "path": "/",
+        "scheme": "http"
+      }
+    },
+    {
+      "@timestamp": "2053-09-01T12:37:12.000Z",
+      "client": {
+        "ip": "10.95.224.34",
+        "port": 64986
+      },
+      "destination": {
+        "ip": "10.95.37.32",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "action": "pass",
+        "category": [
+          "network"
+        ],
+        "code": "1059028704",
+        "kind": "event",
+        "original": "<190>date=2053-09-01 time=12:37:12 devname=\"gdyyebzybb\" devid=\"FPX412345678\" eventtime=2640343032283394873 tz=\"+0000\" logid=\"1059028704\" type=\"utm\" subtype=\"app-ctrl\" eventtype=\"signature\" level=\"information\" vd=\"root\" appid=15893 srcip=10.95.224.34 srccountry=\"Reserved\" dstip=10.95.37.32 dstcountry=\"Reserved\" srcport=64986 dstport=443 srcintf=\"port2\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"wan\" proto=6 service=\"HTTPS\" direction=\"outbound\" policyid=5 poluuid=\"b784fe11-a254-57ab-1543-ab875f0fd8af\" policytype=\"policy\" sessionid=5974998585 applist=\"app_Default\" action=\"pass\" appcat=\"Web.Client\" app=\"HTTP.BROWSER\" hostname=\"fonts.googleapis.com\" incidentserialno=628964575 url=\"/css?family=Roboto:300,400,500,700|Google+Sans:400,500,700|Google+Sans+Text:400,500,700&lang=de\" msg=\"Web.Client: HTTP.BROWSER\" apprisk=\"medium\" rawdataid=\"1/1\" rawdata=\"Method=GET|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36|Referer=https://something.com/\"",
+        "start": "2053-09-01T12:37:12.283Z",
+        "timezone": "+0000"
+      },
+      "fortinet": {
+        "proxy": {
+          "app": "HTTP.BROWSER",
+          "appid": "15893",
+          "applist": "app_Default",
+          "apprisk": "medium",
+          "dstintfrole": "wan",
+          "eventtype": "signature",
+          "incidentserialno": 628964575,
+          "rawdata": "Method=GET|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36|Referer=https://something.com/",
+          "rawdataid": "1/1",
+          "sessionid": "5974998585",
+          "srcintfrole": "lan",
+          "subtype": "app-ctrl",
+          "type": "utm",
+          "url": "/css?family=Roboto:300,400,500,700|Google+Sans:400,500,700|Google+Sans+Text:400,500,700&lang=de",
+          "vd": "root"
+        }
+      },
+      "log": {
+        "level": "information",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 190,
+          "severity": {
+            "code": 6
+          }
+        }
+      },
+      "message": "Web.Client: HTTP.BROWSER",
+      "network": {
+        "direction": "outbound",
+        "iana_number": "6",
+        "protocol": "https",
+        "transport": "tcp"
+      },
+      "observer": {
+        "egress": {
+          "interface": {
+            "name": "port1"
+          }
+        },
+        "ingress": {
+          "interface": {
+            "name": "port2"
+          }
+        },
+        "name": "gdyyebzybb",
+        "product": "FortiProxy",
+        "serial_number": "FPX412345678",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "Web-Client",
+        "id": "5",
+        "ruleset": "policy",
+        "uuid": "b784fe11-a254-57ab-1543-ab875f0fd8af"
+      },
+      "server": {
+        "ip": "10.95.37.32",
+        "port": 443
+      },
+      "source": {
+        "ip": "10.95.224.34",
+        "port": 64986
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "fonts.googleapis.com",
+        "full": "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Google+Sans:400,500,700|Google+Sans+Text:400,500,700&lang=de",
+        "original": "/css?family=Roboto:300,400,500,700|Google+Sans:400,500,700|Google+Sans+Text:400,500,700&lang=de",
+        "path": "/css",
+        "query": "family=Roboto:300,400,500,700|Google+Sans:400,500,700|Google+Sans+Text:400,500,700&lang=de",
+        "scheme": "https"
+      }
+    },
+    {
+      "@timestamp": "2052-06-07T15:33:55.000Z",
+      "client": {
+        "bytes": 120,
+        "ip": "10.23.94.181",
+        "port": 57784
+      },
+      "destination": {
+        "bytes": 0,
+        "ip": "10.119.50.181",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "code": "0010000099",
+        "duration": 10000000000,
+        "kind": "event",
+        "original": "<189>date=2052-06-07 time=09:33:55 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2601383635912000000 tz=\"-0600\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.23.94.181 dstip=10.119.50.181 clientip=10.23.94.181 scheme=\"https\" srcport=57784 dstport=443 hostname=\"example.com\" url=\"/search?q=test\" prefetch=0 policyid=1 sessionid=569328444 transid=139874927 reqlength=120 resplength=0 rcvdbyte=0 sentbyte=120 resptype=\"normal\" httpmethod=\"GET\" agent=\"curl/7.68.0\" statuscode=\"200\" rawdata=\"Time=10ms|Header-Host=example.com\" reqtime=2601383635 resptime=2601383635 respfinishtime=2601383635 duration=10 appcat=\"Web.Client\"",
+        "start": "2052-06-07T14:33:55.912Z",
+        "timezone": "-0600"
+      },
+      "fortinet": {
+        "proxy": {
+          "prefetch": 0,
+          "rawdata": "Time=10ms|Header-Host=example.com",
+          "reqtime": 2601383635,
+          "respfinishtime": 2601383635,
+          "resptime": 2601383635,
+          "resptype": "normal",
+          "sessionid": "569328444",
+          "subtype": "http-transaction",
+          "transid": "139874927",
+          "type": "traffic",
+          "url": "/search?q=test",
+          "vd": "root"
+        }
+      },
+      "http": {
+        "request": {
+          "bytes": 120,
+          "method": "GET"
+        },
+        "response": {
+          "bytes": 0,
+          "status_code": 200
+        }
+      },
+      "log": {
+        "level": "notice",
+        "syslog": {
+          "facility": {
+            "code": 23
+          },
+          "priority": 189,
+          "severity": {
+            "code": 5
+          }
+        }
+      },
+      "network": {
+        "bytes": 120
+      },
+      "observer": {
+        "name": "JBLI-QTM90",
+        "product": "FortiProxy",
+        "serial_number": "FPXTESTPXY01",
+        "type": "proxy",
+        "vendor": "Fortinet"
+      },
+      "rule": {
+        "category": "Web-Client",
+        "id": "1"
+      },
+      "server": {
+        "bytes": 0,
+        "ip": "10.119.50.181",
+        "port": 443
+      },
+      "source": {
+        "bytes": 120,
+        "ip": "10.23.94.181",
+        "port": 57784
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb"
+      ],
+      "url": {
+        "domain": "example.com",
+        "full": "https://example.com/search?q=test",
+        "original": "/search?q=test",
+        "path": "/search",
+        "query": "q=test",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "curl",
+        "original": "curl/7.68.0",
+        "version": "7.68.0"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "date=2045-11-15 time=11:44:16 tz=\"-0700\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"vdom1\" eventtime=2394387856 srcip=10.212.236.251 srcname=\"pc1\" srcport=40772 srcintf=\"port12\" srcintfrole=\"undefined\" dstip=198.51.100.180 dstname=\"crqkiygeyb.com\" dstport=443 dstintf=\"port11\" dstintfrole=\"undefined\" poluuid=\"905c4f94-e246-50b2-bca8-6f940966010b\" sessionid=8058 proto=6 action=\"close\" policyid=1 policytype=\"policy\" policymode=\"learn\" service=\"HTTPS\" dstcountry=\"United States\" srccountry=\"Reserved\" trandisp=\"snat\" transip=172.23.52.3 transport=40772 appid=40568 app=\"HTTPS.BROWSER\" appcat=\"Web.Client\" apprisk=\"medium\" duration=2 sentbyte=1850 rcvdbyte=39898 sentpkt=25 rcvdpkt=37 utmaction=\"allow\" countapp=1 devtype=\"Linux PC\" osname=\"Linux\" mastersrcmac=\"d3:c2:63:ab:41:60\" srcmac=\"d3:c2:63:ab:41:60\" srcserver=0 utmref=0-220586"
+    },
+    {
+      "message": "date=2045-11-15 time=11:44:16 tz=\"+0200\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"vdom1\" eventtime=2394387856 srcip=10.212.236.251 srcname=\"pc1\" srcport=40772 srcintf=\"port12\" srcintfrole=\"undefined\" dstip=198.51.100.180 dstname=\"crqkiygeyb.com\" dstport=443 dstintf=\"port11\" dstintfrole=\"undefined\" poluuid=\"905c4f94-e246-50b2-bca8-6f940966010b\" sessionid=8058 proto=6 action=\"close\" policyid=1 policytype=\"policy\" policymode=\"learn\" service=\"HTTPS\" dstcountry=\"United States\" srccountry=\"Reserved\" trandisp=\"snat\" transip=172.23.52.3 transport=40772 appid=40568 app=\"HTTPS.BROWSER\" appcat=\"Web.Client\" apprisk=\"medium\" duration=2 sentbyte=1850 rcvdbyte=39898 sentpkt=25 rcvdpkt=37 utmaction=\"allow\" countapp=1 devtype=\"Linux PC\" osname=\"Linux\" mastersrcmac=\"d3:c2:63:ab:41:60\" srcmac=\"d3:c2:63:ab:41:60\" srcserver=0 utmref=0-220586"
+    },
+    {
+      "message": "<189>date=2052-06-07 time=09:16:30 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2601382590749853000 tz=\"-0600\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.23.94.181 srcport=64924 srcintf=\"internal\" srcintfrole=\"lan\" dstcountry=\"Canada\" srccountry=\"Reserved\" dstip=192.0.2.112 dstport=443 dstintf=\"external\" dstintfrole=\"wan\" sessionid=888322846 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"43d2e152-6980-4cdd-817a-03f164e16d5b\" policyname=\"TEST-POLICY\" trandisp=\"snat+dnat\" tranip=172.17.244.35 tranport=5505 transip=172.21.119.174 transport=7680 clientip=10.23.94.181 duration=3203 user=\"HFTH-IUAH\" group=\"TEST-GROUP\" wanin=5500 rcvdbyte=5500 wanout=3200 lanin=3200 sentbyte=3200 lanout=5500 appid=34365 app=\"TEST-APP\" appcat=\"APP-CAT\" apprisk=\"medium\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=09:08:38 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710918357817763 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=34750 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=198.51.100.47 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=4052505539 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=13846 clientip=10.108.194.78 duration=122 wanin=4566 rcvdbyte=4566 wanout=452 lanin=843 sentbyte=843 lanout=34487 appcat=\"unscanned\" utmaction=\"block\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=09:10:36 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711036741352145 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=60466 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=198.51.100.47 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=6216149638 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=31298 clientip=10.108.194.78 duration=330 wanin=5386 rcvdbyte=5386 wanout=675 lanin=843 sentbyte=843 lanout=5839 appcat=\"unscanned\" utmaction=\"allow\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=08:53:21 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710001578825283 tz=\"-0700\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=40946 srcintf=\"port2\" srcintfrole=\"lan\" dstip=192.0.2.136 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=3353177719 proto=6 action=\"deny\" policyid=2 policytype=\"policy\" poluuid=\"256b619c-5cc1-58de-1515-2b646d88e4c5\" policyname=\"no-google\" service=\"HTTPS\" trandisp=\"noop\" url=\"https://google.com/\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\" crscore=30 craction=131072 crlevel=\"high\" msg=\"Traffic denied because of explicit proxy policy\""
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:25:02 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873901829329792 tz=\"-0700\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=57748 srcintf=\"port2\" srcintfrole=\"lan\" dstip=203.0.113.220 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=4815585661 proto=6 action=\"deny\" policyid=2 policytype=\"policy\" poluuid=\"3d447c9b-9f43-53eb-9088-cc3f308ad6cb\" policyname=\"url-filter-test\" service=\"HTTPS\" trandisp=\"noop\" url=\"https://steampowered.com/\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\" crscore=30 craction=131072 crlevel=\"high\" msg=\"Traffic denied because of explicit proxy policy\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=09:19:34 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711573638113952 tz=\"-0700\" logid=\"0000000015\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=36834 srcintf=\"port2\" srcintfrole=\"lan\" dstip=198.51.100.2 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" srccountry=\"Reserved\" dstcountry=\"United States\" sessionid=6266840405 proto=6 action=\"start\" policyid=1 policytype=\"policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" service=\"HTTPS\" trandisp=\"noop\" url=\"https://github.com/\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" duration=0 sentbyte=0 rcvdbyte=0 sentpkt=0 rcvdpkt=0 appcat=\"unscanned\""
+    },
+    {
+      "message": "<189>date=2052-06-07 time=09:33:38 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2601383618783036000 tz=\"-0600\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.23.94.181 dstip=203.0.113.16 tranip=172.28.172.44 clientip=10.23.94.181 scheme=\"https\" srcport=57783 dstport=443 tranport=5360 hostname=\"google.com\" url=\"https://google.com/\" prefetch=0 policyid=1 sessionid=269026383 transid=139874926 reqlength=250 resplength=0 rcvdbyte=40 sentbyte=250 resptype=\"normal\" user=\"HFTH-IUAH\" group=\"TEST-GROUP\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36\" statuscode=\"200\" rawdata=\"Time=50ms|Header-Host=google.com:443\" reqtime=2601383618 resptime=2601383618 respfinishtime=2601383618 duration=50 appcat=\"APP-CAT\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=08:53:21 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710001578875219 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=192.0.2.136 clientip=10.108.194.78 scheme=\"https\" srcport=40946 dstport=443 hostname=\"google.com\" url=\"https://google.com/\" prefetch=0 policyid=2 sessionid=3353177719 transid=1 reqlength=82 resplength=0 rcvdbyte=0 sentbyte=82 resptype=\"generated\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"200\" rawdata=\"Time=120ms|Header-Host=google.com:443\" reqtime=2598710001 resptime=0 respfinishtime=2598710001 duration=120 appcat=\"unscanned\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=08:53:21 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710001627718958 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=192.0.2.136 clientip=10.108.194.78 scheme=\"https\" srcport=40946 dstport=443 hostname=\"google.com\" url=\"https://google.com/\" prefetch=0 policyid=2 sessionid=3353177719 transid=1 reqlength=155 resplength=0 rcvdbyte=0 sentbyte=743 resptype=\"generated\" httpmethod=\"GET\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"403\" rawdata=\"Time=0ms|Header-Host=google.com\" reqtime=2598710001 resptime=0 respfinishtime=2598710001 duration=0 appcat=\"unscanned\""
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:19:51 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873591218098006 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=203.0.113.208 clientip=10.108.194.78 scheme=\"https\" srcport=41458 dstport=443 hostname=\"ebyee.com\" url=\"https://adobe.com/\" prefetch=0 policyid=1 sessionid=7393709768 transid=16777245 reqlength=80 resplength=0 rcvdbyte=0 sentbyte=80 resptype=\"generated\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"200\" rawdata=\"Time=56ms|Header-Host=ebyee.com:443\" reqtime=2598873591 resptime=0 respfinishtime=2598873591 duration=56 appcat=\"unscanned\""
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:19:51 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873591413817018 tz=\"-0700\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 dstip=192.0.2.4 clientip=10.108.194.78 scheme=\"https\" srcport=41460 dstport=443 hostname=\"www.ebyee.com\" url=\"https://www.adobe.com/\" prefetch=0 policyid=1 sessionid=5753330008 transid=16777246 reqlength=88 resplength=0 rcvdbyte=0 sentbyte=88 resptype=\"generated\" httpmethod=\"CONNECT\" agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0\" statuscode=\"200\" rawdata=\"Time=55ms|Header-Host=www.ebyee.com:443\" reqtime=2598873591 resptime=0 respfinishtime=2598873591 duration=55 appcat=\"unscanned\""
+    },
+    {
+      "message": "<189>date=2052-04-10 time=19:52:10 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2596384330114683111 tz=\"+0200\" logid=\"0100040704\" type=\"event\" subtype=\"system\" level=\"notice\" vd=\"root\" logdesc=\"System performance statistics\" action=\"perf-stats\" cpu=0 mem=29 totalsession=119 disk=1 bandwidth=\"10/13\" setuprate=0 disklograte=0 fazlograte=0 freediskstorage=506835 sysuptime=461171 waninfo=\"N/A\" msg=\"Performance statistics: average CPU: 0, memory:  29, concurrent sessions:  119, setup-rate: 0\""
+    },
+    {
+      "message": "<187>date=2052-05-07 time=09:08:38 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710918300824285 tz=\"-0700\" logid=\"0100022010\" type=\"event\" subtype=\"system\" level=\"error\" vd=\"root\" logdesc=\"URL filter packet send failure\" reason=\"No such file or directory\" msg=\"failed to send urlfilter packet\""
+    },
+    {
+      "message": "<190>date=2052-05-07 time=09:11:20 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711080109454696 tz=\"-0700\" logid=\"0100026004\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"DHCP client lease granted\" msg=\"interface port1 gets a DHCP lease, ip:10.8.184.146, mask:255.255.255.255, gateway:10.180.189.36, lease expires:Tue May  7 10:11:16 2052\""
+    },
+    {
+      "message": "<185>date=2052-05-06 time=06:20:18 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598614418718129170 tz=\"-0700\" logid=\"0100032002\" type=\"event\" subtype=\"system\" level=\"alert\" vd=\"root\" logdesc=\"Admin login failed\" sn=\"0\" user=\"Admin\" ui=\"https(198.51.100.106)\" method=\"https\" srcip=198.51.100.106 dstip=10.8.184.146 action=\"login\" status=\"failed\" reason=\"name_invalid\" msg=\"Administrator Admin login failed from https(198.51.100.106) because of invalid user name\""
+    },
+    {
+      "message": "<189>date=2052-05-07 time=09:01:32 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710491561506009 tz=\"-0700\" logid=\"0100041000\" type=\"event\" subtype=\"system\" level=\"notice\" vd=\"root\" logdesc=\"FortiProxy update succeeded\" status=\"update\" msg=\"Fortiproxyupdate now  fsci=yes from 175.16.199:443\""
+    },
+    {
+      "message": "<190>date=2052-05-07 time=09:08:31 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710911066601201 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Edit\" cfgtid=56623110 uuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" cfgpath=\"firewall.policy\" cfgobj=\"1\" cfgattr=\"ssl-ssh-profile[certificate-inspection->deep-inspection]\" msg=\"Edit firewall.policy 1\""
+    },
+    {
+      "message": "<190>date=2052-05-07 time=09:10:46 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598711046709559342 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Delete\" cfgtid=56623112 uuid=\"abb4c245-1a29-58bf-6f14-3310dfc92cd8\" cfgpath=\"firewall.policy\" cfgobj=\"3\" msg=\"Delete firewall.policy 3\""
+    },
+    {
+      "message": "<190>date=2052-05-06 time=09:11:54 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624713961265256 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Add\" cfgtid=56688757 uuid=\"256b619c-5cc1-58de-1515-2b646d88e4c5\" cfgpath=\"firewall.policy\" cfgobj=\"2\" cfgattr=\"type[explicit-web]name[no-google]dstintf[port1]srcaddr[all]dstaddr[wildcard.google.com]srcaddr6[]dstaddr6[]schedule[always]service[webproxy]explicit-web-proxy[web-proxy]url-category[]logtraffic[disable]logtraffic-start[enable]log-http-transaction[all]extended-log[enable]poolname[]groups[]users[]custom-log-fields[]application[]app-category[]app-group[]ssl-ssh-profile[certificate-inspection]\" msg=\"Add firewall.policy 2\""
+    },
+    {
+      "message": "<190>date=2052-05-06 time=09:11:58 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624717842918042 tz=\"-0700\" logid=\"0100044547\" type=\"event\" subtype=\"system\" level=\"information\" vd=\"root\" logdesc=\"Object attribute configured\" user=\"admin\" ui=\"GUI(192.0.2.27)\" action=\"Move\" cfgtid=56688758 uuid=\"256b619c-5cc1-58de-1515-2b646d88e4c5\" cfgpath=\"firewall.policy\" cfgobj=\"2\" msg=\"Move firewall.policy 2 to 1\""
+    },
+    {
+      "message": "<189>date=2052-05-06 time=09:09:09 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624548478368427 tz=\"-0700\" logid=\"0110052000\" type=\"event\" subtype=\"security-rating\" level=\"notice\" vd=\"root\" logdesc=\"Security Rating summary\" auditid=1715011747944 audittime=2598624548 auditscore=\"65.0\" auditreporttype=\"OptimizationReport\" criticalcount=0 highcount=0 mediumcount=0 lowcount=0 passedcount=4"
+    },
+    {
+      "message": "<189>date=2052-05-06 time=09:09:10 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624550013344193 tz=\"-0700\" logid=\"0110052000\" type=\"event\" subtype=\"security-rating\" level=\"notice\" vd=\"root\" logdesc=\"Security Rating summary\" auditid=1715011747944 audittime=2598624550 auditscore=\"-160.0\" auditreporttype=\"PostureReport\" criticalcount=3 highcount=7 mediumcount=2 lowcount=0 passedcount=9"
+    },
+    {
+      "message": "<189>date=2052-05-06 time=09:09:19 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598624558637051812 tz=\"-0700\" logid=\"0110052000\" type=\"event\" subtype=\"security-rating\" level=\"notice\" vd=\"root\" logdesc=\"Security Rating summary\" auditid=1715011747944 audittime=2598624558 auditscore=\"-20.0\" auditreporttype=\"CoverageReport\" criticalcount=3 highcount=1 mediumcount=0 lowcount=0 passedcount=12"
+    },
+    {
+      "message": "<187>date=2052-05-07 time=09:01:25 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598710484331635956 tz=\"-0700\" logid=\"0112053202\" type=\"event\" subtype=\"connector\" level=\"error\" vd=\"root\" logdesc=\"SDN Connector API failed\" addr=\"FCTEMS_ALL_FORTICLOUD_SERVERS\" msg=\"Attempt to add tag FCTEMS_ALL_FORTICLOUD_SERVERS failed. Code (-2147483646)\""
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:19:51 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873591388347818 tz=\"-0700\" logid=\"1701062004\" type=\"utm\" subtype=\"ssl\" eventtype=\"ssl-exempt\" level=\"notice\" vd=\"root\" action=\"exempt\" policyid=1 poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policytype=\"policy\" sessionid=5753330008 service=\"HTTPS\" profile=\"Clone of deep-inspection\" srcip=10.108.194.78 srcport=41460 srccountry=\"Reserved\" dstip=10.178.13.239 dstport=8080 dstcountry=\"Reserved\" srcintf=\"port2\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"undefined\" proto=6 eventsubtype=\"address\" hostname=\"www.ebyee.com\" msg=\"SSL connection is exempted based on address.\""
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:20:04 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873603895122957 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=41460 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=192.0.2.4 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=5753330008 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=7242 clientip=10.108.194.78 duration=12536 wanin=3665 rcvdbyte=3665 wanout=667 lanin=755 sentbyte=755 lanout=3737 appcat=\"unscanned\" utmaction=\"allow\" countssl=1"
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:21:14 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873673739449705 tz=\"-0700\" logid=\"0100040704\" type=\"event\" subtype=\"system\" level=\"notice\" vd=\"root\" logdesc=\"System performance statistics\" action=\"perf-stats\" cpu=0 mem=29 totalsession=38 disk=0 bandwidth=\"20/20\" setuprate=1 disklograte=0 fazlograte=0 freediskstorage=0 sysuptime=166235 waninfo=\"N/A\" msg=\"Performance statistics: average CPU: 0, memory:  29, concurrent sessions:  38, setup-rate: 1\""
+    },
+    {
+      "message": "<189>date=2052-05-09 time=06:19:39 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2598873578798356673 tz=\"-0700\" logid=\"0000000010\" type=\"traffic\" subtype=\"forward\" level=\"notice\" vd=\"root\" srcip=10.108.194.78 srcport=47886 srcintf=\"port2\" srcintfrole=\"lan\" dstcountry=\"United States\" srccountry=\"Reserved\" dstip=198.51.100.96 dstport=443 dstintf=\"port1\" dstintfrole=\"undefined\" sessionid=2925190765 service=\"HTTPS\" proxyapptype=\"web-proxy\" proto=6 action=\"accept\" policyid=1 policytype=\"proxy-policy\" poluuid=\"69e51389-001c-55fc-0b59-0a1698d6c244\" policyname=\"test-proxy\" trandisp=\"snat\" transip=10.8.184.146 transport=53184 clientip=10.108.194.78 duration=8089 wanin=125800732 rcvdbyte=125800732 wanout=632 lanin=798 sentbyte=798 lanout=125824455 appcat=\"unscanned\" utmaction=\"allow\""
+    },
+    {
+      "message": "<189>logver=704080649 timestamp=2643697066 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" vd=\"root\" date=2053-10-10 time=08:17:46 eventtime=2643689867153677744 tz=\"+0200\" logid=\"0000000010\" type=\"event\" subtype=\"user\" level=\"notice\" logdesc=\"Explicit proxy authentication failed\" srcip=10.172.26.244 dstip=10.205.163.19 authid=\"999-WGS-AUTH-DEFAULT\" user=\"\"http\" authproto=\"HTTP(10.172.26.244)\" action=\"NTLM-auth\" status=\"failure\" url=\"http://10.205.163.19/\" reason=\"Authentication failed\" msg=\"User \"http failed in authentication\""
+    },
+    {
+      "message": "<190>date=2053-09-01 time=12:37:12 devname=\"gdyyebzybb\" devid=\"FPX412345678\" eventtime=2640343032283394873 tz=\"+0000\" logid=\"1059028704\" type=\"utm\" subtype=\"app-ctrl\" eventtype=\"signature\" level=\"information\" vd=\"root\" appid=15893 srcip=10.95.224.34 srccountry=\"Reserved\" dstip=10.95.37.32 dstcountry=\"Reserved\" srcport=64986 dstport=443 srcintf=\"port2\" srcintfrole=\"lan\" dstintf=\"port1\" dstintfrole=\"wan\" proto=6 service=\"HTTPS\" direction=\"outbound\" policyid=5 poluuid=\"b784fe11-a254-57ab-1543-ab875f0fd8af\" policytype=\"policy\" sessionid=5974998585 applist=\"app_Default\" action=\"pass\" appcat=\"Web.Client\" app=\"HTTP.BROWSER\" hostname=\"fonts.googleapis.com\" incidentserialno=628964575 url=\"/css?family=Roboto:300,400,500,700|Google+Sans:400,500,700|Google+Sans+Text:400,500,700&lang=de\" msg=\"Web.Client: HTTP.BROWSER\" apprisk=\"medium\" rawdataid=\"1/1\" rawdata=\"Method=GET|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36|Referer=https://something.com/\""
+    },
+    {
+      "message": "<189>date=2052-06-07 time=09:33:55 devname=\"JBLI-QTM90\" devid=\"FPXTESTPXY01\" eventtime=2601383635912000000 tz=\"-0600\" logid=\"0010000099\" type=\"traffic\" subtype=\"http-transaction\" level=\"notice\" vd=\"root\" srcip=10.23.94.181 dstip=10.119.50.181 clientip=10.23.94.181 scheme=\"https\" srcport=57784 dstport=443 hostname=\"example.com\" url=\"/search?q=test\" prefetch=0 policyid=1 sessionid=569328444 transid=139874927 reqlength=120 resplength=0 rcvdbyte=0 sentbyte=120 resptype=\"normal\" httpmethod=\"GET\" agent=\"curl/7.68.0\" statuscode=\"200\" rawdata=\"Time=10ms|Header-Host=example.com\" reqtime=2601383635 resptime=2601383635 respfinishtime=2601383635 duration=10 appcat=\"Web.Client\""
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-fortinet_fortiproxy-log-default",
+    "event_count": 33,
+    "numeric_keyword_fields": [],
+    "package": "fortinet_fortiproxy",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

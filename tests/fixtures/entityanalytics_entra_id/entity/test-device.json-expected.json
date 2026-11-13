@@ -1,0 +1,549 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-11-04T09:57:19.786056-05:00",
+      "asset": {
+        "category": "entity",
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "6babd4a5-bf70-4d74-b501-d078c91e2909",
+        "name": "DESKTOP-LETW452G",
+        "status": "enabled",
+        "type": "microsoft_entra_id_device"
+      },
+      "device": {
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "6babd4a5-bf70-4d74-b501-d078c91e2909"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "device": {
+          "account_enabled": true,
+          "alternative_security_ids": [
+            {
+              "key": "DGFSGHSGGTH345A...35DSFH0A",
+              "type": 2
+            }
+          ],
+          "display_name": "DESKTOP-LETW452G",
+          "group": [
+            {
+              "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+              "name": "group1"
+            }
+          ],
+          "id": "6babd4a5-bf70-4d74-b501-d078c91e2909",
+          "operating_system": "Windows",
+          "operating_system_version": "10.0.19043.1337"
+        }
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2050-11-04T09:57:19.786056-05:00\",\"azure_ad\":{\"operatingSystemVersion\":\"10.0.19043.1337\",\"displayName\":\"DESKTOP-LETW452G\",\"alternativeSecurityIds\":[{\"type\":2,\"identityProvider\":null,\"key\":\"DGFSGHSGGTH345A...35DSFH0A\"}],\"operatingSystem\":\"Windows\",\"accountEnabled\":true},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"device-discovered\"},\"device\":{\"id\":\"6babd4a5-bf70-4d74-b501-d078c91e2909\",\"group\":[{\"name\":\"group1\",\"id\":\"040657bd-c0dd-4182-87af-25c425f8fe44\"}]},\"labels\":{\"identity_source\":\"azure-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "6babd4a5-bf70-4d74-b501-d078c91e2909",
+        "name": "DESKTOP-LETW452G",
+        "os": {
+          "type": "windows",
+          "version": "10.0.19043.1337"
+        }
+      },
+      "labels": {
+        "identity_source": "azure-1"
+      },
+      "related": {
+        "hosts": [
+          "DESKTOP-LETW452G",
+          "6babd4a5-bf70-4d74-b501-d078c91e2909"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-11-04T09:57:19.786056-05:00",
+      "asset": {
+        "category": "entity",
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "adcec03e-6665-4188-87e2-56abb01fad4d",
+        "is_managed": true,
+        "name": "DESKTOP-LETW452G",
+        "status": "enabled",
+        "type": "microsoft_entra_id_device"
+      },
+      "device": {
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "adcec03e-6665-4188-87e2-56abb01fad4d",
+        "registered_owners": [
+          {
+            "business_phones": [
+              "123-555-0122"
+            ],
+            "display_name": "Aqeiuva Hobg",
+            "given_name": "Aqeiuva",
+            "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+            "job_title": "Software Engineer",
+            "mail": "blejmte.ineo@example.com",
+            "mobile_phone": "123-555-1000",
+            "surname": "User",
+            "user_principal_name": "blejmte.ineo@example.com"
+          }
+        ],
+        "registered_users": [
+          {
+            "business_phones": [
+              "123-555-0122"
+            ],
+            "display_name": "Aqeiuva Hobg",
+            "given_name": "Aqeiuva",
+            "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+            "job_title": "Software Engineer",
+            "mail": "blejmte.ineo@example.com",
+            "mobile_phone": "123-555-1000",
+            "surname": "User",
+            "user_principal_name": "blejmte.ineo@example.com"
+          }
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "device": {
+          "account_enabled": true,
+          "alternative_security_ids": [
+            {
+              "key": "DGFSGHSGGTH345A...35DSFH0A",
+              "type": 2
+            }
+          ],
+          "approximate_last_sign_in_date_time": "2052-01-15T08:30:00.000Z",
+          "d_id": "6babd4a5-bf70-4d74-b501-d078c91e2909",
+          "display_name": "DESKTOP-LETW452G",
+          "group": [
+            {
+              "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+              "name": "group1"
+            }
+          ],
+          "id": "adcec03e-6665-4188-87e2-56abb01fad4d",
+          "is_managed": true,
+          "operating_system": "Windows",
+          "operating_system_version": "10.0.19043.1337",
+          "registered_owners": [
+            {
+              "business_phones": [
+                "123-555-0122"
+              ],
+              "display_name": "Aqeiuva Hobg",
+              "given_name": "Aqeiuva",
+              "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+              "job_title": "Software Engineer",
+              "mail": "blejmte.ineo@example.com",
+              "mobile_phone": "123-555-1000",
+              "surname": "User",
+              "user_principal_name": "blejmte.ineo@example.com"
+            }
+          ],
+          "registered_users": [
+            {
+              "business_phones": [
+                "123-555-0122"
+              ],
+              "display_name": "Aqeiuva Hobg",
+              "given_name": "Aqeiuva",
+              "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+              "job_title": "Software Engineer",
+              "mail": "blejmte.ineo@example.com",
+              "mobile_phone": "123-555-1000",
+              "surname": "User",
+              "user_principal_name": "blejmte.ineo@example.com"
+            }
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2050-11-04T09:57:19.786056-05:00\",\"azure_ad\":{\"operatingSystemVersion\":\"10.0.19043.1337\",\"displayName\":\"DESKTOP-LETW452G\",\"approximateLastSignInDateTime\":\"2052-01-15T08:30:00Z\",\"alternativeSecurityIds\":[{\"type\":2,\"identityProvider\":null,\"key\":\"DGFSGHSGGTH345A...35DSFH0A\"}],\"deviceId\":\"6babd4a5-bf70-4d74-b501-d078c91e2909\",\"operatingSystem\":\"Windows\",\"accountEnabled\":true,\"isManaged\":true},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"device-discovered\"},\"device\":{\"registered_users\":[{\"businessPhones\":[\"123-555-0122\"],\"mail\":\"blejmte.ineo@example.com\",\"mobilePhone\":\"123-555-1000\",\"displayName\":\"Aqeiuva Hobg\",\"surname\":\"User\",\"givenName\":\"Aqeiuva\",\"jobTitle\":\"Software Engineer\",\"id\":\"2bea0d4d-38c3-4e28-9a8f-515caa66a5ea\",\"userPrincipalName\":\"blejmte.ineo@example.com\"}],\"registered_owners\":[{\"businessPhones\":[\"123-555-0122\"],\"mail\":\"blejmte.ineo@example.com\",\"mobilePhone\":\"123-555-1000\",\"displayName\":\"Aqeiuva Hobg\",\"surname\":\"User\",\"givenName\":\"Aqeiuva\",\"jobTitle\":\"Software Engineer\",\"id\":\"2bea0d4d-38c3-4e28-9a8f-515caa66a5ea\",\"userPrincipalName\":\"blejmte.ineo@example.com\"}],\"id\":\"adcec03e-6665-4188-87e2-56abb01fad4d\",\"group\":[{\"name\":\"group1\",\"id\":\"040657bd-c0dd-4182-87af-25c425f8fe44\"}]},\"labels\":{\"identity_source\":\"azure-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "entity": {
+          "attributes": {
+            "managed": true
+          },
+          "lifecycle": {
+            "last_activity": "2052-01-15T08:30:00.000Z"
+          }
+        },
+        "id": "adcec03e-6665-4188-87e2-56abb01fad4d",
+        "name": "DESKTOP-LETW452G",
+        "os": {
+          "type": "windows",
+          "version": "10.0.19043.1337"
+        }
+      },
+      "labels": {
+        "identity_source": "azure-1"
+      },
+      "related": {
+        "hosts": [
+          "DESKTOP-LETW452G",
+          "adcec03e-6665-4188-87e2-56abb01fad4d"
+        ],
+        "user": [
+          "blejmte.ineo@example.com",
+          "Aqeiuva Hobg"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-11-04T09:57:19.786056-05:00",
+      "asset": {
+        "category": "entity",
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+        "name": "QJANAC-HUZKILFHONK",
+        "status": "enabled",
+        "type": "microsoft_entra_id_device"
+      },
+      "device": {
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+        "registered_owners": [
+          {
+            "business_phones": [
+              "123-555-0200"
+            ],
+            "display_name": "Ekkcf Ijznh",
+            "given_name": "Ekkcf",
+            "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+            "job_title": "Engineer",
+            "mail": "bssba.ptsvv@example.com",
+            "mobile_phone": "123-555-1001",
+            "surname": "Ijznh",
+            "user_principal_name": "bssba.ptsvv@example.com"
+          },
+          {
+            "business_phones": [
+              "123-555-0201"
+            ],
+            "display_name": "Cgb Jtjds",
+            "given_name": "Cgb",
+            "id": "7cc32e4a-63ee-4d58-ab5f-964aa7ac58b7",
+            "job_title": "Manager",
+            "mail": "bwa.zgvai@example.com",
+            "mobile_phone": "123-555-1002",
+            "surname": "Jtjds",
+            "user_principal_name": "bwa.zgvai@example.com"
+          }
+        ]
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "entityanalytics_entra_id": {
+        "device": {
+          "account_enabled": true,
+          "d_id": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+          "display_name": "QJANAC-HUZKILFHONK",
+          "group": [
+            {
+              "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+              "name": "group1"
+            }
+          ],
+          "id": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+          "operating_system": "Windows",
+          "operating_system_version": "10.0.22621.0",
+          "registered_owners": [
+            {
+              "business_phones": [
+                "123-555-0200"
+              ],
+              "display_name": "Ekkcf Ijznh",
+              "given_name": "Ekkcf",
+              "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+              "job_title": "Engineer",
+              "mail": "bssba.ptsvv@example.com",
+              "mobile_phone": "123-555-1001",
+              "surname": "Ijznh",
+              "user_principal_name": "bssba.ptsvv@example.com"
+            },
+            {
+              "business_phones": [
+                "123-555-0201"
+              ],
+              "display_name": "Cgb Jtjds",
+              "given_name": "Cgb",
+              "id": "7cc32e4a-63ee-4d58-ab5f-964aa7ac58b7",
+              "job_title": "Manager",
+              "mail": "bwa.zgvai@example.com",
+              "mobile_phone": "123-555-1002",
+              "surname": "Jtjds",
+              "user_principal_name": "bwa.zgvai@example.com"
+            }
+          ]
+        }
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "kind": "asset",
+        "original": "{\"@timestamp\":\"2050-11-04T09:57:19.786056-05:00\",\"azure_ad\":{\"operatingSystemVersion\":\"10.0.22621.0\",\"displayName\":\"QJANAC-HUZKILFHONK\",\"deviceId\":\"e0d5d6d9-3f58-4402-b846-07b976013d9d\",\"operatingSystem\":\"Windows\",\"accountEnabled\":true},\"ecs\":{\"version\":\"8.11.0\"},\"event\":{\"action\":\"device-discovered\"},\"device\":{\"registered_owners\":[{\"businessPhones\":[\"123-555-0200\"],\"mail\":\"bssba.ptsvv@example.com\",\"mobilePhone\":\"123-555-1001\",\"displayName\":\"Ekkcf Ijznh\",\"surname\":\"Ijznh\",\"givenName\":\"Ekkcf\",\"jobTitle\":\"Engineer\",\"id\":\"2bea0d4d-38c3-4e28-9a8f-515caa66a5ea\",\"userPrincipalName\":\"bssba.ptsvv@example.com\"},{\"businessPhones\":[\"123-555-0201\"],\"mail\":\"bwa.zgvai@example.com\",\"mobilePhone\":\"123-555-1002\",\"displayName\":\"Cgb Jtjds\",\"surname\":\"Jtjds\",\"givenName\":\"Cgb\",\"jobTitle\":\"Manager\",\"id\":\"7cc32e4a-63ee-4d58-ab5f-964aa7ac58b7\",\"userPrincipalName\":\"bwa.zgvai@example.com\"}],\"id\":\"e0d5d6d9-3f58-4402-b846-07b976013d9d\",\"group\":[{\"name\":\"group1\",\"id\":\"040657bd-c0dd-4182-87af-25c425f8fe44\"}]},\"labels\":{\"identity_source\":\"azure-1\"},\"tags\":[\"preserve_original_event\",\"preserve_duplicate_custom_fields\"],\"_index\":\"_index\",\"_id\":\"_id\",\"_version\":-3}",
+        "type": [
+          "info"
+        ]
+      },
+      "host": {
+        "id": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+        "name": "QJANAC-HUZKILFHONK",
+        "os": {
+          "type": "windows",
+          "version": "10.0.22621.0"
+        }
+      },
+      "labels": {
+        "identity_source": "azure-1"
+      },
+      "related": {
+        "hosts": [
+          "QJANAC-HUZKILFHONK",
+          "e0d5d6d9-3f58-4402-b846-07b976013d9d"
+        ],
+        "user": [
+          "bssba.ptsvv@example.com",
+          "bwa.zgvai@example.com",
+          "Ekkcf Ijznh",
+          "Cgb Jtjds"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2050-11-04T09:57:19.786056-05:00",
+      "azure_ad": {
+        "accountEnabled": true,
+        "alternativeSecurityIds": [
+          {
+            "identityProvider": null,
+            "key": "DGFSGHSGGTH345A...35DSFH0A",
+            "type": 2
+          }
+        ],
+        "displayName": "DESKTOP-LETW452G",
+        "operatingSystem": "Windows",
+        "operatingSystemVersion": "10.0.19043.1337"
+      },
+      "device": {
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "6babd4a5-bf70-4d74-b501-d078c91e2909"
+      },
+      "event": {
+        "action": "device-discovered"
+      },
+      "labels": {
+        "identity_source": "azure-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-11-04T09:57:19.786056-05:00",
+      "azure_ad": {
+        "accountEnabled": true,
+        "alternativeSecurityIds": [
+          {
+            "identityProvider": null,
+            "key": "DGFSGHSGGTH345A...35DSFH0A",
+            "type": 2
+          }
+        ],
+        "approximateLastSignInDateTime": "2052-01-15T08:30:00Z",
+        "deviceId": "6babd4a5-bf70-4d74-b501-d078c91e2909",
+        "displayName": "DESKTOP-LETW452G",
+        "isManaged": true,
+        "operatingSystem": "Windows",
+        "operatingSystemVersion": "10.0.19043.1337"
+      },
+      "device": {
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "adcec03e-6665-4188-87e2-56abb01fad4d",
+        "registered_owners": [
+          {
+            "businessPhones": [
+              "123-555-0122"
+            ],
+            "displayName": "Aqeiuva Hobg",
+            "givenName": "Aqeiuva",
+            "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+            "jobTitle": "Software Engineer",
+            "mail": "blejmte.ineo@example.com",
+            "mobilePhone": "123-555-1000",
+            "surname": "User",
+            "userPrincipalName": "blejmte.ineo@example.com"
+          }
+        ],
+        "registered_users": [
+          {
+            "businessPhones": [
+              "123-555-0122"
+            ],
+            "displayName": "Aqeiuva Hobg",
+            "givenName": "Aqeiuva",
+            "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+            "jobTitle": "Software Engineer",
+            "mail": "blejmte.ineo@example.com",
+            "mobilePhone": "123-555-1000",
+            "surname": "User",
+            "userPrincipalName": "blejmte.ineo@example.com"
+          }
+        ]
+      },
+      "event": {
+        "action": "device-discovered"
+      },
+      "labels": {
+        "identity_source": "azure-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    },
+    {
+      "@timestamp": "2050-11-04T09:57:19.786056-05:00",
+      "azure_ad": {
+        "accountEnabled": true,
+        "deviceId": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+        "displayName": "QJANAC-HUZKILFHONK",
+        "operatingSystem": "Windows",
+        "operatingSystemVersion": "10.0.22621.0"
+      },
+      "device": {
+        "group": [
+          {
+            "id": "040657bd-c0dd-4182-87af-25c425f8fe44",
+            "name": "group1"
+          }
+        ],
+        "id": "e0d5d6d9-3f58-4402-b846-07b976013d9d",
+        "registered_owners": [
+          {
+            "businessPhones": [
+              "123-555-0200"
+            ],
+            "displayName": "Ekkcf Ijznh",
+            "givenName": "Ekkcf",
+            "id": "2bea0d4d-38c3-4e28-9a8f-515caa66a5ea",
+            "jobTitle": "Engineer",
+            "mail": "bssba.ptsvv@example.com",
+            "mobilePhone": "123-555-1001",
+            "surname": "Ijznh",
+            "userPrincipalName": "bssba.ptsvv@example.com"
+          },
+          {
+            "businessPhones": [
+              "123-555-0201"
+            ],
+            "displayName": "Cgb Jtjds",
+            "givenName": "Cgb",
+            "id": "7cc32e4a-63ee-4d58-ab5f-964aa7ac58b7",
+            "jobTitle": "Manager",
+            "mail": "bwa.zgvai@example.com",
+            "mobilePhone": "123-555-1002",
+            "surname": "Jtjds",
+            "userPrincipalName": "bwa.zgvai@example.com"
+          }
+        ]
+      },
+      "event": {
+        "action": "device-discovered"
+      },
+      "labels": {
+        "identity_source": "azure-1"
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "entity",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-entityanalytics_entra_id-entity-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "entityanalytics_entra_id",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

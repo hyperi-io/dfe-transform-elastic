@@ -1,0 +1,486 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2043-07-06T11:59:27.000-07:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2043-07-06T18:55:46.000Z",
+        "id": "7017e5bc15844652b16f42b6efa983c1",
+        "kind": "event",
+        "original": "{\"table_name\":\"change_request\",\"sys_updated_on\":{\"display_value\":\"07/06/2043 11:59:27\",\"value\":\"2043-07-06 18:59:27\"},\"sys_created_on\":{\"display_value\":\"07/06/2043 11:55:46\",\"value\":\"2043-07-06 18:55:46\"},\"opened_at\":{\"display_value\":\"03/05/2053 10:00:00\",\"value\":\"03/05/2053 10:00:00\"},\"work_start\":{\"display_value\":\"03/05/2053 10:00:00\",\"value\":\"03/05/2053 10:00:00\"},\"work_end\":{\"display_value\":\"03/05/2053 11:00:00\",\"value\":\"03/05/2053 11:00:00\"},\"closed_at\":{\"display_value\":\"07/06/2043 11:56:23\",\"value\":\"07/06/2043 11:56:23\"},\"activity_due\":{\"display_value\":\"03/06/2053 14:00:00\",\"value\":\"03/06/2053 14:00:00\"},\"due_date\":{\"display_value\":\"03/07/2053\",\"value\":\"03/07/2053\"},\"expected_start\":{\"display_value\":\"03/04/2053 09:00:00\",\"value\":\"03/04/2053 09:00:00\"},\"follow_up\":{\"display_value\":\"03/08/2053\",\"value\":\"03/08/2053\"},\"approval_set\":{\"display_value\":\"03/05/2053 08:00:00\",\"value\":\"03/05/2053 08:00:00\"},\"sys_id\":{\"display_value\":\"7017e5bc15844652b16f42b6efa983c1\",\"value\":\"7017e5bc15844652b16f42b6efa983c1\"},\"number\":{\"display_value\":\"CHG0000024\",\"value\":\"CHG0000024\"},\"short_description\":{\"display_value\":\"MMdd date format test\",\"value\":\"MMdd date format test\"},\"state\":{\"display_value\":\"Closed\",\"value\":\"3\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+        "timezone": "America/Los_Angeles",
+        "type": [
+          "change"
+        ]
+      },
+      "servicenow": {
+        "event": {
+          "activity_due": {
+            "display_value": "2053-03-06T14:00:00.000-08:00",
+            "value": "2053-03-06T14:00:00.000Z"
+          },
+          "approval_set": {
+            "display_value": "2053-03-05T08:00:00.000-08:00",
+            "value": "2053-03-05T08:00:00.000Z"
+          },
+          "closed_at": {
+            "display_value": "2043-07-06T11:56:23.000-07:00",
+            "value": "2043-07-06T11:56:23.000Z"
+          },
+          "due_date": {
+            "display_value": "2053-03-07T00:00:00.000-08:00",
+            "value": "2053-03-07T00:00:00.000Z"
+          },
+          "expected_start": {
+            "display_value": "2053-03-04T09:00:00.000-08:00",
+            "value": "2053-03-04T09:00:00.000Z"
+          },
+          "follow_up": {
+            "display_value": "2053-03-08T00:00:00.000-08:00",
+            "value": "2053-03-08T00:00:00.000Z"
+          },
+          "number": {
+            "display_value": "CHG0000024",
+            "value": "CHG0000024"
+          },
+          "opened_at": {
+            "display_value": "2053-03-05T10:00:00.000-08:00",
+            "value": "2053-03-05T10:00:00.000Z"
+          },
+          "short_description": {
+            "display_value": "MMdd date format test",
+            "value": "MMdd date format test"
+          },
+          "state": {
+            "display_value": "Closed",
+            "value": "3"
+          },
+          "sys_created_on": {
+            "display_value": "2043-07-06T11:55:46.000-07:00",
+            "value": "2043-07-06T18:55:46.000Z"
+          },
+          "sys_domain": {
+            "display_value": "global",
+            "value": "global"
+          },
+          "sys_id": {
+            "display_value": "7017e5bc15844652b16f42b6efa983c1",
+            "value": "7017e5bc15844652b16f42b6efa983c1"
+          },
+          "sys_updated_on": {
+            "display_value": "2043-07-06T11:59:27.000-07:00",
+            "value": "2043-07-06T18:59:27.000Z"
+          },
+          "table_name": "change_request",
+          "work_end": {
+            "display_value": "2053-03-05T11:00:00.000-08:00",
+            "value": "2053-03-05T11:00:00.000Z"
+          },
+          "work_start": {
+            "display_value": "2053-03-05T10:00:00.000-08:00",
+            "value": "2053-03-05T10:00:00.000Z"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "@timestamp": "2052-09-10T01:15:50.000-07:00",
+      "device": {
+        "model": {
+          "name": [
+            "Gateway DX Series"
+          ]
+        }
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "host"
+        ],
+        "created": "2051-08-31T11:16:40.000Z",
+        "id": "5694357e18d3553641e1eaf1eedd7a2e",
+        "kind": "asset",
+        "original": "{\"table_name\":\"alm_hardware\",\"sys_updated_on\":{\"display_value\":\"09/10/2052 01:15:50\",\"value\":\"09/10/2052 01:15:50\"},\"sys_created_on\":{\"display_value\":\"08/31/2051 11:16:40\",\"value\":\"08/31/2051 11:16:40\"},\"assigned\":{\"display_value\":\"08/01/2051 01:00:00\",\"value\":\"08/01/2051 01:00:00\"},\"install_date\":{\"display_value\":\"05/02/2051 00:00:00\",\"value\":\"05/02/2051 00:00:00\"},\"depreciation_date\":{\"display_value\":\"05/03/2051 00:00:00\",\"value\":\"05/03/2051 00:00:00\"},\"delivery_date\":{\"display_value\":\"04/15/2051 12:00:00\",\"value\":\"04/15/2051 12:00:00\"},\"warranty_expiration\":{\"display_value\":\"05/02/2056\",\"value\":\"05/02/2056\"},\"order_date\":{\"display_value\":\"03/10/2051\",\"value\":\"03/10/2051\"},\"purchase_date\":{\"display_value\":\"02/28/2051\",\"value\":\"02/28/2051\"},\"sys_id\":{\"display_value\":\"5694357e18d3553641e1eaf1eedd7a2e\",\"value\":\"5694357e18d3553641e1eaf1eedd7a2e\"},\"asset_tag\":{\"display_value\":\"P1000241\",\"value\":\"P1000241\"},\"display_name\":{\"display_value\":\"P1000241 - Gateway DX Series\",\"value\":\"P1000241 - Gateway DX Series\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"},\"model\":{\"display_value\":\"Gateway DX Series\",\"value\":\"86acd3dde4bb5243225548a04216d644\"}}",
+        "timezone": "America/Los_Angeles",
+        "type": [
+          "info"
+        ]
+      },
+      "servicenow": {
+        "event": {
+          "asset_tag": {
+            "display_value": "P1000241",
+            "value": "P1000241"
+          },
+          "assigned": {
+            "display_value": "2051-08-01T01:00:00.000-07:00",
+            "value": "2051-08-01T01:00:00.000Z"
+          },
+          "delivery_date": {
+            "display_value": "2051-04-15T12:00:00.000-07:00",
+            "value": "2051-04-15T12:00:00.000Z"
+          },
+          "depreciation_date": {
+            "display_value": "2051-05-03T00:00:00.000-07:00",
+            "value": "2051-05-03T00:00:00.000Z"
+          },
+          "display_name": {
+            "display_value": "P1000241 - Gateway DX Series",
+            "value": "P1000241 - Gateway DX Series"
+          },
+          "install_date": {
+            "display_value": "2051-05-02T00:00:00.000-07:00",
+            "value": "2051-05-02T00:00:00.000Z"
+          },
+          "model": {
+            "display_value": "Gateway DX Series",
+            "value": "86acd3dde4bb5243225548a04216d644"
+          },
+          "order_date": {
+            "display_value": "2051-03-10T00:00:00.000-08:00",
+            "value": "2051-03-10T00:00:00.000Z"
+          },
+          "purchase_date": {
+            "display_value": "2051-02-28T00:00:00.000Z",
+            "value": "2051-02-28T00:00:00.000Z"
+          },
+          "sys_created_on": {
+            "display_value": "2051-08-31T11:16:40.000-07:00",
+            "value": "2051-08-31T11:16:40.000Z"
+          },
+          "sys_domain": {
+            "display_value": "global",
+            "value": "global"
+          },
+          "sys_id": {
+            "display_value": "5694357e18d3553641e1eaf1eedd7a2e",
+            "value": "5694357e18d3553641e1eaf1eedd7a2e"
+          },
+          "sys_updated_on": {
+            "display_value": "2052-09-10T01:15:50.000-07:00",
+            "value": "2052-09-10T01:15:50.000Z"
+          },
+          "table_name": "alm_hardware",
+          "warranty_expiration": {
+            "display_value": "2056-05-02T00:00:00.000Z",
+            "value": "2056-05-02T00:00:00.000Z"
+          }
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "@timestamp": "2044-12-13T18:46:44.000-08:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration",
+          "threat"
+        ],
+        "created": "2044-12-12T07:19:57.000Z",
+        "id": "9f714cc47d3163258154662d64435ef0",
+        "kind": "event",
+        "original": "{\"table_name\":\"incident\",\"sys_updated_on\":{\"display_value\":\"12/13/2044 18:46:44\",\"value\":\"12/13/2044 18:46:44\"},\"sys_created_on\":{\"display_value\":\"12/12/2044 07:19:57\",\"value\":\"12/12/2044 07:19:57\"},\"opened_at\":{\"display_value\":\"12/12/2044 07:19:57\",\"value\":\"12/12/2044 07:19:57\"},\"activity_due\":{\"display_value\":\"12/12/2044 17:26:36\",\"value\":\"12/12/2044 17:26:36\"},\"closed_at\":{\"display_value\":\"12/13/2044 18:46:44\",\"value\":\"12/13/2044 18:46:44\"},\"resolved_at\":{\"display_value\":\"12/13/2044 13:43:14\",\"value\":\"12/13/2044 13:43:14\"},\"sys_id\":{\"display_value\":\"9f714cc47d3163258154662d64435ef0\",\"value\":\"9f714cc47d3163258154662d64435ef0\"},\"number\":{\"display_value\":\"INC0000060\",\"value\":\"INC0000060\"},\"short_description\":{\"display_value\":\"Unable to connect to email\",\"value\":\"Unable to connect to email\"},\"state\":{\"display_value\":\"Closed\",\"value\":\"7\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+        "timezone": "America/Los_Angeles",
+        "type": [
+          "info"
+        ]
+      },
+      "servicenow": {
+        "event": {
+          "activity_due": {
+            "display_value": "2044-12-12T17:26:36.000-08:00",
+            "value": "2044-12-12T17:26:36.000Z"
+          },
+          "closed_at": {
+            "display_value": "2044-12-13T18:46:44.000-08:00",
+            "value": "2044-12-13T18:46:44.000Z"
+          },
+          "number": {
+            "display_value": "INC0000060",
+            "value": "INC0000060"
+          },
+          "opened_at": {
+            "display_value": "2044-12-12T07:19:57.000-08:00",
+            "value": "2044-12-12T07:19:57.000Z"
+          },
+          "resolved_at": {
+            "display_value": "2044-12-13T13:43:14.000-08:00",
+            "value": "2044-12-13T13:43:14.000Z"
+          },
+          "short_description": {
+            "display_value": "Unable to connect to email",
+            "value": "Unable to connect to email"
+          },
+          "state": {
+            "display_value": "Closed",
+            "value": "7"
+          },
+          "sys_created_on": {
+            "display_value": "2044-12-12T07:19:57.000-08:00",
+            "value": "2044-12-12T07:19:57.000Z"
+          },
+          "sys_domain": {
+            "display_value": "global",
+            "value": "global"
+          },
+          "sys_id": {
+            "display_value": "9f714cc47d3163258154662d64435ef0",
+            "value": "9f714cc47d3163258154662d64435ef0"
+          },
+          "sys_updated_on": {
+            "display_value": "2044-12-13T18:46:44.000-08:00",
+            "value": "2044-12-13T18:46:44.000Z"
+          },
+          "table_name": "incident"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "@timestamp": "2044-11-11T03:51:16.000-08:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "configuration"
+        ],
+        "created": "2044-11-09T21:24:46.000Z",
+        "id": "e284e099f5f6713175d3c47f48f2b564",
+        "kind": "event",
+        "original": "{\"table_name\":\"change_task\",\"sys_updated_on\":{\"display_value\":\"11/11/2044 03:51:16\",\"value\":\"11/11/2044 03:51:16\"},\"sys_created_on\":{\"display_value\":\"11/09/2044 21:24:46\",\"value\":\"11/09/2044 21:24:46\"},\"opened_at\":{\"display_value\":\"11/09/2044 21:23:45\",\"value\":\"11/09/2044 21:23:45\"},\"due_date\":{\"display_value\":\"11/09/2044 21:24:29\",\"value\":\"11/09/2044 21:24:29\"},\"planned_start_date\":{\"display_value\":\"11/08/2044 08:00:00\",\"value\":\"11/08/2044 08:00:00\"},\"planned_end_date\":{\"display_value\":\"11/10/2044 18:00:00\",\"value\":\"11/10/2044 18:00:00\"},\"closed_at\":{\"display_value\":\"11/11/2044 03:51:16\",\"value\":\"11/11/2044 03:51:16\"},\"sys_id\":{\"display_value\":\"e284e099f5f6713175d3c47f48f2b564\",\"value\":\"e284e099f5f6713175d3c47f48f2b564\"},\"number\":{\"display_value\":\"CTASK0010008\",\"value\":\"CTASK0010008\"},\"short_description\":{\"display_value\":\"Shut down all databases using the Oracle home\",\"value\":\"Shut down all databases using the Oracle home\"},\"state\":{\"display_value\":\"Closed\",\"value\":\"3\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+        "timezone": "America/Los_Angeles",
+        "type": [
+          "change"
+        ]
+      },
+      "servicenow": {
+        "event": {
+          "closed_at": {
+            "display_value": "2044-11-11T03:51:16.000-08:00",
+            "value": "2044-11-11T03:51:16.000Z"
+          },
+          "due_date": {
+            "display_value": "2044-11-09T21:24:29.000-08:00",
+            "value": "2044-11-09T21:24:29.000Z"
+          },
+          "number": {
+            "display_value": "CTASK0010008",
+            "value": "CTASK0010008"
+          },
+          "opened_at": {
+            "display_value": "2044-11-09T21:23:45.000-08:00",
+            "value": "2044-11-09T21:23:45.000Z"
+          },
+          "planned_end_date": {
+            "display_value": "2044-11-10T18:00:00.000-08:00",
+            "value": "2044-11-10T18:00:00.000Z"
+          },
+          "planned_start_date": {
+            "display_value": "2044-11-08T08:00:00.000-08:00",
+            "value": "2044-11-08T08:00:00.000Z"
+          },
+          "short_description": {
+            "display_value": "Shut down all databases using the Oracle home",
+            "value": "Shut down all databases using the Oracle home"
+          },
+          "state": {
+            "display_value": "Closed",
+            "value": "3"
+          },
+          "sys_created_on": {
+            "display_value": "2044-11-09T21:24:46.000-08:00",
+            "value": "2044-11-09T21:24:46.000Z"
+          },
+          "sys_domain": {
+            "display_value": "global",
+            "value": "global"
+          },
+          "sys_id": {
+            "display_value": "e284e099f5f6713175d3c47f48f2b564",
+            "value": "e284e099f5f6713175d3c47f48f2b564"
+          },
+          "sys_updated_on": {
+            "display_value": "2044-11-11T03:51:16.000-08:00",
+            "value": "2044-11-11T03:51:16.000Z"
+          },
+          "table_name": "change_task"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "@timestamp": "2052-04-05T02:38:34.000-07:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2052-04-01T21:51:19.000Z",
+        "id": "66fc49a6e0e1266560f3d1b82fd98e8a",
+        "kind": "event",
+        "original": "{\"table_name\":\"problem\",\"sys_updated_on\":{\"display_value\":\"04/05/2052 02:38:34\",\"value\":\"04/05/2052 02:38:34\"},\"sys_created_on\":{\"display_value\":\"04/01/2052 21:51:19\",\"value\":\"04/01/2052 21:51:19\"},\"opened_at\":{\"display_value\":\"04/01/2052 21:49:47\",\"value\":\"04/01/2052 21:49:47\"},\"closed_at\":{\"display_value\":\"04/01/2052 21:52:04\",\"value\":\"04/01/2052 21:52:04\"},\"resolved_at\":{\"display_value\":\"04/02/2052 10:00:00\",\"value\":\"04/02/2052 10:00:00\"},\"sys_id\":{\"display_value\":\"66fc49a6e0e1266560f3d1b82fd98e8a\",\"value\":\"66fc49a6e0e1266560f3d1b82fd98e8a\"},\"number\":{\"display_value\":\"PRB0000050\",\"value\":\"PRB0000050\"},\"short_description\":{\"display_value\":\"Switch occasionally drops connections\",\"value\":\"Switch occasionally drops connections\"},\"state\":{\"display_value\":\"Resolved\",\"value\":\"106\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+        "timezone": "America/Los_Angeles",
+        "type": [
+          "info"
+        ]
+      },
+      "servicenow": {
+        "event": {
+          "closed_at": {
+            "display_value": "2052-04-01T21:52:04.000-07:00",
+            "value": "2052-04-01T21:52:04.000Z"
+          },
+          "number": {
+            "display_value": "PRB0000050",
+            "value": "PRB0000050"
+          },
+          "opened_at": {
+            "display_value": "2052-04-01T21:49:47.000-07:00",
+            "value": "2052-04-01T21:49:47.000Z"
+          },
+          "resolved_at": {
+            "display_value": "2052-04-02T10:00:00.000-07:00",
+            "value": "2052-04-02T10:00:00.000Z"
+          },
+          "short_description": {
+            "display_value": "Switch occasionally drops connections",
+            "value": "Switch occasionally drops connections"
+          },
+          "state": {
+            "display_value": "Resolved",
+            "value": "106"
+          },
+          "sys_created_on": {
+            "display_value": "2052-04-01T21:51:19.000-07:00",
+            "value": "2052-04-01T21:51:19.000Z"
+          },
+          "sys_domain": {
+            "display_value": "global",
+            "value": "global"
+          },
+          "sys_id": {
+            "display_value": "66fc49a6e0e1266560f3d1b82fd98e8a",
+            "value": "66fc49a6e0e1266560f3d1b82fd98e8a"
+          },
+          "sys_updated_on": {
+            "display_value": "2052-04-05T02:38:34.000-07:00",
+            "value": "2052-04-05T02:38:34.000Z"
+          },
+          "table_name": "problem"
+        }
+      },
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "date_format_preference": "MMdd",
+        "timestamp_field": "sys_updated_on",
+        "tz_offset": "America/Los_Angeles"
+      },
+      "message": "{\"table_name\":\"change_request\",\"sys_updated_on\":{\"display_value\":\"07/06/2043 11:59:27\",\"value\":\"2043-07-06 18:59:27\"},\"sys_created_on\":{\"display_value\":\"07/06/2043 11:55:46\",\"value\":\"2043-07-06 18:55:46\"},\"opened_at\":{\"display_value\":\"03/05/2053 10:00:00\",\"value\":\"03/05/2053 10:00:00\"},\"work_start\":{\"display_value\":\"03/05/2053 10:00:00\",\"value\":\"03/05/2053 10:00:00\"},\"work_end\":{\"display_value\":\"03/05/2053 11:00:00\",\"value\":\"03/05/2053 11:00:00\"},\"closed_at\":{\"display_value\":\"07/06/2043 11:56:23\",\"value\":\"07/06/2043 11:56:23\"},\"activity_due\":{\"display_value\":\"03/06/2053 14:00:00\",\"value\":\"03/06/2053 14:00:00\"},\"due_date\":{\"display_value\":\"03/07/2053\",\"value\":\"03/07/2053\"},\"expected_start\":{\"display_value\":\"03/04/2053 09:00:00\",\"value\":\"03/04/2053 09:00:00\"},\"follow_up\":{\"display_value\":\"03/08/2053\",\"value\":\"03/08/2053\"},\"approval_set\":{\"display_value\":\"03/05/2053 08:00:00\",\"value\":\"03/05/2053 08:00:00\"},\"sys_id\":{\"display_value\":\"7017e5bc15844652b16f42b6efa983c1\",\"value\":\"7017e5bc15844652b16f42b6efa983c1\"},\"number\":{\"display_value\":\"CHG0000024\",\"value\":\"CHG0000024\"},\"short_description\":{\"display_value\":\"MMdd date format test\",\"value\":\"MMdd date format test\"},\"state\":{\"display_value\":\"Closed\",\"value\":\"3\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "_conf": {
+        "date_format_preference": "MMdd",
+        "timestamp_field": "sys_updated_on",
+        "tz_offset": "America/Los_Angeles"
+      },
+      "message": "{\"table_name\":\"alm_hardware\",\"sys_updated_on\":{\"display_value\":\"09/10/2052 01:15:50\",\"value\":\"09/10/2052 01:15:50\"},\"sys_created_on\":{\"display_value\":\"08/31/2051 11:16:40\",\"value\":\"08/31/2051 11:16:40\"},\"assigned\":{\"display_value\":\"08/01/2051 01:00:00\",\"value\":\"08/01/2051 01:00:00\"},\"install_date\":{\"display_value\":\"05/02/2051 00:00:00\",\"value\":\"05/02/2051 00:00:00\"},\"depreciation_date\":{\"display_value\":\"05/03/2051 00:00:00\",\"value\":\"05/03/2051 00:00:00\"},\"delivery_date\":{\"display_value\":\"04/15/2051 12:00:00\",\"value\":\"04/15/2051 12:00:00\"},\"warranty_expiration\":{\"display_value\":\"05/02/2056\",\"value\":\"05/02/2056\"},\"order_date\":{\"display_value\":\"03/10/2051\",\"value\":\"03/10/2051\"},\"purchase_date\":{\"display_value\":\"02/28/2051\",\"value\":\"02/28/2051\"},\"sys_id\":{\"display_value\":\"5694357e18d3553641e1eaf1eedd7a2e\",\"value\":\"5694357e18d3553641e1eaf1eedd7a2e\"},\"asset_tag\":{\"display_value\":\"P1000241\",\"value\":\"P1000241\"},\"display_name\":{\"display_value\":\"P1000241 - Gateway DX Series\",\"value\":\"P1000241 - Gateway DX Series\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"},\"model\":{\"display_value\":\"Gateway DX Series\",\"value\":\"86acd3dde4bb5243225548a04216d644\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "_conf": {
+        "date_format_preference": "MMdd",
+        "timestamp_field": "sys_updated_on",
+        "tz_offset": "America/Los_Angeles"
+      },
+      "message": "{\"table_name\":\"incident\",\"sys_updated_on\":{\"display_value\":\"12/13/2044 18:46:44\",\"value\":\"12/13/2044 18:46:44\"},\"sys_created_on\":{\"display_value\":\"12/12/2044 07:19:57\",\"value\":\"12/12/2044 07:19:57\"},\"opened_at\":{\"display_value\":\"12/12/2044 07:19:57\",\"value\":\"12/12/2044 07:19:57\"},\"activity_due\":{\"display_value\":\"12/12/2044 17:26:36\",\"value\":\"12/12/2044 17:26:36\"},\"closed_at\":{\"display_value\":\"12/13/2044 18:46:44\",\"value\":\"12/13/2044 18:46:44\"},\"resolved_at\":{\"display_value\":\"12/13/2044 13:43:14\",\"value\":\"12/13/2044 13:43:14\"},\"sys_id\":{\"display_value\":\"9f714cc47d3163258154662d64435ef0\",\"value\":\"9f714cc47d3163258154662d64435ef0\"},\"number\":{\"display_value\":\"INC0000060\",\"value\":\"INC0000060\"},\"short_description\":{\"display_value\":\"Unable to connect to email\",\"value\":\"Unable to connect to email\"},\"state\":{\"display_value\":\"Closed\",\"value\":\"7\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "_conf": {
+        "date_format_preference": "MMdd",
+        "timestamp_field": "sys_updated_on",
+        "tz_offset": "America/Los_Angeles"
+      },
+      "message": "{\"table_name\":\"change_task\",\"sys_updated_on\":{\"display_value\":\"11/11/2044 03:51:16\",\"value\":\"11/11/2044 03:51:16\"},\"sys_created_on\":{\"display_value\":\"11/09/2044 21:24:46\",\"value\":\"11/09/2044 21:24:46\"},\"opened_at\":{\"display_value\":\"11/09/2044 21:23:45\",\"value\":\"11/09/2044 21:23:45\"},\"due_date\":{\"display_value\":\"11/09/2044 21:24:29\",\"value\":\"11/09/2044 21:24:29\"},\"planned_start_date\":{\"display_value\":\"11/08/2044 08:00:00\",\"value\":\"11/08/2044 08:00:00\"},\"planned_end_date\":{\"display_value\":\"11/10/2044 18:00:00\",\"value\":\"11/10/2044 18:00:00\"},\"closed_at\":{\"display_value\":\"11/11/2044 03:51:16\",\"value\":\"11/11/2044 03:51:16\"},\"sys_id\":{\"display_value\":\"e284e099f5f6713175d3c47f48f2b564\",\"value\":\"e284e099f5f6713175d3c47f48f2b564\"},\"number\":{\"display_value\":\"CTASK0010008\",\"value\":\"CTASK0010008\"},\"short_description\":{\"display_value\":\"Shut down all databases using the Oracle home\",\"value\":\"Shut down all databases using the Oracle home\"},\"state\":{\"display_value\":\"Closed\",\"value\":\"3\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    },
+    {
+      "_conf": {
+        "date_format_preference": "MMdd",
+        "timestamp_field": "sys_updated_on",
+        "tz_offset": "America/Los_Angeles"
+      },
+      "message": "{\"table_name\":\"problem\",\"sys_updated_on\":{\"display_value\":\"04/05/2052 02:38:34\",\"value\":\"04/05/2052 02:38:34\"},\"sys_created_on\":{\"display_value\":\"04/01/2052 21:51:19\",\"value\":\"04/01/2052 21:51:19\"},\"opened_at\":{\"display_value\":\"04/01/2052 21:49:47\",\"value\":\"04/01/2052 21:49:47\"},\"closed_at\":{\"display_value\":\"04/01/2052 21:52:04\",\"value\":\"04/01/2052 21:52:04\"},\"resolved_at\":{\"display_value\":\"04/02/2052 10:00:00\",\"value\":\"04/02/2052 10:00:00\"},\"sys_id\":{\"display_value\":\"66fc49a6e0e1266560f3d1b82fd98e8a\",\"value\":\"66fc49a6e0e1266560f3d1b82fd98e8a\"},\"number\":{\"display_value\":\"PRB0000050\",\"value\":\"PRB0000050\"},\"short_description\":{\"display_value\":\"Switch occasionally drops connections\",\"value\":\"Switch occasionally drops connections\"},\"state\":{\"display_value\":\"Resolved\",\"value\":\"106\"},\"sys_domain\":{\"display_value\":\"global\",\"value\":\"global\"}}",
+      "tags": [
+        "preserve_original_event",
+        "preserve_duplicate_custom_fields",
+        "hide_sensitive"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-servicenow-event-default",
+    "event_count": 5,
+    "numeric_keyword_fields": [],
+    "package": "servicenow",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

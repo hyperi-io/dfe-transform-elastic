@@ -1,0 +1,124 @@
+{
+  "expected": [
+    {
+      "event": {
+        "original": "Feb 22 16:45:20 gwfoa26 sshd[2738]: Failed password for root from 198.51.100.144 port 1786 ssh2",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:20 gwfoa26 sshd[2738]: Failed password for root from 198.51.100.144 port 1786 ssh2"
+    },
+    {
+      "event": {
+        "original": "Feb 22 16:45:20 gwfoa26 sshd[2738]: pam_succeed_if(sshd:auth): requirement \"uid >= 1000\" not met by user \"root\"",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:20 gwfoa26 sshd[2738]: pam_succeed_if(sshd:auth): requirement \"uid >= 1000\" not met by user \"root\""
+    },
+    {
+      "event": {
+        "original": "Feb 22 16:45:26 gwfoa26 sshd[2738]: fatal: Read from socket failed: Connection reset by peer [preauth]",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:26 gwfoa26 sshd[2738]: fatal: Read from socket failed: Connection reset by peer [preauth]"
+    },
+    {
+      "event": {
+        "original": "Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM 4 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM 4 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root"
+    },
+    {
+      "event": {
+        "original": "Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM service(sshd) ignoring max retries; 5 > 3",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM service(sshd) ignoring max retries; 5 > 3"
+    },
+    {
+      "event": {
+        "original": "Feb 22 16:45:32 gwfoa26 sshd[2742]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:32 gwfoa26 sshd[2742]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root"
+    },
+    {
+      "event": {
+        "original": "Feb 22 17:04:51 gwfoa26 sudo:     qhs : TTY=pts/0 ; PWD=/home/qhs ; USER=root ; COMMAND=/bin/cp /var/log/secure .",
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 17:04:51 gwfoa26 sudo:     qhs : TTY=pts/0 ; PWD=/home/qhs ; USER=root ; COMMAND=/bin/cp /var/log/secure ."
+    }
+  ],
+  "input": [
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:20 gwfoa26 sshd[2738]: Failed password for root from 198.51.100.144 port 1786 ssh2"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:20 gwfoa26 sshd[2738]: pam_succeed_if(sshd:auth): requirement \"uid >= 1000\" not met by user \"root\""
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:26 gwfoa26 sshd[2738]: fatal: Read from socket failed: Connection reset by peer [preauth]"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM 4 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:26 gwfoa26 sshd[2738]: PAM service(sshd) ignoring max retries; 5 > 3"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 16:45:32 gwfoa26 sshd[2742]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.144  user=root"
+    },
+    {
+      "event": {
+        "timezone": "+0000"
+      },
+      "input.type": "log",
+      "message": "Feb 22 17:04:51 gwfoa26 sudo:     qhs : TTY=pts/0 ; PWD=/home/qhs ; USER=root ; COMMAND=/bin/cp /var/log/secure ."
+    }
+  ],
+  "meta": {
+    "data_stream": "auth",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$",
+      "event.ingested": "^.*$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-auth-default",
+    "event_count": 7,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

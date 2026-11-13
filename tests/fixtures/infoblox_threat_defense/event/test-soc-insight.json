@@ -1,0 +1,484 @@
+{
+    "events": [
+        {
+            "@timestamp": "2053-06-09T06:11:37.830Z",
+            "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: QTYPEANY.<br>",
+            "host": {
+                "name": "co7-50-9-149"
+            },
+            "agent": {
+                "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+                "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+                "name": "co7-50-9-149",
+                "type": "filebeat",
+                "version": "9.1.0"
+            },
+            "event": {
+                "original": "<134>1 2053-06-08T20:04:23Z TDXHLB_GMOP dataconnector - SOC-INSIGHTS - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-InsightsNotification-Log|SOC Insights|1|cat=SYSTEM/indicator_detected cnt=4000 InfobloxEventOccurredTime=2633025863 InfobloxInsightId=bb818a35-3d71-4607-8af4-86c8ae619d11 msg=One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: QTYPEANY.<br> InfobloxEventsBlockedCount= InfobloxThreatConfidence=3 InfobloxInsightDescription= InfobloxInsightFeedSource= InfobloxEventsNotBlockedCount= InfobloxInsightStatus= InfobloxThreatClass=TI-BOTNET InfobloxThreatFamily=QTYPEANY InfobloxThreatLevel=2 InfobloxInsightThreatType=Botnet Discovery InfobloxInsightUserComment= status=RAISED",
+                "code": "BloxOne-InsightsNotification-Log",
+                "severity": 1
+            },
+            "input": {
+                "type": "tcp"
+            },
+            "observer": {
+                "vendor": "Infoblox",
+                "product": "Data Connector",
+                "version": "2.1.3"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "log": {
+                "source": {
+                    "address": "198.51.100.211:39126"
+                },
+                "syslog": {
+                    "facility": {
+                        "name": "local0",
+                        "code": 16
+                    },
+                    "severity": {
+                        "code": 6,
+                        "name": "Informational"
+                    },
+                    "appname": "dataconnector",
+                    "hostname": "TDXHLB_GMOP",
+                    "msgid": "SOC-INSIGHTS",
+                    "version": "1",
+                    "priority": 134
+                }
+            },
+            "cef": {
+                "severity": "1",
+                "extensions": {
+                    "deviceEventCategory": "SYSTEM/indicator_detected",
+                    "status": "RAISED",
+                    "InfobloxInsightFeedSource": "",
+                    "InfobloxEventsBlockedCount": "2000",
+                    "InfobloxThreatConfidence": "3",
+                    "InfobloxThreatLevel": "2",
+                    "InfobloxInsightStatus": "",
+                    "InfobloxThreatClass": "TI-BOTNET",
+                    "baseEventCount": 4000,
+                    "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: QTYPEANY.<br>",
+                    "InfobloxEventOccurredTime": "2633025863",
+                    "InfobloxInsightDescription": "Sample Description",
+                    "InfobloxInsightId": "bb818a35-3d71-4607-8af4-86c8ae619d11",
+                    "InfobloxEventsNotBlockedCount": "5",
+                    "InfobloxThreatFamily": "QTYPEANY",
+                    "InfobloxInsightThreatType": "Botnet Discovery",
+                    "InfobloxInsightUserComment": "Sample User comment"
+                },
+                "version": "0",
+                "device": {
+                    "vendor": "Infoblox",
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "BloxOne-InsightsNotification-Log"
+                },
+                "name": "SOC Insights"
+            }
+        },
+        {
+            "@timestamp": "2053-06-09T06:11:37.830Z",
+            "event": {
+                "original": "<134>1 2053-06-08T20:04:58Z TDXHLB_GMOP dataconnector - SOC-INSIGHTS - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-InsightsNotification-Log|SOC Insights|1|cat=SYSTEM/indicator_detected cnt=8935 InfobloxEventOccurredTime=2633025898 InfobloxInsightId=fa9ad1a9-99b9-4494-b91e-68f65c9be5a6 msg=One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br> InfobloxEventsBlockedCount= InfobloxThreatConfidence=3 InfobloxInsightDescription= InfobloxInsightFeedSource= InfobloxEventsNotBlockedCount= InfobloxInsightStatus= InfobloxThreatClass=TI-BOTNET InfobloxThreatFamily=NXDOMAIN InfobloxThreatLevel=1 InfobloxInsightThreatType=Botnet Discovery InfobloxInsightUserComment= status=RAISED",
+                "code": "BloxOne-InsightsNotification-Log",
+                "severity": 1
+            },
+            "input": {
+                "type": "tcp"
+            },
+            "cef": {
+                "name": "SOC Insights",
+                "severity": "1",
+                "extensions": {
+                    "InfobloxEventOccurredTime": "2633025898",
+                    "InfobloxEventsNotBlockedCount": "",
+                    "InfobloxThreatLevel": "1",
+                    "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+                    "InfobloxInsightDescription": "",
+                    "InfobloxInsightFeedSource": "Insight Detection Framework",
+                    "InfobloxInsightStatus": "RAISED",
+                    "baseEventCount": 8935,
+                    "status": "",
+                    "InfobloxThreatFamily": "NXDOMAIN",
+                    "InfobloxInsightUserComment": "",
+                    "InfobloxThreatClass": "TI-BOTNET",
+                    "deviceEventCategory": "SYSTEM/indicator_detected",
+                    "InfobloxEventsBlockedCount": "",
+                    "InfobloxInsightId": "fa9ad1a9-99b9-4494-b91e-68f65c9be5a6",
+                    "InfobloxThreatConfidence": "3",
+                    "InfobloxInsightThreatType": "Botnet Discovery"
+                },
+                "version": "0",
+                "device": {
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "BloxOne-InsightsNotification-Log",
+                    "vendor": "Infoblox"
+                }
+            },
+            "observer": {
+                "vendor": "Infoblox",
+                "product": "Data Connector",
+                "version": "2.1.3"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "log": {
+                "source": {
+                    "address": "198.51.100.211:39126"
+                },
+                "syslog": {
+                    "facility": {
+                        "name": "local0",
+                        "code": 16
+                    },
+                    "severity": {
+                        "code": 6,
+                        "name": "Informational"
+                    },
+                    "appname": "dataconnector",
+                    "hostname": "TDXHLB_GMOP",
+                    "msgid": "SOC-INSIGHTS",
+                    "version": "1",
+                    "priority": 134
+                }
+            },
+            "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+            "host": {
+                "name": "co7-50-9-149"
+            },
+            "agent": {
+                "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+                "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+                "name": "co7-50-9-149",
+                "type": "filebeat",
+                "version": "9.1.0"
+            }
+        },
+        {
+            "@timestamp": "2053-06-06T12:04:58.965Z",
+            "observer": {
+                "vendor": "Infoblox",
+                "product": "Data Connector",
+                "version": "2.1.3"
+            },
+            "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: QTYPEANY.<br>",
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "host": {
+                "name": "co7-50-9-149"
+            },
+            "input": {
+                "type": "tcp"
+            },
+            "agent": {
+                "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+                "name": "co7-50-9-149",
+                "type": "filebeat",
+                "version": "9.1.0",
+                "ephemeral_id": "69eb0501-d894-4f1f-acf2-a6b8f8d07c41"
+            },
+            "log": {
+                "source": {
+                    "address": "198.51.100.211:39126"
+                },
+                "syslog": {
+                    "facility": {
+                        "name": "local0",
+                        "code": 16
+                    },
+                    "severity": {
+                        "code": 6,
+                        "name": "Informational"
+                    },
+                    "appname": "dataconnector",
+                    "hostname": "TDXHLB_GMOP",
+                    "msgid": "SOC-INSIGHTS",
+                    "version": "1",
+                    "priority": 134
+                }
+            },
+            "event": {
+                "original": "<134>1 2053-06-06T12:04:58Z TDXHLB_GMOP dataconnector - SOC-INSIGHTS - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-InsightsNotification-Log|SOC Insights|1|cat=SYSTEM/indicator_detected cnt=4000 InfobloxEventOccurredTime=2632824298 InfobloxInsightId=bb818a35-3d71-4607-8af4-86c8ae619d11 msg=One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: QTYPEANY.<br> InfobloxEventsBlockedCount= InfobloxThreatConfidence=3 InfobloxInsightDescription= InfobloxInsightFeedSource= InfobloxEventsNotBlockedCount= InfobloxInsightStatus= InfobloxThreatClass=TI-BOTNET InfobloxThreatFamily=QTYPEANY InfobloxThreatLevel=2 InfobloxInsightThreatType=Botnet Discovery InfobloxInsightUserComment= status=RAISED",
+                "code": "BloxOne-InsightsNotification-Log",
+                "severity": 1
+            },
+            "cef": {
+                "version": "0",
+                "device": {
+                    "vendor": "Infoblox",
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "BloxOne-InsightsNotification-Log"
+                },
+                "name": "SOC Insights",
+                "severity": "1",
+                "extensions": {
+                    "InfobloxInsightThreatType": "Botnet Discovery",
+                    "InfobloxEventsBlockedCount": "",
+                    "InfobloxInsightFeedSource": "",
+                    "baseEventCount": 4000,
+                    "InfobloxInsightDescription": "",
+                    "InfobloxEventsNotBlockedCount": "",
+                    "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: QTYPEANY.<br>",
+                    "InfobloxThreatFamily": "QTYPEANY",
+                    "InfobloxThreatClass": "TI-BOTNET",
+                    "InfobloxInsightStatus": "",
+                    "InfobloxThreatLevel": "2",
+                    "deviceEventCategory": "SYSTEM/indicator_detected",
+                    "InfobloxInsightId": "bb818a35-3d71-4607-8af4-86c8ae619d11",
+                    "InfobloxThreatConfidence": "3",
+                    "InfobloxEventOccurredTime": "2632824298",
+                    "InfobloxInsightUserComment": "",
+                    "status": "RAISED"
+                }
+            }
+        },
+        {
+            "@timestamp": "2053-06-09T08:04:41.201Z",
+            "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+            "host": {
+                "name": "co7-50-9-149"
+            },
+            "event": {
+                "original": "<134>1 2053-06-09T08:04:40Z TDXHLB_GMOP dataconnector - SOC-INSIGHTS - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-InsightsNotification-Log|SOC Insights|1|cat=SYSTEM/indicator_detected cnt=9026 InfobloxEventOccurredTime=2633069080 InfobloxInsightId=fa9ad1a9-99b9-4494-b91e-68f65c9be5a6 msg=One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br> InfobloxEventsBlockedCount= InfobloxThreatConfidence=3 InfobloxInsightDescription= InfobloxInsightFeedSource= InfobloxEventsNotBlockedCount= InfobloxInsightStatus= InfobloxThreatClass=TI-BOTNET InfobloxThreatFamily=NXDOMAIN InfobloxThreatLevel=1 InfobloxInsightThreatType=Botnet Discovery InfobloxInsightUserComment= status=RAISED",
+                "code": "BloxOne-InsightsNotification-Log",
+                "severity": 1
+            },
+            "input": {
+                "type": "tcp"
+            },
+            "cef": {
+                "extensions": {
+                    "InfobloxThreatLevel": "1",
+                    "InfobloxInsightThreatType": "Botnet Discovery",
+                    "InfobloxInsightUserComment": "",
+                    "InfobloxInsightDescription": "",
+                    "InfobloxEventsNotBlockedCount": "",
+                    "status": "RAISED",
+                    "InfobloxInsightId": "fa9ad1a9-99b9-4494-b91e-68f65c9be5a6",
+                    "InfobloxThreatClass": "TI-BOTNET",
+                    "InfobloxThreatFamily": "NXDOMAIN",
+                    "InfobloxEventsBlockedCount": "",
+                    "InfobloxInsightFeedSource": "",
+                    "deviceEventCategory": "SYSTEM/indicator_detected",
+                    "baseEventCount": 9026,
+                    "message": "One or more domains have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+                    "InfobloxThreatConfidence": "3",
+                    "InfobloxEventOccurredTime": "2633069080",
+                    "InfobloxInsightStatus": ""
+                },
+                "version": "0",
+                "device": {
+                    "vendor": "Infoblox",
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "BloxOne-InsightsNotification-Log"
+                },
+                "name": "SOC Insights",
+                "severity": "1"
+            },
+            "agent": {
+                "type": "filebeat",
+                "version": "9.1.0",
+                "ephemeral_id": "335e3b63-fe5b-4f54-9b20-0d9e41722c0c",
+                "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+                "name": "co7-50-9-149"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "log": {
+                "source": {
+                    "address": "198.51.100.211:39126"
+                },
+                "syslog": {
+                    "facility": {
+                        "name": "local0",
+                        "code": 16
+                    },
+                    "severity": {
+                        "code": 6,
+                        "name": "Informational"
+                    },
+                    "appname": "dataconnector",
+                    "hostname": "TDXHLB_GMOP",
+                    "msgid": "SOC-INSIGHTS",
+                    "version": "1",
+                    "priority": 134
+                }
+            },
+            "observer": {
+                "version": "2.1.3",
+                "vendor": "Infoblox",
+                "product": "Data Connector"
+            }
+        },
+        {
+            "@timestamp": "2053-06-09T06:11:41.441Z",
+            "log": {
+                "source": {
+                    "address": "198.51.100.211:39126"
+                },
+                "syslog": {
+                    "facility": {
+                        "name": "local0",
+                        "code": 16
+                    },
+                    "severity": {
+                        "code": 6,
+                        "name": "Informational"
+                    },
+                    "appname": "dataconnector",
+                    "hostname": "TDXHLB_GMOP",
+                    "msgid": "SOC-INSIGHTS",
+                    "version": "1",
+                    "priority": 134
+                }
+            },
+            "cef": {
+                "version": "0",
+                "device": {
+                    "vendor": "Infoblox",
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "BloxOne-InsightsNotification-Log"
+                },
+                "name": "SOC Insights",
+                "severity": "1",
+                "extensions": {
+                    "message": "One or more protected assets have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+                    "InfobloxThreatConfidence": "3",
+                    "InfobloxThreatLevel": "1",
+                    "deviceEventCategory": "SYSTEM/asset_infected",
+                    "baseEventCount": 8505,
+                    "InfobloxInsightUserComment": "",
+                    "status": "RAISED",
+                    "InfobloxInsightFeedSource": "",
+                    "InfobloxInsightThreatType": "Botnet Discovery",
+                    "InfobloxEventsNotBlockedCount": "",
+                    "InfobloxInsightStatus": "",
+                    "InfobloxEventsBlockedCount": "",
+                    "InfobloxEventOccurredTime": "2633011483",
+                    "InfobloxInsightId": "fa9ad1a9-99b9-4494-b91e-68f65c9be5a6",
+                    "InfobloxThreatClass": "TI-BOTNET",
+                    "InfobloxInsightDescription": "",
+                    "InfobloxThreatFamily": "NXDOMAIN"
+                }
+            },
+            "message": "One or more protected assets have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+            "event": {
+                "original": "<134>1 2053-06-08T16:04:43Z TDXHLB_GMOP dataconnector - SOC-INSIGHTS - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-InsightsNotification-Log|SOC Insights|1|cat=SYSTEM/asset_infected cnt=8505 InfobloxEventOccurredTime=2633011483 InfobloxInsightId=fa9ad1a9-99b9-4494-b91e-68f65c9be5a6 msg=One or more protected assets have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br> InfobloxEventsBlockedCount= InfobloxThreatConfidence=3 InfobloxInsightDescription= InfobloxInsightFeedSource= InfobloxEventsNotBlockedCount= InfobloxInsightStatus= InfobloxThreatClass=TI-BOTNET InfobloxThreatFamily=NXDOMAIN InfobloxThreatLevel=1 InfobloxInsightThreatType=Botnet Discovery InfobloxInsightUserComment= status=RAISED",
+                "code": "BloxOne-InsightsNotification-Log",
+                "severity": 1
+            },
+            "input": {
+                "type": "tcp"
+            },
+            "observer": {
+                "product": "Data Connector",
+                "version": "2.1.3",
+                "vendor": "Infoblox"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "host": {
+                "name": "co7-50-9-149"
+            },
+            "agent": {
+                "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+                "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+                "name": "co7-50-9-149",
+                "type": "filebeat",
+                "version": "9.1.0"
+            }
+        },
+        {
+            "@timestamp": "2053-06-09T06:11:41.441Z",
+            "log": {
+                "source": {
+                    "address": "198.51.100.211:39126"
+                },
+                "syslog": {
+                    "facility": {
+                        "name": "local0",
+                        "code": 16
+                    },
+                    "severity": {
+                        "code": 6,
+                        "name": "Informational"
+                    },
+                    "appname": "dataconnector",
+                    "hostname": "TDXHLB_GMOP",
+                    "msgid": "SOC-INSIGHTS",
+                    "version": "1",
+                    "priority": 134
+                }
+            },
+            "cef": {
+                "version": "0",
+                "device": {
+                    "vendor": "Infoblox",
+                    "product": "Data Connector",
+                    "version": "2.1.3",
+                    "event_class_id": "BloxOne-InsightsNotification-Log"
+                },
+                "name": "SOC Insights",
+                "severity": "1",
+                "extensions": {
+                    "message": "One or more protected assets have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+                    "InfobloxThreatConfidence": "3",
+                    "InfobloxThreatLevel": "1",
+                    "deviceEventCategory": "SYSTEM/asset_infected",
+                    "baseEventCount": 8505,
+                    "InfobloxInsightUserComment": "",
+                    "status": "RAISED",
+                    "InfobloxInsightFeedSource": "",
+                    "InfobloxInsightThreatType": "Botnet Discovery",
+                    "InfobloxEventsNotBlockedCount": "",
+                    "InfobloxInsightStatus": "",
+                    "InfobloxEventsBlockedCount": "",
+                    "InfobloxEventOccurredTime": "2633011483",
+                    "InfobloxInsightId": "fa9ad1a9-99b9-4494-b91e-68f65c9be5a6",
+                    "InfobloxThreatClass": "TI-BOTNET",
+                    "InfobloxInsightDescription": "",
+                    "InfobloxThreatFamily": "NXDOMAIN"
+                }
+            },
+            "message": "One or more protected assets have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br>",
+            "event": {
+                "original": "<134>1 2053-06-08T16:04:43Z TDXHLB_GMOP dataconnector - SOC-INSIGHTS - CEF:0|Infoblox|Data Connector|2.1.3|BloxOne-InsightsNotification-Log|SOC Insights|1|cat=SYSTEM/asset_infected cnt=8505 InfobloxEventOccurredTime=2633011483 InfobloxInsightId=fa9ad1a9-99b9-4494-b91e-68f65c9be5a6 msg=One or more protected assets have been added to this Insight Botnet Discovery.<br> - Detection Class: TI-BOTNET,<br> - Detection Family: NXDOMAIN.<br> InfobloxEventsBlockedCount= InfobloxThreatConfidence=3 InfobloxInsightDescription= InfobloxInsightFeedSource= InfobloxEventsNotBlockedCount= InfobloxInsightStatus= InfobloxThreatClass=TI-BOTNET InfobloxThreatFamily=NXDOMAIN InfobloxThreatLevel=1 InfobloxInsightThreatType=Botnet Discovery InfobloxInsightUserComment= status=RAISED",
+                "code": "BloxOne-InsightsNotification-Log",
+                "severity": 1
+            },
+            "input": {
+                "type": "tcp"
+            },
+            "observer": {
+                "product": "Data Connector",
+                "version": "2.1.3",
+                "vendor": "Infoblox"
+            },
+            "ecs": {
+                "version": "8.0.0"
+            },
+            "host": {
+                "name": "co7-50-9-149"
+            },
+            "agent": {
+                "ephemeral_id": "bccb438d-ae15-4da5-a5cf-f916fbf78b64",
+                "id": "a1b2e8cb-c4ba-42b5-ba70-c6b5c44cabd6",
+                "name": "co7-50-9-149",
+                "type": "filebeat",
+                "version": "9.1.0"
+            }
+        }
+    ]
+}

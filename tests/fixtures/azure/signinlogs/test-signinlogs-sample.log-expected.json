@@ -1,0 +1,336 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-01-24T05:10:08.681Z",
+      "azure": {
+        "correlation_id": "8145a43c-16ae-4b17-93f6-6e624de5fec8",
+        "resource": {
+          "id": "/tenants/1cac74d2-1012-4a3a-98b8-ff111e0fe151/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "signinlogs": {
+          "caller_ip_address": "203.0.113.61",
+          "category": "SignInLogs",
+          "identity": "elastic testing",
+          "operation_name": "Sign-in activity",
+          "operation_version": "1.0",
+          "properties": {
+            "app_display_name": "Azure Portal",
+            "app_id": "f28f5602-6fe0-43d7-b91a-369f76defa6c",
+            "authentication_details": [
+              {
+                "authentication_method": "Previously satisfied",
+                "authentication_step_date_time": "2050-01-24T05:10:08.6816663+00:00",
+                "authentication_step_requirement": "Primary authentication",
+                "authentication_step_result_detail": "First factor requirement satisfied by claim in the token",
+                "request_sequence": 0,
+                "status_sequence": 0,
+                "succeeded": true
+              }
+            ],
+            "authentication_processing_details": {
+              "Is CAE Token": "False",
+              "Legacy TLS (TLS 1.0, 1.1, 3DES)": "False",
+              "Login Hint Present": "True"
+            },
+            "authentication_protocol": "none",
+            "authentication_requirement": "singleFactorAuthentication",
+            "autonomous_system_number": 55836,
+            "client_app_used": "Browser",
+            "conditional_access_status": "notApplied",
+            "correlation_id": "8145a43c-16ae-4b17-93f6-6e624de5fec8",
+            "created_at": "2050-01-24T05:10:08.6816663+00:00",
+            "cross_tenant_access_type": "none",
+            "device_detail": {
+              "browser": "Edge 97.0.1072",
+              "operating_system": "Windows 10"
+            },
+            "flagged_for_review": false,
+            "home_tenant_id": "1cac74d2-1012-4a3a-98b8-ff111e0fe151",
+            "id": "511d30a7-cfcb-472c-9462-e2fc395f4d39",
+            "incoming_token_type": "none",
+            "is_interactive": true,
+            "is_tenant_restricted": false,
+            "original_request_id": "511d30a7-cfcb-472c-9462-e2fc395f4d39",
+            "processing_time_ms": 5662,
+            "resource_display_name": "Windows Azure Service Management API",
+            "resource_id": "217d8465-cb86-4dc1-bf14-cfc5c0b08757",
+            "resource_tenant_id": "1cac74d2-1012-4a3a-98b8-ff111e0fe151",
+            "risk_detail": "none",
+            "risk_level_aggregated": "none",
+            "risk_level_during_signin": "none",
+            "risk_state": "none",
+            "status": {
+              "error_code": 0
+            },
+            "token_issuer_type": "AzureAD",
+            "unique_token_identifier": "OTMzZjIwYzAtZWZkZi00NzdmLTk1ODYtZTVjYzU2NmQyZTAw",
+            "user_display_name": "elastic testing",
+            "user_id": "0fa65a30-0040-460b-b127-c1ceb520e481",
+            "user_principal_name": "ptymbnnakfpmue79931849@outlook.com",
+            "user_type": "Member"
+          },
+          "result_signature": "None",
+          "result_type": "0"
+        },
+        "tenant_id": "1cac74d2-1012-4a3a-98b8-ff111e0fe151"
+      },
+      "client": {
+        "ip": "203.0.113.61"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Sign-in activity",
+        "category": [
+          "authentication"
+        ],
+        "duration": 0,
+        "id": "511d30a7-cfcb-472c-9462-e2fc395f4d39",
+        "kind": "event",
+        "original": "{ \"time\": \"2050-01-24T05:10:08.6816663Z\", \"resourceId\": \"/tenants/1cac74d2-1012-4a3a-98b8-ff111e0fe151/providers/Microsoft.aadiam\", \"operationName\": \"Sign-in activity\", \"operationVersion\": \"1.0\", \"category\": \"SignInLogs\", \"tenantId\": \"1cac74d2-1012-4a3a-98b8-ff111e0fe151\", \"resultType\": \"0\", \"resultSignature\": \"None\", \"durationMs\": 0, \"callerIpAddress\": \"203.0.113.61\", \"correlationId\": \"8145a43c-16ae-4b17-93f6-6e624de5fec8\", \"identity\": \"elastic testing\", \"Level\": 4, \"location\": \"IN\", \"properties\": {\"id\":\"511d30a7-cfcb-472c-9462-e2fc395f4d39\",\"createdDateTime\":\"2050-01-24T05:10:08.6816663+00:00\",\"userDisplayName\":\"elastic testing\",\"userPrincipalName\":\"ptymbnnakfpmue79931849@outlook.com\",\"userId\":\"0fa65a30-0040-460b-b127-c1ceb520e481\",\"appId\":\"f28f5602-6fe0-43d7-b91a-369f76defa6c\",\"appDisplayName\":\"Azure Portal\",\"ipAddress\":\"203.0.113.61\",\"status\":{\"errorCode\":0},\"clientAppUsed\":\"Browser\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69\",\"deviceDetail\":{\"deviceId\":\"\",\"operatingSystem\":\"Windows 10\",\"browser\":\"Edge 97.0.1072\"},\"location\":{\"city\":\"Nizampet\",\"state\":\"Telangana\",\"countryOrRegion\":\"IN\",\"geoCoordinates\":{\"latitude\":17.5164794921875,\"longitude\":78.376632690429688}},\"mfaDetail\":{},\"correlationId\":\"8145a43c-16ae-4b17-93f6-6e624de5fec8\",\"conditionalAccessStatus\":\"notApplied\",\"appliedConditionalAccessPolicies\":[],\"originalRequestId\":\"511d30a7-cfcb-472c-9462-e2fc395f4d39\",\"isInteractive\":true,\"tokenIssuerName\":\"\",\"tokenIssuerType\":\"AzureAD\",\"authenticationProcessingDetails\":[{\"key\":\"Login Hint Present\",\"value\":\"True\"},{\"key\":\"Legacy TLS (TLS 1.0, 1.1, 3DES)\",\"value\":\"False\"},{\"key\":\"Oauth Scope Info\",\"value\":\"\"},{\"key\":\"Is CAE Token\",\"value\":\"False\"}],\"networkLocationDetails\":[],\"processingTimeInMilliseconds\":5662,\"riskDetail\":\"none\",\"riskLevelAggregated\":\"none\",\"riskLevelDuringSignIn\":\"none\",\"riskState\":\"none\",\"riskEventTypes\":[],\"riskEventTypes_v2\":[],\"resourceDisplayName\":\"Windows Azure Service Management API\",\"resourceId\":\"217d8465-cb86-4dc1-bf14-cfc5c0b08757\",\"resourceTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"homeTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"authenticationDetails\":[{\"authenticationStepDateTime\":\"2050-01-24T05:10:08.6816663+00:00\",\"authenticationMethod\":\"Previously satisfied\",\"succeeded\":true,\"authenticationStepResultDetail\":\"First factor requirement satisfied by claim in the token\",\"authenticationStepRequirement\":\"Primary authentication\",\"StatusSequence\":0,\"RequestSequence\":0}],\"authenticationRequirementPolicies\":[],\"authenticationRequirement\":\"singleFactorAuthentication\",\"servicePrincipalId\":\"\",\"userType\":\"Member\",\"flaggedForReview\":false,\"isTenantRestricted\":false,\"autonomousSystemNumber\":55836,\"crossTenantAccessType\":\"none\",\"privateLinkDetails\":{},\"ssoExtensionVersion\":\"\",\"uniqueTokenIdentifier\":\"OTMzZjIwYzAtZWZkZi00NzdmLTk1ODYtZTVjYzU2NmQyZTAw\",\"incomingTokenType\":\"none\",\"authenticationProtocol\":\"none\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "geo": {
+        "city_name": "Nizampet",
+        "country_iso_code": "IN",
+        "location": {
+          "lat": 17.5164794921875,
+          "lon": 78.37663269042969
+        },
+        "region_name": "Telangana"
+      },
+      "log": {
+        "level": "4"
+      },
+      "related": {
+        "entity": [
+          "f28f5602-6fe0-43d7-b91a-369f76defa6c",
+          "217d8465-cb86-4dc1-bf14-cfc5c0b08757",
+          "0fa65a30-0040-460b-b127-c1ceb520e481"
+        ],
+        "ip": [
+          "203.0.113.61"
+        ],
+        "user": [
+          "0fa65a30-0040-460b-b127-c1ceb520e481",
+          "ptymbnnakfpmue79931849@outlook.com",
+          "elastic testing"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.61",
+        "ip": "203.0.113.61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ptymbnnakfpmue79931849@outlook.com",
+        "full_name": "elastic testing",
+        "id": "0fa65a30-0040-460b-b127-c1ceb520e481",
+        "name": "ptymbnnakfpmue79931849@outlook.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "97.0.1072.69"
+      }
+    },
+    {
+      "@timestamp": "2050-01-24T05:10:12.244Z",
+      "azure": {
+        "correlation_id": "8145a43c-16ae-4b17-93f6-6e624de5fec8",
+        "resource": {
+          "id": "/tenants/1cac74d2-1012-4a3a-98b8-ff111e0fe151/providers/Microsoft.aadiam",
+          "provider": "Microsoft.aadiam"
+        },
+        "signinlogs": {
+          "caller_ip_address": "203.0.113.61",
+          "category": "SignInLogs",
+          "identity": "elastic testing",
+          "operation_name": "Sign-in activity",
+          "operation_version": "1.0",
+          "properties": {
+            "app_display_name": "Azure Portal",
+            "app_id": "f28f5602-6fe0-43d7-b91a-369f76defa6c",
+            "authentication_details": [
+              {
+                "authentication_method": "Previously satisfied",
+                "authentication_step_date_time": "2050-01-24T05:10:12.2444226+00:00",
+                "authentication_step_requirement": "Primary authentication",
+                "authentication_step_result_detail": "First factor requirement satisfied by claim in the token",
+                "request_sequence": 0,
+                "status_sequence": 0,
+                "succeeded": true
+              }
+            ],
+            "authentication_processing_details": {
+              "Is CAE Token": "False",
+              "Legacy TLS (TLS 1.0, 1.1, 3DES)": "False",
+              "Login Hint Present": "True"
+            },
+            "authentication_protocol": "none",
+            "authentication_requirement": "singleFactorAuthentication",
+            "autonomous_system_number": 55836,
+            "client_app_used": "Browser",
+            "conditional_access_status": "notApplied",
+            "correlation_id": "8145a43c-16ae-4b17-93f6-6e624de5fec8",
+            "created_at": "2050-01-24T05:10:12.2444226+00:00",
+            "cross_tenant_access_type": "none",
+            "device_detail": {
+              "browser": "Edge 97.0.1072",
+              "operating_system": "Windows 10"
+            },
+            "flagged_for_review": false,
+            "home_tenant_id": "1cac74d2-1012-4a3a-98b8-ff111e0fe151",
+            "id": "909f22b7-befc-449f-9817-d6ae261b2f88",
+            "incoming_token_type": "none",
+            "is_interactive": true,
+            "is_tenant_restricted": false,
+            "original_request_id": "909f22b7-befc-449f-9817-d6ae261b2f88",
+            "processing_time_ms": 1598,
+            "resource_display_name": "Windows Azure Service Management API",
+            "resource_id": "217d8465-cb86-4dc1-bf14-cfc5c0b08757",
+            "resource_tenant_id": "1cac74d2-1012-4a3a-98b8-ff111e0fe151",
+            "risk_detail": "none",
+            "risk_level_aggregated": "none",
+            "risk_level_during_signin": "none",
+            "risk_state": "none",
+            "status": {
+              "error_code": 0
+            },
+            "token_issuer_type": "AzureAD",
+            "unique_token_identifier": "OTMzZjIwYzAtZWZkZi00NzdmLTk1ODYtZTVjYzY3NmYyZTAw",
+            "user_display_name": "elastic testing",
+            "user_id": "0fa65a30-0040-460b-b127-c1ceb520e481",
+            "user_principal_name": "ptymbnnakfpmue79931849@outlook.com",
+            "user_type": "Member"
+          },
+          "result_signature": "None",
+          "result_type": "0"
+        },
+        "tenant_id": "1cac74d2-1012-4a3a-98b8-ff111e0fe151"
+      },
+      "client": {
+        "ip": "203.0.113.61"
+      },
+      "cloud": {
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Sign-in activity",
+        "category": [
+          "authentication"
+        ],
+        "duration": 0,
+        "id": "909f22b7-befc-449f-9817-d6ae261b2f88",
+        "kind": "event",
+        "original": "{ \"time\": \"2050-01-24T05:10:12.2444226Z\", \"resourceId\": \"/tenants/1cac74d2-1012-4a3a-98b8-ff111e0fe151/providers/Microsoft.aadiam\", \"operationName\": \"Sign-in activity\", \"operationVersion\": \"1.0\", \"category\": \"SignInLogs\", \"tenantId\": \"1cac74d2-1012-4a3a-98b8-ff111e0fe151\", \"resultType\": \"0\", \"resultSignature\": \"None\", \"durationMs\": 0, \"callerIpAddress\": \"203.0.113.61\", \"correlationId\": \"8145a43c-16ae-4b17-93f6-6e624de5fec8\", \"identity\": \"elastic testing\", \"Level\": 4, \"location\": \"IN\", \"properties\": {\"id\":\"909f22b7-befc-449f-9817-d6ae261b2f88\",\"createdDateTime\":\"2050-01-24T05:10:12.2444226+00:00\",\"userDisplayName\":\"elastic testing\",\"userPrincipalName\":\"ptymbnnakfpmue79931849@outlook.com\",\"userId\":\"0fa65a30-0040-460b-b127-c1ceb520e481\",\"appId\":\"f28f5602-6fe0-43d7-b91a-369f76defa6c\",\"appDisplayName\":\"Azure Portal\",\"ipAddress\":\"203.0.113.61\",\"status\":{\"errorCode\":0},\"clientAppUsed\":\"Browser\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69\",\"deviceDetail\":{\"deviceId\":\"\",\"operatingSystem\":\"Windows 10\",\"browser\":\"Edge 97.0.1072\"},\"location\":{\"city\":\"Nizampet\",\"state\":\"Telangana\",\"countryOrRegion\":\"IN\",\"geoCoordinates\":{\"latitude\":17.5164794921875,\"longitude\":78.376632690429688}},\"mfaDetail\":{},\"correlationId\":\"8145a43c-16ae-4b17-93f6-6e624de5fec8\",\"conditionalAccessStatus\":\"notApplied\",\"appliedConditionalAccessPolicies\":[],\"originalRequestId\":\"909f22b7-befc-449f-9817-d6ae261b2f88\",\"isInteractive\":true,\"tokenIssuerName\":\"\",\"tokenIssuerType\":\"AzureAD\",\"authenticationProcessingDetails\":[{\"key\":\"Login Hint Present\",\"value\":\"True\"},{\"key\":\"Legacy TLS (TLS 1.0, 1.1, 3DES)\",\"value\":\"False\"},{\"key\":\"Oauth Scope Info\",\"value\":\"\"},{\"key\":\"Is CAE Token\",\"value\":\"False\"}],\"networkLocationDetails\":[],\"processingTimeInMilliseconds\":1598,\"riskDetail\":\"none\",\"riskLevelAggregated\":\"none\",\"riskLevelDuringSignIn\":\"none\",\"riskState\":\"none\",\"riskEventTypes\":[],\"riskEventTypes_v2\":[],\"resourceDisplayName\":\"Windows Azure Service Management API\",\"resourceId\":\"217d8465-cb86-4dc1-bf14-cfc5c0b08757\",\"resourceTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"homeTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"authenticationDetails\":[{\"authenticationStepDateTime\":\"2050-01-24T05:10:12.2444226+00:00\",\"authenticationMethod\":\"Previously satisfied\",\"succeeded\":true,\"authenticationStepResultDetail\":\"First factor requirement satisfied by claim in the token\",\"authenticationStepRequirement\":\"Primary authentication\",\"StatusSequence\":0,\"RequestSequence\":0}],\"authenticationRequirementPolicies\":[],\"authenticationRequirement\":\"singleFactorAuthentication\",\"servicePrincipalId\":\"\",\"userType\":\"Member\",\"flaggedForReview\":false,\"isTenantRestricted\":false,\"autonomousSystemNumber\":55836,\"crossTenantAccessType\":\"none\",\"privateLinkDetails\":{},\"ssoExtensionVersion\":\"\",\"uniqueTokenIdentifier\":\"OTMzZjIwYzAtZWZkZi00NzdmLTk1ODYtZTVjYzY3NmYyZTAw\",\"incomingTokenType\":\"none\",\"authenticationProtocol\":\"none\"}}",
+        "outcome": "success",
+        "type": [
+          "info"
+        ]
+      },
+      "geo": {
+        "city_name": "Nizampet",
+        "country_iso_code": "IN",
+        "location": {
+          "lat": 17.5164794921875,
+          "lon": 78.37663269042969
+        },
+        "region_name": "Telangana"
+      },
+      "log": {
+        "level": "4"
+      },
+      "related": {
+        "entity": [
+          "f28f5602-6fe0-43d7-b91a-369f76defa6c",
+          "217d8465-cb86-4dc1-bf14-cfc5c0b08757",
+          "0fa65a30-0040-460b-b127-c1ceb520e481"
+        ],
+        "ip": [
+          "203.0.113.61"
+        ],
+        "user": [
+          "0fa65a30-0040-460b-b127-c1ceb520e481",
+          "ptymbnnakfpmue79931849@outlook.com",
+          "elastic testing"
+        ]
+      },
+      "source": {
+        "address": "203.0.113.61",
+        "ip": "203.0.113.61"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "email": "ptymbnnakfpmue79931849@outlook.com",
+        "full_name": "elastic testing",
+        "id": "0fa65a30-0040-460b-b127-c1ceb520e481",
+        "name": "ptymbnnakfpmue79931849@outlook.com"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Edge",
+        "original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69",
+        "os": {
+          "full": "Windows 10",
+          "name": "Windows",
+          "version": "10"
+        },
+        "version": "97.0.1072.69"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{ \"time\": \"2050-01-24T05:10:08.6816663Z\", \"resourceId\": \"/tenants/1cac74d2-1012-4a3a-98b8-ff111e0fe151/providers/Microsoft.aadiam\", \"operationName\": \"Sign-in activity\", \"operationVersion\": \"1.0\", \"category\": \"SignInLogs\", \"tenantId\": \"1cac74d2-1012-4a3a-98b8-ff111e0fe151\", \"resultType\": \"0\", \"resultSignature\": \"None\", \"durationMs\": 0, \"callerIpAddress\": \"203.0.113.61\", \"correlationId\": \"8145a43c-16ae-4b17-93f6-6e624de5fec8\", \"identity\": \"elastic testing\", \"Level\": 4, \"location\": \"IN\", \"properties\": {\"id\":\"511d30a7-cfcb-472c-9462-e2fc395f4d39\",\"createdDateTime\":\"2050-01-24T05:10:08.6816663+00:00\",\"userDisplayName\":\"elastic testing\",\"userPrincipalName\":\"ptymbnnakfpmue79931849@outlook.com\",\"userId\":\"0fa65a30-0040-460b-b127-c1ceb520e481\",\"appId\":\"f28f5602-6fe0-43d7-b91a-369f76defa6c\",\"appDisplayName\":\"Azure Portal\",\"ipAddress\":\"203.0.113.61\",\"status\":{\"errorCode\":0},\"clientAppUsed\":\"Browser\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69\",\"deviceDetail\":{\"deviceId\":\"\",\"operatingSystem\":\"Windows 10\",\"browser\":\"Edge 97.0.1072\"},\"location\":{\"city\":\"Nizampet\",\"state\":\"Telangana\",\"countryOrRegion\":\"IN\",\"geoCoordinates\":{\"latitude\":17.5164794921875,\"longitude\":78.376632690429688}},\"mfaDetail\":{},\"correlationId\":\"8145a43c-16ae-4b17-93f6-6e624de5fec8\",\"conditionalAccessStatus\":\"notApplied\",\"appliedConditionalAccessPolicies\":[],\"originalRequestId\":\"511d30a7-cfcb-472c-9462-e2fc395f4d39\",\"isInteractive\":true,\"tokenIssuerName\":\"\",\"tokenIssuerType\":\"AzureAD\",\"authenticationProcessingDetails\":[{\"key\":\"Login Hint Present\",\"value\":\"True\"},{\"key\":\"Legacy TLS (TLS 1.0, 1.1, 3DES)\",\"value\":\"False\"},{\"key\":\"Oauth Scope Info\",\"value\":\"\"},{\"key\":\"Is CAE Token\",\"value\":\"False\"}],\"networkLocationDetails\":[],\"processingTimeInMilliseconds\":5662,\"riskDetail\":\"none\",\"riskLevelAggregated\":\"none\",\"riskLevelDuringSignIn\":\"none\",\"riskState\":\"none\",\"riskEventTypes\":[],\"riskEventTypes_v2\":[],\"resourceDisplayName\":\"Windows Azure Service Management API\",\"resourceId\":\"217d8465-cb86-4dc1-bf14-cfc5c0b08757\",\"resourceTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"homeTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"authenticationDetails\":[{\"authenticationStepDateTime\":\"2050-01-24T05:10:08.6816663+00:00\",\"authenticationMethod\":\"Previously satisfied\",\"succeeded\":true,\"authenticationStepResultDetail\":\"First factor requirement satisfied by claim in the token\",\"authenticationStepRequirement\":\"Primary authentication\",\"StatusSequence\":0,\"RequestSequence\":0}],\"authenticationRequirementPolicies\":[],\"authenticationRequirement\":\"singleFactorAuthentication\",\"servicePrincipalId\":\"\",\"userType\":\"Member\",\"flaggedForReview\":false,\"isTenantRestricted\":false,\"autonomousSystemNumber\":55836,\"crossTenantAccessType\":\"none\",\"privateLinkDetails\":{},\"ssoExtensionVersion\":\"\",\"uniqueTokenIdentifier\":\"OTMzZjIwYzAtZWZkZi00NzdmLTk1ODYtZTVjYzU2NmQyZTAw\",\"incomingTokenType\":\"none\",\"authenticationProtocol\":\"none\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{ \"time\": \"2050-01-24T05:10:12.2444226Z\", \"resourceId\": \"/tenants/1cac74d2-1012-4a3a-98b8-ff111e0fe151/providers/Microsoft.aadiam\", \"operationName\": \"Sign-in activity\", \"operationVersion\": \"1.0\", \"category\": \"SignInLogs\", \"tenantId\": \"1cac74d2-1012-4a3a-98b8-ff111e0fe151\", \"resultType\": \"0\", \"resultSignature\": \"None\", \"durationMs\": 0, \"callerIpAddress\": \"203.0.113.61\", \"correlationId\": \"8145a43c-16ae-4b17-93f6-6e624de5fec8\", \"identity\": \"elastic testing\", \"Level\": 4, \"location\": \"IN\", \"properties\": {\"id\":\"909f22b7-befc-449f-9817-d6ae261b2f88\",\"createdDateTime\":\"2050-01-24T05:10:12.2444226+00:00\",\"userDisplayName\":\"elastic testing\",\"userPrincipalName\":\"ptymbnnakfpmue79931849@outlook.com\",\"userId\":\"0fa65a30-0040-460b-b127-c1ceb520e481\",\"appId\":\"f28f5602-6fe0-43d7-b91a-369f76defa6c\",\"appDisplayName\":\"Azure Portal\",\"ipAddress\":\"203.0.113.61\",\"status\":{\"errorCode\":0},\"clientAppUsed\":\"Browser\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.69\",\"deviceDetail\":{\"deviceId\":\"\",\"operatingSystem\":\"Windows 10\",\"browser\":\"Edge 97.0.1072\"},\"location\":{\"city\":\"Nizampet\",\"state\":\"Telangana\",\"countryOrRegion\":\"IN\",\"geoCoordinates\":{\"latitude\":17.5164794921875,\"longitude\":78.376632690429688}},\"mfaDetail\":{},\"correlationId\":\"8145a43c-16ae-4b17-93f6-6e624de5fec8\",\"conditionalAccessStatus\":\"notApplied\",\"appliedConditionalAccessPolicies\":[],\"originalRequestId\":\"909f22b7-befc-449f-9817-d6ae261b2f88\",\"isInteractive\":true,\"tokenIssuerName\":\"\",\"tokenIssuerType\":\"AzureAD\",\"authenticationProcessingDetails\":[{\"key\":\"Login Hint Present\",\"value\":\"True\"},{\"key\":\"Legacy TLS (TLS 1.0, 1.1, 3DES)\",\"value\":\"False\"},{\"key\":\"Oauth Scope Info\",\"value\":\"\"},{\"key\":\"Is CAE Token\",\"value\":\"False\"}],\"networkLocationDetails\":[],\"processingTimeInMilliseconds\":1598,\"riskDetail\":\"none\",\"riskLevelAggregated\":\"none\",\"riskLevelDuringSignIn\":\"none\",\"riskState\":\"none\",\"riskEventTypes\":[],\"riskEventTypes_v2\":[],\"resourceDisplayName\":\"Windows Azure Service Management API\",\"resourceId\":\"217d8465-cb86-4dc1-bf14-cfc5c0b08757\",\"resourceTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"homeTenantId\":\"1cac74d2-1012-4a3a-98b8-ff111e0fe151\",\"authenticationDetails\":[{\"authenticationStepDateTime\":\"2050-01-24T05:10:12.2444226+00:00\",\"authenticationMethod\":\"Previously satisfied\",\"succeeded\":true,\"authenticationStepResultDetail\":\"First factor requirement satisfied by claim in the token\",\"authenticationStepRequirement\":\"Primary authentication\",\"StatusSequence\":0,\"RequestSequence\":0}],\"authenticationRequirementPolicies\":[],\"authenticationRequirement\":\"singleFactorAuthentication\",\"servicePrincipalId\":\"\",\"userType\":\"Member\",\"flaggedForReview\":false,\"isTenantRestricted\":false,\"autonomousSystemNumber\":55836,\"crossTenantAccessType\":\"none\",\"privateLinkDetails\":{},\"ssoExtensionVersion\":\"\",\"uniqueTokenIdentifier\":\"OTMzZjIwYzAtZWZkZi00NzdmLTk1ODYtZTVjYzY3NmYyZTAw\",\"incomingTokenType\":\"none\",\"authenticationProtocol\":\"none\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "signinlogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure-signinlogs-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "azure",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

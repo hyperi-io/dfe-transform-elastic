@@ -1,0 +1,217 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2046-05-15T11:23:17.000Z",
+      "barracuda_cloudgen_firewall": {
+        "log": {
+          "app_rule": "<App>:<pass-no-match>",
+          "traffic_type": 0,
+          "user_type": "0"
+        }
+      },
+      "destination": {
+        "address": "198.51.100.126",
+        "ip": "198.51.100.126",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "0",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2409996197000,\"traffic_type\":0,\"action\":0,\"source_ip\":\"192.168.126.109\",\"source_port\":\"50646\",\"destination_ip\":\"198.51.100.126\",\"destination_port\":\"443\",\"method\":\"GET\",\"status_code\":\"200\",\"user_agent\":\"wget/1.19.2 (linux-gnu)\",\"content_type\":\"text/html; charset=UTF-8\",\"name\":\"https://www.heise.de/\",\"size\":59558,\"domain\":\"www.hcmgb.de\",\"category\":[\"79\"],\"user\":\"192.168.126.109\",\"user_type\":0,\"fw_rule\":\"LAN-2-INTERNET\",\"app_rule\":\"<App>:<pass-no-match>\"}",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET",
+          "mime_type": "text/html; charset=UTF-8"
+        },
+        "response": {
+          "body": {
+            "bytes": 59558
+          },
+          "status_code": 200
+        }
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "cpd-gdwln-mrt",
+        "product": "ngfw",
+        "serial_number": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "firewall",
+        "vendor": "Barracuda"
+      },
+      "related": {
+        "ip": [
+          "192.168.126.109",
+          "198.51.100.126"
+        ]
+      },
+      "rule": {
+        "name": "LAN-2-INTERNET"
+      },
+      "source": {
+        "address": "192.168.126.109",
+        "ip": "192.168.126.109",
+        "port": 50646
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "www.heise.de",
+        "original": "https://www.heise.de/",
+        "path": "/",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "wget/1.19.2 (linux-gnu)",
+        "os": {
+          "name": "Linux"
+        }
+      }
+    },
+    {
+      "@timestamp": "2046-05-15T09:50:04.000Z",
+      "barracuda_cloudgen_firewall": {
+        "log": {
+          "app_rule": "<App>:<pass-no-match>",
+          "traffic_type": 0,
+          "user_type": "0"
+        }
+      },
+      "destination": {
+        "address": "192.0.2.151",
+        "ip": "192.0.2.151",
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "0",
+        "category": [
+          "network"
+        ],
+        "kind": "event",
+        "original": "{\"timestamp\":2409990604000,\"traffic_type\":0,\"action\":0,\"source_ip\":\"192.168.163.66\",\"source_port\":\"50159\",\"destination_ip\":\"192.0.2.151\",\"destination_port\":\"443\",\"method\":\"GET\",\"status_code\":\"200\",\"user_agent\":\"mozilla/5.0 (windows nt 6.1) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.139 safari/537.36\",\"content_type\":\"\",\"name\":\"https://clientservices.googleapis.com/chrome-variations/seed?osname=win&channel=stable&milestone=66\",\"size\":0,\"domain\":\"clientservices.googleapis.com\",\"category\":[],\"user\":\"192.168.163.66\",\"user_type\":0,\"fw_rule\":\"LAN-2-INTERNET\",\"app_rule\":\"<App>:<pass-no-match>\"}",
+        "type": [
+          "allowed"
+        ]
+      },
+      "http": {
+        "request": {
+          "method": "GET"
+        },
+        "response": {
+          "body": {
+            "bytes": 0
+          },
+          "status_code": 200
+        }
+      },
+      "network": {
+        "type": "ipv4"
+      },
+      "observer": {
+        "hostname": "cpd-gdwln-mrt",
+        "product": "ngfw",
+        "serial_number": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "firewall",
+        "vendor": "Barracuda"
+      },
+      "related": {
+        "ip": [
+          "192.168.163.66",
+          "192.0.2.151"
+        ]
+      },
+      "rule": {
+        "name": "LAN-2-INTERNET"
+      },
+      "source": {
+        "address": "192.168.163.66",
+        "ip": "192.168.163.66",
+        "port": 50159
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "url": {
+        "domain": "clientservices.googleapis.com",
+        "original": "https://clientservices.googleapis.com/chrome-variations/seed?osname=win&channel=stable&milestone=66",
+        "path": "/chrome-variations/seed",
+        "query": "osname=win&channel=stable&milestone=66",
+        "scheme": "https"
+      },
+      "user_agent": {
+        "device": {
+          "name": "Other"
+        },
+        "name": "Other",
+        "original": "mozilla/5.0 (windows nt 6.1) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.139 safari/537.36"
+      }
+    }
+  ],
+  "input": [
+    {
+      "lumberjack": {
+        "beat": {
+          "hostname": "cpd-gdwln-mrt"
+        },
+        "product": "ngfw",
+        "sn": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "ngfw-wf"
+      },
+      "message": "{\"timestamp\":2409996197000,\"traffic_type\":0,\"action\":0,\"source_ip\":\"192.168.126.109\",\"source_port\":\"50646\",\"destination_ip\":\"198.51.100.126\",\"destination_port\":\"443\",\"method\":\"GET\",\"status_code\":\"200\",\"user_agent\":\"wget/1.19.2 (linux-gnu)\",\"content_type\":\"text/html; charset=UTF-8\",\"name\":\"https://www.heise.de/\",\"size\":59558,\"domain\":\"www.hcmgb.de\",\"category\":[\"79\"],\"user\":\"192.168.126.109\",\"user_type\":0,\"fw_rule\":\"LAN-2-INTERNET\",\"app_rule\":\"<App>:<pass-no-match>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "lumberjack": {
+        "beat": {
+          "hostname": "cpd-gdwln-mrt"
+        },
+        "product": "ngfw",
+        "sn": "5d09effa9e2d593cb2fa02e327eafba4",
+        "type": "ngfw-wf"
+      },
+      "message": "{\"timestamp\":2409990604000,\"traffic_type\":0,\"action\":0,\"source_ip\":\"192.168.163.66\",\"source_port\":\"50159\",\"destination_ip\":\"192.0.2.151\",\"destination_port\":\"443\",\"method\":\"GET\",\"status_code\":\"200\",\"user_agent\":\"mozilla/5.0 (windows nt 6.1) applewebkit/537.36 (khtml, like gecko) chrome/66.0.3359.139 safari/537.36\",\"content_type\":\"\",\"name\":\"https://clientservices.googleapis.com/chrome-variations/seed?osname=win&channel=stable&milestone=66\",\"size\":0,\"domain\":\"clientservices.googleapis.com\",\"category\":[],\"user\":\"192.168.163.66\",\"user_type\":0,\"fw_rule\":\"LAN-2-INTERNET\",\"app_rule\":\"<App>:<pass-no-match>\"}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-barracuda_cloudgen_firewall-log-default",
+    "event_count": 2,
+    "numeric_keyword_fields": [],
+    "package": "barracuda_cloudgen_firewall",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

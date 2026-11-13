@@ -1,0 +1,7 @@
+# Test inputs for this directory's fixtures.
+fields:
+  tags:
+  - preserve_original_event
+  event.provider: EventLogFile
+dynamic_fields:
+  event.ingested: .*

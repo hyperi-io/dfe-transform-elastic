@@ -1,0 +1,68 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-08-09T12:10:43.537Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "detected",
+        "category": [
+          "threat"
+        ],
+        "created": "2051-08-09T12:10:43.537Z",
+        "dataset": "withsecure_elements.incidents",
+        "end": "2051-08-09T12:10:43.537Z",
+        "id": "1b188e84-f1b3-41ca-9877-264ba900f1b5",
+        "kind": "alert",
+        "module": "withsecure_elements",
+        "original": "{\"incidentId\":\"1b188e84-f1b3-41ca-9877-264ba900f1b5\",\"incidentPublicId\":\"INC-12345\",\"organizationId\":\"633819ee-3342-4c0d-a451-e8492b2be319\",\"name\":\"Malware Detection\",\"status\":\"new\",\"severity\":\"high\",\"riskLevel\":\"high\",\"riskScore\":85.5,\"resolution\":\"unconfirmed\",\"createdTimestamp\":\"2051-08-09T12:10:43.537Z\",\"updatedTimestamp\":\"2051-08-09T12:10:43.537Z\",\"initialReceivedTimestamp\":\"2051-08-09T12:10:43.537Z\",\"categories\":[\"MALWARE\"],\"sources\":[\"endpoint\"]}",
+        "outcome": "success",
+        "provider": "withsecure_elements",
+        "risk_score": 85.5,
+        "severity": 73,
+        "start": "2051-08-09T12:10:43.537Z",
+        "type": [
+          "incident"
+        ]
+      },
+      "withsecure_elements": {
+        "incidents": {
+          "categories": [
+            "MALWARE"
+          ],
+          "createdTimestamp": "2051-08-09T12:10:43.537Z",
+          "incidentId": "1b188e84-f1b3-41ca-9877-264ba900f1b5",
+          "incidentPublicId": "INC-12345",
+          "initialReceivedTimestamp": "2051-08-09T12:10:43.537Z",
+          "name": "Malware Detection",
+          "organizationId": "633819ee-3342-4c0d-a451-e8492b2be319",
+          "resolution": "unconfirmed",
+          "riskLevel": "high",
+          "riskScore": 85.5,
+          "severity": "high",
+          "sources": [
+            "endpoint"
+          ],
+          "status": "new",
+          "updatedTimestamp": "2051-08-09T12:10:43.537Z"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"incidentId\":\"1b188e84-f1b3-41ca-9877-264ba900f1b5\",\"incidentPublicId\":\"INC-12345\",\"organizationId\":\"633819ee-3342-4c0d-a451-e8492b2be319\",\"name\":\"Malware Detection\",\"status\":\"new\",\"severity\":\"high\",\"riskLevel\":\"high\",\"riskScore\":85.5,\"resolution\":\"unconfirmed\",\"createdTimestamp\":\"2051-08-09T12:10:43.537Z\",\"updatedTimestamp\":\"2051-08-09T12:10:43.537Z\",\"initialReceivedTimestamp\":\"2051-08-09T12:10:43.537Z\",\"categories\":[\"MALWARE\"],\"sources\":[\"endpoint\"]}"
+    }
+  ],
+  "meta": {
+    "data_stream": "incidents",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-withsecure_elements-incidents-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "withsecure_elements",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

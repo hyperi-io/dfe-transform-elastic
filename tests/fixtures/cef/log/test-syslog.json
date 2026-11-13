@@ -1,0 +1,84 @@
+{
+    "events": [
+        {
+            "agent": {
+                "id": "4SNQXV30BABCAIi+-ZH3gxT==",
+                "ip": "10.50.91.130",
+                "mac": "26:02:60:2b:b8:69",
+                "name": "centos7.as",
+                "type": "syslog",
+                "version": "7.6.0.8009.0"
+            },
+            "cef": {
+                "device": {
+                    "event_class_id": "arcsight:143:1",
+                    "product": "Unix",
+                    "vendor": "Unix"
+                },
+                "extensions": {
+                    "_cefVer": "0.1",
+                    "agentAddress": "10.50.91.130",
+                    "agentHostName": "centos7.as",
+                    "agentId": "4SNQXV30BABCAIi+-ZH3gxT==",
+                    "agentMacAddress": "26:02:60:2b:b8:69",
+                    "agentReceiptTime": "2045-07-18T19:01:10.493Z",
+                    "agentTimeZone": "America/Argentina/Buenos_Aires",
+                    "agentType": "syslog",
+                    "agentVersion": "7.6.0.8009.0",
+                    "agentZoneURI": "/All Zones/ArcSight System/Private Address Space Zones/RFC1918: 10.110.146.136-10.241.115.232",
+                    "categoryBehavior": "/Access/Start",
+                    "categoryDeviceGroup": "/Operating System",
+                    "categoryDeviceType": "Operating System",
+                    "categoryObject": "/Host/Application/Service",
+                    "categoryOutcome": "/Success",
+                    "categorySignificance": "/Informational",
+                    "destinationHostName": "dbjyoi8",
+                    "deviceAction": "Started",
+                    "deviceCustomNumber1Label": "File Descriptor",
+                    "deviceCustomString1": "systemd",
+                    "deviceCustomString1Label": "Module",
+                    "deviceCustomString2": "daemon",
+                    "deviceCustomString2Label": "Facility",
+                    "deviceFacility": "daemon",
+                    "deviceHostName": "dbjyoi8",
+                    "deviceProcessName": "systemd",
+                    "deviceReceiptTime": "2045-07-18T19:01:01.000Z",
+                    "deviceSeverity": "info",
+                    "deviceTimeZone": "America/Argentina/Buenos_Aires",
+                    "eventId": 31,
+                    "message": "Started Session 21 of user root",
+                    "sourceUserName": "root"
+                },
+                "name": "Started Session",
+                "severity": "Low",
+                "version": "0"
+            },
+            "destination": {
+                "domain": "dbjyoi8"
+            },
+            "event": {
+                "action": "Started",
+                "code": "arcsight:143:1",
+                "created": "2045-07-18T19:01:10.493Z",
+                "id": 31,
+                "original": "CEF:0|Unix|Unix||arcsight:143:1|Started Session|Low| eventId=31 msg=Started Session 21 of user root categorySignificance=/Informational categoryBehavior=/Access/Start categoryDeviceGroup=/Operating System catdt=Operating System categoryOutcome=/Success categoryObject=/Host/Application/Service art=1500404470493 deviceSeverity=info act=Started rt=1500404461000 suser=root dhost=dbjyoi8 cs1=systemd cs2=daemon cs1Label=Module cs2Label=Facility cn1Label=File Descriptor ahost=centos7.as agt=10.50.91.130 agentZoneURI=/All Zones/ArcSight System/Private Address Space Zones/RFC1918: 10.110.146.136-10.241.115.232 amac=54-99-32-3A-B7-75 av=7.6.0.8009.0 atz=America/Argentina/Buenos_Aires at=syslog dvchost=dbjyoi8 dtz=America/Argentina/Buenos_Aires deviceFacility=daemon deviceProcessName=systemd _cefVer=0.1 aid=4SNQXV30BABCAIi+-ZH3gxT\\=\\=",
+                "severity": 0,
+                "timezone": "America/Argentina/Buenos_Aires"
+            },
+            "message": "Started Session 21 of user root",
+            "observer": {
+                "hostname": "dbjyoi8",
+                "product": "Unix",
+                "vendor": "Unix"
+            },
+            "process": {
+                "name": "systemd"
+            },
+            "source": {
+                "user": {
+                    "name": "root"
+                }
+            }
+        }
+    ]
+}

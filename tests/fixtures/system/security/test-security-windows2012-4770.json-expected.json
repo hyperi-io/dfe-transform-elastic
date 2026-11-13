@@ -1,0 +1,169 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2048-04-01T07:32:55.010Z",
+      "agent": {
+        "ephemeral_id": "ceb1216f-b4a0-4b15-bc6c-9bf1511b0d5c",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "kerberos-service-ticket-renewed",
+        "category": [
+          "authentication"
+        ],
+        "code": "4770",
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "type": [
+          "start"
+        ]
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4770.xml"
+        },
+        "level": "information"
+      },
+      "related": {
+        "ip": [
+          "::1"
+        ],
+        "user": [
+          "DD_ZCSS4R02$"
+        ]
+      },
+      "service": {
+        "name": "krbtgt"
+      },
+      "source": {
+        "ip": "::1",
+        "port": 0
+      },
+      "tags": [
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "user": {
+        "domain": "TEST.SAAS",
+        "name": "DD_ZCSS4R02$"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "ServiceName": "krbtgt",
+          "ServiceSid": "S-1-5-21-1717121054-434620538-60925301-502",
+          "TargetDomainName": "TEST.SAAS",
+          "TargetUserName": "DD_ZCSS4R02$@XCYX.SAAS",
+          "TicketEncryptionType": "0x12",
+          "TicketEncryptionTypeDescription": "AES256-CTS-HMAC-SHA1-96",
+          "TicketOptions": "0x10002",
+          "TicketOptionsDescription": [
+            "Name-canonicalize",
+            "Renew"
+          ]
+        },
+        "event_id": "4770",
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 4468
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": "5039598",
+        "time_created": "2048-04-01T07:32:55.010Z"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2049-04-15T19:08:49.077Z",
+      "agent": {
+        "ephemeral_id": "ceb1216f-b4a0-4b15-bc6c-9bf1511b0d5c",
+        "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25",
+        "name": "Lees-MBP.localdomain",
+        "type": "filebeat",
+        "version": "8.0.0"
+      },
+      "ecs": {
+        "version": "1.8.0"
+      },
+      "event": {
+        "code": 4770,
+        "kind": "event",
+        "outcome": "success",
+        "provider": "Microsoft-Windows-Security-Auditing"
+      },
+      "host": {
+        "name": "CA_TBIY4q29.XCYX.SAAS"
+      },
+      "log": {
+        "file": {
+          "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/security-windows2012_4770.xml"
+        },
+        "level": "information"
+      },
+      "winlog": {
+        "channel": "Security",
+        "computer_name": "CA_TBIY4q29.XCYX.SAAS",
+        "event_data": {
+          "IpAddress": "::1",
+          "IpPort": "0",
+          "ServiceName": "krbtgt",
+          "ServiceSid": "S-1-5-21-1717121054-434620538-60925301-502",
+          "TargetDomainName": "TEST.SAAS",
+          "TargetUserName": "DD_ZCSS4R02$@XCYX.SAAS",
+          "TicketEncryptionType": "0x12",
+          "TicketOptions": "0x10002"
+        },
+        "event_id": 4770,
+        "keywords": [
+          "Audit Success"
+        ],
+        "level": "information",
+        "opcode": "Info",
+        "outcome": "success",
+        "process": {
+          "pid": 496,
+          "thread": {
+            "id": 4468
+          }
+        },
+        "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}",
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 5039598,
+        "time_created": "2048-04-01T07:32:55.010Z"
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "security",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-system-security-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "system",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

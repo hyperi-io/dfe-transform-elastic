@@ -1,0 +1,4 @@
+# Test inputs for this directory's fixtures.
+fields:
+  _conf:
+    secret: secret

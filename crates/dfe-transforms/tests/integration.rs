@@ -24,20 +24,17 @@
 //! as one ~11.6 GB rustc and ran zero tests. A comment does not need a link
 //! cycle.
 //!
-//! These read Elastic-licensed fixtures kept outside this repository, and run
-//! only where `DFE_ELASTIC_FIXTURES` names them. The floor over the
-//! licence-clean samples is `tests/unencumbered.rs`.
+//! These read the repository's own fixtures under `tests/fixtures/`. The
+//! floor over the unencumbered samples is `tests/unencumbered.rs`.
 
 mod common;
 
-/// One floor over an Elastic fixture, `$fixture` in `$dir` under the Elastic
-/// data's `tests/fixtures/`.
+/// One floor over a fixture, `$fixture` in `$dir` under `tests/fixtures/`.
 macro_rules! floor {
     ($name:ident, $transform:expr, $dir:literal, $fixture:literal, $max_errors:expr) => {
         #[test]
-        #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
         fn $name() {
-            let dir = dfe_runtime::testutil::elastic_fixtures().join($dir);
+            let dir = dfe_runtime::testutil::fixtures().join($dir);
             crate::common::run_floor(&$transform, &dir, $fixture, $max_errors);
         }
     };

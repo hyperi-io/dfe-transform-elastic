@@ -1,0 +1,66 @@
+{
+    "events": [
+        {
+            "@timestamp": "2049-04-15T19:05:13.376Z",
+            "event": {
+                "kind": "event",
+                "code": 4907,
+                "provider": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success"
+            },
+            "log": {
+                "file": {
+                    "path": "/Users/vaemzilbm/src/beats/x-pack/winlogbeat/module/security/test/testdata/4907_WindowsSrv2016.xml"
+                },
+                "level": "information"
+            },
+            "ecs": {
+                "version": "1.8.0"
+            },
+            "host": {
+                "name": "ZVK-EPQ9VR7G6I6.XCYX.local"
+            },
+            "agent": {
+                "name": "Lees-MBP.localdomain",
+                "type": "filebeat",
+                "version": "8.0.0",
+                "ephemeral_id": "f90184a2-7305-4e43-b429-37e6d23522b8",
+                "id": "4dcb9e09-ebc6-4a9e-8694-cab3d3079b25"
+            },
+            "winlog": {
+                "computer_name": "ZVK-EPQ9VR7G6I6.XCYX.local",
+                "opcode": "Info",
+                "time_created": "2048-08-19T07:56:17.112Z",
+                "process": {
+                    "pid": 4,
+                    "thread": {
+                        "id": 408
+                    }
+                },
+                "channel": "Security",
+                "event_id": 4907,
+                "provider_name": "Microsoft-Windows-Security-Auditing",
+                "outcome": "success",
+                "level": "information",
+                "event_data": {
+                    "ObjectType": "File",
+                    "HandleId": "0x93c",
+                    "NewSd": "S:ARAI(AU;SAFA;DCLCRPCRSDWDWO;;;WD)",
+                    "ProcessId": "0x10cc",
+                    "ObjectServer": "Security",
+                    "SubjectUserName": "ZVK-EPQ9VR7G6I6$",
+                    "SubjectDomainName": "TEST",
+                    "SubjectLogonId": "0x3e7",
+                    "ObjectName": "C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\Modules\\RemoteAccess\\RemoteAccess.psd1",
+                    "ProcessName": "C:\\Windows\\WinSxS\\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.14393.1883_none_7ed84bd822106081\\TiWorker.exe",
+                    "SubjectUserSid": "S-1-5-18"
+                },
+                "record_id": 146933,
+                "keywords": [
+                    "Audit Success"
+                ],
+                "provider_guid": "{35176868-7249-4208-a5ce-5e4a0085b00a}"
+            }
+        }
+    ]
+}

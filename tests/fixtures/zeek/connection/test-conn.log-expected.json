@@ -1,0 +1,1351 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2047-01-11T06:33:35.857Z",
+      "destination": {
+        "address": "192.168.157.145",
+        "bytes": 206,
+        "ip": "192.168.157.145",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 76967000,
+        "id": "CAcJw21BbVedgFnYH3",
+        "kind": "event",
+        "original": "{\"ts\":2430801215.857497,\"uid\":\"CAcJw21BbVedgFnYH3\",\"id.orig_h\":\"192.168.49.138\",\"id.orig_p\":38339,\"id.resp_h\":\"192.168.157.145\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.076967,\"orig_bytes\":75,\"resp_bytes\":178,\"conn_state\":\"SF\",\"local_orig\":true,\"local_resp\":true,\"missed_bytes\":0,\"history\":\"Dd\",\"orig_pkts\":1,\"orig_ip_bytes\":103,\"resp_pkts\":1,\"resp_ip_bytes\":206,\"tunnel_parents\":[]}",
+        "type": [
+          "connection",
+          "start",
+          "end"
+        ]
+      },
+      "network": {
+        "bytes": 309,
+        "community_id": "1:oaEQST4RYb6/G6ep0Ko7zxlEUI0=",
+        "direction": "internal",
+        "packets": 2,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.168.49.138",
+          "192.168.157.145"
+        ]
+      },
+      "source": {
+        "address": "192.168.49.138",
+        "bytes": 103,
+        "ip": "192.168.49.138",
+        "packets": 1,
+        "port": 38339
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Dd",
+          "local_orig": true,
+          "local_resp": true,
+          "missed_bytes": 0,
+          "state": "SF",
+          "state_message": "Normal establishment and termination."
+        },
+        "session_id": "CAcJw21BbVedgFnYH3"
+      }
+    },
+    {
+      "@timestamp": "2047-01-11T06:33:36.857Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 206,
+        "ip": "198.51.100.144",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 76967000,
+        "id": "CAcJw21BbVedgFnYH4",
+        "kind": "event",
+        "original": "{\"ts\":2430801216.857497,\"uid\":\"CAcJw21BbVedgFnYH4\",\"id.orig_h\":\"192.168.49.138\",\"id.orig_p\":38340,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.076967,\"orig_bytes\":75,\"resp_bytes\":178,\"conn_state\":\"SF\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Dd\",\"orig_pkts\":1,\"orig_ip_bytes\":103,\"resp_pkts\":1,\"resp_ip_bytes\":206,\"tunnel_parents\":[]}",
+        "type": [
+          "connection",
+          "start",
+          "end"
+        ]
+      },
+      "network": {
+        "bytes": 309,
+        "community_id": "1:eY7+5JEvkbvlnrU8sqeY4M2dr4E=",
+        "direction": "outbound",
+        "packets": 2,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "192.168.49.138",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "192.168.49.138",
+        "bytes": 103,
+        "ip": "192.168.49.138",
+        "packets": 1,
+        "port": 38340
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Dd",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SF",
+          "state_message": "Normal establishment and termination."
+        },
+        "session_id": "CAcJw21BbVedgFnYH4"
+      }
+    },
+    {
+      "@timestamp": "2047-01-11T06:33:37.857Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 206,
+        "ip": "198.51.100.144",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 76967000,
+        "id": "CAcJw21BbVedgFnYH5",
+        "kind": "event",
+        "original": "{\"ts\":2430801217.857497,\"uid\":\"CAcJw21BbVedgFnYH5\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":38334,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.076967,\"orig_bytes\":75,\"resp_bytes\":178,\"conn_state\":\"SF\",\"local_orig\":false,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Dd\",\"orig_pkts\":1,\"orig_ip_bytes\":103,\"resp_pkts\":1,\"resp_ip_bytes\":206,\"tunnel_parents\":[]}",
+        "type": [
+          "connection",
+          "start",
+          "end"
+        ]
+      },
+      "network": {
+        "bytes": 309,
+        "community_id": "1:k0Sa8ADbHfgFs8kFV56Ux9TiRZA=",
+        "direction": "external",
+        "packets": 2,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "198.51.100.144",
+        "bytes": 103,
+        "ip": "198.51.100.144",
+        "packets": 1,
+        "port": 38334
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Dd",
+          "local_orig": false,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SF",
+          "state_message": "Normal establishment and termination."
+        },
+        "session_id": "CAcJw21BbVedgFnYH5"
+      }
+    },
+    {
+      "@timestamp": "2047-03-01T00:10:00.578Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 0,
+        "ip": "198.51.100.144",
+        "packets": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "Cc6NJ3GRlfjE44I3h",
+        "kind": "event",
+        "original": "{\"ts\":2435011800.57855,\"uid\":\"Cc6NJ3GRlfjE44I3h\",\"id.orig_h\":\"192.168.45.223\",\"id.orig_p\":3,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":3,\"proto\":\"icmp\",\"conn_state\":\"OTH\",\"local_orig\":false,\"local_resp\":false,\"missed_bytes\":0,\"orig_pkts\":1,\"orig_ip_bytes\":107,\"resp_pkts\":0,\"resp_ip_bytes\":0,\"tunnel_parents\":[]}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 107,
+        "community_id": "1:xqfXGY5V0M51XU6YqqnMnAgUgb8=",
+        "direction": "external",
+        "packets": 1,
+        "transport": "icmp"
+      },
+      "related": {
+        "ip": [
+          "192.168.45.223",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "192.168.45.223",
+        "bytes": 107,
+        "ip": "192.168.45.223",
+        "packets": 1
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "icmp": {
+            "code": 3,
+            "type": 3
+          },
+          "local_orig": false,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "Cc6NJ3GRlfjE44I3h"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T00:00:00.404Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 0,
+        "ip": "198.51.100.144",
+        "packets": 0,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CCicIg43lOtCQOxXnb",
+        "kind": "event",
+        "original": "{\"ts\":2500675200.404645,\"uid\":\"CCicIg43lOtCQOxXnb\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":56190,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:AEtBqQvjltrfm8+Jd1elL9Vaeds=",
+        "direction": "outbound",
+        "packets": 0,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 56190
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "C",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "CCicIg43lOtCQOxXnb"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:55:00.419Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 267,
+        "ip": "198.51.100.144",
+        "packets": 4,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 103708982,
+        "id": "C52mXBCPJ4pPGkhr1",
+        "kind": "event",
+        "original": "{\"ts\":2500674900.419397,\"uid\":\"C52mXBCPJ4pPGkhr1\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":60810,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"duration\":0.10370898246765137,\"orig_bytes\":0,\"resp_bytes\":5854,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"^hCcdafA\",\"orig_pkts\":1,\"orig_ip_bytes\":52,\"resp_pkts\":4,\"resp_ip_bytes\":267}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 319,
+        "community_id": "1:xW6jIRE9bKZkb/0QthnAvLAUVkE=",
+        "direction": "outbound",
+        "packets": 5,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 52,
+        "ip": "10.55.23.134",
+        "packets": 1,
+        "port": 60810
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "^hCcdafA",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "C52mXBCPJ4pPGkhr1"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:55:00.419Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 267,
+        "ip": "198.51.100.144",
+        "packets": 4,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 104128838,
+        "id": "CTzCky2CyLT5JJvHck",
+        "kind": "event",
+        "original": "{\"ts\":2500674900.419603,\"uid\":\"CTzCky2CyLT5JJvHck\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":60804,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"duration\":0.10412883758544922,\"orig_bytes\":0,\"resp_bytes\":5854,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"^hCcdafA\",\"orig_pkts\":1,\"orig_ip_bytes\":52,\"resp_pkts\":4,\"resp_ip_bytes\":267}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 319,
+        "community_id": "1:rVm979oLP8Nsd5zvJFX3DHCS8l8=",
+        "direction": "outbound",
+        "packets": 5,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 52,
+        "ip": "10.55.23.134",
+        "packets": 1,
+        "port": 60804
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "^hCcdafA",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "CTzCky2CyLT5JJvHck"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:55:00.419Z",
+      "destination": {
+        "address": "198.51.100.144",
+        "bytes": 267,
+        "ip": "198.51.100.144",
+        "packets": 4,
+        "port": 443
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 104333878,
+        "id": "CIkS28PDxqQnN49m2",
+        "kind": "event",
+        "original": "{\"ts\":2500674900.419826,\"uid\":\"CIkS28PDxqQnN49m2\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":60802,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"duration\":0.10433387756347656,\"orig_bytes\":0,\"resp_bytes\":5854,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"^hCcdafA\",\"orig_pkts\":1,\"orig_ip_bytes\":52,\"resp_pkts\":4,\"resp_ip_bytes\":267}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 319,
+        "community_id": "1:F1X47c20dz/FLdj8rsBh96dzW3c=",
+        "direction": "outbound",
+        "packets": 5,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "198.51.100.144"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 52,
+        "ip": "10.55.23.134",
+        "packets": 1,
+        "port": 60802
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "^hCcdafA",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "CIkS28PDxqQnN49m2"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:59:50.563Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 269,
+        "ip": "169.254.169.254",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 26802063,
+        "id": "CezEGe4jeLNkayV976",
+        "kind": "event",
+        "original": "{\"ts\":2500675190.563187,\"uid\":\"CezEGe4jeLNkayV976\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":38948,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.02680206298828125,\"orig_bytes\":0,\"resp_bytes\":241,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":269}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 269,
+        "community_id": "1:Zc9YBH5LBydrPUpqgBjYCg2zYQE=",
+        "direction": "outbound",
+        "packets": 1,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 38948
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Cd",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "CezEGe4jeLNkayV976"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:59:50.563Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 304,
+        "ip": "169.254.169.254",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 25056124,
+        "id": "CKSr3w18mmW6t7bXC4",
+        "kind": "event",
+        "original": "{\"ts\":2500675190.563442,\"uid\":\"CKSr3w18mmW6t7bXC4\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":40080,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.025056123733520509,\"orig_bytes\":0,\"resp_bytes\":276,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":304}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 304,
+        "community_id": "1:yXN448ut6WYWxudQUuDdjKFm2fw=",
+        "direction": "outbound",
+        "packets": 1,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 40080
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Cd",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "CKSr3w18mmW6t7bXC4"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:59:50.667Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 161,
+        "ip": "169.254.169.254",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 3319979,
+        "id": "CGUiHy4kLIF2ml95eg",
+        "kind": "event",
+        "original": "{\"ts\":2500675190.667048,\"uid\":\"CGUiHy4kLIF2ml95eg\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":41407,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.003319978713989258,\"orig_bytes\":0,\"resp_bytes\":133,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":161}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 161,
+        "community_id": "1:qF/y2LD+hUJEK0VE7DLe16WlCQI=",
+        "direction": "outbound",
+        "packets": 1,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 41407
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Cd",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "CGUiHy4kLIF2ml95eg"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:59:50.698Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 230,
+        "ip": "169.254.169.254",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 1111984,
+        "id": "CAOZZi4Qrio7gUVgVc",
+        "kind": "event",
+        "original": "{\"ts\":2500675190.698943,\"uid\":\"CAOZZi4Qrio7gUVgVc\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":50487,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.0011119842529296876,\"orig_bytes\":0,\"resp_bytes\":202,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":230}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 230,
+        "community_id": "1:6yvSz+9tVrbxKK559KVaBdrBKK8=",
+        "direction": "outbound",
+        "packets": 1,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 50487
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Cd",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "CAOZZi4Qrio7gUVgVc"
+      }
+    },
+    {
+      "@timestamp": "2049-03-29T23:59:50.699Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 173,
+        "ip": "169.254.169.254",
+        "packets": 1,
+        "port": 53
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "duration": 908852,
+        "id": "Chx5fs3xQ5ALB72i4e",
+        "kind": "event",
+        "original": "{\"ts\":2500675190.699227,\"uid\":\"Chx5fs3xQ5ALB72i4e\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":49647,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.0009088516235351563,\"orig_bytes\":0,\"resp_bytes\":145,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":173}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 173,
+        "community_id": "1:RQFhEH4yNwn88cfY17AoOnwASgI=",
+        "direction": "outbound",
+        "packets": 1,
+        "protocol": "dns",
+        "transport": "udp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 49647
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "Cd",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "SHR",
+          "state_message": "Responder sent a SYN ACK followed by a FIN, we never saw a SYN from the originator."
+        },
+        "session_id": "Chx5fs3xQ5ALB72i4e"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T00:00:00.703Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 0,
+        "ip": "169.254.169.254",
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C3pPjh1YRYcVDiZD3",
+        "kind": "event",
+        "original": "{\"ts\":2500675200.703865,\"uid\":\"C3pPjh1YRYcVDiZD3\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":44944,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:anoOuAaaIS5MUemvrhfa+2vu4pk=",
+        "direction": "outbound",
+        "packets": 0,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 44944
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "C",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "C3pPjh1YRYcVDiZD3"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T00:00:00.703Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 0,
+        "ip": "169.254.169.254",
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "ChUxTmYLG37oO5qUb",
+        "kind": "event",
+        "original": "{\"ts\":2500675200.703851,\"uid\":\"ChUxTmYLG37oO5qUb\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":44942,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:Z3jhU087HPHOweudlkZiIpvL5tQ=",
+        "direction": "outbound",
+        "packets": 0,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 44942
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "C",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "ChUxTmYLG37oO5qUb"
+      }
+    },
+    {
+      "@timestamp": "2049-03-30T00:00:00.704Z",
+      "destination": {
+        "address": "169.254.169.254",
+        "bytes": 0,
+        "ip": "169.254.169.254",
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CpeAOT3B11CTXJgzw2",
+        "kind": "event",
+        "original": "{\"ts\":2500675200.704467,\"uid\":\"CpeAOT3B11CTXJgzw2\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":44946,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:dY92+UdyhAkFBAZgJC0vJE6aXHU=",
+        "direction": "outbound",
+        "packets": 0,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.55.23.134",
+          "169.254.169.254"
+        ]
+      },
+      "source": {
+        "address": "10.55.23.134",
+        "bytes": 0,
+        "ip": "10.55.23.134",
+        "packets": 0,
+        "port": 44946
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "C",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "CpeAOT3B11CTXJgzw2"
+      }
+    },
+    {
+      "@timestamp": "2049-06-09T20:55:13.160Z",
+      "destination": {
+        "address": "172.23.94.196",
+        "bytes": 0,
+        "ip": "172.23.94.196",
+        "packets": 0,
+        "port": 80
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "C2KP1V3alRLoxl4JB9",
+        "kind": "event",
+        "original": "{\"ts\":\"2049-06-09T20:55:13.160328Z\",\"uid\":\"C2KP1V3alRLoxl4JB9\",\"id.orig_h\":\"10.218.244.99\",\"id.orig_p\":46408,\"id.resp_h\":\"172.23.94.196\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 0,
+        "community_id": "1:r3EeGotvWK/mbvv8i3v0eX2MetE=",
+        "direction": "outbound",
+        "packets": 0,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.218.244.99",
+          "172.23.94.196"
+        ]
+      },
+      "source": {
+        "address": "10.218.244.99",
+        "bytes": 0,
+        "ip": "10.218.244.99",
+        "packets": 0,
+        "port": 46408
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "C",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "C2KP1V3alRLoxl4JB9"
+      }
+    },
+    {
+      "@timestamp": "2052-06-13T12:14:37.013Z",
+      "destination": {
+        "address": "203.0.113.229",
+        "bytes": 0,
+        "ip": "203.0.113.229",
+        "packets": 0,
+        "port": 0
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2048-04-28T11:07:58.223Z",
+        "id": "CL0jWq3WeMU4py67t7",
+        "kind": "event",
+        "original": "{\"ts\":2601893677.013007,\"uid\":\"CL0jWq3WeMU4py67t7\",\"id.orig_h\":\"10.142.227.86\",\"id.orig_p\":0,\"id.resp_h\":\"203.0.113.229\",\"id.resp_p\":0,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"R\",\"orig_pkts\":1,\"orig_ip_bytes\":40,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+        "type": [
+          "connection",
+          "info"
+        ]
+      },
+      "network": {
+        "bytes": 40,
+        "direction": "outbound",
+        "packets": 1,
+        "transport": "tcp"
+      },
+      "related": {
+        "ip": [
+          "10.142.227.86",
+          "203.0.113.229"
+        ]
+      },
+      "source": {
+        "address": "10.142.227.86",
+        "bytes": 40,
+        "ip": "10.142.227.86",
+        "packets": 1,
+        "port": 0
+      },
+      "tags": [
+        "preserve_original_event",
+        "local_orig",
+        "local_resp",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "zeek": {
+        "connection": {
+          "history": "R",
+          "local_orig": true,
+          "local_resp": false,
+          "missed_bytes": 0,
+          "state": "OTH",
+          "state_message": "No SYN seen, just midstream traffic (a 'partial connection' that was not later closed)."
+        },
+        "session_id": "CL0jWq3WeMU4py67t7"
+      }
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2430801215.857497,\"uid\":\"CAcJw21BbVedgFnYH3\",\"id.orig_h\":\"192.168.49.138\",\"id.orig_p\":38339,\"id.resp_h\":\"192.168.157.145\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.076967,\"orig_bytes\":75,\"resp_bytes\":178,\"conn_state\":\"SF\",\"local_orig\":true,\"local_resp\":true,\"missed_bytes\":0,\"history\":\"Dd\",\"orig_pkts\":1,\"orig_ip_bytes\":103,\"resp_pkts\":1,\"resp_ip_bytes\":206,\"tunnel_parents\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2430801216.857497,\"uid\":\"CAcJw21BbVedgFnYH4\",\"id.orig_h\":\"192.168.49.138\",\"id.orig_p\":38340,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.076967,\"orig_bytes\":75,\"resp_bytes\":178,\"conn_state\":\"SF\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Dd\",\"orig_pkts\":1,\"orig_ip_bytes\":103,\"resp_pkts\":1,\"resp_ip_bytes\":206,\"tunnel_parents\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2430801217.857497,\"uid\":\"CAcJw21BbVedgFnYH5\",\"id.orig_h\":\"198.51.100.144\",\"id.orig_p\":38334,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.076967,\"orig_bytes\":75,\"resp_bytes\":178,\"conn_state\":\"SF\",\"local_orig\":false,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Dd\",\"orig_pkts\":1,\"orig_ip_bytes\":103,\"resp_pkts\":1,\"resp_ip_bytes\":206,\"tunnel_parents\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2435011800.57855,\"uid\":\"Cc6NJ3GRlfjE44I3h\",\"id.orig_h\":\"192.168.45.223\",\"id.orig_p\":3,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":3,\"proto\":\"icmp\",\"conn_state\":\"OTH\",\"local_orig\":false,\"local_resp\":false,\"missed_bytes\":0,\"orig_pkts\":1,\"orig_ip_bytes\":107,\"resp_pkts\":0,\"resp_ip_bytes\":0,\"tunnel_parents\":[]}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675200.404645,\"uid\":\"CCicIg43lOtCQOxXnb\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":56190,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500674900.419397,\"uid\":\"C52mXBCPJ4pPGkhr1\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":60810,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"duration\":0.10370898246765137,\"orig_bytes\":0,\"resp_bytes\":5854,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"^hCcdafA\",\"orig_pkts\":1,\"orig_ip_bytes\":52,\"resp_pkts\":4,\"resp_ip_bytes\":267}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500674900.419603,\"uid\":\"CTzCky2CyLT5JJvHck\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":60804,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"duration\":0.10412883758544922,\"orig_bytes\":0,\"resp_bytes\":5854,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"^hCcdafA\",\"orig_pkts\":1,\"orig_ip_bytes\":52,\"resp_pkts\":4,\"resp_ip_bytes\":267}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500674900.419826,\"uid\":\"CIkS28PDxqQnN49m2\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":60802,\"id.resp_h\":\"198.51.100.144\",\"id.resp_p\":443,\"proto\":\"tcp\",\"duration\":0.10433387756347656,\"orig_bytes\":0,\"resp_bytes\":5854,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"^hCcdafA\",\"orig_pkts\":1,\"orig_ip_bytes\":52,\"resp_pkts\":4,\"resp_ip_bytes\":267}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675190.563187,\"uid\":\"CezEGe4jeLNkayV976\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":38948,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.02680206298828125,\"orig_bytes\":0,\"resp_bytes\":241,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":269}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675190.563442,\"uid\":\"CKSr3w18mmW6t7bXC4\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":40080,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.025056123733520509,\"orig_bytes\":0,\"resp_bytes\":276,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":304}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675190.667048,\"uid\":\"CGUiHy4kLIF2ml95eg\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":41407,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.003319978713989258,\"orig_bytes\":0,\"resp_bytes\":133,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":161}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675190.698943,\"uid\":\"CAOZZi4Qrio7gUVgVc\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":50487,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.0011119842529296876,\"orig_bytes\":0,\"resp_bytes\":202,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":230}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675190.699227,\"uid\":\"Chx5fs3xQ5ALB72i4e\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":49647,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":0.0009088516235351563,\"orig_bytes\":0,\"resp_bytes\":145,\"conn_state\":\"SHR\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"Cd\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":1,\"resp_ip_bytes\":173}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675200.703865,\"uid\":\"C3pPjh1YRYcVDiZD3\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":44944,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675200.703851,\"uid\":\"ChUxTmYLG37oO5qUb\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":44942,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2500675200.704467,\"uid\":\"CpeAOT3B11CTXJgzw2\",\"id.orig_h\":\"10.55.23.134\",\"id.orig_p\":44946,\"id.resp_h\":\"169.254.169.254\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":\"2049-06-09T20:55:13.160328Z\",\"uid\":\"C2KP1V3alRLoxl4JB9\",\"id.orig_h\":\"10.218.244.99\",\"id.orig_p\":46408,\"id.resp_h\":\"172.23.94.196\",\"id.resp_p\":80,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"C\",\"orig_pkts\":0,\"orig_ip_bytes\":0,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "@timestamp": "2048-04-28T11:07:58.223Z",
+      "message": "{\"ts\":2601893677.013007,\"uid\":\"CL0jWq3WeMU4py67t7\",\"id.orig_h\":\"10.142.227.86\",\"id.orig_p\":0,\"id.resp_h\":\"203.0.113.229\",\"id.resp_p\":0,\"proto\":\"tcp\",\"conn_state\":\"OTH\",\"local_orig\":true,\"local_resp\":false,\"missed_bytes\":0,\"history\":\"R\",\"orig_pkts\":1,\"orig_ip_bytes\":40,\"resp_pkts\":0,\"resp_ip_bytes\":0}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "connection",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zeek-connection-default",
+    "event_count": 18,
+    "numeric_keyword_fields": [],
+    "package": "zeek",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

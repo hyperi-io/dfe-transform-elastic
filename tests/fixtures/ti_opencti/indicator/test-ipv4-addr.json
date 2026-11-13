@@ -1,0 +1,134 @@
+{
+    "events": [
+        {
+            "id": "0c110077-a14b-425a-8084-f33c5110bd40",
+            "standard_id": "indicator--a5967e41-f02f-51e0-af64-a4d0064df92c",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 15,
+            "lang": "en",
+            "created": "2048-03-09T11:00:32.000Z",
+            "modified": "2051-01-17T09:30:06.558Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[ipv4-addr:value = '192.0.2.75']",
+            "name": "192.0.2.75",
+            "description": "The Hajime Linux IoT botnet list of active P2P IoT peers (IP addresses)",
+            "valid_from": "2048-03-09T11:00:32.000Z",
+            "valid_until": "2048-04-08T11:00:32.000Z",
+            "x_opencti_score": 40,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "IPv4-Addr",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "MalwareMustDie"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:CLEAR"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "malware"
+                },
+                {
+                    "value": "linux"
+                },
+                {
+                    "value": "botnet"
+                },
+                {
+                    "value": "password brute forcing"
+                },
+                {
+                    "value": "machine-access-control"
+                },
+                {
+                    "value": "ongoing"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "fcb00699-05bf-41a6-adcd-3e2ce7d80b18",
+                            "standard_id": "ipv4-addr--040b4f0c-6e5a-5abd-868f-3a2eab31bef7",
+                            "entity_type": "IPv4-Addr",
+                            "observable_value": "192.0.2.75",
+                            "value": "11175.16.199.127"
+                        }
+                    }
+                ],
+                "pageInfo": {
+                    "globalCount": 1
+                }
+            }
+        },
+        {
+            "id": "0c110077-a14b-425a-8084-f33c5110bd40",
+            "standard_id": "indicator--a5967e41-f02f-51e0-af64-a4d0064df92c",
+            "is_inferred": false,
+            "revoked": true,
+            "confidence": 15,
+            "lang": "en",
+            "created": "2048-03-09T11:00:32.000Z",
+            "modified": "2051-01-17T09:30:06.558Z",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "pattern": "[ipv4-addr:value = '192.0.2.75']",
+            "name": "192.0.2.75",
+            "description": "The Hajime Linux IoT botnet list of active P2P IoT peers (IP addresses)",
+            "valid_from": "2048-03-09T11:00:32.000Z",
+            "valid_until": "2048-04-08T11:00:32.000Z",
+            "x_opencti_score": 40,
+            "x_opencti_detection": false,
+            "x_opencti_main_observable_type": "IPv4-Addr",
+            "createdBy": {
+                "identity_class": "organization",
+                "name": "MalwareMustDie"
+            },
+            "objectMarking": [
+                {
+                    "definition_type": "TLP",
+                    "definition": "TLP:CLEAR"
+                }
+            ],
+            "objectLabel": [
+                {
+                    "value": "malware"
+                },
+                {
+                    "value": "linux"
+                },
+                {
+                    "value": "botnet"
+                },
+                {
+                    "value": "password brute forcing"
+                },
+                {
+                    "value": "machine-access-control"
+                },
+                {
+                    "value": "ongoing"
+                }
+            ],
+            "killChainPhases": [],
+            "externalReferences": {
+                "edges": []
+            },
+            "observables": {
+                "edges": [],
+                "pageInfo": {
+                    "globalCount": 0
+                }
+            }
+        }
+    ]
+}

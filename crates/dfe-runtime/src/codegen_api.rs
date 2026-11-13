@@ -3800,14 +3800,13 @@ mod tests {
     }
 
     /// A space before the quote of a field that itself holds commas, read off
-    /// the first line in the Elastic data's
-    /// `cisco/umbrella/test-umbrella-dnslogs.log` that has one.
+    /// the first line in `tests/fixtures/cisco/umbrella/test-umbrella-dnslogs.log`
+    /// that has one.
     #[cfg(feature = "testutil")]
     #[test]
-    #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
     fn a_gap_before_a_quote_closes_so_the_field_reads_as_quoted() {
         let path =
-            crate::testutil::elastic_fixtures().join("cisco/umbrella/test-umbrella-dnslogs.log");
+            crate::testutil::fixtures().join("cisco/umbrella/test-umbrella-dnslogs.log");
         let text = std::fs::read_to_string(&path)
             .unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
         let line = text

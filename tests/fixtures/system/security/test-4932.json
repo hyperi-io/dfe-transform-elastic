@@ -1,0 +1,59 @@
+{
+  "events": [
+      {
+          "@timestamp": "2051-01-09T11:29:56.577Z",
+          "agent": {
+            "hostname": "Wfmmax1",
+            "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee",
+            "version": "7.3.1",
+            "type": "winlogbeat",
+            "ephemeral_id": "8ec27101-08f4-4601-88e9-5189fd145348"
+          },
+          "winlog": {
+            "event_id": 4932,
+            "provider_name": "Microsoft-Windows-Security-Auditing",
+            "opcode": "Info",
+            "event_data": {
+              "DestinationDRA": "CN=NTDS Settings,CN=SERVER2,CN=Servers,CN=city,CN=Sites,CN=Configuration,DC=test1,DC=local",
+              "SourceDRA": "CN=NTDS Settings,CN=CLIENT3,CN=Servers,CN=city,CN=Sites,CN=Configuration,DC=test1,DC=local",
+              "NamingContext": "DC=test1,DC=local",
+              "Options": "19",
+              "SessionID": "0",
+              "StartUSN": "12838"
+            },
+            "process": {
+              "thread": {
+                "id": 7112
+              },
+              "pid": 652
+            },
+            "record_id": 651073392,
+            "activity_id": "{9560F130-3BF9-0087-28D8-0823D55CF468}",
+            "channel": "Security",
+            "task": "Directory Service Replication",
+            "api": "wineventlog",
+            "computer_name": "Wfmmax1.xcyu5.local",
+            "keywords": [
+              "Audit Success"
+            ],
+            "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}"
+          },
+          "event": {
+            "kind": "event",
+            "code": 4932,
+            "action": "Directory Service Replication",
+            "created": "2051-01-09T11:29:58.351Z"
+          },
+          "log": {
+            "level": "information"
+          },
+          "message": "Synchronization of a replica of an Active Directory naming context has begun.\n\nDestination DRA:\tCN=NTDS Settings,CN=SERVER2,CN=Servers,CN=city,CN=Sites,CN=Configuration,DC=test1,DC=local\nSource DRA:\tCN=NTDS Settings,CN=CLIENT3,CN=Servers,CN=city,CN=Sites,CN=Configuration,DC=test1,DC=local\nNaming Context:\tDC=test1,DC=local\nOptions:\t\t19\nSession ID:\t0\nStart USN:\t᡿",
+          "ecs": {
+            "version": "1.0.1"
+          },
+          "host": {
+            "name": "Wfmmax1"
+          }
+      }
+  ]
+}

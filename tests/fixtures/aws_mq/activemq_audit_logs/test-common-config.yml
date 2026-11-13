@@ -1,0 +1,8 @@
+# Test inputs for this directory's fixtures.
+fields:
+  '@timestamp': '2053-03-20T11:07:58.223Z'
+  tags:
+  - preserve_original_event
+  - preserve_duplicate_custom_fields
+dynamic_fields:
+  event.ingested: .*

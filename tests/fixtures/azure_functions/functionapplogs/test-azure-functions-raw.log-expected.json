@@ -1,0 +1,71 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2051-05-23T20:11:59.000Z",
+      "azure": {
+        "category": "FunctionAppLogs",
+        "function": {
+          "app_name": "test-function",
+          "category": "Function.hello",
+          "event_id": 1,
+          "event_name": "FunctionStarted",
+          "host_instance_id": "ce54c449-6a32-4e9b-a29f-1ba5e16633f1",
+          "host_version": "198.51.100.154",
+          "invocation_id": "c822f623-e8c5-4637-9934-7318acb0a640",
+          "level": "Information",
+          "level_id": 2,
+          "message": "Executing Functions.hello (Reason=This function was programmatically called via the host APIs., Id=c822f623-e8c5-4637-9934-7318acb0a640)",
+          "name": "Functions.hello",
+          "process_id": 67,
+          "role_instance": "54108609-638204200593759681"
+        },
+        "operation_name": "Microsoft.Web/sites/functions/log",
+        "resource": {
+          "group": "TEST-RG",
+          "id": "/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/TEST-RG/PROVIDERS/MICROSOFT.WEB/SITES/TEST-FUNCTION",
+          "name": "TEST-FUNCTION",
+          "provider": "MICROSOFT.WEB/SITES"
+        },
+        "subscription_id": "58FBCBB3-64A1-440F-A5B0-8BD3413C41BB"
+      },
+      "cloud": {
+        "account": {
+          "id": "58FBCBB3-64A1-440F-A5B0-8BD3413C41BB"
+        },
+        "provider": "azure"
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "original": "{\"time\":\"2051-05-23T20:11:59Z\",\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/TEST-RG/PROVIDERS/MICROSOFT.WEB/SITES/TEST-FUNCTION\",\"category\":\"FunctionAppLogs\",\"operationName\":\"Microsoft.Web/sites/functions/log\",\"level\":\"Informational\",\"location\":\"East US\",\"properties\":{\"appName\":\"test-function\",\"roleInstance\":\"54108609-638204200593759681\",\"message\":\"Executing Functions.hello (Reason=This function was programmatically called via the host APIs., Id=c822f623-e8c5-4637-9934-7318acb0a640)\",\"category\":\"Function.hello\",\"hostVersion\":\"198.51.100.154\",\"functionInvocationId\":\"c822f623-e8c5-4637-9934-7318acb0a640\",\"functionName\":\"Functions.hello\",\"hostInstanceId\":\"ce54c449-6a32-4e9b-a29f-1ba5e16633f1\",\"level\":\"Information\",\"levelId\":2,\"processId\":67,\"eventId\":1,\"eventName\":\"FunctionStarted\"}}"
+      },
+      "observer": {
+        "product": "Azure Functions",
+        "type": "functions",
+        "vendor": "Azure"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"time\":\"2051-05-23T20:11:59Z\",\"resourceId\":\"/SUBSCRIPTIONS/58FBCBB3-64A1-440F-A5B0-8BD3413C41BB/RESOURCEGROUPS/TEST-RG/PROVIDERS/MICROSOFT.WEB/SITES/TEST-FUNCTION\",\"category\":\"FunctionAppLogs\",\"operationName\":\"Microsoft.Web/sites/functions/log\",\"level\":\"Informational\",\"location\":\"East US\",\"properties\":{\"appName\":\"test-function\",\"roleInstance\":\"54108609-638204200593759681\",\"message\":\"Executing Functions.hello (Reason=This function was programmatically called via the host APIs., Id=c822f623-e8c5-4637-9934-7318acb0a640)\",\"category\":\"Function.hello\",\"hostVersion\":\"198.51.100.154\",\"functionInvocationId\":\"c822f623-e8c5-4637-9934-7318acb0a640\",\"functionName\":\"Functions.hello\",\"hostInstanceId\":\"ce54c449-6a32-4e9b-a29f-1ba5e16633f1\",\"level\":\"Information\",\"levelId\":2,\"processId\":67,\"eventId\":1,\"eventName\":\"FunctionStarted\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "functionapplogs",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-azure_functions-functionapplogs-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "azure_functions",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

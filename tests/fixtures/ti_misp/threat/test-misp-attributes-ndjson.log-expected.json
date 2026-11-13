@@ -1,0 +1,2775 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-05-21T09:09:22.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload installation\",\"comment\":\"Contextual comment for the file md5 attribute\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3631\",\"first_seen\":null,\"id\":\"266258\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505200962\",\"to_ids\":false,\"type\":\"md5\",\"uuid\":\"42d11e97-c04e-4783-964f-4c754b982a08\",\"value\":\"81055ae9f32f8bb0c1dab5575a6d8d4a\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"1\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload installation",
+          "comment": "Contextual comment for the file md5 attribute",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3631",
+          "id": "266258",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:09:22.000Z",
+          "to_ids": false,
+          "type": "md5",
+          "uuid": "42d11e97-c04e-4783-964f-4c754b982a08"
+        },
+        "event": {
+          "attribute_count": 1,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3631",
+          "info": "Test event 1 just atrributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "3be70eb7-4534-4831-94e8-788fa4a2cef8"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "81055ae9f32f8bb0c1dab5575a6d8d4a"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T09:20:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"Artefact dropped for test 2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266259\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201475\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"04731f0d-4374-42b0-9228-7b3a11f3193f\",\"value\":\"68533aa6e73f2dd1d2ccf5384f2f6c1e\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Artifacts dropped",
+          "comment": "Artefact dropped for test 2",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3632",
+          "id": "266259",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:17:55.000Z",
+          "to_ids": true,
+          "type": "md5",
+          "uuid": "04731f0d-4374-42b0-9228-7b3a11f3193f"
+        },
+        "event": {
+          "attribute_count": 4,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3632",
+          "info": "Test event 2 just more atrributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "aeead784-bec0-4cc3-b6e7-ba2be730c441"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "68533aa6e73f2dd1d2ccf5384f2f6c1e"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T09:20:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Network activity\",\"comment\":\"Conext for domain type attribute event 2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266260\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201544\",\"to_ids\":true,\"type\":\"domain\",\"uuid\":\"c38a3b31-b299-4b83-98ef-139fc2932d4c\",\"value\":\"ddfcsh.tcacqj.local\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "Conext for domain type attribute event 2",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3632",
+          "id": "266260",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:19:04.000Z",
+          "to_ids": true,
+          "type": "domain",
+          "uuid": "c38a3b31-b299-4b83-98ef-139fc2932d4c"
+        },
+        "event": {
+          "attribute_count": 4,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3632",
+          "info": "Test event 2 just more atrributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "aeead784-bec0-4cc3-b6e7-ba2be730c441"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "domain-name",
+          "url": {
+            "domain": "ddfcsh.tcacqj.local"
+          }
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T09:20:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Network activity\",\"comment\":\"Ip-src attribute context for event2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266261\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201600\",\"to_ids\":false,\"type\":\"ip-src\",\"uuid\":\"4dda445f-5f68-4b5d-9c93-74b77238dd34\",\"value\":\"10.26.137.145\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "Ip-src attribute context for event2",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3632",
+          "id": "266261",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:20:00.000Z",
+          "to_ids": false,
+          "type": "ip-src",
+          "uuid": "4dda445f-5f68-4b5d-9c93-74b77238dd34"
+        },
+        "event": {
+          "attribute_count": 4,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3632",
+          "info": "Test event 2 just more atrributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "aeead784-bec0-4cc3-b6e7-ba2be730c441"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "ip": "10.26.137.145",
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "ipv4-addr"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T09:20:36.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Network activity\",\"comment\":\"ip-dst context for event id 2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266262\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201636\",\"to_ids\":true,\"type\":\"ip-dst\",\"uuid\":\"af7aff84-9041-4e1e-9044-57c65f4cfe92\",\"value\":\"192.168.202.32\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Network activity",
+          "comment": "ip-dst context for event id 2",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3632",
+          "id": "266262",
+          "object_id": "0",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:20:36.000Z",
+          "to_ids": true,
+          "type": "ip-dst",
+          "uuid": "af7aff84-9041-4e1e-9044-57c65f4cfe92"
+        },
+        "event": {
+          "attribute_count": 4,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3632",
+          "info": "Test event 2 just more atrributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 2,
+          "uuid": "aeead784-bec0-4cc3-b6e7-ba2be730c441"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "ip": "192.168.202.32",
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "ipv4-addr"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:22:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266267\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"fullpath\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"dc49aa79-668d-4df9-9b8d-fce3015067f4\",\"value\":\"\\\\the\\\\fullpath\\\\to the file\\\\filenameofobject.txt\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "266267",
+          "object_id": "18207",
+          "object_relation": "fullpath",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "dc49aa79-668d-4df9-9b8d-fce3015067f4",
+          "value": "\\the\\fullpath\\to the file\\filenameofobject.txt"
+        },
+        "context": {
+          "attribute": {
+            "category": "Payload delivery",
+            "comment": "filename contect for test event 3",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3633",
+            "id": "266263",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-21T09:27:09.000Z",
+            "to_ids": false,
+            "type": "filename",
+            "uuid": "8d059f2f-8ec1-447f-ae56-91e3be5ca1d8",
+            "value": "thetestfile.txt"
+          }
+        },
+        "event": {
+          "attribute_count": 6,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3633",
+          "info": "Test event 3 objects and attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1bac99e2-0292-435d-bcbd-dcc0105e2bc8"
+        },
+        "object": {
+          "comment": "File object for event 3",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "18207",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "uuid": "89b18cc9-8214-47c5-a91b-dbf9f437d0dc"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:22:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266268\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"size-in-bytes\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":false,\"type\":\"size-in-bytes\",\"uuid\":\"e624e4a9-60c3-4e42-bc1f-66acf3d0c049\",\"value\":\"505050\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "266268",
+          "object_id": "18207",
+          "object_relation": "size-in-bytes",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "to_ids": false,
+          "type": "size-in-bytes",
+          "uuid": "e624e4a9-60c3-4e42-bc1f-66acf3d0c049",
+          "value": "505050"
+        },
+        "context": {
+          "attribute": {
+            "category": "Payload delivery",
+            "comment": "filename contect for test event 3",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3633",
+            "id": "266263",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-21T09:27:09.000Z",
+            "to_ids": false,
+            "type": "filename",
+            "uuid": "8d059f2f-8ec1-447f-ae56-91e3be5ca1d8",
+            "value": "thetestfile.txt"
+          }
+        },
+        "event": {
+          "attribute_count": 6,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3633",
+          "info": "Test event 3 objects and attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1bac99e2-0292-435d-bcbd-dcc0105e2bc8"
+        },
+        "object": {
+          "comment": "File object for event 3",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "18207",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "uuid": "89b18cc9-8214-47c5-a91b-dbf9f437d0dc"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:22:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266264\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"md5\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"073e0367-7fee-4195-b80e-4e829e5dac42\",\"value\":\"81055ae9f32f8bb0c1dab5575a6d8d4a\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "266264",
+          "object_id": "18207",
+          "object_relation": "md5",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "to_ids": true,
+          "type": "md5",
+          "uuid": "073e0367-7fee-4195-b80e-4e829e5dac42"
+        },
+        "context": {
+          "attribute": {
+            "category": "Payload delivery",
+            "comment": "filename contect for test event 3",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3633",
+            "id": "266263",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-21T09:27:09.000Z",
+            "to_ids": false,
+            "type": "filename",
+            "uuid": "8d059f2f-8ec1-447f-ae56-91e3be5ca1d8",
+            "value": "thetestfile.txt"
+          }
+        },
+        "event": {
+          "attribute_count": 6,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3633",
+          "info": "Test event 3 objects and attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1bac99e2-0292-435d-bcbd-dcc0105e2bc8"
+        },
+        "object": {
+          "comment": "File object for event 3",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "18207",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "uuid": "89b18cc9-8214-47c5-a91b-dbf9f437d0dc"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "81055ae9f32f8bb0c1dab5575a6d8d4a"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:22:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266265\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"sha256\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":true,\"type\":\"sha256\",\"uuid\":\"528b5f3d-7d81-4ec7-a7af-bc8b0d6f200a\",\"value\":\"a08e60016f3aa14124ef623598bf027b691ae923fc37ab5c57c8943b426cb1df\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "266265",
+          "object_id": "18207",
+          "object_relation": "sha256",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "to_ids": true,
+          "type": "sha256",
+          "uuid": "528b5f3d-7d81-4ec7-a7af-bc8b0d6f200a"
+        },
+        "context": {
+          "attribute": {
+            "category": "Payload delivery",
+            "comment": "filename contect for test event 3",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3633",
+            "id": "266263",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-21T09:27:09.000Z",
+            "to_ids": false,
+            "type": "filename",
+            "uuid": "8d059f2f-8ec1-447f-ae56-91e3be5ca1d8",
+            "value": "thetestfile.txt"
+          }
+        },
+        "event": {
+          "attribute_count": 6,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3633",
+          "info": "Test event 3 objects and attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1bac99e2-0292-435d-bcbd-dcc0105e2bc8"
+        },
+        "object": {
+          "comment": "File object for event 3",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "18207",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "uuid": "89b18cc9-8214-47c5-a91b-dbf9f437d0dc"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha256": "a08e60016f3aa14124ef623598bf027b691ae923fc37ab5c57c8943b426cb1df"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:22:12.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266266\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"5461d637-0379-469b-9e03-143a02f0d9b3\",\"value\":\"filenameofobject.txt\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "266266",
+          "object_id": "18207",
+          "object_relation": "filename",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "to_ids": true,
+          "type": "filename",
+          "uuid": "5461d637-0379-469b-9e03-143a02f0d9b3"
+        },
+        "context": {
+          "attribute": {
+            "category": "Payload delivery",
+            "comment": "filename contect for test event 3",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3633",
+            "id": "266263",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-21T09:27:09.000Z",
+            "to_ids": false,
+            "type": "filename",
+            "uuid": "8d059f2f-8ec1-447f-ae56-91e3be5ca1d8",
+            "value": "thetestfile.txt"
+          }
+        },
+        "event": {
+          "attribute_count": 6,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3633",
+          "info": "Test event 3 objects and attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1bac99e2-0292-435d-bcbd-dcc0105e2bc8"
+        },
+        "object": {
+          "comment": "File object for event 3",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3633",
+          "id": "18207",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T09:32:28.000Z",
+          "uuid": "89b18cc9-8214-47c5-a91b-dbf9f437d0dc"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "name": "filenameofobject.txt"
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:09:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"266269\",\"last_seen\":null,\"object_id\":\"18208\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505204570\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"36c1c916-03be-4c7f-b1cb-38d4b0e10e27\",\"value\":\"Free text in the file object\"},\"ObjectReference\":[],\"comment\":\"File object for test event 4 \",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"18208\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505204570\",\"uuid\":\"939c834f-d381-4cde-8f9a-14a51e83daae\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"3\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3634\",\"info\":\"Test event 4 with object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2505204570\",\"uuid\":\"e84f7177-0e14-4c40-a232-5103ce0f699f\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3634",
+          "id": "266269",
+          "object_id": "18208",
+          "object_relation": "text",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:09:30.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "36c1c916-03be-4c7f-b1cb-38d4b0e10e27",
+          "value": "Free text in the file object"
+        },
+        "event": {
+          "attribute_count": 3,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3634",
+          "info": "Test event 4 with object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "e84f7177-0e14-4c40-a232-5103ce0f699f"
+        },
+        "object": {
+          "comment": "File object for test event 4 ",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3634",
+          "id": "18208",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:09:30.000Z",
+          "uuid": "939c834f-d381-4cde-8f9a-14a51e83daae"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:09:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"266270\",\"last_seen\":null,\"object_id\":\"18208\",\"object_relation\":\"sha256\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505204570\",\"to_ids\":true,\"type\":\"sha256\",\"uuid\":\"0d412773-242f-43d3-b75f-7dae0b52ff77\",\"value\":\"650cee3631045d1848db5dd9b5d84c0a8f8a9caf9b42be124478784e2cbdd286\"},\"ObjectReference\":[],\"comment\":\"File object for test event 4 \",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"18208\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505204570\",\"uuid\":\"939c834f-d381-4cde-8f9a-14a51e83daae\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"3\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3634\",\"info\":\"Test event 4 with object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2505204570\",\"uuid\":\"e84f7177-0e14-4c40-a232-5103ce0f699f\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3634",
+          "id": "266270",
+          "object_id": "18208",
+          "object_relation": "sha256",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:09:30.000Z",
+          "to_ids": true,
+          "type": "sha256",
+          "uuid": "0d412773-242f-43d3-b75f-7dae0b52ff77"
+        },
+        "event": {
+          "attribute_count": 3,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3634",
+          "info": "Test event 4 with object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "e84f7177-0e14-4c40-a232-5103ce0f699f"
+        },
+        "object": {
+          "comment": "File object for test event 4 ",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3634",
+          "id": "18208",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:09:30.000Z",
+          "uuid": "939c834f-d381-4cde-8f9a-14a51e83daae"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha256": "650cee3631045d1848db5dd9b5d84c0a8f8a9caf9b42be124478784e2cbdd286"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:09:30.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"266271\",\"last_seen\":null,\"object_id\":\"18208\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505204570\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"a08220c9-f710-4731-9a7c-3ce094a25605\",\"value\":\"filenameinmispobject.txt\"},\"ObjectReference\":[],\"comment\":\"File object for test event 4 \",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"18208\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505204570\",\"uuid\":\"939c834f-d381-4cde-8f9a-14a51e83daae\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"3\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3634\",\"info\":\"Test event 4 with object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2505204570\",\"uuid\":\"e84f7177-0e14-4c40-a232-5103ce0f699f\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3634",
+          "id": "266271",
+          "object_id": "18208",
+          "object_relation": "filename",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:09:30.000Z",
+          "to_ids": true,
+          "type": "filename",
+          "uuid": "a08220c9-f710-4731-9a7c-3ce094a25605"
+        },
+        "event": {
+          "attribute_count": 3,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3634",
+          "info": "Test event 4 with object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 3,
+          "uuid": "e84f7177-0e14-4c40-a232-5103ce0f699f"
+        },
+        "object": {
+          "comment": "File object for test event 4 ",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3634",
+          "id": "18208",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:09:30.000Z",
+          "uuid": "939c834f-d381-4cde-8f9a-14a51e83daae"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "name": "filenameinmispobject.txt"
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:19:39.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266272\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"859b3c78-4139-4d8e-abae-97d57cd80af1\",\"value\":\"Object 5 free text attribute in object\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "266272",
+          "object_id": "18209",
+          "object_relation": "text",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "859b3c78-4139-4d8e-abae-97d57cd80af1",
+          "value": "Object 5 free text attribute in object"
+        },
+        "event": {
+          "attribute_count": 5,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3635",
+          "info": "Test event 5 with an object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1c4611a7-83e1-4bdc-a5d2-b51a74fff10d"
+        },
+        "object": {
+          "comment": "event 5 object comment",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "18209",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "uuid": "a84df2ef-ac8b-49af-aea3-d95fa88905a3"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:19:39.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266275\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"entropy\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":false,\"type\":\"float\",\"uuid\":\"0283d933-2c85-4a16-ab27-c381a5b5f143\",\"value\":\"0.53535445\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "266275",
+          "object_id": "18209",
+          "object_relation": "entropy",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "to_ids": false,
+          "type": "float",
+          "uuid": "0283d933-2c85-4a16-ab27-c381a5b5f143",
+          "value": "0.53535445"
+        },
+        "event": {
+          "attribute_count": 5,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3635",
+          "info": "Test event 5 with an object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1c4611a7-83e1-4bdc-a5d2-b51a74fff10d"
+        },
+        "object": {
+          "comment": "event 5 object comment",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "18209",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "uuid": "a84df2ef-ac8b-49af-aea3-d95fa88905a3"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:19:39.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266276\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"size-in-bytes\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":false,\"type\":\"size-in-bytes\",\"uuid\":\"c4fb8ac7-cde2-4c3c-bd05-c8cd961fa4b9\",\"value\":\"55555\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "266276",
+          "object_id": "18209",
+          "object_relation": "size-in-bytes",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "to_ids": false,
+          "type": "size-in-bytes",
+          "uuid": "c4fb8ac7-cde2-4c3c-bd05-c8cd961fa4b9",
+          "value": "55555"
+        },
+        "event": {
+          "attribute_count": 5,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3635",
+          "info": "Test event 5 with an object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1c4611a7-83e1-4bdc-a5d2-b51a74fff10d"
+        },
+        "object": {
+          "comment": "event 5 object comment",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "18209",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "uuid": "a84df2ef-ac8b-49af-aea3-d95fa88905a3"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:19:39.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266273\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"sha256\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":true,\"type\":\"sha256\",\"uuid\":\"779c31ef-9905-4940-8606-033439f68005\",\"value\":\"255dfa7515975c4400bb2ad4e0d84d3f0e9f7bbe7a05ab357419577e2cafc833\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "266273",
+          "object_id": "18209",
+          "object_relation": "sha256",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "to_ids": true,
+          "type": "sha256",
+          "uuid": "779c31ef-9905-4940-8606-033439f68005"
+        },
+        "event": {
+          "attribute_count": 5,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3635",
+          "info": "Test event 5 with an object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1c4611a7-83e1-4bdc-a5d2-b51a74fff10d"
+        },
+        "object": {
+          "comment": "event 5 object comment",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "18209",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "uuid": "a84df2ef-ac8b-49af-aea3-d95fa88905a3"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "sha256": "255dfa7515975c4400bb2ad4e0d84d3f0e9f7bbe7a05ab357419577e2cafc833"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-21T10:19:39.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266274\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"e3b2f0a7-e5c0-4683-9ea4-fb8b7b784b7d\",\"value\":\"object5.txt\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "266274",
+          "object_id": "18209",
+          "object_relation": "filename",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "to_ids": true,
+          "type": "filename",
+          "uuid": "e3b2f0a7-e5c0-4683-9ea4-fb8b7b784b7d"
+        },
+        "event": {
+          "attribute_count": 5,
+          "date": "2049-05-21",
+          "disable_correlation": false,
+          "distribution": 1,
+          "extends_uuid": "",
+          "id": "3635",
+          "info": "Test event 5 with an object",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "1c4611a7-83e1-4bdc-a5d2-b51a74fff10d"
+        },
+        "object": {
+          "comment": "event 5 object comment",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3635",
+          "id": "18209",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-21T10:19:39.000Z",
+          "uuid": "a84df2ef-ac8b-49af-aea3-d95fa88905a3"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "name": "object5.txt"
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266278\",\"last_seen\":null,\"object_id\":\"18210\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813148\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"162f73a6-b622-43b1-835d-4f2efb901330\",\"value\":\"Excutable create bad pipe\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18210\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505813148\",\"uuid\":\"dab94f70-d9a5-48da-8c9a-9b5bdb1d4985\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266278",
+          "object_id": "18210",
+          "object_relation": "text",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:12:28.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "162f73a6-b622-43b1-835d-4f2efb901330",
+          "value": "Excutable create bad pipe"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18210",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-28T11:12:28.000Z",
+          "uuid": "dab94f70-d9a5-48da-8c9a-9b5bdb1d4985"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266281\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"size-in-bytes\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"size-in-bytes\",\"uuid\":\"3ee5236f-bc61-4194-b709-1b04715ecf62\",\"value\":\"3892\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266281",
+          "object_id": "18211",
+          "object_relation": "size-in-bytes",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "to_ids": false,
+          "type": "size-in-bytes",
+          "uuid": "3ee5236f-bc61-4194-b709-1b04715ecf62",
+          "value": "3892"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "Object describing a section of a Portable Executable",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18211",
+          "meta_category": "file",
+          "name": "pe-section",
+          "sharing_group_id": "0",
+          "template_uuid": "647a65c2-a527-4e77-9e87-5ad9b142598f",
+          "template_version": "3",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "uuid": "796ac096-61f1-4ac7-aa61-d7cb4acbda7c"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266283\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"name\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"c37a0af8-b99c-417c-8ce0-8577341d2913\",\"value\":\".data\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266283",
+          "object_id": "18211",
+          "object_relation": "name",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "c37a0af8-b99c-417c-8ce0-8577341d2913",
+          "value": ".data"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "Object describing a section of a Portable Executable",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18211",
+          "meta_category": "file",
+          "name": "pe-section",
+          "sharing_group_id": "0",
+          "template_uuid": "647a65c2-a527-4e77-9e87-5ad9b142598f",
+          "template_version": "3",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "uuid": "796ac096-61f1-4ac7-aa61-d7cb4acbda7c"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266284\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"bc66645e-b197-4793-b76f-e27f8594b2c8\",\"value\":\"Extracted zip archive data\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266284",
+          "object_id": "18211",
+          "object_relation": "text",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "to_ids": false,
+          "type": "text",
+          "uuid": "bc66645e-b197-4793-b76f-e27f8594b2c8",
+          "value": "Extracted zip archive data"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "Object describing a section of a Portable Executable",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18211",
+          "meta_category": "file",
+          "name": "pe-section",
+          "sharing_group_id": "0",
+          "template_uuid": "647a65c2-a527-4e77-9e87-5ad9b142598f",
+          "template_version": "3",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "uuid": "796ac096-61f1-4ac7-aa61-d7cb4acbda7c"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266285\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"entropy\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"float\",\"uuid\":\"b33a1dbf-67f1-4fa0-b646-5dfe2576d0bb\",\"value\":\"7.93280431051\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Other",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266285",
+          "object_id": "18211",
+          "object_relation": "entropy",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "to_ids": false,
+          "type": "float",
+          "uuid": "b33a1dbf-67f1-4fa0-b646-5dfe2576d0bb",
+          "value": "7.93280431051"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "Object describing a section of a Portable Executable",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18211",
+          "meta_category": "file",
+          "name": "pe-section",
+          "sharing_group_id": "0",
+          "template_uuid": "647a65c2-a527-4e77-9e87-5ad9b142598f",
+          "template_version": "3",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "uuid": "796ac096-61f1-4ac7-aa61-d7cb4acbda7c"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "provider": "misp",
+          "scanner_stats": 0
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266279\",\"last_seen\":null,\"object_id\":\"18210\",\"object_relation\":\"md5\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813148\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"1e34e615-5ae7-46f9-b824-4445825af848\",\"value\":\"4450332ccd47620b07826ae7f521dcc0\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18210\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505813148\",\"uuid\":\"dab94f70-d9a5-48da-8c9a-9b5bdb1d4985\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266279",
+          "object_id": "18210",
+          "object_relation": "md5",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:12:28.000Z",
+          "to_ids": true,
+          "type": "md5",
+          "uuid": "1e34e615-5ae7-46f9-b824-4445825af848"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18210",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-28T11:12:28.000Z",
+          "uuid": "dab94f70-d9a5-48da-8c9a-9b5bdb1d4985"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "4450332ccd47620b07826ae7f521dcc0"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266282\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"md5\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"e2d8285c-2709-4853-adf7-1c52aaed448d\",\"value\":\"9154845ffe15141d02219cc3e305fdd4\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": false,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266282",
+          "object_id": "18211",
+          "object_relation": "md5",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "to_ids": true,
+          "type": "md5",
+          "uuid": "e2d8285c-2709-4853-adf7-1c52aaed448d"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "Object describing a section of a Portable Executable",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18211",
+          "meta_category": "file",
+          "name": "pe-section",
+          "sharing_group_id": "0",
+          "template_uuid": "647a65c2-a527-4e77-9e87-5ad9b142598f",
+          "template_version": "3",
+          "timestamp": "2049-05-28T11:19:40.000Z",
+          "uuid": "796ac096-61f1-4ac7-aa61-d7cb4acbda7c"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "hash": {
+              "md5": "9154845ffe15141d02219cc3e305fdd4"
+            }
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    },
+    {
+      "@timestamp": "2049-05-28T11:19:41.000Z",
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "category": [
+          "threat"
+        ],
+        "kind": "enrichment",
+        "original": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266280\",\"last_seen\":null,\"object_id\":\"18210\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813148\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"4deaa077-f9eb-4b0f-af59-e4fa481615b9\",\"value\":\"badmojopipe.exe\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18210\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505813148\",\"uuid\":\"dab94f70-d9a5-48da-8c9a-9b5bdb1d4985\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+        "type": [
+          "indicator"
+        ]
+      },
+      "misp": {
+        "attribute": {
+          "category": "Payload delivery",
+          "comment": "",
+          "deleted": false,
+          "disable_correlation": true,
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "266280",
+          "object_id": "18210",
+          "object_relation": "filename",
+          "sharing_group_id": "0",
+          "timestamp": "2049-05-28T11:12:28.000Z",
+          "to_ids": true,
+          "type": "filename",
+          "uuid": "4deaa077-f9eb-4b0f-af59-e4fa481615b9"
+        },
+        "context": {
+          "attribute": {
+            "category": "Artifacts dropped",
+            "comment": "",
+            "deleted": false,
+            "disable_correlation": false,
+            "distribution": 5,
+            "event_id": "3636",
+            "id": "266277",
+            "object_id": "0",
+            "sharing_group_id": "0",
+            "timestamp": "2049-05-28T11:10:49.000Z",
+            "to_ids": false,
+            "type": "windows-service-name",
+            "uuid": "2ed85b24-44f7-4194-8a1c-2bb9f91d40fb",
+            "value": "badmojopipe"
+          }
+        },
+        "event": {
+          "attribute_count": 9,
+          "date": "2049-05-28",
+          "disable_correlation": false,
+          "distribution": 0,
+          "extends_uuid": "",
+          "id": "3636",
+          "info": "Test event 6 with multiple objects and multiple attributes",
+          "locked": false,
+          "org_id": "1",
+          "orgc_id": "1",
+          "proposal_email_lock": false,
+          "publish_timestamp": "1970-01-01T00:00:00.000Z",
+          "published": false,
+          "sharing_group_id": "0",
+          "threat_level_id": 1,
+          "uuid": "22aae2a2-bd28-4bdc-9e1e-342a5de348ca"
+        },
+        "object": {
+          "comment": "",
+          "deleted": false,
+          "description": "File object describing a file with meta-information",
+          "distribution": 5,
+          "event_id": "3636",
+          "id": "18210",
+          "meta_category": "file",
+          "name": "file",
+          "sharing_group_id": "0",
+          "template_uuid": "179d52bf-3eeb-48f7-8112-4da0242e4837",
+          "template_version": "22",
+          "timestamp": "2049-05-28T11:12:28.000Z",
+          "uuid": "dab94f70-d9a5-48da-8c9a-9b5bdb1d4985"
+        },
+        "orgc": {
+          "id": "1",
+          "local": true,
+          "name": "ORGNAME",
+          "uuid": "79cebd9f-be7d-4977-99f7-d723e3164262"
+        }
+      },
+      "tags": [
+        "preserve_original_event"
+      ],
+      "threat": {
+        "feed": {
+          "name": "MISP"
+        },
+        "indicator": {
+          "file": {
+            "name": "badmojopipe.exe"
+          },
+          "provider": "misp",
+          "scanner_stats": 0,
+          "type": "file"
+        }
+      },
+      "user": {
+        "email": "admin@admin.test",
+        "roles": [
+          "reporting_user"
+        ]
+      }
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload installation\",\"comment\":\"Contextual comment for the file md5 attribute\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3631\",\"first_seen\":null,\"id\":\"266258\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505200962\",\"to_ids\":false,\"type\":\"md5\",\"uuid\":\"42d11e97-c04e-4783-964f-4c754b982a08\",\"value\":\"81055ae9f32f8bb0c1dab5575a6d8d4a\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"1\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"Artefact dropped for test 2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266259\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201475\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"04731f0d-4374-42b0-9228-7b3a11f3193f\",\"value\":\"68533aa6e73f2dd1d2ccf5384f2f6c1e\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Network activity\",\"comment\":\"Conext for domain type attribute event 2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266260\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201544\",\"to_ids\":true,\"type\":\"domain\",\"uuid\":\"c38a3b31-b299-4b83-98ef-139fc2932d4c\",\"value\":\"ddfcsh.tcacqj.local\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Network activity\",\"comment\":\"Ip-src attribute context for event2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266261\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201600\",\"to_ids\":false,\"type\":\"ip-src\",\"uuid\":\"4dda445f-5f68-4b5d-9c93-74b77238dd34\",\"value\":\"10.26.137.145\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Network activity\",\"comment\":\"ip-dst context for event id 2\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3632\",\"first_seen\":null,\"id\":\"266262\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505201636\",\"to_ids\":true,\"type\":\"ip-dst\",\"uuid\":\"af7aff84-9041-4e1e-9044-57c65f4cfe92\",\"value\":\"192.168.202.32\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":[],\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"2\",\"name\":\"CIRCL\",\"uuid\":\"12b9bf4e-1a13-48c6-961a-79d9088c108f\"},\"analysis\":\"2\",\"date\":\"2046-03-26\",\"distribution\":\"3\",\"id\":\"684\",\"info\":\"OSINT - Forgot About Default Accounts? No Worries, GoScanSSH Didn’t\",\"org_id\":\"1\",\"orgc_id\":\"2\",\"published\":true,\"threat_level_id\":\"3\",\"timestamp\":\"2407478036\",\"uuid\":\"9daac7b6-c228-4408-9376-1c9b617a039d\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"4\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3632\",\"info\":\"Test event 2 just more atrributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"2\",\"timestamp\":\"2505201636\",\"uuid\":\"aeead784-bec0-4cc3-b6e7-ba2be730c441\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266267\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"fullpath\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"dc49aa79-668d-4df9-9b8d-fce3015067f4\",\"value\":\"\\\\the\\\\fullpath\\\\to the file\\\\filenameofobject.txt\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266268\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"size-in-bytes\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":false,\"type\":\"size-in-bytes\",\"uuid\":\"e624e4a9-60c3-4e42-bc1f-66acf3d0c049\",\"value\":\"505050\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266264\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"md5\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"073e0367-7fee-4195-b80e-4e829e5dac42\",\"value\":\"81055ae9f32f8bb0c1dab5575a6d8d4a\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266265\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"sha256\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":true,\"type\":\"sha256\",\"uuid\":\"528b5f3d-7d81-4ec7-a7af-bc8b0d6f200a\",\"value\":\"a08e60016f3aa14124ef623598bf027b691ae923fc37ab5c57c8943b426cb1df\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"filename contect for test event 3\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266263\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505202029\",\"to_ids\":false,\"type\":\"filename\",\"uuid\":\"8d059f2f-8ec1-447f-ae56-91e3be5ca1d8\",\"value\":\"thetestfile.txt\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"266266\",\"last_seen\":null,\"object_id\":\"18207\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505202348\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"5461d637-0379-469b-9e03-143a02f0d9b3\",\"value\":\"filenameofobject.txt\"},\"ObjectReference\":[],\"comment\":\"File object for event 3\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3633\",\"first_seen\":null,\"id\":\"18207\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505202348\",\"uuid\":\"89b18cc9-8214-47c5-a91b-dbf9f437d0dc\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[{\"Event\":{\"Org\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"analysis\":\"0\",\"date\":\"2049-05-21\",\"distribution\":\"1\",\"id\":\"3631\",\"info\":\"Test event 1 just atrributes\",\"org_id\":\"1\",\"orgc_id\":\"1\",\"published\":false,\"threat_level_id\":\"1\",\"timestamp\":\"2505200962\",\"uuid\":\"3be70eb7-4534-4831-94e8-788fa4a2cef8\"}}],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"6\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3633\",\"info\":\"Test event 3 objects and attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205332\",\"uuid\":\"1bac99e2-0292-435d-bcbd-dcc0105e2bc8\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"266269\",\"last_seen\":null,\"object_id\":\"18208\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505204570\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"36c1c916-03be-4c7f-b1cb-38d4b0e10e27\",\"value\":\"Free text in the file object\"},\"ObjectReference\":[],\"comment\":\"File object for test event 4 \",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"18208\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505204570\",\"uuid\":\"939c834f-d381-4cde-8f9a-14a51e83daae\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"3\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3634\",\"info\":\"Test event 4 with object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2505204570\",\"uuid\":\"e84f7177-0e14-4c40-a232-5103ce0f699f\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"266270\",\"last_seen\":null,\"object_id\":\"18208\",\"object_relation\":\"sha256\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505204570\",\"to_ids\":true,\"type\":\"sha256\",\"uuid\":\"0d412773-242f-43d3-b75f-7dae0b52ff77\",\"value\":\"650cee3631045d1848db5dd9b5d84c0a8f8a9caf9b42be124478784e2cbdd286\"},\"ObjectReference\":[],\"comment\":\"File object for test event 4 \",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"18208\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505204570\",\"uuid\":\"939c834f-d381-4cde-8f9a-14a51e83daae\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"3\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3634\",\"info\":\"Test event 4 with object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2505204570\",\"uuid\":\"e84f7177-0e14-4c40-a232-5103ce0f699f\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"266271\",\"last_seen\":null,\"object_id\":\"18208\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505204570\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"a08220c9-f710-4731-9a7c-3ce094a25605\",\"value\":\"filenameinmispobject.txt\"},\"ObjectReference\":[],\"comment\":\"File object for test event 4 \",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3634\",\"first_seen\":null,\"id\":\"18208\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505204570\",\"uuid\":\"939c834f-d381-4cde-8f9a-14a51e83daae\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"3\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3634\",\"info\":\"Test event 4 with object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"3\",\"timestamp\":\"2505204570\",\"uuid\":\"e84f7177-0e14-4c40-a232-5103ce0f699f\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266272\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"859b3c78-4139-4d8e-abae-97d57cd80af1\",\"value\":\"Object 5 free text attribute in object\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266275\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"entropy\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":false,\"type\":\"float\",\"uuid\":\"0283d933-2c85-4a16-ab27-c381a5b5f143\",\"value\":\"0.53535445\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266276\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"size-in-bytes\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":false,\"type\":\"size-in-bytes\",\"uuid\":\"c4fb8ac7-cde2-4c3c-bd05-c8cd961fa4b9\",\"value\":\"55555\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266273\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"sha256\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":true,\"type\":\"sha256\",\"uuid\":\"779c31ef-9905-4940-8606-033439f68005\",\"value\":\"255dfa7515975c4400bb2ad4e0d84d3f0e9f7bbe7a05ab357419577e2cafc833\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":[],\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"266274\",\"last_seen\":null,\"object_id\":\"18209\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505205179\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"e3b2f0a7-e5c0-4683-9ea4-fb8b7b784b7d\",\"value\":\"object5.txt\"},\"ObjectReference\":[],\"comment\":\"event 5 object comment\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3635\",\"first_seen\":null,\"id\":\"18209\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505205179\",\"uuid\":\"a84df2ef-ac8b-49af-aea3-d95fa88905a3\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"5\",\"date\":\"2049-05-21\",\"disable_correlation\":false,\"distribution\":\"1\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3635\",\"info\":\"Test event 5 with an object\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505205179\",\"uuid\":\"1c4611a7-83e1-4bdc-a5d2-b51a74fff10d\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266278\",\"last_seen\":null,\"object_id\":\"18210\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813148\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"162f73a6-b622-43b1-835d-4f2efb901330\",\"value\":\"Excutable create bad pipe\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18210\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505813148\",\"uuid\":\"dab94f70-d9a5-48da-8c9a-9b5bdb1d4985\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266281\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"size-in-bytes\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"size-in-bytes\",\"uuid\":\"3ee5236f-bc61-4194-b709-1b04715ecf62\",\"value\":\"3892\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266283\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"name\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"c37a0af8-b99c-417c-8ce0-8577341d2913\",\"value\":\".data\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266284\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"text\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"text\",\"uuid\":\"bc66645e-b197-4793-b76f-e27f8594b2c8\",\"value\":\"Extracted zip archive data\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Other\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266285\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"entropy\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":false,\"type\":\"float\",\"uuid\":\"b33a1dbf-67f1-4fa0-b646-5dfe2576d0bb\",\"value\":\"7.93280431051\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266279\",\"last_seen\":null,\"object_id\":\"18210\",\"object_relation\":\"md5\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813148\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"1e34e615-5ae7-46f9-b824-4445825af848\",\"value\":\"4450332ccd47620b07826ae7f521dcc0\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18210\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505813148\",\"uuid\":\"dab94f70-d9a5-48da-8c9a-9b5bdb1d4985\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266282\",\"last_seen\":null,\"object_id\":\"18211\",\"object_relation\":\"md5\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813580\",\"to_ids\":true,\"type\":\"md5\",\"uuid\":\"e2d8285c-2709-4853-adf7-1c52aaed448d\",\"value\":\"9154845ffe15141d02219cc3e305fdd4\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"Object describing a section of a Portable Executable\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18211\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"pe-section\",\"sharing_group_id\":\"0\",\"template_uuid\":\"647a65c2-a527-4e77-9e87-5ad9b142598f\",\"template_version\":\"3\",\"timestamp\":\"2505813580\",\"uuid\":\"796ac096-61f1-4ac7-aa61-d7cb4acbda7c\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "message": "{\"Event\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Artifacts dropped\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":false,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266277\",\"last_seen\":null,\"object_id\":\"0\",\"object_relation\":null,\"sharing_group_id\":\"0\",\"timestamp\":\"2505813049\",\"to_ids\":false,\"type\":\"windows-service-name\",\"uuid\":\"2ed85b24-44f7-4194-8a1c-2bb9f91d40fb\",\"value\":\"badmojopipe\"},\"EventReport\":[],\"Galaxy\":[],\"Object\":{\"Attribute\":{\"Galaxy\":[],\"ShadowAttribute\":[],\"category\":\"Payload delivery\",\"comment\":\"\",\"deleted\":false,\"disable_correlation\":true,\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"266280\",\"last_seen\":null,\"object_id\":\"18210\",\"object_relation\":\"filename\",\"sharing_group_id\":\"0\",\"timestamp\":\"2505813148\",\"to_ids\":true,\"type\":\"filename\",\"uuid\":\"4deaa077-f9eb-4b0f-af59-e4fa481615b9\",\"value\":\"badmojopipe.exe\"},\"ObjectReference\":[],\"comment\":\"\",\"deleted\":false,\"description\":\"File object describing a file with meta-information\",\"distribution\":\"5\",\"event_id\":\"3636\",\"first_seen\":null,\"id\":\"18210\",\"last_seen\":null,\"meta-category\":\"file\",\"name\":\"file\",\"sharing_group_id\":\"0\",\"template_uuid\":\"179d52bf-3eeb-48f7-8112-4da0242e4837\",\"template_version\":\"22\",\"timestamp\":\"2505813148\",\"uuid\":\"dab94f70-d9a5-48da-8c9a-9b5bdb1d4985\"},\"Org\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"Orgc\":{\"id\":\"1\",\"local\":true,\"name\":\"ORGNAME\",\"uuid\":\"79cebd9f-be7d-4977-99f7-d723e3164262\"},\"RelatedEvent\":[],\"ShadowAttribute\":[],\"analysis\":\"0\",\"attribute_count\":\"9\",\"date\":\"2049-05-28\",\"disable_correlation\":false,\"distribution\":\"0\",\"event_creator_email\":\"admin@admin.test\",\"extends_uuid\":\"\",\"id\":\"3636\",\"info\":\"Test event 6 with multiple objects and multiple attributes\",\"locked\":false,\"org_id\":\"1\",\"orgc_id\":\"1\",\"proposal_email_lock\":false,\"publish_timestamp\":\"0\",\"published\":false,\"sharing_group_id\":\"0\",\"threat_level_id\":\"1\",\"timestamp\":\"2505813581\",\"uuid\":\"22aae2a2-bd28-4bdc-9e1e-342a5de348ca\"}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "threat",
+    "dynamic_fields": {},
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-ti_misp-threat-default",
+    "event_count": 26,
+    "numeric_keyword_fields": [],
+    "package": "ti_misp",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

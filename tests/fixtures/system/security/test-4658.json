@@ -1,0 +1,60 @@
+{
+  "events": [
+    {
+      "@timestamp": "2051-01-06T05:50:32.050Z",
+      "host": {
+        "name": "Wfmmax1"
+      },
+      "agent": {
+        "version": "7.3.1",
+        "type": "winlogbeat",
+        "ephemeral_id": "8ec27101-08f4-4601-88e9-5189fd145348",
+        "hostname": "Wfmmax1",
+        "id": "c16166d9-bc07-4cc5-ab7b-59502a1f8eee"
+      },
+      "log": {
+        "level": "information"
+      },
+      "message": "The handle to an object was closed.\n\nSubject :\n\tSecurity ID:\t\tS-1-5-20\n\tAccount Name:\t\tSERVER2$\n\tAccount Domain:\t\tTEST1\n\tLogon ID:\t\t0x3E4\n\nObject:\n\tObject Server:\t\tSecurity\n\tHandle ID:\t\t0x3b0\n\nProcess Information:\n\tProcess ID:\t\t0x92c\n\tProcess Name:\t\tC:\\Windows\\System32\\wbem\\WmiPrvSE.exe",
+      "winlog": {
+        "computer_name": "Wfmmax1.xcyu5.local",
+        "opcode": "Info",
+        "channel": "Security",
+        "process": {
+          "pid": 4,
+          "thread": {
+            "id": 2716
+          }
+        },
+        "event_data": {
+          "SubjectLogonId": "0x3e4",
+          "ObjectServer": "Security",
+          "HandleId": "0x3b0",
+          "ProcessId": "0x92c",
+          "ProcessName": "C:\\Windows\\System32\\wbem\\WmiPrvSE.exe",
+          "SubjectUserSid": "S-1-5-20",
+          "SubjectUserName": "WFMMAX1$",
+          "SubjectDomainName": "TEST1"
+        },
+        "provider_name": "Microsoft-Windows-Security-Auditing",
+        "record_id": 633857954,
+        "task": "Removable Storage",
+        "api": "wineventlog",
+        "keywords": [
+          "Audit Success"
+        ],
+        "event_id": 4658,
+        "provider_guid": "{35176868-7249-4208-A5CE-5E4A0085B00A}"
+      },
+      "event": {
+        "kind": "event",
+        "code": 4658,
+        "action": "Removable Storage",
+        "created": "2051-01-06T05:50:33.603Z"
+      },
+      "ecs": {
+        "version": "1.0.1"
+      }
+    }
+  ]
+}

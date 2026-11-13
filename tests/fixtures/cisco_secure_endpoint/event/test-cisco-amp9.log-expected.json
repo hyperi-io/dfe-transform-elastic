@@ -1,0 +1,114 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-01-14T13:06:17.000Z",
+      "cisco": {
+        "secure_endpoint": {
+          "computer": {
+            "active": true,
+            "external_ip": "198.51.100.211",
+            "network_addresses": [
+              {
+                "ip": "10.182.2.165",
+                "mac": "80:11:56:ae:48:20"
+              }
+            ]
+          },
+          "connector_guid": "test_connector_guid",
+          "detection": "W32.File.MalParent",
+          "detection_id": "6419204901661835278",
+          "event_type_id": 1090519054,
+          "file": {
+            "disposition": "Malicious"
+          },
+          "related": {
+            "mac": [
+              "80-11-56-AE-48-20"
+            ]
+          }
+        }
+      },
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "Threat Detected",
+        "category": [
+          "file",
+          "malware"
+        ],
+        "code": "1090519054",
+        "id": "6419204901661835000",
+        "kind": "alert",
+        "original": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?limit=500&offset=500\",\"prev\":\"https://api.eu.amp.cisco.com/v1/events?limit=500&offset=0\"},\"results\":{\"total\":972,\"current_item_count\":472,\"index\":500,\"items_per_page\":500}},\"data\":{\"id\":6419204901661835000,\"timestamp\":2494242377,\"timestamp_nanoseconds\":443000000,\"date\":\"2049-01-14T13:06:17+00:00\",\"event_type\":\"Threat Detected\",\"event_type_id\":1090519054,\"detection\":\"W32.File.MalParent\",\"detection_id\":\"6419204901661835278\",\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Medium\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"Dbhn_VeptaEqj_Seszlvscub\",\"external_ip\":\"198.51.100.211\",\"user\":\"Not Available\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/test_computer\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/test_computer/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/test_group\"}},\"file\":{\"disposition\":\"Malicious\",\"file_name\":\"tasksche.exe\",\"file_path\":\"\\\\\\\\?\\\\C:\\\\ProgramData\\\\qzkbplcgew884\\\\tasksche.exe\",\"identity\":{\"sha256\":\"ff53fcefc2cc6fcca227bb4b24fb7c2907700326290359e6d4bcdf7e335a91ea\"}}}}",
+        "severity": 2
+      },
+      "file": {
+        "hash": {
+          "sha256": "ff53fcefc2cc6fcca227bb4b24fb7c2907700326290359e6d4bcdf7e335a91ea"
+        },
+        "name": "tasksche.exe",
+        "path": "\\\\?\\C:\\ProgramData\\qzkbplcgew884\\tasksche.exe"
+      },
+      "group": {
+        "id": [
+          "test_group_guid"
+        ]
+      },
+      "host": {
+        "hostname": "Dbhn_VeptaEqj_Seszlvscub",
+        "id": "test_connector_guid",
+        "ip": [
+          "10.182.2.165"
+        ],
+        "mac": [
+          "80-11-56-AE-48-20"
+        ],
+        "name": "dbhn_veptaeqj_seszlvscub",
+        "os": {
+          "family": "windows",
+          "platform": "windows"
+        }
+      },
+      "related": {
+        "hash": [
+          "ff53fcefc2cc6fcca227bb4b24fb7c2907700326290359e6d4bcdf7e335a91ea"
+        ],
+        "hosts": [
+          "dbhn_veptaeqj_seszlvscub"
+        ],
+        "ip": [
+          "198.51.100.211",
+          "10.182.2.165"
+        ]
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "message": "{\"version\":\"v1.2.0\",\"metadata\":{\"links\":{\"self\":\"https://api.eu.amp.cisco.com/v1/events?limit=500&offset=500\",\"prev\":\"https://api.eu.amp.cisco.com/v1/events?limit=500&offset=0\"},\"results\":{\"total\":972,\"current_item_count\":472,\"index\":500,\"items_per_page\":500}},\"data\":{\"id\":6419204901661835000,\"timestamp\":2494242377,\"timestamp_nanoseconds\":443000000,\"date\":\"2049-01-14T13:06:17+00:00\",\"event_type\":\"Threat Detected\",\"event_type_id\":1090519054,\"detection\":\"W32.File.MalParent\",\"detection_id\":\"6419204901661835278\",\"connector_guid\":\"test_connector_guid\",\"group_guids\":[\"test_group_guid\"],\"severity\":\"Medium\",\"computer\":{\"connector_guid\":\"test_connector_guid\",\"hostname\":\"Dbhn_VeptaEqj_Seszlvscub\",\"external_ip\":\"198.51.100.211\",\"user\":\"Not Available\",\"active\":true,\"network_addresses\":[{\"ip\":\"10.182.2.165\",\"mac\":\"80:11:56:ae:48:20\"}],\"links\":{\"computer\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/test_computer\",\"trajectory\":\"worgx://aym.cr.fkj.dwoar.com/v1/computers/test_computer/trajectory\",\"group\":\"https://api.eu.amp.cisco.com/v1/groups/test_group\"}},\"file\":{\"disposition\":\"Malicious\",\"file_name\":\"tasksche.exe\",\"file_path\":\"\\\\\\\\?\\\\C:\\\\ProgramData\\\\qzkbplcgew884\\\\tasksche.exe\",\"identity\":{\"sha256\":\"ff53fcefc2cc6fcca227bb4b24fb7c2907700326290359e6d4bcdf7e335a91ea\"}}}}",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "event",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-cisco_secure_endpoint-event-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "cisco_secure_endpoint",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

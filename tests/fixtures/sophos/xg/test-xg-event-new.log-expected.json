@@ -1,0 +1,289 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2049-11-15T20:52:23.000-06:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "60020",
+        "kind": "event",
+        "original": "Nov 16 02:52:23 sophos device_name=\"VER\" timestamp=\"2049-11-15T20:52:23-0600\" device_model=\"SFVH\" device_serial_id=\"C01001BQC8TFFFF\" log_id=063411660020 log_type=\"Event\" log_component=\"DHCP Server\" log_subtype=\"System\" log_version=1 status=\"Renew\" severity=\"Information\" reported_ip=\"192.168.241.75\" src_mac=\"78:83:b5:b9:35:34\" reported_host=\"TIVO-846001190AE52F2\" message=\"Lease IP 192.168.103.67 renewed for MAC 78:83:b5:b9:35:34\" lease_time=\"345600\"",
+        "severity": 6,
+        "timezone": "-06:00"
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "Lease IP 192.168.103.67 renewed for MAC 78:83:b5:b9:35:34",
+      "observer": {
+        "hostname": "sophos",
+        "product": "XG",
+        "serial_number": "C01001BQC8TFFFF",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device_model": "SFVH",
+          "device_name": "VER",
+          "lease_time": "345600",
+          "log_component": "DHCP Server",
+          "log_id": "063411660020",
+          "log_subtype": "System",
+          "log_type": "Event",
+          "log_version": "1",
+          "reported_host": "TIVO-846001190AE52F2",
+          "reported_ip": "192.168.241.75",
+          "status": "Renew"
+        }
+      },
+      "source": {
+        "mac": "78-83-B5-B9-35-34"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-15T20:57:56.000-06:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "60020",
+        "kind": "event",
+        "original": "Nov 16 02:57:56 sophos device_name=\"VER\" timestamp=\"2049-11-15T20:57:56-0600\" device_model=\"SFVH\" device_serial_id=\"C01001BQC8TFFFF\" log_id=063411660020 log_type=\"Event\" log_component=\"DHCP Server\" log_subtype=\"System\" log_version=1 status=\"Renew\" severity=\"Information\" reported_ip=\"192.168.255.217\" src_mac=\"03:50:4f:4f:EB:ee\" reported_host=\"TIZEN-ODg6NTc6MUQ6MkQ6MTk6REIKK\" message=\"Lease IP 192.168.103.67 renewed for MAC 89:14:2e:2a:14:da\" lease_time=\"345600\"",
+        "severity": 6,
+        "timezone": "-06:00"
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "Lease IP 192.168.103.67 renewed for MAC 89:14:2e:2a:14:da",
+      "observer": {
+        "hostname": "sophos",
+        "product": "XG",
+        "serial_number": "C01001BQC8TFFFF",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device_model": "SFVH",
+          "device_name": "VER",
+          "lease_time": "345600",
+          "log_component": "DHCP Server",
+          "log_id": "063411660020",
+          "log_subtype": "System",
+          "log_type": "Event",
+          "log_version": "1",
+          "reported_host": "TIZEN-ODg6NTc6MUQ6MkQ6MTk6REIKK",
+          "reported_ip": "192.168.255.217",
+          "status": "Renew"
+        }
+      },
+      "source": {
+        "mac": "03-50-4F-4F-EB-EE"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    },
+    {
+      "@timestamp": "2049-11-15T21:04:08.000-06:00",
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "code": "60020",
+        "kind": "event",
+        "original": "Nov 16 03:04:08 sophos device_name=\"VER\" timestamp=\"2049-11-15T21:04:08-0600\" device_model=\"SFVH\" device_serial_id=\"C01001BQC8TFFFF\" log_id=063411660020 log_type=\"Event\" log_component=\"DHCP Server\" log_subtype=\"System\" log_version=1 status=\"Renew\" severity=\"Information\" reported_ip=\"192.168.255.217\" src_mac=\"03:50:4f:4f:EB:ee\" reported_host=\"TIZEN-ODg6NTc6MUQ6MkQ6MTk6REIKK\" message=\"Lease IP 192.168.103.67 renewed for MAC 89:14:2e:2a:14:da\" lease_time=\"345600\"",
+        "severity": 6,
+        "timezone": "-06:00"
+      },
+      "host": {
+        "name": "eaecwjitcyy.local"
+      },
+      "log": {
+        "level": "Information"
+      },
+      "message": "Lease IP 192.168.103.67 renewed for MAC 89:14:2e:2a:14:da",
+      "observer": {
+        "hostname": "sophos",
+        "product": "XG",
+        "serial_number": "C01001BQC8TFFFF",
+        "type": "firewall",
+        "vendor": "Sophos"
+      },
+      "related": {
+        "hosts": [
+          "eaecwjitcyy.local"
+        ]
+      },
+      "sophos": {
+        "xg": {
+          "device_model": "SFVH",
+          "device_name": "VER",
+          "lease_time": "345600",
+          "log_component": "DHCP Server",
+          "log_id": "063411660020",
+          "log_subtype": "System",
+          "log_type": "Event",
+          "log_version": "1",
+          "reported_host": "TIZEN-ODg6NTc6MUQ6MkQ6MTk6REIKK",
+          "reported_ip": "192.168.255.217",
+          "status": "Renew"
+        }
+      },
+      "source": {
+        "mac": "03-50-4F-4F-EB-EE"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "Nov 16 02:52:23 sophos device_name=\"VER\" timestamp=\"2049-11-15T20:52:23-0600\" device_model=\"SFVH\" device_serial_id=\"C01001BQC8TFFFF\" log_id=063411660020 log_type=\"Event\" log_component=\"DHCP Server\" log_subtype=\"System\" log_version=1 status=\"Renew\" severity=\"Information\" reported_ip=\"192.168.241.75\" src_mac=\"78:83:b5:b9:35:34\" reported_host=\"TIVO-846001190AE52F2\" message=\"Lease IP 192.168.103.67 renewed for MAC 78:83:b5:b9:35:34\" lease_time=\"345600\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "Nov 16 02:57:56 sophos device_name=\"VER\" timestamp=\"2049-11-15T20:57:56-0600\" device_model=\"SFVH\" device_serial_id=\"C01001BQC8TFFFF\" log_id=063411660020 log_type=\"Event\" log_component=\"DHCP Server\" log_subtype=\"System\" log_version=1 status=\"Renew\" severity=\"Information\" reported_ip=\"192.168.255.217\" src_mac=\"03:50:4f:4f:EB:ee\" reported_host=\"TIZEN-ODg6NTc6MUQ6MkQ6MTk6REIKK\" message=\"Lease IP 192.168.103.67 renewed for MAC 89:14:2e:2a:14:da\" lease_time=\"345600\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    },
+    {
+      "_conf": {
+        "default": "eaecwjitcyy.local",
+        "mappings": [
+          {
+            "hostname": "gdnohspk.local",
+            "serial_number": "1234567890123456"
+          }
+        ],
+        "tz_map": [
+          {
+            "tz_long": "Asia/Kolkata",
+            "tz_short": "IST"
+          },
+          {
+            "tz_long": "Etc/GMT-2",
+            "tz_short": "CEST"
+          },
+          {
+            "tz_long": "Etc/GMT-1",
+            "tz_short": "BST"
+          }
+        ]
+      },
+      "message": "Nov 16 03:04:08 sophos device_name=\"VER\" timestamp=\"2049-11-15T21:04:08-0600\" device_model=\"SFVH\" device_serial_id=\"C01001BQC8TFFFF\" log_id=063411660020 log_type=\"Event\" log_component=\"DHCP Server\" log_subtype=\"System\" log_version=1 status=\"Renew\" severity=\"Information\" reported_ip=\"192.168.255.217\" src_mac=\"03:50:4f:4f:EB:ee\" reported_host=\"TIZEN-ODg6NTc6MUQ6MkQ6MTk6REIKK\" message=\"Lease IP 192.168.103.67 renewed for MAC 89:14:2e:2a:14:da\" lease_time=\"345600\"",
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "xg",
+    "dynamic_fields": {
+      "network.community_id": ".*",
+      "user_agent.version": "^\\d+\\.\\d+(\\.|\\..*)?$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-sophos-xg-default",
+    "event_count": 3,
+    "numeric_keyword_fields": [],
+    "package": "sophos",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

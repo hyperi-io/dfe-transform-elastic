@@ -1,0 +1,214 @@
+{
+  "expected": [
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "zoomroom.alert",
+        "kind": [
+          "event"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "zoom": {
+        "account_id": "EPAbcdefyZslakjflP",
+        "zoomroom": {
+          "alert_kind": 1,
+          "alert_type": 1,
+          "calendar_name": "ysficniczvdescpabvrgqfzpbgpvv@mqrfblxerr.com",
+          "component": 2,
+          "email": "sofybrhfyyosjoqoli@mqrfblxerr.com",
+          "id": "EbY5jzz2R5KVPn6ZY9wh0A",
+          "issue": "Room Controller disconnected",
+          "room_name": "MyFabulousZoomRoom"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "zoomroom.delayed_alert",
+        "kind": [
+          "event"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "zoom": {
+        "account_id": "EPAbcdefyZslakjflP",
+        "zoomroom": {
+          "alert_kind": 1,
+          "alert_type": 1,
+          "calendar_name": "ysficniczvdescpabvrgqfzpbgpvv@mqrfblxerr.com",
+          "component": 2,
+          "email": "sofybrhfyyosjoqoli@mqrfblxerr.com",
+          "id": "EbY5jzz2R5KVPn6ZY9wh0A",
+          "issue": "Room Controller disconnected",
+          "room_name": "MyFabulousZoomRoom"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "zoomroom.checked_in",
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "zoom": {
+        "account_id": "vhdnmf673q2543rfhgsca",
+        "zoomroom": {
+          "calendar_id": "vnifrrbzcmlaafjfyw218614@zoom.us",
+          "calendar_name": "jxpi.pm_efee805s235t0tqpi6@group.calendar.google.com",
+          "change_key": "DwAAABYAAABQ/N0JvB/FRqv5UT2rFfkVAAE2XqVw",
+          "email": "teekbwo@bksct.sfgjgdf",
+          "event_id": "AbbbbbGYxLTc3OTVkMzFmZDc0MwBGAAAAAAD48FI58voYSqDgJePOSZblBwBQ/N0JvB/FRqv5UT2rFfkVAAAAAAENAABQ/N0JvB/FRqv5UT2rFfkVAAE2YC8DAAA=",
+          "id": "365743fgshfh63",
+          "resource_email": "kwbuta.hbzi@tegrnfwm628nfqcn.com",
+          "room_name": "Sharks Room"
+        }
+      }
+    },
+    {
+      "ecs": {
+        "version": "8.11.0"
+      },
+      "event": {
+        "action": "zoomroom.checked_in",
+        "kind": [
+          "event"
+        ],
+        "type": [
+          "info",
+          "start"
+        ]
+      },
+      "observer": {
+        "product": "Webhook",
+        "vendor": "Zoom"
+      },
+      "zoom": {
+        "account_id": "vhdnmf673q2543rfhgsca",
+        "zoomroom": {
+          "calendar_id": "vnifrrbzcmlaafjfyw218614@zoom.us",
+          "calendar_name": "jxpi.pm_efee805s235t0tqpi6@group.calendar.google.com",
+          "change_key": "DwAAABYAAABQ/N0JvB/FRqv5UT2rFfkVAAE2XqVw",
+          "email": "teekbwo@bksct.sfgjgdf",
+          "event_id": "AbbbbbGYxLTc3OTVkMzFmZDc0MwBGAAAAAAD48FI58voYSqDgJePOSZblBwBQ/N0JvB/FRqv5UT2rFfkVAAAAAAENAABQ/N0JvB/FRqv5UT2rFfkVAAE2YC8DAAA=",
+          "id": "365743fgshfh63",
+          "resource_email": "kwbuta.hbzi@tegrnfwm628nfqcn.com",
+          "room_name": "Sharks Room"
+        }
+      }
+    }
+  ],
+  "input": [
+    {
+      "zoom": {
+        "event": "zoomroom.alert",
+        "payload": {
+          "account_id": "EPAbcdefyZslakjflP",
+          "object": {
+            "alert_kind": 1,
+            "alert_type": 1,
+            "calendar_name": "ysficniczvdescpabvrgqfzpbgpvv@mqrfblxerr.com",
+            "component": 2,
+            "email": "sofybrhfyyosjoqoli@mqrfblxerr.com",
+            "id": "EbY5jzz2R5KVPn6ZY9wh0A",
+            "issue": "Room Controller disconnected",
+            "room_name": "MyFabulousZoomRoom"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "zoomroom.delayed_alert",
+        "payload": {
+          "account_id": "EPAbcdefyZslakjflP",
+          "object": {
+            "alert_kind": 1,
+            "alert_type": 1,
+            "calendar_name": "ysficniczvdescpabvrgqfzpbgpvv@mqrfblxerr.com",
+            "component": 2,
+            "email": "sofybrhfyyosjoqoli@mqrfblxerr.com",
+            "id": "EbY5jzz2R5KVPn6ZY9wh0A",
+            "issue": "Room Controller disconnected",
+            "room_name": "MyFabulousZoomRoom"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "zoomroom.checked_in",
+        "payload": {
+          "account_id": "vhdnmf673q2543rfhgsca",
+          "object": {
+            "calendar_id": "vnifrrbzcmlaafjfyw218614@zoom.us",
+            "calendar_name": "jxpi.pm_efee805s235t0tqpi6@group.calendar.google.com",
+            "change_key": "DwAAABYAAABQ/N0JvB/FRqv5UT2rFfkVAAE2XqVw",
+            "email": "teekbwo@bksct.sfgjgdf",
+            "event_id": "AbbbbbGYxLTc3OTVkMzFmZDc0MwBGAAAAAAD48FI58voYSqDgJePOSZblBwBQ/N0JvB/FRqv5UT2rFfkVAAAAAAENAABQ/N0JvB/FRqv5UT2rFfkVAAE2YC8DAAA=",
+            "id": "365743fgshfh63",
+            "resource_email": "kwbuta.hbzi@tegrnfwm628nfqcn.com",
+            "room_name": "Sharks Room"
+          }
+        }
+      }
+    },
+    {
+      "zoom": {
+        "event": "zoomroom.checked_in",
+        "payload": {
+          "account_id": "vhdnmf673q2543rfhgsca",
+          "object": {
+            "calendar_id": "vnifrrbzcmlaafjfyw218614@zoom.us",
+            "calendar_name": "jxpi.pm_efee805s235t0tqpi6@group.calendar.google.com",
+            "change_key": "DwAAABYAAABQ/N0JvB/FRqv5UT2rFfkVAAE2XqVw",
+            "email": "teekbwo@bksct.sfgjgdf",
+            "event_id": "AbbbbbGYxLTc3OTVkMzFmZDc0MwBGAAAAAAD48FI58voYSqDgJePOSZblBwBQ/N0JvB/FRqv5UT2rFfkVAAAAAAENAABQ/N0JvB/FRqv5UT2rFfkVAAE2YC8DAAA=",
+            "id": "365743fgshfh63",
+            "resource_email": "kwbuta.hbzi@tegrnfwm628nfqcn.com",
+            "room_name": "Sharks Room"
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "data_stream": "webhook",
+    "dynamic_fields": {
+      "event.ingested": ".*"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-zoom-webhook-default",
+    "event_count": 4,
+    "numeric_keyword_fields": [
+      "zoom.zoomroom.alert_kind",
+      "zoom.zoomroom.alert_type",
+      "zoom.zoomroom.component"
+    ],
+    "package": "zoom",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}

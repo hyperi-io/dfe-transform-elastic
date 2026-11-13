@@ -1,0 +1,181 @@
+{
+  "expected": [
+    {
+      "@timestamp": "2050-01-12T22:56:01.000Z",
+      "agent": {
+        "ephemeral_id": "11c77772-ae2a-4118-9b8d-2a12223aaa63",
+        "hostname": "e485f3ea53c1",
+        "id": "4de6d505-17eb-4cd8-a5bc-dfc95d984d31",
+        "name": "e485f3ea53c1",
+        "type": "filebeat",
+        "version": "7.16.2"
+      },
+      "data_stream": {
+        "dataset": "iptables.log",
+        "type": "logs"
+      },
+      "destination": {
+        "ip": "10.4.99.101",
+        "mac": "DC-A6-32-BD-54-FB",
+        "port": 40702
+      },
+      "ecs": {
+        "version": "8.17.0"
+      },
+      "event": {
+        "category": [
+          "network"
+        ],
+        "created": "2050-01-12T12:44:04.687Z",
+        "kind": "event",
+        "original": "iptables DROP_INPUT: IN=eth0 OUT= MAC=dc:a6:32:bd:54:fb:64:9e:f3:ce:a4:48:08:00 SRC=10.33.32.2 DST=10.4.99.101 LEN=40 TOS=0x00 PREC=0x00 TTL=63 ID=31214 DF PROTO=TCP SPT=443 DPT=40702 WINDOW=0 RES=0x00 RST URGP=0 ",
+        "type": [
+          "connection"
+        ]
+      },
+      "host": {
+        "hostname": "e485f3ea53c1",
+        "id": "8fc11db02747061dc9589683b35d7e7d",
+        "ip": [
+          "10.4.99.101"
+        ],
+        "name": "e485f3ea53c1"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "iptables": {
+        "ether_type": 2048,
+        "fragment_flags": [
+          "DF"
+        ],
+        "id": 31214,
+        "input_device": "eth0",
+        "length": 40,
+        "output_device": "",
+        "precedence_bits": 0,
+        "tcp": {
+          "flags": [
+            "RST"
+          ],
+          "reserved_bits": 0,
+          "window": 0
+        },
+        "tos": 0,
+        "ttl": 63
+      },
+      "journald": {
+        "host": {
+          "boot_id": "f0a7fe2f694a770271ae0bdddd6f90e0"
+        }
+      },
+      "log": {
+        "syslog": {
+          "appname": "kernel",
+          "facility": {
+            "code": 0
+          },
+          "priority": 7
+        }
+      },
+      "message": "iptables DROP_INPUT: IN=eth0 OUT= MAC=dc:a6:32:bd:54:fb:64:9e:f3:ce:a4:48:08:00 SRC=10.33.32.2 DST=10.4.99.101 LEN=40 TOS=0x00 PREC=0x00 TTL=63 ID=31214 DF PROTO=TCP SPT=443 DPT=40702 WINDOW=0 RES=0x00 RST URGP=0 ",
+      "network": {
+        "community_id": "1:ygnMW8Y1JPBh7EeRT8g+8YOV4QM=",
+        "transport": "tcp",
+        "type": "ipv4"
+      },
+      "related": {
+        "ip": [
+          "10.33.32.2",
+          "10.4.99.101"
+        ]
+      },
+      "source": {
+        "ip": "10.33.32.2",
+        "mac": "64-9E-F3-CE-A4-48",
+        "port": 443
+      },
+      "systemd": {
+        "transport": "kernel"
+      },
+      "tags": [
+        "preserve_original_event",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ]
+    }
+  ],
+  "input": [
+    {
+      "@timestamp": "2050-01-12T22:56:01.000Z",
+      "agent": {
+        "ephemeral_id": "11c77772-ae2a-4118-9b8d-2a12223aaa63",
+        "hostname": "e485f3ea53c1",
+        "id": "4de6d505-17eb-4cd8-a5bc-dfc95d984d31",
+        "name": "e485f3ea53c1",
+        "type": "filebeat",
+        "version": "7.16.2"
+      },
+      "data_stream": {
+        "dataset": "iptables.log",
+        "type": "logs"
+      },
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "event": {
+        "created": "2050-01-12T12:44:04.687Z"
+      },
+      "host": {
+        "hostname": "e485f3ea53c1",
+        "id": "8fc11db02747061dc9589683b35d7e7d",
+        "ip": [
+          "10.4.99.101"
+        ],
+        "name": "e485f3ea53c1"
+      },
+      "input": {
+        "type": "journald"
+      },
+      "journald": {
+        "host": {
+          "boot_id": "f0a7fe2f694a770271ae0bdddd6f90e0"
+        }
+      },
+      "log": {
+        "syslog": {
+          "facility": {
+            "code": 0
+          },
+          "priority": 7
+        }
+      },
+      "message": "iptables DROP_INPUT: IN=eth0 OUT= MAC=dc:a6:32:bd:54:fb:64:9e:f3:ce:a4:48:08:00 SRC=10.33.32.2 DST=10.4.99.101 LEN=40 TOS=0x00 PREC=0x00 TTL=63 ID=31214 DF PROTO=TCP SPT=443 DPT=40702 WINDOW=0 RES=0x00 RST URGP=0 ",
+      "syslog": {
+        "facility": 0,
+        "identifier": "kernel",
+        "priority": 7
+      },
+      "systemd": {
+        "transport": "kernel"
+      },
+      "tags": [
+        "preserve_original_event"
+      ]
+    }
+  ],
+  "meta": {
+    "data_stream": "log",
+    "dynamic_fields": {
+      "@timestamp": "^[0-9]{4}(-[0-9]{2}){2}T[0-9]{2}(:[0-9]{2}){2}\\.[0-9]{3}Z$"
+    },
+    "elasticsearch_version": "9.2.2",
+    "entry_pipeline": "compat-iptables-log-default",
+    "event_count": 1,
+    "numeric_keyword_fields": [],
+    "package": "iptables",
+    "pipelines_commit": "2c934eb5223bdfcf0ea0db9e3230154933352bda"
+  }
+}
