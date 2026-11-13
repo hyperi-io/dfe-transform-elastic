@@ -35,16 +35,20 @@ source:
 
 sink:
   topic: normalised_events
-  max_message_bytes: 8000000     # ceiling on one outbound record
+  max_message_bytes: 8000000     # per-record ceiling, values below 4096 are clamped
 ```
 
-Health and metrics answer on port 9090: `/livez`, `/readyz`, `/metrics`, `/metrics/manifest`, and `/scaling/pressure` for KEDA.
+Health and metrics answer on the metrics listener, port 9090 by default: `/livez`, `/readyz`, `/metrics`, `/metrics/manifest`, and `/scaling/pressure` for KEDA.
 
 ## Configuration
 
 [config.example.yaml](config.example.yaml) is rendered from the deployment contract with illustrative values for the source and sink. Set those for your deployment (`source.name`, `source.topics`, `source.brokers` and `sink.topic` on the Kafka transport). A test pins the file against drift. `dfe-transform-elastic emit-config` reprints it. Settings load from an explicit `--config` path, or from scalo's config cascade under the `DFE_TRANSFORM_ELASTIC` prefix. [docs/configuration.md](docs/configuration.md) says which env spelling reaches a `--config` file and which sections that file cannot carry.
 
-Every transformed event goes out as its own record, because dfe-loader parses one JSON document per message, so keep `max_message_bytes` below the broker's `message.max.bytes`. `source.envelope` defaults to `auto`, which reads the producer's wrapper (`beats`, `receiver` or `fetcher`) off each event. The producer's own field names are stripped once lifted onto ECS, except the one dfe-loader routes on. Each side also takes a `transport`: `bus` (Kafka, the default) or `direct` (a scalo Push listener in, a gRPC push out).
+Every transformed event goes out as its own record, because dfe-loader parses one JSON document per message. Keep `sink.max_message_bytes` below the broker's `message.max.bytes`.
+
+`source.envelope` defaults to `auto`, which reads the producer's wrapper (`beats`, `receiver` or `fetcher`) off each event. The producer's own field names are stripped once lifted onto ECS, except the one dfe-loader routes on.
+
+Each side also takes a `transport`: `bus` (Kafka, the default) or `direct` (a scalo Push listener in, a gRPC push out).
 
 The source catalogue, `sources.yaml`, is compiled into the binary and `dfe-transform-elastic emit-catalogue` prints it, so a deployment takes the catalogue from the image it already pulls.
 
