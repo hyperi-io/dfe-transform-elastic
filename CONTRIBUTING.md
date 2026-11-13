@@ -215,7 +215,7 @@ Two traps worth knowing before you burn a run on them:
 
 - **Never set `CARGO_BUILD_JOBS` by hand.** A hand-set value beats the project's
   own pinning and any build governor on the host.
-- **The compat corpus is committed.** Every fixture's confirmed documents sit
+- **The compat corpus is committed.** Each confirmed fixture's documents sit
   beside it under `tests/fixtures/`, so a worktree scores the same corpus as
   the main checkout, and a tree with none fails.
 

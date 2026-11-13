@@ -24,7 +24,7 @@ A confirmed sample under `tests/fixtures/<package>/<data stream>/` has `<sample>
 | `input` | The documents the engine was sent, exactly as the pipeline saw them |
 | `expected` | The documents it returned, one per input, or `_compat_error` where the pipeline dropped or failed the event |
 
-`crates/dfe-transforms/tests/compat_corpus.rs` reads these files, runs the same inputs through the transform, and compares field by field. It starts no container and needs no network.
+`crates/dfe-transforms/tests/compat_corpus.rs` reads these files, runs the inputs of every capture it can score through the transform, and compares field by field. It starts no container and needs no network.
 
 The confirmed documents are produced by the meta project that maintains the transforms, which runs the engine. `tests/fixtures/PROVENANCE.md` names the tools.
 
