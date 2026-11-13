@@ -219,6 +219,49 @@ Two traps worth knowing before you burn a run on them:
   worktree measures nothing and still reports success, so pass
   `DFE_COMPAT_CORPUS=<main checkout>/testdata/compat` there.
 
+## Working in this repo
+
+```bash
+cargo test --workspace --all-features
+hyperi-ci check
+```
+
+`librdkafka` 2.12.1 or later is needed for the `kafka` feature, which is on by default. `cargo build --no-default-features` builds without it.
+
+Non-English text is a tested case, not an edge case. `tests/unicode.rs` runs every registered transform against seventeen scripts and a set of degenerate inputs.
+
+### Generated artefacts
+
+The container image, compose fragment and released chart are all generated from one deployment contract in `src/deployment.rs`:
+
+```bash
+dfe-transform-elastic emit-dockerfile > Dockerfile
+dfe-transform-elastic emit-compose
+dfe-transform-elastic generate-artefacts --output-dir docs
+```
+
+`generate-artefacts` writes into `docs/`: `metrics-manifest.json`, `deployment-contract.json`, `container-manifest.json`, `Dockerfile.runtime`, and the reflectable config pair `config-schema.*` and `capability-catalog.*`.
+
+The deployed chart is not committed here. At release, hyperi-ci runs `generate-artefacts` for the deployment contract and assembles a thin chart from it on the scalo-service library chart, at the version `release.helm.library` names in `.hyperi-ci.yaml`. Keep that version at the scalo version in `Cargo.toml`: a library renders only the contract version its scalo release writes.
+
+**Not every artefact is pinned against a fresh regen.** `committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares `config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its sibling tests do the same for the committed `deployment-contract.json`, `Dockerfile` and `config.example.yaml`. Nothing compares `container-manifest.json` or `Dockerfile.runtime`, so those can and do fall behind -- re-run the command when `src/deployment.rs` changes rather than assuming a test caught it.
+
+`metrics-manifest.json` is compared by metric NAME SET in `src/metrics.rs`, not byte for byte, because it also records the version and commit of the build that wrote it.
+
+The image expects the release binary in the build context:
+
+```bash
+cargo build --release
+cp target/release/dfe-transform-elastic .
+docker build -t dfe-transform-elastic .
+```
+
+### The catalogue and the detect tables
+
+`scripts/emit_variants.py` prints every registered variant with the intakes it accepts. On a push to `main` that changes it, `.github/workflows/sync-elastic-variants.yml` opens or updates a `chore(elastic-variants)` PR on dfe-schemas, whose catalogue test checks every elastic entry against that file.
+
+The other direction is generated code. `src/detect/labels.rs` (each variant's `_source` label) and `src/detect/markers.rs` (the agentless marker table) come from the dfe-schemas wheel `scripts/dfe-schemas.toml` pins by version and sha256. To move the pin, set both values from `https://pypi.org/pypi/dfe-schemas/<version>/json` and run `scripts/gen_detect_tables.py`. `tests/scripts_suite.rs` runs it with `--check`, so a stale file fails the test job.
+
 ## Questions
 
 If you have questions about contributing, please open an issue or contact us.
