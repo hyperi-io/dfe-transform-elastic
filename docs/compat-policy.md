@@ -22,8 +22,8 @@ ratchet, and the acknowledgement below.
 
 `DFE_COMPAT_ALLOW_UNRATCHETED=1` is the acknowledgement, for the one
 legitimate case: the confirmed documents have moved and the baseline has not
-caught up yet. It leaves parity unenforced for that run, which is why it has
-to be typed.
+caught up yet. It lets a run whose provenance the baseline does not name pass,
+which leaves those scores unenforced for that run and is why it has to be typed.
 
 ## The second ratchet: patterns that never apply
 
