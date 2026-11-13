@@ -82,7 +82,10 @@ jobs:
       bump: ${{ inputs.bump || 'auto' }}
       skip-optimize: ${{ inputs.skip-optimize || '' }}
       release-unoptimized: ${{ inputs.release-unoptimized || '' }}
-      optimize-tier: ${{ inputs.optimize-tier || '' }}
+      optimize-tier: release
+      runner-mode: free
+      branch-build: "true"
+      test-timeout-minutes: 360
       # A PGO+BOLT release builds the binary three times, ending in a single-threaded LTO pass; one build took over three hours.
       build-timeout-minutes: 360
       test-tier: ${{ inputs.test-tier || 'core' }}

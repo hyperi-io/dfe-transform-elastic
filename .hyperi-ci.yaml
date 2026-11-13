@@ -63,6 +63,8 @@ build:
     # behind the `Publish: true` trailer, a `hyperi-ci publish` dispatch, or a
     # dispatch with `optimize-tier: release`, so the day-to-day loop is untouched.
     optimize:
+      # The release tier defaults to fat LTO, which builds the binary crate on one core. The measured reason is at [profile.release] in Cargo.toml.
+      lto: thin
       pgo:
         enabled: true
         # 600s of load, 300s per source. The prefix holds it there over the duration_secs hyperi-ci exports.
@@ -85,7 +87,7 @@ release:
     contract: emit
     library: "2.14.29"
   container:
-    enabled: true
+    enabled: false
     dockerfile: Dockerfile
     platforms:
       - linux/amd64
