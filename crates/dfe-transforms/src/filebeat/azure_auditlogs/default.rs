@@ -114,9 +114,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = ctx.event.duration * params.param_nano
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -354,9 +352,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.azure.auditlogs.properties?.targetResources != null) {\n  ctx.azure.auditlogs.properties.target_resources = new HashMap();\n  for (def i = 0; i < ctx.azure.auditlogs.properties.targetResources.length; i++) {\n    String index = String.valueOf(i);\n    ctx.azure.auditlogs.properties.target_resources[index] = new HashMap();\n    if(ctx.azure.auditlogs.properties.targetResources[i].displayName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].display_name = ctx.azure.auditlogs.properties.targetResources[i].displayName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].id = ctx.azure.auditlogs.properties.targetResources[i].id;\n    ctx.azure.auditlogs.properties.target_resources[index].type = ctx.azure.auditlogs.properties.targetResources[i].type;\n    if (ctx.azure.auditlogs.properties.targetResources[i].ipAddress != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].ip_address = ctx.azure.auditlogs.properties.targetResources[i].ipAddress;\n    }\n    if (ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].user_principal_name = ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].modified_properties = new HashMap();\n    for (def j = 0; j < ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties.length; j++) {\n      String n = String.valueOf(j);\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n] = new HashMap();\n\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].display_name = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].displayName;\n      \n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].new_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue;\n      }\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].old_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue;\n      }\n    }\n  }\n  ctx.azure.auditlogs.properties.remove('targetResources');\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -493,9 +489,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: ctx.related = ctx.related ?: [:];\nctx.related.entity = ctx.related.entity ?: [];\nif (ctx.azure.auditlogs.properties?.target_resources != null) {\n    for (String k : ctx.azure.auditlogs.properties.target_resources.keySet()) {\n        def resource = ctx.azure.auditlogs.properties.target_resources[k];\n        if (resource?.id != null && resource.id != '' && !ctx.related.entity.contains(resource.id)) {\n                ctx.related.entity.add(resource.id);\n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

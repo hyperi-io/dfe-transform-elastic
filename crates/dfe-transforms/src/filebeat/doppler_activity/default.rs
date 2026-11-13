@@ -204,9 +204,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def t = ctx.event.action;\ndef parts = t.splitOnToken('.');\ndef last = parts[parts.length - 1];\nArrayList cat = new ArrayList();\nArrayList typ = new ArrayList();\nboolean iam = t == 'security.secret_read' ? false :\n  (t.contains('.access.') || t.startsWith('team.group') || t.startsWith('team.seat')\n    || t.startsWith('team.service_account') || t.startsWith('custom_roles')\n    || t.contains('.service_token'));\nif (iam) { cat.add('iam'); } else { cat.add('configuration'); }\nif (t == 'security.secret_read') {\n  typ.add('access');\n} else if (last == 'create') {\n  typ.add('creation');\n} else if (last == 'delete' || last == 'revoke' || last == 'remove') {\n  typ.add('deletion');\n} else if (last == 'join' || last == 'add') {\n  typ.add('creation');\n} else {\n  typ.add('change');\n}\nif (iam) {\n  if (t.contains('group')) {\n    typ.add('group');\n  } else if (t.contains('seat') || t.contains('.access.') || t.contains('service_account')) {\n    typ.add('user');\n  }\n}\nctx.event.category = cat;\nctx.event.type = typ;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -429,9 +427,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def am = ctx.doppler.metadata.addedMembers;\nArrayList members = new ArrayList();\nif (am instanceof List) {\n  members.addAll(am);\n} else if (am instanceof Map) {\n  members.add(am);\n}\nArrayList emails = new ArrayList();\nfor (def m : members) {\n  if (m instanceof Map && m.email != null && !emails.contains(m.email)) {\n    emails.add(m.email);\n  }\n}\nif (members.size() > 0 && members.get(0) instanceof Map) {\n  def first = members.get(0);\n  if (ctx.user == null) { ctx.user = new HashMap(); }\n  if (ctx.user.target == null) { ctx.user.target = new HashMap(); }\n  if (first.email != null && ctx.user.target.email == null) {\n    ctx.user.target.email = first.email;\n  }\n  if (first.name != null && ctx.user.target.name == null) {\n    ctx.user.target.name = first.name;\n  }\n}\nif (emails.size() > 0) {\n  if (ctx.doppler.activity == null) { ctx.doppler.activity = new HashMap(); }\n  ctx.doppler.activity.members_added = emails;\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -670,8 +666,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

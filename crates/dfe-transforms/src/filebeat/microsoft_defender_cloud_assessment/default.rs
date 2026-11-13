@@ -90,9 +90,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.properties") };
             if _cond {
-                // Painless script
-                // Source: // Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def sb = new StringBuilder();\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        sb.append(\"_\");\n      }\n      sb.append(Character.toLowerCase(c));\n      lastCharWasUpperCase = true;\n    } else {\n      sb.append(c);\n      lastCharWasUpperCase = false;\n    }\n  }\n  return sb.toString();\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nctx.microsoft_defender_cloud = ctx.microsoft_defender_cloud ?: [:];\nctx.microsoft_defender_cloud.assessment = convertToSnakeCase(ctx.json.properties);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1661,9 +1659,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def cvss = ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss; if (cvss.containsKey('2.0')) {\n  ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss_v2 = cvss.get('2.0');\n} if (cvss.containsKey('3.0')) {\n  ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss_v3 = cvss.get('3.0');\n} if (cvss.containsKey('4.0')) {\n  ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.vulnerability_details.cvss_v4 = cvss.get('4.0');\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2331,9 +2327,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def status_change_date = ctx.microsoft_defender_cloud?.assessment?.status?.status_change_date; def first_evaluation_date = ctx.microsoft_defender_cloud?.assessment?.status?.first_evaluation_date; if (status_change_date != null && first_evaluation_date != null) {\n  ZonedDateTime date1 = ZonedDateTime.parse(status_change_date);\n  ZonedDateTime date2 = ZonedDateTime.parse(first_evaluation_date);\n\n  if (date1.isAfter(date2)) {\n    ctx.event.created = status_change_date;\n  } else {\n    ctx.event.created = first_evaluation_date;\n  }\n} else if (first_evaluation_date != null) {\n  ctx.event.created = first_evaluation_date;\n} else if (status_change_date != null) {\n  ctx.event.created = status_change_date;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2443,9 +2437,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def severity = ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.status.severity;\nif (severity == 'Low') {\n  ctx.event.severity = 21;\n} else if (severity == 'Medium') {\n  ctx.event.severity = 47;\n} else if (severity == 'High') {\n  ctx.event.severity = 73;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2798,9 +2790,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: String os_platform;\nif (ctx.microsoft_defender_cloud?.assessment?.additional_data?.sub_assessment?.additional_data?.software_details?.os_details?.os_platform != null) {\n  os_platform = ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.software_details.os_details.os_platform.toLowerCase();\n} else if (ctx.microsoft_defender_cloud?.assessment?.additional_data?.os_type != null) {\n  os_platform = ctx.microsoft_defender_cloud.assessment.additional_data.os_type.toLowerCase();\n} else {\n  return;\n}\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    if (os == 'mac') {\n      ctx.host.os.put('type', 'macos');\n    } else {\n      ctx.host.os.put('type', os);\n    }\n    return;\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -3250,9 +3240,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: double max_score = 0.0;\nString severity, version;\nfor (def cve: ctx.microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.cve_list) {\n  if (cve.cvss_score != null) {\n    if (max_score < cve.cvss_score) {\n      max_score = cve.cvss_score;\n      severity = cve.severity;\n      version = cve.cvss_version;\n    }\n  }\n}\nctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.score = ctx.vulnerability.score ?: [:];\nctx.vulnerability.score.base = max_score;\nctx.vulnerability.severity = severity;\nctx.vulnerability.score.version = version;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3297,9 +3285,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: double max_score = 0.0;\nString severity;\nfor (def cve: ctx.microsoft_defender_cloud.assessment.additional_data.cves) {\n  if (cve.base_score != null) {\n    if (max_score < cve.base_score) {\n      max_score = cve.base_score;\n      severity = cve.severity;\n    }\n  }\n}\nctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.score = ctx.vulnerability.score ?: [:];\nctx.vulnerability.score.base = max_score;\nctx.vulnerability.severity = severity;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3893,8 +3879,7 @@ impl Transform for Default {
                 event.remove("microsoft_defender_cloud.assessment.additional_data.sub_assessment.additional_data.cve.description");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

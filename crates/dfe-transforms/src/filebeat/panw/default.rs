@@ -1107,9 +1107,7 @@ impl Transform for Default {
                 // Begin nested pipeline: "threat"
                 let _cond = { event.get_str("panw.panos.sub_type") == Some("url") };
                 if _cond {
-                    // Painless script
-                    // Source: def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2046,9 +2044,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("url.original") };
                 if _cond {
-                    // Painless script
-                    // Source: Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2084,9 +2080,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.get("file.path").is_some_and(|v| v.is_string()) };
                 if _cond {
-                    // Painless script
-                    // Source: // For file.path to be set it must have had one of '/' or '\\' present.\nint idx = ctx.file.path.lastIndexOf('/');\nif (idx == -1) {\n  idx = ctx.file.path.lastIndexOf('\\\\');\n}\nctx.file[\"name\"] = ctx.file.path.substring(idx+1);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3382,9 +3376,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
-                        // Source: ctx.event.action = params.get(ctx.panw.panos.cmd);
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -4433,9 +4425,7 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("_temp_.hash") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -4445,9 +4435,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("_temp_.tls") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -10531,9 +10519,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("_temp_.labels") && event.get_i64("_temp_.labels") != Some(0) };
             if _cond {
-                // Painless script
-                // Source: def labels = ctx.labels; if (labels == null) {\n  labels = new HashMap();\n  ctx['labels'] = labels;\n} long value = ctx._temp_.labels; for (entry in params.entrySet()) {\n  def flag = entry.getValue();\n  if (flag instanceof String) {\n      flag = Long.decode(flag);\n  }\n  if ((value & flag) != 0) {\n      labels[entry.getKey()] = true;\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -10547,9 +10533,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
-                // Source: long nanos = ctx['event']['duration'] * params.NANOS_IN_A_SECOND; ctx['event']['duration'] = nanos; def start = ctx.event?.start; if (start != null) {\n  ctx.event['end'] = ZonedDateTime.parse(start).plusNanos(nanos);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -11797,8 +11781,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

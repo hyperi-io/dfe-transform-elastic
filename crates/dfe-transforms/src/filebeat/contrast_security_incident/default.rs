@@ -20,9 +20,7 @@ impl Transform for Default {
                 event.has_value("event") && !(event.get("event").is_some_and(|v| v.is_object()))
             };
             if _cond {
-                // Painless script
-                // Source: def original = ctx.event; ctx.event = new HashMap(); ctx.event.original = Json.dump(original);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -70,8 +68,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null) {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -26,9 +26,7 @@ impl Transform for Default {
 
             parse_json_field(event, "message", "azure.signinlogs")?;
 
-            // Painless script
-            // Source: Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -235,8 +233,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ctx.event.duration * 1000000
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new("event.duration", "event.duration", Factor::Long(1000000)),
@@ -288,9 +285,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: String reason = ctx?.azure?.signinlogs?.properties?.status?.failure_reason; String details = ctx?.azure?.signinlogs?.properties?.status?.additional_details; if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; } else if (reason != null) { ctx['message'] = reason; } else if (details != null) { ctx['message'] = details; }
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -336,9 +331,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -930,8 +923,7 @@ impl Transform for Default {
             }
             // End nested pipeline: "azure-shared-pipeline"
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

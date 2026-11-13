@@ -417,9 +417,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("ti_cyware_intel_exchange.indicator.ctix_score") };
             if _cond {
-                // Painless script
-                // Source: ctx.event = ctx.event ?: [:];\nif (ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 21 ) {\n  ctx.event.severity = 21;\n} else if (ctx.ti_cyware_intel_exchange.indicator.ctix_score >= 22 && ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 47) {\n  ctx.event.severity = 47;\n} else if (ctx.ti_cyware_intel_exchange.indicator.ctix_score >= 48 && ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 73) {\n  ctx.event.severity = 73;\n} else if (ctx.ti_cyware_intel_exchange.indicator.ctix_score >= 74 && ctx.ti_cyware_intel_exchange.indicator.ctix_score <= 100) {\n  ctx.event.severity = 99;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1476,9 +1474,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def dur = ctx._conf.ioc_expiration_duration; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_updated_at; _tmp_updated_at = ZonedDateTime.parse(ctx.ti_cyware_intel_exchange.indicator.ctix_modified); String time_unit = dur.substring(dur.length() -  1, dur.length()); String time_value = dur.substring(0, dur.length() - 1); if (time_unit == 'd') {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(Long.parseLong(time_value));\n} else if (time_unit == 'h') {\n  _tmp_deleted_at = _tmp_updated_at.plusHours(Long.parseLong(time_value));\n} else if (time_unit == 'm') {\n  _tmp_deleted_at = _tmp_updated_at.plusMinutes(Long.parseLong(time_value));\n} else {\n  _tmp_deleted_at = _tmp_updated_at.plusDays(90L);\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n} ctx.ti_cyware_intel_exchange.indicator.deleted_at = _tmp_deleted_at;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1600,8 +1596,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

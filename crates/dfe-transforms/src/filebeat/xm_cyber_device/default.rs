@@ -71,9 +71,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: String camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nif (ctx.xm_cyber?.device != null) {\n  ctx.xm_cyber.device = convertToSnakeCase(ctx.xm_cyber.device);\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1174,9 +1172,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def cves = new TreeSet();\nfor (def app : ctx.xm_cyber.device.apps) {\n  if (app instanceof Map && app.active_cves instanceof List) {\n    for (def cve : app.active_cves) {\n      if (cve != null && cve != '') {\n        cves.add(cve);\n      }\n    }\n  }\n}\nif (!cves.isEmpty()) {\n  if (ctx.vulnerability == null) {\n    ctx.vulnerability = new HashMap();\n  }\n  ctx.vulnerability.id = new ArrayList(cves);\n  ctx.vulnerability.enumeration = 'CVE';\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1570,8 +1566,7 @@ impl Transform for Default {
             event.remove("xm_cyber.device.ip_address");
             event.remove("xm_cyber.device.last_scan");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

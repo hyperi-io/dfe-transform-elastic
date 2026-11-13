@@ -80,9 +80,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.get("mimecast").is_some_and(|v| v.is_object()) };
                 if _cond {
-                    // Painless script
-                    // Source: // Canonicalise keys to lowercase. If this causes issues in future\n// because case becomes significant, this table space optimisation\n// will need to be reverted.\ndef keys = new HashSet();\nfor (def k: ctx.mimecast.keySet()) {\n  keys.add(k.toLowerCase());\n}        \nfor (def k: keys) {\n  def typ = params.definite_positive.get(k);\n  if (typ != null) {\n    // We have a definitive known log_type.\n    ctx.mimecast.log_type = typ;\n    return;\n  }\n}\ndef score = params.candidates.clone();\nfor (def k: keys) {\n  def typ = params.negative.get(k);\n  if (typ == null) {\n    continue;\n  }\n  for (String e: typ) {\n    score.remove(e);\n  }\n}\nif (score.size() == 1) {\n  // We have removed all but one of the candidates.\n  ctx.mimecast.log_type = score.keySet().toArray()[0];\n  return;\n}\n// Find best remaining and list all co-equal winners.\nint max = 0;\nfor (def k: keys) {\n  def typ = params.positive.get(k);\n  if (typ == null) {\n    continue;\n  }\n  for (String e: typ) {\n    def s = score.get(e);\n    if (s == null) {\n      continue;\n    }\n    s++;\n    if (s > max) {\n      max = s;\n    }\n    score.put(e, s);\n  }\n}\nfor (def e: score.entrySet()) {\n  if (e.getValue() < max) {\n    score.remove(e.getKey());\n  }\n}\nctx.mimecast.log_type = score.keySet();\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -494,9 +492,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("mimecast.type") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1165,9 +1161,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("email.attachments") };
                 if _cond {
-                    // Painless script
-                    // Source: def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1200,8 +1194,7 @@ impl Transform for Default {
                 // End nested pipeline: "v2_pipeline"
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

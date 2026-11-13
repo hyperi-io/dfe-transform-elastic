@@ -45,9 +45,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: def dict = ['result': new HashMap()]; \nfor (entry in ctx['json'].entrySet()) { \n    dict['result'][entry.getKey()] = entry.getValue(); \n} \nctx['osquery'] = dict; \nctx.remove('json');\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -57,9 +55,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("osquery.result") };
             if _cond {
-                // Painless script
-                // Source: for (key in params.keys) {\n    if (ctx['osquery']['result'][key] == null) {\n        continue;\n    }\n\n    def dict = new HashMap();\n    for (entry in ctx['osquery']['result'][key].entrySet()) { \n        if (entry.getValue() != '') {\n            dict[entry.getKey()] = entry.getValue();\n        }\n    }\n    ctx['osquery']['result'][key] = dict; \n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

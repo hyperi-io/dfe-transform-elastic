@@ -37,9 +37,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.proofpoint.email.size = ctx.proofpoint.email.size.value + ' ' + ctx.proofpoint.email.size.unit;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -73,9 +71,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def attachmentNames = [];\ndef attachmentExtensions = [];\ndef ecsAttachments = [];\nfor (att in ctx.proofpoint.email.attachments) {\n    if (att instanceof Map && att.containsKey('name')) {\n        def filename = att.name;\n        attachmentNames.add(filename);\n        \n        // Extract file extension\n        def lastDot = filename.lastIndexOf('.');\n        def ext = null;\n        if (lastDot > 0 && lastDot < filename.length() - 1) {\n            ext = filename.substring(lastDot + 1).toLowerCase();\n            if (!attachmentExtensions.contains(ext)) {\n                attachmentExtensions.add(ext);\n            }\n        }\n        \n        // Create ECS attachment object\n        def ecsAtt = ['file': ['name': filename]];\n        if (ext != null) {\n            ecsAtt.file.extension = ext;\n        }\n        if (att.containsKey('size')) {\n            ecsAtt.file.size = att.size;\n        }\n        ecsAttachments.add(ecsAtt);\n    }\n}\nctx.proofpoint.email.attachmentsList = attachmentNames;\nctx.proofpoint.email.attachmentsExtensions = attachmentExtensions;\nctx.proofpoint.email.attachments = attachmentNames.size() > 0 ? 'yes' : 'no';\nif (!ctx.containsKey('email')) {\n    ctx.email = [:];\n}\nctx.email.attachments = ecsAttachments;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -158,9 +154,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.proofpoint.email.classification.containsKey('text')) {\n    ctx.proofpoint.email.classification_text = ctx.proofpoint.email.classification.text;\n    ctx.proofpoint.email.classification_id = ctx.proofpoint.email.classification.id;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -179,9 +173,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.proofpoint.email.status.containsKey('text')) {\n    ctx.proofpoint.email.status_text = ctx.proofpoint.email.status.text;\n    ctx.proofpoint.email.status_id = ctx.proofpoint.email.status.id;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -196,9 +188,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def dir = ctx.proofpoint.email.direction;\n// Set direction text based on integer value\nif (dir == 1) {\n    ctx.proofpoint.email.direction_text = 'inbound';\n} else if (dir == 2) {\n    ctx.proofpoint.email.direction_text = 'outbound';\n} else {\n    ctx.proofpoint.email.direction_text = 'unknown';\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -217,9 +207,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.proofpoint.email.crypt_type_in.containsKey('text')) {\n    ctx.proofpoint.email.incoming_encryption = ctx.proofpoint.email.crypt_type_in.text;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -238,9 +226,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.proofpoint.email.crypt_type_out.containsKey('text')) {\n    ctx.proofpoint.email.outgoing_encryption = ctx.proofpoint.email.crypt_type_out.text;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -255,9 +241,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def direction = ctx.proofpoint.email.containsKey('direction') ? ctx.proofpoint.email.direction : null;\nif (direction != null && direction == 1) {\n    // Inbound: owner is recipient, comm_partner is sender\n    ctx.proofpoint.email.to = ctx.proofpoint.email.owner;\n    if (ctx.proofpoint.email.containsKey('comm_partner') && ctx.proofpoint.email.comm_partner != null) {\n        ctx.proofpoint.email.from = ctx.proofpoint.email.comm_partner;\n    }\n} else if (direction != null && direction == 2) {\n    // Outbound: owner is sender, comm_partner is recipient\n    ctx.proofpoint.email.from = ctx.proofpoint.email.owner;\n    if (ctx.proofpoint.email.containsKey('comm_partner') && ctx.proofpoint.email.comm_partner != null) {\n        ctx.proofpoint.email.to = ctx.proofpoint.email.comm_partner;\n    }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

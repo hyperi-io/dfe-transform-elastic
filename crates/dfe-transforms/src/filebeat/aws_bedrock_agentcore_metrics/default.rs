@@ -48,9 +48,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def parts = ctx.aws.dimensions.Name.splitOnToken('::');\nif (parts.length == 2) {\n  if (ctx.aws.bedrock_agentcore == null) {\n    ctx.aws.bedrock_agentcore = new HashMap();\n  }\n  ctx.aws.bedrock_agentcore.agent_name = parts[0];\n  ctx.aws.bedrock_agentcore.endpoint_name = parts[1];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

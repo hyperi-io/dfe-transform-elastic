@@ -33,8 +33,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "_tmp_")?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    /* these tetragon objects have \"process\" */\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\" ||\n        k == \"process_tracepoint\" ||\n        k == \"process_loader\" ||\n        k == \"process_lsm\" ||\n        k == \"process_uprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"process\"] = map.cilium_tetragon.log[k].process;\n    }\n\n    /* these tetragon objects have \"parent\" */\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\" ||\n        k == \"process_tracepoint\" ||\n        k == \"process_lsm\" ||\n        k == \"process_uprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             member_from_variant_key(
                 event,
                 &MemberFromVariantKey::new(
@@ -258,8 +257,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

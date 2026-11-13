@@ -295,8 +295,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("json.duration") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.event.duration = (long)ctx.json.duration * 1000000;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::new("json.duration", "event.duration", Factor::Long(1000000)),
@@ -310,8 +309,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                        // The pipeline's script, emitted as the runtime's equivalent
                         sum_directions_into_existing(event, &["bytes"]);
                         Ok(())
                     })();
@@ -324,8 +322,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
+                        // The pipeline's script, emitted as the runtime's equivalent
                         sum_directions_into_existing(event, &["packets"]);
                         Ok(())
                     })();
@@ -348,9 +345,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -1014,8 +1009,7 @@ impl Transform for Default {
             event.remove("lumberjack");
             event.remove("_tmp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n    for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n    }\n    map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n    for (def x : list) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n    list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

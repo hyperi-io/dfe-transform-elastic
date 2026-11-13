@@ -66,9 +66,7 @@ impl Transform for Default {
                 })
         };
         if _cond {
-            // Painless script
-            // Source: String sql = ctx.action_data.query;\nif (sql.length() > 1024) {\n  sql = sql.substring(0, 1023) + \"…\";\n}\nif (!(ctx.query instanceof Map)) {\n  ctx.query = new HashMap();\n}\nctx.query.name = sql;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

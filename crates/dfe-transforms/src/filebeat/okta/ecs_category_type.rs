@@ -18,9 +18,7 @@ impl Transform for EcsCategoryType {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             let _cond = { event.has_value("okta.event_type") };
             if _cond {
-                // Painless script
-                // Source: def addUnique(List dst, List src) {\n  src = src ?: [];\n  if (src.length == 0) {\n    return dst ?: [];\n  }\n  HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  return new ArrayList(s);\n}\ndef p = params[ctx.okta.event_type];\nctx.event.type = addUnique(ctx.event.type, p.type);\nctx.event.category = addUnique(ctx.event.category, p.category);\nctx.tags = addUnique(ctx.tags, p.tags);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

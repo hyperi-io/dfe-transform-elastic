@@ -253,9 +253,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.x509.signature_algorithm") };
             if _cond {
-                // Painless script
-                // Source: String algo = params.get(ctx.file.x509.signature_algorithm);\nif (algo != null) {\n  ctx.file.x509.signature_algorithm = algo;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

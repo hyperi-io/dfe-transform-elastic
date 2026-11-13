@@ -196,9 +196,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("log.level") };
             if _cond {
-                // Painless script
-                // Source: def err_levels = [\"emerg\", \"alert\", \"crit\", \"error\", \"warn\"]; if (err_levels.contains(ctx.log.level)) {\n  ctx.event.type = [\"error\"];\n} else {\n  ctx.event.type = [\"info\"];\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -286,8 +284,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v.equals(\"\") || (v instanceof Map && v.values().isEmpty()));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

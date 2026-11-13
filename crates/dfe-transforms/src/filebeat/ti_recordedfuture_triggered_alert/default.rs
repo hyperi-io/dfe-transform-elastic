@@ -430,9 +430,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: ctx.related = ctx.related ?: [:];\ndef ipList = new ArrayList();\nfor (data in ctx.recordedfuture.triggered_alert.entities) {\n  if (data.type != null && data.name != null && data.type.toLowerCase() == 'ipaddress' && !data.name.contains(\"/\")) {\n    ipList.add(data.name);\n  }\n}\nctx.related.put('ip', ipList);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -517,8 +515,7 @@ impl Transform for Default {
                 event.remove("recordedfuture.triggered_alert.rule.name");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

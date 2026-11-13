@@ -106,9 +106,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.json.put(\"k8sCluster.containerImage.value\", ctx.json['k8sCluster.containerImage']); ctx.json.remove('k8sCluster.containerImage');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -186,9 +184,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: String trimQuotes(def doubleQuote, def v) {\n  if (v.startsWith(doubleQuote) && v.endsWith(doubleQuote)) {\n    v = v.substring(1, v.length() - 1);\n  }\n  return v;\n}\ndef v1 = ctx.json?.src?.process?.parent?.cmdline;\ndef v2 = ctx.json?.tgt?.process?.cmdline;\nif (v1 instanceof String && v1 != null) {\n  v1 = trimQuotes(params.double_quote, v1);\n  ctx.json.src.process.parent.put(\"cmdline\", v1);\n}\nif (v2 instanceof String && v2 != null) {\n  v2 = trimQuotes(params.double_quote, v2);\n  ctx.json.tgt.process.put(\"cmdline\", v2);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -9886,9 +9882,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def ips = new ArrayList();\ndef relatedHosts = new ArrayList();\ndef dns = new HashMap();\n\nif (ctx.sentinel_one_cloud_funnel?.event?.dns?.request != null && ctx.sentinel_one_cloud_funnel.event.dns.request != \"\") {\n  def request = ctx.sentinel_one_cloud_funnel.event.dns.request;\n  def question = new HashMap();\n  def parts = /\\s+/.split(request);\n\n  if (parts.length == 3) {\n    question.put(\"type\", params[parts[1]]);\n    question.put(\"name\", parts[2]);   \n    relatedHosts.add(parts[2]);\n  } else {\n    question.put(\"name\", request); \n  }\n  dns.question = question;\n}\n\nif (ctx.sentinel_one_cloud_funnel?.event?.dns?.response != null && ctx.sentinel_one_cloud_funnel.event.dns.response != \"\") {\n  def response = /;/.split(ctx.sentinel_one_cloud_funnel.event.dns.response);\n  def answers = new ArrayList();\n\n  for (def i = 0; i < response.length; i++) {\n    def answer = response[i];\n    if (answer == \"\") {\n      continue;\n    }\n\n    if (answer.startsWith(\"type:\")) {\n      def parts = /\\s+/.split(answer);\n      if (parts.length < 2) {\n        throw new Exception(\"unexpected event.dns.response format\");\n      }\n      if (parts.length == 3) {\n        answers.add([\n          \"type\": params[parts[1]],\n          \"data\": parts[2]\n        ]);\n        relatedHosts.add(parts[2]);\n      } else {\n        answers.add([\n          \"type\": params[parts[1]]\n        ]);\n      }\n    } else {\n      ips.add(answer);\n    }\n  }\n\n  if (answers.length > 0) {\n    dns.answers = answers;\n  }\n  if (ips.length > 0) {\n    dns.resolved_ip = ips;\n  }\n  if (relatedHosts.length > 0) {\n    if (ctx?.related == null) {\n      ctx.related = new HashMap();\n    }\n    ctx.related.hosts = relatedHosts;\n  }\n}\nif (dns != null) {\n  ctx.dns = dns;\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -10402,9 +10396,7 @@ impl Transform for Default {
                                 .is_some_and(|s| s.len() > 1)
                     };
                     if _cond {
-                        // Painless script
-                        // Source: def path = ctx.sentinel_one_cloud_funnel.event.tgt.file.path;\ndef idx = path.lastIndexOf(\"\\\\\");\nif (idx == -1) {\n  idx = path.lastIndexOf(\"/\");\n}\nif (idx > -1) {\n    if (ctx.file == null) {\n        ctx.file = new HashMap();\n    }\n    ctx.file.name = path.substring(idx+1);\n    ctx.file.directory = path.substring(0, idx);\n\n    def extIdx = ctx.file.name.lastIndexOf(\".\");\n    if (extIdx > -1 && ctx.file.type == \"file\") {\n        ctx.file.extension = ctx.file.name.substring(extIdx+1);\n    }\n}\nif (path.indexOf(':') == 1) {\n  ctx.file.drive_letter = path.substring(0, 1).toUpperCase();\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -12864,9 +12856,7 @@ impl Transform for Default {
                             && event.get_str("registry.path") != Some("")
                     };
                     if _cond {
-                        // Painless script
-                        // Source: def idx = ctx.registry.path.lastIndexOf('\\\\');\nif (idx >= 0) {\n  ctx.registry.key = ctx.registry.path.substring(0, idx);\n  ctx.registry.value = ctx.registry.path.substring(idx+1);\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -13862,9 +13852,7 @@ impl Transform for Default {
                         && event.get_str("process.parent.command_line") != Some(""))
             };
             if _cond {
-                // Painless script
-                // Source: // appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string into next\n// argument and command line remainder offset.\ndef readNextArg(String line, int offset) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; offset < line.length(); offset++) {\n        def c = line.charAt(offset);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"offset\": offset+1\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && offset+1 < line.length() && line.charAt(offset+1) == (char)'\"') {\n                    b.append(c);\n                    offset++;\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"offset\": line.length()\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String line) {\n    def args = new ArrayList();\n    for (int i = 0; i < line.length();) {\n        if (line.charAt(i) == (char)' ' || line.charAt(i) == (char)0x09) {\n            i++;\n            continue;\n        }\n        def next = readNextArg(line, i);\n        i = next.offset;\n        if (next.arg == '') {\n            // Empty strings will be removed later so don't bother adding them.\n            continue;\n        }\n        args.add(next.arg);\n    }\n    return args;\n}\n\ndef cmd = ctx.process?.command_line;\nif (cmd != null && cmd != \"\") {\n  ctx.process.args = commandLineToArgv(cmd);\n  ctx.process.args_count = ctx.process.args.length;\n}\n\ndef parentCmd = ctx.process?.parent?.command_line;\nif (parentCmd != null && parentCmd != \"\") {\n  ctx.process.parent.args = commandLineToArgv(parentCmd);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -13957,8 +13945,7 @@ impl Transform for Default {
                 event.remove("sentinel_one_cloud_funnel.event.url.address");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

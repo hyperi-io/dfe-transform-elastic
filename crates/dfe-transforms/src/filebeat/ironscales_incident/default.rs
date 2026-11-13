@@ -59,9 +59,7 @@ impl Transform for Default {
 
             event.set("event.kind", json!("event"))?;
 
-            // Painless script
-            // Source: // Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n    def result = \"\";\n    for (int i = 0; i < str.length(); i++) {\n        char c = str.charAt(i);\n        if (Character.isUpperCase(c)) {\n            if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n                result += \"_\";\n            }\n            result += Character.toLowerCase(c);\n        } else {\n            result += c;\n        }\n    }\n    return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n// Apply the conversion\nctx.ironscales = ctx.ironscales ?: [:];\nif (ctx.json != null) {\n  ctx.ironscales.incident = convertToSnakeCase(ctx.json);\n}\n// Remove json field\nctx.remove('json');
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1635,9 +1633,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: // Initialize ECS email.attachments structure\nctx.email = ctx.email ?: [:];\nctx.email.attachments = ctx.email.attachments ?: [:];\nctx.email.attachments.file = ctx.email.attachments.file ?: [:];\nctx.email.attachments.file.name = ctx.email.attachments.file.name ?: [];\nctx.email.attachments.file.hash = ctx.email.attachments.file.hash ?: [:];\nctx.email.attachments.file.hash.md5 = ctx.email.attachments.file.hash.md5 ?: [];\n\n// Single iteration to extract file_name and md5 from attachments array\nfor (attachment in ctx.ironscales.incident.attachments) {\n  if (attachment.file_name != null && !ctx.email.attachments.file.name.contains(attachment.file_name)) {\n    ctx.email.attachments.file.name.add(attachment.file_name);\n  }\n  if (attachment.md5 != null && !ctx.email.attachments.file.hash.md5.contains(attachment.md5)) {\n    ctx.email.attachments.file.hash.md5.add(attachment.md5);\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1772,9 +1768,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: // Initialize ECS related fields structure\nctx.related = ctx.related ?: [:];\nctx.related.user = ctx.related.user ?: [];\nctx.related.hosts = ctx.related.hosts ?: [];\nctx.related.ip = ctx.related.ip ?: [];\n\n// Single iteration to extract name, email, sender_email, mail_server.host, and mail_server.ip from reports array\nfor (report in ctx.ironscales.incident.reports) {\n  if (report?.name != null && !ctx.related.user.contains(report.name)) {\n    ctx.related.user.add(report.name);\n  }\n  if (report?.email != null && !ctx.related.user.contains(report.email)) {\n    ctx.related.user.add(report.email);\n  }\n  if (report?.sender_email != null && !ctx.related.user.contains(report.sender_email)) {\n    ctx.related.user.add(report.sender_email);\n  }\n  if (report?.mail_server?.host != null && !ctx.related.hosts.contains(report.mail_server.host)) {\n    ctx.related.hosts.add(report.mail_server.host);\n  }\n  if (report?.mail_server?.ip != null && !ctx.related.ip.contains(report.mail_server.ip)) {\n    ctx.related.ip.add(report.mail_server.ip);\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1856,8 +1850,7 @@ impl Transform for Default {
 
             event.remove("ironscales.incident.affected_mailbox_count");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\nmap.values().removeIf(v -> {\n\tif (v instanceof Map) {\n\thandleMap(v);\n\t} else if (v instanceof List) {\n\thandleList(v);\n\t}\n\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n});\n}\nvoid handleList(List list) {\nlist.removeIf(v -> {\n\tif (v instanceof Map) {\n\thandleMap(v);\n\t} else if (v instanceof List) {\n\thandleList(v);\n\t}\n\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n});\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

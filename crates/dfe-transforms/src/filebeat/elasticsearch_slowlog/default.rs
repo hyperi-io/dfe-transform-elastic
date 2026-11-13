@@ -131,9 +131,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("elasticsearch.slowlog.duration") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = Math.round(ctx.elasticsearch.slowlog.duration * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -149,9 +147,7 @@ impl Transform for Default {
 
             event.set("event.category", Value::Array(vec![json!("database")]))?;
 
-            // Painless script
-            // Source: def errorLevels = ['FATAL', 'ERROR']; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = ['error'];\n  } else {\n    ctx.event.type = ['info'];\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

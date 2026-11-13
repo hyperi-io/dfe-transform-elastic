@@ -47,8 +47,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "azure.frontdoor.access")?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -472,9 +471,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: Map convertDotsToUnderscore(Map m) {\n  def out = new HashMap();\n  for (entry in m.entrySet()) {\n    def k = entry.getKey().replace('.', '_');\n    def v = entry.getValue();\n    out.put(k, v);\n  }\n  return out;\n}\nctx.azure.frontdoor.access.identity.claims = convertDotsToUnderscore(ctx.azure.frontdoor.access.identity.claims);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -521,9 +518,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def claims = ctx.azure.frontdoor.access.identity.claims;\ndef claims_initiated_by_user = new HashMap();\nif (claims.name != null) {\n    claims_initiated_by_user.fullname = claims.name;\n}\nfor (entry in params.entrySet()) {\n    if (claims[entry.getValue()] != null) {\n        claims_initiated_by_user[entry.getKey()] = claims[entry.getValue()];\n    }\n}\nif (claims_initiated_by_user.size() > 0) {\n    claims_initiated_by_user.schema = \"http://schemas.xmlsoap.org/ws/2005/05/identity/claims\";\n    ctx.azure.frontdoor.access.identity.claims_initiated_by_user = claims_initiated_by_user;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(

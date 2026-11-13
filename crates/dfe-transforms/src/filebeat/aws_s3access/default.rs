@@ -56,8 +56,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -288,9 +287,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration *= params.MS_TO_NS;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(r#"ctx.event.duration *= params.MS_TO_NS;"#),
@@ -349,9 +346,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("aws.s3access.tls_version") };
             if _cond {
-                // Painless script
-                // Source: def parts = ctx.aws.s3access.tls_version.toLowerCase().splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} ctx.tls.version = parts[1]; ctx.tls.version_protocol = parts[0]
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -393,8 +388,7 @@ impl Transform for Default {
 
             event.remove("_temp_");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

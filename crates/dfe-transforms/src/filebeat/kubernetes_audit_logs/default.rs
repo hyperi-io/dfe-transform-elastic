@@ -196,9 +196,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("kubernetes.audit.annotations") };
             if _cond {
-                // Painless script
-                // Source: Map annotations = ctx['kubernetes']['audit']['annotations']; Map updatedAnnotation = new HashMap(); for (String key: annotations.keySet()) {\n    updatedAnnotation[key.replace('.', '_')] = annotations[key];\n    if (key == 'authorization.k8s.io/decision') {\n        if (annotations['authorization.k8s.io/decision'] == 'allow') {\n            ctx.event.outcome = 'success';\n        } else if (annotations['authorization.k8s.io/decision'] == 'forbid') {\n            ctx.event.outcome = 'failure';\n        }\n    }\n} ctx['kubernetes']['audit']['annotations'] = updatedAnnotation
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -420,8 +418,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

@@ -616,9 +616,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.json.httpRequest.headers != null) {\n  ctx.aws.waf.request = new HashMap();\n  ctx.aws.waf.request.headers = new HashMap();\n  for (def i = 0; i < ctx.json.httpRequest.headers.length; i++) {\n    ctx.aws.waf.request.headers[ctx.json.httpRequest.headers[i].name] = ctx.json.httpRequest.headers[i].value;\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -638,9 +636,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.aws.waf.request_headers_inserted = new HashMap(); for (def i = 0; i < ctx.json.requestHeadersInserted.length; i++) {\n  ctx.aws.waf.request_headers_inserted[ctx.json.requestHeadersInserted[i].name] = ctx.json.requestHeadersInserted[i].value;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -793,8 +789,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n    for (def x : map.values()) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n    map.values().removeIf(v -> v == null || v == \"\" || v == \"-\" || ((v instanceof List || v instanceof Map) && v.isEmpty()));\n}\nvoid handleList(List list) {\n    for (def x : list) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

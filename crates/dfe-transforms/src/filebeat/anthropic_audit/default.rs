@@ -1208,9 +1208,7 @@ impl Transform for Default {
                 // Begin nested pipeline: "categorize"
                 let _cond = { event.has_value("event.action") };
                 if _cond {
-                    // Painless script
-                    // Source: def action = ctx.event.action;\nctx.event.kind = 'event';\n\nif (params.exact.containsKey(action)) {\n  def m = params.exact[action];\n  ctx.event.category = m.category;\n  ctx.event.type = m.type;\n  if (m.containsKey('outcome')) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = [];\n  ctx.event.type = ['info'];\n  ctx.event.outcome = 'unknown';\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1405,8 +1403,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

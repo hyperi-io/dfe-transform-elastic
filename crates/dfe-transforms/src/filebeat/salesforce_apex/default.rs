@@ -104,9 +104,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def apex = ctx.salesforce?.apex ?: [:];\ndef json = ctx.json ?: [:];\n\ndef fieldsToConvert = [\n  'CALLOUT_TIME': 'callout_time',\n  'CPU_TIME': 'cpu_time',\n  'DB_CPU_TIME': 'db_cpu_time',\n  'DB_TOTAL_TIME': 'db_total_time',\n  'EXECUTE_MS': 'execute_ms',\n  'FETCH_MS': 'fetch_ms',\n  'LIMIT_USAGE_PERCENT': 'limit_usage_pct',\n  'THROUGHPUT': 'throughput',\n  'RUN_TIME': 'run_time'\n];\nfor (def entry : fieldsToConvert.entrySet()) {\n  if (json[entry.getKey()] != null) {\n    def value = json[entry.getKey()];\n    if (value instanceof String && value.length() > 0) {\n      apex[entry.getValue()] = Float.parseFloat(value);\n    }\n  }\n}\n\ndef longFields = [\n  'DB_BLOCKS': 'db_blocks',\n  'LIMIT': 'limit',\n  'NUMBER_FIELDS': 'fields_count',\n  'NUMBER_SOQL_QUERIES': 'soql_queries_count',\n  'OFFSET': 'offset',\n  'ROWS': 'rows_total',\n  'ROWS_FETCHED': 'rows_fetched',\n  'ROWS_PROCESSED': 'rows_processed'\n];\nfor (def entry : longFields.entrySet()) {\n  if (json[entry.getKey()] != null) {\n    def value = json[entry.getKey()];\n    if (value instanceof String && value.length() > 0) {\n      apex[entry.getValue()] = Long.parseLong(value);\n    }\n  }\n}\n\ndef fieldsToRename = [\n  'ACTION': 'action',\n  'CLASS_NAME': 'class_name',\n  'CLIENT_NAME': 'client_name',\n  'ENTITY': 'entity',\n  'ENTITY_NAME': 'entity_name',\n  'ENTRY_POINT': 'entry_point',\n  'EVENT_TYPE': 'event_type',\n  'FILTER': 'filter',\n  'IS_LONG_RUNNING_REQUEST': 'is_long_running_request',\n  'LOGIN_KEY': 'login_key',\n  'MEDIA_TYPE': 'media_type',\n  'MESSAGE': 'message',\n  'METHOD_NAME': 'method_name',\n  'ORDERBY': 'orderby',\n  'ORGANIZATION_ID': 'organization_id',\n  'QUERY': 'query',\n  'QUIDDITY': 'quiddity',\n  'REQUEST_ID': 'request_id',\n  'REQUEST_STATUS': 'request_status',\n  'SELECT': 'select',\n  'SUBQUERIES': 'subqueries',\n  'TRIGGER_ID': 'trigger_id',\n  'TRIGGER_NAME': 'trigger_name',\n  'TRIGGER_TYPE': 'trigger_type',\n  'TYPE': 'type',\n  'URI': 'uri',\n  'URI_ID_DERIVED': 'uri_derived_id',\n  'USER_AGENT': 'user_agent',\n  'USER_ID_DERIVED': 'user_id_derived'\n];\nfor (def entry : fieldsToRename.entrySet()) {\n  if (json[entry.getKey()] != null) {\n    apex[entry.getValue()] = json[entry.getKey()];\n  }\n}\n\nctx.salesforce = ctx.salesforce ?: [:];\nctx.salesforce.apex = apex;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -138,9 +136,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def userAgent = ctx.salesforce.apex.user_agent.toString();\nif (userAgent.length() >= 3) {\n  def code = userAgent.substring(0, 3);\n  if (params.user_agent_map.containsKey(code)) {\n    ctx.salesforce.apex.user_agent = params.user_agent_map[code];\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -202,9 +198,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def eventType = ctx.salesforce.apex.event_type?.toLowerCase();\nif (eventType != null && params.event_action_map.containsKey(eventType)) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.action = params.event_action_map[eventType];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -238,9 +232,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def apex = ctx.salesforce?.apex ?: [:];\ndef json = ctx.json ?: [:];\ndef event = ctx.event ?: [:];\n\nif (apex.event_type == \"ApexCallout\" && json.TIME != null) {\n  event.duration = Float.parseFloat(json.TIME);\n} else if (json.EXEC_TIME != null && (apex.event_type == \"ApexTrigger\" || apex.event_type == \"ApexExecution\")) {\n  event.duration = Float.parseFloat(json.EXEC_TIME);\n} else if (apex.run_time != null && (apex.event_type == \"ApexRestApi\" || apex.event_type == \"ApexSoap\")) {\n  event.duration = apex.run_time;\n} else if (json.TOTAL_MS != null && apex.event_type == \"ExternalCustomApexCallout\") {\n  event.duration = Float.parseFloat(json.TOTAL_MS);\n}\n\nif ((json.SUCCESS != null && json.SUCCESS == \"1\") || (json.STATUS != null && json.STATUS == \"1\")) {\n  event.outcome = \"success\";\n} else if ((json.SUCCESS != null && json.SUCCESS != \"1\") || (json.STATUS != null && json.STATUS != \"1\")) {\n  event.outcome = \"failure\";\n}\n\nif (json.URL != null && apex.event_type == \"ApexCallout\") {\n  event.url = json.URL;\n} else if (apex.uri != null && apex.event_type != \"ApexCallout\" && apex.event_type != \"ExternalCustomApexCallout\") {\n  event.url = apex.uri;\n}\n\nctx.event = event;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -416,8 +408,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return ((Map) object).isEmpty();\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return ((List) object).isEmpty();\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

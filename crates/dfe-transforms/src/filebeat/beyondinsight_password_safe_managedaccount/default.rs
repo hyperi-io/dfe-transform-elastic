@@ -43,9 +43,7 @@ impl Transform for Default {
                 "beyondinsight_password_safe.managedaccount",
             )?;
 
-            // Painless script
-            // Source: ctx.beyondinsight_password_safe.managedaccount.entrySet().removeIf(entry ->\n  entry.getValue() == null ||\n  (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -53,9 +51,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.managedaccount[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.managedaccount[field] =\n      Integer.toString(value.intValue());\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -66,9 +62,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.managedaccount.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.managedaccount = renamedFields;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -188,9 +182,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("beyondinsight_password_safe.managedaccount.change_state") };
             if _cond {
-                // Painless script
-                // Source: def description = params.descriptions.get(ctx.beyondinsight_password_safe.managedaccount.change_state);\nif (description != null) {\n  ctx.beyondinsight_password_safe.managedaccount.change_state = description;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

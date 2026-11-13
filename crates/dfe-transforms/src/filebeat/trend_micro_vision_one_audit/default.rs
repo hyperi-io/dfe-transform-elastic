@@ -73,9 +73,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script
-                // Source: String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    if (obj == \"\") {\n      return null;\n    }\n    return obj;\n  }\n}\nctx.trend_micro_vision_one = ctx.trend_micro_vision_one ?: [:];\nctx.trend_micro_vision_one.audit = convertToSnakeCase(ctx.json);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -224,9 +222,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def eventCategory = new HashSet();\ndef eventType = new HashSet();\ndef category = ctx.trend_micro_vision_one.audit.category.toLowerCase();\ndef activity = ctx.trend_micro_vision_one.audit.activity.toLowerCase();\nif (['logon and logoff', 'saml single sign-on'].contains(category)) {\n  eventCategory.add('authentication');\n  if (['log on', 'enable single sign-on'].contains(activity)) {\n    eventType.add('start');\n  }\n  if (['log off', 'disable single sign-on'].contains(activity)) {\n    eventType.add('end');\n  } else {\n    eventType.add('info');\n  }\n}\nif (['account management', 'product connector', 'Notifications', 'detection model management', 'workbench', 'response management', 'search', 'managed xdr', 'third-party integration', 'service gateway inventory', 'endpoint inventory', 'endpoint security policies', 'zero trust secure access', 'sandbox analysis', 'oat', 'security playbooks'].contains(category)) {\n  eventCategory.add('authentication');\n  eventType.add('info');\n}\nif (category == 'network inventory') {\n  eventCategory.add('network');\n  eventType.add('info');\n}\nif (category == 'threat intelligence') {\n  eventCategory.add('threat');\n  eventType.add('indicator');\n}\nif (activity == 'email') {\n  eventCategory.add('email');\n}\nif (activity == 'file') {\n  eventCategory.add('file');\n}\nif (activity == 'threat') {\n  eventCategory.add('threat');\n}\nif (!eventCategory.isEmpty()) {\n  ctx.event.category = eventCategory;\n}\nif (!eventType.isEmpty()) {\n  ctx.event.type = eventType;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -332,8 +328,7 @@ impl Transform for Default {
                 event.remove("trend_micro_vision_one.audit.logged_role");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

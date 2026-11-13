@@ -78,9 +78,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: long t = (long)(ctx.json.Timestamp);\nif (t > (long)(1e18)) {\n  ctx.json.Timestamp = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.Timestamp = t*(long)(1e3)\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -877,9 +875,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def domains = new HashSet();\nif (ctx.related?.hosts instanceof List) {\n  for (def h: ctx.related.hosts) {\n    domains.add(h);\n  }\n}\nif (ctx.server?.domain != null) {\n  domains.add(ctx.server.domain)\n}\nif (ctx.related?.user instanceof List) {\n  for (def u: ctx.related.user) {\n    if (u.length() < 3) {\n      continue;\n    }\n    def parts = u.splitOnToken('@');\n    if (parts.length != 2) {\n      continue;\n    }\n    domains.add(parts[1]);\n  }\n}\nctx.related.hosts = domains;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1009,9 +1005,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def files = [];\ndef emailAttachments = [];\ndef hashes = new HashSet();\nfor (def a: ctx.cloudflare_logpush.email_security_alerts.attachments) {\n  def f = [:];\n  def efa = [:];\n  if (a.Name != null) {\n    f.name = a.Name;\n  }\n  if (a.ContentTypeComputed != null) {\n    f.mime_type = a.ContentTypeComputed;\n  }\n  def fh = [:];\n  if (a.Md5 != null) {\n    fh.md5 = a.Md5;\n  }\n  if (a.Sha1 != null) {\n    fh.sha1 = a.Sha1;\n  }\n  if (a.Sha256 != null) {\n    fh.sha256 = a.Sha256;\n  }\n  if (a.Sha384 != null) {\n    fh.sha384 = a.Sha384;\n  }\n  if (a.Sha512 != null) {\n    fh.sha512 = a.Sha512;\n  }\n  if (a.Ssdeep != null) {\n    fh.ssdeep = a.Ssdeep;\n  }\n  if (fh.size() != 0) {\n    f.hash = fh;\n  }\n  files.add(f);\n  efa.put('file', f);\n  emailAttachments.add(efa);\n  for (def h: fh.entrySet()) {\n    hashes.add(h.getValue());\n  }\n}\nctx.file = files;\nif (emailAttachments.size() != 0) {\n  if (ctx.email == null) {\n    ctx.email = [:];\n  }\n  ctx.email.attachments = emailAttachments;\n}\nctx.related = ctx.related ?: [:];\nctx.related.hash = hashes;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1077,8 +1071,7 @@ impl Transform for Default {
                 event.remove("cloudflare_logpush.email_security_alerts.reply_to");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

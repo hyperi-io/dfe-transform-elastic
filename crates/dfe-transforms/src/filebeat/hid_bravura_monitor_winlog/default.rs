@@ -85,9 +85,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: if (ctx?.winlog?.event_id == null) {\n  return;\n}\ndef t = params.get(ctx.winlog.event_id);\nif (t == null) {\n  return;\n}\nctx.winlog.put(\"symbolic_id\", t)
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -98,9 +96,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: if (ctx?.winlog?.event_id == null) {\n  return;\n}\ndef t = params.get(ctx.winlog.event_id);\nif (t == null) {\n  return;\n}\nif (ctx?.winlog?.event_data == null ) {\n  Map map = new HashMap();\n  ctx.winlog.put(\"event_data\", map);\n}\nctx.winlog.event_data.put(\"Description\", t)
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

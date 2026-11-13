@@ -356,9 +356,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def dur = ctx._conf.ioc_expiration_duration; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_created_at = ZonedDateTime.parse(ctx.cybersixgill.created); if (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    _tmp_deleted_at = _tmp_created_at.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    _tmp_deleted_at = _tmp_created_at.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    _tmp_deleted_at = _tmp_created_at.plusMinutes(Long.parseLong(time_value));\n  } else {\n    _tmp_deleted_at = _tmp_created_at.plusDays(90L);\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n  }\n  ctx.cybersixgill.deleted_at = _tmp_deleted_at;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -463,9 +461,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cybersixgill.external_references") };
             if _cond {
-                // Painless script
-                // Source: def refs = ctx.cybersixgill.external_references; ctx.cybersixgill.mitre = new HashMap(); ctx.cybersixgill.virustotal = new HashMap(); ctx.threat.tactic = new HashMap(); for (def ref : refs) {\n  if (ref?.description != null) {\n    ctx.cybersixgill.mitre.description = ref.description;\n  }\n  if (ref?.mitre_attack_tactic != null) {\n    ctx.threat.tactic.name = [ref.mitre_attack_tactic];\n  }\n  if (ref?.mitre_attack_tactic_id != null) {\n    ctx.threat.tactic.id = [ref.mitre_attack_tactic_id];\n  }\n  if (ref?.mitre_attack_tactic_url != null) {\n    ctx.threat.tactic.reference = [ref.mitre_attack_tactic_url];\n  }\n  if (ref?.positive_rate != null) {\n    ctx.cybersixgill.virustotal.pr = ref.positive_rate;\n  }\n  if (ref?.url != null) {\n    ctx.cybersixgill.virustotal.url = ref.url;\n  }    \n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -497,9 +493,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("threat.indicator.confidence") };
             if _cond {
-                // Painless script
-                // Source: def value = ctx.threat.indicator.confidence; if (value <= 0.0 || value > 100.0) {\n  ctx.threat.indicator.confidence = \"None\";\n  return;\n} if (value >= 1.0 && value <= 29.0) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} if (value >= 30.0 && value <= 69.0) {\n  ctx.threat.indicator.confidence = \"Med\";\n  return;\n} if (value >= 70 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -510,8 +504,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("threatintel") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\nmap.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

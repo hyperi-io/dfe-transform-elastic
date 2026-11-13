@@ -48,9 +48,7 @@ impl Transform for Default {
 
             event.rename("isNew", "ti_strider.indicator.is_new")?;
 
-            // Painless script
-            // Source: if (ctx.ti_strider?.indicator?.is_new != null) {\n  ctx.ti_strider.indicator.is_new = (ctx.ti_strider.indicator.is_new == 1);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -72,9 +70,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("@timestamp") };
             if _cond {
-                // Painless script
-                // Source: ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);\nif (ctx.ti_strider?.indicator?.archive == 1) {\n  ctx.ti_strider.indicator.expires_at = now;\n} else {\n  ctx.ti_strider.indicator.expires_at = now.plusDays(90);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

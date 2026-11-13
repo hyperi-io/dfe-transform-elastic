@@ -631,9 +631,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: def dur = ctx._temp?.duration_str;\nif (dur == null) return;\nlong nanos;\nif (dur.endsWith('ms')) {\n  nanos = (long)(Double.parseDouble(dur.substring(0, dur.length() - 2)) * 1000000.0);\n} else if (dur.endsWith(\"µs\") || dur.endsWith('us')) {\n  nanos = (long)(Double.parseDouble(dur.substring(0, dur.length() - 2)) * 1000.0);\n} else if (dur.endsWith('ns')) {\n  nanos = (long)Double.parseDouble(dur.substring(0, dur.length() - 2));\n} else if (dur.endsWith('s')) {\n  nanos = (long)(Double.parseDouble(dur.substring(0, dur.length() - 1)) * 1000000000.0);\n} else {\n  return;\n}\nctx.event.duration = nanos;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -656,9 +654,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: def level = ctx.log?.level;\nif (level == null) return;\ndef lower = level.toLowerCase();\nif (lower == 'eror') ctx.log.level = 'error';\nelse if (lower == 'dbug') ctx.log.level = 'debug';\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -670,9 +666,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: def level = ctx.log?.level;\nif (level == null) return;\nlevel = level.toLowerCase();\nif (level == 'critical' || level == 'crit') ctx.event.severity = 2;\nelse if (level == 'error') ctx.event.severity = 3;\nelse if (level == 'warn' || level == 'warning') ctx.event.severity = 4;\nelse if (level == 'info') ctx.event.severity = 6;\nelse if (level == 'debug') ctx.event.severity = 7;\nelse if (level == 'trace') ctx.event.severity = 8;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

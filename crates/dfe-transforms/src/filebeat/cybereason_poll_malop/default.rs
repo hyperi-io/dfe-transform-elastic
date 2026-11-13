@@ -953,9 +953,7 @@ impl Transform for Default {
 
             let _cond = { event.get("json.machines").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: def os_types = new ArrayList(); for (def obj : ctx.json.machines) {\n  if (obj.containsKey(\"os_type\") && [\"linux\", \"macos\", \"unix\", \"windows\", \"ios\", \"android\"].contains((obj.get(\"os_type\")).toLowerCase())) {\n    os_types.add(obj.get(\"os_type\").toLowerCase());\n  }\n} if (os_types.size() > 0){\n  if (ctx.host.os == null) {\n    ctx.host.os = new HashMap();\n  }\n  ctx.host.os.type= os_types;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1323,8 +1321,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

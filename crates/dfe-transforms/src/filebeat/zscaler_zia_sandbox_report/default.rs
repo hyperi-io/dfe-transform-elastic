@@ -87,8 +87,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'NA' || object == 'None') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -678,8 +677,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.event.duration = ctx.zscaler_zia.sandbox_report.summary.duration * 1000000;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::new(
@@ -969,8 +967,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

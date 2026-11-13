@@ -176,9 +176,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sonicwall.firewall") };
             if _cond {
-                // Painless script
-                // Source: List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\nList removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\nfor (def src_field : ctx.sonicwall.firewall.entrySet()) {\n  def key = src_field.getKey();\n  if (params[key] != null) {\n    boolean mapped = false;\n    for (def action : params[key]) {\n      def value = action.map == null? src_field.getValue() : action.map[src_field.getValue()];\n      if (value != null) {\n        sets.add([\n          \"target\": action.to,\n          \"value\": value\n        ]);\n      }\n    }\n    removes.add(key);\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -190,9 +188,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\nList removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\nfor (def field : params.entrySet()) {\n  String value = ctx.sonicwall.firewall[field.getKey()];\n  if (value == null) continue;\n  String[] parts = value.splitOnToken(\":\");\n  List mapping = field.getValue();\n  for ( int i = (int)Math.min(parts.length, mapping.size()) - 1\n      ; i>=0\n      ; i--) {\n    sets.add([\n      \"target\": mapping[i],\n      \"value\": parts[i]\n    ]);\n  }\n  removes.add(field.getKey());\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -203,9 +199,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\nList removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\nMap base = ctx.sonicwall?.firewall;\nif (base == null) return;\nfor (def entry : params.sources) {\n  if (base.containsKey(entry.field)) {\n    sets.add([\n        \"target\": params.destination,\n        \"value\": base[entry.field] + entry.append\n    ]);\n  }\n  removes.add(entry.field);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -990,9 +984,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: for (def src : params.from) {\n  for (def key : params.keys) {\n    def v = null;\n    if (ctx[src] != null && (v = ctx[src][key]) != null && v instanceof Long) {\n      if (ctx[params.to] == null || !(ctx[params.to] instanceof Map)) {\n        ctx[params.to] = new HashMap();\n      }\n      if (ctx[params.to][key] == null || !(ctx[params.to][key] instanceof Long)) {\n        ctx[params.to][key] = v;\n      } else {\n        ctx[params.to][key] += v;\n      }\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -1033,9 +1025,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def clone(def val) {\n  return val instanceof List? new ArrayList(val) : val;\n}\ndef evtype = params.message_codes[ctx.event?.code];\nif (evtype == null) return;\ndef actions = params.event_types[evtype];\nif (actions == null) {\n  throw new Exception(\"message code \" + ctx.event.code + \" references missing event type \" + evtype);\n}\ndef event = ctx.computeIfAbsent('event', k -> new HashMap());\nfor (def entry : actions.entrySet()) {\n  event[entry.getKey()] = clone(entry.getValue());\n}\nevent[\"action\"] = evtype;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

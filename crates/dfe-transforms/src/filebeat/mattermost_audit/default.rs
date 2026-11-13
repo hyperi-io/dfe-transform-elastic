@@ -359,9 +359,7 @@ impl Transform for Default {
                 event.rename("json.channeld", "mattermost.audit.channel")?;
             }
 
-            // Painless script
-            // Source: ctx.event.kind = 'event'; ctx.event.category = ['configuration']; ctx.event.type = ['info']; if (ctx.event.action == null) {\n    return;\n} if (params.get(ctx.event.action) == null) {\n    return;\n} def hm = new HashMap(params.get(ctx.event.action)); hm.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -380,9 +378,7 @@ impl Transform for Default {
                 })
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.event.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user.target.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if (['patchUser'].contains(ctx.event.action)) {\n  if(ctx.user.target.name != ctx.mattermost?.audit?.patch?.name) {\n    ctx.user.changes.put(\"name\", ctx.mattermost?.audit?.patch?.name);\n  }\n} else if (['createTeam','patchTeam','deleteTeam'].contains(ctx.event.action)) {\n  ctx.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n  ctx.group.put(\"id\", ctx.mattermost?.audit?.team?.id);\n} else if (['addTeamMembers','removeTeamMember'].contains(ctx.event.action)) {\n  ctx.user.target.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n  ctx.user.target.group.put(\"id\", ctx.mattermost?.audit?.team?.id);\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -506,8 +502,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

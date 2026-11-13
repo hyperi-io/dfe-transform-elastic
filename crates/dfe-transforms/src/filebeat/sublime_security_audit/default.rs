@@ -854,9 +854,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sublime_security.audit.data.request.query") };
             if _cond {
-                // Painless script
-                // Source: StringBuilder sb = new StringBuilder();\nMap attributes = ctx.sublime_security.audit.data.request.query;\nfor (entry in attributes.entrySet()) {\n  sb.append(entry.getKey()).append('=').append(entry.getValue()).append('&');\n}\nif(ctx.url == null) {\n    ctx.put(\"url\", new HashMap());\n}\nctx.url.query = sb.length() > 0 ? sb.substring(0, sb.length() - 1) : null;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -933,9 +931,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: String t = ctx.sublime_security.audit.type;\nint dot = t.indexOf('.');\nString res = dot >= 0 ? t.substring(0, dot) : t;\n\nArrayList cats = new ArrayList();\nArrayList types = new ArrayList();\n\nif (params.email_resources.contains(res)) {\n  cats.add('email');\n  types.add('info');\n} else if (res == 'auth') {\n  cats.add('authentication');\n  if (t.startsWith('auth.login')) { types.add('start'); }\n  else if (t == 'auth.logout') { types.add('end'); }\n  else { types.add('info'); }\n} else if (params.iam_resources.contains(res)) {\n  cats.add('iam');\n  if (res == 'user') { types.add('user'); }\n  if (res == 'rbac') { types.add('group'); }\n  if (t.contains('create') || t.contains('connect') || t.contains('upload')) { types.add('creation'); }\n  else if (t.contains('delete')) { types.add('deletion'); }\n  else { types.add('change'); }\n} else if (params.configuration_resources.contains(res) || params.configuration_types.contains(t)) {\n  cats.add('configuration');\n  if (t.contains('create') || t.contains('connect') || t.contains('upload')) { types.add('creation'); }\n  else if (t.contains('delete')) { types.add('deletion'); }\n  else if (t == 'inline_signed_headers_retrieved') { types.add('info'); }\n  else { types.add('change'); }\n}\n\nif (!cats.isEmpty()) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.category = cats;\n  ctx.event.type = types;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1013,8 +1009,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

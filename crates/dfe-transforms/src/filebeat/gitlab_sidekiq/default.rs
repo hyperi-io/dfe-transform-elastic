@@ -284,9 +284,7 @@ impl Transform for Default {
 
             let _cond = { event.get("event.duration").is_some_and(|v| v.is_number()) };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = (long) (ctx.event.duration*1e9)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(r#"ctx.event.duration = (long) (ctx.event.duration*1e9)"#),
@@ -7291,8 +7289,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

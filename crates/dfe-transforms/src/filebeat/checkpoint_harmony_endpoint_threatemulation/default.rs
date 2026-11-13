@@ -248,9 +248,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.os.name") && event.has_value("host.os.version") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.host.os.name instanceof List && ctx.host.os.name.size() == 1)\n    ctx.host.os.name = ctx.host.os.name[0];\nif (ctx.host.os.version instanceof List && ctx.host.os.version.size() == 1)\n    ctx.host.os.version = ctx.host.os.version[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -288,9 +286,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.name") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.file.name instanceof List && ctx.file.name.size() == 1)\n    ctx.file.name = ctx.file.name[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -326,9 +322,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.path") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.file.path instanceof List && ctx.file.path.size() == 1)\n    ctx.file.path = ctx.file.path[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -355,9 +349,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("url.original") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.url.original instanceof List && ctx.url.original.size() == 1)\n    ctx.url.original = ctx.url.original[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -421,9 +413,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("checkpoint_harmony_endpoint.threatemulation.malware.action") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.checkpoint_harmony_endpoint.threatemulation.malware.action instanceof List && ctx.checkpoint_harmony_endpoint.threatemulation.malware.action.size() == 1)\n    ctx.checkpoint_harmony_endpoint.threatemulation.malware.action = ctx.checkpoint_harmony_endpoint.threatemulation.malware.action[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -459,9 +449,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("checkpoint_harmony_endpoint.threatemulation.client.version") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.checkpoint_harmony_endpoint.threatemulation.client.version instanceof List && ctx.checkpoint_harmony_endpoint.threatemulation.client.version.size() == 1)\n    ctx.checkpoint_harmony_endpoint.threatemulation.client.version = ctx.checkpoint_harmony_endpoint.threatemulation.client.version[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -473,9 +461,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("checkpoint_harmony_endpoint.threatemulation.web_client_type") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type instanceof List && ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type.size() == 1)\n    ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type = ctx.checkpoint_harmony_endpoint.threatemulation.web_client_type[0];
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -517,8 +503,7 @@ impl Transform for Default {
             event.remove("checkpoint_harmony_endpoint.threatemulation.product_family");
             event.remove("checkpoint_harmony_endpoint.threatemulation.time");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' ||(v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

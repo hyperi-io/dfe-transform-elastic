@@ -40,9 +40,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def docs = ctx.json.docs;\nif (docs instanceof List && docs.size() > 0) {\n  ctx.json[\"doc\"] = docs[0];\n} else if (docs instanceof Map) {\n  ctx.json[\"doc\"] = docs;\n} else {\n  throw new Exception(\"Unexpected type\");\n}\nctx.json.remove(\"docs\");
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -364,9 +362,7 @@ impl Transform for Default {
                 event.set("_tmp.forwarded", json!(true))?;
             }
 
-            // Painless script
-            // Source: void removeEmptyStr(Map m) {\n  if (m != null) m.entrySet().removeIf( e -> e.value == \"\");\n}\nremoveEmptyStr(ctx.json);\nremoveEmptyStr(ctx.json.doc);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -390,9 +386,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: def clone(def ref) {\n  if (ref == null) return ref;\n  if (ref instanceof Map) {\n    ref = ref.entrySet().stream().collect(\n            Collectors.toMap(\n              e -> e.getKey(),\n              e -> clone(e.getValue())\n            )\n          );\n  } else if (ref instanceof List) {\n    ref = ref.stream().map(e -> clone(e)).collect(\n            Collectors.toList()\n          );\n  }\n  return ref;\n}\ndef event = ctx.event;\nif (event == null) {\n  event = new HashMap();\n  ctx[\"event\"] = event;\n}\ndef type = ctx.event.action;\ndef fields = params[type] != null? params[type] : params[\"unknown\"];\nfields.forEach( (k, v) -> {\n  event[k] = clone(v);\n});
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -611,9 +605,7 @@ impl Transform for Default {
                 event.rename("json.watchlist_name", "rule.name")?;
             }
 
-            // Painless script
-            // Source: def ep = ctx.json.doc?.endpoint;\nif (ep != null && !(ep instanceof List)) {\n  ctx.json.doc.endpoint = [ ep ];\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -984,9 +976,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: void _set(Map base, def path, def value) {\n  if (path.length == 0) return;\n  for (int i=0; i<path.length-1; i++) {\n    String c = path[i];\n    if (base[c] == null) base[c] = new HashMap();\n    base = base[c];\n  }\n  base[path[path.length-1]] = value;\n} void set(Map base, String path, def value) {\n  _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.ioc_type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.ioc_value; if (value == null) return; set(ctx, mapping.target, value); ctx[\"_tmp_ioc_done\"] = true;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(

@@ -32,8 +32,7 @@ impl Transform for Default {
                     }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
+            // The pipeline's script, emitted as the runtime's equivalent
             syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
             if let Some(input) = event.get_string("_temp_.full_message") {
@@ -263,9 +262,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") != Some("") };
             if _cond {
-                // Painless script
-                // Source: def messageID = Long.parseLong(ctx._temp_.cisco.message_id);\nif (messageID >= 101001 && messageID <= 105052) {\n ctx.event[\"reason\"] = ctx.message;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8759,9 +8756,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.orig_security") };
             if _cond {
-                // Painless script
-                // Source: boolean isEmpty(def value) {\n  return (value instanceof AbstractList ? value.size() : value.length()) == 0;\n}\ndef appendOrCreate(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n  dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n String key = path[path.length - 1];\n def existing = dest.get(key);\n return existing == null ?\n  dest.put(key, value)\n  : existing instanceof AbstractList ?\n    existing.add(value)\n    : dest.put(key, new ArrayList([existing, value]));\n}\ndef msg = ctx._temp_.orig_security;\ndef counters = new HashMap();\ndef dest = new HashMap();\ndef dest_event = new HashMap();\ndef security_event_list = new ArrayList(['ac_policy',\n                            'access_control_rule_action',\n                            'access_control_rule_name',\n                            'access_control_rule_reason',\n                            'application_protocol',\n                            'client',\n                            'client_version',\n                            'connection_duration',\n                            'dns_query',\n                            'dns_record_type',\n                            'dns_response_type',\n                            'dns_ttl',\n                            'destination_ip_dynamic_attribute',\n                            'destination_security_group',\n                            'destination_security_group_tag',\n                            'dst_ip',\n                            'dst_port',\n                            'egress_interface',\n                            'egress_zone',\n                            'encrypt_peer_ip',\n                            'file_action',\n                            'file_count',\n                            'file_direction',\n                            'file_name',\n                            'file_policy',\n                            'file_sandbox_status',\n                            'file_sha256',\n                            'file_size',\n                            'file_type',\n                            'first_packet_second',\n                            'http_referer',\n                            'http_response',\n                            'icmp_code',\n                            'icmp_type',\n                            'ingress_interface',\n                            'ingress_zone',\n                            'initiator_bytes',\n                            'initiator_packets',\n                            'nap_policy',\n                            'prefilter_policy',\n                            'protocol',\n                            'referenced_host',\n                            'responder_bytes',\n                            'responder_packets',\n                            'sha_disposition',\n                            'source_security_group',\n                            'source_security_group_tag',\n                            'source_security_group_type',\n                            'spero_disposition',\n                            'src_ip',\n                            'src_port',\n                            'ssl_actual_action',\n                            'ssl_certificate',\n                            'ssl_expected_action',\n                            'ssl_flow_status',\n                            'ssl_policy',\n                            'ssl_rule_name',\n                            'ssl_server_cert_status',\n                            'ssl_server_name',\n                            'ssl_session_id',\n                            'ssl_ticket_id',\n                            'ssl_version',\n                            'sslurl_category',\n                            'tunnel_or_prefilter_rule',\n                            'uri',\n                            'url',\n                            'url_category',\n                            'url_reputation',\n                            'user',\n                            'user_agent',\n                            'vpn_action',\n                            'web_application']);\nctx._temp_.cisco['security'] = dest;\nctx._temp_.cisco['security_event'] = dest_event;\nfor (entry in msg.entrySet()) {\n def param = params.get(entry.getKey());\n if (param == null) {\n   continue;\n }\n param.getOrDefault('id', []).forEach( id -> counters[id] = 1 + counters.getOrDefault(id, 0) );\n if (!isEmpty(entry.getValue())) {\n  param.getOrDefault('ecs', []).forEach( field -> appendOrCreate(ctx, field.splitOnToken('.'), entry.getValue()) );\n  if (security_event_list.contains(param.target)){\n    dest_event[param.target] = entry.getValue();\n  }\n  else{\n    dest[param.target] = entry.getValue();\n  }\n }\n}\nif (ctx._temp_.cisco.message_id != \"\") return;\ndef best;\nfor (entry in counters.entrySet()) {\n if (best == null || best.getValue() < entry.getValue()) best = entry;\n}\nif (best != null) ctx._temp_.cisco.message_id = best.getKey();\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -9004,9 +8999,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n  if (src == null || !(src instanceof Map)) {\n    return null;\n  }\n }\n return src[path[path.length-1]];\n}\ndef setField(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n   dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n dest[path[path.length-1]] = value;\n}\nfor (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  def param = entry.getValue();\n  def rawVal = getField(ctx, srcField.splitOnToken('.'));\n  if (rawVal == null) continue;\n  String oldVal;\n  if (rawVal instanceof AbstractList) {\n    if (rawVal.size() == 0) continue;\n    oldVal = rawVal[0].toString();\n  } else {\n    oldVal = rawVal.toString();\n  }\n  def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -9089,16 +9082,13 @@ impl Transform for Default {
                     && !event.has_value("network.bytes")
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: if (ctx.network == null) {\n  ctx.network = [:];\n}\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;
+                // The pipeline's script, emitted as the runtime's equivalent
                 sum_directions(event, &["bytes"]);
             }
 
             let _cond = { event.has_value("_temp_.duration_hms") };
             if _cond {
-                // Painless script
-                // Source: long parse_hms(String s) {\n    long cur = 0, total = 0;\n    for (char c: s.toCharArray()) {\n        if (c >= (char)'0' && c <= (char)'9') {\n            cur = (cur*10) + (long)c - (char)'0';\n        } else if (c == (char)':') {\n            total = (total + cur) * 60;\n            cur = 0;\n        } else if (c != (char)'h' && c == (char)'m' && c == (char)'s') {\n            return 0;\n        }\n    }\n    return total + cur;\n} if (ctx.event == null) {\n    ctx['event'] = new HashMap();\n} if (ctx?._temp_.cisco?.message_id == '430003') {\n  String start = ctx['@timestamp'];\n  ctx.event['start'] = start;\n  long nanos = parse_hms(ctx._temp_.duration_hms) * 1000000000L;\n  ctx.event['duration'] = nanos;\n  ctx.event['end'] = ZonedDateTime.ofInstant(\n      Instant.parse(start).plusNanos(nanos),\n      ZoneOffset.UTC);\n} else {\n  String end = ctx['@timestamp'];\n  ctx.event['end'] = end;\n  long nanos = parse_hms(ctx._temp_.duration_hms) * 1000000000L;\n  ctx.event['duration'] = nanos;\n  ctx.event['start'] = ZonedDateTime.ofInstant(\n      Instant.parse(end).minusNanos(nanos),\n      ZoneOffset.UTC);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9396,9 +9386,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("network.transport") };
             if _cond {
-                // Painless script
-                // Source: def net = ctx.network; def iana = params[net.transport]; if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} def reverse = new HashMap(); def[] arr = new def[] { null }; for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  reverse.put(String.format(\"%d\", arr), entry.getKey());\n} def trans = reverse[net.transport]; if (trans != null) {\n  net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -10167,9 +10155,7 @@ impl Transform for Default {
                         || !event.has_value("_temp_.internal_zones"))
             };
             if _cond {
-                // Painless script
-                // Source: boolean isPrivateCIDR(def ip) {\n  CIDR class_a_network = new CIDR('10.0.0.0/8');\n  CIDR class_b_network = new CIDR('172.16.0.0/12');\n  CIDR class_c_network = new CIDR('192.168.0.0/16');\n\n  try {\n    return class_a_network.contains(ip) || class_b_network.contains(ip) || class_c_network.contains(ip);\n  } catch (IllegalArgumentException e) {\n    return false;\n  }\n}\ntry {\n  if (ctx.network == null) {\n    Map map = new HashMap();\n    ctx.put('network', map);\n  }\n\n  if (!isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'inbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'outbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'internal';\n  } else if (!isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'external';\n  } else {\n    ctx.network.direction = 'unknown';\n  }\n}\ncatch (Exception e) {\n  ctx.network.direction = null;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -10404,9 +10390,7 @@ impl Transform for Default {
                 event.rename("cisco.ftd.list_id", "cisco.ftd.rule_name")?;
             }
 
-            // Painless script
-            // Source: if (ctx.event?.action == null || !params.containsKey(ctx.event.action)) {\n  return;\n} ctx.event.kind = params.get(ctx.event.action).get('kind'); ctx.event.category = params.get(ctx.event.action).get('category').clone(); ctx.event.type = params.get(ctx.event.action).get('type').clone(); if (ctx.event?.outcome == null) {\n  return;\n} if (ctx.event.category.contains('network') || ctx.event.category.contains('intrusion_detection')) {\n  if (ctx.event.outcome == 'success') {\n    ctx.event.type.add('allowed');\n  }\n  if (ctx.event.outcome == 'failure') {\n    ctx.event.type.add('denied');\n  }\n  if (ctx.event.outcome == 'trust') {\n    ctx.event.outcome = 'success';\n    ctx.event.type.add('allowed');\n  }\n  if (ctx.event.outcome == 'block') {\n    ctx.event.outcome = 'success';\n    ctx.event.type.add('denied');\n  }\n  if (ctx.event.outcome == 'block with reset') {\n    ctx.event.outcome = 'success';\n    ctx.event.type.add('denied');\n  }\n  if (ctx.event.outcome == 'domain not found') {\n    ctx.event.outcome = 'success';\n    ctx.event.type.add('denied');\n  }\n  if (ctx.event.outcome == 'monitor') {\n    ctx.event.outcome = 'success';\n  }\n  if (ctx.event.outcome == 'monitored') {\n    ctx.event.category.add('intrusion_detection');\n    ctx.event.outcome = 'success';\n  }\n  if (ctx.event.outcome == 'pass') {\n    ctx.event.outcome = 'success';\n    ctx.event.type.add('allowed');\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -10796,8 +10780,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

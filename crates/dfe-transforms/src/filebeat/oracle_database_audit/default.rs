@@ -183,8 +183,7 @@ impl Transform for Default {
                 event.rename("db_user", "oracle.database_audit.database_user")?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: ctx.oracle.database_audit = ctx.oracle.database_audit.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
+            // The pipeline's script, emitted as the runtime's equivalent
             rewrite_keys(
                 event,
                 &RewriteKeys::new(
@@ -194,8 +193,7 @@ impl Transform for Default {
                 ),
             );
 
-            // Painless script, resolved to its runners at generation time
-            // Source: ctx.oracle.database_audit = ctx?.oracle?.database_audit.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_'), e -> e.getValue()));
+            // The pipeline's script, emitted as the runtime's equivalent
             rename_map_keys(
                 event,
                 &RenameMapKeys::new("oracle.database_audit".into(), ' ', '_'),
@@ -244,8 +242,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("oracle.database_audit") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

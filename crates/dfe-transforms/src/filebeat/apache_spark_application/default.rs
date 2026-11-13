@@ -38,9 +38,7 @@ impl Transform for Default {
                 })
             };
             if _cond {
-                // Painless script
-                // Source: def bean_name = ctx.apache_spark.mbean.toString().splitOnToken(\".\"); def app_name = \"\"; if (bean_name[0].contains(\"name=application\") == true) {\n    app_name = bean_name[1] + \".\" + bean_name[2];\n} ctx.apache_spark.application.name = app_name;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

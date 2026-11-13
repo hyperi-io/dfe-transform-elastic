@@ -63,9 +63,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: def getLastElement(def arr) {\n  def last_index = arr.length - 1;\n  return arr[last_index];\n}\nif (ctx.http?.query_index?.op?.samples != null) {\n  if (ctx.http.query_index.op.samples.index_remaining_ram != null) {\n    ctx.index_remaining_ram = getLastElement(ctx.http.query_index.op.samples.index_remaining_ram);\n  }\n  if (ctx.http.query_index.op.samples.index_ram_percent != null) {\n    ctx.index_ram_percent = getLastElement(ctx.http.query_index.op.samples.index_ram_percent);\n  }\n  if (ctx.http.query_index.op.samples.query_avg_req_time != null) {\n    ctx.query_avg_req_time = getLastElement(ctx.http.query_index.op.samples.query_avg_req_time);\n  }\n  if (ctx.http.query_index.op.samples.query_requests != null) {\n    ctx.query_requests = getLastElement(ctx.http.query_index.op.samples.query_requests);\n  }\n  if (ctx.http.query_index.op.samples.query_result_count != null) {\n    ctx.query_result_count = getLastElement(ctx.http.query_index.op.samples.query_result_count);\n  }\n  if (ctx.http.query_index.op.samples['eventing/failed_count'] != null) {\n    ctx.eventing_failed_count = getLastElement(ctx.http.query_index.op.samples['eventing/failed_count']);\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -132,8 +130,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

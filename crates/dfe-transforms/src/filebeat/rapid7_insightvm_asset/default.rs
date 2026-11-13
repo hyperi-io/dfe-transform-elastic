@@ -437,8 +437,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: int idx = ctx.host.name.indexOf(\".\");\nif (idx == -1) {\n  ctx.host.hostname = ctx.host.name;\n} else {\n  ctx.host.hostname = ctx.host.name.substring(0, idx);\n}\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 split_at_delimiter(
                     event,
                     &SplitAtDelimiter::new(
@@ -2379,8 +2378,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

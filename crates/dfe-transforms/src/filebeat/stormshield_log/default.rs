@@ -28,9 +28,7 @@ impl Transform for Default {
 
             event.set("observer.vendor", json!("Stormshield"))?;
 
-            // Painless script
-            // Source: ctx[\"stormshield\"] = new HashMap();\ndef kvStart = 0; def kvSplit = 0; def kvEnd = 0; def inQuote = false;\nfor (int i = 0, n = ctx[\"message\"].length(); i < n; ++i) {\n  char c = ctx[\"message\"].charAt(i);\n  if (c == (char)'\"') {\n    inQuote = !inQuote;\n  }\n  if (inQuote) {\n    continue;\n  }\n  \n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)' ' || (i == n - 1)) {\n    if (kvStart != kvSplit) {\n      def key = ctx[\"message\"].substring(kvStart, kvSplit);\n      def end = i;\n      if (i == n - 1)  {\n          end = n;\n      }\n      def value = ctx[\"message\"].substring(kvSplit + 1, end).replace(\"\\\"\", \"\");\n      ctx[\"stormshield\"][key] = value;\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -130,9 +128,7 @@ impl Transform for Default {
             let _cond = { event.get_str("stormshield.logtype") == Some("filterstat") };
             if _cond {
                 // Begin nested pipeline: "filterstat"
-                // Painless script
-                // Source: Pattern compositeKeyPattern = /^(\\w+)\\((\\w+)\\/(\\w+)\\)$/; Pattern compositeValuePattern = /^(\\w+)\\/(\\w+)$/;\ndef replacePairs = [:]; def move = []; ctx.stormshield.forEach((k, v) -> {\n  if (k.contains('(')) {\n    replacePairs[k] = v;\n  } else if (Character.isUpperCase(k.charAt(0))) {\n    move.add(k);\n  }\n\n  return true;\n});\nif (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield.metadata = [:];\n} move.forEach(k -> {\n  ctx.stormshield.metadata[k] = ctx.stormshield[k];\n  ctx.stormshield.remove(k);\n  return true;\n}); replacePairs.forEach((k, v) -> {\n  def keyMatcher = compositeKeyPattern.matcher(k);\n  if (!keyMatcher.matches()) {\n    return false;\n  }\n  def valueMatcher = compositeValuePattern.matcher(v);\n  if (!valueMatcher.matches()) {\n    return false;\n  }\n  def newSubkeys = [:];\n  def newSubkey0 = keyMatcher.group(2);\n  def newSubkey1 = keyMatcher.group(3);\n  newSubkey0 = params.containsKey(newSubkey0) ? params[newSubkey0] : newSubkey0;\n  newSubkey1 = params.containsKey(newSubkey1) ? params[newSubkey1] : newSubkey1;\n  newSubkeys[newSubkey0] = Long.parseLong(valueMatcher.group(1));\n  newSubkeys[newSubkey1] = Long.parseLong(valueMatcher.group(2));\n  ctx.stormshield.metadata[keyMatcher.group(1)] = newSubkeys;\n  ctx.stormshield.remove(k);\n});
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -146,9 +142,7 @@ impl Transform for Default {
             let _cond = { event.get_str("stormshield.logtype") == Some("monitor") };
             if _cond {
                 // Begin nested pipeline: "monitor"
-                // Painless script
-                // Source: def deviceStats = [:]; def specialCases = [:]; ctx.stormshield.forEach((k, v) -> {\n  params.devices.forEach(d -> {\n    if (k.startsWith(d)) {\n      deviceStats[k] = [:];\n      deviceStats[k][\"value\"] = v;\n      deviceStats[k][\"stem\"] = d;\n    }\n\n    return true;\n  });\n  params.special_cases.forEach(s -> {\n    def sp_k = s[\"key\"];\n    def sp_v = s[\"value\"];\n    if (k.startsWith(sp_k)) {\n      def _map = [:];\n      def values = v.splitOnToken(',', 3);\n      for (int i = 0; i < sp_v.length; ++i) {\n        _map[sp_v[i]] = Long.parseLong(values[i]);\n      }\n      specialCases[sp_k] = _map;\n    }\n\n    return true;\n  });\n});\nif (deviceStats.isEmpty() && specialCases.isEmpty()) {\n  return;\n}\ndef result = [:]; for (entry in deviceStats.entrySet()) {\n  def entryValue = entry.getValue();\n  def stem = entryValue[\"stem\"];\n  if (!result.containsKey(stem)) {\n    result[stem] = [];\n  }\n  def values = entryValue[\"value\"].splitOnToken(',', 7);\n  def item = [:];\n  item[\"original\"] = entry.getKey();\n  for (int i = 0; i < values.length; ++i) {\n    if (i == 0) {\n      item[params.stats[i]] = values[i];\n    } else {\n      item[params.stats[i]] = Long.parseLong(values[i]);        \n    }\n  }\n  result[stem].add(item);\n  ctx.stormshield.remove(entry.getKey());\n} for (entry in result.entrySet()) {\n  result[entry.getKey()].sort((a, b) -> a[\"original\"].compareTo(b[\"original\"]));\n} if (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield[\"metadata\"] = [:];\n} ctx.stormshield.metadata.device_stats = result; for (entry in specialCases.entrySet()) {\n  ctx.stormshield.metadata.device_stats[entry.getKey()] = entry.getValue();\n  ctx.stormshield.remove(entry.getKey());\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -158,9 +152,7 @@ impl Transform for Default {
                         "{\"special_cases\":[{\"key\":\"CPU\",\"value\":[\"user_time\",\"kernel_time\",\"system_disruption\"]}],\"devices\":[\"agg\",\"ipsec\",\"sslvpn\",\"Wifi\",\"Qid\",\"Vlan\"],\"stats\":[\"name\",\"incoming_throughput\",\"maximum_incoming_throughput\",\"outgoing_throughput\",\"maximum_outgoing_throughput\",\"packets_accepted\",\"packets_blocked\"]}"
                     ),
                 )?;
-                // Painless script
-                // Source: def deviceStats = [:]; ctx.stormshield.forEach((k, v) -> {\n  params.devices.forEach(d -> {\n    if (k.startsWith(d)) {\n      deviceStats[k] = [:];\n      deviceStats[k][\"value\"] = v;\n      deviceStats[k][\"stem\"] = d;\n    }\n\n    return true;\n  });\n});\nif (deviceStats.isEmpty()) {\n  return;\n}\nif (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield.metadata = [:];\n} def ports = []; for (entry in deviceStats.entrySet()) {\n  def entryKey = entry.getKey();\n  def entryValue = entry.getValue();\n  def values = entryValue[\"value\"].splitOnToken(',', 7);\n  def item = [:];\n  ports.add(entryKey);\n  item[\"original\"] = entryKey;\n  for (int i = 0; i < values.length; ++i) {\n    if (i == 0) {\n      item[params.stats[i]] = values[i];\n    } else {\n      item[params.stats[i]] = Long.parseLong(values[i]);        \n    }\n  }\n  ctx.stormshield.remove(entryKey);\n  ctx.stormshield.metadata[entryKey] = item;\n} ports.sort((a, b) -> a.compareTo(b)); ctx.stormshield.ports = ports;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -176,9 +168,7 @@ impl Transform for Default {
             let _cond = { event.get_str("stormshield.logtype") == Some("count") };
             if _cond {
                 // Begin nested pipeline: "count"
-                // Painless script
-                // Source: boolean isNumeric(def s) {\n  if (!(s instanceof String) || s.isEmpty() || s.length() > 18) {\n    return false;\n  }\n  for (int i = 0; i < s.length(); i++) {\n    if (Character.isDigit(s.charAt(i)) == false) {\n      return false;\n    }\n  }\n  return true;\n} def ruleStats = []; def ruleKeys = []; def str = \"Rule\"; ctx.stormshield.forEach((k, v) -> {\n  if (k.startsWith(str) && k.indexOf(\":\") > str.length()) {\n    ruleKeys.add(k);\n    def parts = k.substring(str.length()).splitOnToken(\":\");\n    if (parts.length == 2 && isNumeric(v) && isNumeric(parts[1]) && parts[0].length() == 1 && isNumeric(parts[0])) {\n      int category = Integer.parseInt(parts[0]);\n      if (category < params.stats.size()) {\n        def item = [:];\n        item[\"original\"] = k;\n        item[\"byte_count\"] = Long.parseLong(v);\n        item[\"category\"] = params.stats[category];\n        item[\"rule_number\"] = Long.parseLong(parts[1]);\n        ruleStats.add(item);\n      }\n    }\n  }\n\n  return true;\n});\nfor (k in ruleKeys) {\n  ctx.stormshield.remove(k);\n}\nif (ruleStats.isEmpty()) {\n  return;\n}\nruleStats.sort((a, b) -> a[\"original\"].compareTo(b[\"original\"])); if (!ctx.stormshield.containsKey(\"metadata\")) {\n  ctx.stormshield.metadata = [:];\n} ctx.stormshield.metadata.rule_stats = ruleStats;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -515,8 +505,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: if (ctx.network == null) {\n    ctx.network = [:];\n} ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
@@ -644,9 +633,7 @@ impl Transform for Default {
 
             event.remove("stormshield.srcmac");
 
-            // Painless script
-            // Source: if (ctx.stormshield?.duration != null) {\n    def duration = Float.parseFloat(ctx.stormshield.duration);\n    duration *= 1000000000; // 10^9 nanoseconds per second\n    if (!ctx.containsKey(\"event\")) {\n        ctx.event = [:];\n    }\n\n    ctx.event.duration = (int)duration;\n    ctx.stormshield.remove(\"duration\");\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -695,9 +682,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("stormshield.ipv") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.stormshield.ipv == \"4\") {\n    ctx.network.type = \"ipv4\";\n    ctx.stormshield.remove(\"ipv\");\n} else if (ctx.stormshield.ipv == \"6\") {\n    ctx.network.type = \"ipv6\";\n    ctx.stormshield.remove(\"ipv\");\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -803,9 +788,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (!ctx.stormshield.containsKey(\"metadata\")) {\n    ctx.stormshield.metadata = [:];\n} params.names.forEach(k -> {\n    if (ctx.stormshield.containsKey(k)) {\n        ctx.stormshield.metadata[k] = ctx.stormshield[k];\n        ctx.stormshield.remove(k);\n    }\n    return true;\n});
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -877,9 +860,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("error") };
             if _cond {
-                // Painless script
-                // Source: def logtype = ctx.stormshield?.logtype; def entry = params.logtypes[logtype]; if (ctx.event == null) {\n    ctx.event = [:];\n} if (entry == null) {\n    ctx.event.kind = 'event';\n} else {\n    ctx.event.kind = entry.kind;\n    ctx.event.category = new ArrayList(entry.category);\n    ctx.event.type = new ArrayList(entry.type);\n    if (params.action_logtypes.contains(logtype) && ctx.event.action instanceof String) {\n        def mapped = params.action_types[ctx.event.action.toLowerCase()];\n        if (mapped != null && !ctx.event.type.contains(mapped)) {\n            ctx.event.type.add(mapped);\n        }\n    }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

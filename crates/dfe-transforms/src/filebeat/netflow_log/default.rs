@@ -75,9 +75,7 @@ impl Transform for Default {
 
             let _cond = { event.get("netflow").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
-                // Source: HashSet set = null;\nfor (key in ctx.netflow.keySet()) {\n    if (key.endsWith(\"_ipv4_address\") || key.endsWith(\"_ipv6_address\")) {\n        // Creating set on demand, avoiding extra garbage\n        if (set == null) {\n            set = new HashSet();\n        }\n        set.add(ctx.netflow[key]);\n    }\n}\n\nif (set != null) {\n    if (ctx.related == null) {\n        ctx.related = new HashMap();\n    }\n    if (ctx.related?.ip != null) {\n        for (ip in ctx.related.ip) {\n            set.add(ip);\n        }\n    }\n\n    ArrayList list = new ArrayList(set);\n    Collections.sort(list);\n    ctx.related.ip = list;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -92,9 +90,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_number())
             };
             if _cond {
-                // Painless script
-                // Source: String[] flags = new String[]{\"CWR\", \"ECE\", \"URG\", \"ACK\", \"PSH\", \"RST\", \"SYN\", \"FIN\"};\nArrayList flagsSeen = new ArrayList();\n\nint tcp_flags = ctx.netflow.tcp_control_bits;\nfor (int i = 8; i > 0; --i) {\n    int value = (tcp_flags & (1 << (i-1))) & 0x0ff;\n    if (value != 0) {\n        flagsSeen.add(flags[8-i]);\n    }\n}\n\nif (flagsSeen.length > 0) {\n    ctx.netflow.tcp_flags = flagsSeen;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

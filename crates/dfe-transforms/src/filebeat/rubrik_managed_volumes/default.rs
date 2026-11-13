@@ -113,9 +113,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: if (ctx.rubrik.managed_volumes?.volume_size?.bytes != null && ctx.rubrik.managed_volumes?.used_size?.bytes != null) {\n    ctx.rubrik.managed_volumes.free_size = [:];\n    ctx.rubrik.managed_volumes.free_size.bytes = ctx.rubrik.managed_volumes.volume_size.bytes - ctx.rubrik.managed_volumes.used_size.bytes;\n} else {\n    ctx.rubrik.managed_volumes.free_size = [:];\n    ctx.rubrik.managed_volumes.free_size.bytes = 0;\n}\n\n// Calculate pending snapshots which is the difference of the total snapshot count and the scheduled snapshot count.\n if (ctx.response?.snapshotDistribution != null) {\n    def snapshotDistribution = ctx.response.snapshotDistribution;\n\n    def totalCount = snapshotDistribution.totalCount != null ? snapshotDistribution.totalCount : 0;\n    def scheduledCount = snapshotDistribution.scheduledCount != null ? snapshotDistribution.scheduledCount : 0;\n\n    // Initialize pending_snapshots field and set the count\n    ctx.rubrik.managed_volumes.pending_snapshots = [:];\n    ctx.rubrik.managed_volumes.pending_snapshots.count = totalCount - scheduledCount;\n} else {\n    // If snapshotDistribution is missing, initialize pending_snapshots with a default value\n    ctx.rubrik.managed_volumes.pending_snapshots = [:];\n    ctx.rubrik.managed_volumes.pending_snapshots.count = 0;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

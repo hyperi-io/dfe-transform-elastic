@@ -135,9 +135,7 @@ impl Transform for Default {
                     && event.get_str("json.AuditOperationType") != Some("")
             };
             if _cond {
-                // Painless script
-                // Source: def class = params.event_classification[ctx.json.AuditOperationType?.toLowerCase()];\nif (class == null) {\n  return;\n}\nctx.event.type = class.type;\nctx.event.category = class.category;\nctx.event.outcome = class.outcome;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -422,9 +420,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.ObjectType") };
             if _cond {
-                // Painless script
-                // Source: def objectType = ctx.json.ObjectType?.toLowerCase();\ndef operationType = ctx.json.AuditOperationType?.toLowerCase();\ndef valuesMap;\nif (operationType == 'delete' || operationType == 'sign out') {\n  valuesMap = ctx.json.AuditOldValue;\n} else if (operationType == 'create' || operationType == 'sign in' || operationType == 'update') {\n  valuesMap = ctx.json.AuditNewValue;\n}\n\nif (objectType == 'administrator') {\n  ctx.user.target = new HashMap();\n  ctx.user.target.roles = new ArrayList();\n  def roles = (valuesMap?.roles == null) ? [] : new ArrayList(valuesMap?.roles);\n  ctx.user.target.email = valuesMap?.email;\n  for (int i = 0; i < roles.length; i++) {\n    ctx.user.target.roles.add(roles[i].name);\n  }\n} else if (objectType == 'app connector group') {\n  ctx.group = new HashMap();\n  ctx.group.id = valuesMap?.id;\n  ctx.group.name = valuesMap?.name;\n  ctx.observer = new HashMap();\n  ctx.observer.geo = new HashMap();\n  ctx.observer.geo.location = new HashMap();\n  ctx.observer.geo.location.lat = valuesMap?.latitude;\n  ctx.observer.geo.location.lon = valuesMap?.longitude;\n  ctx.observer.geo.city_name = valuesMap?.cityCountry;\n  ctx.observer.geo.country_name = valuesMap?.location;\n} else if (objectType == 'browser access') {\n  ctx.network = new HashMap();\n  ctx.network.protocol = valuesMap?.applicationProtocol?.toLowerCase();\n} else if (objectType == 'authentication') {\n  ctx.client = new HashMap();\n  ctx.client.ip = valuesMap?.remoteIP;\n} else if (objectType == 'certificate') {\n  ctx.x509 = new HashMap();\n  ctx.x509.issuer = new HashMap();\n  ctx.x509.alternative_names = valuesMap?.subjectAlternateNames;\n  ctx.x509.issuer.common_name = valuesMap?.commonName;\n  ctx.x509.issuer.distinguished_name = valuesMap?.issuedTo;\n} else if (objectType == 'executive insights user') {\n  ctx.user = new HashMap();\n  ctx.user.target = new HashMap();\n  ctx.user.target.id = valuesMap?.id;\n  ctx.user.target.email = valuesMap?.email;\n  ctx.user.target.name = valuesMap?.name;\n} else if (objectType == 'idp certificate') {\n  ctx.x509 = new HashMap();\n  ctx.x509.issuer = new HashMap();\n  if (valuesMap?.creationTimeInSeconds != null) {\n    ctx.x509.not_before = Long.parseLong(valuesMap?.creationTimeInSeconds);\n  }\n  if (valuesMap?.expirationTimeInSeconds != null) {\n    ctx.x509.not_after = Long.parseLong(valuesMap?.expirationTimeInSeconds);\n  }\n  ctx.x509.issuer.common_name = valuesMap?.commonName;\n} else if (objectType == 'server') {\n  ctx.server = new HashMap();\n  ctx.server.address = valuesMap?.domainOrIpAddress;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -617,8 +613,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -642,9 +637,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script
-                // Source: for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.zscaler_zpa?.audit[m.getKey()] = m.getValue();\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

@@ -377,9 +377,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: LinkedHashSet users = new LinkedHashSet();\nif (ctx.user?.name != null) {\n  users.add(String.valueOf(ctx.user.name));\n}\nMap rels = ctx.hackerone?.report?.relationships instanceof Map ? (Map) ctx.hackerone.report.relationships : null;\nif (rels != null) {\n  if (rels.assignee instanceof Map && ((Map) rels.assignee).data instanceof Map) {\n    Map asgData = (Map) ((Map) rels.assignee).data;\n    if ('user'.equals(asgData.type) && asgData.attributes instanceof Map) {\n      Object u = ((Map) asgData.attributes).username;\n      if (u != null) users.add(String.valueOf(u));\n    }\n  }\n  if (rels.collaborators instanceof Map && ((Map) rels.collaborators).data instanceof List) {\n    for (Object r : (List) ((Map) rels.collaborators).data) {\n      if (r instanceof Map) {\n        Map row = (Map) r;\n        if (row.user instanceof Map && ((Map) row.user).attributes instanceof Map) {\n          Object u = ((Map) ((Map) row.user).attributes).username;\n          if (u != null) users.add(String.valueOf(u));\n        }\n      }\n    }\n  }\n  if (rels.summaries instanceof Map && ((Map) rels.summaries).data instanceof List) {\n    for (Object r : (List) ((Map) rels.summaries).data) {\n      if (r instanceof Map) {\n        Map row = (Map) r;\n        if (row.relationships instanceof Map) {\n          Map srels = (Map) row.relationships;\n          if (srels.user instanceof Map && ((Map) srels.user).data instanceof Map) {\n            Map udata = (Map) ((Map) srels.user).data;\n            if (udata.attributes instanceof Map) {\n              Object u = ((Map) udata.attributes).username;\n              if (u != null) users.add(String.valueOf(u));\n            }\n          }\n        }\n      }\n    }\n  }\n  if (rels.custom_remediation_guidance instanceof Map) {\n    Map crg = (Map) rels.custom_remediation_guidance;\n    if (crg.data instanceof Map) {\n      Map cdata = (Map) crg.data;\n      if (cdata.relationships instanceof Map) {\n        Map crels = (Map) cdata.relationships;\n        if (crels.author instanceof Map && ((Map) crels.author).data instanceof Map) {\n          Map adata = (Map) ((Map) crels.author).data;\n          if (adata.attributes instanceof Map) {\n            Object u = ((Map) adata.attributes).username;\n            if (u != null) users.add(String.valueOf(u));\n          }\n        }\n      }\n    }\n  }\n}\nif (users.isEmpty()) {\n  return;\n}\nif (ctx.related == null) {\n  ctx.related = new HashMap();\n}\nMap related = (Map) ctx.related;\nArrayList existing = related.user instanceof List ? new ArrayList((List) related.user) : new ArrayList();\nfor (Object u : users) {\n  if (existing.contains(u) == false) {\n    existing.add(u);\n  }\n}\nrelated.user = existing;
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -606,8 +604,7 @@ impl Transform for Default {
 
             let _cond = { event.get("hackerone.report").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ArrayList stack = new ArrayList();\nstack.add(ctx.hackerone.report);\nwhile (stack.isEmpty() == false) {\n  Object node = stack.remove(stack.size() - 1);\n  if (node instanceof Map) {\n    Map current = (Map) node;\n    ArrayList keys = new ArrayList(current.keySet());\n    for (Object k : keys) {\n      Object v = current.get(k);\n      if (v == null) {\n        current.remove(k);\n      } else if (v instanceof Map || v instanceof List) {\n        stack.add(v);\n      }\n    }\n  } else if (node instanceof List) {\n    for (Object item : (List) node) {\n      if (item instanceof Map || item instanceof List) {\n        stack.add(item);\n      }\n    }\n  }\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -620,9 +617,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("hackerone.report.attributes.state") };
             if _cond {
-                // Painless script
-                // Source: Object stRaw = ctx.hackerone.report.attributes.state;\nString st = stRaw instanceof String ? (String) stRaw : String.valueOf(stRaw);\nif (!params.containsKey(st)) {\n  return;\n}\nMap m = params[st] instanceof Map ? (Map) params[st] : null;\nif (m == null) {\n  return;\n}\nMap ev = ctx.containsKey('event') && ctx.event instanceof Map ? (Map) ctx.event : new HashMap();\nev.put('kind', 'event');\nArrayList ec = new ArrayList();\nec.add('vulnerability');\nev.put('category', ec);\nArrayList et = new ArrayList();\net.add('info');\nev.put('type', et);\nev.put('outcome', m.get('outcome'));\nev.put('action', m.get('action'));\nctx.event = ev;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

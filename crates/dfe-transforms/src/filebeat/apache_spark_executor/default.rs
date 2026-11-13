@@ -50,9 +50,7 @@ impl Transform for Default {
                 }))
             };
             if _cond {
-                // Painless script
-                // Source: def bean_name = ctx.apache_spark.mbean.toString().splitOnToken(\"=\")[1]; def app_name = bean_name.splitOnToken(\".\")[0]; def executor_id = bean_name.splitOnToken(\".\")[1]; if (executor_id == \"driver\") {\n  ctx.apache_spark.driver.application_name = app_name;\n} else {\n  ctx.apache_spark.executor.application_name = app_name;\n  ctx.apache_spark.executor.id = executor_id;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

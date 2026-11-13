@@ -34,9 +34,7 @@ impl Transform for Default {
                             == Some("true"))
             };
             if _cond {
-                // Painless script
-                // Source: ctx.event = ctx.event ?: [:]; ctx.event.original = Json.dump(ctx); ctx.tags = ctx.tags ?: []; if (!ctx.tags.contains('preserve_original_event')) {\n  ctx.tags.add('preserve_original_event');\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -51,9 +49,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event_name") };
             if _cond {
-                // Painless script
-                // Source: def name = ctx.event_name; ctx.event = ctx.event ?: new HashMap(); ctx.event.kind = 'event'; if (name == 'user_prompt' || name == 'skill_activated') {\n  return;\n} if (name == 'tool_decision') {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n  return;\n} def entry = params.categories.getOrDefault(name, null); if (entry != null) {\n  ctx.event.category = entry.category;\n  ctx.event.type = entry.type;\n} else {\n  ctx.event.category = ['host'];\n  ctx.event.type = ['info'];\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -482,8 +478,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("claude_cowork.events.duration_ms") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ((long)ctx.claude_cowork.events.duration_ms) * 1000000L;\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(
@@ -565,8 +560,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n    map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nvoid handleList(List list) {\n    list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

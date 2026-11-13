@@ -263,9 +263,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("auth0.logs.data.type") };
             if _cond {
-                // Painless script
-                // Source: def eventType = ctx.auth0.logs.data.type;\ndef actions = params.get('actions');\ndef actionData = actions.get(eventType);\nif (actionData == null) {\n    ctx.event.action = 'unknown-' + eventType;\n    ctx.event.type = ['info'];\n    return;\n}\n// overwrite type abbreviation with actual value\ndef eventTypeVal = actionData.get('value');\nif (eventTypeVal != null) {\n    ctx.auth0.logs.data.type = eventTypeVal;\n}\n// event.type\ndef actionType = actionData.get('type');\nif (actionType != null) {\n  ctx.event.type = new ArrayList(actionType);\n}\n// event.category\ndef actionCategory = actionData.get('category');\nif (actionCategory != null) {\n  for (def c : actionCategory) {\n    ctx.event.category.add(c);\n  }\n}\n// event.action\ndef action = actionData.get('action');\nif (action != null) {\n  ctx.event.action = action;\n}\n// auth0 event category / classification group\ndef classification = actionData.get('classification');\nif (classification != null) {\n  ctx.auth0.logs.data.classification = classification;\n}\n// event.outcome\nif (classification.toLowerCase().contains(\"success\")) {\n  ctx.event.outcome = \"success\";\n} else if (classification.toLowerCase().contains(\"failure\")) {\n  ctx.event.outcome = \"failure\";\n} else {\n  ctx.event.outcome = \"unknown\";\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -281,9 +279,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.auth0.logs.data.details.initiatedAt = Math.round(Double.parseDouble(ctx.auth0.logs.data.details.initiatedAt.toString()));\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -326,9 +322,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.auth0.logs.data.details.completedAt = Math.round(Double.parseDouble(ctx.auth0.logs.data.details.completedAt.toString()));\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -436,8 +430,7 @@ impl Transform for Default {
             event.remove("auth0.logs.data.user_agent");
             event.remove("auth0.logs.data.log_id");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

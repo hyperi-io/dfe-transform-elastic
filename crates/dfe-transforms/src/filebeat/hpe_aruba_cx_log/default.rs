@@ -19810,9 +19810,7 @@ impl Transform for Default {
                 event.remove("aruba.sequence");
             }
 
-            // Painless script
-            // Source: def settings = params.get(ctx.event.code); if( settings != null ) {\n  if( settings[0] != null ) { ctx.event.type = settings[0]; }\n  if( settings[1] != null ) { ctx.event.kind = settings[1]; }\n  if( settings[2] != null ) { ctx.event.outcome = settings[2]; }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

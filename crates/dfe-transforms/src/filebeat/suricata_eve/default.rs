@@ -142,9 +142,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.mac") };
             if _cond {
-                // Painless script
-                // Source: def fixup(ArrayList macs) {\n  for (def i = 0; i < macs.length; i++) {\n    macs[i] = macs[i].replace(':','-').toUpperCase();\n  }\n  return macs;\n}\nctx.host['mac'] = fixup(ctx.host?.mac);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -324,9 +322,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: ctx.event.kind = 'event';\nctx.event.category = ['network'];\ndef type_params = params.get(ctx?.suricata?.eve?.event_type);\nif (type_params == null) {\n    return;\n}\ntype_params.forEach((k, v) -> {\n    if ('network_protocol' == k) {\n        if (ctx.network == null) {\n            ctx.network = ['protocol': v];\n        } else {\n            ctx.network.protocol = v;\n        }\n    } else if (v instanceof List) {\n        ctx.event[k] = new ArrayList(v);\n    } else {\n        ctx.event[k] = v;\n    }\n});\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -464,9 +460,7 @@ impl Transform for Default {
                 };
                 if _cond {
                     // Begin nested pipeline: "dns-answer-v1"
-                    // Painless script
-                    // Source: def name = ctx?.suricata?.eve?.dns?.rrname;\ndef data = ctx?.suricata?.eve?.dns?.rdata;\ndef type = ctx?.suricata?.eve?.dns?.rrtype;\ndef ttl = ctx?.suricata?.eve?.dns?.ttl;\n\ndef answer = [:];\nif (name != null) {\n    answer[\"name\"] = name;\n}\nif (data != null) {\n    answer[\"data\"] = data;\n}\nif (type != null) {\n    answer[\"type\"] = type;\n}\nif (ttl != null) {\n    answer[\"ttl\"] = ttl;\n}\nif (!answer.isEmpty()) {\n    ctx.dns.answers = [answer];\n}\n\nif (type == \"A\" || type == \"AAAA\") {\n    ctx.dns.resolved_ip = [data];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -486,9 +480,7 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("dns.answers") };
                     if _cond {
-                        // Painless script
-                        // Source: def resolvedIps = new ArrayList();\nfor (def answer : ctx?.dns?.answers) {\n    // Normalize field names to match ECS.\n    def name = answer.remove(\"rrname\");\n    if (name != null) {\n        answer[\"name\"] = name;\n    }\n    def type = answer.remove(\"rrtype\");\n    if (type != null) {\n        answer[\"type\"] = type;\n    }\n    def data = answer.remove(\"rdata\");\n    if (data != null) {\n        answer[\"data\"] = data;\n    }\n\n    if (type == \"A\" || type == \"AAAA\") {\n        resolvedIps.add(data);\n    }\n}\n\nif (resolvedIps.size() > 0) {\n    ctx.dns.resolved_ip = resolvedIps;\n}\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -513,9 +505,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dns.question.registered_domain") };
                 if _cond {
-                    // Painless script
-                    // Source: def rd = ctx.dns.question.registered_domain;\ndef firstDot = rd.indexOf(\".\");\nif (firstDot == -1) {\n    return;\n}\nctx.dns.question.top_level_domain = rd.substring(firstDot + 1);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -587,9 +577,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("suricata.eve.tls.sni") };
                 if _cond {
-                    // Painless script
-                    // Source: def sni = ctx.suricata.eve.tls.sni;\nif (!sni.endsWith(\".\")) {\n    return;\n}\nctx.suricata.eve.tls.sni = sni.substring(0, sni.length() - 1);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1161,9 +1149,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: def domain = ctx.destination?.domain; if (domain instanceof Collection) {\n\n\n  domain = domain.stream().distinct().collect(Collectors.toList());\n  if (domain.length == 1) {\n    domain = domain[0];\n  }\n  ctx.destination.domain = domain;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1522,8 +1508,7 @@ impl Transform for Default {
                 event.rename("suricata.eve.flow.bytes_toserver", "source.bytes")?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: long getOrZero(def map, def key) {\n  if (map!=null && map[key]!=null) {\n    return map[key];\n  }\n  return 0;\n} def network=ctx['network'], source=ctx['source'], dest=ctx['destination']; def sp=getOrZero(source,'packets'), sb=getOrZero(source,'bytes'), dp=getOrZero(dest,'packets'), db=getOrZero(dest,'bytes'); if (sb+db+sp+dp > 0) {\n  if (network == null) {\n    network=new HashMap();\n    ctx['network']=network;\n  }\n  if (sb+db > 0) {\n    network['bytes'] = sb+db;\n  }\n  if(sp+dp>0) {\n    network['packets'] = sp+dp;\n  }\n}\n
+            // The pipeline's script, emitted as the runtime's equivalent
             sum_totals(
                 event,
                 &SumTotals::new(vec![
@@ -1564,9 +1549,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: Instant ins(def d) {\n  try {\n    return Instant.parse(d);\n  } catch(Exception e) {\n    return null;\n  }\n} def ev = ctx['event']; if (ev != null) {\n  def start = ins(ev['start']);\n  def end = ins(ev['end']);\n  if (start != null && end != null && !start.isAfter(end)) {\n    ev['duration'] = Duration.between(start,end).toNanos();\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

@@ -87,9 +87,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("servicenow.event") };
             if _cond {
-                // Painless script
-                // Source: def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -100,9 +98,7 @@ impl Transform for Default {
 
             let _cond = { event.get("servicenow.event").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
-                // Source: for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -156,8 +152,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -13715,9 +13710,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "uri_parts")?;
-                    // Painless script
-                    // Source: String encode(String path) {\nStringBuilder sb = new StringBuilder();\nfor (int i = 0; i < path.length(); i++) {\n  char c = path.charAt(i);\n  if (\n    (c >= (char)'a' && c <= (char)'z') ||\n    (c >= (char)'A' && c <= (char)'Z') ||\n    (c >= (char)'0' && c <= (char)'9') ||\n    c != (char)' ' && c != (char)'^'\n  ) {\n      sb.append(c);\n      continue;\n    }\n    sb.append('%');\n    sb.append(Integer.toHexString((int)c));\n  }\n  return sb.toString();\n}\nctx._tmp_url = encode(ctx.servicenow.event.url.display_value);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -28465,8 +28458,7 @@ impl Transform for Default {
             event.remove("_conf.table_name");
             event.remove("servicenow.event.timestamp_field");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -28479,9 +28471,7 @@ impl Transform for Default {
                 None,
             );
 
-            // Painless script
-            // Source: def filterMassive(def src) {\n  if (src instanceof Map) {\n    for (def entry: src.entrySet()) {\n      entry.setValue(filterMassive(entry.getValue()));\n    }\n    return src;\n  } else if (src instanceof List) {\n    for (int i = 0; i < src.length; i++) {\n      src[i] = filterMassive(src[i]);\n    }\n    return src;\n  } else if (src instanceof String && src.length() > 32766) {\n    return src.substring(0, 32700)+' (truncated)';\n  }\n  return src;\n}\nfilterMassive(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

@@ -252,9 +252,7 @@ impl Transform for Default {
                 event.has_value("json") && event.get("json.insights").is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: List keysToCopy = params.keysToCopy;\nList insights = new ArrayList();\n\nfor (insight in ctx.json.insights) {\n  Map new_insight = new HashMap();\n  for (key in keysToCopy) {\n    if (insight.containsKey(key)) {\n      new_insight[key] = insight[key];\n    }\n  }\n  insights.add(new_insight);\n}\nctx.abnormal_security.vendor_case.insights = insights;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -268,9 +266,7 @@ impl Transform for Default {
                 event.has_value("json") && event.get("json.timeline").is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: List keysToCopy = params.keysToCopy; List timeline = new ArrayList(); for (event in ctx.json.timeline) {\n  Map new_event = new HashMap();\n  for (key in keysToCopy) {\n    if (event.containsKey(key)) {\n     // Inline snake_case conversion logic\n      StringBuilder sb = new StringBuilder();\n      for (int i = 0; i < key.length(); i++) {\n        char c = key.charAt(i);\n        if (Character.isUpperCase(c)) {\n          if (i > 0) {\n            sb.append('_');\n          }\n          sb.append(Character.toLowerCase(c));\n        } else {\n          sb.append(c);\n        }\n      }\n      String snake_key = sb.toString();\n      new_event[snake_key] = event[key];\n    }\n  }\n  timeline.add(new_event);\n} ctx.abnormal_security.vendor_case.timeline = timeline;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -284,8 +280,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

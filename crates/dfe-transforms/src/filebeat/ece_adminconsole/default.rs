@@ -179,8 +179,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script, resolved to its runners at generation time
-                        // Source: ctx.event.duration = Long.parseLong(ctx.tmp.ece.log.response_time) * 1000000\n
+                        // The pipeline's script, emitted as the runtime's equivalent
                         scale_field(
                             event,
                             &ScaleField::new(
@@ -464,9 +463,7 @@ impl Transform for Default {
                         })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def temp = params.get(ctx.http.request.method.toLowerCase());\n// elastic.co/api/v1/deployments\n// and we only want the part after the /api/v1/\nString url_parts = ctx.url.original.splitOnToken(\"/api/v1/\")[1];\nif (url_parts.contains('elasticsearch/elasticsearch/proxy/')){\n  // we handle the special cases here\n  url_parts = url_parts.splitOnToken('elasticsearch/elasticsearch/proxy/')[1];\n  // that should give us `_search`, `_cat/indices`\n  url_parts = url_parts.splitOnToken('?')[0];\n  // we do not care about params ? this will just overload the event.action\n  url_parts = url_parts.splitOnToken('/')[0];\n  // we do not care about '/' like in `_cat/indices`, just getting `_cat` back is good enough\n  ctx.putIfAbsent(\"event\", [:]);\n  ctx.event.action = \"elasticsearch_api_through_ece\" + \"-\" + url_parts.toLowerCase();\n}\nelse if (temp != null){\n    if (temp.get(url_parts) != null){\n        ctx.putIfAbsent(\"event\", [:]);\n        ctx.event.action = temp.get(url_parts);\n    }\n}\nif (ctx.event?.action == null){\n    ctx.putIfAbsent(\"event\", [:]);\n    ctx.event.action = ctx.http.request.method.toLowerCase() + \"_\" + url_parts.splitOnToken(\"/\")[0];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -519,8 +516,7 @@ impl Transform for Default {
                 event.set("event.action", json!("non-api"))?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\nif (object == null || object == \"\" || object == '\"-\"') {\n    return true;\n} else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n} else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n}\nreturn false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

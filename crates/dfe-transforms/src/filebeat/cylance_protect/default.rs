@@ -30,9 +30,7 @@ impl Transform for Default {
                 event.has_value("host.mac") && event.get("host.mac").is_some_and(|v| v.is_string())
             };
             if _cond {
-                // Painless script
-                // Source: ctx.host.mac = [ctx.host.mac];\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(r#"ctx.host.mac = [ctx.host.mac];\n"#),

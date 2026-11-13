@@ -268,9 +268,7 @@ impl Transform for Default {
                 })();
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def sessionTypes = [\n  \"A\": \"API\",\n  \"I\": \"APIOnlyUser\",\n  \"N\": \"ChatterNetworks\",\n  \"Z\": \"ChatterNetworksAPIOnly\",\n  \"C\": \"Content\",\n  \"P\": \"OauthApprovalUI\",\n  \"O\": \"Oauth2\",\n  \"T\": \"SiteStudio\",\n  \"R\": \"SitePreview\",\n  \"S\": \"SubstituteUser\",\n  \"B\": \"TempContentExchange\",\n  \"G\": \"TempOauthAccessTokenFrontdoor\",\n  \"Y\": \"TempVisualforceExchange\",\n  \"F\": \"TempUIFrontdoor\",\n  \"U\": \"UI\",\n  \"E\": \"UserSite\",\n  \"V\": \"Visualforce\",\n  \"W\": \"WDC_API\"\n];\ndef type = ctx.salesforce?.logout?.session?.type;\nif (type != null && sessionTypes.containsKey(type)) {\n  ctx.salesforce.logout.session.type = sessionTypes.get(type);\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -313,9 +311,7 @@ impl Transform for Default {
                 })();
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def levels = [\"1\": \"Standard Session\", \"2\": \"High-Assurance Session\"];\ndef level = ctx.salesforce?.logout?.session?.level;\nif (level != null && levels.containsKey(level)) {\n  ctx.salesforce.logout.session.level = levels.get(level);\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -358,9 +354,7 @@ impl Transform for Default {
                 })();
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def platform = ctx.salesforce?.logout?.platform_type;\nif (platform != null && params.platforms.containsKey(platform)) {\n  ctx.salesforce.logout.platform_type = params.platforms.get(platform);\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -407,9 +401,7 @@ impl Transform for Default {
                 })();
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def type = ctx.salesforce?.logout?.app_type;\nif (type != null && params.appTypes.containsKey(type)) {\n  ctx.salesforce.logout.app_type = params.appTypes.get(type);\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -455,9 +447,7 @@ impl Transform for Default {
                 })();
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def type = ctx.salesforce?.logout?.api?.type;\nif (type != null && params.apiTypes.containsKey(type)) {\n  ctx.salesforce.logout.api.type = params.apiTypes.get(type);\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -548,9 +538,7 @@ impl Transform for Default {
                 })();
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def role = ctx.salesforce?.logout?.user?.roles;\nif (role != null && params.userRoles.containsKey(role)) {\n  ctx.salesforce.logout.user.roles = [params.userRoles.get(role)];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -706,8 +694,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return ((Map) object).isEmpty();\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return ((List) object).isEmpty();\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

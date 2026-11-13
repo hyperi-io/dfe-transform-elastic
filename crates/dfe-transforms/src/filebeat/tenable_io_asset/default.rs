@@ -1606,9 +1606,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.json.acr_score instanceof String) {\n  try {\n    long acr_score = Long.parseLong(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = acr_score;\n  } catch (NumberFormatException e) {\n    double acr_score = Double.parseDouble(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = (long) acr_score; \n  }\n  return;\n} if (ctx.json.acr_score instanceof int || ctx.json.acr_score instanceof long) {\n  ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;\n  return;\n} if (ctx.json.acr_score instanceof double) {\n  ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;\n  return;\n} \n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1654,9 +1652,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.json.exposure_score instanceof String) {\n  try {\n    long exposure_score = Long.parseLong(ctx.json.exposure_score);\n    ctx.tenable_io.asset.exposure_score = exposure_score;\n  } catch (Exception e) {\n    double exposure_score = Double.parseDouble(ctx.json.exposure_score);\n    ctx.tenable_io.asset.exposure_score = (long) exposure_score;\n  }\n  return;\n} if (ctx.json.exposure_score instanceof int || ctx.json.exposure_score instanceof long) {\n  ctx.tenable_io.asset.exposure_score = (long) ctx.json.exposure_score;\n  return;\n}  if (ctx.json.exposure_score instanceof double) {\n  ctx.tenable_io.asset.exposure_score = (long) ctx.json.exposure_score;\n  return;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1918,8 +1914,7 @@ impl Transform for Default {
                 event.remove("tenable_io.asset.network.name");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

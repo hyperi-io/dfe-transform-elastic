@@ -64,8 +64,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -78,9 +77,7 @@ impl Transform for Default {
                 None,
             );
 
-            // Painless script
-            // Source: Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\nif (ctx.tenable_ot_security.events != null) {\n  ctx.tenable_ot_security.events = keysToSnakeCase(ctx.tenable_ot_security.events);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -88,9 +85,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def normalize(def obj) {\n  if (obj instanceof Map) {\n        Map newObj = new HashMap();\n        for (entry in obj.entrySet()) {\n            def key = entry.getKey();\n            def value = entry.getValue();\n\n            // If the value is a map with a single key \"nodes\", replace it with its contents\n            if (value instanceof Map && value.containsKey(\"nodes\")) {\n                value = value.get(\"nodes\");\n            }\n\n            // Recursively process if value is a map or list\n            newObj.put(key, normalize(value));\n        }\n        return newObj;\n    } else if (obj instanceof List) {\n        List newList = new ArrayList();\n        for (item in obj) {\n            newList.add(normalize(item));\n        }\n        return newList;\n    } else {\n        return obj;\n    }\n   }\n// Apply normalization to every occurrence of \"nodes\" in events.\nif (ctx.containsKey(\"tenable_ot_security\") && ctx.tenable_ot_security.containsKey(\"events\")) {\n  ctx.tenable_ot_security.events = normalize(ctx.tenable_ot_security.events);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -192,9 +187,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: def events = ctx?.tenable_ot_security?.events;\nif (events != null) {\n  if (events.dst_mac != null) {\n    events.dst_mac = events.dst_mac.replace(\":\", \"-\").toUpperCase();\n  }\n  if (events.src_mac != null) {\n    events.src_mac = events.src_mac.replace(\":\", \"-\").toUpperCase();\n  }\n  def srcInterface = events.src_interface;\n  if (srcInterface?.mac != null) {\n    srcInterface.mac = srcInterface.mac.replace(\":\", \"-\").toUpperCase();\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

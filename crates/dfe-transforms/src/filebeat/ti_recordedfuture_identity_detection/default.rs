@@ -73,9 +73,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def flat = [:];\nctx.related = ctx.related ?: [:];\nctx.related.hash = ctx.related.hash ?: [];\nfor (h in ctx.recordedfuture.identity_detection.password.hashes) {\n  if (h.algorithm != null) {\n    def algorithm = h.algorithm.toLowerCase();\n    if (h.hash != null) {\n      flat[algorithm] = h.hash;\n      ctx.related.hash.add(h.hash);\n    } else if (h.hash_prefix != null) {\n      flat[algorithm + '_prefix'] = h.hash_prefix;\n    }\n  }\n}\nif (flat.size() > 0) {\n  ctx.recordedfuture.identity_detection.password.hashes = flat;\n} else {\n  ctx.recordedfuture.identity_detection.password.remove('hashes');\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1004,9 +1002,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString os = ctx.recordedfuture.identity_detection.dump.compromise.os.toLowerCase();\nfor (String os_type: params.os_type) {\n  if (os.contains(os_type)) {\n    ctx.host.os.put('type', os_type);\n    return;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1312,8 +1308,7 @@ impl Transform for Default {
             event.remove("recordedfuture.identity_detection.dump.location.city");
             event.remove("recordedfuture.identity_detection.dump.location.postal_code");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

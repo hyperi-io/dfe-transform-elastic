@@ -86,9 +86,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.jamf_protect.telemetry.containsKey('event')) {\n  def eventObject = ctx.jamf_protect.telemetry.event;\n  for (def key : eventObject.keySet()) {\n    if (eventObject[key] != null) {\n      if (!ctx.containsKey('event')) {\n        ctx.event = new HashMap();\n      }\n      ctx.event.action = key;\n      break;\n    }\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -98,9 +96,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: if (ctx.jamf_protect?.telemetry?.action?.result?.result?.auth != null) {\n    def authValue = ctx.jamf_protect.telemetry.action.result.result.auth.toString();\n    def authTypeBoolean = params.authTypeMap.containsKey(authValue) ? params.authTypeMap[authValue] : 'Unknown';\n    ctx.jamf_protect.telemetry = ctx.jamf_protect.telemetry != null ? ctx.jamf_protect.telemetry : new HashMap();\n    ctx.jamf_protect.telemetry.event_allowed_by_esclient = authTypeBoolean;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -428,9 +424,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -451,9 +445,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.process.args instanceof List) {\n  ctx.process.args_count = ctx.process.args.size();\n} else {\n  ctx.process = ctx.process != null ? ctx.process : new HashMap();\n  ctx.process.args_count = 0;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -853,9 +845,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1239,9 +1229,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1686,9 +1674,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2133,9 +2119,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2508,9 +2492,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2881,9 +2863,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3249,9 +3229,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3696,9 +3674,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4084,9 +4060,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4281,9 +4255,7 @@ impl Transform for Default {
                     json!("Apple’s XProtect remediated malware on the system"),
                 )?;
                 event.append("event.category", json!("malware"))?;
-                // Painless script
-                // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.xp_malware_remediated?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.xp_malware_remediated.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4490,9 +4462,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4887,9 +4857,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -5284,9 +5252,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -5678,9 +5644,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6075,9 +6039,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6273,9 +6235,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("session"))?;
-                // Painless script
-                // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.screensharing_attach?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.screensharing_attach.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6435,9 +6395,7 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.screensharing_attach?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.screensharing_attach.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -6622,9 +6580,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6820,9 +6776,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("end"))?;
                 event.append("event.category", json!("session"))?;
-                // Painless script
-                // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.screensharing_detach?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.screensharing_detach.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -6881,9 +6835,7 @@ impl Transform for Default {
                         "source.ip",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.screensharing_detach?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.screen?.screensharing_detach.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7068,9 +7020,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7267,9 +7217,7 @@ impl Transform for Default {
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("authentication"))?;
                 event.append("event.category", json!("session"))?;
-                // Painless script
-                // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.openssh_login?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.openssh_login.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7306,9 +7254,7 @@ impl Transform for Default {
                         "user.name",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.openssh_login?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.openssh_login.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7318,9 +7264,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"0\":\"Unknown\",\"1\":\"IPv4\",\"2\":\"IPv6\",\"3\":\"UNIX Socket\"}}"
                     ),
                 )?;
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.openssh_login?.result_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.openssh_login.result_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_result_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7505,9 +7449,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -7746,9 +7688,7 @@ impl Transform for Default {
                         "source.ip",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.openssh_logout?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.openssh_logout.source_address_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -7933,9 +7873,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8131,9 +8069,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("authentication"))?;
-                // Painless script
-                // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.login_login?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.login_login.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8332,9 +8268,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -8722,9 +8656,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9017,9 +8949,7 @@ impl Transform for Default {
                         event.set("jamf_protect.telemetry.btm_executable_path", converted)?;
                     }
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.btm_launch_item_add?.item?.item_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.btm_launch_item_add.item.item_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.btm_item_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -9371,9 +9301,7 @@ impl Transform for Default {
                 ) {
                     event.rename("jamf_protect.telemetry.event.btm_launch_item_add.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9817,9 +9745,7 @@ impl Transform for Default {
                             "process.executable",
                         )?;
                     }
-                    // Painless script
-                    // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -10105,9 +10031,7 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.btm_launch_item_remove?.item?.item_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.btm_launch_item_remove.item.item_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.btm_item_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -10488,9 +10412,7 @@ impl Transform for Default {
                 event.rename("jamf_protect.telemetry.event.btm_launch_item_remove.instigator.executable.path", "process.executable")?;
                 }
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -10965,9 +10887,7 @@ impl Transform for Default {
                             "process.executable",
                         )?;
                     }
-                    // Painless script
-                    // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -11231,9 +11151,7 @@ impl Transform for Default {
                         event.set("jamf_protect.telemetry.profile_display_name", converted)?;
                     }
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.profile_add?.profile?.install_source != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.profile_add.profile.install_source.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.profile_install_source = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -11476,9 +11394,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -11691,9 +11607,7 @@ impl Transform for Default {
                         event.set("jamf_protect.telemetry.profile_display_name", converted)?;
                     }
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.profile_remove?.profile?.install_source != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.profile_remove.profile.install_source.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.profile_install_source = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -11913,9 +11827,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12065,9 +11977,7 @@ impl Transform for Default {
                 )?;
                 event.append("event.type", json!("start"))?;
                 event.append("event.category", json!("authentication"))?;
-                // Painless script
-                // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.su?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.su.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12096,9 +12006,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.process.args instanceof List) {            \n    ctx.process.args_count = ctx.process.args.size();\n} else {\n    ctx.process = ctx.process != null ? ctx.process : new HashMap();\n    ctx.process.args_count = 0;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -12366,9 +12274,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12561,9 +12467,7 @@ impl Transform for Default {
                 event.append("event.category", json!("authentication"))?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.jamf_protect?.telemetry?.event?.authentication?.type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.authentication.type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_method = itemTypeString;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -12575,9 +12479,7 @@ impl Transform for Default {
                     )?;
                     Ok(())
                 })();
-                // Painless script
-                // Source: ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -12586,9 +12488,7 @@ impl Transform for Default {
                 )?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event != null ? ctx.event : new HashMap();\nif (ctx.jamf_protect?.telemetry?.event?.authentication?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.authentication.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n}\nif (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -12599,9 +12499,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.jamf_protect?.telemetry?.event?.authentication?.data?.auto_unlock != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.authentication.data.auto_unlock.type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_auto_unlock_type = itemTypeString;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -12669,9 +12567,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.jamf_protect?.telemetry?.event?.authentication?.data?.touchid != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.authentication.data.touchid.touchid_mode.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.authentication_touchid_mode = itemTypeString;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -13180,9 +13076,7 @@ impl Transform for Default {
                 if event.has_value("jamf_protect.telemetry.event.authentication.data.auto_unlock.instigator.executable.path") {
                 event.rename("jamf_protect.telemetry.event.authentication.data.auto_unlock.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -13800,9 +13694,7 @@ impl Transform for Default {
                             "process.executable",
                         )?;
                     }
-                    // Painless script
-                    // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -14211,9 +14103,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -14632,9 +14522,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -15004,9 +14892,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -15377,9 +15263,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -15554,9 +15438,7 @@ impl Transform for Default {
                         "file.path",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.od_modify_password?.account_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.od_modify_password.account_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.account_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -15564,9 +15446,7 @@ impl Transform for Default {
                     ),
                     cached_params!("{\"itemTypeMap\":{\"0\":\"User\",\"1\":\"Computer\"}}"),
                 )?;
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.od_modify_password?.error_code != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.od_modify_password.error_code.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.error_message = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -15751,9 +15631,7 @@ impl Transform for Default {
                 ) {
                     event.rename("jamf_protect.telemetry.event.od_modify_password.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -16109,9 +15987,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -16475,9 +16351,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -16838,9 +16712,7 @@ impl Transform for Default {
                 if event.has_value("jamf_protect.telemetry.event.od_attribute_value_add.instigator.executable.path") {
                 event.rename("jamf_protect.telemetry.event.od_attribute_value_add.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -17190,9 +17062,7 @@ impl Transform for Default {
                 if event.has_value("jamf_protect.telemetry.event.od_attribute_value_remove.instigator.executable.path") {
                 event.rename("jamf_protect.telemetry.event.od_attribute_value_remove.instigator.executable.path", "process.executable")?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -17582,9 +17452,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -17943,9 +17811,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -18307,9 +18173,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -18673,9 +18537,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -19037,9 +18899,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -19560,9 +19420,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -19826,9 +19684,7 @@ impl Transform for Default {
                         event.set("source.port", converted)?;
                     }
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.network_connect?.socket_protocol != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.network_connect.socket_protocol.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'unknown';\n\n    if (ctx.network == null) {\n        ctx.network = new HashMap();\n    }\n    \n    ctx.network.transport = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -19838,9 +19694,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"1\":\"icmp\",\"6\":\"tcp\",\"17\":\"udp\",\"41\":\"ip6in4\",\"58\":\"icmp6\",\"255\":\"ipproto_raw\"}}"
                     ),
                 )?;
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.network_connect?.socket_family != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.network_connect.socket_family.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.network_socket_family = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -19850,9 +19704,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"1\":\"af_unix\",\"2\":\"af_inet\",\"30\":\"af_inet6\"}}"
                     ),
                 )?;
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.network_connect?.socket_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.network_connect.socket_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.network_socket_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20054,9 +19906,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -20225,9 +20075,7 @@ impl Transform for Default {
                         "jamf_protect.telemetry.tcc_identity_type",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.tcc_modify?.right != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.tcc_modify.right.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.tcc_right = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20237,9 +20085,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"0\":\"denied\",\"1\":\"unknown\",\"2\":\"allowed\",\"3\":\"limited\",\"4\":\"add_modify_added\",\"5\":\"session_pid\",\"6\":\"learn_more\"}}"
                     ),
                 )?;
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.tcc_modify?.reason != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.tcc_modify.reason.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.tcc_reason = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20249,9 +20095,7 @@ impl Transform for Default {
                         "{\"itemTypeMap\":{\"0\":\"none\",\"1\":\"error\",\"2\":\"user_consent\",\"3\":\"user_set\",\"4\":\"system_set\",\"5\":\"service_policy\",\"6\":\"mdm_policy\",\"7\":\"service_override_policy\",\"8\":\"missing_usage_string\",\"9\":\"prompt_timeout\",\"10\":\"preflight_unknown\",\"11\":\"entitled\",\"12\":\"app_type_policy\",\"13\":\"prompt_cancel\"}}"
                     ),
                 )?;
-                // Painless script
-                // Source: if (ctx.jamf_protect?.telemetry?.event?.tcc_modify?.update_type != null) {\n    String itemType = ctx.jamf_protect.telemetry.event.tcc_modify.update_type.toString();\n    def itemTypeString = params.itemTypeMap.containsKey(itemType) ? params.itemTypeMap[itemType] : 'Unknown';\n    ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    ctx.jamf_protect.telemetry.tcc_update_type = itemTypeString;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -20466,9 +20310,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -20806,9 +20648,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -21184,9 +21024,7 @@ impl Transform for Default {
                         "process.executable",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.process?.executable != null) {\n    int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    if (lastSlashIndex != -1) {\n        ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    } else {\n        ctx.process.name = ctx.process.executable; // Fallback if no slash is found\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -21430,8 +21268,7 @@ impl Transform for Default {
             event.remove("jamf_protect.telemetry.process_token");
             event.remove("message");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

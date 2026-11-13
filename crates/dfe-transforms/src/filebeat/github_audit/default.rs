@@ -765,9 +765,7 @@ impl Transform for Default {
 
             let _cond = { event.get("github.events").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: if(ctx.github.events instanceof List) {\n  if(ctx.github.events.size() > 0 && ctx.github.events[0] instanceof Map) {\n    ctx.github.events_object = ctx.github.events;\n    ctx.github.remove(\"events\");\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1191,8 +1189,7 @@ impl Transform for Default {
                 event.remove("log.offset");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

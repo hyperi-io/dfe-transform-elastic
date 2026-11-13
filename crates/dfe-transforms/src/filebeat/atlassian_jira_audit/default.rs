@@ -39,8 +39,7 @@ impl Transform for Default {
                 return Ok(TransformResult::Drop);
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -98,8 +97,7 @@ impl Transform for Default {
                 if event.has_value("json.changedValues") {
                     event.rename("json.changedValues", "jira.audit.changed_values")?;
                 }
-                // Painless script, resolved to its runners at generation time
-                // Source: if(ctx.jira?.audit?.affected_objects == null) {\n    ArrayList items = new ArrayList();\n    ctx.jira?.audit.put(\"affected_objects\", items);\n} if(ctx.json?.objectItem != null && !ctx.jira?.audit?.affected_objects.contains(ctx.json?.objectItem)) {\n    ctx.jira?.audit?.affected_objects.add(ctx.json?.objectItem);\n}\n        \nif(ctx.jira?.audit?.affected_objects != null) {\n    for (def j = 0; j < ctx.jira?.audit?.affected_objects.length; j++) {\n        if(ctx.jira.audit.affected_objects[j]?.typeName != null) {\n            ctx.jira.audit.affected_objects[j].put('type', ctx.jira.audit.affected_objects[j].typeName);\n            ctx.jira.audit.affected_objects[j].remove('typeName');\n        }\n    }\n} if(ctx.jira?.audit?.changed_values != null) {\n    for (def j = 0; j < ctx.jira?.audit?.changed_values.length; j++) {\n        if(ctx.jira.audit.changed_values[j]?.fieldName != null) {\n            ctx.jira.audit.changed_values[j].put('i18nKey', ctx.jira.audit.changed_values[j].fieldName);\n            ctx.jira.audit.changed_values[j].put('key', ctx.jira.audit.changed_values[j].fieldName);\n            ctx.jira.audit.changed_values[j].remove('fieldName');\n        }\n        if(ctx.jira.audit.changed_values[j]?.changedTo != null) {\n            ctx.jira.audit.changed_values[j].put('to', ctx.jira.audit.changed_values[j].changedTo);\n            ctx.jira.audit.changed_values[j].remove('changedTo');\n        }\n        if(ctx.jira.audit.changed_values[j]?.changedFrom != null) {\n            ctx.jira.audit.changed_values[j].put('from', ctx.jira.audit.changed_values[j].changedFrom);\n            ctx.jira.audit.changed_values[j].remove('changedFrom');\n        }\n    }\n}
+                // The pipeline's script, emitted as the runtime's equivalent
                 list_item_renames(
                     event,
                     &ListItemRenames::new(
@@ -243,9 +241,7 @@ impl Transform for Default {
 
             let _cond = { event.get("_tmp.source_ip").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: int ip_list_size = ctx._tmp.source_ip.size(); ctx.source = new HashMap(); if (ip_list_size > 0) {\n  ctx.source.address = ctx._tmp.source_ip[0];\n\n  if (ip_list_size > 1) {\n    ctx.jira.audit.additional_source_ips = ctx._tmp.source_ip.subList(1, ip_list_size);\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -372,9 +368,7 @@ impl Transform for Default {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            // Painless script
-            // Source: ctx.event.kind = 'event'; ctx.event.type = ['info'];\nif (ctx?.event?.action == null) {\n    return;\n}\nif (params.get(ctx.event.action) == null) {\n    return;\n}\ndef hm = new HashMap(params.get(ctx.event.action)); hm.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -398,9 +392,7 @@ impl Transform for Default {
                     .contains(&event.get_str("jira.audit.type.category").unwrap_or(""))
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx?.event?.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user?.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user?.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user?.target?.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if(ctx.jira?.audit?.affected_objects != null) {\n  for (def j = 0; j < ctx.jira?.audit?.affected_objects.length; j++) {\n    if(ctx.jira?.audit?.affected_objects[j]?.type == 'GROUP') {\n      if(['jira.auditing.group.created', 'jira.auditing.group.deleted', 'Group created', 'Group deleted'].contains(ctx.event.action)) {\n        ctx.group.put(\"name\", ctx.jira?.audit?.affected_objects[j]?.name);\n      }\n      if(['jira.auditing.user.added.to.group', 'jira.auditing.user.removed.from.group', 'User added to group', 'User removed from group'].contains(ctx.event.action)) {\n        ctx.user.target.group.put(\"name\", ctx.jira?.audit?.affected_objects[j]?.name);\n        ctx.user.target.group.put(\"id\", ctx.jira?.audit?.affected_objects[j]?.id);\n      }\n    }\n    if(ctx.jira?.audit?.affected_objects[j]?.type == 'USER') {\n      if(['jira.auditing.user.created', 'jira.auditing.user.deleted','jira.auditing.user.password.changed','jira.auditing.user.updated','jira.auditing.user.added.to.group', 'jira.auditing.user.removed.from.group', 'User created', 'User deleted', 'User added to group', 'User removed from group'].contains(ctx.event.action)) {\n        ctx.user.target.put(\"name\", ctx.jira?.audit?.affected_objects[j]?.name);\n        ctx.user.target.put(\"id\", ctx.jira?.audit?.affected_objects[j]?.id);\n      }\n    }\n  }\n} if(ctx.jira?.audit?.changed_values != null) {\n  for (def j = 0; j < ctx.jira?.audit?.changed_values.length; j++) {\n    if(['jira.auditing.user.renamed', 'User renamed'].contains(ctx.event.action)) {\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.username') {\n        ctx.user.changes.put(\"name\", ctx.jira?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"name\", ctx.jira?.audit?.changed_values[j]?.from);\n      }\n    }\n    if(['jira.auditing.user.created','jira.auditing.user.updated', 'User created', 'User updated'].contains(ctx.event.action)) {\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.username') {\n        ctx.user.changes.put(\"name\", ctx.jira?.audit?.changed_values[j]?.to);\n        if(ctx.jira?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"name\", ctx.jira?.audit?.changed_values[j]?.from);\n        }\n      }\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.email') {\n        ctx.user.changes.put(\"email\", ctx.jira?.audit?.changed_values[j]?.to);\n        if(ctx.jira?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"email\", ctx.jira?.audit?.changed_values[j]?.from);\n        }\n      }\n      if(ctx.jira?.audit?.changed_values[j]?.i18nKey == 'common.words.fullname') {\n        ctx.user.changes.put(\"full_name\", ctx.jira?.audit?.changed_values[j]?.to);\n        if(ctx.jira?.audit?.changed_values[j]?.from != null) {\n          ctx.user.target.put(\"full_name\", ctx.jira?.audit?.changed_values[j]?.from);\n        }\n      }\n    }\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -492,8 +484,7 @@ impl Transform for Default {
             event.remove("_tmp");
             event.remove("_config");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -2181,9 +2181,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def signatureIds = [4000000L, 4000001L, 4000002L, 4000003L, 4000010L, 4000011L, 4000012L, 4000013L, 4000020L, 4000030L]; if (signatureIds.contains(ctx.trendmicro.deep_security.signature_id)) {\n  ctx.event.category = [\"malware\"];\n  ctx.event.kind = \"alert\";\n  ctx.event.type = [\"info\"];\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -2621,8 +2619,7 @@ impl Transform for Default {
             event.remove("_tmp");
             event.remove("cef");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

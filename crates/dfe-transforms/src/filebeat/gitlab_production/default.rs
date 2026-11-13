@@ -150,8 +150,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event['duration'] = ctx.event.duration * 1e9;\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(
@@ -210,9 +209,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gitlab.production.params") };
             if _cond {
-                // Painless script
-                // Source: Map map = [:];\nfor (item in ctx.gitlab.production.params) {\n  def key = item.key;\n  def value = item.value;\n  if (key == \"variables\" && value instanceof Map) {\n    map[key] = Json.dump(value);\n  } else {\n    map[key] = value;\n  }\n}\nctx.gitlab.production.params = map;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -223,9 +220,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gitlab.production.graphql") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.gitlab?.production?.graphql instanceof List) {\n  for (int i = 0; i < ctx.gitlab.production.graphql.size(); i++) {\n    def item = ctx.gitlab.production.graphql[i];\n    if (item.containsKey(\"variables\") && item.variables instanceof Map) {\n      item.variables = Json.dump(item.variables);\n    }\n  }\n} else if (ctx.gitlab.production.graphql instanceof Map) {\n  def vars = ctx.gitlab.production.graphql.variables;\n  if (vars instanceof Map) {\n    ctx.gitlab.production.graphql.variables = Json.dump(vars);\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -241,9 +236,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script
-                // Source: def vars = ctx.gitlab.production.params.graphql.variables;\nctx.gitlab.production.params.graphql.variables = Json.dump(vars);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1170,8 +1163,7 @@ impl Transform for Default {
                 event.set("organization.id", v)?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

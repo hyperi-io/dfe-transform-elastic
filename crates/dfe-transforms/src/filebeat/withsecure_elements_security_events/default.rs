@@ -125,9 +125,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("withsecure_elements.security_events.severity") };
             if _cond {
-                // Painless script
-                // Source: def severityValue = ctx.withsecure_elements.security_events.severity; if (severityValue == null) return; if (severityValue instanceof Number) {\n  ctx.event.severity = ((Number) severityValue).intValue();\n  return;\n} def normalized = severityValue.toString().toLowerCase(); if (normalized == 'info') {\n  ctx.event.severity = 21;\n} else if (normalized == 'warning') {\n  ctx.event.severity = 47;\n} else if (normalized == 'critical') {\n  ctx.event.severity = 99;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

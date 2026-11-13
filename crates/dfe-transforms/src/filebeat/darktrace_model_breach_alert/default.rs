@@ -96,9 +96,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: for (component in ctx.json.triggeredComponents) { if (component?.metric?.label?.toLowerCase().contains('connection')) { ctx.event?.type?.add('connection'); if (ctx.event.category == null) { ctx.event.category = new ArrayList(); } ctx.event.category.add('network'); } }
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3237,9 +3235,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def data = ctx.json.model.logic.data; if (ctx.json.model.logic?.type != null) { if (['componentList', 'weightedComponentList'].contains(ctx.json.model.logic?.type)) { ctx[\"json\"][\"model\"][\"logic\"][params.get(ctx.json.model.logic?.type)] = data; } else { ctx[\"json\"][\"model\"][\"logic\"][\"data_\" + ctx.json.model.logic?.type] = data; } } ctx.json.model.logic.remove(\"data\");
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -3934,8 +3930,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.risk_score") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: def normalizedRiskScore = ctx.event.risk_score * 100.0; ctx.event.risk_score_norm = normalizedRiskScore;
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(
@@ -4058,9 +4053,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: ctx.darktrace = ctx.darktrace ?: [:];\nctx.darktrace.model_breach_alert = ctx.darktrace?.model_breach_alert ?: [:];\nif (ctx.darktrace?.model_breach_alert?.acknowledged == null) {\n  ctx.darktrace.model_breach_alert.is_acknowledged = false;\n  return;\n}\nif (!(ctx.darktrace.model_breach_alert.acknowledged instanceof Map)) {\n  // It appears that some versions of the data from Darktrace\n  // have the value at acknowledged as a boolean. Don't handle\n  // that here. Rename it to is_acknowledged below.\n  return;\n}\nif (ctx.darktrace.model_breach_alert.acknowledged.time == null) {\n  // No time, so be non-commital.\n  return;\n}\nif (ctx.darktrace.model_breach_alert.time == null) {\n  // Assume any time noted in json.acknowledged.time\n  // is in the past.\n  ctx.darktrace.model_breach_alert.is_acknowledged = true;\n  return;\n}\ndef time = ctx.darktrace.model_breach_alert.time;\ndef acknowledged = ctx.darktrace.model_breach_alert.acknowledged.time;\nctx.darktrace.model_breach_alert.is_acknowledged = ZonedDateTime.parse(acknowledged).isBefore(ZonedDateTime.parse(time));\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4576,9 +4569,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: for (component in ctx.json.triggeredComponents) { component.logic.data = component?.logic?.data.toString(); }
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -6856,8 +6847,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1662,9 +1662,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("temp_tags_obj") };
             if _cond {
-                // Painless script
-                // Source: Map sortedTags = new TreeMap(); sortedTags.putAll(ctx.temp_tags_obj);\nStringBuilder sb = new StringBuilder(); sb.append('{');\nIterator it = sortedTags.entrySet().iterator(); while (it.hasNext()) {\n  Map.Entry pair = (Map.Entry)it.next();\n  sb.append('\"');\n  sb.append(pair.getKey());\n  sb.append('\"');\n  sb.append(':');\n  sb.append('\"');\n  sb.append(pair.getValue());\n  sb.append('\"');\n  if (it.hasNext()) {\n    sb.append(',');\n  }\n}\nsb.append('}'); ctx.aws_billing.cur.resource_tags = sb.toString();
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1691,9 +1689,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("temp_cost_category_obj") };
             if _cond {
-                // Painless script
-                // Source: Map sortedCostCategories = new TreeMap(); sortedCostCategories.putAll(ctx.temp_cost_category_obj);\nStringBuilder sb = new StringBuilder(); sb.append('{');\nIterator it = sortedCostCategories.entrySet().iterator(); while (it.hasNext()) {\n  Map.Entry pair = (Map.Entry)it.next();\n  sb.append('\"');\n  sb.append(pair.getKey());\n  sb.append('\"');\n  sb.append(':');\n  sb.append('\"');\n  sb.append(pair.getValue());\n  sb.append('\"');\n  if (it.hasNext()) {\n    sb.append(',');\n  }\n}\nsb.append('}'); ctx.aws_billing.cur.cost_category = sb.toString();
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1714,8 +1710,7 @@ impl Transform for Default {
 
             event.remove("_tmp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -1735,9 +1730,7 @@ impl Transform for Default {
                         .is_some_and(|s| s.len() > 32766)
             };
             if _cond {
-                // Painless script
-                // Source: ctx.event.original = 'sha1-'+ctx.event.original.sha1()+':'+ctx.event.original.length().toString();\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

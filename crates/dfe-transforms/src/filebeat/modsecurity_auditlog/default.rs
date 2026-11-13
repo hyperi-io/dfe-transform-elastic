@@ -758,9 +758,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.modsec?.audit?.details == null || ctx.modsec.audit.details.length == 0) {\n  return;\n}\ndef details = ctx.modsec.audit.details;\ndef messages = new ArrayList();\ndef detObj = new ArrayList();\nfor (def i = 0; i < details.length; i++) {\n  def idx = details[i].indexOf(' ['); // Find first key value mark.\n  if (idx < 0) {\n    idx = details[i].length;\n  }\n  messages.add(details[i].substring(0, idx));\n\n  // Make modsec.audit.details an object since it is a flattened and so\n  // must be an object, while apache leaves this as an array of strings.\n  def obj = new HashMap();\n  obj['value'] = details[i];\n  detObj.add(obj);\n}\nctx.modsec.audit.messages = messages;\nctx.modsec.audit.details = detObj;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

@@ -156,9 +156,7 @@ impl Transform for Default {
                 event.rename("swimlane.audit_log.Message", "message")?;
             }
 
-            // Painless script
-            // Source: def src = ctx.swimlane?.audit_log?.SourceIp; if (src != null) {\n    if (src instanceof List && src.size() > 0) {\n        ctx.swimlane.audit_log.SourceIp = src[0];\n    } else if (src instanceof String) {\n        ctx.swimlane.audit_log.SourceIp = src;\n    }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -275,9 +273,7 @@ impl Transform for Default {
                 event.rename("swimlane.audit_log.UserId", "user.id")?;
             }
 
-            // Painless script
-            // Source: ctx.event.kind = 'event'; ctx.event.type = ['info']; if (ctx.swimlane?.audit_log?.ActionType == null) {\n    return;\n} if (params.get(ctx.swimlane?.audit_log?.ActionType) == null) {\n    return;\n} def hm = new HashMap(params.get(ctx.swimlane?.audit_log?.ActionType)); hm.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

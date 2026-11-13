@@ -45,9 +45,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.azure.ai_foundry.model_availability_rate.avg = ctx.azure.ai_foundry.model_availability_rate.avg\n        / params.param_percent;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -63,9 +61,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.azure.ai_foundry.provisioned_utilization.avg = ctx.azure.ai_foundry.provisioned_utilization.avg\n        / params.param_percent;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(

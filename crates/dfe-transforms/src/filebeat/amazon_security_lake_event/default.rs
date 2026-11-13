@@ -61,8 +61,7 @@ impl Transform for Default {
 
             let _cond = { event.get("ocsf").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.ocsf);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -78,9 +77,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def convertToMilliseconds(long timestamp) {\n  if ((long)1e19 - 1 < timestamp) {\n    throw new IllegalArgumentException(\"Timestamp format not recognized: \" + timestamp);\n  } else if ((long)1e16 - 1 < timestamp) {\n    return timestamp / 1000000;  // Convert nanoseconds to milliseconds\n  } else if ((long)1e13 - 1 < timestamp) {\n    return timestamp / 1000;  // Convert microseconds to milliseconds\n  } else if ((long)1e10 - 1 < timestamp) {\n    return timestamp;  // Already in milliseconds, no conversion needed\n  } else {\n    return timestamp * 1000;  // Convert seconds to milliseconds\n  }\n}\ndef processFields(Map fields) {\n  if (fields == null) {\n    return null;\n  }\n  for (entry in fields.entrySet()) {\n    def fieldName = entry.getKey();\n    def fieldValue = entry.getValue();\n    // Check if the field is a nested object (Map)\n    if (fieldValue instanceof Map) {\n      // Recursively process nested objects\n      processFields((Map) fieldValue);\n    } else if (fieldName.endsWith('time') || fieldName.endsWith('_time')) {\n      // If the field name ends with \"time\" or \"_time\" and is a number, convert it\n      if (fieldValue instanceof Number) {\n        fields[fieldName] = convertToMilliseconds(((Number) fieldValue).longValue());\n      }\n    }\n  }\n  return null;\n} processFields(ctx.ocsf);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -125,9 +122,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.ocsf.resources = [ctx.ocsf.resource];\nctx.ocsf.remove('resource');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -850,8 +845,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("ocsf.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ctx.ocsf.duration * 1000000;
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new("ocsf.duration", "event.duration", Factor::Long(1000000)),
@@ -2277,9 +2271,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (params.get(ctx.ocsf.actor.process.container.hash.algorithm) == null) {\n  return;\n}\nif (ctx.container == null) {\n  ctx.container = new HashMap();\n}\nif (ctx.container.image == null) {\n  ctx.container.image = new HashMap();\n}\nif (ctx.container.image.hash == null) {\n  ctx.container.image.hash = new HashMap();\n}\ndef list = new ArrayList();\ndef value = params.get(ctx.ocsf.actor.process.container.hash.algorithm) + ':' + ctx.ocsf.actor.process.container.hash.value;\nlist.add(value);\nctx.container.image.hash.all = list;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -2665,9 +2657,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.actor.process.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -4673,9 +4663,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def process = ctx.ocsf.actor.process.parent_process;\ndef count = 0;\nwhile (true) {\n  if (process != null && process.parent_process != null) {\n    count += 1;\n    process = process.parent_process;\n  } else {\n    break;\n  }\n}\nif (count >= 15) {\n  ctx.ocsf.actor.process.parent_process.put(\"parent_process_keyword\", ctx.ocsf.actor.process.parent_process.parent_process.toString());\n  ctx.ocsf.actor.process.parent_process.remove(\"parent_process\");\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -12313,9 +12301,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.ocsf.src_endpoint.intermediate_ips.removeIf(v -> v == '-');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -12817,9 +12803,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.ocsf.dst_endpoint.intermediate_ips.removeIf(v -> v == '-');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -13123,9 +13107,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (params.get(ctx.ocsf.process.container.hash.algorithm) == null) {\n  return;\n}\nif (ctx.container == null) {\n  ctx.container = new HashMap();\n}\nif (ctx.container.image == null) {\n  ctx.container.image = new HashMap();\n}\nif (ctx.container.image.hash == null) {\n  ctx.container.image.hash = new HashMap();\n}\ndef list = new ArrayList();\ndef value = params.get(ctx.ocsf.process.container.hash.algorithm) + ':' + ctx.ocsf.process.container.hash.value;\nlist.add(value);\nctx.container.image.hash.all = list;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -13511,9 +13493,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.process.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -15409,9 +15389,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def process = ctx.ocsf.process.parent_process;\ndef count = 0;\nwhile (true) {\n  if (process != null && process.parent_process != null) {\n    count += 1;\n    process = process.parent_process;\n  } else {\n    break;\n  }\n}\nif (count >= 15) {\n  ctx.ocsf.process.parent_process.put(\"parent_process_keyword\", ctx.ocsf.process.parent_process.parent_process.toString());\n  ctx.ocsf.process.parent_process.remove(\"parent_process\");\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -18751,9 +18729,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.ocsf.proxy.intermediate_ips.removeIf(v -> v == '-');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -19033,8 +19009,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.get("json.tls.sans").is_some_and(|v| v.is_array()) };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: boolean dropDash(Object object) {\n  if (object == '-') {\n    // We do not need to handle null or ' ' since they were done in default.\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropDash(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropDash(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropDash(ctx.ocsf);
+                    // The pipeline's script, emitted as the runtime's equivalent
                     drop_empty(
                         event,
                         &DropPolicy {
@@ -19553,9 +19528,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("ocsf.tls.certificate.fingerprints") };
                 if _cond {
-                    // Painless script
-                    // Source: if (ctx.tls == null) {\n  ctx.tls = new HashMap();\n}\nif (ctx.tls.client == null) {\n  ctx.tls.client = new HashMap();\n}\nif (ctx.tls.client.hash == null) {\n  ctx.tls.client.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.tls.certificate.get('fingerprints');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.tls.client.hash = map;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -20563,9 +20536,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -23216,9 +23187,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.driver.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -24779,9 +24748,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.module.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -26337,9 +26304,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.file == null) {\n  ctx.file = new HashMap();\n}\nif (ctx.file.hash == null) {\n  ctx.file.hash = new HashMap();\n}\nMap map = new HashMap();\ndef hashes = ctx.ocsf.job.file.get('hashes');\nfor (def hash: hashes) {\n  def hashAlgorithm = params.get(hash.get('algorithm'));\n  if (hashAlgorithm == null) {\n    continue;\n  }\n  if (map.containsKey(hashAlgorithm)) {\n    map[hashAlgorithm].add(hash.get('value'));\n  } else {\n    Set set = new HashSet();\n    set.add(hash.get('value'));\n    map.put(hashAlgorithm, set);\n  }\n}\nctx.file.hash = map;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -32538,9 +32503,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def process = ctx.ocsf.logon_process.parent_process;\ndef count = 0;\nwhile (true) {\n  if (process != null && process.parent_process != null) {\n    count += 1;\n    process = process.parent_process;\n  } else {\n    break;\n  }\n}\nif (count >= 15) {\n  ctx.ocsf.logon_process.parent_process.put(\"parent_process_keyword\", ctx.ocsf.logon_process.parent_process.parent_process.toString());\n  ctx.ocsf.logon_process.parent_process.remove(\"parent_process\");\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -36630,9 +36593,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} def list = new HashSet(); for (def answer : ctx.ocsf.answers) {\n  if (answer.flags != null)\n  {\n    for (int i = 0; i < answer.flags.length; i++) {\n      def flag = answer.flags[i];\n      if(params.containsKey(flag))\n      {\n        list.add(params.get(flag));\n      }\n    }\n  }\n} ctx.dns.put('header_flags', list);
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -38089,9 +38050,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.ocsf.email.x_originating_ip.removeIf(v -> v == '-');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -39675,8 +39634,7 @@ impl Transform for Default {
                 event.remove("ocsf.url.url_string");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

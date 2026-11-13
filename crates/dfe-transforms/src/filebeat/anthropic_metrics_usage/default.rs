@@ -57,9 +57,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.json.containsKey('workspace_id') && ctx.json.workspace_id == null) {\n  ctx.json.workspace_id = 'Default';\n} ctx.json.entrySet().removeIf(e -> e.getValue() == null);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -157,9 +155,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.cache_creation") };
             if _cond {
-                // Painless script
-                // Source: long total = 0; if (ctx.json.cache_creation.containsKey('ephemeral_5m_input_tokens')) {\n  total += ctx.json.cache_creation.ephemeral_5m_input_tokens;\n} if (ctx.json.cache_creation.containsKey('ephemeral_1h_input_tokens')) {\n  total += ctx.json.cache_creation.ephemeral_1h_input_tokens;\n} ctx.anthropic = ctx.anthropic != null ? ctx.anthropic : new HashMap(); ctx.anthropic.usage = ctx.anthropic.usage != null ? ctx.anthropic.usage : new HashMap(); ctx.anthropic.usage.cache_creation_input_tokens = total;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

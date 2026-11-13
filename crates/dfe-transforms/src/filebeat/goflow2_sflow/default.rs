@@ -36,8 +36,7 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: ctx.goflow2.time_flow_start_ns = (ctx.goflow2?.time_flow_start_ns / 1000000);
+            // The pipeline's script, emitted as the runtime's equivalent
             scalar_expression(
                 event,
                 &ScalarExpression::new(
@@ -57,8 +56,7 @@ impl Transform for Default {
                     && event.get_str("goflow2.sampling_rate") != Some("")
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.goflow2.flow_size = ctx.goflow2?.bytes * ctx.goflow2?.sampling_rate;
+                // The pipeline's script, emitted as the runtime's equivalent
                 scalar_expression(
                     event,
                     &ScalarExpression::new(

@@ -81,9 +81,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: if (ctx.json?.audit?.action == null || params.get(ctx.json.audit.action.toLowerCase()) == null) {\n  return;\n}\nparams.get(ctx.json.audit.action.toLowerCase()).forEach((k, v) -> {\n  if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -543,9 +541,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.put(\"labels\", new HashMap()); for (tag in ctx.proofpoint_on_demand.audit.tags) {\n  ctx.labels.put(tag.name, tag.value);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -564,9 +560,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.proofpoint_on_demand.audit.action == null) {\n  return;\n} String action = ctx.proofpoint_on_demand.audit.action + '.'; String outcome; for (tag in ctx.proofpoint_on_demand.audit.tags) {\n  if (tag.name.startsWith(action)) {\n    if (tag.value.toLowerCase() == \"true\") {\n      outcome = \"success\";\n    } else if (tag.value.toLowerCase() == \"false\") {\n      outcome = \"failure\";\n    }\n  }\n} ctx.action.put(\"outcome\", outcome);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -842,8 +836,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

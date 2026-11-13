@@ -27,9 +27,7 @@ impl Transform for User {
                     })
             };
             if _cond {
-                // Painless script
-                // Source: def stringified_orig = Json.dump(ctx);\nif (stringified_orig != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.original = stringified_orig;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -87,9 +85,7 @@ impl Transform for User {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.user == null) {\n  ctx.user = new HashMap();\n}\nif (ctx.user.account == null) {\n  ctx.user.account = new HashMap();\n}\nif (ctx.user.account.status == null) {\n  ctx.user.account.status = new HashMap();\n}\nctx.user.account.status.put('recovery', false);\nctx.user.account.status.put('locked_out', false);\nctx.user.account.status.put('suspended', false);\nctx.user.account.status.put('password_expired', false);\nctx.user.account.status.put('deprovisioned', false);\ndef status = ctx.okta.status.toLowerCase();\nif (['recovery', 'locked_out', 'suspended', 'password_expired', 'deprovisioned'].contains(status)) {\n  ctx.user.account.status[status] = true;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -814,9 +810,7 @@ impl Transform for User {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: for (def role : ctx.entityanalytics_okta.roles) {\n  if (!(role?.permissions instanceof List)) {\n    continue;\n  }\n  for (def perm : role.permissions) {\n    def label = perm?.label;\n    if (label == null || label == '') {\n      continue;\n    }\n    ctx.user = ctx.user ?: new HashMap();\n    ctx.user.entity = ctx.user.entity ?: new HashMap();\n    ctx.user.entity.attributes = ctx.user.entity.attributes ?: new HashMap();\n    ctx.user.entity.attributes.permissions = ctx.user.entity.attributes.permissions ?: new HashSet();\n    ctx.user.entity.attributes.permissions.add(label);\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -835,9 +829,7 @@ impl Transform for User {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: for (def f : ctx.entityanalytics_okta.user.factors) {\n  if (f == null || f.status != \"ACTIVE\") {\n    continue;\n  }\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.attributes = ctx.user.entity.attributes ?: new HashMap();\n  ctx.user.entity.attributes.put(\"mfa_enabled\", true);\n  return;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -856,9 +848,7 @@ impl Transform for User {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def ids = new ArrayList();\ndef names = new ArrayList();\nfor (def device : ctx.entityanalytics_okta.user.devices) {\n  if (device == null) { continue; }\n  if (device.id != null) { ids.add(device.id); }\n  def displayName = device?.profile?.displayName;\n  if (displayName != null) { names.add(displayName); }\n}\ndef hostObj = new HashMap();\nif (!ids.isEmpty()) { hostObj.put(\"id\", ids); }\nif (!names.isEmpty()) { hostObj.put(\"name\", names); }\nif (!hostObj.isEmpty()) {\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.relationships = ctx.user.entity.relationships ?: new HashMap();\n  ctx.user.entity.relationships.put(\"owns\", [\"host\": hostObj]);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -877,9 +867,7 @@ impl Transform for User {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def ids = new ArrayList();\ndef names = new ArrayList();\ndef emails = new ArrayList();\ndef renamedSupervises = new ArrayList();\nfor (def supervised : ctx.entityanalytics_okta.user.supervises) {\n  if (supervised == null) { continue; }\n  def raw = new HashMap();\n  if (supervised?.user_id != null) {\n    ids.add(supervised.user_id);\n    raw.put(\"user.id\", supervised.user_id);\n  }\n  if (supervised?.username != null) {\n    names.add(supervised.username);\n    raw.put(\"user.name\", supervised.username);\n  }\n  if (supervised?.email != null) {\n    emails.add(supervised.email);\n    raw.put(\"user.email\", supervised.email);\n  }\n  renamedSupervises.add(raw);\n}\nctx.entityanalytics_okta.user.supervises = renamedSupervises;\ndef userObj = new HashMap();\nif (!ids.isEmpty()) { userObj.put(\"id\", ids); }\nif (!names.isEmpty()) { userObj.put(\"name\", names); }\nif (!emails.isEmpty()) { userObj.put(\"email\", emails); }\nif (!userObj.isEmpty()) {\n  ctx.user = ctx.user ?: new HashMap();\n  ctx.user.entity = ctx.user.entity ?: new HashMap();\n  ctx.user.entity.relationships = ctx.user.entity.relationships ?: new HashMap();\n  ctx.user.entity.relationships.put(\"supervises\", [\"user\": userObj]);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

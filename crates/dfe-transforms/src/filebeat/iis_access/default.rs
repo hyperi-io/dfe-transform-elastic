@@ -161,9 +161,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.duration") };
             if _cond {
-                // Painless script
-                // Source: ctx.event.duration = Math.round(ctx._temp_.duration * params.scale)
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -221,9 +219,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source") };
             if _cond {
-                // Painless script
-                // Source: for (field in params.fields) {\n    if (ctx.source[field] instanceof List) {\n        def vals = ctx.source[field];\n        vals = vals.stream().distinct().collect(Collectors.toList());\n        if (vals.size() == 1) {\n            ctx.source[field] = vals[0]\n        } else {\n            ctx.source[field] = vals\n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -235,9 +231,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination") };
             if _cond {
-                // Painless script
-                // Source: for (field in params.fields) {\n    if (ctx.destination[field] instanceof List) {\n        def vals = ctx.destination[field];\n        vals = vals.stream().distinct().collect(Collectors.toList());\n        if (vals.size() == 1) {\n            ctx.destination[field] = vals[0]\n        } else {\n            ctx.destination[field] = vals\n        }\n    }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -453,8 +447,7 @@ impl Transform for Default {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

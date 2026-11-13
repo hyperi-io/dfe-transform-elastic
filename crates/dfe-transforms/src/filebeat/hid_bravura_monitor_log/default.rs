@@ -131,9 +131,7 @@ impl Transform for Default {
                 })
             };
             if _cond {
-                // Painless script
-                // Source: Map m = new HashMap(); ctx['hid_bravura_monitor']['perf'].forEach((k,v) -> m.put(k.toLowerCase(), v)); ctx['hid_bravura_monitor'].remove('perf'); ctx['hid_bravura_monitor']['perf'] = new HashMap(); m.forEach((k,v) -> ctx['hid_bravura_monitor']['perf'][k] = v );
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -326,8 +324,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

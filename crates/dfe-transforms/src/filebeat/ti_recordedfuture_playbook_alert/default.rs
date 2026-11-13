@@ -95,9 +95,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def targets = ctx.recordedfuture.playbook_alert.panel_status.targets;\nif (targets instanceof List && targets.size() > 0 && targets[0] instanceof String) {\n  ctx.recordedfuture.playbook_alert.panel_status.targets_str = targets;\n  ctx.recordedfuture.playbook_alert.panel_status.remove(\"targets\");\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -112,9 +110,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def panel_log= ctx.recordedfuture.playbook_alert.panel_log_v2;\nfor (panel in panel_log) {\n    if (panel.containsKey(\"changes\") && panel.changes instanceof List) {\n        for (change in panel.changes) {\n            if (change.containsKey(\"old\") && change.old instanceof String) {\n                change.old_str = change.old;\n                change.remove(\"old\");\n            }\n            if (change.containsKey(\"new\") && change.new instanceof String) {\n                change.new_str = change.new;\n                change.remove(\"new\");\n            }\n            if (change.containsKey(\"added\") && change.added instanceof List && change.added.size() > 0 && change.added[0] instanceof String) {\n                change.added_str = change.added;\n                change.remove(\"added\");\n            }\n            if (change.containsKey(\"removed\") && change.removed instanceof List && change.removed.size() > 0 && change.removed[0] instanceof String) {\n                change.removed_str = change.removed;\n                change.remove(\"removed\");\n            }\n        }\n    }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1905,9 +1901,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\nString name = ctx.recordedfuture.playbook_alert.panel_status.priority;\nif (name.equalsIgnoreCase(\"low\") || name.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (name.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (name.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (name.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2166,8 +2160,7 @@ impl Transform for Default {
                 event.remove("recordedfuture.playbook_alert.playbook_alert_id");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

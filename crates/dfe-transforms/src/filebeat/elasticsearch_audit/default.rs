@@ -329,9 +329,7 @@ impl Transform for Default {
                 event.set("event.type", json!("access"))?;
             }
 
-            // Painless script
-            // Source: def successEvents = ['authentication_success', 'access_granted', 'run_as_granted', 'connection_granted']; if (ctx?.elasticsearch?.audit?.event_type != null && successEvents.contains(ctx.elasticsearch.audit.event_type)) {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'failure';\n} if (ctx?.event.action != null && successEvents.contains(ctx.event.action)) {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'failure';\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

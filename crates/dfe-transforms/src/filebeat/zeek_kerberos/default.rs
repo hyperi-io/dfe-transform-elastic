@@ -303,8 +303,7 @@ impl Transform for Default {
                     && event.has_value("zeek.kerberos.valid.until")
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.zeek.kerberos.valid.days = Math.round( (ctx.zeek.kerberos.valid.until - ctx.zeek.kerberos.valid.from) / 86400 )
+                // The pipeline's script, emitted as the runtime's equivalent
                 scalar_expression(
                     event,
                     &ScalarExpression::new(

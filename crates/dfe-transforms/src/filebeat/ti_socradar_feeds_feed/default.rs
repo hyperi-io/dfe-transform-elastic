@@ -174,9 +174,7 @@ impl Transform for Default {
                 json!("https://platform.socradar.com"),
             )?;
 
-            // Painless script
-            // Source: double score = -1;\nif (ctx.ti_socradar_feeds?.feed?.extra_info?.score != null) {\n  score = ((Number) ctx.ti_socradar_feeds.feed.extra_info.score).doubleValue();\n}\nif (score < 0) {\n  ctx.threat.indicator.confidence = 'Low';\n} else if (score == 0) {\n  ctx.threat.indicator.confidence = 'None';\n} else if (score <= 25) {\n  ctx.threat.indicator.confidence = 'Low';\n} else if (score <= 50) {\n  ctx.threat.indicator.confidence = 'Medium';\n} else {\n  ctx.threat.indicator.confidence = 'High';\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -249,9 +247,7 @@ impl Transform for Default {
                     && event.has_value("ti_socradar_feeds.feed.type")
             };
             if _cond {
-                // Painless script
-                // Source: def feedType = ctx.ti_socradar_feeds.feed.type.toLowerCase();\ndef value = ctx.ti_socradar_feeds.feed.value;\n\nif (ctx.threat == null) ctx.threat = new HashMap();\nif (ctx.threat.indicator == null) ctx.threat.indicator = new HashMap();\n\nif (feedType == 'ipv6') {\n  ctx.threat.indicator.type = 'ipv6-addr';\n  ctx.threat.indicator.ip = value;\n  if (ctx.related == null) ctx.related = new HashMap();\n  if (ctx.related.ip == null) ctx.related.ip = new ArrayList();\n  if (!ctx.related.ip.contains(value)) ctx.related.ip.add(value);\n} else if (feedType == 'ip' || feedType == 'ipv4-addr' || feedType == 'ipv4') {\n  ctx.threat.indicator.type = 'ipv4-addr';\n  ctx.threat.indicator.ip = value;\n  if (ctx.related == null) ctx.related = new HashMap();\n  if (ctx.related.ip == null) ctx.related.ip = new ArrayList();\n  if (!ctx.related.ip.contains(value)) ctx.related.ip.add(value);\n} else if (feedType == 'domain' || feedType == 'hostname' || feedType == 'domain-name') {\n  ctx.threat.indicator.type = 'domain-name';\n  if (ctx.threat.indicator.url == null) ctx.threat.indicator.url = new HashMap();\n  ctx.threat.indicator.url.domain = value;\n  if (ctx.related == null) ctx.related = new HashMap();\n  if (ctx.related.hosts == null) ctx.related.hosts = new ArrayList();\n  if (!ctx.related.hosts.contains(value)) ctx.related.hosts.add(value);\n} else if (feedType == 'hash' || feedType == 'file') {\n  ctx.threat.indicator.type = 'file';\n  if (ctx.threat.indicator.file == null) ctx.threat.indicator.file = new HashMap();\n  if (ctx.threat.indicator.file.hash == null) ctx.threat.indicator.file.hash = new HashMap();\n  if (value.length() == 32) {\n    ctx.threat.indicator.file.hash.md5 = value;\n  } else if (value.length() == 40) {\n    ctx.threat.indicator.file.hash.sha1 = value;\n  } else if (value.length() == 64) {\n    ctx.threat.indicator.file.hash.sha256 = value;\n  } else if (value.length() == 128) {\n    ctx.threat.indicator.file.hash.sha512 = value;\n  }\n  if (ctx.related == null) ctx.related = new HashMap();\n  if (ctx.related.hash == null) ctx.related.hash = new ArrayList();\n  if (!ctx.related.hash.contains(value)) ctx.related.hash.add(value);\n} else if (feedType == 'url') {\n  ctx.threat.indicator.type = 'url';\n  if (ctx.threat.indicator.url == null) ctx.threat.indicator.url = new HashMap();\n  ctx.threat.indicator.url.full = value;\n  ctx.threat.indicator.url.original = value;\n} else if (feedType == 'email' || feedType == 'email-addr') {\n  ctx.threat.indicator.type = 'email-addr';\n  if (ctx.threat.indicator.email == null) ctx.threat.indicator.email = new HashMap();\n  ctx.threat.indicator.email.address = value;\n} else {\n  ctx.threat.indicator.type = 'domain-name';\n  if (ctx.threat.indicator.url == null) ctx.threat.indicator.url = new HashMap();\n  ctx.threat.indicator.url.domain = value;\n  if (ctx.related == null) ctx.related = new HashMap();\n  if (ctx.related.hosts == null) ctx.related.hosts = new ArrayList();\n  if (!ctx.related.hosts.contains(value)) ctx.related.hosts.add(value);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -278,9 +274,7 @@ impl Transform for Default {
                     && event.get_str("_conf.ioc_expiration_duration") != Some("")
             };
             if _cond {
-                // Painless script
-                // Source: ZonedDateTime _now = ZonedDateTime.ofInstant(Instant.ofEpochMilli(new Date().getTime()), ZoneId.of('Z'));\nString dur = ctx._conf.ioc_expiration_duration.trim();\nlong amount = Long.parseLong(dur.substring(0, dur.length() - 1));\nString unit = dur.substring(dur.length() - 1);\nZonedDateTime expiry;\nif (unit == 'd') {\n  expiry = _now.plusDays(amount);\n} else if (unit == 'h') {\n  expiry = _now.plusHours(amount);\n} else if (unit == 'm') {\n  expiry = _now.plusMinutes(amount);\n} else {\n  expiry = _now.plusDays(90);\n}\nif (ctx.ti_socradar_feeds == null) ctx.ti_socradar_feeds = new HashMap();\nif (ctx.ti_socradar_feeds.feed == null) ctx.ti_socradar_feeds.feed = new HashMap();\nctx.ti_socradar_feeds.feed.ioc_expiration_date = expiry;\nctx.ti_socradar_feeds.feed.ioc_expiration_duration = ctx._conf.ioc_expiration_duration;\nctx.ti_socradar_feeds.feed.ioc_expiration_reason = 'Expiration set by configuration';\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -330,8 +324,7 @@ impl Transform for Default {
                 event.remove("event.original");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropEmptyFields(v));\n    return ((Map) object).isEmpty();\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropEmptyFields(v));\n    return ((List) object).isEmpty();\n  } else if (object instanceof String) {\n    return ((String) object).isEmpty();\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

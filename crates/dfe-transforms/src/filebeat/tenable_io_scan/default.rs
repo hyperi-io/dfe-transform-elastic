@@ -394,9 +394,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("tenable_io.scan.scan_details") };
             if _cond {
-                // Painless script
-                // Source: def details = ctx.tenable_io.scan.scan_details;\ndef ipv4Pat = /^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}$/;\ndef ipv6Pat = /^[0-9A-Fa-f:]*:[0-9A-Fa-f:.]*$/;\nif (ctx.related == null) { ctx.related = new HashMap(); }\nif (details.info?.targets instanceof String) {\n  for (def t : details.info.targets.splitOnToken(',')) {\n    def v = t.trim();\n    if (v.length() == 0) { continue; }\n    def base = v;\n    int slash = base.indexOf('/');\n    if (slash >= 0) { base = base.substring(0, slash); }\n    int dash = base.indexOf('-');\n    if (dash > 0 && base.indexOf(':') < 0) { base = base.substring(0, dash); }\n    base = base.trim();\n    if (ipv4Pat.matcher(base).matches() || ipv6Pat.matcher(base).matches()) {\n      if (ctx.related.ip == null) { ctx.related.ip = new ArrayList(); }\n      if (!ctx.related.ip.contains(base)) { ctx.related.ip.add(base); }\n    } else {\n      if (ctx.related.hosts == null) { ctx.related.hosts = new ArrayList(); }\n      if (!ctx.related.hosts.contains(v)) { ctx.related.hosts.add(v); }\n    }\n  }\n}\nif (details.hosts instanceof List) {\n  for (def host : (List) details.hosts) {\n    if (host?.hostname instanceof String && host.hostname.length() > 0) {\n      def v = host.hostname;\n      def base = v;\n      int slash = base.indexOf('/');\n      if (slash >= 0) { base = base.substring(0, slash); }\n      int dash = base.indexOf('-');\n      if (dash > 0 && base.indexOf(':') < 0) { base = base.substring(0, dash); }\n      base = base.trim();\n      if (ipv4Pat.matcher(base).matches() || ipv6Pat.matcher(base).matches()) {\n        if (ctx.related.ip == null) { ctx.related.ip = new ArrayList(); }\n        if (!ctx.related.ip.contains(base)) { ctx.related.ip.add(base); }\n      } else {\n        if (ctx.related.hosts == null) { ctx.related.hosts = new ArrayList(); }\n        if (!ctx.related.hosts.contains(v)) { ctx.related.hosts.add(v); }\n      }\n    }\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -405,8 +403,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

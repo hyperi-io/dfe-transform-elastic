@@ -72,9 +72,7 @@ impl Transform for Default {
                 event.rename("openai.completions.object", "openai.base.usage_object_type")?;
             }
 
-            // Painless script
-            // Source: long t = 0; if (ctx.openai?.completions?.input_tokens != null) { t += ((Number)ctx.openai.completions.input_tokens).longValue(); } if (ctx.openai?.completions?.output_tokens != null) { t += ((Number)ctx.openai.completions.output_tokens).longValue(); } if (ctx.openai?.completions?.input_audio_tokens != null) { t += ((Number)ctx.openai.completions.input_audio_tokens).longValue(); } if (ctx.openai?.completions?.output_audio_tokens != null) { t += ((Number)ctx.openai.completions.output_audio_tokens).longValue(); } if (ctx.openai == null) { ctx.openai = [:]; } if (ctx.openai.base == null) { ctx.openai.base = [:]; } ctx.openai.base.usage_tokens = t;
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

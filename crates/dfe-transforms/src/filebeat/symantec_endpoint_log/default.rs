@@ -467,9 +467,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: def columnArray = [];\ndef sortedMap = new TreeMap();\nsortedMap.putAll(ctx._csv_array);\nsortedMap.forEach((key, value) -> {\n  def v = value;\n  if (v.startsWith(\"'\") && v.endsWith(\"'\"))\n  {\n    v = v.substring(1, v.length() - 1);\n  }\n  columnArray.add(v);\n});\nctx['_csv_array'] = columnArray;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -477,9 +475,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
-            // Source: def aliases = Collections.unmodifiableMap([\n  'computer': 'computer_name',\n  'domain': 'domain_name',\n  'end_time': 'end',\n  'group_name': 'group',\n  'local': 'local_host_ip',\n  'local_host': 'local_host_ip',\n  'server_name': 'server',\n  'user': 'user_name'\n]);\n\ndef keyPattern = /^([a-zA-Z][a-zA-Z0-9 \\(\\)-]{0,28}):(?:\\s(.+)|\\s)?/;\ndef keyValue = [:];\ndef fingerprint = [];\nctx._csv_array.forEach(v -> {\n    def m = keyPattern.matcher(v);\n    def key = 'NONE';\n    if (m.matches()) {\n      key = m.group(1).toLowerCase().replace(' ', '_');\n      key = /[\\(\\)]+/.matcher(key).replaceAll('');\n\n      def tmp = aliases[key];\n      if (tmp != null) {\n        key = tmp;\n      }\n\n\n      def value = m.group(2);\n      if (value != null && !value.trim().isEmpty()) {\n        keyValue[key] = value.trim();\n      }\n    }\n\n    fingerprint.add(key);\n    return true;\n});\nif (!keyValue.isEmpty()) {\n  ctx['_csv_map'] = keyValue;\n}\nctx['_fingerprint'] = String.join(\"|\", fingerprint);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -489,9 +485,7 @@ impl Transform for Default {
 
             event.remove("message");
 
-            // Painless script
-            // Source: // Assume first column is always the host.hostname.\ndef hostname = ctx._csv_array.get(0);\nif (/[\\.a-zA-Z0-9_-]+/.matcher(hostname).matches()) {\n  if (ctx?.host == null) {\n    ctx['host'] = [:];\n  }\n  ctx['host']['hostname'] = hostname;\n}\n\ndef provider = null;\nfor (def p: params.providers) {\n  if (p.fingerprint == ctx._fingerprint || (p.fingerprint instanceof Collection && p.fingerprint.contains(ctx._fingerprint))) {\n    provider = p;\n    break;\n  }\n}\nif (provider == null) { return; }\n\nctx['event']['provider'] = provider.name;\nif (provider?.event_category != null) {\n  ctx['event']['category'] = new ArrayList(provider.event_category);\n}\nif (provider?.event_type!= null) {\n  ctx['event']['type'] = new ArrayList(provider.event_type);\n}\nfor (def c : provider.columns) {\n  def v = ctx._csv_array.get(c.index).trim();\n  if (!v.isEmpty()) {\n    ctx._csv_map[c.name] = v;\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -786,8 +780,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event['duration'] = ctx.event.duration * 1e9;\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(
@@ -2023,9 +2016,7 @@ impl Transform for Default {
                     && event.has_value("destination")
             };
             if _cond {
-                // Painless script
-                // Source: def tmp = ctx.source;\nctx.source = ctx.destination;\nctx.destination = tmp;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(

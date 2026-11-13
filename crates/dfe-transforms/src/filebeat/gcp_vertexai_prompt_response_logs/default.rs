@@ -44,9 +44,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: Map keysToSnakeCase(Map m) {\n    def regex = /_?([a-z])([A-Z]+)/;\n    def snakeCaseMap = [:];\n    for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n    if (v instanceof Map) {\n        v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n        for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n            v.set(i, keysToSnakeCase(item));\n        }\n        }\n    }\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n    }\n    return snakeCaseMap;\n}\n\nif (ctx.gcp?.vertexai?.prompt_response_logs?.full_request != null) {\n    ctx.gcp.vertexai.prompt_response_logs.full_request = keysToSnakeCase(ctx.gcp.vertexai.prompt_response_logs.full_request);\n}\nif (ctx.gcp?.vertexai?.prompt_response_logs?.full_response != null) {\n    ctx.gcp.vertexai.prompt_response_logs.full_response = keysToSnakeCase(ctx.gcp.vertexai.prompt_response_logs.full_response);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -56,8 +54,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script, resolved to its runners at generation time
-                // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {

@@ -57,9 +57,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\ndef m = params.get(ctx.thor.module);\nif (m != null) {\n  m.forEach((k, v) -> {\n    if (v instanceof List) {\n      ctx.event[k] = new ArrayList(v);\n    } else {\n      ctx.event[k] = v;\n    }\n  });\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -2521,9 +2519,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.thor.start = ctx.thor.start.splitOnToken(',')[0].trim();
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3472,9 +3468,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("thor.duration") };
             if _cond {
-                // Painless script
-                // Source: String s = ctx.thor.duration.toString().trim();\nif (s.length() == 0) return;\n\nlong hours = 0L;\nlong mins  = 0L;\nlong secs  = 0L;\n\nString[] parts = s.splitOnToken(\" \");\nfor (int i = 0; i < parts.length - 1; i++) {\n  String v = parts[i];\n  String u = parts[i + 1].toLowerCase(Locale.ROOT);\n\n  long n;\n  try {\n    n = Long.parseLong(v);\n  } catch (Exception e) {\n    continue;  // skip non-numeric tokens safely\n  }\n\n  if (u.startsWith(\"hour\")) {\n    hours = n;\n  } else if (u.startsWith(\"min\")) {\n    mins = n;\n  } else if (u.startsWith(\"sec\")) {\n    secs = n;\n  }\n}\n\nctx.thor.duration = hours * 3600L + mins * 60L + secs;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3586,8 +3580,7 @@ impl Transform for Default {
 
             event.remove("_temp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

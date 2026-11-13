@@ -262,9 +262,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_number())
                 };
                 if _cond {
-                    // Painless script
-                    // Source: long score = ctx.crowdstrike.alert.score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -547,9 +545,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def indicator = ctx.crowdstrike.alert.threatgraph_indicators[0];\nif (indicator.host_id != null && indicator.host_id != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.host_id;\n}\nif (indicator.hostname != null && indicator.hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.hostname;\n}\nif (indicator.process_id != null && indicator.process_id != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.process_id;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -656,9 +652,7 @@ impl Transform for Default {
                         )
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\nctx.event.provider = ctx.crowdstrike.alert.source_products[0];
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1003,9 +997,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.host = ctx.host ?: [:];\nif (ctx.host.name == null || ctx.host.name == '') {\n  ctx.host.name = ctx.crowdstrike.alert.host_names[0];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1082,9 +1074,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.source = ctx.source ?: [:];\nif (ctx.source.domain == null || ctx.source.domain == '') {\n  ctx.source.domain = ctx.crowdstrike.alert.source_hosts[0];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1107,9 +1097,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.destination = ctx.destination ?: [:];\nif (ctx.destination.domain == null || ctx.destination.domain == '') {\n  ctx.destination.domain = ctx.crowdstrike.alert.destination_hosts[0];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1172,9 +1160,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.source = ctx.source ?: [:];\nif (ctx.source.ip == null || ctx.source.ip == '') {\n  ctx.source.ip = ctx.crowdstrike.alert.source_ips[0];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1307,9 +1293,7 @@ impl Transform for Default {
                         )
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.destination = ctx.destination ?: [:];\nif (ctx.destination.ip == null || ctx.destination.ip == '') {\n  ctx.destination.ip = ctx.crowdstrike.alert.destination_ips[0];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1419,9 +1403,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.user = ctx.user ?: [:];\nif (ctx.user.name == null || ctx.user.name == '') {\n  ctx.user.name = ctx.crowdstrike.alert.user_names[0];\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1462,9 +1444,7 @@ impl Transform for Default {
                             })
                 };
                 if _cond {
-                    // Painless script
-                    // Source: for (def userEntry : ctx.crowdstrike.alert.users) {\n  if (userEntry.user_name != null && userEntry.user_name != '') {\n    ctx.user = ctx.user ?: [:];\n    if (ctx.user.name == null || ctx.user.name == '') {\n      ctx.user.name = userEntry.user_name;\n    }\n\n    ctx.related = ctx.related ?: [:];\n    ctx.related.user = ctx.related.user ?: [];\n    if (!ctx.related.user.contains(userEntry.user_name)) {\n      ctx.related.user.add(userEntry.user_name);\n    }\n  }\n\n  ctx.user = ctx.user ?: [:];\n  if (userEntry.sid != null && userEntry.sid != '' && (ctx.user.id == null || ctx.user.id == '')) {\n    ctx.user.id = userEntry.sid;\n  }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3511,9 +3491,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.crowdstrike == null) {\n  ctx.crowdstrike = [:];\n}\nif (ctx.crowdstrike.alert == null) {\n  ctx.crowdstrike.alert = [:];\n}\nfor (def c: ctx.crowdstrike.alert.ioc_context) {\n  if (c.type == 'module' || c.type == 'script') {\n    ctx.crowdstrike.alert.has_script_or_module_ioc = true;\n    return;\n  }\n}\nctx.crowdstrike.alert.has_script_or_module_ioc = false;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4179,9 +4157,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.crowdstrike == null) {\n  ctx.crowdstrike = [:];\n}\nif (ctx.crowdstrike.alert == null) {\n  ctx.crowdstrike.alert = [:];\n}\nfor (def d: ctx.crowdstrike.alert.pattern_disposition_details.entrySet()) {\n  if (d.getKey() == 'quarantine_file') {\n    ctx.crowdstrike.alert.is_synthetic_quarantine_disposition = d.getValue();\n    return;\n  }\n}\nctx.crowdstrike.alert.is_synthetic_quarantine_disposition = false;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4355,9 +4331,7 @@ impl Transform for Default {
                     && event.has_value("crowdstrike.alert.location_longitude_as_int")
             };
             if _cond {
-                // Painless script
-                // Source: def location = new HashMap();\nlocation.put('lat', ctx.crowdstrike.alert.location_latitude_as_int);\nlocation.put('lon', ctx.crowdstrike.alert.location_longitude_as_int);\nif(ctx.observer == null) {\n  ctx.put('observer', new HashMap());\n}\nif(ctx.observer.geo == null){\n  ctx.observer.put('geo', new HashMap());\n}\nctx.observer.geo.location = location;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4887,9 +4861,7 @@ impl Transform for Default {
                 event.set("host.os.name", v)?;
             }
 
-            // Painless script
-            // Source: if (ctx.crowdstrike?.alert?.device?.platform_name != null) {\n  String platform_name = ctx.crowdstrike.alert.device.platform_name.toLowerCase();\n  for (String os: params.os_type) {\n    if (platform_name.contains(os)) {\n      ctx.host.os.put('type', os);\n      return;\n    }\n  }\n} else if (ctx.crowdstrike?.alert?.operating_system != null) {\n  String operating_system = ctx.crowdstrike.alert.operating_system.toLowerCase();\n  for (String os: params.os_type) {\n    if (operating_system.contains(os)) {\n      ctx.host.os.put('type', os);\n      return;\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -7275,9 +7247,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: long severity = ctx.crowdstrike.alert.severity;\nif (0 <= severity && severity < 20) {\n  ctx.crowdstrike.alert.severity_name = \"info\";\n} else if (20 <= severity && severity < 40) {\n  ctx.crowdstrike.alert.severity_name = \"low\";\n} else if (40 <= severity && severity < 60) {\n  ctx.crowdstrike.alert.severity_name = \"medium\";\n} else if (60 <= severity && severity < 80) {\n  ctx.crowdstrike.alert.severity_name = \"high\";\n} else if (80 <= severity && severity <= 100) {\n  ctx.crowdstrike.alert.severity_name = \"critical\";\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -7327,9 +7297,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.crowdstrike.alert.severity_name;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"info\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -7935,9 +7903,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def start = ZonedDateTime.parse(ctx.event.start);\ndef end = ZonedDateTime.parse(ctx.event.end);\ndef duration = ChronoUnit.NANOS.between(start, end);\nif (duration >= 0) {\n  ctx.event.duration = duration;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -8350,9 +8316,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def tid = ctx.threat.tactic?.id;\ndef nid = ctx.threat.technique?.id;\ndef tname = ctx.threat.tactic?.name;\nif ((tid == null || tid.isEmpty()) && (nid == null || nid.isEmpty()) && (tname == null || tname.isEmpty())) {\n  return;\n}\nSet frameworks = new HashSet();\n// Handling tactics prefixed with \"CS\" or \"TA\".\nif (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n// Handling techniques prefixed with \"CS\".\nif (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n// Handling falcon specific tactics.\nif (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\nif (frameworks.isEmpty()) {\n  return;\n}\nif (frameworks.size() == 1) {\n  ctx.threat.framework = frameworks.iterator().next();\n  return;\n}\n\nfor (def preferred : params.framework_preference) {\n  if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    return;\n  }\n}\n\n// fallback when new frameworks are added and not yet in preference list\nctx.threat.framework = frameworks.iterator().next();\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -8789,8 +8753,7 @@ impl Transform for Default {
                 event.remove("crowdstrike.alert.user_name");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

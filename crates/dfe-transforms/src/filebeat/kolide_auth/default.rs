@@ -47,9 +47,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.event") && event.has_value("data") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.containsKey('id')) { ctx.json.id = ctx.remove('id'); }\nif (ctx.containsKey('timestamp')) { ctx.json.timestamp = ctx.remove('timestamp'); }\nif (ctx.containsKey('data')) { ctx.json.data = ctx.remove('data'); }
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -80,9 +78,7 @@ impl Transform for Default {
                 // Begin nested pipeline: "s3"
                 let _cond = { event.get("json.data").is_some_and(|v| v.is_object()) };
                 if _cond {
-                    // Painless script
-                    // Source: Map data = (Map) ctx.json.remove('data');\nfor (def entry : data.entrySet()) {\n  ctx.json[entry.getKey()] = entry.getValue();\n}\nctx.json.remove('type');
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -614,9 +610,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def prefix = 'Downloaded package: ';\ndef packages = new ArrayList();\nfor (def ev : ctx.json.events) {\n  def desc = ev?.event_description;\n  if (desc instanceof String && desc.startsWith(prefix)) {\n    packages.add(desc.substring(prefix.length()));\n  }\n}\nif (!packages.isEmpty()) {\n  if (ctx.kolide.auth.downloaded_packages == null) {\n    ctx.kolide.auth.downloaded_packages = packages;\n  } else {\n    ctx.kolide.auth.downloaded_packages.addAll(packages);\n  }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -631,9 +625,7 @@ impl Transform for Default {
             // Begin nested pipeline: "categorize"
             let _cond = { event.has_value("event.action") };
             if _cond {
-                // Painless script
-                // Source: def action = ctx.event.action;\nctx.event.kind = 'event';\n\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.containsKey('outcome') && ctx.event.outcome == null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['authentication'];\n  ctx.event.type = ['info'];\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -648,9 +640,7 @@ impl Transform for Default {
                 event.get("json.events").is_some_and(|v| v.is_array()) && event.get("json.events").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0) && event.has_value("json.timestamp")
             };
             if _cond {
-                // Painless script
-                // Source: def evs = ctx.json.events;\ndef ts = ctx.json.timestamp;\nint idx = -1;\nfor (int i = 0; i < evs.size(); i++) {\n  if (evs[i] instanceof Map && evs[i].timestamp == ts) { idx = i; break; }\n}\nif (idx != -1) {\n  if (ctx.event == null) { ctx.event = [:]; }\n  if (idx == evs.size() - 1) {\n    ctx.event.type = ['end'];\n  } else if (idx == 0) {\n    ctx.event.type = ['start'];\n  } else {\n    ctx.event.type = ['info'];\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -693,8 +683,7 @@ impl Transform for Default {
                 event.append_unique("tags", json!("preserve_original_event"))?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

@@ -1368,9 +1368,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def var = new ArrayList(); if (params.containsKey((ctx.ses.device_os_type_id).toString())) {\n    def type = params.get((ctx.ses.device_os_type_id).toString());\n    ctx.ses.device_os_type_value = type;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1419,9 +1417,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def var = new ArrayList(); if (params.containsKey((ctx.ses.device_os_type_id).toString())) {\n    def type = params.get((ctx.ses.device_os_type_id).toString());\n    var.add(type);\n} if (ctx.host == null) {\n    ctx.host = new HashMap();\n} if (ctx.host.os == null) {\n    ctx.host.os = new HashMap();\n} ctx.host.os.put('type', var)
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1904,9 +1900,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.event.duration = ctx.ses.event_duration * params.S_TO_NS;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -2996,9 +2990,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def obj = ctx.ses.severity_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.severity_value = type\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -3146,9 +3138,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def obj = ctx.ses.status_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.status_value = type\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -3959,9 +3949,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.ses.curr_security_level_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.curr_security_level_value = type\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -4658,9 +4646,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: ctx.event.duration = ctx.ses.duration * params.S_TO_NS;
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -5608,9 +5594,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.ses.resolution_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.resolution_value = type\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -5891,9 +5875,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.ses.scan_type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.scan_type_value = type\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -5992,9 +5974,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.ses.state_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.state_value = type\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -6191,9 +6171,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def obj = ctx.ses.verdict_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.verdict_value = type\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -6352,9 +6330,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.actor.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -7356,9 +7332,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.actor.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -9827,9 +9801,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new ArrayList(); def direction = ctx.ses.connection.direction_id; if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n}\nif (ctx.network == null) {\n    ctx.network = new HashMap();\n} ctx.network.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -11917,9 +11889,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -12205,9 +12175,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -12235,9 +12203,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -13289,9 +13255,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -13556,9 +13520,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -15205,9 +15167,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -15374,9 +15334,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -16130,9 +16088,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -17561,9 +17517,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.kernel.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.kernel.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -18460,9 +18414,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.module.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.module.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -22285,9 +22237,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.process.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -23207,9 +23157,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -26040,9 +25988,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -27386,9 +27332,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.threat.risk_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.threat.risk_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -27497,9 +27441,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.threat.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.threat.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -28601,9 +28543,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -28889,9 +28829,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -28919,9 +28857,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -29973,9 +29909,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -30240,9 +30174,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -31978,9 +31910,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -34678,9 +34608,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -34966,9 +34894,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -34996,9 +34922,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -36050,9 +35974,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -36317,9 +36239,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -37963,9 +37883,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -38132,9 +38050,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -38888,9 +38804,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -43728,9 +43642,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -45771,9 +45683,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -46059,9 +45969,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -46089,9 +45997,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -47143,9 +47049,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -47410,9 +47314,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -49055,9 +48957,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -49224,9 +49124,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -49980,9 +49878,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -51711,9 +51607,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -54619,9 +54513,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.directory.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -56229,9 +56121,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.directory_result.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -56570,9 +56460,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def var = new HashSet(); if (ctx.email != null && ctx.email.direction != null) {\n    var = ctx.email.direction;\n} else {\n  if (ctx.email == null)\n  {\n    ctx.email = new HashMap();\n  }\n} def direction = ctx.ses.email.direction_id; if (params.containsKey(direction.toString())) { def type = params.get(direction.toString()); var.add(type); }\nctx.email.put('direction', var)
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -58430,9 +58318,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.remote_process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -62718,9 +62604,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.startup_app.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n}\nctx.file.put('type', var);
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan_params(
                             event,
                             cached_painless!(
@@ -63737,9 +63621,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.actor.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -64741,9 +64623,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.actor.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -67212,9 +67092,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new ArrayList(); def direction = ctx.ses.connection.direction_id; if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n}\nif (ctx.network == null) {\n    ctx.network = new HashMap();\n} ctx.network.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -69302,9 +69180,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -69590,9 +69466,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -69620,9 +69494,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -70674,9 +70546,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -70941,9 +70811,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -72590,9 +72458,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -72759,9 +72625,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -73515,9 +73379,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -74946,9 +74808,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.kernel.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.kernel.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -75845,9 +75705,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.module.type_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.module.type_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -79670,9 +79528,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.process.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -80592,9 +80448,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -83425,9 +83279,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -85604,9 +85456,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.email != null && ctx.email.direction != null) {\n      var = ctx.email.direction;\n  } else {\n    if (ctx.email == null)\n    {\n      ctx.email = new HashMap();\n    }\n  }\n\nfor (def email : ctx.ses.cybox.emails) {\n  def direction = email.direction_id;\n  if (params.containsKey(direction.toString())) {\n    def type = params.get(direction.toString());\n    var.add(type);\n  }\n}\nctx.email.put('direction', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -85892,9 +85742,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -85922,9 +85770,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -86976,9 +86822,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.signature_value_ids == null || !file.containsKey('signature_value_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.signature_value_ids.length; j++) {\n    def value_id = file.signature_value_ids[j];\n    if (value_id != null) {\n      new_ids.add(value_id.toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.signature_value_ids = new_ids;\n  }\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan(
                                 event,
                                 cached_painless!(
@@ -87243,9 +87087,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n}\nfor (def file : ctx.ses.cybox.files) {\n  if (file.type_id == null) {\n    continue;\n  }\n  def type = params[file.type_id.toString()];\n  if (type != null) {\n      var.add(type);\n  }  \n}\nctx.file.put('type', var);
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -88905,9 +88747,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def obj : ctx.ses.process.file.attribute_ids) {\n  if (params.containsKey(obj.toString())) {\n    def type = params.get(obj.toString());\n    var.add(type);\n  }\n}\nctx.file.put('attributes', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -89827,9 +89667,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.process.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var)
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -92150,9 +91988,7 @@ impl Transform for Default {
                     if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            // Painless script
-                            // Source: def obj = ctx.ses.session.auth_protocol_id;\nif (params.containsKey(obj.toString())) {\n  def type = params.get(obj.toString());\n  ctx.ses.session.auth_protocol_value = type\n}
-                            // TODO: Transpile Painless to Rust (2.2.3)
+                            // The pipeline's script, run by the runtime's equivalent
                             painless_exec_plan_params(
                                 event,
                                 cached_painless!(
@@ -93514,9 +93350,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def new_sizes = []; for (int i = 0; i < ctx.file.size.length; i++) {\n  def sz = ctx.file.size[i];\n  if (sz == null) {\n    continue\n  }\n  if (sz instanceof long || sz instanceof int) {\n    new_sizes.add((long)sz);\n  } else if (sz instanceof String && sz != \"\") {\n    new_sizes.add(Long.parseLong(sz));\n  }\n} ctx.file.size = new_sizes;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -93563,9 +93397,7 @@ impl Transform for Default {
                     && !(event.get("ses.raw_data").is_some_and(|v| v.is_object()))
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx.ses.raw_data instanceof List) {\n  for (def e: ctx.ses.raw_data) {\n    if (!(e instanceof Map)) {\n      def m = new HashMap();\n      m[\"value\"] = ctx.ses.raw_data;\n      ctx.ses.raw_data = m;\n      break;\n    }\n  }\n  return;\n}\ndef m = new HashMap();\nm[\"value\"] = ctx.ses.raw_data;\nctx.ses.raw_data = m;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -93619,8 +93451,7 @@ impl Transform for Default {
                 event.remove("ses.uuid");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

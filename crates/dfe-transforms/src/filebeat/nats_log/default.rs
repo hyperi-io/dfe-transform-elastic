@@ -155,9 +155,7 @@ impl Transform for Default {
                 event.rename("nats.log.msg.data", "message")?;
             }
 
-            // Painless script
-            // Source: if (ctx.log.level == params.inf) {\n    ctx.log.level = params.info;\n} else if (ctx.log.level == params.dbg) {\n    ctx.log.level = params.debug;\n} else if (ctx.log.level == params.wrn) {\n    ctx.log.level = params.warning;\n} else if (ctx.log.level == params.err) {\n    ctx.log.level = params.error;\n} else if (ctx.log.level == params.ftl) {\n    ctx.log.level = params.fatal;\n} else if (ctx.log.level == params.trc) {\n    ctx.log.level = params.trace;\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -170,9 +168,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("nats.log.msg.type") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.nats.log.msg.type == params.msg) {\n  ctx.nats.log.msg.type = params.message;\n} else if (ctx.nats.log.msg.type == params.pub) {\n    ctx.nats.log.msg.type = params.publish;\n} else if (ctx.nats.log.msg.type == params.sub) {\n    ctx.nats.log.msg.type = params.subscribe;\n} else if (ctx.nats.log.msg.type == params.unsub) {\n    ctx.nats.log.msg.type = params.unsubscribe;\n} else if (ctx.nats.log.msg.type == params.msg_payload) {\n    ctx.nats.log.msg.type = params.payload;\n} else if (ctx.nats.log.msg.type == params.err) {\n    ctx.nats.log.msg.type = params.error;\n} else if (ctx.nats.log.msg.type == params.pi) {\n    ctx.nats.log.msg.type = params.ping;\n} else if (ctx.nats.log.msg.type == params.po) {\n    ctx.nats.log.msg.type = params.pong;\n} else if (ctx.nats.log.msg.type == params.ok) {\n    ctx.nats.log.msg.type = params.acknowledge;\n} else if (ctx.nats.log.msg.type == params.connect) {\n    ctx.nats.log.msg.type = params.connection;\n} else if (ctx.nats.log.msg.type == params.info) {\n    ctx.nats.log.msg.type = params.information;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -186,9 +182,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("network.direction") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.network.direction == params.in) {\n  ctx.network.direction = params.inbound;\n} else if (ctx.network.direction == params.out) {\n  ctx.network.direction = params.outbound;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(

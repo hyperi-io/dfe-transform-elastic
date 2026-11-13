@@ -504,8 +504,7 @@ impl Transform for Default {
                         && event.get_str("_conf.endace_view_window") != Some("")
                 };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx._conf.timedelta = ctx._conf.endace_view_window * 60 * 1000
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::new(
@@ -522,9 +521,7 @@ impl Transform for Default {
                             && event.get_str("_conf.timedelta") != Some(""))
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx._conf.event.end = ctx._conf.event.end + ctx._conf.timedelta/2
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -539,9 +536,7 @@ impl Transform for Default {
                             && event.get_str("_conf.timedelta") != Some(""))
                 };
                 if _cond {
-                    // Painless script
-                    // Source: ctx._conf.event.start = ctx._conf.event.start - ctx._conf.timedelta/2
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

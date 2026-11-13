@@ -143,9 +143,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def mapping = params.type_mapping[ctx.json.type];\nif (mapping == null) {\n  return;\n}\nctx.event.category = mapping.category;\nctx.event.type = mapping.type;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -379,9 +377,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: // These allocations may be futile, but will be cleaned up in the postamble.\nif (ctx.client == null) {\n  ctx.client = new HashMap();\n}\nif (ctx.source == null) {\n  ctx.source = new HashMap();\n}\nif (ctx.destination == null) {\n  ctx.destination = new HashMap();\n}\n// Nulls inserted into the document will be cleaned up in the postamble.\nctx.client.ip = ctx.json.local_ip;\nctx.client.port = ctx.json.local_port;\nif (ctx.json?.netconn_inbound == true) {\n  ctx.destination.ip = ctx.json?.local_ip;\n  ctx.destination.port = ctx.json?.local_port;\n  ctx.source.ip = ctx.json?.remote_ip;\n  ctx.source.port = ctx.json?.remote_port;\n  ctx.source.domain = ctx.json?.netconn_domain;\n} else {\n  ctx.source.ip = ctx.json?.local_ip;\n  ctx.source.port = ctx.json?.local_port;\n  ctx.destination.ip = ctx.json?.remote_ip;\n  ctx.destination.port = ctx.json?.remote_port;\n  ctx.destination.domain = ctx.json?.netconn_domain;\n}     \n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -528,9 +524,7 @@ impl Transform for Default {
                 event.rename("json.regmod_name", "registry.path")?;
             }
 
-            // Painless script
-            // Source: void mapHashField(def ctx, def hashes, def key) {\n    for (hash in hashes) {\n        if (hash.length() == 32) {ctx.json[key + '_md5'] = hash;}\n        if (hash.length() == 64) {ctx.json[key + '_sha256'] = hash;}\n    }\n}\nif (ctx.json?.process_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.process_hash, 'process_hash');\n}\nif (ctx.json?.parent_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.parent_hash, 'parent_hash');\n}\nif (ctx.json?.filemod_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.filemod_hash, 'filemod_hash');\n}\nif (ctx.json?.childproc_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.childproc_hash, 'childproc_hash');\n}\nif (ctx.json?.crossproc_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.crossproc_hash, 'crossproc_hash');\n}\nif (ctx.json?.scriptload_hash instanceof List) {\n    mapHashField(ctx, ctx.json?.scriptload_hash, 'scriptload_hash');\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -2234,9 +2228,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script
-                // Source: for (Map.Entry m : ctx.json.entrySet()) {\n  ctx.carbon_black_cloud.endpoint_event[m.getKey()] = m.getValue();\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2247,8 +2239,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
@@ -2261,9 +2252,7 @@ impl Transform for Default {
                 None,
             );
 
-            // Painless script
-            // Source: if (ctx?.related?.user != null) {\n  ctx.related.user = new HashSet(ctx.related.user)\n}\nif (ctx?.related?.ip != null) {\n  ctx.related.ip = new HashSet(ctx.related.ip)\n}\nif (ctx?.related?.hash != null) {\n  def hashes = new HashSet(ctx.related.hash);\n  def hash = new ArrayList();\n  for (def h: hashes) {\n    hash.add(h);\n  }\n  Collections.sort(hash);\n  ctx.related.hash = hash;\n}\nif (ctx.related?.hash != null) {\n  def hashes = new HashSet(ctx.related.hash);\n  def hash = new ArrayList();\n  for (def h: hashes) {\n    hash.add(h);\n  }\n  Collections.sort(hash);\n  ctx.related.hash = hash;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

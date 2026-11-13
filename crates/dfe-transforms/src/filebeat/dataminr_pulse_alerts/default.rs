@@ -119,9 +119,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def alertType = ctx.json.alertType.name;\nif (alertType == 'Flash') {\n  ctx.event.severity = 90;\n} else if (alertType == 'Urgent') {\n  ctx.event.severity = 50;\n} else {\n  ctx.event.severity = 30;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -462,9 +460,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def coords = ctx.json.estimatedEventLocation.coordinates;\nif (coords instanceof List && coords.size() == 2) {\n  if (ctx.source == null) { ctx.source = [:]; }\n  if (ctx.source.geo == null) { ctx.source.geo = [:]; }\n  if (ctx.source.geo.location == null) { ctx.source.geo.location = [:]; }\n  ctx.source.geo.location.lat = coords[0];\n  ctx.source.geo.location.lon = coords[1];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -520,9 +516,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def summary = ctx.json.intelAgents[0].summary;\nif (summary instanceof String) {\n  if (ctx.dataminr_pulse == null) { ctx.dataminr_pulse = [:]; }\n  if (ctx.dataminr_pulse.intel_agents == null) { ctx.dataminr_pulse.intel_agents = [:]; }\n  ctx.dataminr_pulse.intel_agents.summary = summary;\n} else if (summary instanceof List) {\n  def parts = [];\n  for (item in summary) {\n    if (item instanceof Map) {\n      def title = item.containsKey('title') ? item.title : '';\n      def content = '';\n      if (item.containsKey('content') && item.content instanceof List) {\n        content = String.join(' ', item.content);\n      }\n      if (title != '' && content != '') {\n        parts.add(title + ': ' + content);\n      } else if (content != '') {\n        parts.add(content);\n      } else if (title != '') {\n        parts.add(title);\n      }\n    } else if (item instanceof String) {\n      parts.add(item);\n    }\n  }\n  if (parts.size() > 0) {\n    if (ctx.dataminr_pulse == null) { ctx.dataminr_pulse = [:]; }\n    if (ctx.dataminr_pulse.intel_agents == null) { ctx.dataminr_pulse.intel_agents = [:]; }\n    ctx.dataminr_pulse.intel_agents.summary = String.join(' | ', parts);\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -614,9 +608,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def threatActorNames = [];\ndef threatActorAliases = [];\ndef threatActorCountries = [];\ndef vulnerabilityNames = [];\ndef malwareList = [];\ndef platformsSet = new LinkedHashSet();\ndef urlList = [];\ndef ipList = [];\ndef enrichments = [];\ndef firstVulnCvss = null;\ndef firstVulnDescription = null;\n\nfor (intelAgent in ctx.json.intelAgents) {\n  if (!(intelAgent.discoveredEntities instanceof List)) { continue; }\n  for (entity in intelAgent.discoveredEntities) {\n    if (entity.type == 'threatActor' && entity.name != null && entity.name != '') {\n      if (!threatActorNames.contains(entity.name)) {\n        threatActorNames.add(entity.name);\n      }\n      if (entity.aliases instanceof List) {\n        for (alias in entity.aliases) {\n          if (!threatActorAliases.contains(alias)) {\n            threatActorAliases.add(alias);\n          }\n        }\n      }\n      if (entity.countryOfOrigin != null) {\n        def countries = entity.countryOfOrigin instanceof List ? entity.countryOfOrigin : [entity.countryOfOrigin];\n        for (country in countries) {\n          if (country instanceof String && !threatActorCountries.contains(country)) {\n            threatActorCountries.add(country);\n          }\n        }\n      }\n    } else if (entity.type == 'vulnerability') {\n      def vulnName = entity.cve != null && entity.cve != '' ? entity.cve\n                   : entity.name != null && entity.name != '' ? entity.name\n                   : entity.id != null && entity.id != '' ? entity.id\n                   : null;\n      if (vulnName != null && !vulnerabilityNames.contains(vulnName)) {\n        vulnerabilityNames.add(vulnName);\n      }\n      if (firstVulnCvss == null && entity.cvss != null) {\n        firstVulnCvss = entity.cvss;\n      }\n      if (firstVulnDescription == null && entity.summary != null && entity.summary != '') {\n        firstVulnDescription = entity.summary;\n      }\n    } else if (entity.type == 'malware' && entity.name != null && entity.name != '') {\n      if (!malwareList.contains(entity.name)) {\n        malwareList.add(entity.name);\n      }\n      if (entity.affectedOperatingSystems instanceof List) {\n        def osMapping = [\n          'Windows': ['win', 'windows', 'win32', 'win64', 'microsoft windows'],\n          'Linux': ['elf', 'linux', 'unix'],\n          'macOS': ['mac', 'macos', 'osx', 'os x', 'darwin', 'mac os', 'mac os x'],\n          'AWS': ['aws', 'amazon web services'],\n          'Azure': ['azure', 'microsoft azure'],\n          'Azure AD': ['azure ad', 'azure active directory', 'azuread'],\n          'GCP': ['gcp', 'google cloud', 'google cloud platform'],\n          'Network': ['network'],\n          'Office 365': ['office 365', 'o365', 'office365', 'microsoft 365', 'm365'],\n          'SaaS': ['saas', 'software as a service']\n          ];\n        for (os in entity.affectedOperatingSystems) {\n          if (os == null) continue;\n\n          def osLower = os.toLowerCase();\n          def normalized = null;\n        \n          for (entry in osMapping.entrySet()) {\n            if (entry.getValue().contains(osLower)) {\n            normalized = entry.getKey();\n            break;\n            }\n          }\n          platformsSet.add(normalized);\n      }\n    }\n\n    } else if (entity.type == 'url' && entity.name != null && entity.name != '') {\n      def refanged = entity.name.replace('[.]', '.');\n      if (!urlList.contains(refanged)) {\n        urlList.add(refanged);\n      }\n      def e = [:];\n      e.indicator = [:];\n      e.indicator.type = 'url';\n      e.indicator.name = entity.name;\n      e.indicator.url = ['original': refanged];\n      enrichments.add(e);\n    } else if (entity.type == 'ipAddress' && entity.ip != null && entity.ip != '') {\n      def refanged = entity.ip.replace('[.]', '.');\n      if (!ipList.contains(refanged)) {\n        ipList.add(refanged);\n      }\n      def e = [:];\n      e.indicator = [:];\n      e.indicator.name = entity.ip;\n      e.indicator.ip = refanged;\n      e.indicator.type = refanged.contains(':') ? 'ipv6-addr' : 'ipv4-addr';\n      if (entity.ports instanceof List && entity.ports.size() > 0) {\n        e.indicator.port = entity.ports;\n      }\n      enrichments.add(e);\n    }\n  }\n}\n\nif (ctx.dataminr_pulse == null) { ctx.dataminr_pulse = [:]; }\n\nif (threatActorNames.size() > 0) {\n  ctx.dataminr_pulse.threatactor = [:];\n  ctx.dataminr_pulse.threatactor.name = threatActorNames;\n  if (threatActorAliases.size() > 0) { ctx.dataminr_pulse.threatactor.alias = threatActorAliases; }\n  if (threatActorCountries.size() > 0) { ctx.dataminr_pulse.threatactor.country_of_origin = threatActorCountries; }\n  if (ctx.threat == null) { ctx.threat = [:]; }\n  ctx.threat.group = [:];\n  ctx.threat.group.name = threatActorNames[0];\n  if (threatActorAliases.size() > 0) { ctx.threat.group.alias = threatActorAliases; }\n  if (threatActorCountries.size() > 0) {\n    ctx.threat.indicator = [:];\n    ctx.threat.indicator.geo = [:];\n    ctx.threat.indicator.geo.country_iso_code = threatActorCountries;\n  }\n  ctx.threat.framework = 'MITRE ATT&CK';\n}\n\nif (vulnerabilityNames.size() > 0) {\n  ctx.dataminr_pulse.vulnerability = [:];\n  ctx.dataminr_pulse.vulnerability.name = vulnerabilityNames;\n  ctx.vulnerability = [:];\n  ctx.vulnerability.id = vulnerabilityNames[0];\n  if (firstVulnCvss != null) {\n    ctx.vulnerability.score = [:];\n    ctx.vulnerability.score.base = firstVulnCvss;\n  }\n  if (firstVulnDescription != null) {\n    ctx.vulnerability.description = firstVulnDescription;\n  }\n}\n\nif (malwareList.size() > 0) {\n  ctx.dataminr_pulse.malware = malwareList;\n  if (ctx.threat == null) { ctx.threat = [:]; }\n  ctx.threat.software = [:];\n  ctx.threat.software.name = malwareList[0];\n  ctx.threat.software.type = 'Malware';\n  if (platformsSet.size() > 0) {\n    ctx.dataminr_pulse.platforms = new ArrayList(platformsSet);\n    ctx.threat.software.platforms = new ArrayList(platformsSet);\n  }\n}\n\nif (urlList.size() > 0) { ctx.dataminr_pulse.url = urlList; }\n\nif (ipList.size() > 0) {\n  ctx.dataminr_pulse.ip = ipList;\n  if (ctx.related == null) { ctx.related = [:]; }\n  ctx.related.ip = ipList;\n}\n\nif (enrichments.size() > 0) {\n  if (ctx.threat == null) { ctx.threat = [:]; }\n  ctx.threat.enrichments = enrichments;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -660,9 +652,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: // Initialize event.category as array if not exists\nif (ctx.event == null) { ctx.event = [:]; }\nif (ctx.event.category == null) { ctx.event.category = []; }\nif (ctx.event.type == null) { ctx.event.type = []; }\n\nboolean hasEntities = false;\n\n// Check for vulnerability\nif (ctx.dataminr_pulse?.vulnerability?.name != null && ctx.dataminr_pulse.vulnerability.name.size() > 0) {\n  if (!ctx.event.category.contains('vulnerability')) {\n    ctx.event.category.add('vulnerability');\n  }\n  if (!ctx.event.type.contains('info')) {\n    ctx.event.type.add('info');\n  }\n  hasEntities = true;\n}\n\n// Check for threat actor\nif (ctx.dataminr_pulse?.threatactor?.name != null && ctx.dataminr_pulse.threatactor.name.size() > 0) {\n  if (!ctx.event.category.contains('threat')) {\n    ctx.event.category.add('threat');\n  }\n  if (!ctx.event.type.contains('indicator')) {\n    ctx.event.type.add('indicator');\n  }\n  hasEntities = true;\n}\n\n// Check for malware\nif (ctx.dataminr_pulse?.malware != null && ctx.dataminr_pulse.malware.size() > 0) {\n  if (!ctx.event.category.contains('malware')) {\n    ctx.event.category.add('malware');\n  }\n  if (!ctx.event.type.contains('info')) {\n    ctx.event.type.add('info');\n  }\n  hasEntities = true;\n}\n\n// Check for network indicators (IPs or URLs)\nif ((ctx.dataminr_pulse?.ip != null && ctx.dataminr_pulse.ip.size() > 0) ||\n    (ctx.dataminr_pulse?.url != null && ctx.dataminr_pulse.url.size() > 0)) {\n  if (!ctx.event.category.contains('threat')) {\n    ctx.event.category.add('threat');\n  }\n  if (!ctx.event.type.contains('indicator')) {\n    ctx.event.type.add('indicator');\n  }\n  hasEntities = true;\n}\n\n// Fallback to 'web' and 'info' if no specific entities found\nif (!hasEntities) {\n  ctx.event.category.add('web');\n  if (!ctx.event.type.contains('info')) {\n    ctx.event.type.add('info');\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -707,9 +697,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def hashes = ctx.json.metadata.cyber.hashValues;\nif (hashes instanceof List && hashes.size() > 0) {\n  if (ctx.file == null) { ctx.file = [:]; }\n  if (ctx.file.hash == null) { ctx.file.hash = [:]; }\n  if (ctx.related == null) { ctx.related = [:]; }\n  if (ctx.related.hash == null) { ctx.related.hash = []; }\n\n  for (hash in hashes) {\n    if (hash.type != null && hash.value != null) {\n      def hashType = hash.type.toLowerCase();\n      if (hashType == 'md5') {\n        ctx.file.hash.md5 = hash.value;\n        if (!ctx.related.hash.contains(hash.value)) {\n          ctx.related.hash.add(hash.value);\n        }\n      } else if (hashType == 'sha1') {\n        ctx.file.hash.sha1 = hash.value;\n        if (!ctx.related.hash.contains(hash.value)) {\n          ctx.related.hash.add(hash.value);\n        }\n      } else if (hashType == 'sha256') {\n        ctx.file.hash.sha256 = hash.value;\n        if (!ctx.related.hash.contains(hash.value)) {\n          ctx.related.hash.add(hash.value);\n        }\n      } else if (hashType == 'sha512') {\n        ctx.file.hash.sha512 = hash.value;\n        if (!ctx.related.hash.contains(hash.value)) {\n          ctx.related.hash.add(hash.value);\n        }\n      }\n    }\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -799,8 +787,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).size() == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

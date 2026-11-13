@@ -1729,9 +1729,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def iana_number = ctx.network.iana_number;\nif (iana_number == '0' && ctx.source?.ip?.contains(':')) {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '114') {\n    ctx.network.transport = '0-hop';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n} else if (iana_number == '4294967295') {\n    iana_number = null;\n} else {\n    ctx.network.transport = iana_number;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1836,9 +1834,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                // Painless script
-                // Source: String packetsStr = ctx.checkpoint.packets.trim();\nif (packetsStr.startsWith('(sample')) {\n  int closeParenIdx = packetsStr.indexOf(')');\n  if (closeParenIdx > 0) {\n    ctx.checkpoint.packets_data_is_sampled = true;\n    packetsStr = packetsStr.substring(closeParenIdx + 1).trim();\n  }\n}\nif (packetsStr.endsWith('\";')) {\n  packetsStr = packetsStr.substring(0, packetsStr.length() - 2);\n}\ndef parsed = [];\nString[] entries = packetsStr.splitOnToken('>');\nfor (int i = 0; i < entries.length; i++) {\n  String entry = entries[i].trim();\n  if (entry.length() == 0) continue;\n  if (entry.startsWith('<')) {\n    entry = entry.substring(1);\n  }\n  def packet = new HashMap();\n  String[] parts = entry.splitOnToken(';');\n  String tuple = parts[0];\n  if (parts.length > 1) {\n    packet.put('interface', ['name': parts[1]]);\n  }\n  String[] fields = tuple.splitOnToken(',');\n  if (fields.length >= 5) {\n    packet.put('source', ['ip': fields[0], 'port': Long.parseLong(fields[1])]);\n    packet.put('destination', ['ip': fields[2], 'port': Long.parseLong(fields[3])]);\n    packet.put('network', ['iana_number': fields[4]]);\n    parsed.add(packet);\n  }\n}\nif (parsed.size() > 0) {\n  ctx.checkpoint.packets_dropped = parsed;\n  ctx.checkpoint.remove('packets');\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2192,9 +2188,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ZonedDateTime convert(String time) {\n  ZonedDateTime zdt;\n  try {\n    Instant instant;\n    long temp_time = Long.parseLong(time);\n    if (String.valueOf(temp_time).length() > 10) {\n      instant = Instant.ofEpochMilli(temp_time);\n    } else {\n      instant = Instant.ofEpochMilli(temp_time * 1000L);\n    }\n    zdt = ZonedDateTime.ofInstant(instant, ZoneId.of('Z'));\n  }\n  catch (NumberFormatException nfe) {\n    zdt = ZonedDateTime.parse(time);\n  }\n  return zdt\n}\n\n// Handle single time field.\nif (ctx.checkpoint.time instanceof String) {\n  ctx.checkpoint._temp_unixms = convert(ctx.checkpoint.time);\n  return;\n}\n\n// Some log lines have more than one time. Pick the earliest and retain all.\nList zdt = new ArrayList();\nfor (def time: ctx.checkpoint.time) {\n  zdt.add(convert(time));\n}\nctx.checkpoint.times = zdt;\nctx.checkpoint._temp_unixms = Collections.min(zdt);\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2334,8 +2328,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ctx.event.duration * 1000000000L
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new("event.duration", "event.duration", Factor::Long(1000000000)),
@@ -2655,8 +2648,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions_into_existing(event, &["bytes"]);
                     Ok(())
                 })();
@@ -2670,8 +2662,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
+                    // The pipeline's script, emitted as the runtime's equivalent
                     sum_directions_into_existing(event, &["packets"]);
                     Ok(())
                 })();
@@ -3033,8 +3024,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

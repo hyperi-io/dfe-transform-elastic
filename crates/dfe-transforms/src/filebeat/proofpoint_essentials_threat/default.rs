@@ -52,9 +52,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "json")?;
 
-            // Painless script
-            // Source: // Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      // Skip fields that contain '@' in their name\n      if (!entry.getKey().contains(\"@\")) {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nctx.proofpoint_essentials = ctx.proofpoint_essentials ?: [:];\nif (ctx.json != null) {\n  ctx.proofpoint_essentials.threat = convertToSnakeCase(ctx.json);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -797,9 +795,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def ts = Instant.parse(ctx['@timestamp']);\nif (ctx.proofpoint_essentials?.threat?.event_type == 'messages_blocked' || ctx.proofpoint_essentials?.threat?.event_type == 'messages_delivered') {\n  if (ctx.proofpoint_essentials.threat.threats_info_map instanceof List) {\n    for (item in ctx.proofpoint_essentials.threat.threats_info_map) {\n      if (item?.threat_time instanceof String && Instant.parse(item.threat_time).isAfter(ts)) {\n        ts = item.threat_time;\n      }\n    }\n  }\n}\nif (ctx.proofpoint_essentials?.threat?.event_type == 'clicks_blocked' || ctx.proofpoint_essentials?.threat?.event_type == 'clicks_permitted') {\n  if (ctx.proofpoint_essentials.threat.threat_time instanceof String && Instant.parse(ctx.proofpoint_essentials.threat.threat_time).isAfter(ts)) {\n    ts = ctx.proofpoint_essentials.threat.threat_time;\n  }\n}\nctx['@timestamp'] = ts.toString();\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1078,9 +1074,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.email = ctx.email ?: [:];\nctx.email.attachments = ctx.email.attachments ?: [];\nfor (attachment in ctx.proofpoint_essentials.threat.message_parts) {\n  if (attachment.disposition == 'attached') {\n    def o = [:];\n    o.file = [:];\n    o.file.hash = [:];\n    o.file.hash.md5 = attachment.md5;\n    o.file.hash.sha256 = attachment.sha256;\n    o.file.name = attachment.filename;\n    o.file.mime_type = attachment.content_type;\n    ctx.email.attachments.add(o);\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1208,9 +1202,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.name = ctx.threat.indicator.name ?: [];\nctx.threat.indicator.type = ctx.threat.indicator.type ?: [];\nctx.threat.indicator.email = ctx.threat.indicator.email ?: [:];\nctx.threat.indicator.email.address = ctx.threat.indicator.email.address ?: [];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [:];\nctx.threat.indicator.url.original = ctx.threat.indicator.url.original ?: [];\nctx.related = ctx.related ?: [:];\nctx.related.hash = ctx.related.hash ?: [];\nctx.related.user = ctx.related.user ?: [];\nfor (artifact in ctx.proofpoint_essentials.threat.threats_info_map) {\n  if (artifact.threat != null) {\n\n    // if artifact is hash of the attachment threat\n    if (artifact.threat.length() == 64) {\n      def str = artifact.threat.toLowerCase();\n      def hash_pattern = /^[0-9a-f]{64}$/;\n      if (hash_pattern.matcher(str).matches() && !ctx.related.hash.contains(str)) {\n        ctx.related.hash.add(str);\n      }\n    }\n\n    // if artifact is email address of the impostor sender\n    def email_pattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$/;\n    if (email_pattern.matcher(artifact.threat).matches() && !ctx.related.user.contains(artifact.threat)) {\n      ctx.threat.indicator.email.address.add(artifact.threat);\n      ctx.threat.indicator.type.add('email-addr');\n      ctx.related.user.add(artifact.threat);\n    }\n\n    // else artifact is malicious url\n    if (artifact.threat_type != null && artifact.threat_type == 'URL') {\n      ctx.threat.indicator.url.original.add(artifact.threat);\n      ctx.threat.indicator.type.add('url'); \n    }\n\n    ctx.threat.indicator.name.add(artifact.threat);\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1461,8 +1453,7 @@ impl Transform for Default {
                 event.remove("proofpoint_essentials.threat.url");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

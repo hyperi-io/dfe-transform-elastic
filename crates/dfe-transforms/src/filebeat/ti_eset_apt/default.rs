@@ -86,9 +86,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("@timestamp") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.eset == null) {\n  ctx.eset = new HashMap();\n}\nctx.eset.valid_until =  ZonedDateTime.parse(ctx['@timestamp']).plusDays(365);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -481,9 +479,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("threat.indicator.email.address") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.threat.indicator.email.address = ctx.threat.indicator.email.address.splitOnToken(' ');\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1081,8 +1077,7 @@ impl Transform for Default {
 
             event.remove("eti");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

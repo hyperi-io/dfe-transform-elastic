@@ -75,8 +75,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == '<NA>' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == '<NA>' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx.json);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -477,8 +476,7 @@ impl Transform for Default {
                         || event.has_value("sysdig.event.content.fields.proc.ppid_ts"))
             };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: if (ctx.sysdig.event.content.fields.proc instanceof Map) {\n  def proc = ctx.sysdig.event.content.fields.proc;\n  if (proc.containsKey('pid') && proc.pid instanceof Map && proc.pid.size() == 0) {\n    proc.remove('pid');\n  }\n  if (proc.containsKey('ppid') && proc.ppid instanceof Map && proc.ppid.size() == 0) {\n    proc.remove('ppid');\n  }\n}\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 remove_empty_child_maps(
                     event,
                     &RemoveEmptyChildMaps::new(
@@ -1308,9 +1306,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
-                // Source: def parseDate(def rawtimestamp) {\n  long timestamp;\n  if (rawtimestamp instanceof String) {\n    timestamp = Long.parseLong(rawtimestamp);\n  } else if (rawtimestamp instanceof long) {\n    timestamp = (long) rawtimestamp;\n  }\n  if (String.valueOf(timestamp).length() == 19) {\n    long epoch = timestamp / 1000000000L;\n    long seconds = timestamp % 1000000000L;\n    return Instant.ofEpochSecond(epoch, seconds).atZone(ZoneOffset.UTC);\n  }\n  return '';\n} if (ctx.json?.timestamp != null) {\n  ctx.json.timestamp = parseDate(ctx.json.timestamp);\n} if (ctx.sysdig?.event?.content?.fields?.proc?.pid_ts != null) {\n  ctx.sysdig.event.content.fields.proc.pid_ts = parseDate(ctx.sysdig.event.content.fields.proc.pid_ts);\n} if (ctx.sysdig?.event?.content?.fields?.proc?.ppid_ts != null) {\n  ctx.sysdig.event.content.fields.proc.ppid_ts = parseDate(ctx.sysdig.event.content.fields.proc.ppid_ts);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1929,9 +1925,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.threat = ctx.threat ?: [:]; ctx.threat.tactic = ctx.threat.tactic ?: [:]; ctx.threat.technique = ctx.threat.technique ?: [:]; ctx.threat.technique.subtechnique = ctx.threat.technique.subtechnique ?: [:]; ctx.threat.tactic.id = ctx.threat.tactic.id ?: []; ctx.threat.technique.id = ctx.threat.technique.id ?: []; ctx.threat.technique.subtechnique.id = ctx.threat.technique.subtechnique.id ?: []; ctx.threat.tactic.name = ctx.threat.tactic.name ?: []; ctx.threat.technique.name = ctx.threat.technique.name ?: []; ctx.threat.technique.subtechnique.name = ctx.threat.technique.subtechnique.name ?: []; Pattern pattern = /MITRE_(T[A-Z]\\d{4})_(\\w+)|MITRE_(T\\d{4}(?:\\.\\d{3})?)_(\\w+)/; for (int i = 0; i < ctx.sysdig.event.content.rule_tags.size(); i++) {\n  def tag = ctx.sysdig.event.content.rule_tags[i];\n  def matcher = pattern.matcher(tag);\n  if (matcher.find()) {\n    if (matcher.group(1) != null && matcher.group(2) != null) {\n      ctx.threat.tactic.id.add(matcher.group(1));\n      ctx.threat.tactic.name.add(matcher.group(2));\n    } else if (matcher.group(3) != null && matcher.group(4) != null) {\n      if (matcher.group(3).contains('.')) {\n        ctx.threat.technique.subtechnique.id.add(matcher.group(3));\n        ctx.threat.technique.subtechnique.name.add(matcher.group(4));\n      } else {\n        ctx.threat.technique.id.add(matcher.group(3));\n        ctx.threat.technique.name.add(matcher.group(4));\n      }\n    }\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2537,9 +2531,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.related = ctx.related ?: [:]; ctx.related.hash = ctx.related.hash ?: []; String digest = ctx.sysdig.event.labels.container.image.digest; int index = digest.indexOf(':'); String hash = digest.substring(index + 1); ctx.related.hash.add(hash);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2978,9 +2970,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: String severity_value; if (ctx.event.severity >= 0 && ctx.event.severity <= 3) {\n  severity_value = \"High\";\n} else if (ctx.event.severity >= 4 && ctx.event.severity <= 5) {\n  severity_value = \"Medium\";\n} else if (ctx.event.severity == 6) {\n  severity_value = \"Low\";\n} else if (ctx.event.severity == 7) {\n  severity_value = \"Info\";\n} if (severity_value != null) {\n  ctx.sysdig.event.severity_value = severity_value;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -3143,8 +3133,7 @@ impl Transform for Default {
             event.remove("sysdig.event.labels.gcp.instanceId");
             event.remove("sysdig.event.labels.gcp.projectId");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

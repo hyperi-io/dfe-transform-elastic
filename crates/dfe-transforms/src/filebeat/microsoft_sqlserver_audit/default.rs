@@ -180,9 +180,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: def actionIdKey = ctx.sqlserver.audit.action_id;\ndef actions = params.get('actions');\ndef classTypes = params.get('classtypes');\n// handle class type\n// overwrite the abbreviated key with its value\ndef ct = classTypes.get(ctx.sqlserver.audit.class_type);\nif (ct != null) {\n  ctx.sqlserver.audit.class_type = ct;\n}\n// error case - for unhandled action ids\ndef actionData = actions.get(actionIdKey);\nif (actionData == null) {\n  ctx.event.action = 'unknown-' + actionIdKey.toLowerCase();\n  ctx.event.type = ['info'];\n  return;\n}\n// overwrite the action id with its actual value\nctx.sqlserver.audit.action_id = actionData.get('value');\n// event.type\ndef actionType = actionData.get('type');\nif (actionType != null) {\n  ctx.event.type = new ArrayList(actionType);\n}\n// event.category\ndef actionCategory = actionData.get('category');\nif (actionCategory != null) {\n  for (def c : actionCategory) {\n    ctx.event.category.add(c);\n  }\n}\n// event.action\ndef action = actionData.get('action');\nif (action != null) {\n  ctx.event.action = action;\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -253,9 +251,7 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
-            // Source: def v = ctx?.sqlserver?.audit?.duration_milliseconds;\nif (v != null) {\n    ctx.event.duration = Long.parseLong(v) * 1000000;\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -395,8 +391,7 @@ impl Transform for Default {
             event.remove("sqlserver.audit.target_server_principal_name");
             event.remove("sqlserver.audit.target_server_principal_sid");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

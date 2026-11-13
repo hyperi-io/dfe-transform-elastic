@@ -264,9 +264,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def attachmentList = new ArrayList();\nfor (attachment in ctx.sublime_security.email_message.attachments) {\n  def object = new HashMap();\n  object.put('file', new HashMap());\n  object.file.put('hash', new HashMap());\n  object.file.put('mime_type', attachment.content.type);\n  object.file.put('extension', attachment.file.extension);\n  object.file.put('name', attachment.file.name);\n  object.file.put('size', attachment.size);\n  object.file.hash.put('md5', attachment.md5);\n  object.file.hash.put('sha1', attachment.sha1);\n  object.file.hash.put('sha256', attachment.sha256);\n  attachmentList.add(object);\n}\nctx.put('email',new HashMap());\nctx.email.attachments = attachmentList;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -277,9 +275,7 @@ impl Transform for Default {
 
             let _cond = { event.get("email.attachments").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: for (attachment in ctx.email.attachments) {\n  if (attachment.file.extension != null && attachment.file.extension.startsWith('.')) {\n    String extension = attachment.file.extension.substring(1);\n    attachment.file.extension = extension;\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -769,9 +765,7 @@ impl Transform for Default {
 
             let _cond = { event.get("json.body.links").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: def links = new ArrayList();\nfor (link in ctx.json.body.links) {\n  def object = new HashMap();\n  if(link?.href_url != null) {\n    object.put('domain', link.href_url.domain.domain);\n    object.put('subdomain', link.href_url.domain.subdomain);\n    object.put('top_level_domain', link.href_url.domain.tld);\n    object.put('fragment', link.href_url.fragment);\n    object.put('password', link.href_url.password);\n    object.put('path', link.href_url.path);\n    object.put('port', link.href_url.port);\n    object.put('query', link.href_url.query_params);\n    object.put('scheme', link.href_url.scheme);\n    object.put('full', link.href_url.url);\n    object.put('username', link.href_url.username);\n    links.add(object);\n  }\n}\nctx.put('url',new HashMap());\nctx.url = links;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2083,9 +2077,7 @@ impl Transform for Default {
 
             let _cond = { event.get("json.headers.hops").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
-                // Source: def hops = ctx.json.headers.hops;\nfor (int i = 0; i < hops.size(); i++) {\n  def hop = hops[i];\n  if(hop.fields instanceof List) {\n    for (def field : hop.fields) {\n      def lowercaseName = field.name.toLowerCase();\n      field[lowercaseName] = field.value;\n    }\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -4963,8 +4955,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

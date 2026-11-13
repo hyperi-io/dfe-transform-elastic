@@ -151,9 +151,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("stix.confidence") };
             if _cond {
-                // Painless script
-                // Source: def value = ctx.stix.confidence; if (value == 0) {\n  ctx.threat.indicator.confidence = \"None\";\n} else if (value >= 1 && value <= 29) {\n  ctx.threat.indicator.confidence = \"Low\";\n} else if (value >= 30 && value <= 69) {\n  ctx.threat.indicator.confidence = \"Medium\";\n} else if (value >= 70 && value <= 100) {\n  ctx.threat.indicator.confidence = \"High\";\n} else {\n  ctx.threat.indicator.confidence = \"Not Specified\";\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -223,9 +221,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ZonedDateTime ioc_expiration_date; ZonedDateTime updated_at; def dur = ctx._conf.ioc_expiration_duration;\nif (ctx.threat.indicator.last_seen != null) {\n  updated_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n} else {\n  updated_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n}\nif (dur instanceof String){\n  String time_unit = dur.substring(dur.length() -  1, dur.length());\n  String time_value = dur.substring(0, dur.length() - 1);\n  if (time_unit == 'd') {\n    ioc_expiration_date = updated_at.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == 'h') {\n    ioc_expiration_date = updated_at.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == 'm') {\n    ioc_expiration_date = updated_at.plusMinutes(Long.parseLong(time_value));\n  } else {\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n    ioc_expiration_date = updated_at.plusDays(90L);\n  }\n} else {\n    ioc_expiration_date = updated_at.plusDays(90L);\n}\nctx.stix.ioc_expiration_date = ioc_expiration_date;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -269,9 +265,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("stix.ioc_expiration_date") };
             if _cond {
-                // Painless script
-                // Source: if (ctx.stix.valid_until != null) {\n  ctx.stix.ioc_expiration_reason = params.valid_until;\n} else if (ctx.stix.revoked != null && ctx.stix.revoked == true) {\n  ctx.stix.ioc_expiration_reason = params.revoked;\n} else {\n  ctx.stix.ioc_expiration_reason = params.default;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -1897,9 +1891,7 @@ impl Transform for Default {
             event.remove("_conf");
             event.remove("stix._patterns");
 
-            // Painless script
-            // Source: void unescape(Object obj) {\n  if (obj instanceof Map) {\n    for (entry in ((Map)obj).entrySet()) {\n      Object value = entry.getValue();\n      unescape(value);\n      if (value instanceof String) {\n        entry.setValue(((String)value).replace('\\\\\\\\', '\\\\'));\n      }\n    }\n  } else if (obj instanceof List) {\n    for (int i = 0; i < ((List)obj).size(); i++) {\n      Object value = ((List)obj).get(i);\n      unescape(value);\n      if (value instanceof String) {\n        ((List)obj).set(i, ((String)value).replace('\\\\\\\\', '\\\\'));\n      }\n    }\n  }\n} unescape(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -1907,8 +1899,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n} drop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

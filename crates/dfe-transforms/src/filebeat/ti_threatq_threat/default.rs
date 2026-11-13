@@ -661,9 +661,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("threatq.score") };
             if _cond {
-                // Painless script
-                // Source: def value = ctx.threatq.score; if (ctx.containsKey('threat') == false || ctx.threat == null) {\n  ctx.threat = new HashMap();\n}\nif (ctx.threat.containsKey('indicator') == false || ctx.threat.indicator == null) {\n  ctx.threat.indicator = new HashMap();\n} if (value >= 0 && value <= 4) {\n  ctx.threat.indicator.confidence = \"Low\";\n  return;\n} if (value >= 5 && value <=7) {\n  ctx.threat.indicator.confidence = \"Medium\";\n  return;\n} if (value >= 8 && value <= 10) {\n  ctx.threat.indicator.confidence = \"High\";\n  return;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -697,9 +695,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: if (ctx.threatq.ioc_expired_at == null) {\n  ZonedDateTime ioc_expired_at;\n  if (ctx.threatq.status == 'Expired') {\n    ioc_expired_at = ZonedDateTime.parse(ctx['@timestamp']);\n  }\n  else {\n    def dur = ctx._conf.ioc_expiration_duration;\n    ZonedDateTime updated_at = ZonedDateTime.parse(ctx.threatq.updated_at, DateTimeFormatter.ISO_ZONED_DATE_TIME);\n    if (dur instanceof String){\n      char time_unit;\n      String time_value;\n      if (dur.length() != 0){\n        time_unit = dur.charAt(dur.length() - 1);\n        time_value = dur.substring(0, dur.length() - 1);\n      }\n      if (time_unit == (char)'d') {\n        ioc_expired_at = updated_at.plusDays(Long.parseLong(time_value));\n      } else if (time_unit == (char)'h') {\n        ioc_expired_at = updated_at.plusHours(Long.parseLong(time_value));\n      } else if (time_unit == (char)'m') {\n        ioc_expired_at = updated_at.plusMinutes(Long.parseLong(time_value));\n      } else {\n        if (ctx.error == null) {\n          ctx.error = new HashMap();\n        }\n        if (ctx.error.message == null) {\n          ctx.error.message = new ArrayList();\n        }\n        ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n        ioc_expired_at = updated_at.plusDays(90L);\n      }\n    }\n    else {\n      ioc_expired_at = updated_at.plusDays(90L);\n    }\n  }\n  ctx.threatq.ioc_expired_at = ioc_expired_at;\n}\n\n// Set threatq.ioc_expiration_reason\nif (ctx.threatq.expires_at != null && ctx.threatq.expired_at == null) {\n  ctx.threatq.ioc_expiration_reason = params.expires_at;\n} else if (ctx.threatq.expired_at != null) {\n  ctx.threatq.ioc_expiration_reason = params.expired_at;\n} else if (ctx.threatq.status == 'Expired') {\n  ctx.threatq.ioc_expiration_reason = params.expired_status;\n} else {\n  ctx.threatq.ioc_expiration_reason = params.expired_default;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -1544,9 +1540,7 @@ impl Transform for Default {
                 event.get("threatq.sources").is_some_and(|v| v.is_array()) && event.get("threatq.sources").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                // Painless script
-                // Source: def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', 'CLEAR', 'AMBER+STRICT'];\ndef providers = new ArrayList();\ndef tlps = new ArrayList();\nfor (source in ctx.threatq.sources) {\n  if (source == null) {\n    return;\n  }\n  if (source.containsKey(\"name\") && source[\"name\"] != null) {\n    providers.add(source[\"name\"]);\n  }\n  if (source.containsKey(\"tlp_name\") && source[\"tlp_name\"] != null && ecsTlps.contains(source[\"tlp_name\"])) {\n    tlps.add(source[\"tlp_name\"]);\n  }\n}\nif (tlps.size() > 0) {\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}\nif (providers.size() > 0) {\n  if (ctx.threat.indicator.provider == null) {\n    ctx.threat.indicator.provider = new HashMap();\n  }\n  ctx.threat.indicator.provider = providers;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3129,8 +3123,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("threat") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\nmap.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -3186,8 +3179,7 @@ impl Transform for Default {
 
             event.remove("_conf");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

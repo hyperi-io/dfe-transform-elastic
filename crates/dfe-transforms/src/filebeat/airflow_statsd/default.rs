@@ -22,9 +22,7 @@ impl Transform for Default {
                 event.rename("statsd", "airflow")?;
             }
 
-            // Painless script
-            // Source: for (entry in ctx.airflow.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (!(v instanceof String)) {\n        v.keySet().stream().filter(s -> s.startsWith('1m_rate') || s.startsWith('5m_rate') ||s.startsWith('15m_rate') ||\n        s.startsWith('p99_9') || s.startsWith('p75') || s.startsWith('p99') || s.startsWith('p95'))\n        .collect(Collectors.toList()).forEach(m -> v.remove(m))\n    }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

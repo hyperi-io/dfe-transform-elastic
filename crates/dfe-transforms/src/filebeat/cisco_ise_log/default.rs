@@ -895,9 +895,7 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("cisco_ise.log.message.description") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1270,9 +1268,7 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("cisco_ise.log.message.description") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1987,9 +1983,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("cisco_ise.log.message.code") };
                 if _cond {
-                    // Painless script
-                    // Source: def eventCategory = new ArrayList();\ndef categoryReferenceTable = [\n  [\"messageCodeArray\": [\"91110\"], \"name\": \"authentication\"],\n  [\"messageCodeArray\": [\"91004\",\"91018\"], \"name\": \"configuration\"]\n];\nfor (entry in categoryReferenceTable) {\n  if (entry.messageCodeArray.contains(ctx.cisco_ise.log.message.code)) {\n    eventCategory.add(entry.name);\n  }\n}\nctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();\nctx.event.category = eventCategory;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2236,9 +2230,7 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("cisco_ise.log.message.description") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -5781,9 +5773,7 @@ impl Transform for Default {
                         "cisco_ise.log.calling_station.id",
                     )?;
                 }
-                // Painless script
-                // Source: if (ctx.cisco_ise.log.log_details.get(\"cisco-av-pair\") == null) {\n  return;\n}\nif (ctx.cisco_ise.log.log_details.get(\"cisco-av-pair\") instanceof String) {\n  ctx.cisco_ise.log.log_details[\"cisco-av-pair\"] = [ctx.cisco_ise.log.log_details.get(\"cisco-av-pair\")];\n}\n\ndef attributes = [:];\nctx.cisco_ise.log.log_details.get(\"cisco-av-pair\")?.forEach((v) -> {\n  def firstEq = v.indexOf('=');\n  if (firstEq <= 0) {\n    return true;\n  }\n  def topKey = v.substring(0, firstEq).trim();\n  def rest = v.substring(firstEq + 1);\n\n  // Only mdm-tlv uses nested subkeys (device-platform=win, ...). Other pairs\n  // (e.g. FQSubjectName=...cn=...,ou=...) may contain '=' in the value and must stay scalar.\n  if (!\"mdm-tlv\".equals(topKey)) {\n    attributes[topKey] = rest.trim();\n    return true;\n  }\n\n  def inEscape = false;\n  def start = 0;\n  def key = \"\";\n  if (!attributes.containsKey(\"mdm-tlv\")) {\n    attributes[\"mdm-tlv\"] = [:];\n  }\n  def m = attributes[\"mdm-tlv\"];\n\n  for (def i = 0, n = rest.length(); i < n; ++i) {\n    def c = rest.charAt(i);\n    if (inEscape) {\n      inEscape = false;\n      continue;\n    }\n    if (c == (char)'\\\\') {\n      inEscape = true;\n      continue;\n    }\n\n    if (c == (char)'=') {\n      key = rest.substring(start, i).trim();\n      def nextSplit = rest.indexOf(\"=\", i + 1);\n      if (nextSplit != -1 && rest.charAt(nextSplit - 1) != (char)'\\\\') {\n        if (!m.containsKey(key)) {\n          m[key] = [:];\n        }\n        m = m[key];\n      }\n      start = i + 1;\n    }\n    if (i == n - 1) {\n      m[key] = rest.substring(start, n).trim();\n    }\n  }\n\n  return true;\n});\n\nif (attributes.size() > 0) {\n  ctx.cisco_ise.log[\"cisco_av_pair\"] = attributes;\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -9477,9 +9467,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
-                        // Source: def eventCategory = new ArrayList();\ndef eventType = new ArrayList();\ndef categoryReferenceTable = [\n  [\"messageCodeArray\": [\"51001\",\"51002\",\"51020\",\"51021\",\"52000\",\"52001\",\"52002\",\"60077\",\"60078\",\"60461\",\"61077\",\"58005\",\"60094\",\"60093\",\"60134\",\"60188\",\"60116\",\"60080\",\"60115\",\"60081\",\"60084\"], \"name\": \"iam\"],\n  [\"messageCodeArray\": [\"51001\",\"51002\",\"51020\",\"51021\",\"60077\",\"60078\",\"61077\",\"60188\",\"60116\",\"60080\",\"60115\",\"60081\"], \"name\": \"authentication\"],\n  [\"messageCodeArray\": [\"61025\",\"61026\",\"60134\"], \"name\": \"network\"],\n  [\"messageCodeArray\": [\"60067\",\"60070\",\"60456\",\"58005\"], \"name\": \"process\"],\n  [\"messageCodeArray\": [\"52000\",\"52001\",\"52002\",\"60084\"], \"name\": \"configuration\"]\n];\ndef typeReferenceTable = [\n  [\"messageCodeArray\": [\"51001\",\"51002\",\"51020\",\"51021\"], \"name\": \"admin\"],\n  [\"messageCodeArray\": [\"52001\",\"60084\"], \"name\": \"change\"],\n  [\"messageCodeArray\": [\"61025\", \"61026\"], \"name\": \"connection\"],\n  [\"messageCodeArray\": [\"52000\"], \"name\": \"creation\"],\n  [\"messageCodeArray\": [\"52002\"], \"name\": \"deletion\"],\n  [\"messageCodeArray\": [\"61026\"], \"name\": \"end\"],\n  [\"messageCodeArray\": [\"60116\",\"60080\",\"60115\",\"60081\"], \"name\": \"user\"],\n  [\"messageCodeArray\": [\"51001\",\"51002\",\"51020\",\"51021\",\"52000\",\"52001\",\"52002\",\"60067\",\"60070\",\"60077\",\"60078\",\"60456\",\"60461\",\"61025\",\"61026\",\"61077\",\"58005\",\"60094\",\"60093\",\"60134\",\"60188\",\"60116\",\"60080\",\"60115\",\"60081\",\"60084\"], \"name\": \"info\"],\n  [\"messageCodeArray\": [\"60067\",\"60456\",\"61025\"], \"name\": \"start\"]\n];\n\nfor (entry in categoryReferenceTable) {\n  if (entry.messageCodeArray.contains(ctx.cisco_ise.log.message.code)) {\n    eventCategory.add(entry.name);\n  }\n}\nfor (entry in typeReferenceTable) {\n  if (entry.messageCodeArray.contains(ctx.cisco_ise.log.message.code)) {\n    eventType.add(entry.name);\n  }\n}\n\nctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();\nctx.event.category = eventCategory;\nctx.event.type = eventType;\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -11292,9 +11280,7 @@ impl Transform for Default {
                 event.remove("cisco_ise.log.log_details.cisco-av-pair");
                 let _cond = { event.has_value("cisco_ise.log.message.description") };
                 if _cond {
-                    // Painless script
-                    // Source: ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -11551,9 +11537,7 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("cisco_ise.log.avpair") };
                 if _cond {
-                    // Painless script
-                    // Source: def avpair = ctx.cisco_ise.log.avpair;\nfor (def field : ['start_time', 'stop_time']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if      (v >= 1000000000000000000L) { v /= 1000000L; } // ns -> ms\n  else if (v >= 1000000000000000L)    { v /= 1000L; }    // µs -> ms\n  else if (v <  10000000000L)         { v *= 1000L; }    // s  -> ms\n  avpair[field] = v;\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -12640,8 +12624,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("cisco_ise.log.log_details_raw") };
                 if _cond {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;
+                    // The pipeline's script, emitted as the runtime's equivalent
                     rewrite_keys(
                         event,
                         &RewriteKeys::new(
@@ -12988,9 +12971,7 @@ impl Transform for Default {
                     cached_regex!("\\\\,"),
                     "",
                 )?;
-                // Painless script
-                // Source: def m = ctx.cisco_ise.log[\"log_details\"];\nif (!(m instanceof Map)) {\n  m = new HashMap();\n}\nint pos = ctx.cisco_ise.log.log_details_raw.indexOf(\"=\");\nif (pos == -1) {\n    m[ctx.cisco_ise.log.log_details_raw] = null;\n} else {\n    m[ctx.cisco_ise.log.log_details_raw.substring(0,pos)] = ctx.cisco_ise.log.log_details_raw.substring(pos+1);\n}\nctx.cisco_ise.log[\"log_details\"] = m;
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -13271,8 +13252,7 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

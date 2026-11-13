@@ -395,9 +395,7 @@ impl Transform for Default {
                         && event.has_value("beyondtrust_epm.event.client.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.client.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.client.geo.location.lon);\nctx.beyondtrust_epm.event.client.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1844,9 +1842,7 @@ impl Transform for Default {
                         && event.has_value("beyondtrust_epm.event.destination.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.destination.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.destination.geo.location.lon);\nctx.beyondtrust_epm.event.destination.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -4061,9 +4057,7 @@ impl Transform for Default {
                         && event.has_value("beyondtrust_epm.event.server.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.server.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.server.geo.location.lon);\nctx.beyondtrust_epm.event.server.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -5491,9 +5485,7 @@ impl Transform for Default {
                         && event.has_value("beyondtrust_epm.event.source.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.source.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.source.geo.location.lon);\nctx.beyondtrust_epm.event.source.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -11783,9 +11775,7 @@ impl Transform for Default {
                             .has_value("beyondtrust_epm.event.threat.indicator.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.threat.indicator.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.threat.indicator.geo.location.lon);\nctx.beyondtrust_epm.event.threat.indicator.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -20491,9 +20481,7 @@ impl Transform for Default {
                     )
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.process.entry_meta.source.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.process.entry_meta.source.geo.location.lon);\nctx.beyondtrust_epm.event.process.entry_meta.source.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -23369,9 +23357,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        // Painless script
-                        // Source: if (ctx.related == null) {\n  ctx.related = new HashMap();\n}\nif (ctx.related.hash == null) {\n  ctx.related.hash = new ArrayList();\n}\nfor (def entry : ctx.beyondtrust_epm.event.container.image.hash.all) {\n  if (entry == null) {\n    continue;\n  }\n  def digest = entry.toString().replace('[', '').replace(']', '');\n  int sep = digest.indexOf(':');\n  if (sep >= 0) {\n    digest = digest.substring(sep + 1);\n  }\n  if (digest.length() > 0 && !ctx.related.hash.contains(digest)) {\n    ctx.related.hash.add(digest);\n  }\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
+                        // The pipeline's script, run by the runtime's equivalent
                         painless_exec_plan(
                             event,
                             cached_painless!(
@@ -24096,9 +24082,7 @@ impl Transform for Default {
                         && event.has_value("beyondtrust_epm.event.host.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.host.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.host.geo.location.lon);\nctx.beyondtrust_epm.event.host.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -24831,9 +24815,7 @@ impl Transform for Default {
                         && event.has_value("beyondtrust_epm.event.observer.geo.location.lon")
                 };
                 if _cond {
-                    // Painless script
-                    // Source: def location = new HashMap();\nlocation.put('lat', ctx.beyondtrust_epm.event.observer.geo.location.lat);\nlocation.put('lon', ctx.beyondtrust_epm.event.observer.geo.location.lon);\nctx.beyondtrust_epm.event.observer.geo.location = location;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -28712,9 +28694,7 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline-metadata-observability"
             }
 
-            // Painless script
-            // Source: // Helper function to convert camelCase to snake_case\nString camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      if (entry.getKey().contains(\"@\")) {\n        newObj[entry.getKey()] = convertToSnakeCase(entry.getValue());\n      } else {\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nif (ctx.beyondtrust_epm.event != null) {\n  ctx.beyondtrust_epm.event = convertToSnakeCase(ctx.beyondtrust_epm.event);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -28750,8 +28730,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

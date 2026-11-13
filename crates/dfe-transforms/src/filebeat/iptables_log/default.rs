@@ -610,9 +610,7 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
-            // Source: for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -661,9 +659,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
-            // Source: def iptables = ctx['iptables']; if (iptables != null) {\n  for (key in params.hex_fields_to_convert) {\n    long value = 0;\n    def field = iptables[key];\n    if (field == null) continue;\n    char[] hex = field.toLowerCase().toCharArray();\n    for (chr in hex) {\n      long v = -1;\n      if (chr >= (char) 'a' && chr <= (char) 'f') v = (long) chr - (char) 'a' + 10;\n      else if (chr >= (char) '0' && chr <= (char) '9') v = (long) chr - (char) '0';\n      if (v >= 0) {\n        value = value * 16 + v;\n      }\n      iptables[key] = value;\n    }\n  }\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(

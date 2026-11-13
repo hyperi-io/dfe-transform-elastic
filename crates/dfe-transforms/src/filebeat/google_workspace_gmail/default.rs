@@ -96,9 +96,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def transformDataRecord(def row, def schema) {\n  def transformedRecord = new HashMap();\n\n  for (int i = 0; i < schema.size(); i++) {\n    def field = schema[i];\n\n    // Get the corresponding value from the row,\n    // Set fieldValue to null if the value does not exists for the current field.\n    def fieldValue = (row.size() > i && row[i] != null) ? row[i].v : null;\n\n    // If the current field type is 'RECORD' then extract nested fields recursively.\n    if (field.type == 'RECORD') {\n      def value_list = new ArrayList();\n      // Handle field with list of values ('REPEATED' mode).\n      if (field.mode == 'REPEATED') {\n        if (fieldValue instanceof List && fieldValue.size() > 0) {\n          for (def item : fieldValue) {\n            // Recursively call transformDataRecord to transform each nested record.\n            if (item instanceof Map && item.v?.f != null && field.fields != null) {\n              value_list.add(transformDataRecord(item.v.f, field.fields));\n            } else {\n              // Handle scalar values for 'REPEATED' mode.\n              value_list.add(item);\n            }\n          }\n        }\n        transformedRecord[field.name] = value_list;\n      } else {\n        // Handle non-repeated 'RECORD' fields.\n        if (fieldValue instanceof Map) {\n          transformedRecord[field.name] = transformDataRecord(fieldValue.f, field.fields);\n        }\n      }\n    } else {\n      // For scalar field type, map the value to the field name.\n      if (field.mode == 'REPEATED'){\n        def value_list = new ArrayList();\n        for (def item : fieldValue) {\n          value_list.add(item.v);\n        }\n        transformedRecord[field.name] = value_list;\n      } else{\n        transformedRecord[field.name] = fieldValue;\n      }\n    }\n  }\n  return transformedRecord;\n}\n\n// Entry point: Check whether row and schema exists.\nif (ctx.json?.row?.f != null && ctx.json.schema?.fields != null) {\n  ctx.google_workspace = ctx.google_workspace ?: [:];\n  ctx.google_workspace.gmail = transformDataRecord(ctx.json.row.f, ctx.json.schema.fields);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1155,9 +1153,7 @@ impl Transform for Default {
                     && event.get_str("google_workspace.gmail.ip_address") != Some("")
             };
             if _cond {
-                // Painless script
-                // Source: ctx.google_workspace.gmail.ip_address = ctx.google_workspace.gmail.ip_address.decodeBase64();
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1804,9 +1800,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("google_workspace.gmail.event_info.timestamp_usec") };
             if _cond {
-                // Painless script
-                // Source: ctx._temp_ = [:]; ctx._temp_.timestamp_usec = ctx.google_workspace.gmail.event_info.timestamp_usec / 1000;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -1876,9 +1870,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.google_workspace.gmail.message_info.spam_info.classification_timestamp_usec /= 1000;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1979,9 +1971,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.google_workspace.gmail.message_info.structured_policy_log_info.exchange_journal_info.timestamp *= 1000;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -2221,8 +2211,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script, resolved to its runners at generation time
-                    // Source: ctx.event = ctx.event ?: [:];\nctx.event.duration = ctx.google_workspace.gmail.event_info.elapsed_time_usec * 1000
+                    // The pipeline's script, emitted as the runtime's equivalent
                     scale_field(
                         event,
                         &ScaleField::new(
@@ -2540,9 +2529,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.email = ctx.email ?: [:];\nctx.email.content_type = params.get(ctx.google_workspace.gmail.message_info.smime_content_type);
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -2789,9 +2776,7 @@ impl Transform for Default {
                 event.get("google_workspace.gmail.message_info.post_delivery_info.interaction.attachment").is_some_and(|v| v.is_array())
             };
             if _cond {
-                // Painless script
-                // Source: def shas = new HashSet();\nfor (def a: ctx.google_workspace.gmail.message_info.post_delivery_info.interaction.attachment) {\n  if (a.sha256 == null) {\n    continue;\n  }\n  shas.add(a.sha256)\n}\nif (shas.size() != 0) {\n  ctx.related = ctx.related ?: [:];\n  ctx.related.hash = new ArrayList(shas);\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2866,8 +2851,7 @@ impl Transform for Default {
             event.remove("json");
             event.remove("_temp_");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

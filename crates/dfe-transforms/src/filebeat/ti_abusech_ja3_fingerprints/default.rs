@@ -146,9 +146,7 @@ impl Transform for Default {
                 event.set("event.ingested", v)?;
             }
 
-            // Painless script
-            // Source: def dur = ctx.labels.interval; ZonedDateTime _tmp_deleted_at; ZonedDateTime _tmp_created_at = ctx.event.ingested; long max_ingest_time_in_sec = 30L; long transform_max_age_in_min = 1L; String time_unit = dur.substring(dur.length() -  1, dur.length()); String time_value = dur.substring(0, dur.length() - 1); if (time_unit == 'd') {\n  _tmp_deleted_at = _tmp_created_at.plusDays(Long.parseLong(time_value));\n} else if (time_unit == 'h') {\n  _tmp_deleted_at = _tmp_created_at.plusHours(Long.parseLong(time_value));\n} else if (time_unit == 'm') {\n  _tmp_deleted_at = _tmp_created_at.plusMinutes(Long.parseLong(time_value));\n} else {\n  _tmp_deleted_at = _tmp_created_at.plusDays(90L);\n  if (ctx.error == null) {\n    ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n    ctx.error.message = new ArrayList();\n  }\n  ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n} // Subtract transform's retention max_age and ingest time so that indicators are expire time slightly before next interval. // This ensures the indicator is deleted when the next interval starts.\n_tmp_deleted_at = _tmp_deleted_at.minusMinutes(transform_max_age_in_min).minusSeconds(max_ingest_time_in_sec); ctx.abusech.ja3_fingerprints.deleted_at = _tmp_deleted_at;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(
@@ -178,8 +176,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("abusech") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\nmap.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -195,8 +192,7 @@ impl Transform for Default {
             event.remove("message");
             event.remove("_conf");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

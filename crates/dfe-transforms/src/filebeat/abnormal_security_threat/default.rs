@@ -238,9 +238,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def attachmentList = new ArrayList();\nfor (name in ctx.abnormal_security.threat.attachment_names) {\n  def attachment = new HashMap();\n  attachment.put('file', new HashMap());\n  attachment.file.put('name', name);\n  String[] tokenList = name.splitOnToken('.');\n  if(tokenList.length > 1){\n    attachment.file.put('extension', tokenList[tokenList.length - 1]);\n  }\n  attachmentList.add(attachment);\n}\nctx.put('email',new HashMap());\nctx.email.attachments = attachmentList;
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(
@@ -1230,8 +1228,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

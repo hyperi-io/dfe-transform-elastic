@@ -30,9 +30,7 @@ impl Transform for User {
             event.set("asset.type", json!("activedirectory_user"))?;
 
             // Begin nested pipeline: "common"
-            // Painless script
-            // Source: String hexByte(Byte b) {\n    String x = Integer.toHexString(Byte.toUnsignedInt(b));\n    if (x.length() < 2) {\n        x = \"0\" + x;\n    }\n    return x;\n}\nString guid(String text) {\n    def bytes = Base64.getDecoder().decode(text);\n    def uid = \"\";\n    for (int i = 3; i >= 0; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 5; i > 3; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 7; i > 5; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 8; i < bytes.length; i++) {\n        if (i == 10) {\n            uid += \"-\";\n        }\n        uid += hexByte(bytes[i]);\n    }\n    return uid;\n}\nString sid(String text) {\n    def bytes = Base64.getDecoder().decode(text);\n    def uid = \"S-\"+Byte.toString(bytes[0])+\"-\";\n    int auth = 0;\n    for (int i = 2; i < 8; i++) {\n        auth |= Byte.toUnsignedInt(bytes[i])<<(8*(5-(i-2)));\n    }\n    uid += Integer.toString(auth);\n    int subauths = Byte.toUnsignedInt(bytes[1]);\n    int off = 8;\n    for (int i = 0; i < subauths; i++) {\n        int subauth = 0;\n        for (int k = 0; k < 4; k++) {\n            subauth |= (Byte.toUnsignedInt(bytes[off+k])&0xff)<<(8*k);\n        }\n        uid += \"-\"+Integer.toUnsignedString(subauth);\n        off += 4;\n    }\n    return uid;\n}\ndef renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (value instanceof String) {\n        if (key == \"objectGUID\") {\n          value = guid(value);\n        } else if (key == \"objectSid\") {\n          value = sid(value);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\nctx.activedirectory = renameKeys(ctx.activedirectory, params)\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -66,9 +64,7 @@ impl Transform for User {
                     && event.get_i64("activedirectory.user.user_account_control") != Some(0)
             };
             if _cond {
-                // Painless script
-                // Source: Long newUacValue = Long.decode(ctx.activedirectory.user.user_account_control);\nArrayList uacResult = new ArrayList();\nfor (entry in params.entrySet()) {\n  Long flag = Long.decode(entry.getKey());\n  if ((newUacValue.longValue() & flag.longValue()) != 0) {\n    uacResult.add(entry.getValue());\n  }\n}\nif (uacResult.length != 0) {\n  ctx.activedirectory.user.uac_list = uacResult;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -565,9 +561,7 @@ impl Transform for User {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: ctx.user = ctx.user ?: [:];\nctx.user.group = ctx.user.group ?: [:];\n\nfor (def group : ctx.activedirectory.groups) {\n  if (group.name != null) {\n    ctx.user.group.name = ctx.user.group.name ?: new HashSet();\n    ctx.user.group.name.add(group.name);\n  }\n\n  if (group?.object_sid == null) {\n    continue;\n  }\n\n  group.id = group.object_sid;\n  ctx.user.group.id = ctx.user.group.id ?: new HashSet();\n  ctx.user.group.id.add(group.id);\n\n  int idx = group.object_sid.lastIndexOf('-');\n  if (idx < 0) {\n    continue;\n  }\n  def priv = params.get(group.object_sid.substring(idx+1));\n  if (priv != null && ctx.activedirectory.user.privileged_group_member == null) {\n    ctx.activedirectory.user.privileged_group_member = priv;\n  }\n}\nif (ctx.activedirectory.user.privileged_group_member == null) {\n  ctx.activedirectory.user.privileged_group_member = false;\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan_params(
                         event,
                         cached_painless!(
@@ -588,9 +582,7 @@ impl Transform for User {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: def parseDn(def dn) {\n  def result = ['id': dn];\n  int start = 0;\n  def dcParts = new ArrayList();\n  boolean cnFound = false;\n  while (start < dn.length()) {\n    int end = start;\n    while (true) {\n      end = dn.indexOf(',', end);\n      if (end == -1) { end = dn.length(); break; }\n      if (end > 0 && dn.charAt(end - 1) == (char)'\\\\') { end++; continue; }\n      break;\n    }\n    def part = dn.substring(start, end).replace('\\\\,', ',').trim();\n    if (!cnFound && part.length() > 3 && part.substring(0, 3).equalsIgnoreCase('CN=')) {\n      result['name'] = part.substring(3);\n      cnFound = true;\n    } else if (part.length() > 3 && part.substring(0, 3).equalsIgnoreCase('DC=')) {\n      dcParts.add(part.substring(3));\n    }\n    start = end + 1;\n  }\n  if (!dcParts.isEmpty()) {\n    def domain = dcParts[0];\n    for (int i = 1; i < dcParts.size(); i++) {\n      domain += '.' + dcParts[i];\n    }\n    result['domain'] = domain;\n  }\n  return result;\n}\ndef buildHostRel(def dns) {\n  def rel = ['host': [:]];\n  def dnList = (dns instanceof List) ? dns : [dns];\n  for (def dn : dnList) {\n    if (!(dn instanceof String) || dn.isEmpty()) continue;\n    def p = parseDn(dn);\n    if (!rel['host'].containsKey('id')) rel['host']['id'] = new ArrayList();\n    rel['host']['id'].add(p['id']);\n    if (p.containsKey('name')) {\n      if (!rel['host'].containsKey('name')) rel['host']['name'] = new ArrayList();\n      def fqdn = p.containsKey('domain') ? p['name'].toLowerCase() + '.' + p['domain'] : p['name'];\n      rel['host']['name'].add(fqdn);\n    }\n    if (p.containsKey('domain')) {\n      if (!rel.containsKey('user')) rel['user'] = [:];\n      if (!rel['user'].containsKey('domain')) rel['user']['domain'] = new ArrayList();\n      rel['user']['domain'].add(p['domain']);\n    }\n  }\n  return rel;\n}\ndef buildUserRel(def dns) {\n  def rel = ['user': [:]];\n  def dnList = (dns instanceof List) ? dns : [dns];\n  for (def dn : dnList) {\n    if (!(dn instanceof String) || dn.isEmpty()) continue;\n    def p = parseDn(dn);\n    if (!rel['user'].containsKey('id')) rel['user']['id'] = new ArrayList();\n    rel['user']['id'].add(p['id']);\n    if (p.containsKey('name')) {\n      if (!rel['user'].containsKey('name')) rel['user']['name'] = new ArrayList();\n      rel['user']['name'].add(p['name']);\n    }\n    if (p.containsKey('domain')) {\n      if (!rel['user'].containsKey('domain')) rel['user']['domain'] = new ArrayList();\n      rel['user']['domain'].add(p['domain']);\n    }\n  }\n  return rel;\n}\nctx.user = ctx.user ?: [:];\nctx.user.entity = ctx.user.entity ?: [:];\nctx.user.entity.relationships = ctx.user.entity.relationships ?: [:];\nif (ctx.activedirectory?.user?.managed_objects != null) {\n  ctx.user.entity.relationships.administers = buildHostRel(ctx.activedirectory.user.managed_objects);\n}\nif (ctx.activedirectory?.user?.direct_reports != null) {\n  ctx.user.entity.relationships.supervises = buildUserRel(ctx.activedirectory.user.direct_reports);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

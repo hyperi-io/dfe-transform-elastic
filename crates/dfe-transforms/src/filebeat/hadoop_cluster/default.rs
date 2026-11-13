@@ -35,9 +35,7 @@ impl Transform for Default {
             let _cond = { event.has("hadoop.cluster.beans") };
             if _cond {
                 // Begin nested pipeline: "pipeline-cluster"
-                // Painless script
-                // Source: ctx.hadoop.cluster.temp = ctx.hadoop.cluster.beans[0]; ctx.hadoop.cluster.remove(\"beans\")\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -145,9 +143,7 @@ impl Transform for Default {
             let _cond = { event.has("hadoop.cluster.clusterMetrics") };
             if _cond {
                 // Begin nested pipeline: "pipeline-expanded-cluster"
-                // Painless script
-                // Source: ctx.hadoop.cluster.temp = ctx.hadoop.cluster.clusterMetrics; ctx.hadoop.cluster.remove(\"clusterMetrics\")\n
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -408,8 +404,7 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline-expanded-cluster"
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

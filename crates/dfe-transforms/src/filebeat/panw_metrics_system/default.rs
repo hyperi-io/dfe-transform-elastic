@@ -16,9 +16,7 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // Painless script
-            // Source: if (ctx.panw != null && ctx.panw.system != null) {\n    if (ctx.panw.system.cpu != null) {\n        def cpuFields = ['user', 'system', 'nice', 'idle', 'wait', 'hi', 'system_int', 'steal'];\n        for (def fieldName : cpuFields) {\n            if (ctx.panw.system.cpu[fieldName] != null) {\n                ctx.panw.system.cpu[fieldName] = ctx.panw.system.cpu[fieldName] / 100.0;\n            }\n        }\n    }\n    if (ctx.panw.system.containsKey('filesystem.use_percent') && ctx.panw.system['filesystem.use_percent'] != null) {\n        ctx.panw.system['filesystem.use_percent'] = ctx.panw.system['filesystem.use_percent'] / 100.0;\n    }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan(
                 event,
                 cached_painless!(

@@ -41,8 +41,7 @@ impl Transform for Default {
 
             let _cond = { event.get("json").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx.json);\n
+                // The pipeline's script, emitted as the runtime's equivalent
                 drop_empty(
                     event,
                     &DropPolicy {
@@ -223,9 +222,7 @@ impl Transform for Default {
                 event.set("event.action", v)?;
             }
 
-            // Painless script
-            // Source: ctx.event.kind = 'event'; ctx.event.type = ['info'];\nif (ctx?.event?.action == null) {\n    return;\n}\nif (params.get(ctx.event.action) == null) {\n    return;\n}\ndef hm = new HashMap(params.get(ctx.event.action)); hm.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
+            // The pipeline's script, run by the runtime's equivalent
             painless_exec_plan_params(
                 event,
                 cached_painless!(
@@ -244,9 +241,7 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                // Painless script
-                // Source: if (ctx?.event?.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user?.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user?.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user?.target?.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if(ctx.bitbucket?.audit?.affected_objects != null) {\n  for (def j = 0; j < ctx.bitbucket?.audit?.affected_objects.length; j++) {\n    if(ctx.bitbucket?.audit?.affected_objects[j]?.type == 'GROUP') {\n      if(['bitbucket.service.user.audit.action.groupcreated', 'bitbucket.service.user.audit.action.groupdeleted'].contains(ctx.event.action)) {\n        ctx.group.put(\"name\", ctx.bitbucket?.audit?.affected_objects[j]?.name);\n        ctx.group.put(\"id\", ctx.bitbucket?.audit?.affected_objects[j]?.id);\n      }\n      if(['bitbucket.service.user.audit.action.groupmembershipscreated.user', 'bitbucket.service.user.audit.action.groupmembershipdeleted'].contains(ctx.event.action)) {\n        ctx.user.target.group.put(\"name\", ctx.bitbucket?.audit?.affected_objects[j]?.name);\n        ctx.user.target.group.put(\"id\", ctx.bitbucket?.audit?.affected_objects[j]?.id);\n      }\n    }\n    if(ctx.bitbucket?.audit?.affected_objects[j]?.type == 'USER') {\n      if(['bitbucket.service.user.audit.action.usercreated', 'bitbucket.service.user.audit.action.userdeleted', 'bitbucket.service.user.audit.action.userrenamed', 'bitbucket.service.user.audit.action.usercredentialupdated','bitbucket.service.user.audit.action.groupmembershipscreated.user', 'bitbucket.service.user.audit.action.groupmembershipdeleted'].contains(ctx.event.action)) {\n        ctx.user.target.put(\"name\", ctx.bitbucket?.audit?.affected_objects[j]?.name);\n        ctx.user.target.put(\"id\", ctx.bitbucket?.audit?.affected_objects[j]?.id);\n      }\n    }\n  }\n} if(ctx.bitbucket?.audit?.changed_values != null) {\n  for (def j = 0; j < ctx.bitbucket?.audit?.changed_values.length; j++) {\n    if(['bitbucket.service.user.audit.action.userrenamed'].contains(ctx.event.action)) {\n      if(ctx.bitbucket?.audit?.changed_values[j]?.i18nKey == 'bitbucket.service.user.audit.attribute.user.name') {\n        ctx.user.changes.put(\"name\", ctx.bitbucket?.audit?.changed_values[j]?.to);\n        ctx.user.target.put(\"name\", ctx.bitbucket?.audit?.changed_values[j]?.from);\n      }\n    }\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -318,8 +313,7 @@ impl Transform for Default {
             event.remove("json");
             event.remove("_tmp");
 
-            // Painless script, resolved to its runners at generation time
-            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {

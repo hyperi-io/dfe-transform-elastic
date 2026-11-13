@@ -20,9 +20,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
-                    // Source: String status = ctx.status;\nString healthStatus;\n\nif (status == 'online') {\n  healthStatus = 'healthy';\n} else if (status == 'error' || status == 'degraded') {\n  healthStatus = 'unhealthy';\n} else if (status == 'updating' || status == 'enrolling' || status == 'unenrolling') {\n  healthStatus = 'updating';\n} else {\n  healthStatus = status;\n}\n\nctx.health_status = healthStatus;\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
+                    // The pipeline's script, run by the runtime's equivalent
                     painless_exec_plan(
                         event,
                         cached_painless!(

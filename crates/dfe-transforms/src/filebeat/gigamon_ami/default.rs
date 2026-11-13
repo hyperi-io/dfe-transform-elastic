@@ -2827,9 +2827,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami") };
             if _cond {
-                // Painless script
-                // Source: // end_reason\nif (ctx.gigamon.ami.end_reason != null) {\n    ctx.gigamon.ami.end_reason_value = params['end_reason'][ctx.gigamon.ami.end_reason];\n}\n// http_uri_path\nif (ctx.gigamon.ami.http_uri_path != null) {\n    ctx.gigamon.ami.http_uri_path_value = params['http_uri_path'][ctx.gigamon.ami.http_uri_path];\n}\n// smb_version\nif (ctx.gigamon.ami.smb_version != null) {\n    ctx.gigamon.ami.smb_version_value = params['smb_version'][ctx.gigamon.ami.smb_version];\n}\n// ssl_cipher_suite_id\nif (ctx.gigamon.ami.ssl_cipher_suite_id != null) {\n  String s = ctx.gigamon.ami.ssl_cipher_suite_id;\n  if (Character.isDigit(s.charAt(0))) {\n    def mapping = params['ssl_cipher_suite_id'][s];\n    if (mapping != null && mapping.size() > 0) {\n      ctx.gigamon.ami.ssl_cipher_suite_id_value = mapping[0];\n      if (mapping.size() > 1) {\n        ctx.gigamon.ami.ssl_cipher_suite_id_protocol = mapping[1];\n        }\n      }\n    }\n    else {\n        ctx.gigamon.ami.ssl_cipher_suite_id_value = s;\n    }\n}\n// ssl_protocol_version\nif (ctx.gigamon.ami.ssl_protocol_version != null) {\n    ctx.gigamon.ami.ssl_protocol_version_value = params['ssl_protocol_version'][ctx.gigamon.ami.ssl_protocol_version];\n}\n// ssl_ext_sig_algorithm_hash\nif (ctx.gigamon.ami.ssl_ext_sig_algorithm_hash != null) {\n    ctx.gigamon.ami.ssl_ext_sig_algorithm_hash_value = params['ssl_ext_sig_algorithm_hash'][ctx.gigamon.ami.ssl_ext_sig_algorithm_hash];\n}\n// ssl_ext_sig_algorithm_scheme\nif (ctx.gigamon.ami.ssl_ext_sig_algorithm_scheme != null) {\n    ctx.gigamon.ami.ssl_ext_sig_algorithm_scheme_value = params['ssl_ext_sig_algorithm_scheme'][ctx.gigamon.ami.ssl_ext_sig_algorithm_scheme];\n}\n// dns_query_type\nif (ctx.gigamon.ami.dns_query_type != null) {\n    ctx.gigamon.ami.dns_query_type_value = params['dns_query_type'][ctx.gigamon.ami.dns_query_type];\n}\n// dns_reply_code\nif (ctx.gigamon.ami.dns_reply_code != null) {\n    ctx.gigamon.ami.dns_reply_code_value = params['dns_reply_code'][ctx.gigamon.ami.dns_reply_code];\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan_params(
                     event,
                     cached_painless!(
@@ -2843,8 +2841,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.dns_response_time") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ctx.gigamon.ami.dns_response_time * 1000000000L;
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(
@@ -2864,9 +2861,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("dns.question.name") };
             if _cond {
-                // Painless script
-                // Source: int idx = ctx.dns.question.name.lastIndexOf('.'); if (idx < 0) {\n  return;\n} ctx.dns.question.top_level_domain = ctx.dns.question.name.substring(idx + 1);
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -2877,9 +2872,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("dns.question.name") };
             if _cond {
-                // Painless script
-                // Source: def subdomain(String s) {\n  int n;\n  for (int i = s.length()-1; i >= 0; i--) {\n    if (s.charAt(i) == (char)'.') {\n      n++;\n      if (n == 2) {\n        return s.substring(0, i);\n      }\n    }\n  }\n  return null;\n} def sub = subdomain(ctx.dns.question.name); if (sub != null) {\n  ctx.dns.question.subdomain = sub;\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
+                // The pipeline's script, run by the runtime's equivalent
                 painless_exec_plan(
                     event,
                     cached_painless!(
@@ -3009,8 +3002,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.http_rtt") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.event.duration = ctx.gigamon.ami.http_rtt * 1000000000L;
+                // The pipeline's script, emitted as the runtime's equivalent
                 scale_field(
                     event,
                     &ScaleField::new(
@@ -3383,8 +3375,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.src_mac") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.source.mac = ctx.gigamon.ami.src_mac.replace(\":\", \"-\").toUpperCase();
+                // The pipeline's script, emitted as the runtime's equivalent
                 string_ops(
                     event,
                     &StringOps::new(
@@ -3403,8 +3394,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.dst_mac") };
             if _cond {
-                // Painless script, resolved to its runners at generation time
-                // Source: ctx.destination.mac = ctx.gigamon.ami.dst_mac.replace(\":\", \"-\").toUpperCase();
+                // The pipeline's script, emitted as the runtime's equivalent
                 string_ops(
                     event,
                     &StringOps::new(
@@ -3438,8 +3428,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            // Painless script, resolved to its runners at generation time
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+            // The pipeline's script, emitted as the runtime's equivalent
             drop_empty(
                 event,
                 &DropPolicy {
