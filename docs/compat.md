@@ -68,7 +68,7 @@ Options that apply to any command:
 | `--sources` | Where the clones live. Also `DFE_ELASTIC_SOURCES`. |
 | `--fixtures` | The Elastic test data's `fixtures/elastic` directory. Also `DFE_ELASTIC_FIXTURES`. |
 | `--corpus` | Where confirmed output is written. Also `DFE_COMPAT_CORPUS`. |
-| `--es-version` | Which engine to run, default 9.2.2. Each version gets its own container. |
+| `--es-version` | Which engine to run, default `DEFAULT_ES_VERSION` in `scripts/compat.py`. Each version gets its own container. |
 | `--ref` | Read pipelines at a git ref, e.g. `v7.17.9`. The clone is never modified. |
 | `--geoip` | Resolve geo against our own DB-IP databases rather than none. |
 | `--trace` | Capture the document after every processor. |
