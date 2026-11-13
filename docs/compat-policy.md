@@ -11,12 +11,14 @@ means in the first place is [parity.md](parity.md).
 test prints the exact line for every source that improved. A fall needs a
 stated reason and is never mechanical.
 
-## The ratchet refuses to be skipped quietly
+## A provenance mismatch fails
 
 The baseline is asserted only when the fixtures' confirmed documents name the
 `pipelines_commit` and engine version the baseline names. A score against
 different pipelines is a different measurement, so ratcheting one against the
 other would fail for the wrong reason, and the test FAILS rather than print.
+Two variables lift it: `DFE_COMPAT_ONLY` scores a subset and checks neither
+ratchet, and the acknowledgement below.
 
 `DFE_COMPAT_ALLOW_UNRATCHETED=1` is the acknowledgement, for the one
 legitimate case: the confirmed documents have moved and the baseline has not

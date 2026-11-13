@@ -31,5 +31,5 @@ The confirmed documents are produced by the meta project that maintains the tran
 ## Known limits
 
 - **o365 and panw are incomplete.** Part of their transformation runs inside Filebeat before Elasticsearch sees the event: o365 has a JavaScript processor chain, and panw applies `decode_csv_fields` to `message`. The simulate API cannot reach either, so for those two the confirmed output covers only the Elasticsearch half.
-- **GeoIP is off.** The documents are confirmed with no GeoIP database loaded. The corpus test disables its GeoIP enricher and excludes GeoIP-derived fields from the comparison, and an event can still carry geo fields its source supplied.
+- **GeoIP is not compared.** The corpus test disables its GeoIP enricher and excludes GeoIP-derived fields from the comparison. An event can still carry geo fields its source supplied.
 - **The engine never ships.** The Elasticsearch image is a development dependency of the meta project only and must never become part of the shipped service.

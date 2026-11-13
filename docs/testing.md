@@ -39,9 +39,9 @@ corpus and `compat_corpus.rs` fails rather than passing on none.
 
 ## The fixtures
 
-The fixtures under `tests/fixtures/` are the repository's own: one directory per data stream,
-holding sample lines, their test configs, and beside each sample the documents the real Elastic
-engine produced for it. They are produced by the meta project that maintains the transforms,
+Outside `unencumbered/`, the fixtures under `tests/fixtures/` are the repository's own: one
+directory per data stream, holding sample lines, their test configs, and beside each confirmed
+sample the documents the real Elastic engine produced for it. They are produced by the meta project that maintains the transforms,
 and `tests/fixtures/PROVENANCE.md` says how. The Beats envelope shapes under
 `tests/envelopes/beats/` are built the same way.
 

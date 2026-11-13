@@ -3,9 +3,9 @@
 **Project:** dfe-transform-elastic
 **Purpose:** Rust-optimised transform service for Elastic Stack data (Beats + Elastic Agent) ingested over Kafka or a direct gRPC push
 
-Each transform is the ground-up equivalent of one source's ingest pipeline, built as optimised
-parser tree objects rather than plain regex or grok, and its output is verified against the real
-Elastic engine by [compat](compat.md). One module per source. There is no interpreter, no scripting VM and no
+Each transform reimplements one source's ingest pipeline from the ground up, as optimised parser
+tree objects rather than plain regex or grok. Where a source has fixtures, [compat](compat.md)
+scores its output against the real Elastic engine's. One module per source. There is no interpreter, no scripting VM and no
 plugin system: the service resolves a source name to a compiled transform at startup, and the
 hot path carries no dynamic dispatch per event.
 
