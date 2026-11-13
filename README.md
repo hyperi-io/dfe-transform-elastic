@@ -12,7 +12,7 @@ Turns Beats and Elastic Agent events into DFE-normalised events.
 - Events wrapped by Beats, by dfe-receiver or by dfe-fetcher, the wrapper read off each event.
 - Kafka in and out, or a direct gRPC push with no broker.
 - At-least-once for what it can deliver: the offset commit, or the answer to a push, is held until the sink takes the block. `source.acknowledgements.enabled: false` acknowledges at receipt instead.
-- Invalid UTF-8 is decoded with replacements and counted. Non-JSON goes to the DLQ with its reason, or is dropped and counted with the DLQ off. An event that will not transform, or is too large for one Kafka record, is dropped and counted, and the batch carries on. A sink that refuses for now is retried, and with acknowledgements on nothing is committed past the block.
+- Invalid UTF-8 is decoded with replacements and counted. Non-JSON goes to the DLQ with its reason, or is dropped and counted with the DLQ off. An event that will not transform, or is too large for one Kafka record, is dropped and counted, and the batch carries on. A retryable sink refusal is retried, and with acknowledgements on nothing is committed past the block.
 
 Use dfe-transform-vrl instead when the transform has to change without a release.
 
@@ -42,11 +42,11 @@ Health and metrics answer on the metrics listener, port 9090 by default: `/livez
 
 ## Configuration
 
-[config.example.yaml](config.example.yaml) is rendered from the deployment contract with illustrative values for the source and sink. Set those for your deployment (`source.name`, `source.topics`, `source.brokers` and `sink.topic` on the Kafka transport). A test pins the file against drift. `dfe-transform-elastic emit-config` reprints it. Settings load from an explicit `--config` path, or from scalo's config cascade under the `DFE_TRANSFORM_ELASTIC` prefix. [docs/configuration.md](docs/configuration.md) says which env spelling reaches a `--config` file and which sections that file cannot carry.
+[config.example.yaml](config.example.yaml) is rendered from the deployment contract with illustrative values for the source and sink. Set those for your deployment (`source.name`, `source.topics`, `source.brokers`, `source.group_id` and `sink.topic` on the Kafka transport). A test pins the file against drift. `dfe-transform-elastic emit-config` reprints it. Settings load from an explicit `--config` path, or from scalo's config cascade under the `DFE_TRANSFORM_ELASTIC` prefix. [docs/configuration.md](docs/configuration.md) says which env spelling reaches a `--config` file and which sections that file cannot carry.
 
 Every transformed event goes out as its own record, because dfe-loader parses one JSON document per message. Keep `sink.max_message_bytes` below the broker's `message.max.bytes`.
 
-`source.envelope` defaults to `auto`, which reads the producer's wrapper (`beats`, `receiver` or `fetcher`) off each event. The producer's own field names are stripped once lifted onto ECS, except the one dfe-loader routes on.
+`source.envelope` defaults to `auto`, which reads the producer's wrapper (`beats`, `receiver` or `fetcher`) off each event. The producer's own field names are stripped once lifted onto ECS, except the markers dfe-loader routes on: the receiver's `_source` and the fetcher's `_source_fetcher`.
 
 Each side also takes a `transport`: `bus` (Kafka, the default) or `direct` (a scalo Push listener in, a gRPC push out).
 
