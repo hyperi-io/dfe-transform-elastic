@@ -1,0 +1,197 @@
+{
+  "rows": 400000,
+  "runs": [
+    {
+      "engine": "transform-elastic",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.86,
+          2.28,
+          2.57
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          1.51,
+          2.13,
+          2.51
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.765974514835513,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.4975747574757476,
+      "peak_cgroup_memory_bytes": 312934400,
+      "peak_rss_bytes": 331386880,
+      "samples": 196,
+      "rate": 10132.94074785852,
+      "rate_per_core": 2533.23518696463,
+      "cpu_seconds": 33.295456,
+      "rec_per_cpu_second": 9610.92108184372,
+      "whole_rate": 9962.293158993429,
+      "window_seconds": 31.580170847009867,
+      "output_records": 400000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"original\":\"{\\n    \\\"metadata\\\": {\\n        \\\"customerIDString\\\": \\\"8f69fe9e-b995-4204-95ad-44f9bcf75b6b\\\",\\n        \\\"offset\\\": 8,\\n        \\\"eventType\\\": \\\"AuthActivityAuditEvent\\\",\\n        \\\"eventCreationTime\\\": 1581601814754,\\n        \\\"version\\\": \\\"1.0\\\"\\n    },\\n    \\\"event\\\": {\\n        \\\"UserId\\\": \\\"alice@company.com\\\",\\n        \\\"UserIp\\\": \\\"192.168.6.8\\\",\\n        \\\"OperationName\\\": \\\"twoFactorAuthenticate\\\",\\n        \\\"ServiceName\\\": \\\"CrowdStrike Authentication\\\",\\n        \\\"Success\\\": true,\\n        \\\"UTCTimestamp\\\": 1581601814754\\n    }\\n}\",\"created\":\"2020-02-13T13:50:14.754Z\",\"kind\":\"event\",\"category\":[\"a",
+      "counter_lines": "worker_pool_scale_events_total{direction=\"up\"} 8\ntransport_received_events_total{transport=\"kafka\"} 400000\nbatch_engine_parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0\nparse_errors_total 0",
+      "transformed": 400000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "engine_metrics": "worker_pool_tasks_total 0\nbatch_engine_messages_received_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8\nbatch_engine_parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0\nself_regulation_max_hold_releases_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_messages_filtered_total 0\nbatch_engine_messages_parsed_total 0\nself_regulation_inbound_pauses_total 0\nself_regulation_pressure_ratio 0.04060576943901438\npipeline_ready 1\nworker_pool_target_threads 4\nworker_pool_memory_utilisation 0.04067364861094869\nworker_pool_emergency_above 0.95\nbatch_engine_max_chunk_size 20000\nself_regulation_recv_block_bytes 2037603\nworker_pool_shrink_above 0.85\nworker_pool_async_inflight 0\nworker_pool_saturation 1\nworker_pool_max_threads 4\nworker_pool_scale_interval_secs 5\nself_regulation_byte_budget 16777216\nworker_pool_async_concurrency 32\nworker_pool_cpu_utilisation 0.06787500381469727\nworker_pool_memory_pressure_cap 0.8\nworker_pool_grow_below 0.6\nself_regulation_inbound_paused 0\nworker_pool_min_threads 2\nworker_pool_memory_psi_some 0\nbatch_engine_intern_table_size 0\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_active_threads 0\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nworker_pool_available_threads 4\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0",
+      "log_tail": "e empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"88fe12e2a7eb\"}\n{\"timestamp\":\"2026-11-10T00:30:37.867137958Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"88fe12e2a7eb\"}\n{\"timestamp\":\"2026-11-10T00:30:37.867172728Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"88fe12e2a7eb\"}\n{\"timestamp\":\"2026-11-10T00:30:38.232533104Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"crowdstrike.falcon\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"88fe12e2a7eb\"}\n",
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794270633
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.55,
+          2.13,
+          2.5
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          1.9,
+          2.14,
+          2.49
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.6459966456826014,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 12.0,
+      "peak_cgroup_memory_bytes": 316760064,
+      "peak_rss_bytes": 336080896,
+      "samples": 193,
+      "rate": 10334.528785252252,
+      "rate_per_core": 2583.632196313063,
+      "cpu_seconds": 32.683239,
+      "rec_per_cpu_second": 9790.95125792153,
+      "whole_rate": 10123.983989533408,
+      "window_seconds": 30.96415972604882,
+      "output_records": 400000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"original\":\"{\\n    \\\"metadata\\\": {\\n        \\\"customerIDString\\\": \\\"12345a1bc2d34fghi56jk7890lmno12p\\\",\\n        \\\"offset\\\": 57269,\\n        \\\"eventType\\\": \\\"RemoteResponseSessionEndEvent\\\",\\n        \\\"eventCreationTime\\\": 1595006899000,\\n        \\\"version\\\": \\\"1.0\\\"\\n    },\\n    \\\"event\\\": {\\n        \\\"SessionId\\\": \\\"330633db-1cda-4355-b0d8-2c2edc91fe3e\\\",\\n        \\u001f}{\"},\"error\":{\"message\":[\"Processor json with tag json_event_original in pipeline  failed with message: parse error at 'event.original': failed to parse JSON: key must be a string at line 11 column 9\"]},\"observer\":{\"vendor\":\"Crowdstrike\",\"product\":\"Falc",
+      "counter_lines": "worker_pool_scale_events_total{direction=\"up\"} 8\nparse_errors_total 0\ntransport_received_events_total{transport=\"kafka\"} 400000\nbatch_engine_parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0",
+      "transformed": 400000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "engine_metrics": "worker_pool_scale_events_total{direction=\"up\"} 8\nbatch_engine_messages_filtered_total 0\nbatch_engine_parse_errors_total 0\nself_regulation_max_hold_releases_total 0\nworker_pool_tasks_total 0\nbatch_engine_messages_received_total 0\nbatch_engine_messages_dlq_total 0\nself_regulation_kafka_gate_errors_total 0\nbatch_engine_messages_parsed_total 0\nself_regulation_inbound_pauses_total 0\nworker_pool_scale_interval_secs 5\nworker_pool_saturation 1\nself_regulation_pressure_ratio 0.03361589768445711\nself_regulation_recv_block_bytes 2037603\nworker_pool_memory_pressure_cap 0.8\nworker_pool_available_threads 4\nworker_pool_cpu_utilisation 0.052061820030212404\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_grow_below 0.6\nself_regulation_byte_budget 16777216\nworker_pool_memory_psi_some 0\nworker_pool_emergency_above 0.95\nworker_pool_memory_utilisation 0.03843571730611177\nworker_pool_shrink_above 0.85\nself_regulation_inbound_paused 0\nworker_pool_async_inflight 0\nbatch_engine_intern_table_size 0\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nbatch_engine_max_chunk_size 20000\nworker_pool_active_threads 0\nworker_pool_async_concurrency 32\npipeline_ready 1\nworker_pool_target_threads 4\nworker_pool_min_threads 2\nworker_pool_max_threads 4\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0",
+      "log_tail": "e empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"5844b900946b\"}\n{\"timestamp\":\"2026-11-10T00:31:22.537667545Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"5844b900946b\"}\n{\"timestamp\":\"2026-11-10T00:31:22.537730235Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"5844b900946b\"}\n{\"timestamp\":\"2026-11-10T00:31:22.877008151Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"crowdstrike.falcon\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"5844b900946b\"}\n",
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794270678
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.9,
+          2.14,
+          2.49
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.35,
+          2.25,
+          2.51
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.6390981524029145,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.745049504950495,
+      "peak_cgroup_memory_bytes": 328474624,
+      "peak_rss_bytes": 346542080,
+      "samples": 195,
+      "rate": 10194.42102360804,
+      "rate_per_core": 2548.60525590201,
+      "cpu_seconds": 33.089625152,
+      "rec_per_cpu_second": 9670.704897080363,
+      "whole_rate": 10019.367150154105,
+      "window_seconds": 31.389717891673328,
+      "output_records": 400000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"original\":\"{\\n    \\\"metadata\\\": {\\n        \\\"customerIDString\\\": \\\"8f69fe9e-b995-4204-95ad-44f9bcf75b6b\\\",\\n        \\\"offset\\\": 0,\\n        \\\"eventType\\\": \\\"AuthActivityAuditEvent\\\",\\n        \\\"eventCreationTime\\\": 1581542950710,\\n        \\\"version\\\": \\\"1.0\\\"\\n    },\\n    \\\"event\\\": {\\n        \\\"UserId\\\": \\\"api-client-id:1234567890abcdefghijklmnopqrstuvwxyz\\\",\\n        \\\"UserIp\\\": \\\"10.10.0.8\\\",\\n        \\\"OperationName\\\": \\\"streamStarted\\\",\\n        \\\"ServiceName\\\": \\\"Crowdstrike Streaming API\\\",\\n        \\\"Success\\\": true,\\n        \\\"UTCTimestamp\\\": 1581542950,\\n        \\\"AuditKeyValues\\\": [\\n            {\\n          ",
+      "counter_lines": "parse_errors_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8\ntransport_received_events_total{transport=\"kafka\"} 400000\nbatch_engine_parse_errors_total 0\nself_regulation_kafka_gate_errors_total 0",
+      "transformed": 400000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "engine_metrics": "self_regulation_max_hold_releases_total 0\nworker_pool_scale_events_total{direction=\"up\"} 8\nself_regulation_inbound_pauses_total 0\nbatch_engine_messages_parsed_total 0\nworker_pool_tasks_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_parse_errors_total 0\nbatch_engine_messages_received_total 0\nself_regulation_kafka_gate_errors_total 0\nbatch_engine_messages_filtered_total 0\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nworker_pool_health_saturation_timeout_secs 30\nworker_pool_saturation 1\nworker_pool_available_threads 4\nworker_pool_async_concurrency 32\nworker_pool_cpu_utilisation 0.05511022090911865\nself_regulation_pressure_ratio 0.04256080178770075\nworker_pool_memory_utilisation 0.04277453703156\nworker_pool_grow_below 0.6\nbatch_engine_max_chunk_size 20000\nworker_pool_scale_interval_secs 5\nself_regulation_recv_block_bytes 1059566\nworker_pool_active_threads 0\nworker_pool_memory_pressure_cap 0.8\nbatch_engine_intern_table_size 0\nworker_pool_min_threads 2\nworker_pool_memory_psi_some 0\npipeline_ready 1\nself_regulation_inbound_paused 0\nworker_pool_shrink_above 0.85\nworker_pool_emergency_above 0.95\nworker_pool_target_threads 4\nworker_pool_max_threads 4\nself_regulation_byte_budget 16777216\nworker_pool_async_inflight 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0",
+      "log_tail": "be empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"8e631a551b3a\"}\n{\"timestamp\":\"2026-11-10T00:32:06.445951032Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"8e631a551b3a\"}\n{\"timestamp\":\"2026-11-10T00:32:06.446007303Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"8e631a551b3a\"}\n{\"timestamp\":\"2026-11-10T00:32:06.80718851Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"crowdstrike.falcon\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"8e631a551b3a\"}\n",
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794270722
+    },
+    {
+      "engine": "transform-elastic",
+      "source": "crowdstrike_falcon",
+      "mode": "malformed",
+      "rows": 400000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.74,
+          2.12,
+          2.46
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.35,
+          2.27,
+          2.5
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.838742073926719,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 2.210972796308757,
+      "peak_cgroup_memory_bytes": 341606400,
+      "peak_rss_bytes": 359997440,
+      "samples": 203,
+      "rate": 9693.547811295051,
+      "rate_per_core": 2423.386952823763,
+      "cpu_seconds": 34.941105143922016,
+      "rec_per_cpu_second": 9158.267853347043,
+      "whole_rate": 9620.90523464192,
+      "window_seconds": 33.011649215484525,
+      "output_records": 400000,
+      "sample_output": "{\"tags\":[\"preserve_original_event\"],\"ecs\":{\"version\":\"8.17.0\"},\"event\":{\"original\":\"{\\\"metadata\\\":{\\\"customerIDString\\\":\\\"123123abcd\\\",\\\"offset\\\":1,\\\"eventType\\\":\\\"DetectionSummaryEvent\\\",\\\"eventCreationTime\\\":1686845212400,\\\"version\\\":\\\"1.0\\\"},\\\"event\\\":{\\\"ProcessStartTime\\\":1686845212400,\\\"ProcessEndTime\\\":0,\\\"ProcessId\\\":123123,\\\"ParentProcessId\\\":321321,\\\"ComputerName\\\":\\\"ELASTICHOST\\\",\\\"UserName\\\":\\\"ELASTICUSER\\\",\\\"DetectName\\\":\\\"NGAV\\\",\\\"DetectDescription\\\":\\\"This file is classified as Adware/PUP based on its SHA256 hash.\\\",\\\"Severity\\\":2,\\\"SeverityName\\\":\\\"Low\\\",\\\"FileName\\\":\\\"TESTFILE.exe\\\",\\\"FilePath\\\":\\\"\\\\\\\\Device\\\\\\\\HarddiskVolume3\\\\\\\\Users\\\\\\\\ELASTICUSER\\\\\\\\Software\\\\\\\\TESTSOFTWA",
+      "counter_lines": "parse_errors_total 0\ntransport_received_events_total{transport=\"kafka\"} 400000\nself_regulation_kafka_gate_errors_total 0\nworker_pool_scale_events_total{direction=\"up\"} 9\nbatch_engine_parse_errors_total 0",
+      "transformed": 400000,
+      "errored": 0,
+      "dropped": 0,
+      "dlq_records": 0,
+      "engine_metrics": "self_regulation_inbound_pauses_total 0\nself_regulation_kafka_gate_errors_total 0\nbatch_engine_messages_dlq_total 0\nbatch_engine_messages_parsed_total 0\nworker_pool_tasks_total 0\nworker_pool_scale_events_total{direction=\"up\"} 9\nbatch_engine_messages_filtered_total 0\nbatch_engine_messages_received_total 0\nself_regulation_max_hold_releases_total 0\nbatch_engine_parse_errors_total 0\nworker_pool_min_threads 2\nworker_pool_memory_pressure_cap 0.8\nworker_pool_max_threads 4\nworker_pool_cpu_utilisation 0.05327663421630859\nworker_pool_target_threads 4\nworker_pool_async_inflight 0\nworker_pool_active_threads 0\nworker_pool_emergency_above 0.95\nworker_pool_saturation 1\nworker_pool_grow_below 0.6\nworker_pool_memory_utilisation 0.04160263959213222\nself_regulation_byte_budget 16777216\nworker_pool_memory_psi_some 0\nself_regulation_pressure_ratio 0.03842914805798049\nworker_pool_health_saturation_timeout_secs 30\nself_regulation_inbound_paused 0\nself_regulation_recv_block_bytes 1801692\npipeline_ready 1\nbatch_engine_intern_table_size 0\nworker_pool_async_concurrency 32\npipeline_delivery_guarantee{guarantee=\"at_least_once\",reason=\"confirmed\"} 1\nworker_pool_scale_interval_secs 5\nworker_pool_shrink_above 0.85\nbatch_engine_max_chunk_size 20000\nworker_pool_available_threads 4\nworker_pool_batch_duration_seconds{quantile=\"0\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_batch_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_batch_duration_seconds{quantile=\"1\"} 0\nworker_pool_batch_duration_seconds_sum 0\nworker_pool_batch_duration_seconds_count 0\nworker_pool_task_duration_seconds{quantile=\"0\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.5\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.9\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.95\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.99\"} 0\nworker_pool_task_duration_seconds{quantile=\"0.999\"} 0\nworker_pool_task_duration_seconds{quantile=\"1\"} 0\nworker_pool_task_duration_seconds_sum 0\nworker_pool_task_duration_seconds_count 0\nbatch_engine_chunk_size{quantile=\"0\"} 0\nbatch_engine_chunk_size{quantile=\"0.5\"} 0\nbatch_engine_chunk_size{quantile=\"0.9\"} 0\nbatch_engine_chunk_size{quantile=\"0.95\"} 0\nbatch_engine_chunk_size{quantile=\"0.99\"} 0\nbatch_engine_chunk_size{quantile=\"0.999\"} 0\nbatch_engine_chunk_size{quantile=\"1\"} 0\nbatch_engine_chunk_size_sum 0\nbatch_engine_chunk_size_count 0\nbatch_engine_transform_duration_seconds{quantile=\"0\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_transform_duration_seconds{quantile=\"1\"} 0\nbatch_engine_transform_duration_seconds_sum 0\nbatch_engine_transform_duration_seconds_count 0\nworker_pool_semaphore_wait_seconds{quantile=\"0\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.5\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.9\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.95\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.99\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"0.999\"} 0\nworker_pool_semaphore_wait_seconds{quantile=\"1\"} 0\nworker_pool_semaphore_wait_seconds_sum 0\nworker_pool_semaphore_wait_seconds_count 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_pre_route_duration_seconds{quantile=\"1\"} 0\nbatch_engine_pre_route_duration_seconds_sum 0\nbatch_engine_pre_route_duration_seconds_count 0\nbatch_engine_parse_duration_seconds{quantile=\"0\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.5\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.9\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.95\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.99\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"0.999\"} 0\nbatch_engine_parse_duration_seconds{quantile=\"1\"} 0\nbatch_engine_parse_duration_seconds_sum 0\nbatch_engine_parse_duration_seconds_count 0",
+      "log_tail": "e empty. Check `geoip.enabled` and `geoip.auto_download`, or mount the files yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":553,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"4ad47706e1bf\"}\n{\"timestamp\":\"2026-11-10T00:33:10.719463556Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"pipeline delivery guarantee\",\"guarantee\":\"at_least_once\",\"reason\":\"confirmed\"},\"target\":\"scalo::transport::ack\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/transport/ack.rs\",\"line_number\":353,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"4ad47706e1bf\"}\n{\"timestamp\":\"2026-11-10T00:33:10.719498506Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"BatchEngine (pipeline) starting\",\"transport\":\"kafka\",\"commit\":\"Auto\",\"acknowledgements\":\"held\"},\"target\":\"scalo::worker::engine::pipeline\",\"filename\":\"/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scalo-2.14.27/src/worker/engine/pipeline.rs\",\"line_number\":270,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"4ad47706e1bf\"}\n{\"timestamp\":\"2026-11-10T00:33:11.069273325Z\",\"level\":\"INFO\",\"fields\":{\"message\":\"envelope in use\",\"envelope\":\"Beats\",\"variant\":\"bare\",\"dataset\":\"crowdstrike.falcon\"},\"target\":\"dfe_transform_elastic::service\",\"filename\":\"src/service.rs\",\"line_number\":1277,\"service\":\"dfe-transform-elastic\",\"version\":\"1.1.28\",\"pod_name\":\"4ad47706e1bf\"}\n",
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794270786
+    }
+  ]
+}

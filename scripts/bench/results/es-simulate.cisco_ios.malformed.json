@@ -1,0 +1,173 @@
+{
+  "rows": 600000,
+  "runs": [
+    {
+      "engine": "es-simulate",
+      "source": "cisco_ios",
+      "mode": "malformed",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.83,
+          2.9,
+          3.37
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          3.19,
+          3.12,
+          3.43
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 15.348111495013868,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 9.07124264682322,
+      "peak_cgroup_memory_bytes": 5509349376,
+      "peak_rss_bytes": null,
+      "samples": 146,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 19769.642173673124,
+      "rate_per_core": 4942.410543418281,
+      "cpu_seconds": 79.96255491666663,
+      "rec_per_cpu_second": 6002.809696366435,
+      "whole_rate": 19415.334903432147,
+      "window_seconds": 24.279650374208966,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794269071
+    },
+    {
+      "engine": "es-simulate",
+      "source": "cisco_ios",
+      "mode": "malformed",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.93,
+          2.77,
+          3.29
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          3.16,
+          3.0,
+          3.35
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 5.784831316933739,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 4.53045304530453,
+      "peak_cgroup_memory_bytes": 5509349376,
+      "peak_rss_bytes": null,
+      "samples": 126,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 23288.87728463134,
+      "rate_per_core": 5822.219321157835,
+      "cpu_seconds": 69.77349166666674,
+      "rec_per_cpu_second": 6879.403460172725,
+      "whole_rate": 22633.28647401384,
+      "window_seconds": 20.610697292683955,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794269174
+    },
+    {
+      "engine": "es-simulate",
+      "source": "cisco_ios",
+      "mode": "malformed",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.99,
+          2.73,
+          3.25
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          3.02,
+          2.9,
+          3.29
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 5.368069294085353,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.745049504950495,
+      "peak_cgroup_memory_bytes": 5509349376,
+      "peak_rss_bytes": null,
+      "samples": 119,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 24586.669551535182,
+      "rate_per_core": 6146.6673878837955,
+      "cpu_seconds": 65.772029,
+      "rec_per_cpu_second": 7297.935114636649,
+      "whole_rate": 24123.79462656571,
+      "window_seconds": 19.52277428196976,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794269232
+    },
+    {
+      "engine": "es-simulate",
+      "source": "cisco_ios",
+      "mode": "malformed",
+      "rows": 600000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.95,
+          2.65,
+          3.19
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.79,
+          2.8,
+          3.22
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 5.136604115601465,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.7401490149014902,
+      "peak_cgroup_memory_bytes": 5509349376,
+      "peak_rss_bytes": null,
+      "samples": 122,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 23469.736067132366,
+      "rate_per_core": 5867.4340167830915,
+      "cpu_seconds": 67.49990066666675,
+      "rec_per_cpu_second": 7111.12157587273,
+      "whole_rate": 23259.303059870686,
+      "window_seconds": 20.451870384354454,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794269289
+    }
+  ]
+}

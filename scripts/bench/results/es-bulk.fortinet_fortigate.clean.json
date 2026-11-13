@@ -1,0 +1,173 @@
+{
+  "rows": 100000,
+  "runs": [
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.79,
+          2.95,
+          4.01
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          3.08,
+          3.16,
+          4.05
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.61134085107771,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.25,
+      "peak_cgroup_memory_bytes": 6198697984,
+      "peak_rss_bytes": null,
+      "samples": 89,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 7059.773612121888,
+      "rate_per_core": 1764.943403030472,
+      "cpu_seconds": 43.389342,
+      "rec_per_cpu_second": 1843.7707582659355,
+      "whole_rate": 5666.342267513373,
+      "window_seconds": 11.33180812804494,
+      "measured": false,
+      "run": 0,
+      "started_unix": 1794277117
+    },
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.85,
+          2.83,
+          3.9
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.63,
+          2.95,
+          3.93
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.1619503151821964,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 0.5,
+      "peak_cgroup_memory_bytes": 6198697984,
+      "peak_rss_bytes": null,
+      "samples": 75,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 8019.469571597154,
+      "rate_per_core": 2004.8673928992885,
+      "cpu_seconds": 38.12408825,
+      "rec_per_cpu_second": 2098.4108387169103,
+      "whole_rate": 6738.8051944248255,
+      "window_seconds": 9.97572212049272,
+      "measured": true,
+      "run": 1,
+      "started_unix": 1794277178
+    },
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.88,
+          2.76,
+          3.84
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.51,
+          2.84,
+          3.85
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 2.797284726720282,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 1.0,
+      "peak_cgroup_memory_bytes": 6198697984,
+      "peak_rss_bytes": null,
+      "samples": 78,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 7645.605370688724,
+      "rate_per_core": 1911.401342672181,
+      "cpu_seconds": 40.08717916666651,
+      "rec_per_cpu_second": 1995.6505212649633,
+      "whole_rate": 6474.771882723541,
+      "window_seconds": 10.463527231826447,
+      "measured": true,
+      "run": 2,
+      "started_unix": 1794277214
+    },
+    {
+      "engine": "es-bulk",
+      "source": "fortinet_fortigate",
+      "mode": "clean",
+      "rows": 100000,
+      "cores": 4,
+      "stop_reason": "target",
+      "host_before": {
+        "loadavg": [
+          1.88,
+          2.67,
+          3.77
+        ],
+        "nproc": 32
+      },
+      "host_after": {
+        "loadavg": [
+          2.78,
+          2.83,
+          3.79
+        ],
+        "nproc": 32
+      },
+      "others_busy_pct": 10.762843575014488,
+      "noisy": false,
+      "engine_cpus_busy_before_pct": 2.0,
+      "peak_cgroup_memory_bytes": 6198697984,
+      "peak_rss_bytes": null,
+      "samples": 89,
+      "item_errors": 0,
+      "clients": 4,
+      "chunk": 2000,
+      "rate": 6184.2817346179645,
+      "rate_per_core": 1546.0704336544911,
+      "cpu_seconds": 47.09478,
+      "rec_per_cpu_second": 1698.7020642202808,
+      "whole_rate": 5540.2492172783695,
+      "window_seconds": 12.936021260509733,
+      "measured": true,
+      "run": 3,
+      "started_unix": 1794277251
+    }
+  ]
+}
