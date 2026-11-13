@@ -212,7 +212,7 @@ corpus run prints handled, skipped and distinct-script counts, and `never_ran` i
 `tests/compat-baseline.json`.
 
 The gap between the two is the point. A pattern can MATCH a script statically and then decline at
-run time, which reads as covered from everywhere except that dump.
+run time, which reads as covered from everywhere except the corpus run.
 
 ---
 

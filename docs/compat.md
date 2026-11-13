@@ -1,6 +1,6 @@
 # compat -- confirmed output from the real Elastic engine
 
-compat runs a fixture's sample lines through the source's own ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. Those documents are ground truth: what the real engine produces, rather than what we believe it produces. The corpus test scores every transform that has confirmed fixtures against them.
+compat runs a fixture's sample lines through the source's own ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. Those documents are ground truth: what the real engine produces, rather than what we believe it produces. The corpus test scores each transform against the confirmed fixtures it can load.
 
 What a difference MEANS -- the ratchet, the compare policy, and the divergences kept on purpose -- is [compat-policy.md](compat-policy.md).
 
@@ -22,7 +22,7 @@ A confirmed sample under `tests/fixtures/<package>/<data stream>/` has `<sample>
 |---|---|
 | `meta` | The package and data stream, the engine version, the pipeline commit, the entry pipeline, and the fields the test config marks as nondeterministic |
 | `input` | The documents the engine was sent, exactly as the pipeline saw them |
-| `expected` | The documents it returned, one per input, or `_compat_error` where the pipeline failed the event |
+| `expected` | The documents it returned, one per input, or `_compat_error` where the pipeline dropped or failed the event |
 
 `crates/dfe-transforms/tests/compat_corpus.rs` reads these files, runs the same inputs through the transform, and compares field by field. It starts no container and needs no network.
 

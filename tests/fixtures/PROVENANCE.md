@@ -1,8 +1,9 @@
 # Where these fixtures come from
 
-Every directory here except `unencumbered/` is one data stream's fixtures:
-sample lines, their test configs, and beside each sample, as
-`<sample>-expected.json`, the documents the real Elastic engine produced for it.
+Every directory here except `unencumbered/` is a package, holding one directory
+per data stream: sample lines, their test configs, and beside each confirmed
+sample, as `<sample>-expected.json`, the documents the real Elastic engine
+produced for it.
 They are this repository's own test data.
 
 They are made by `dfe-transform-elastic-dev`, the project that maintains the
@@ -10,7 +11,8 @@ transforms:
 
 - `scripts/rewrite_fixtures.py` writes each sample. Every address, MAC, UUID,
   digest, host and domain name, email address, username, personal name, session
-  or request id is a seeded stand-in of the same shape. IPv4 sits in
+  or request id is a seeded stand-in with the same length, character classes
+  and separators. IPv4 sits in
   192.0.2.0/24, 198.51.100.0/24 and 203.0.113.0/24 or a private block, IPv6 in
   2001:db8::/32, and every dated value is 28 years on. Every other token keeps
   its place: delimiters, quoting, field order, event codes, action words and

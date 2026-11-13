@@ -57,8 +57,8 @@ cargo test --no-default-features --test envelope --test envelope_detection
 ```
 
 `tests/fixtures/unencumbered/` holds vendor samples under their own licences, and
-`crates/dfe-transforms/tests/unencumbered.rs` fails on any fixture that names an Elastic
-repository or licence.
+`crates/dfe-transforms/tests/unencumbered.rs` fails on any fixture outside `unencumbered/` that
+names an Elastic repository or licence.
 
 ---
 
