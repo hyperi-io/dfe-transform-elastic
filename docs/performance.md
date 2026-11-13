@@ -84,26 +84,26 @@ candidate that would have belonged here lost its own benchmark
 The libraries the hot path is built on. `Cargo.toml` carries the version ranges and the reason
 for each bound; this is the map of which crate does what.
 
-| Crate | Version | Purpose |
-|---|---|---|
-| `serde` / `serde_json` | >=1.0.229 / >=1.0.151 | Serialisation framework, and both JSON paths. `preserve_order` is on, so object keys keep document order |
-| `simd-json` | >=0.18.1, <0.19 | DEV-dependency of `dfe-runtime` only, for `crates/dfe-runtime/benches/json_parse.rs` -- the bench that demoted it |
-| `scalo` (`yaml`) | 2.14.13 | YAML config parsing, through `scalo::yaml` on serde-saphyr |
-| `memchr` | >=2.8.3 | SIMD byte search (`crates/dfe-parse/src/string.rs`) |
-| `regex-automata` | >=0.4.18, <0.5 | Pre-compiled DFA regex (`crates/dfe-parse/src/dfa.rs`) |
-| `regex` | >=1.13.1 | Grok-derived pattern matching in `dfe-transforms` |
-| `fancy-regex` | >=0.19.2, <0.20 | Backtracking fallback for the vendor patterns `regex` rejects by design -- lookaround and backreferences. Reached only when `regex` fails to COMPILE, so the hot path is unchanged |
-| `psl` | >=2.1.239 | Mozilla's Public Suffix List, compiled in, for `registered_domain` |
-| `parking_lot` | >=0.12.5, <0.13 | The lock in front of the GeoIP cache, taken per event across one transform thread per partition |
-| `chrono` | >=0.4.45, <0.5 | Timestamp handling |
-| `maxminddb` | >=0.32.0, <0.33 | GeoIP lookups (mmap) |
-| `base64` | >=0.23.1, <0.24 | Fingerprinting and Community ID encoding |
-| `sha1`, `sha2` | >=0.11.0, <0.12 | Fingerprint and Community ID digests, and Painless's `sha1()` and `sha256()` as lower-case hex |
-| `csv` | >=1.4.0 | CSV processor |
-| `scalo` | 2.14.1 | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling -- the service binary's runtime |
-| `clap` | >=4.6.7 | Service CLI surface |
-| `tokio` | >=1.53.2 | Async runtime |
-| `thiserror` | >=2.0.21 | Error types in every crate, including the service binary's `src/error.rs` |
-| `tracing` | >=0.1.44, <0.2 | Logging |
-| `criterion` | >=0.8.2, <0.9 | Benchmarking framework |
-| `testcontainers` | >=0.27.3, <0.28 | Ephemeral Kafka broker for round-trip tests |
+| Crate | Purpose |
+|---|---|
+| `serde` / `serde_json` | Serialisation framework, and both JSON paths. `preserve_order` is on, so object keys keep document order |
+| `simd-json` | DEV-dependency of `dfe-runtime` only, for `crates/dfe-runtime/benches/json_parse.rs` -- the bench that demoted it |
+| `scalo` (`yaml`) | YAML config parsing, through `scalo::yaml` on serde-saphyr |
+| `memchr` | SIMD byte search (`crates/dfe-parse/src/string.rs`) |
+| `regex-automata` | Pre-compiled DFA regex (`crates/dfe-parse/src/dfa.rs`) |
+| `regex` | Grok-derived pattern matching in `dfe-transforms` |
+| `fancy-regex` | Backtracking fallback for the vendor patterns `regex` rejects by design -- lookaround and backreferences. Reached only when `regex` fails to COMPILE, so the hot path is unchanged |
+| `psl` | Mozilla's Public Suffix List, compiled in, for `registered_domain` |
+| `parking_lot` | The lock in front of the GeoIP cache, taken per event across one transform thread per partition |
+| `chrono` | Timestamp handling |
+| `maxminddb` | GeoIP lookups (mmap) |
+| `base64` | Fingerprinting and Community ID encoding |
+| `sha1`, `sha2` | Fingerprint and Community ID digests, and Painless's `sha1()` and `sha256()` as lower-case hex |
+| `csv` | CSV processor |
+| `scalo` | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling -- the service binary's runtime |
+| `clap` | Service CLI surface |
+| `tokio` | Async runtime |
+| `thiserror` | Error types in every crate, including the service binary's `src/error.rs` |
+| `tracing` | Logging |
+| `criterion` | Benchmarking framework |
+| `testcontainers` | Ephemeral Kafka broker for round-trip tests |
