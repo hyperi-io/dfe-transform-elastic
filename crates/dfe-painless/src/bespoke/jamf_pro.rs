@@ -86,7 +86,7 @@ fn release_name(version: &str) -> String {
     String::new()
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "2c867fd4910e58d254f6e845ae740f548706b9f45654a772ee895fbfdf919e89",
     source: "jamf_pro",

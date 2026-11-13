@@ -105,7 +105,7 @@ fn truncate_list(
     true
 }
 
-/// Every `tanium` script transcribed here.
+/// Every `tanium` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "4c840404186829ef951c682ffe28648e62cd743dca298dbbc77b7213a521d429",

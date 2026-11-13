@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `island_browser`'s single-address unwrap, transcribed.
+//! `island_browser`'s single-address unwrap, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -27,7 +27,7 @@ fn single_internal_ip_to_scalar(event: &mut Event, _params: &Value) {
     let _ = event.update(path, first);
 }
 
-/// Every `island_browser` script transcribed here.
+/// Every `island_browser` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "7e8e47ce705df9148006a12d86de556cda83852c668fdbe1c7c186deab55afac",
     source: "island_browser",

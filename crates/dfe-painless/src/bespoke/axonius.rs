@@ -248,7 +248,7 @@ fn coerce_flag(members: &mut Map<String, Value>, field: &str) {
     }
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "006e09306a16955e39ef85a98ebcc9c9edbc51a826e36678c65ece0f53b2cedb",

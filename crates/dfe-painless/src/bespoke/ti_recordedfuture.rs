@@ -63,7 +63,7 @@ fn panel_status_targets_to_str(event: &mut Event, _params: &Value) {
     event.remove(TARGETS);
 }
 
-/// Every `ti_recordedfuture` script transcribed here.
+/// Every `ti_recordedfuture` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "0f5e891702f537498da88922a6a78010e1d1bbd6279150b14d5d533f8cc3a716",

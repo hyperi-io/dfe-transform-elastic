@@ -219,7 +219,7 @@ fn cut_deep_ancestry(event: &mut Event, root: &str) {
     event.remove(&nested);
 }
 
-/// Every `amazon_security_lake` script transcribed here.
+/// Every `amazon_security_lake` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "d86bd0c95af789bedefa07991b366e1e11c08f6508659d839172bce8f204a488",

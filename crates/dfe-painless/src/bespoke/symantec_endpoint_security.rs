@@ -96,7 +96,7 @@ fn resolution_from_id(event: &mut Event, params: &Value) {
     let _ = event.set("ses.incident.resolution", label);
 }
 
-/// Every `symantec_endpoint_security` script transcribed here.
+/// Every `symantec_endpoint_security` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "a6ee67078a0a442107d7daea9357b62d346862758404f78621ce04d67b334b09",

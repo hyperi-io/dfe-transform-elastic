@@ -102,7 +102,7 @@ fn part_addresses(event: &mut Event, addresses: &str, buffers: &str) {
     }
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "f43c17d4c7a0a150a15d51f28d536cf186907f89d6c97c397d86a7114630a4b9",

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `atlassian_jira`'s audit source-address split, transcribed.
+//! `atlassian_jira`'s audit source-address split, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -39,7 +39,7 @@ fn split_source_addresses(event: &mut Event, _params: &Value) {
     );
 }
 
-/// Every `atlassian_jira` script transcribed here.
+/// Every `atlassian_jira` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "089b844ec3456e1c46149a09e9cb539f0c54ff18a4f91708f66cedc6e02825d3",
     source: "atlassian_jira",

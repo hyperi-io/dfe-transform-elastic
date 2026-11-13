@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `aws_bedrock`'s invocation scripts, transcribed.
+//! `aws_bedrock`'s invocation scripts, as the runtime runs them.
 //!
 //! A model invocation log carries the request and the response as parsed JSON,
 //! and the pipeline puts them back into text so the two `gen_ai` fields can
@@ -767,7 +767,7 @@ fn sorted(values: &[Value]) -> Value {
     )
 }
 
-/// Every `aws_bedrock` script transcribed here.
+/// Every `aws_bedrock` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "414ac3ec4eb6dea11366a1b00e5849cf740b60a0728cb184c4264e3d5a34542b",

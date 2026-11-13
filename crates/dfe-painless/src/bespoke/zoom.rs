@@ -61,7 +61,7 @@ fn instant_nanos(event: &Event, path: &str) -> Option<i64> {
         .timestamp_nanos_opt()
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "bd6d1866042593995a2ab3687de6c3e96d110536c721d88d4896d83e65a26e55",

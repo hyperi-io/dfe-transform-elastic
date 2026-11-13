@@ -25,7 +25,7 @@ fn body_length(event: &mut Event, _params: &Value) {
     );
 }
 
-/// The transcription this module registers.
+/// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "02f4e9612b4ac3810d50c63f55b66052336bd0f5e4f2e1b0bc815c2e9d1c63ce",
     source: "beelzebub",

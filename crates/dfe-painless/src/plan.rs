@@ -15,7 +15,7 @@
 //! already recovered -- a drop-empty script's [`DropPolicy`], an equality
 //! ladder's arms -- so those parses stop running per event too.
 //!
-//! A script transcribed by hand ([`crate::bespoke`]) is resolved here too, ahead
+//! A hand-written script equivalent ([`crate::bespoke`]) is resolved here too, ahead
 //! of every matcher: the table is keyed by the script's hash, so the lookup is
 //! one hash per call site and nothing per event.
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `rubrik`'s two managed-volume derivations, transcribed.
+//! `rubrik`'s two managed-volume derivations, as the runtime runs them.
 
 use serde_json::{Map, Value};
 
@@ -65,7 +65,7 @@ fn counted(event: &Event, path: &str) -> Value {
         .unwrap_or(Value::from(0))
 }
 
-/// Every rubrik script transcribed here.
+/// Every rubrik script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "5e47ab508e98ebec73611abea63af8284d1b2699ef642d4bd82416b0b290e0f4",
     source: "rubrik",

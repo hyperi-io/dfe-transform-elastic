@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `microsoft_defender_cloud`'s two data streams, transcribed.
+//! `microsoft_defender_cloud`'s two data streams, as the runtime runs them.
 //!
 //! The alert stream arrives in whatever casing the Azure API felt like, so the
 //! first script lower-cases every key in the document and every rename after it
@@ -255,7 +255,7 @@ fn host_os_type(event: &mut Event, params: &Value) {
     }
 }
 
-/// Every `microsoft_defender_cloud` script transcribed here.
+/// Every `microsoft_defender_cloud` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "476f0bc89929d00b14ed03099f6460e621ea6e79f7aa83f7c5b7159979b2809d",

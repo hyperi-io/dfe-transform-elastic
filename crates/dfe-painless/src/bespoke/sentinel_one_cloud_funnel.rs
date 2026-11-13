@@ -2,7 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! The DNS, registry and file scripts of `sentinel_one_cloud_funnel/event`,
-//! transcribed.
+//! as the runtime runs them.
 
 use serde_json::{Map, Value, json};
 
@@ -158,7 +158,7 @@ fn file_info_from_tgt_path(event: &mut Event, _params: &Value) {
     }
 }
 
-/// Every `sentinel_one_cloud_funnel` script transcribed here.
+/// Every `sentinel_one_cloud_funnel` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "dfdc942f9327060a0fd95800eef850a11b2a19b4847833e404ecdd6acc626d59",

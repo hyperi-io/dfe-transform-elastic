@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Scripts the `anthropic_metrics` package ships, transcribed by hand.
+//! The `anthropic_metrics` package's scripts, as the runtime runs them.
 
 use serde_json::Value;
 
@@ -50,7 +50,7 @@ fn default_workspace_id(event: &mut Event, _params: &Value) {
     }
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "811ca1e7c7d937af1ebac107eeaa1482f11715017461656ea3ad56c809a000e5",

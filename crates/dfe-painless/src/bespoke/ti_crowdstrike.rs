@@ -45,7 +45,7 @@ fn ioc_value_by_type(event: &mut Event, params: &Value) {
     let _ = event.set(target, value);
 }
 
-/// The transcription this module registers.
+/// The script equivalent this module registers.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "9fd8779b9492dd20ea7af33db55516649f6eaa727bda464962b546b0f7faa9f5",
     source: "ti_crowdstrike",

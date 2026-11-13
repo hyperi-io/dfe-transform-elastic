@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `checkpoint`'s dropped-packet tuples and its protocol ladder, transcribed.
+//! `checkpoint`'s dropped-packet tuples and its protocol ladder, as the runtime runs them.
 
 use serde_json::{Map, Value, json};
 
@@ -115,7 +115,7 @@ fn transport_from_iana_number(event: &mut Event, _params: &Value) {
     let _ = event.set("network.transport", transport);
 }
 
-/// Every checkpoint script transcribed here.
+/// Every checkpoint script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "33d6ddb34a78692a6890108f2e0e945eb7ae4c18872230fc5794606007eb1c8f",

@@ -169,7 +169,7 @@ fn lift_package(event: &mut Event, vuln: &Map<String, Value>) {
     );
 }
 
-/// Every `eset_protect` script transcribed here.
+/// Every `eset_protect` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "87be0ad55d312b2b2c23be38f80ac28dea5fa6a1e2efcdc1f76008ec218fd871",
     source: "eset_protect",

@@ -220,7 +220,7 @@ fn at(value: &Value, path: &str) -> Value {
     current.clone()
 }
 
-/// The transcriptions this module registers.
+/// The script equivalents this module registers.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "97b190dba1e498e83bfa24ce6702e83ff90c93afb2021e8cfca24234136b4258",

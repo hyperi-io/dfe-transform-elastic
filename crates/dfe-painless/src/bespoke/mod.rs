@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Runners transcribed by hand, keyed by the script each stands in for.
+//! Hand-written runners, keyed by the script each stands in for.
 //!
 //! The ladder recognises a script's TEXT and dispatches to a runner written
-//! for that pattern. A script that appears once in the catalogue costs a whole
+//! for that pattern. A script that appears in only one pipeline costs a whole
 //! matcher and pays back one event, and a matcher gated on a keyword can claim
-//! a script it cannot run. For those the Painless is transcribed into one
+//! a script it cannot run. For those the script's behaviour is written as one
 //! function local to its source and registered here against the hash of the
 //! script's text. [`crate::plan::PainlessPlan`] consults this table before
 //! the params matcher and the ladder, once per call site, so a registered
@@ -20,7 +20,7 @@
 //! holds every registered hash to a script in the generated tree, so a vendor
 //! change fails loudly instead of falling back to the ladder in silence.
 //!
-//! Transcribing Painless onto [`Event`]: `ctx.a.b` reads as `event.get("a.b")`
+//! How a script maps onto [`Event`]: `ctx.a.b` reads as `event.get("a.b")`
 //! and writes as `event.set`; a path the script reads back after writing goes
 //! through `Event::update`, because `set` splits a dotted key that `get`
 //! honours flat. `x != null` is `has_value`, `containsKey` is `has`, and a
@@ -150,21 +150,21 @@ mod xm_cyber;
 mod zoom;
 mod zscaler_zpa;
 
-/// A transcribed script's effect on one event.
+/// A script equivalent's effect on one event.
 ///
 /// `params` is the pipeline's `params` block verbatim, [`Value::Null`] when
 /// the processor carries none.
 pub type Runner = fn(&mut Event, &Value);
 
-/// One transcribed script.
+/// One hand-written script equivalent.
 pub struct Entry {
     /// [`script_hash`] of the script this stands in for.
     pub hash: &'static str,
-    /// The source the transcription lives under, for the census.
+    /// The source the runner lives under.
     pub source: &'static str,
-    /// The function's name, for the census.
+    /// The function's name.
     pub name: &'static str,
-    /// The transcription.
+    /// The runner.
     pub run: Runner,
 }
 
@@ -334,13 +334,13 @@ fn lower_hex(bytes: &[u8]) -> String {
     out
 }
 
-/// The transcription registered for a script, if any.
+/// The runner registered for a script, if any.
 #[must_use]
 pub fn lookup(script: &str) -> Option<&'static Entry> {
     table().get(script_hash(script).as_str()).copied()
 }
 
-/// Every registered transcription.
+/// Every registered runner.
 pub fn entries() -> impl Iterator<Item = &'static Entry> {
     ENTRIES.iter().flat_map(|module| module.iter())
 }

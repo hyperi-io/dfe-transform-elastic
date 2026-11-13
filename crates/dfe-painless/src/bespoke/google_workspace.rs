@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `google_workspace`'s report scripts, transcribed.
+//! `google_workspace`'s report scripts, as the runtime runs them.
 //!
 //! Two payload shapes run through here. The reports API sends an event's
 //! detail as a `parameters` list of name/value objects, where the value
@@ -337,7 +337,7 @@ fn gregorian_millis(event: &mut Event, path: &str) {
     let _ = event.update(path, (seconds - GREGORIAN_OFFSET) * 1000);
 }
 
-/// Every `google_workspace` script transcribed here.
+/// Every `google_workspace` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "a1dd684dd83a395d087233df33b8a70697611c14e426537c7468da801b63b720",

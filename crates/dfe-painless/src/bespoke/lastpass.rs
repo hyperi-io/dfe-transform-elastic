@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `lastpass`'s limit-shared-folder split, transcribed.
+//! `lastpass`'s limit-shared-folder split, as the runtime runs them.
 //!
 //! The event report gives this one action a `Data` field of the form
 //! `<folder name> <user email>`, and a folder name may hold spaces of its own.
@@ -48,7 +48,7 @@ fn acts(event: &Event) -> bool {
     }
 }
 
-/// Every `lastpass` script transcribed here.
+/// Every `lastpass` script this module runs.
 pub const ENTRIES: &[Entry] = &[Entry {
     hash: "bb0787215942f145792511049b48046572846c5ee41caddb419999c1b5189aba",
     source: "lastpass",

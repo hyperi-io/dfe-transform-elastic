@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! `cybereason`'s payload-splitting scripts, transcribed.
+//! `cybereason`'s payload-splitting scripts, as the runtime runs them.
 //!
 //! The console answers a malop query with a THREE-ELEMENT array -- the record
 //! itself, then the suspicions map, then the evidence map -- so the whole
@@ -68,7 +68,7 @@ fn resolve<'a>(event: &'a mut Event, path: &str) -> Option<&'a mut Value> {
     Some(current)
 }
 
-/// Every `cybereason` script transcribed here.
+/// Every `cybereason` script this module runs.
 pub const ENTRIES: &[Entry] = &[
     Entry {
         hash: "b9279188e0943d6338567b0b2622d835c72cbb80668347c4f2cd7c116ac4e131",
