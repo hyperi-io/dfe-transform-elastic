@@ -60,7 +60,7 @@ The source catalogue, `sources.yaml`, is compiled into the binary and `dfe-trans
 - [docs/configuration.md](docs/configuration.md): the cascade, the env spellings and the sections a file cannot carry.
 - [docs/enrichment.md](docs/enrichment.md): the enrichment tables.
 
-The suite's published docs are at <https://dfe.docs.hyperi.io>.
+The suite's published docs are at <https://dfe.docs.hyperi.io>, and this repository's pages at <https://dfe.docs.hyperi.io/dfe-transform-elastic/>.
 
 ## Help and contributing
 
