@@ -1,6 +1,6 @@
 # compat -- confirmed output from the real Elastic engine
 
-compat runs a fixture's sample lines through the source's own ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. Those documents are ground truth: what the real engine produces, rather than what we believe it produces. Every transform here is scored against them.
+compat runs a fixture's sample lines through the source's own ingest pipeline in a throwaway Elasticsearch container and keeps the documents the engine returns. Those documents are ground truth: what the real engine produces, rather than what we believe it produces. The corpus test scores every transform that has confirmed fixtures against them.
 
 What a difference MEANS -- the ratchet, the compare policy, and the divergences kept on purpose -- is [compat-policy.md](compat-policy.md).
 
@@ -16,7 +16,7 @@ flowchart LR
 
 ## What is committed
 
-Beside every sample under `tests/fixtures/<package>/<data stream>/` sits `<sample>-expected.json`:
+A confirmed sample under `tests/fixtures/<package>/<data stream>/` has `<sample>-expected.json` beside it. The samples under `tests/fixtures/unencumbered/` are inputs only.
 
 | Key | Holds |
 |---|---|
@@ -31,5 +31,5 @@ The confirmed documents are produced by the meta project that maintains the tran
 ## Known limits
 
 - **o365 and panw are incomplete.** Part of their transformation runs inside Filebeat before Elasticsearch sees the event: o365 has a JavaScript processor chain, and panw applies `decode_csv_fields` to `message`. The simulate API cannot reach either, so for those two the confirmed output covers only the Elasticsearch half.
-- **GeoIP is off.** The documents are confirmed with no GeoIP database loaded, and the sample addresses sit in the documentation ranges, so no geo field is expected and the corpus test disables the enricher.
+- **GeoIP is off.** The documents are confirmed with no GeoIP database loaded. The corpus test disables its GeoIP enricher and excludes GeoIP-derived fields from the comparison, and an event can still carry geo fields its source supplied.
 - **The engine never ships.** The Elasticsearch image is a development dependency of the meta project only and must never become part of the shipped service.

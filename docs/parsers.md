@@ -205,8 +205,8 @@ through `crates/dfe-painless/src/stats.rs`.
 floor of 100%, none skipped. That floor is real but its driver is narrow, so it says those
 fixtures are fully covered, not that the runtime is.
 
-Running the same counters over every confirmed fixture, in `tests/compat_corpus.rs`, is what says
-that. Both figures are run
+The corpus test in `crates/dfe-transforms/tests/compat_corpus.rs` runs the same counters over
+every confirmed capture it can load and score, and that is what says it. Both figures are run
 outputs rather than constants, so derive them rather than quoting a number from here: the
 corpus run prints handled, skipped and distinct-script counts, and `never_ran` is ratcheted in
 `tests/compat-baseline.json`.

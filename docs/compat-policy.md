@@ -88,7 +88,7 @@ about the field.
 
 The two readers differ. `crates/dfe-runtime/src/testutil/policy.rs` honours
 `sources` and chains the four rule sections into ONE skip set, keeping no column
-breakdown -- a skipped path is simply not compared, whichever section it came
+breakdown -- a skipped path is not compared, whichever section it came
 from. The audit tool that confirms the documents keeps them apart to build its
 columns and does not read `sources` yet, so every rule applies globally there,
 the wider reading of the two. And a comparison that does not know its source cannot honour scoping, so

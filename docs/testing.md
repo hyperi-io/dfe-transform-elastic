@@ -45,8 +45,9 @@ engine produced for it. They are produced by the meta project that maintains the
 and `tests/fixtures/PROVENANCE.md` says how. The Beats envelope shapes under
 `tests/envelopes/beats/` are built the same way.
 
-Every floor reads them through `dfe_runtime::testutil::fixtures()`, so they run on every push
-with nothing to set:
+The fixture tests read this committed data with no variable to set, through
+`dfe_runtime::testutil::fixtures()` and the envelope and unencumbered directories, so they run
+whenever CI does:
 
 ```bash
 cargo test -p dfe-transforms --test integration --test untested_sources \
@@ -81,7 +82,7 @@ case discovered in production.
 
 ## Core, full and the shared broker
 
-Core is every test, and it runs on every push: the unit tests, the corpus and floors above, `tests/broker.rs` and `tests/kafka_tls.rs` against a real broker, and the memory tests (`tests/ndjson_fanout.rs`, `tests/asa_teardown.rs`) held to the deployment contract. No test here is `#[ignore]`d.
+Core is every test, and it runs on every push that triggers CI: the unit tests, the corpus and floors above, `tests/broker.rs` and `tests/kafka_tls.rs` against a real broker, and the memory tests (`tests/ndjson_fanout.rs`, `tests/asa_teardown.rs`) held to the deployment contract. No test here is `#[ignore]`d.
 
 Nextest is required (`test.rust.nextest`): the memory tests read the process's peak resident set and `tests/config_cascade.rs` reads scalo's process-wide cascade, so each needs a process of its own.
 
